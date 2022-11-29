@@ -1,11 +1,11 @@
 {
   "name": "@aws/mynah-ui",
   "displayName": "AWS Mynah UI",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "AWS Mynah UI",
   "publisher": "aws-mynah",
   "license": "Apache License 2.0",
-  "main": "./dist/",
+  "main": "./dist/main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/aws/mynah-ui.git"
