@@ -1,0 +1,7 @@
+out
+dist
+node_modules
+*.bk
+**/.DS_Store
+.idea
+.gitcommit

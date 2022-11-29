@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+        "esModuleInterop": true,
+		"module": "commonjs",
+		"lib": ["es2015", "dom"],
+		"target": "ES2019",
+		"outDir": "./dist",
+		"sourceMap": true,
+		"declaration": true,
+		"strict": true,
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+		"strictPropertyInitialization": false,
+	},
+	"exclude": ["dist", "node_modules"]
+}
