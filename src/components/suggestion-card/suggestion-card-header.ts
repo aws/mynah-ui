@@ -25,7 +25,7 @@ export class SuggestionCardHeader {
             .slice(0, 3)
         this.render = DomBuilder.getInstance().build({
             type: 'div',
-            classNames: ['mynah-card-header'],
+            classNames: ['mynah-card-header', ...(props.metaData ? ["mynah-card-header-with-source-thumbnail"] : [])],
             children: [
                 ...(props.metaData ? [{
                     type: "span",
@@ -51,7 +51,11 @@ export class SuggestionCardHeader {
                         {
                             type: 'div',
                             classNames: ['mynah-card-title'],
-                            children: [props.title],
+                            children: [props.title, {
+                                type: 'div',
+                                classNames: ['mynah-card-expand-icon'],
+                                children: [new Icon({ icon: MynahIcons.EXTERNAL }).render],
+                            }],
                         },
                         {
                             type: 'a',
@@ -68,11 +72,6 @@ export class SuggestionCardHeader {
                         },
                         ...(props.metaData ? [this.getSourceMetaBlock(props.metaData)] : []),
                     ],
-                },
-                {
-                    type: 'div',
-                    classNames: ['mynah-card-expand-icon'],
-                    children: [new Icon({ icon: MynahIcons.EXTERNAL }).render],
                 },
             ],
         })

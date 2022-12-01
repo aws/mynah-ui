@@ -65,6 +65,5 @@ export const getTimeDiff = (differenceInMs: number, show?: {
     if (show && typeof show === "number") {
         combined.splice(show, combined.length);
     }
-    console.log(combined);
     return combined.join(separator ?? " ");
 }

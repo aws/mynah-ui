@@ -39,7 +39,7 @@ export interface ServiceConnector {
         text: string,
         currSelected?: number,
         suggestionCount?: number
-    ) => void
+    ) => void,
 }
 export interface StateManager {
     getState: () => Record<string, any>

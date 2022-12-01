@@ -18,25 +18,14 @@
         justify-content: flex-start;
         overflow: hidden;
         box-shadow: none;
+        background: var(--mynah-color-context-should-contain);
+        color: var(--mynah-color-context-reverse);
+        > span {
+            padding-left: 0;
+        }
         > i {
             font-size: var(--mynah-font-size-medium);
             margin-left: calc(-1 * var(--mynah-sizing-1));
-        }
-        &.mynah-must-contain {
-            background: var(--mynah-color-context-must-contain);
-            color: var(--mynah-color-context-reverse);
-        }
-        &.mynah-should-contain {
-            background: var(--mynah-color-context-should-contain);
-            color: var(--mynah-color-context-reverse);
-            > span {
-                padding-left: 0;
-            }
-            @include lighten-darken();
-        }
-        &.mynah-must-not-contain {
-            background: var(--mynah-color-context-must-not-contain);
-            color: var(--mynah-color-context-reverse);
         }
     }
 }

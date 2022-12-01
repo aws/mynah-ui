@@ -109,15 +109,28 @@
             max-width: 100%;
             overflow: hidden;
             cursor: pointer;
-            &:hover ~ .mynah-card-expand-icon {
-                opacity: 1;
-                transform: translate3d(0, 0, 0) scale(1);
+            &:hover > .mynah-card-title > .mynah-card-expand-icon {
+                opacity: 0.75;
             }
             > .mynah-card-title {
                 font-size: var(--mynah-font-size-xlarge);
                 font-weight: 700;
                 color: var(--mynah-color-text-strong);
                 width: 100%;
+                display: inline-flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                justify-content: flex-start;
+                gap: var(--mynah-sizing-2);
+                > .mynah-card-expand-icon {
+                    transition: var(--mynah-short-transition-rev);
+                    opacity: 0;
+                    font-size: var(--mynah-font-size-xsmall);
+                    display: inline;
+                    padding: var(--mynah-sizing-1);
+                    border: 1px solid currentColor;
+                    border-radius: 2px;
+                }
             }
             > .mynah-card-url {
                 font-size: var(--mynah-font-size-medium);
@@ -194,13 +207,9 @@
                 }
             }
         }
-        > .mynah-card-expand-icon {
-            color: var(--mynah-color-border-default);
-            align-self: flex-start;
-            transition: var(--mynah-short-transition-rev);
-            opacity: 0;
-            transform: translate3d(0, 0, 0) scale(0.5);
-            font-size: var(--mynah-font-size-large);
+
+        &.mynah-card-header-with-source-thumbnail + .mynah-card-context-wrapper > .mynah-card-tags {
+            padding-left: var(--mynah-sizing-14);
         }
     }
     > .mynah-card-center {
@@ -328,7 +337,6 @@
             display: inline-flex;
             flex-wrap: wrap;
             gap: var(--mynah-sizing-3);
-            padding-left: var(--mynah-sizing-14);
         }
         > .mynah-card-badges {
             display: inline-flex;

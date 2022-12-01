@@ -37,7 +37,6 @@ export class PrioritizationMenuButtons {
                                 cancelEvent(e)
                                 this.handlePrioritizationButtonClick.apply(this, [ContextTypes.MUST])
                             },
-                            icon: new Icon({ icon: MynahIcons.OK_CIRCLED }).render,
                             label: DomBuilder.getInstance().build({
                                 type: 'span',
                                 innerHTML: `Must have&nbsp;<b>${this.props.context.context}</b>`,
@@ -60,7 +59,6 @@ export class PrioritizationMenuButtons {
                                 cancelEvent(e)
                                 this.handlePrioritizationButtonClick.apply(this, [ContextTypes.MUST_NOT])
                             },
-                            icon: new Icon({ icon: MynahIcons.BLOCK }).render,
                             label: DomBuilder.getInstance().build({
                                 type: 'span',
                                 innerHTML: `Without&nbsp;<b>${this.props.context.context}</b>`,

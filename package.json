@@ -1,7 +1,7 @@
 {
   "name": "@aws/mynah-ui",
   "displayName": "AWS Mynah UI",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "AWS Mynah UI",
   "publisher": "aws-mynah",
   "license": "Apache License 2.0",

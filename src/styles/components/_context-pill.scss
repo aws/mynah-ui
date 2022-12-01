@@ -31,7 +31,7 @@
         }
     }
     &:before {
-        content: '';
+        content: "";
         position: absolute;
         left: 0;
         width: calc(100% + var(--mynah-sizing-9));
@@ -64,7 +64,7 @@
         }
         > .mynah-context-checkbox-label {
             &:after {
-                opacity: 1;
+                opacity: 1 !important;
             }
         }
     }
@@ -78,6 +78,10 @@
         > .mynah-context-checkbox-label {
             background: var(--mynah-color-context-must-contain);
             color: var(--mynah-color-context-reverse);
+            @include lighten-darken();
+            &:after {
+                opacity: 0.5;
+            }
         }
     }
     &.mynah-should-contain {
@@ -86,8 +90,10 @@
         > .mynah-context-checkbox-label {
             background: var(--mynah-color-context-should-contain);
             color: var(--mynah-color-context-reverse);
-
             @include lighten-darken();
+            > span {
+                opacity: 0.75;
+            }
         }
     }
     &.mynah-must-not-contain {
@@ -100,6 +106,10 @@
             background: var(--mynah-color-context-must-not-contain);
             color: var(--mynah-color-context-reverse);
             text-decoration: line-through;
+            font-style: italic;
+            > span {
+                opacity: 0.5;
+            }
         }
     }
 }
@@ -164,7 +174,7 @@
         align-items: center;
         cursor: pointer;
         &:before {
-            content: '';
+            content: "";
             position: absolute;
             background-color: currentColor;
             transition: var(--mynah-short-transition);
@@ -192,7 +202,7 @@
     }
     &:after {
         pointer-events: none;
-        content: '';
+        content: "";
         transition: var(--mynah-short-transition-rev);
         position: absolute;
         top: 0;
@@ -204,7 +214,7 @@
         z-index: 10;
         border-radius: var(--mynah-button-radius);
         border: var(--mynah-button-border-width) solid currentColor;
-        opacity: 0;
+        opacity: 0.15;
     }
 
     &#add-new-context {

@@ -38,16 +38,6 @@ export class ContextPill {
                           }
                         : {},
                     children: [
-                        ...((props.showRemoveButton ?? false) && props.context.type !== ContextTypes.SHOULD
-                            ? [
-                                  new Icon({
-                                      icon:
-                                          props.context.type === ContextTypes.MUST
-                                              ? MynahIcons.OK_CIRCLED
-                                              : MynahIcons.BLOCK,
-                                  }).render,
-                              ]
-                            : []),
                         { type: 'span', innerHTML: props.context.context },
                         ...(props.showRemoveButton ?? false
                             ? [

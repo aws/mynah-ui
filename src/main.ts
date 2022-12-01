@@ -260,10 +260,17 @@ export class MynahUI {
                     this.handleContentUpdate(suggestions)
                 }
             })
-            .catch((err: Error) => {
-                console.warn(err)
+            .catch((error: Error) => {
                 this.searchCard.setWaitState(false)
-                this.mainContainer.updateCards([])
+                this.mainContainer.updateCards([]);
+                console.warn(error);
+                new Notification({
+                    content: error.message ?? "An error occured",
+                    title: "Something went wrong",
+                    duration: 5000,
+                    onNotificationClick: () => { },
+                    type: NotificationType.ERROR
+                }).notify();
             })
     }
 
