@@ -64,11 +64,18 @@ export class MynahUI {
             this.config.getConfig('live') !== false &&
             this.config.getConfig('live') !== ''
 
+        const listenPayloadChanges =
+            this.config.getConfig('listen-payloads') !== undefined &&
+            this.config.getConfig('listen-payloads') !== false &&
+            this.config.getConfig('listen-payloads') !== ''
+
         if (isLiveSearchOn) {
-            this.connector.registerLiveSearchHandler(
-                this.handleLiveSearch,
-                this.handleLiveSearchExternalCommand
-            )
+            this.connector.liveSearchHandler = this.handleLiveSearch;
+            this.connector.liveSearchStateExternalChangeHandler = this.handleLiveSearchExternalCommand;
+        }
+
+        if (listenPayloadChanges) {
+            this.connector.liveSearchHandler = this.handlePayloadChange;
         }
 
         this.wrapper = DomBuilder.getInstance().createPortal(
@@ -96,7 +103,9 @@ export class MynahUI {
                 this.connector.sendFeedback(feedbackPayload);
             },
             onLiveSearchToggle: (value: LiveSearchState) => {
-                this.connector.toggleLiveSearch(value, this.handleLiveSearch)
+                if (this.connector.toggleLiveSearch) {
+                    this.connector.toggleLiveSearch(value, this.handleLiveSearch)
+                }
             },
             onSearch: this.handleSearch,
             onHistoryChange: (suggestions: Suggestion[], payload: SearchPayload) => {
@@ -196,6 +205,10 @@ export class MynahUI {
         this.searchCard.addFocusOnInput()
     }
 
+    public updateSearchPayload = (searchPayload: SearchPayload): void => {
+
+    }
+
     private readonly handleLiveSearchExternalCommand = (state: LiveSearchState): void => {
         switch (state) {
             case LiveSearchState.PAUSE:
@@ -205,6 +218,17 @@ export class MynahUI {
             case LiveSearchState.STOP:
                 this.searchCard.removeLiveSearchToggle()
                 break
+        }
+    }
+
+    private readonly handlePayloadChange = (searchPayload?: SearchPayload): void => {
+        this.searchCard.setSearchQuery('');
+        ContextManager.getInstance().removeAll();
+
+        if (searchPayload !== undefined) {
+            this.searchCard.setSearchQuery(searchPayload.query)
+            this.searchCard.setContextItems(searchPayload?.matchPolicy)
+            this.handleSearch(searchPayload, false);
         }
     }
 
@@ -246,7 +270,7 @@ export class MynahUI {
         this.config.setConfig('code-query', JSON.stringify(payload.codeQuery))
 
         if (isFromAutocomplete) {
-            this.connector.publishAutocompleteSuggestionSelectedEvent(
+            this.connector.clickAutocompleteSuggestionItem(
                 payload.query,
                 currAutocompleteSuggestionSelected,
                 autocompleteSuggestionsCount

@@ -14,6 +14,7 @@ const configProcessors: Record<string, (sourceString: string) => any> = {
     'code-selection': (sourceString: string) => decodeURI(sourceString),
     'code-query': (sourceString: string) => decodeURI(sourceString),
     live: (sourceString: string) => sourceString === 'true',
+    'listen-payloads': (sourceString: string) => sourceString === 'true',
     language: (sourceString: string) => decodeURI(sourceString),
 }
 export interface MynahConfigProps {
@@ -29,6 +30,7 @@ export class MynahConfig {
         'code-selection': '',
         'code-query': '',
         live: false,
+        'listen-payloads': false,
         language: 'en',
     }
     private readonly stateManager;

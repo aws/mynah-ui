@@ -4,14 +4,16 @@
  */
 
 export interface ServiceConnector {
-    uiReady: () => void
-    once: () => Promise<Suggestion[]>
+    liveSearchHandler?: (searchPayload?: SearchPayload, suggestions?: Suggestion[]) => void,
+    liveSearchStateExternalChangeHandler?: (state: LiveSearchState) => void,
+    uiReady: () => void,
+    once: () => Promise<Suggestion[]>,
     requestSuggestions: (
         searchPayload: SearchPayload,
         isFromHistory?: boolean,
         isFromAutocomplete?: boolean
-    ) => Promise<Suggestion[] | undefined>
-    updateVoteOfSuggestion: (suggestion: Suggestion, vote: RelevancyVoteType) => void
+    ) => Promise<Suggestion[] | undefined>,
+    updateVoteOfSuggestion: (suggestion: Suggestion, vote: RelevancyVoteType) => void,
     clickCodeDetails: (
         code: string,
         fileName?: string,
@@ -19,23 +21,19 @@ export interface ServiceConnector {
             start: { row: string; column?: string }
             end?: { row: string; column?: string }
         }
-    ) => void
-    recordContextChange: (changeType: ContextChangeType, queryContext: ContextType) => void
-    triggerSuggestionEngagement: (engagement: SuggestionEngagement) => void
-    triggerSuggestionClipboardInteraction: (suggestionId: string, type?: string, text?: string) => void
-    triggerSuggestionEvent: (eventName: SuggestionEventName, suggestion: Suggestion) => void
-    sendFeedback: (feedbackPayload: FeedbackPayload) => void
-    requestHistoryRecords: (filterPayload: SearchHistoryFilters) => Promise<SearchHistoryItem[]>
-    requestAutocomplete: (input: string) => Promise<AutocompleteItem[]>
-    toggleLiveSearch: (
+    ) => void,
+    recordContextChange: (changeType: ContextChangeType, queryContext: ContextType) => void,
+    triggerSuggestionEngagement: (engagement: SuggestionEngagement) => void,
+    triggerSuggestionClipboardInteraction: (suggestionId: string, type?: string, text?: string) => void,
+    triggerSuggestionEvent: (eventName: SuggestionEventName, suggestion: Suggestion) => void,
+    sendFeedback: (feedbackPayload: FeedbackPayload) => void,
+    requestHistoryRecords: (filterPayload: SearchHistoryFilters) => Promise<SearchHistoryItem[]>,
+    requestAutocomplete: (input: string) => Promise<AutocompleteItem[]>,
+    toggleLiveSearch?: (
         liveSearchState: LiveSearchState,
         onFeedReceived: (searchPayload?: SearchPayload, suggestions?: Suggestion[]) => void
-    ) => void
-    registerLiveSearchHandler: (
-        onLiveSearchDataReceived: (searchPayload?: SearchPayload, suggestions?: Suggestion[]) => void,
-        onStateChangedExternally?: (state: LiveSearchState) => void
-    ) => void
-    publishAutocompleteSuggestionSelectedEvent: (
+    ) => void,
+    clickAutocompleteSuggestionItem: (
         text: string,
         currSelected?: number,
         suggestionCount?: number
