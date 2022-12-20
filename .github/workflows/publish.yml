@@ -10,11 +10,10 @@ jobs:
       packages: write 
     steps:
       - uses: actions/checkout@v3
-      # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: 'https://registry.npmjs.org/'
           scope: '@aws'
       - run: npm install
       - run: npm run lint
@@ -22,3 +21,4 @@ jobs:
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
