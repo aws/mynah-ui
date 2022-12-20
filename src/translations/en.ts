@@ -4,8 +4,8 @@
  */
 
 const en = {
-    searchInputAPIHelpPlaceholder: 'You can enrich your query here.',
-    searchInputMynahPlaceholder: 'What can Mynah help you with?',
-}
+  searchInputAPIHelpPlaceholder: 'You can enrich your query here.',
+  searchInputMynahPlaceholder: 'What can Mynah help you with?',
+};
 
-export default en
+export default en;

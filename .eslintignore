@@ -1,0 +1,13 @@
+node_modules/**
+**/*.json
+**/*.md
+**/*.css
+**/*.scss
+**/*rc.js
+**/*config.js
+dist/**
+out/**
+**/*.d.ts
+LICENSE
+THIRD-PARTY-LICENSES
+NOTICE
