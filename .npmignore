@@ -4,3 +4,12 @@ node_modules
 **/.DS_Store
 .idea
 .gitcommit
+.github
+.eslintignore
+.gitignore
+.npmignore
+.eslintrc.json
+package-lock.json
+tsconfig.json
+webpack.config.js
+src
