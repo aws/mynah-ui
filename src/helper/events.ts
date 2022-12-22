@@ -60,8 +60,10 @@ export class MynahUIGlobalEvents {
    * @param data A full or partial set of store data model with values.
    */
   public dispatch = (eventKey: MynahEventNames, data?: any): void => {
-    Object.keys(this.listeners[eventKey]).forEach((listenerId: string) => {
-      this.listeners[eventKey][listenerId](data);
-    });
+    if (this.listeners[eventKey] !== undefined) {
+      Object.keys(this.listeners[eventKey]).forEach((listenerId: string) => {
+        this.listeners[eventKey][listenerId](data);
+      });
+    }
   };
 }

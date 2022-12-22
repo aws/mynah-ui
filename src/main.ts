@@ -289,6 +289,15 @@ export class MynahUI {
       }
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_VOTE, (data) => {
+      if (this.props.onClickSuggestionVote !== undefined) {
+        this.props.onClickSuggestionVote(
+          data.suggestion,
+          data.vote
+        );
+      }
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_LINK_COPY, (data) => {
       if (this.props.onSuggestionInteraction !== undefined) {
         this.props.onSuggestionInteraction(
