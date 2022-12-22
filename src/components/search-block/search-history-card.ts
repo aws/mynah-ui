@@ -4,7 +4,8 @@
  */
 
 import { getTimeDiff } from '../../helper/date-time';
-import { cancelEvent, DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { cancelEvent } from '../../helper/events';
 import {
   SearchPayloadMatchPolicy,
   ContextTypeClassNames,
@@ -91,12 +92,11 @@ export class HistoryCardContent {
               },
               {
                 type: 'span',
-                innerHTML:
-                                    props.content.recordDate !== undefined
-                                      ? `${getTimeDiff(
-                                            new Date().getTime() - props.content.recordDate
-                                        ).toString()} ago`
-                                      : '',
+                innerHTML: props.content.recordDate !== undefined
+                  ? `${getTimeDiff(
+                      new Date().getTime() - props.content.recordDate
+                    ).toString()} ago`
+                  : '',
               },
             ],
           },
@@ -121,10 +121,9 @@ export class HistoryCardContent {
                       children: [
                         {
                           type: 'span',
-                          innerHTML:
-                                                        props.content.query.queryContext[
-                                                          policyGroup as keyof SearchPayloadMatchPolicy
-                                                        ].length.toString(),
+                          innerHTML: props.content.query.queryContext[
+                            policyGroup as keyof SearchPayloadMatchPolicy
+                          ].length.toString(),
                         },
                       ],
                     },

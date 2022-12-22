@@ -4,8 +4,9 @@
  */
 
 import { AutocompleteItem } from '../../static';
-import { cancelEvent, DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
+import { cancelEvent } from '../../helper/events';
 
 export interface AutocompleteCardContentProps {
   searchQuery: string;

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { cancelEvent, DomBuilderObject, DS, ExtendedHTMLElement } from '../../helper/dom';
+import { DomBuilderObject, DS, ExtendedHTMLElement } from '../../helper/dom';
+import { cancelEvent } from '../../helper/events';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection, OVERLAY_MARGIN } from '../overlay/overlay';
 

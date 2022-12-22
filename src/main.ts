@@ -7,25 +7,33 @@ import { MainContainer } from './components/main-container';
 import { Notification, NotificationType } from './components/notification/notification';
 import { SearchCard } from './components/search-block/search-card';
 import { MynahConfig } from './helper/config';
-import { ContextManager } from './helper/context-manager';
 import { DomBuilder, ExtendedHTMLElement } from './helper/dom';
 import {
   SuggestionEngagement,
   MynahPortalNames,
   Suggestion,
   SearchPayload,
-  MynahEventNames,
   LiveSearchState,
-  ContextChangeType,
   SuggestionEventName,
   RelevancyVoteType,
   FeedbackPayload,
-  ServiceConnector,
-  StateManager
+  MynahUIDataModel,
+  ContextChangeType,
+  ContextType,
+  SearchHistoryFilters,
+  MynahEventNames,
+  SearchHistoryItem,
+  SearchPayloadMatchPolicy,
+  ContextTypes,
+  AutocompleteItem,
 } from './static';
 import { I18N } from './translations/i18n';
 import './styles/styles.scss';
+import { EmptyMynahUIDataModel, MynahUIDataStore } from './helper/store';
+import { MynahUIGlobalEvents } from './helper/events';
+import { getTimeDiff } from './helper/date-time';
 
+export { NotificationType } from './components/notification/notification';
 export {
   AutocompleteItem,
   SearchPayloadCodeSelection,
@@ -38,45 +46,60 @@ export {
   SearchHistoryItem,
   EngagementType,
   SuggestionEngagement,
+  SuggestionEventName,
+  SearchHistoryFilters,
+  MynahUIDataModel,
+  ContextChangeType,
+  ContextSource,
+  ContextTypes,
 } from './static';
 
 export interface MynahUIProps {
-  serviceConnector: ServiceConnector;
-  stateManager: StateManager;
+  storeData?: MynahUIDataModel;
+  onSearch?: (
+    searchPayload: SearchPayload,
+    isFromHistory?: boolean,
+    isFromAutocomplete?: boolean
+  ) => void;
+  onReady?: () => void;
+  onClickSuggestionVote?: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
+  onClickCodeDetails?: (
+    code: string,
+    fileName?: string,
+    range?: {
+      start: { row: string; column?: string };
+      end?: { row: string; column?: string };
+    }
+  ) => void;
+  onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
+  onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
+  onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
+  onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion) => void;
+  onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
+  onRequestHistoryRecords?: (filterPayload: SearchHistoryFilters) => void;
+  onRequestAutocompleteList?: (input: string) => void;
+  onChangeLiveSearchState?: (liveSearchState: LiveSearchState) => void;
+  onClickAutocompleteItem?: (
+    text: string,
+    currSelected?: number,
+    suggestionCount?: number
+  ) => void;
 }
 export class MynahUI {
+  private readonly props: MynahUIProps;
   private readonly wrapper: ExtendedHTMLElement;
   private readonly searchCard: SearchCard;
   private readonly mainContainer: MainContainer;
   private readonly config: MynahConfig;
-  private readonly connector: ServiceConnector;
 
   constructor (props: MynahUIProps) {
+    this.props = props;
+    MynahUIGlobalEvents.getInstance();
+    MynahUIDataStore.getInstance(props.storeData);
     DomBuilder.getInstance('body');
-    ContextManager.getInstance();
-    this.connector = props.serviceConnector;
-    this.config = new MynahConfig({ stateManager: props.stateManager });
+    this.config = new MynahConfig();
 
     I18N.getInstance(this.config.getConfig('language'));
-
-    const isLiveSearchOn =
-            this.config.getConfig('live') !== undefined &&
-            this.config.getConfig('live') !== false &&
-            this.config.getConfig('live') !== '';
-
-    const listenPayloadChanges =
-            this.config.getConfig('listen-payloads') !== undefined &&
-            this.config.getConfig('listen-payloads') !== false &&
-            this.config.getConfig('listen-payloads') !== '';
-
-    if (isLiveSearchOn) {
-      this.connector.liveSearchHandler = this.handleLiveSearch;
-      this.connector.liveSearchStateExternalChangeHandler = this.handleLiveSearchExternalCommand;
-    }
-
-    if (listenPayloadChanges) {
-      this.connector.liveSearchHandler = this.handlePayloadChange;
-    }
 
     this.wrapper = DomBuilder.getInstance().createPortal(
       MynahPortalNames.WRAPPER,
@@ -87,223 +110,218 @@ export class MynahUI {
       'afterbegin'
     );
 
-    const codeQuery = (() => {
-      try {
-        return JSON.parse(this.config.getConfig('code-query'));
-      } catch (err) {
-        console.warn('Cannot parse code-query data from config.');
-      }
-    })();
-
-    this.searchCard = new SearchCard({
-      liveSearch: isLiveSearchOn,
-      onHistoryOpen: this.connector.requestHistoryRecords,
-      onAutocompleteRequest: this.connector.requestAutocomplete,
-      onFeedbackSet: (feedbackPayload: FeedbackPayload) => {
-        this.connector.sendFeedback(feedbackPayload);
-      },
-      onLiveSearchToggle: (value: LiveSearchState) => {
-        if (this.connector.toggleLiveSearch != null) {
-          this.connector.toggleLiveSearch(value, this.handleLiveSearch);
-        }
-      },
-      onSearch: this.handleSearch,
-      onHistoryChange: (suggestions: Suggestion[], payload: SearchPayload) => {
-        if (suggestions !== undefined && suggestions.length > 0) {
-          this.wrapper.addClass('mynah-showing-suggestions-from-history');
-          this.mainContainer.updateCards(suggestions);
-
-          void this.connector.requestSuggestions(payload, true).then(() => {
-            // event sent
-          });
-        } else {
-          this.wrapper.removeClass('mynah-showing-suggestions-from-history');
-          this.mainContainer.updateCards([]);
-          const notification = new Notification({
-            title: "Can't show suggestions",
-            content: 'It seems like there was no suggestion on this search.',
-            type: NotificationType.WARNING,
-            onNotificationClick: () => { },
-          });
-          notification.notify();
-        }
-      },
-      onCodeDetailsClicked: this.connector.clickCodeDetails,
-      codeSelection: (() => {
-        try {
-          return JSON.parse(this.config.getConfig('code-selection'));
-        } catch (err) {
-          console.warn('Cannot parse code-selection data from config.');
-        }
-      })(),
-      codeQuery,
-      initText: this.config.getConfig('query-text'),
-      initContextList: (() => {
-        try {
-          return JSON.parse(this.config.getConfig('context'));
-        } catch (err) {
-          console.warn('Cannot parse context from config.');
-        }
-      })(),
-    });
+    this.searchCard = new SearchCard();
     this.mainContainer = new MainContainer({
-      onVoteChange: (suggestion: Suggestion, vote: RelevancyVoteType) => {
-        this.connector.updateVoteOfSuggestion(suggestion, vote);
-      },
-      onSuggestionOpen: (suggestion: Suggestion) => {
-        this.connector.triggerSuggestionEvent(SuggestionEventName.CLICK, suggestion);
-      },
-      onSuggestionLinkClick: (suggestion: Suggestion) => {
-        this.connector.triggerSuggestionEvent(SuggestionEventName.OPEN, suggestion);
-      },
-      onSuggestionLinkCopy: (suggestion: Suggestion) => {
-        this.connector.triggerSuggestionEvent(SuggestionEventName.COPY, suggestion);
-      },
-      onSuggestionEngaged: (engagement: SuggestionEngagement) => {
-        this.connector.triggerSuggestionEngagement(engagement);
-      },
       onScroll: (e: Event) => this.searchCard.setFolded((e.target as HTMLElement).scrollTop > 0),
-      onCopiedToClipboard: this.connector.triggerSuggestionClipboardInteraction,
     });
 
     this.wrapper
       .insertChild('beforeend', this.searchCard.render)
       .insertChild('beforeend', this.mainContainer.render);
 
-    DomBuilder.getInstance().root.addEventListener(
-      MynahEventNames.CONTEXT_VISIBILITY_CHANGE as keyof HTMLElementEventMap,
-      this.recordContextChange.bind(this) as EventListener
-    );
-
-    if (
-      (this.config.getConfig('query-text') !== undefined && this.config.getConfig('query-text') !== '') ||
-            (codeQuery !== undefined && codeQuery.simpleNames.length !== 0)
-    ) {
-      const initSuggestions = this.config.getConfig('suggestions');
-      if (initSuggestions !== undefined && initSuggestions !== '') {
-        this.handleContentUpdate(JSON.parse(initSuggestions));
-      } else {
-        if (
-          this.config.getConfig('loading') !== undefined &&
-                    this.config.getConfig('loading') !== '' &&
-                    this.config.getConfig('loading') !== 'true'
-        ) {
-          this.searchCard.setWaitState(true);
-          this.mainContainer.clearCards();
-        }
-        this.connector
-          .once()
-          .then(this.handleContentUpdate)
-          .catch((reason: Error) => {
-            console.warn(reason);
-            this.searchCard.setWaitState(false);
-            this.mainContainer.updateCards([]);
-          });
-      }
-    }
-    this.connector.uiReady();
     this.searchCard.addFocusOnInput();
+    this.addGlobalListeners();
+    setTimeout(() => {
+      if (this.props.onReady !== undefined) {
+        this.props.onReady();
+      }
+    }, 1000);
   }
 
-  public updateSearchPayload = (searchPayload: SearchPayload): void => {
+  private readonly addGlobalListeners = (): void => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REQUEST_SEARCH_HISTORY, (data) => {
+      if (this.props.onRequestHistoryRecords !== undefined) {
+        this.props.onRequestHistoryRecords(data.filters);
+      }
+    });
 
-  };
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REQUEST_AUTOCOMPLETE_SUGGESTIONS, (data) => {
+      if (this.props.onRequestAutocompleteList !== undefined) {
+        this.props.onRequestAutocompleteList(data.input);
+      }
+    });
 
-  private readonly handleLiveSearchExternalCommand = (state: LiveSearchState): void => {
-    switch (state) {
-      case LiveSearchState.PAUSE:
-      case LiveSearchState.RESUME:
-        this.searchCard.changeLiveSearchState(state);
-        break;
-      case LiveSearchState.STOP:
-        this.searchCard.removeLiveSearchToggle();
-        break;
-    }
-  };
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.AUTOCOMPLETE_SUGGESTION_CLICK, (data: {
+      autocompleteQuery: AutocompleteItem;
+      index: number;
+      count: number;
+    }) => {
+      if (this.props.onClickAutocompleteItem !== undefined) {
+        this.props.onClickAutocompleteItem(data.autocompleteQuery.suggestion, data.index, data.count);
+      }
+    });
 
-  private readonly handlePayloadChange = (searchPayload?: SearchPayload): void => {
-    this.searchCard.setSearchQuery('');
-    ContextManager.getInstance().removeAll();
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FEEDBACK_SET, (feedbackData) => {
+      if (this.props.onSendFeedback !== undefined) {
+        this.props.onSendFeedback(feedbackData);
+      }
+    });
 
-    if (searchPayload !== undefined) {
-      this.searchCard.setSearchQuery(searchPayload.query);
-      this.searchCard.setContextItems(searchPayload?.matchPolicy);
-      this.handleSearch(searchPayload, false);
-    }
-  };
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.LIVE_SEARCH_STATE_CHANGED, (data) => {
+      if (this.props.onChangeLiveSearchState !== undefined) {
+        this.props.onChangeLiveSearchState(data.liveSearchState);
+      }
+    });
 
-  private readonly handleLiveSearch = (searchPayload?: SearchPayload, suggestions?: Suggestion[]): void => {
-    this.searchCard.onLiveSearchDataReceived();
-    if (suggestions !== undefined) {
-      this.handleContentUpdate(suggestions);
-    }
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SEARCH, (data: {
+      query: string;
+      isFromAutocomplete?: boolean;
+    }) => {
+      if (this.props.onSearch !== undefined) {
+        this.props.onSearch({
+          query: data.query,
+          codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
+          matchPolicy: MynahUIDataStore.getInstance().getValue('matchPolicy'),
+          codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
+        }, false, data.isFromAutocomplete);
+      }
+      if (this.props.onChangeLiveSearchState != null) {
+        this.props.onChangeLiveSearchState(LiveSearchState.STOP);
+        MynahUIDataStore.getInstance().updateStore({
+          liveSearchState: LiveSearchState.STOP
+        });
+      }
+    });
 
-    this.searchCard.setSearchQuery('');
-    ContextManager.getInstance().removeAll();
-
-    if (searchPayload !== undefined) {
-      this.searchCard.setSearchQuery(searchPayload.query);
-      this.searchCard.setContextItems(searchPayload?.matchPolicy);
-    }
-  };
-
-  private readonly handleContentUpdate = (suggestions: Suggestion[]): void => {
-    ContextManager.getInstance().clear();
-    this.mainContainer.updateCards(suggestions);
-    this.config.setConfig('suggestions', JSON.stringify(suggestions));
-    this.searchCard.setWaitState(false);
-  };
-
-  public handleSearch = (
-    payload: SearchPayload,
-    isFromAutocomplete: boolean,
-    currAutocompleteSuggestionSelected?: number,
-    autocompleteSuggestionsCount?: number
-  ): void => {
-    this.wrapper.removeClass('mynah-showing-suggestions-from-history');
-    this.searchCard.setWaitState(true);
-    this.mainContainer.clearCards();
-
-    this.config.setConfig('query-text', payload.query);
-    this.config.setConfig('context', JSON.stringify(payload.matchPolicy));
-    this.config.setConfig('code-selection', JSON.stringify(payload.codeSelection));
-    this.config.setConfig('code-query', JSON.stringify(payload.codeQuery));
-
-    if (isFromAutocomplete) {
-      this.connector.clickAutocompleteSuggestionItem(
-        payload.query,
-        currAutocompleteSuggestionSelected,
-        autocompleteSuggestionsCount
-      );
-    }
-
-    this.connector
-      .requestSuggestions(payload, false, isFromAutocomplete)
-      .then((suggestions?: Suggestion[]) => {
-        if (suggestions !== undefined) {
-          this.handleContentUpdate(suggestions);
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, (data: {
+      type: ContextChangeType;
+      context: ContextType;
+      oldPolicyType?: ContextTypes;
+    }) => {
+      const currentMatchPolicy = Object.assign({}, MynahUIDataStore.getInstance().getValue('matchPolicy') as SearchPayloadMatchPolicy);
+      if (data.type === ContextChangeType.ADD) {
+        if (data.oldPolicyType !== undefined && data.oldPolicyType !== data.context.type) {
+          currentMatchPolicy[data.oldPolicyType] = currentMatchPolicy[data.oldPolicyType]
+            .filter((contextKey: string) => contextKey !== data.context.context);
         }
-      })
-      .catch((error: Error) => {
-        this.searchCard.setWaitState(false);
-        this.mainContainer.updateCards([]);
-        console.warn(error);
-        new Notification({
-          content: error.message ?? 'An error occured',
-          title: 'Something went wrong',
-          duration: 5000,
-          onNotificationClick: () => { },
-          type: NotificationType.ERROR
-        }).notify();
+        currentMatchPolicy[data.context.type as ContextTypes].push(data.context.context);
+      } else if (data.type === ContextChangeType.REMOVE) {
+        currentMatchPolicy[data.context.type as ContextTypes] = currentMatchPolicy[data.context.type as ContextTypes]
+          .filter((contextKey: string) => contextKey !== data.context.context);
+      }
+      MynahUIDataStore.getInstance().updateStore({
+        matchPolicy: { ...currentMatchPolicy }
       });
+
+      if (this.props.onSearch !== undefined) {
+        this.props.onSearch({
+          query: MynahUIDataStore.getInstance().getValue('query'),
+          codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
+          matchPolicy: currentMatchPolicy,
+          codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
+        });
+      }
+
+      if (this.props.onChangeContext != null) {
+        this.props.onChangeContext(data.type, data.context);
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SEARCH_HISTORY_ITEM_CLICK, (data: {
+      historyItem: SearchHistoryItem;
+    }) => {
+      if (this.props.onSearch !== undefined) {
+        this.props.onSearch({
+          query: data.historyItem.query.input,
+          codeSelection: data.historyItem.query.codeSelection,
+          matchPolicy: data.historyItem.query.queryContext,
+          codeQuery: data.historyItem.query.codeQuery,
+        }, true);
+      }
+      const fullStoreData: Required<MynahUIDataModel> = Object.assign((new EmptyMynahUIDataModel()).data, {
+        ...(data.historyItem.query.input !== undefined ? { query: data.historyItem.query.input } : {}),
+        ...(data.historyItem.query.queryContext !== undefined ? { matchPolicy: data.historyItem.query.queryContext } : {}),
+        ...(data.historyItem.suggestions !== undefined ? { suggestions: data.historyItem.suggestions } : {}),
+        ...(data.historyItem.query.codeQuery !== undefined ? { codeQuery: data.historyItem.query.codeQuery } : {}),
+        ...(data.historyItem.query.codeSelection !== undefined ? { codeSelection: data.historyItem.query.codeSelection } : {}),
+        headerInfoText: data.historyItem.recordDate !== undefined
+          ? `${getTimeDiff(
+            new Date().getTime() - data.historyItem.recordDate
+          ).toString()} ago`
+          : ''
+      });
+      MynahUIDataStore.getInstance().updateStore(fullStoreData);
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CODE_DETAILS_CLICK, (data) => {
+      if (this.props.onClickCodeDetails !== undefined) {
+        this.props.onClickCodeDetails(
+          data.code,
+          data.fileName,
+          data.range
+        );
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ENGAGEMENT, (engagement: SuggestionEngagement) => {
+      if (this.props.onSuggestionEngagement !== undefined) {
+        this.props.onSuggestionEngagement(
+          engagement
+        );
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, (data) => {
+      if (this.props.onSuggestionClipboardInteraction !== undefined) {
+        this.props.onSuggestionClipboardInteraction(
+          data.suggestionId,
+          data.type,
+          data.text
+        );
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_OPEN, (data) => {
+      if (this.props.onSuggestionInteraction !== undefined) {
+        this.props.onSuggestionInteraction(
+          SuggestionEventName.OPEN,
+          data.suggestion
+        );
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_LINK_CLICK, (data) => {
+      if (this.props.onSuggestionInteraction !== undefined) {
+        this.props.onSuggestionInteraction(
+          SuggestionEventName.CLICK,
+          data.suggestion
+        );
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_LINK_COPY, (data) => {
+      if (this.props.onSuggestionInteraction !== undefined) {
+        this.props.onSuggestionInteraction(
+          SuggestionEventName.COPY,
+          data.suggestion
+        );
+      }
+    });
   };
 
-  private readonly recordContextChange = (e: CustomEvent | { detail: { context: string } }): void => {
-    const context = ContextManager.getInstance().getContextObjectFromKey(e.detail.context);
-    if (context.visible !== undefined && context.visible) {
-      this.connector.recordContextChange(ContextChangeType.ADD, context);
-    } else {
-      this.connector.recordContextChange(ContextChangeType.REMOVE, context);
-    }
+  /**
+   * Updates only the UI with the given data.
+   * @param data A full or partial set of data with values.
+   */
+  public updateStore = (data: MynahUIDataModel): void => {
+    MynahUIDataStore.getInstance().updateStore({ ...data });
+  };
+
+  /**
+   * Simply creates and shows a notification
+   * @param props NotificationProps
+   */
+  public notify = (props: {
+    duration?: number;
+    type?: NotificationType;
+    title?: string;
+    content: string;
+    onNotificationClick?: () => void;
+    onNotificationHide?: () => void;
+  }): void => {
+    new Notification({
+      ...props,
+      onNotificationClick: () => {}
+    }).notify();
   };
 }

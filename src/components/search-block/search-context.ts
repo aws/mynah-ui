@@ -4,17 +4,20 @@
  */
 
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
+/* eslint-disable @typescript-eslint/prefer-includes */
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-import { ContextManager } from '../../helper/context-manager';
-import { cancelEvent, DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
+import { MynahUIDataStore } from '../../helper/store';
 import {
   KeyMap,
-  MynahEventNames,
   SearchPayloadMatchPolicy,
   ContextSource,
   ContextType,
-  ContextTypes
+  ContextTypes,
+  MynahEventNames,
+  ContextChangeType
 } from '../../static';
 import { ContextPill } from '../context-item';
 import { Icon, MynahIcons } from '../icon';
@@ -44,73 +47,15 @@ export class SearchContext {
   constructor (props?: SearchContextProps) {
     this.onContextInsertionEnabled = props?.onContextInsertionEnabled;
     this.onContextInsertionDisabled = props?.onContextInsertionDisabled;
-    if (props?.initContextList !== undefined) {
-      this.updateLocalContext(props.initContextList);
+    const initContext = MynahUIDataStore.getInstance().getValue('matchPolicy');
+    if (initContext !== undefined) {
+      this.createContextItemElements(initContext, {});
     }
 
-    DomBuilder.getInstance().root.addEventListener(
-      MynahEventNames.CONTEXT_VISIBILITY_CHANGE as keyof HTMLElementEventMap,
-      this.updateContextItems.bind(this) as EventListener
-    );
-
-    DomBuilder.getInstance().root.addEventListener(MynahEventNames.REMOVE_ALL_CONTEXT as keyof HTMLElementEventMap, () => {
-      Object.keys(this.renderedContextMap).forEach(contextKey => {
-        this.renderedContextMap[contextKey].render.remove();
-      });
-      this.renderedContextMap = {};
+    MynahUIDataStore.getInstance().subscribe('matchPolicy', (matchPolicy: SearchPayloadMatchPolicy, oldMatchPolicy: Partial<SearchPayloadMatchPolicy>) => {
+      this.createContextItemElements(matchPolicy, oldMatchPolicy);
     });
   }
-
-  updateLocalContext = (contextItems: SearchPayloadMatchPolicy): void => {
-    Object.keys(contextItems).forEach((policyGroup: string) => {
-      contextItems[policyGroup as keyof SearchPayloadMatchPolicy].forEach((contextKey: string) => {
-        ContextManager.getInstance().addOrUpdateContext(
-          {
-            context: contextKey,
-            type: policyGroup as ContextTypes,
-            visible: true,
-            source: ContextSource.AUTO,
-          },
-          false
-        );
-        this.updateContextItems({ detail: { context: contextKey } });
-      });
-    });
-  };
-
-  private readonly updateContextItems = (e: CustomEvent | { detail: { context: string } }): void => {
-    const contextKey = e.detail.context;
-    if (
-      this.renderedContextMap[contextKey] &&
-            (!ContextManager.getInstance().contextMap[contextKey] ||
-                !ContextManager.getInstance().contextMap[contextKey].visible ||
-                !ContextManager.getInstance().areContextItemsIdentical(
-                  ContextManager.getInstance().contextMap[contextKey],
-                  this.renderedContextMap[contextKey]
-                ))
-    ) {
-      this.renderedContextMap[contextKey].render.remove();
-      delete this.renderedContextMap[contextKey];
-    }
-
-    if (
-      ContextManager.getInstance().contextMap[contextKey]?.visible &&
-            !ContextManager.getInstance().areContextItemsIdentical(
-              ContextManager.getInstance().contextMap[contextKey],
-              this.renderedContextMap[contextKey]
-            )
-    ) {
-      const contextRender = new ContextPill({
-        context: ContextManager.getInstance().contextMap[contextKey],
-        showRemoveButton: true,
-      }).render;
-      this.renderedContextMap[contextKey] = {
-        ...ContextManager.getInstance().contextMap[contextKey],
-        render: contextRender,
-      };
-      this.contextWrapper.insertChild('beforeend', contextRender);
-    }
-  };
 
   private readonly enableContextInsertion = (): void => {
     this.contextInsertionButton.addClass('context-insertion-activated');
@@ -131,16 +76,68 @@ export class SearchContext {
     }
   };
 
+  private readonly createContextItemElements = (matchPolicy: SearchPayloadMatchPolicy, oldMatchPolicy: Partial<SearchPayloadMatchPolicy>): void => {
+    const userAddedContext: string[] = MynahUIDataStore.getInstance().getValue('userAddedContext') as string[];
+    const removedContext: ContextType[] = [];
+    const addedContext: ContextType[] = [];
+    Object.keys(oldMatchPolicy).forEach(policyGroup => {
+      oldMatchPolicy[policyGroup as keyof SearchPayloadMatchPolicy]?.forEach(contextKey => {
+        if (matchPolicy[policyGroup as keyof SearchPayloadMatchPolicy]?.indexOf(contextKey) === -1) {
+          removedContext.push({
+            context: contextKey,
+            source: ContextSource.AUTO,
+            type: policyGroup as ContextTypes
+          });
+        }
+      });
+    });
+    Object.keys(matchPolicy).forEach(policyGroup => {
+      matchPolicy[policyGroup as keyof SearchPayloadMatchPolicy].forEach(contextKey => {
+        if (!oldMatchPolicy[policyGroup as keyof SearchPayloadMatchPolicy]?.includes(contextKey)) {
+          addedContext.push({
+            context: contextKey,
+            source: userAddedContext.includes(contextKey) ? ContextSource.USER : ContextSource.AUTO,
+            type: policyGroup as ContextTypes
+          });
+        }
+      });
+    });
+
+    removedContext.forEach((contextItem: ContextType) => {
+      if (this.renderedContextMap[contextItem.context]) {
+        this.renderedContextMap[contextItem.context].render.remove();
+        delete this.renderedContextMap[contextItem.context];
+      }
+    });
+    addedContext.forEach((contextItem: ContextType) => {
+      const contextRender = new ContextPill({
+        context: contextItem,
+        showRemoveButton: true,
+      }).render;
+      this.renderedContextMap[contextItem.context] = {
+        ...contextItem,
+        render: contextRender,
+      };
+      this.contextWrapper.insertChild('beforeend', contextRender);
+    });
+  };
+
   private readonly contextInsertionKeydownHandler = (e: KeyboardEvent): void => {
     if (this.acceptedNagivationKeys.includes(e.key) || this.isAcceptedKeyPress(e.key)) {
       if (e.key === KeyMap.ENTER) {
         cancelEvent(e);
         if (this.contextCheckExpression.test(this.contextInsertionInput.value)) {
-          if (!this.renderedContextMap[this.contextInsertionInput.value]) {
-            ContextManager.getInstance().addOrUpdateContext({
-              context: this.contextInsertionInput.value,
-              visible: true,
-              source: ContextSource.USER,
+          if (this.renderedContextMap[this.contextInsertionInput.value] === undefined) {
+            MynahUIDataStore.getInstance().updateStore({
+              userAddedContext: [ ...MynahUIDataStore.getInstance().getValue('userAddedContext'), this.contextInsertionInput.value ]
+            });
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, {
+              type: ContextChangeType.ADD,
+              context: {
+                context: this.contextInsertionInput.value,
+                type: ContextTypes.SHOULD,
+                source: ContextSource.USER,
+              }
             });
           } else {
             this.contextWrapper.insertChild(

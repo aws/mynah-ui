@@ -4,35 +4,18 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
-import { OnCopiedToClipboardFunctionWithSuggestionId, RelevancyVoteType, Suggestion, SuggestionEngagement } from '../static';
+import { MynahUIDataStore } from '../helper/store';
+import { Suggestion } from '../static';
 import { SuggestionCard } from './suggestion-card/suggestion-card';
 
 export interface MainContainerProps {
-  onSuggestionOpen?: (suggestion: Suggestion) => void;
-  onSuggestionLinkClick?: (suggestion: Suggestion) => void;
-  onSuggestionLinkCopy?: (suggestion: Suggestion) => void;
-  onSuggestionEngaged?: (engagementInfo: SuggestionEngagement) => void;
-  onCopiedToClipboard?: OnCopiedToClipboardFunctionWithSuggestionId;
-  onVoteChange: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
   onScroll?: (e: Event) => void;
 }
 export class MainContainer {
-  private readonly onSuggestionOpen;
-  private readonly onSuggestionLinkClick;
-  private readonly onSuggestionLinkCopy;
-  private readonly onSuggestionEngaged;
-  private readonly onCopiedToClipboard;
-  private readonly onVoteChange;
   private readonly cardsWrapper: ExtendedHTMLElement;
   private readonly skeletonWrapper: ExtendedHTMLElement;
   public render: ExtendedHTMLElement;
   constructor (props: MainContainerProps) {
-    this.onVoteChange = props.onVoteChange;
-    this.onSuggestionOpen = props.onSuggestionOpen;
-    this.onSuggestionLinkClick = props.onSuggestionLinkClick;
-    this.onSuggestionLinkCopy = props.onSuggestionLinkCopy;
-    this.onSuggestionEngaged = props.onSuggestionEngaged;
-    this.onCopiedToClipboard = props.onCopiedToClipboard;
     this.cardsWrapper = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-cards-wrapper' ],
@@ -45,7 +28,6 @@ export class MainContainer {
       persistent: true,
       children: [
         new SuggestionCard({
-          onVoteChange: this.onVoteChange,
           suggestion: {
             title: 'Lorem ipsum dolor sit',
             url: '#mynahisawesome.com/mynah',
@@ -57,7 +39,6 @@ export class MainContainer {
           },
         }).render.addClass('mynah-card-skeleton'),
         new SuggestionCard({
-          onVoteChange: this.onVoteChange,
           suggestion: {
             title: 'Lorem ipsum dolor sit',
             url: '#mynahismorenadmoreawesome.com/mynah',
@@ -77,6 +58,13 @@ export class MainContainer {
       type: 'div',
       classNames: [ 'mynah-main' ],
       children: [ this.cardsWrapper, this.skeletonWrapper ],
+    });
+
+    MynahUIDataStore.getInstance().subscribe('suggestions', this.updateCards);
+    MynahUIDataStore.getInstance().subscribe('loading', (loading: boolean) => {
+      if (loading) {
+        this.clearCards();
+      }
     });
   }
 
@@ -111,13 +99,7 @@ export class MainContainer {
           this.cardsWrapper.insertChild(
             'beforeend',
             new SuggestionCard({
-              suggestion,
-              onVoteChange: this.onVoteChange,
-              onSuggestionOpen: this.onSuggestionOpen?.bind(this),
-              onSuggestionLinkClick: this.onSuggestionLinkClick?.bind(this),
-              onSuggestionLinkCopy: this.onSuggestionLinkCopy?.bind(this),
-              onSuggestionEngaged: this.onSuggestionEngaged?.bind(this),
-              onCopiedToClipboard: this.onCopiedToClipboard?.bind(this),
+              suggestion
             }).render
           );
         });

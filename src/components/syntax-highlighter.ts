@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { cancelEvent, DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import * as Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-python';
@@ -19,6 +19,7 @@ import {
 import { Button } from './button';
 import { Notification } from './notification/notification';
 import { Icon, MynahIcons } from './icon';
+import { cancelEvent } from '../helper/events';
 
 const DEFAULT_LANG = SupportedCodingLanguagesExtensionToTypeMap.js;
 
@@ -175,7 +176,7 @@ export class SyntaxHighlighter {
         }
       })
       .catch(e => {
-        console.log(e);
+        //
       });
   };
 }

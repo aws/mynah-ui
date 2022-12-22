@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FeedbackPayload, FeedbackStars } from '../../static';
-import { cancelEvent, DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { FeedbackPayload, FeedbackStars, MynahEventNames } from '../../static';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { FeedbackFormComment } from './feedback-form-comment';
 import { FeedbackFormStars } from './feedback-form-stars';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 
 export interface FeedbackFormProps {
-  onFeedbackSet: (feedbackPayload: FeedbackPayload) => void;
   initPayload?: FeedbackPayload;
 }
 export class FeedbackForm {
@@ -23,11 +23,9 @@ export class FeedbackForm {
   private readonly feedbackSubmitButton: Button;
   public readonly feedbackFormContainer: ExtendedHTMLElement;
   public readonly feedbackContainer: ExtendedHTMLElement;
-  private readonly onFeedbackSet;
 
-  constructor (props: FeedbackFormProps) {
-    this.onFeedbackSet = props.onFeedbackSet;
-    if (props.initPayload !== undefined) {
+  constructor (props?: FeedbackFormProps) {
+    if (props?.initPayload !== undefined) {
       this.feedbackPayload = {
         ...(props.initPayload.stars !== undefined && { stars: props.initPayload.stars }),
         ...(props.initPayload.comment !== undefined && { comment: props.initPayload.comment }),
@@ -94,4 +92,8 @@ export class FeedbackForm {
       children: [ this.triggerButton ],
     });
   }
+
+  private readonly onFeedbackSet = (feedbackData: FeedbackPayload): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FEEDBACK_SET, feedbackData);
+  };
 }

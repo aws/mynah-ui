@@ -3,19 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { RelevancyVoteType, Suggestion } from '../../static';
+import { MynahEventNames, RelevancyVoteType, Suggestion } from '../../static';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Icon, MynahIcons } from '../icon';
+import { MynahUIGlobalEvents } from '../../helper/events';
 
 export interface SuggestionCardRelevanceVoteProps {
   suggestion: Suggestion;
-  onVoteChange: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
 }
 export class SuggestionCardRelevanceVote {
   render: ExtendedHTMLElement;
-  private readonly onVoteChange: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
   constructor (props: SuggestionCardRelevanceVoteProps) {
-    this.onVoteChange = props.onVoteChange;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-votes-wrapper' ],
@@ -82,6 +80,6 @@ export class SuggestionCardRelevanceVote {
   }
 
   private readonly handleVoteChange = (vote: RelevancyVoteType, suggestion: Suggestion): void => {
-    this.onVoteChange(suggestion, vote);
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_VOTE, { suggestion, vote });
   };
 }

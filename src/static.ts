@@ -3,6 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export interface MynahUIDataModel {
+  loading?: boolean;
+  liveSearchState?: LiveSearchState;
+  query?: string;
+  codeSelection?: SearchPayloadCodeSelection;
+  codeQuery?: SearchPayloadCodeQuery;
+  matchPolicy?: SearchPayloadMatchPolicy;
+  userAddedContext?: string[];
+  suggestions?: Suggestion[];
+  autoCompleteSuggestions?: AutocompleteItem[];
+  searchHistory?: SearchHistoryItem[];
+  headerInfoText?: string;
+}
+
 export interface ServiceConnector {
   liveSearchHandler?: (searchPayload?: SearchPayload, suggestions?: Suggestion[]) => void;
   liveSearchStateExternalChangeHandler?: (state: LiveSearchState) => void;
@@ -39,14 +53,23 @@ export interface ServiceConnector {
     suggestionCount?: number
   ) => void;
 }
-export interface StateManager {
-  getState: () => Record<string, any>;
-  setState: (state: Record<string, any>) => void;
-}
 
-export const MynahEventNames = {
-  CONTEXT_VISIBILITY_CHANGE: 'contextVisibilityChange',
-  REMOVE_ALL_CONTEXT: 'removeAllContext',
+export enum MynahEventNames {
+  CONTEXT_VISIBILITY_CHANGE = 'contextVisibilityChange',
+  REQUEST_AUTOCOMPLETE_SUGGESTIONS = 'requestAutocompleteSuggestions',
+  AUTOCOMPLETE_SUGGESTION_CLICK = 'autoCompleteSuggestionClick',
+  SEARCH = 'search',
+  REQUEST_SEARCH_HISTORY = 'requestSearchHistory',
+  SEARCH_HISTORY_ITEM_CLICK = 'searchHistoryItemClick',
+  LIVE_SEARCH_STATE_CHANGED = 'liveSearchStateChanged',
+  FEEDBACK_SET = 'feedbackSet',
+  CODE_DETAILS_CLICK = 'codeDetailsClick',
+  SUGGESTION_VOTE = 'suggestionVote',
+  SUGGESTION_OPEN = 'suggestionOpen',
+  SUGGESTION_LINK_CLICK = 'suggestionLinkClick',
+  SUGGESTION_LINK_COPY = 'suggestionLinkCopy',
+  SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
+  SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
 };
 export const MynahPortalNames = {
   WRAPPER: 'wrapper',
@@ -136,11 +159,6 @@ export const SupportedCodingLanguagesExtensionToTypeMap = {
 };
 
 export type OnCopiedToClipboardFunction = (type?: 'selection' | 'block', text?: string) => void;
-export type OnCopiedToClipboardFunctionWithSuggestionId = (
-  suggestionId: string,
-  type?: 'selection' | 'block',
-  text?: string
-) => void;
 
 export interface SearchHistoryFilters {
   /**
@@ -274,8 +292,6 @@ export enum ContextTypeClassNames {
 export interface ContextType {
   context: string;
   type?: ContextTypes;
-  availableInSuggestion?: boolean;
-  visible?: boolean;
   source: ContextSource;
 }
 

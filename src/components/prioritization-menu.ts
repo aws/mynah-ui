@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ContextType, ContextTypeClassNames, ContextTypes } from '../static';
-import { cancelEvent, DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { ContextChangeType, ContextType, ContextTypeClassNames, ContextTypes, MynahEventNames } from '../static';
+import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { Button } from './button';
 import { Overlay, OverlayVerticalDirection } from './overlay/overlay';
-import { ContextManager } from '../helper/context-manager';
+import { cancelEvent, MynahUIGlobalEvents } from '../helper/events';
 export interface PrioritizationMenuButtonsProps {
   context: ContextType;
   referenceElement: Element | ExtendedHTMLElement;
@@ -71,6 +71,15 @@ export class PrioritizationMenuButtons {
 
   private readonly handlePrioritizationButtonClick = (priority: ContextTypes): void => {
     this.menuOverlay.close();
-    ContextManager.getInstance().addOrUpdateContext({ ...this.props.context, type: priority, visible: true });
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, {
+      type: ContextChangeType.ADD,
+      context: {
+        context: this.props.context.context,
+        type: priority,
+        source: this.props.context.source,
+      },
+      oldPolicyType: this.props.context.type
+    });
+    // TODO ContextManager.getInstance().addOrUpdateContext({ ...this.props.context, type: priority, visible: true });
   };
 }

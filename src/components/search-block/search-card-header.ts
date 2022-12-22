@@ -3,19 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FeedbackPayload } from '../../static';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { FeedbackForm } from '../feedback-form/feedback-form';
 
-export interface SearchCardHeaderProps {
-  onFeedbackSet: (feedbackPayload: FeedbackPayload) => void;
-}
 export class SearchCardHeader {
   private readonly feedbackForm: FeedbackForm;
   render: ExtendedHTMLElement;
 
-  constructor (props: SearchCardHeaderProps) {
-    this.feedbackForm = new FeedbackForm({ onFeedbackSet: props.onFeedbackSet });
+  constructor () {
+    this.feedbackForm = new FeedbackForm();
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',

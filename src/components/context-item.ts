@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ContextType, ContextTypeClassNames, ContextTypes } from '../static';
-import { cancelEvent, DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { ContextChangeType, ContextSource, ContextType, ContextTypeClassNames, ContextTypes, MynahEventNames, SearchPayloadMatchPolicy } from '../static';
+import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
 import { PrioritizationMenuButtons } from './prioritization-menu';
-import { ContextManager } from '../helper/context-manager';
+import { cancelEvent, MynahUIGlobalEvents } from '../helper/events';
+import { MynahUIDataStore } from '../helper/store';
 
 export interface ContextPillProps {
   context: ContextType;
@@ -33,7 +34,23 @@ export class ContextPill {
             ? {
                 click: (event: Event) => {
                   cancelEvent(event);
-                  ContextManager.getInstance().addOrUpdateContext({ ...props.context, visible: true });
+                  const currentMatchPolicy: SearchPayloadMatchPolicy = MynahUIDataStore.getInstance().getValue('matchPolicy') as SearchPayloadMatchPolicy;
+                  const alreadyAvailable = Object.keys((currentMatchPolicy)).reduce((res: boolean, policyGroup: string) => {
+                    if (currentMatchPolicy[policyGroup as keyof SearchPayloadMatchPolicy].includes(this.props.context.context)) {
+                      return true;
+                    }
+                    return res;
+                  }, false);
+                  if (!alreadyAvailable) {
+                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, {
+                      type: ContextChangeType.ADD,
+                      context: {
+                        context: this.props.context.context,
+                        type: ContextTypes.SHOULD,
+                        source: ContextSource.SUGGESTION,
+                      }
+                    });
+                  }
                 },
               }
             : {},
@@ -47,7 +64,15 @@ export class ContextPill {
                     events: {
                       click: (event: Event) => {
                         cancelEvent(event);
-                        ContextManager.getInstance().removeContext(props.context.context);
+                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, {
+                          type: ContextChangeType.REMOVE,
+                          context: this.props.context
+                        });
+                        MynahUIDataStore.getInstance().updateStore({
+                          userAddedContext: [
+                            ...MynahUIDataStore.getInstance().getValue('userAddedContext').filter((contextKey: string) => contextKey !== this.props.context.context)
+                          ]
+                        });
                       },
                     },
                     children: [ new Icon({ icon: MynahIcons.CANCEL }).render ],

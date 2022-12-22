@@ -4,14 +4,14 @@
  */
 
 import { ExtendedHTMLElement } from '../../helper/dom';
-import { SearchHistoryItem } from '../../static';
+import { MynahUIGlobalEvents } from '../../helper/events';
+import { MynahEventNames, SearchHistoryItem } from '../../static';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { HistoryCardContent } from './search-history-card';
 
 export interface HistoryContentProps {
   referenceElement: Element | ExtendedHTMLElement;
   searchHistory: SearchHistoryItem[];
-  onHistoryChange: (historyItem: SearchHistoryItem) => void;
 }
 export class HistoryContent {
   private historyItemsOverlay!: Overlay;
@@ -41,12 +41,14 @@ export class HistoryContent {
       record =>
         new HistoryCardContent({
           content: record,
-          onHistoryItemClick: this.handleHistoryChange.bind(this),
+          onHistoryItemClick: this.handleHistoryChange,
         }).render
     );
 
   private readonly handleHistoryChange = (historyItem: SearchHistoryItem): void => {
     this.historyItemsOverlay.close();
-    this.props.onHistoryChange(historyItem);
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SEARCH_HISTORY_ITEM_CLICK, {
+      historyItem
+    });
   };
 }

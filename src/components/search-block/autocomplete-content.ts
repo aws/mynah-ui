@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AutocompleteItem } from '../../static';
+import { AutocompleteItem, MynahEventNames } from '../../static';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { AutocompleteCardContent } from './autocomplete-card';
+import { MynahUIGlobalEvents } from '../../helper/events';
 
 export interface AutocompleteContentProps {
   searchQuery: string;
   referenceElement: Element | ExtendedHTMLElement;
   autocompleteSuggestions: AutocompleteItem[];
-  onAutocompleteClick: (autocompleteQuery: AutocompleteItem, index: number, count: number) => void;
   onClose?: () => void;
 }
 
@@ -61,7 +61,11 @@ export class AutocompleteContent {
 
   private readonly handleAutocompleteClick = (autocompleteItem: AutocompleteItem, index: number): void => {
     this.autocompleteItemsOverlay.close();
-    this.props.onAutocompleteClick(autocompleteItem, index, this.getSuggestionsCount());
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.AUTOCOMPLETE_SUGGESTION_CLICK, {
+      autocompleteQuery: autocompleteItem,
+      index,
+      count: this.getSuggestionsCount()
+    });
   };
 
   public updateSuggestions = (autocompleteSuggestions: AutocompleteItem[], hoverQuery: number): void => {

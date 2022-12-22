@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { cancelEvent } from './events';
+
 /* eslint-disable @typescript-eslint/method-signature-style */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
@@ -264,10 +266,3 @@ export class DomBuilder {
   getPortal = (portalName: string): ExtendedHTMLElement => this.portals[portalName];
   removePortal = (portalName: string): void => this.portals[portalName].remove();
 }
-
-export const cancelEvent = (event: Event): boolean => {
-  event.preventDefault();
-  event.stopPropagation();
-  event.stopImmediatePropagation();
-  return false;
-};

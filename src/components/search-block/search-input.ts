@@ -3,31 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { cancelEvent, DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { AutocompleteItem, KeyMap, SearchHistoryFilters, SearchHistoryItem } from '../../static';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { AutocompleteItem, KeyMap, MynahEventNames, SearchHistoryFilters, SearchHistoryItem, SearchPayloadCodeSelection } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { HistoryContent } from './search-history-content';
-import { Notification, NotificationType } from '../notification/notification';
 import { AutocompleteContent } from './autocomplete-content';
 import { I18N } from '../../translations/i18n';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
+import { MynahUIDataStore } from '../../helper/store';
 
-export interface SearchInputProps {
-  onSearch: (
-    queryText: string,
-    isFromAutocomplete: boolean,
-    currAutocompleteSuggestionSelected?: number,
-    autocompleteSuggestionsCount?: number
-  ) => void;
-  onHistoryOpen: (filterPayload: SearchHistoryFilters) => Promise<SearchHistoryItem[]>;
-  onAutocompleteRequest: (input: string) => Promise<AutocompleteItem[]>;
-  onHistoryChange: (historyItem: SearchHistoryItem) => void;
-  initText?: string;
-  searchAlwaysActive?: boolean;
-  hideHistoryButton?: boolean;
-}
 export class SearchInput {
-  props: SearchInputProps;
   render: ExtendedHTMLElement;
   private searchTextInput: ExtendedHTMLElement;
   private readonly searchButton: ExtendedHTMLElement;
@@ -35,11 +21,13 @@ export class SearchInput {
   private readonly remainingIndicator: ExtendedHTMLElement;
   private autocompleteContent: AutocompleteContent | undefined;
   private readonly allowedCharCount: number = 1000;
-  constructor (props: SearchInputProps) {
-    this.props = props;
+  private codeSelectionAvailable: boolean = false;
+  constructor () {
+    const initText = MynahUIDataStore.getInstance().getValue('query');
+    this.codeSelectionAvailable = MynahUIDataStore.getInstance().getValue('codeSelection').selectedCode !== '';
 
     const classNames = [ 'mynah-search-input' ];
-    if (props.searchAlwaysActive ?? false) {
+    if (this.codeSelectionAvailable) {
       classNames.push('search-always-active');
     }
 
@@ -51,10 +39,10 @@ export class SearchInput {
         maxlength: '1000',
         type: 'text',
         placeholder:
-                    props.searchAlwaysActive !== undefined && props.searchAlwaysActive
-                      ? I18N.getInstance().texts.searchInputAPIHelpPlaceholder
-                      : I18N.getInstance().texts.searchInputMynahPlaceholder,
-        value: props.initText ?? '',
+        this.codeSelectionAvailable
+          ? I18N.getInstance().texts.searchInputAPIHelpPlaceholder
+          : I18N.getInstance().texts.searchInputMynahPlaceholder,
+        value: initText ?? '',
       },
       events: {
         keyup: this.handleInputKeydown.bind(this),
@@ -71,7 +59,9 @@ export class SearchInput {
           { type: 'i', classNames: [ 'mynah-loading-spinner' ] },
         ],
       }),
-      onClick: this.triggerSearch.bind(this),
+      onClick: () => {
+        this.triggerSearch();
+      },
     }).render;
     this.searchHistoryButton = new Button({
       classNames: [ 'mynah-icon-button' ],
@@ -91,8 +81,8 @@ export class SearchInput {
     this.remainingIndicator = DomBuilder.getInstance().build({
       type: 'span',
       attributes: {
-        'remaining-chars': (props.initText !== undefined && props.initText.length > 0
-          ? this.allowedCharCount - props.initText.length
+        'remaining-chars': (initText !== undefined && initText.length > 0
+          ? this.allowedCharCount - initText.length
           : this.allowedCharCount
         ).toString(),
         'max-chars': this.allowedCharCount.toString(),
@@ -105,9 +95,52 @@ export class SearchInput {
       children: [
         this.searchTextInput,
         this.remainingIndicator,
-        ...(!(props.hideHistoryButton ?? false) ? [ this.searchHistoryButton ] : []),
+        this.searchHistoryButton,
         this.searchButton,
       ],
+    });
+
+    MynahUIDataStore.getInstance().subscribe('query', (query: string) => {
+      this.searchTextInput.value = query;
+      this.remainingIndicator.update({
+        attributes: {
+          'remaining-chars': (this.allowedCharCount - this.searchTextInput.value.length).toString(),
+        },
+      });
+    });
+
+    MynahUIDataStore.getInstance().subscribe('autoCompleteSuggestions', (autoCompleteList: AutocompleteItem[]) => {
+      this.handleAutocompleteSuggestions(this.searchTextInput.value, autoCompleteList);
+    });
+
+    MynahUIDataStore.getInstance().subscribe('loading', (loading: boolean) => {
+      this.setWaitState(loading);
+    });
+
+    MynahUIDataStore.getInstance().subscribe('codeSelection', (codeSelection: SearchPayloadCodeSelection) => {
+      if (codeSelection.selectedCode !== '') {
+        this.codeSelectionAvailable = true;
+        this.searchTextInput.addClass('search-always-active');
+        this.searchTextInput.setAttribute('placeholder', I18N.getInstance().texts.searchInputAPIHelpPlaceholder);
+      } else {
+        this.codeSelectionAvailable = false;
+        this.searchTextInput.removeClass('search-always-active');
+        this.searchTextInput.setAttribute('placeholder', I18N.getInstance().texts.searchInputMynahPlaceholder);
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.AUTOCOMPLETE_SUGGESTION_CLICK, (data: {
+      autocompleteQuery: AutocompleteItem;
+      autocompleteSuggestionSelected: number;
+      autocompleteSuggestionsCount: number;}) => {
+      this.searchTextInput.value = data.autocompleteQuery.suggestion;
+      this.remainingIndicator.update({
+        attributes: {
+          'remaining-chars': (this.allowedCharCount - this.searchTextInput.value.length).toString(),
+        },
+      });
+      this.autocompleteContent?.close();
+      this.triggerSearch(true);
     });
   }
 
@@ -132,7 +165,9 @@ export class SearchInput {
             e.key === KeyMap.BACKSPACE ||
             !Object.values<string>(KeyMap).includes(e.key)
     ) {
-      this.getAutocompleteSuggestions(this.searchTextInput.value);
+      MynahUIGlobalEvents.getInstance().dispatch(
+        MynahEventNames.REQUEST_AUTOCOMPLETE_SUGGESTIONS,
+        { input: this.searchTextInput.value });
     }
     this.remainingIndicator.update({
       attributes: {
@@ -141,123 +176,65 @@ export class SearchInput {
     });
   };
 
-  triggerSearch = (): void => {
-    if (this.props.searchAlwaysActive !== undefined || this.searchTextInput.value.trim() !== '') {
-      let isAutocompleteUsed = false;
-      let currAutocompleteSuggestionSelected;
-      let autocompleteSuggestionsCount;
-      if (this.autocompleteContent !== undefined) {
-        isAutocompleteUsed = this.autocompleteContent.getIsUsed();
-        currAutocompleteSuggestionSelected = this.autocompleteContent.getCurrentSelected();
-        autocompleteSuggestionsCount = this.autocompleteContent.getSuggestionsCount();
-        this.autocompleteContent?.close();
-      }
-      this.props.onSearch(
-        this.searchTextInput.value,
-        isAutocompleteUsed,
-        currAutocompleteSuggestionSelected,
-        autocompleteSuggestionsCount
-      );
+  private readonly triggerSearch = (isFromAutocomplete?: boolean): void => {
+    if (this.codeSelectionAvailable || this.searchTextInput.value.trim() !== '') {
+      MynahUIDataStore.getInstance().updateStore({
+        query: this.searchTextInput.value
+      });
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SEARCH, {
+        query: this.searchTextInput.value,
+        isFromAutocomplete
+      });
     }
   };
 
-  triggerSearchHistory = (): void => {
-    const filters = {
+  private readonly triggerSearchHistory = (): void => {
+    const filters: SearchHistoryFilters = {
       isGlobal: false,
       languages: [],
       resultOffset: 0,
       resultLimit: 50,
     };
     this.searchHistoryButton.addClass('mynah-button-wait');
-    this.props.onHistoryOpen(filters)
-      .then((searchHistory: SearchHistoryItem[]) => {
-        this.searchHistoryButton.removeClass('mynah-button-wait');
-        const historyContent = new HistoryContent({
-          referenceElement: this.searchHistoryButton,
-          searchHistory,
-          onHistoryChange: this.handleHistoryChange,
-        });
-        historyContent.createOverlay();
-      })
-      .catch((err: Error) => {
-        console.warn(err);
-        this.searchHistoryButton.removeClass('mynah-button-wait');
-        const notification = new Notification({
-          content: "Couldn't retrieve history items",
-          type: NotificationType.WARNING,
-        });
-
-        notification.notify();
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.REQUEST_SEARCH_HISTORY, {
+      filters
+    });
+    const searchHistorySubscriptionId = MynahUIDataStore.getInstance().subscribe('searchHistory', (searchHistory: SearchHistoryItem[]) => {
+      this.searchHistoryButton.removeClass('mynah-button-wait');
+      const historyContent = new HistoryContent({
+        referenceElement: this.searchHistoryButton,
+        searchHistory,
       });
+      historyContent.createOverlay();
+      MynahUIDataStore.getInstance().unsubscribe('searchHistory', searchHistorySubscriptionId);
+    });
   };
 
-  getAutocompleteSuggestions = (input: string): void => {
+  private readonly handleAutocompleteSuggestions = (input: string, autocompleteSuggestions: AutocompleteItem[]): void => {
     if (input.trim() === '') {
       this.autocompleteContent?.close();
     } else {
-      this.props.onAutocompleteRequest(input)
-        .then((autocompleteSuggestions: AutocompleteItem[]) => {
-          if (this.autocompleteContent !== undefined) {
-            if (autocompleteSuggestions.length === 0) {
-              this.autocompleteContent?.close();
-            } else {
-              this.autocompleteContent.updateQuery(input);
-              this.autocompleteContent.updateSuggestions(autocompleteSuggestions, 0);
-            }
-          } else {
-            this.autocompleteContent = new AutocompleteContent({
-              searchQuery: input,
-              referenceElement: this.searchTextInput,
-              autocompleteSuggestions,
-              onAutocompleteClick: this.handleAutocompleteClick,
-              onClose: () => {
-                this.autocompleteContent = undefined;
-              },
-            });
-          }
-        })
-        .catch((err: Error) => {
-          console.warn(err);
+      if (this.autocompleteContent !== undefined) {
+        if (autocompleteSuggestions.length === 0) {
+          this.autocompleteContent?.close();
+        } else {
+          this.autocompleteContent.updateQuery(input);
+          this.autocompleteContent.updateSuggestions(autocompleteSuggestions, 0);
+        }
+      } else if (autocompleteSuggestions.length !== 0) {
+        this.autocompleteContent = new AutocompleteContent({
+          searchQuery: input,
+          referenceElement: this.searchTextInput,
+          autocompleteSuggestions,
+          onClose: () => {
+            this.autocompleteContent = undefined;
+          },
         });
+      }
     }
   };
 
-  private readonly handleHistoryChange = (historyItem: SearchHistoryItem): void => {
-    this.searchTextInput.value = historyItem.query.input;
-    this.remainingIndicator.update({
-      attributes: {
-        'remaining-chars': (this.allowedCharCount - this.searchTextInput.value.length).toString(),
-      },
-    });
-    this.props.onHistoryChange(historyItem);
-  };
-
-  private readonly handleAutocompleteClick = (
-    autocompleteQuery: AutocompleteItem,
-    index: number,
-    count: number
-  ): void => {
-    this.searchTextInput.value = autocompleteQuery.suggestion;
-    this.remainingIndicator.update({
-      attributes: {
-        'remaining-chars': (this.allowedCharCount - this.searchTextInput.value.length).toString(),
-      },
-    });
-    this.props.onSearch(autocompleteQuery.suggestion, true, index, count);
-  };
-
-  getSearchText = (): string => this.searchTextInput.value;
-
-  setSearchText = (value: string): void => {
-    this.searchTextInput.value = value;
-    this.remainingIndicator.update({
-      attributes: {
-        'remaining-chars': (this.allowedCharCount - this.searchTextInput.value.length).toString(),
-      },
-    });
-  };
-
-  public setWaitState = (waitState?: boolean): void => {
+  private readonly setWaitState = (waitState?: boolean): void => {
     if (waitState ?? false) {
       this.searchButton.addClass('mynah-button-wait');
     } else {

@@ -21,6 +21,7 @@ export interface ToggleProps {
 export class Toggle {
   render: ExtendedHTMLElement;
   private readonly props: ToggleProps;
+  private currentValue?: string;
   private readonly relocateTransitioner: ExtendedHTMLElement;
 
   constructor (props: ToggleProps) {
@@ -81,6 +82,7 @@ export class Toggle {
   ];
 
   private readonly setRelocatePosition = (value: string, color?: string): void => {
+    this.currentValue = value;
     setTimeout(() => {
       const renderRect = this.render.getBoundingClientRect();
       // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing
@@ -121,4 +123,6 @@ export class Toggle {
     this.render.update({ children: this.getChildren(value) });
     this.setRelocatePosition(value);
   };
+
+  getValue = (): string | undefined => this.currentValue;
 }

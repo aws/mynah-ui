@@ -64,10 +64,16 @@
         gap: var(--mynah-sizing-1);
         width: 100%;
         padding: var(--mynah-sizing-3) var(--mynah-sizing-3) 0 0;
+
+        &.mynah-hide-content,
+        &.mynah-hide-content * {
+            display: none;
+        }
+        
         > .mynah-toggle-container > .mynah-toggle-indicator-transitioner {
             &:before,
             &:after {
-                content: '';
+                content: "";
                 position: absolute;
                 z-index: 10;
                 top: 0;
@@ -87,7 +93,7 @@
             > .mynah-toggle-indicator-transitioner {
                 &:before,
                 &:after {
-                    content: '';
+                    content: "";
                     transform: translate3d(0, 0, 0) scale(8);
                     opacity: 0;
                     transition: var(--mynah-short-transition);
@@ -241,7 +247,7 @@
             }
             & + span {
                 &:after {
-                    content: attr(remaining-chars) '/' attr(max-chars);
+                    content: attr(remaining-chars) "/" attr(max-chars);
                 }
                 display: none;
                 opacity: 0.5;

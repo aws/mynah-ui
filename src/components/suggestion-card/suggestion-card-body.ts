@@ -5,19 +5,17 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import {
-  OnCopiedToClipboardFunction,
-  RelevancyVoteType,
+  MynahEventNames,
   Suggestion,
   SupportedCodingLanguagesExtensionToTypeMap,
 } from '../../static';
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { findLanguageFromSuggestion } from '../../helper/find-language';
 import { SuggestionCardRelevanceVote } from './suggestion-card-relevance-vote';
+import { MynahUIGlobalEvents } from '../../helper/events';
 
 export interface SuggestionCardBodyProps {
   suggestion: Suggestion;
-  onVoteChange: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
-  onCopiedToClipboard?: OnCopiedToClipboardFunction;
 }
 export class SuggestionCardBody {
   render: ExtendedHTMLElement;
@@ -49,14 +47,16 @@ export class SuggestionCardBody {
                   language: matchingLanguage,
                   keepHighlights: true,
                   showCopyOptions: true,
-                  onCopiedToClipboard: props.onCopiedToClipboard,
+                  onCopiedToClipboard: (type, text) => {
+                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, { suggestionId: props.suggestion.id, type, text });
+                  },
                 }).render;
               }
               return node;
             }) as HTMLElement[]),
           ],
         },
-        new SuggestionCardRelevanceVote({ suggestion: props.suggestion, onVoteChange: props.onVoteChange }).render,
+        new SuggestionCardRelevanceVote({ suggestion: props.suggestion }).render,
       ],
     });
   }
