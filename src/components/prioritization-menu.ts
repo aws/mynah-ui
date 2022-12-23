@@ -80,6 +80,5 @@ export class PrioritizationMenuButtons {
       },
       oldPolicyType: this.props.context.type
     });
-    // TODO ContextManager.getInstance().addOrUpdateContext({ ...this.props.context, type: priority, visible: true });
   };
 }

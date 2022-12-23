@@ -167,7 +167,7 @@ export class SyntaxHighlighter {
           this.onCopiedToClipboard(type, textToSendClipboard);
         }
         if (notificationText !== undefined) {
-          /* eslint-disable no-new */
+          // eslint-disable no-new
           new Notification({
             content: notificationText,
             title: 'Copied to clipbard',

@@ -6,7 +6,6 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { EngagementType, MynahEventNames, Suggestion } from '../../static';
-import { Icon, MynahIcons } from '../icon';
 import { SuggestionCardBody } from './suggestion-card-body';
 import { SuggestionCardContextWrapper } from './suggestion-card-context-wrapper';
 import { SuggestionCardHeader } from './suggestion-card-header';
@@ -28,12 +27,10 @@ export class SuggestionCard {
   private totalMouseDistanceTraveled: { x: number; y: number } = { x: 0, y: 0 };
   private previousMousePosition!: { x: number; y: number };
   private mouseDownInfo!: { x: number; y: number; time: number };
-  // private readonly onSuggestionEngaged;
   private readonly suggestion: Suggestion;
   render: ExtendedHTMLElement;
   constructor (props: SuggestionCardProps) {
     this.suggestion = props.suggestion;
-    // this.onSuggestionEngaged = props.onSuggestionEngaged;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       attributes: {
@@ -90,11 +87,6 @@ export class SuggestionCard {
         },
       },
       children: [
-        {
-          type: 'div',
-          classNames: [ 'mynah-suggestion-from-history-icon' ],
-          children: [ new Icon({ icon: MynahIcons.SEARCH_HISTORY }).render ],
-        },
         new SuggestionCardHeader({
           title: props.suggestion.title,
           url: props.suggestion.url,

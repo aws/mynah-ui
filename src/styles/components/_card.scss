@@ -420,45 +420,4 @@
             animation: glass-reflection 2000ms 1000ms linear infinite;
         }
     }
-
-    > .mynah-suggestion-from-history-icon {
-        display: none;
-        position: absolute;
-        z-index: 7;
-        color: inherit;
-        right: 0;
-        top: 50%;
-        margin-top: -80px;
-        overflow: hidden;
-        width: 120px;
-        height: 160px;
-        justify-content: flex-start;
-        align-items: center;
-        &:after {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: auto;
-            height: auto;
-            background: linear-gradient(to right, transparent 0%, transparent 25%, var(--mynah-card-bg) 100%);
-            z-index: 100;
-            opacity: 0.5;
-        }
-        > i {
-            position: relative;
-            z-index: 50;
-            min-width: 180px;
-            min-height: 180px;
-            color: inherit;
-            transform: translate3d(0, 0, 0) rotateZ(45deg);
-            opacity: 0.035;
-        }
-
-        .mynah-showing-suggestions-from-history & {
-            display: flex;
-        }
-    }
 }

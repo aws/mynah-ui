@@ -32,23 +32,21 @@ export class FeedbackForm {
       };
     }
 
-    this.triggerButton = DomBuilder.getInstance().build({
-      type: 'a',
-      classNames: [ 'mynah-feedback-trigger-button' ],
-      events: {
-        click: () => {
-          this.formOverlay = new Overlay({
-            children: [ this.feedbackFormContainer ],
-            closeOnOutsideClick: true,
-            dimOutside: false,
-            horizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
-            verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
-            referenceElement: this.triggerButton,
-          });
-        },
+    this.triggerButton = new Button({
+      onClick: () => {
+        this.formOverlay = new Overlay({
+          children: [ this.feedbackFormContainer ],
+          closeOnOutsideClick: true,
+          dimOutside: false,
+          horizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
+          verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
+          referenceElement: this.triggerButton,
+        });
       },
-      innerHTML: 'Leave us feedback',
-    });
+      primary: false,
+      label: 'Leave us feedback',
+      classNames: [ 'mynah-header-button' ],
+    }).render;
 
     this.feedbackStars = new FeedbackFormStars({
       onChange: (star: FeedbackStars) => {

@@ -4,7 +4,7 @@
  */
 
 import { MainContainer } from './components/main-container';
-import { Notification, NotificationType } from './components/notification/notification';
+import { Notification } from './components/notification/notification';
 import { SearchCard } from './components/search-block/search-card';
 import { MynahConfig } from './helper/config';
 import { DomBuilder, ExtendedHTMLElement } from './helper/dom';
@@ -26,6 +26,7 @@ import {
   SearchPayloadMatchPolicy,
   ContextTypes,
   AutocompleteItem,
+  NotificationType,
 } from './static';
 import { I18N } from './translations/i18n';
 import './styles/styles.scss';
@@ -33,7 +34,6 @@ import { EmptyMynahUIDataModel, MynahUIDataStore } from './helper/store';
 import { MynahUIGlobalEvents } from './helper/events';
 import { getTimeDiff } from './helper/date-time';
 
-export { NotificationType } from './components/notification/notification';
 export {
   AutocompleteItem,
   SearchPayloadCodeSelection,
@@ -52,6 +52,7 @@ export {
   ContextChangeType,
   ContextSource,
   ContextTypes,
+  NotificationType,
 } from './static';
 
 export interface MynahUIProps {
@@ -178,7 +179,10 @@ export class MynahUI {
       if (this.props.onChangeLiveSearchState != null) {
         this.props.onChangeLiveSearchState(LiveSearchState.STOP);
         MynahUIDataStore.getInstance().updateStore({
-          liveSearchState: LiveSearchState.STOP
+          liveSearchState: LiveSearchState.STOP,
+          headerInfo: {
+            content: ''
+          },
         });
       }
     });
@@ -210,6 +214,8 @@ export class MynahUI {
           matchPolicy: currentMatchPolicy,
           codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
         });
+
+        MynahUIDataStore.getInstance().updateStore({ headerInfo: { content: '' } });
       }
 
       if (this.props.onChangeContext != null) {
@@ -234,11 +240,13 @@ export class MynahUI {
         ...(data.historyItem.suggestions !== undefined ? { suggestions: data.historyItem.suggestions } : {}),
         ...(data.historyItem.query.codeQuery !== undefined ? { codeQuery: data.historyItem.query.codeQuery } : {}),
         ...(data.historyItem.query.codeSelection !== undefined ? { codeSelection: data.historyItem.query.codeSelection } : {}),
-        headerInfoText: data.historyItem.recordDate !== undefined
-          ? `${getTimeDiff(
+        headerInfo: {
+          content: data.historyItem.recordDate !== undefined
+            ? `Showing the search you've performed ${getTimeDiff(
             new Date().getTime() - data.historyItem.recordDate
-          ).toString()} ago`
-          : ''
+          ).toString()} ago.`
+            : ''
+        }
       });
       MynahUIDataStore.getInstance().updateStore(fullStoreData);
     });

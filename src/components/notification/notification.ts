@@ -5,31 +5,11 @@
 
 import { DomBuilderObject, DS, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
+import { NotificationType } from '../../static';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection, OVERLAY_MARGIN } from '../overlay/overlay';
 
 type NotificationContentType = string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
-
-/**
- * Options for where to show the notification
- */
-export enum NotificationTarget {
-  /**
-     * Shows an IDE level notification
-     */
-  IDE = 'ide',
-  /**
-     * Shows a notification inside the extension UI
-     */
-  UI = 'ui',
-}
-
-export enum NotificationType {
-  INFO = MynahIcons.INFO,
-  SUCCESS = MynahIcons.OK_CIRCLED,
-  WARNING = MynahIcons.WARNING,
-  ERROR = MynahIcons.ERROR,
-}
 
 export interface NotificationProps {
   duration?: number;

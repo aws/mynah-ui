@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { MynahIcons } from './components/icon';
+
 export interface MynahUIDataModel {
   loading?: boolean;
   liveSearchState?: LiveSearchState;
@@ -14,7 +16,10 @@ export interface MynahUIDataModel {
   suggestions?: Suggestion[];
   autoCompleteSuggestions?: AutocompleteItem[];
   searchHistory?: SearchHistoryItem[];
-  headerInfoText?: string;
+  headerInfo?: {
+    content: string;
+    type?: NotificationType;
+  };
 }
 
 export interface ServiceConnector {
@@ -303,4 +308,11 @@ export interface FeedbackPayload {
 export interface AutocompleteItem {
   suggestion: string;
   highlight: string;
+}
+
+export enum NotificationType {
+  INFO = MynahIcons.INFO,
+  SUCCESS = MynahIcons.OK_CIRCLED,
+  WARNING = MynahIcons.WARNING,
+  ERROR = MynahIcons.ERROR,
 }

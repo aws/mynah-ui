@@ -17,11 +17,12 @@ import {
   ContextType,
   ContextTypes,
   MynahEventNames,
-  ContextChangeType
+  ContextChangeType,
+  NotificationType
 } from '../../static';
 import { ContextPill } from '../context-item';
 import { Icon, MynahIcons } from '../icon';
-import { Notification, NotificationType } from '../notification/notification';
+import { Notification } from '../notification/notification';
 
 interface RenderedContextType extends ContextType {
   render: HTMLElement | ExtendedHTMLElement;

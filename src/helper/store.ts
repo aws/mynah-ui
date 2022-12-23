@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { LiveSearchState, MynahUIDataModel } from '../static';
+import { LiveSearchState, MynahUIDataModel, NotificationType } from '../static';
 import { generateUID } from './guid';
 
 export class EmptyMynahUIDataModel {
@@ -29,7 +29,10 @@ export class EmptyMynahUIDataModel {
       matchPolicy: { must: [], mustNot: [], should: [] },
       userAddedContext: [],
       suggestions: [],
-      headerInfoText: ''
+      headerInfo: {
+        content: '',
+        type: NotificationType.INFO
+      }
     };
   }
 }

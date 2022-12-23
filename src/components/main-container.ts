@@ -5,7 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
-import { Suggestion } from '../static';
+import { SearchPayloadCodeSelection, Suggestion } from '../static';
 import { SuggestionCard } from './suggestion-card/suggestion-card';
 
 export interface MainContainerProps {
@@ -78,7 +78,7 @@ export class MainContainer {
   updateCards = (suggestions: Suggestion[]): void => {
     setTimeout(() => {
       this.cardsWrapper.clear();
-      if (suggestions.length === 0) {
+      if (suggestions.length === 0 && (MynahUIDataStore.getInstance().getValue('query') !== '' || (MynahUIDataStore.getInstance().getValue('codeSelection') as SearchPayloadCodeSelection).selectedCode !== '')) {
         this.cardsWrapper.insertChild(
           'beforeend',
           DomBuilder.getInstance().build({
