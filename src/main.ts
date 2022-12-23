@@ -72,6 +72,7 @@ export interface MynahUIProps {
       end?: { row: string; column?: string };
     }
   ) => void;
+  onResetStore?: () => void;
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
   onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
@@ -232,6 +233,7 @@ export class MynahUI {
           codeSelection: data.historyItem.query.codeSelection,
           matchPolicy: data.historyItem.query.queryContext,
           codeQuery: data.historyItem.query.codeQuery,
+          code: data.historyItem.query.code,
         }, true);
       }
       const fullStoreData: Required<MynahUIDataModel> = Object.assign((new EmptyMynahUIDataModel()).data, {
@@ -240,6 +242,7 @@ export class MynahUI {
         ...(data.historyItem.suggestions !== undefined ? { suggestions: data.historyItem.suggestions } : {}),
         ...(data.historyItem.query.codeQuery !== undefined ? { codeQuery: data.historyItem.query.codeQuery } : {}),
         ...(data.historyItem.query.codeSelection !== undefined ? { codeSelection: data.historyItem.query.codeSelection } : {}),
+        ...(data.historyItem.query.code !== undefined ? { code: data.historyItem.query.code } : {}),
         headerInfo: {
           content: data.historyItem.recordDate !== undefined
             ? `Showing the search you've performed ${getTimeDiff(
@@ -312,6 +315,12 @@ export class MynahUI {
           SuggestionEventName.COPY,
           data.suggestion
         );
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, () => {
+      if (this.props.onResetStore !== undefined) {
+        this.props.onResetStore();
       }
     });
   };

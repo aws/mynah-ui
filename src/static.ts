@@ -9,6 +9,7 @@ export interface MynahUIDataModel {
   loading?: boolean;
   liveSearchState?: LiveSearchState;
   query?: string;
+  code?: string;
   codeSelection?: SearchPayloadCodeSelection;
   codeQuery?: SearchPayloadCodeQuery;
   matchPolicy?: SearchPayloadMatchPolicy;
@@ -60,6 +61,7 @@ export interface ServiceConnector {
 }
 
 export enum MynahEventNames {
+  RESET_STORE = 'resetStore',
   CONTEXT_VISIBILITY_CHANGE = 'contextVisibilityChange',
   REQUEST_AUTOCOMPLETE_SUGGESTIONS = 'requestAutocompleteSuggestions',
   AUTOCOMPLETE_SUGGESTION_CLICK = 'autoCompleteSuggestionClick',
@@ -105,6 +107,7 @@ export interface SearchPayload {
   matchPolicy: SearchPayloadMatchPolicy;
   codeSelection: SearchPayloadCodeSelection;
   codeQuery?: SearchPayloadCodeQuery;
+  code?: string;
 }
 export interface SuggestionMetaData {
   site: string;
@@ -274,6 +277,7 @@ export interface SearchHistoryItem {
     trigger: string;
     codeQuery: CodeQuery;
     codeSelection: SearchPayloadCodeSelection;
+    code?: string;
   };
   recordDate?: number;
   suggestions: Suggestion[];

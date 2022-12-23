@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { LiveSearchState, MynahUIDataModel, NotificationType } from '../static';
+import { LiveSearchState, MynahEventNames, MynahUIDataModel, NotificationType } from '../static';
+import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
 
 export class EmptyMynahUIDataModel {
@@ -13,6 +14,7 @@ export class EmptyMynahUIDataModel {
       loading: false,
       liveSearchState: LiveSearchState.STOP,
       query: '',
+      code: '',
       autoCompleteSuggestions: [],
       searchHistory: [],
       codeSelection: {
@@ -105,5 +107,6 @@ export class MynahUIDataStore {
    */
   public resetStore = (): void => {
     this.updateStore((new EmptyMynahUIDataModel()).data);
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_STORE);
   };
 }
