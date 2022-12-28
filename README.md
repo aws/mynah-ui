@@ -22,7 +22,7 @@ export const createMynahUI = () => {
         // it expects the data in this model.
         storeData?: MynahUIDataModel;
         
-        // Below items are trigger when;
+        // All below items trigger when;
         // User hits search button or enter inside query input
         onSearch?: (
             searchPayload: SearchPayload,
