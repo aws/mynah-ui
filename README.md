@@ -9,39 +9,111 @@ npm install @aws/mynah-ui
 ```
 
 ## How to use
-When you import `@aws/mynah-ui` it provides you the `MynahUI` class to generate a new all-in-one object to create the UI. However, you have to to provide 2 arguments to let the UI work properly.
+When you import `@aws/mynah-ui` it provides you the `MynahUI` class to generate a new all-in-one object to create the UI. You can connect to user interaction events through the initial properties have provide to the UI.
 
 ``` typescript
 import { MynahUI } from '@aws/mynah-ui';
 
 export const createMynahUI = () => {
-    new MynahUI({
-        // You have to provide a connector to let the UI call for requests. 
-        // See "ServiceConnector" type for mandatory and optional public functions
-        serviceConnector: new ServiceConnector({
-            postMessageHandler: message => {
-                // post message handling
+    const mynahUI = new MynahUI({
+        // initial UI state data
+        // It doesn't have to be matched with backend data
+        // but to update the UI and rerender its desired parts, 
+        // it expects the data in this model.
+        storeData?: MynahUIDataModel;
+        
+        // Below items are trigger when;
+        // User hits search button or enter inside query input
+        onSearch?: (
+            searchPayload: SearchPayload,
+            isFromHistory?: boolean,
+            isFromAutocomplete?: boolean
+        ) => void;
+
+        // UI is ready
+        onReady?: () => void;
+
+        // User votes a suggestion
+        onClickSuggestionVote?: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
+        // User opens the detail view of selected code block
+        onClickCodeDetails?: (
+            code: string,
+            fileName?: string,
+            range?: {
+            start: { row: string; column?: string };
+            end?: { row: string; column?: string };
             }
-        }),
-        // You have to provide a state manager to locally store temporary data.
-        // If you don't need to store panelID or temporary information, 
-        // you can leave the contents of the get and set state functions empty.
-        stateManager: {
-            getState: (): Record<string, any> => {
-                // return all recorded items
-            },
-            setState: state => {
-                // set all items at once
-            }
-        },
+        ) => void;
+
+        // Data store is reset
+        onResetStore?: () => void;
+
+        // Matching policy is changed (context items)
+        onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
+
+        // User engages with a suggestion
+        onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
+
+        // User copies text from suggestion
+        onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
+
+        // User clicks to the title, clicks or copies the link of the suggestion
+        onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion) => void;
+
+        // User sends feedback
+        onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
+
+        // Search history panel view opens
+        onRequestHistoryRecords?: (filterPayload: SearchHistoryFilters) => void;
+
+        // Autocomplete items list block opens
+        onRequestAutocompleteList?: (input: string) => void;
+
+        // User changes live search state
+        onChangeLiveSearchState?: (liveSearchState: LiveSearchState) => void;
+
+        // User selects and autocomplete item
+        onClickAutocompleteItem?: (
+            text: string,
+            currSelected?: number,
+            suggestionCount?: number
+        ) => void;
     });
 }
 ```
 
-In addition to MynahUI class, there are also some exported type definitions that might be helpful for function returns in ServiceConnector.
+MynahUI also provides some accessible functions to help developer show a notification or more importantly update the UI state data store. When you update the data store, it will automatically rerender the parts that is subscribed to that particular data part.
 
 ``` typescript
-export {
+import { MynahUI } from '@aws/mynah-ui';
+
+export const createMynahUI = () => {
+    let mynahUI:MynahUI;
+    const getSuggestions = (searchPayload) => {
+        mynahUI.updateStore({loading: true});
+        // get suggestions list
+        const suggestions = await getSuggestions(searchPayload);
+        if(suggestions){
+            mynahUI.updateStore({suggestions, loading: false});
+        } else {
+            mynahUI.notify({
+                content: "Couldn't get suggestions!",
+                type: NotificationType.ERROR,
+            });
+        }
+        
+    }
+    const mynahUI = new MynahUI({
+        ...,
+        onSearch: getSuggestions
+    });
+}
+```
+
+In addition to MynahUI class, there are also some exported type definitions that can be handy for function returns or proper usage of arguments.
+
+``` typescript
+import {
   AutocompleteItem,
   SearchPayloadCodeSelection,
   FeedbackPayload,
@@ -53,7 +125,14 @@ export {
   SearchHistoryItem,
   EngagementType,
   SuggestionEngagement,
-} from './static';
+  SuggestionEventName,
+  SearchHistoryFilters,
+  MynahUIDataModel,
+  ContextChangeType,
+  ContextSource,
+  ContextTypes,
+  NotificationType,
+} from '@aws/mynah-ui';
 ```
 
 ## Styles
