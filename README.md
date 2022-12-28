@@ -96,6 +96,7 @@ export const createMynahUI = () => {
         if(suggestions){
             mynahUI.updateStore({suggestions, loading: false});
         } else {
+            mynahUI.updateStore({loading: false});
             mynahUI.notify({
                 content: "Couldn't get suggestions!",
                 type: NotificationType.ERROR,
