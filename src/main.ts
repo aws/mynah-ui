@@ -172,6 +172,7 @@ export class MynahUI {
       if (this.props.onSearch !== undefined) {
         this.props.onSearch({
           query: data.query,
+          code: MynahUIDataStore.getInstance().getValue('code'),
           codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
           matchPolicy: MynahUIDataStore.getInstance().getValue('matchPolicy'),
           codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
@@ -211,6 +212,7 @@ export class MynahUI {
       if (this.props.onSearch !== undefined) {
         this.props.onSearch({
           query: MynahUIDataStore.getInstance().getValue('query'),
+          code: MynahUIDataStore.getInstance().getValue('code'),
           codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
           matchPolicy: currentMatchPolicy,
           codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
