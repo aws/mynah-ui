@@ -30,7 +30,7 @@ export class SuggestionCardHeader {
         ...((props.metaData != null)
           ? [ {
               type: 'span',
-              classNames: [ 'mynah-source-thumbnail', props.metaData.site ]
+              classNames: [ 'mynah-source-thumbnail', props.metaData.type ]
             } ]
           : []),
         {
@@ -111,7 +111,7 @@ export class SuggestionCardHeader {
       });
     }
 
-    if (metaData.answers !== undefined) {
+    if (metaData.answerCount !== undefined) {
       metaItems.push({
         type: 'span',
         classNames: [ 'mynah-title-meta-block-item' ],
@@ -120,7 +120,7 @@ export class SuggestionCardHeader {
           {
             type: 'span',
             classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metaData.answers.toString()} answers` ]
+            children: [ `${metaData.answerCount.toString()} answers` ]
           }
         ]
       });
@@ -156,7 +156,7 @@ export class SuggestionCardHeader {
       });
     }
 
-    if (metaData.upVotes !== undefined) {
+    if (metaData.score !== undefined) {
       metaItems.push({
         type: 'span',
         classNames: [ 'mynah-title-meta-block-item' ],
@@ -165,7 +165,7 @@ export class SuggestionCardHeader {
           {
             type: 'span',
             classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metaData.upVotes.toString()} upvotes` ]
+            children: [ `${metaData.score.toString()}` ]
           }
         ]
       });

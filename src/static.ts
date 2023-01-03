@@ -110,12 +110,12 @@ export interface SearchPayload {
   code?: string;
 }
 export interface SuggestionMetaData {
-  site: string;
+  type: string;
   stars?: number; // repo stars
   forks?: number; // repo forks
-  answers?: number; // total answer if it is a question
+  answerCount?: number; // total answer if it is a question
   isAccepted?: boolean; // is accepted or not if it is an answer
-  upVotes?: number; // upVote count for question or answer
+  score?: number; // upVote count for question or answer
   lastActivityDate?: number; // creation or last update date for question or answer
 }
 export interface Suggestion {
