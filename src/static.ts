@@ -125,7 +125,7 @@ export interface Suggestion {
   body: string;
   context: string[];
   type?: string;
-  metaData?: SuggestionMetaData;
+  metadata?: SuggestionMetaData;
 }
 
 export enum KeyMap {

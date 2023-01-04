@@ -11,7 +11,7 @@ import { Icon, MynahIcons } from '../icon';
 export interface SuggestionCardHeaderProps {
   title: string;
   url: string;
-  metaData?: SuggestionMetaData;
+  metadata?: SuggestionMetaData;
   onSuggestionTitleClick?: () => void;
   onSuggestionLinkClick?: () => void;
   onSuggestionLinkCopy?: () => void;
@@ -25,12 +25,12 @@ export class SuggestionCardHeader {
       .slice(0, 3);
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-card-header', ...((props.metaData != null) ? [ 'mynah-card-header-with-source-thumbnail' ] : []) ],
+      classNames: [ 'mynah-card-header', ...((props.metadata != null) ? [ 'mynah-card-header-with-source-thumbnail' ] : []) ],
       children: [
-        ...((props.metaData != null)
+        ...((props.metadata != null)
           ? [ {
               type: 'span',
-              classNames: [ 'mynah-source-thumbnail', props.metaData.type ]
+              classNames: [ 'mynah-source-thumbnail', props.metadata.type ]
             } ]
           : []),
         {
@@ -72,16 +72,16 @@ export class SuggestionCardHeader {
               innerHTML: `${splittedUrl.slice(0, splittedUrl.length - 1).join(' / ')} / <b>${splittedUrl[splittedUrl.length - 1]
                                 }</b>`,
             },
-            ...((props.metaData != null) ? [ this.getSourceMetaBlock(props.metaData) ] : []),
+            ...((props.metadata != null) ? [ this.getSourceMetaBlock(props.metadata) ] : []),
           ],
         },
       ],
     });
   }
 
-  private readonly getSourceMetaBlock = (metaData: SuggestionMetaData): DomBuilderObject => {
+  private readonly getSourceMetaBlock = (metadata: SuggestionMetaData): DomBuilderObject => {
     const metaItems = [];
-    if (metaData.isAccepted === true) {
+    if (metadata.isAccepted === true) {
       metaItems.push({
         type: 'span',
         classNames: [ 'mynah-title-meta-block-item', 'approved-answer' ],
@@ -96,7 +96,7 @@ export class SuggestionCardHeader {
       });
     }
 
-    if (metaData.lastActivityDate !== undefined) {
+    if (metadata.lastActivityDate !== undefined) {
       metaItems.push({
         type: 'span',
         classNames: [ 'mynah-title-meta-block-item' ],
@@ -105,13 +105,13 @@ export class SuggestionCardHeader {
           {
             type: 'span',
             classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${getTimeDiff((new Date()).getTime() - metaData.lastActivityDate, 2, ' and ')} ago` ]
+            children: [ `${getTimeDiff((new Date()).getTime() - metadata.lastActivityDate, 2, ' and ')} ago` ]
           }
         ]
       });
     }
 
-    if (metaData.answerCount !== undefined) {
+    if (metadata.answerCount !== undefined) {
       metaItems.push({
         type: 'span',
         classNames: [ 'mynah-title-meta-block-item' ],
@@ -120,13 +120,13 @@ export class SuggestionCardHeader {
           {
             type: 'span',
             classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metaData.answerCount.toString()} answers` ]
+            children: [ `${metadata.answerCount.toString()} answers` ]
           }
         ]
       });
     }
 
-    if (metaData.stars !== undefined) {
+    if (metadata.stars !== undefined) {
       metaItems.push({
         type: 'span',
         classNames: [ 'mynah-title-meta-block-item' ],
@@ -135,13 +135,13 @@ export class SuggestionCardHeader {
           {
             type: 'span',
             classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metaData.stars.toString()} contributors` ]
+            children: [ `${metadata.stars.toString()} contributors` ]
           }
         ]
       });
     }
 
-    if (metaData.forks !== undefined) {
+    if (metadata.forks !== undefined) {
       metaItems.push({
         type: 'span',
         classNames: [ 'mynah-title-meta-block-item' ],
@@ -150,13 +150,13 @@ export class SuggestionCardHeader {
           {
             type: 'span',
             classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metaData.forks.toString()} forks` ]
+            children: [ `${metadata.forks.toString()} forks` ]
           }
         ]
       });
     }
 
-    if (metaData.score !== undefined) {
+    if (metadata.score !== undefined) {
       metaItems.push({
         type: 'span',
         classNames: [ 'mynah-title-meta-block-item' ],
@@ -165,7 +165,7 @@ export class SuggestionCardHeader {
           {
             type: 'span',
             classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metaData.score.toString()}` ]
+            children: [ `${metadata.score.toString()}` ]
           }
         ]
       });

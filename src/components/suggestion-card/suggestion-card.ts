@@ -90,7 +90,7 @@ export class SuggestionCard {
         new SuggestionCardHeader({
           title: props.suggestion.title,
           url: props.suggestion.url,
-          metaData: props.suggestion.metaData,
+          metadata: props.suggestion.metadata,
           onSuggestionTitleClick: () => {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: props.suggestion });
           },
