@@ -43,7 +43,7 @@ export class SearchCardHeader {
                 MynahUIDataStore.getInstance().resetStore();
               },
               primary: false,
-              label: 'Reset All',
+              label: 'Clear All',
               classNames: [ 'mynah-header-button' ],
             }).render,
             this.feedbackForm.feedbackContainer,

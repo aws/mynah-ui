@@ -182,9 +182,14 @@ export class MynahUI {
         this.props.onChangeLiveSearchState(LiveSearchState.STOP);
         MynahUIDataStore.getInstance().updateStore({
           liveSearchState: LiveSearchState.STOP,
-          headerInfo: {
-            content: ''
-          },
+          ...(MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true
+            ? {
+                headerInfo: {
+                  content: ''
+                },
+                showingHistoricalSearch: false,
+              }
+            : {}),
         });
       }
     });
@@ -218,7 +223,12 @@ export class MynahUI {
           codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
         });
 
-        MynahUIDataStore.getInstance().updateStore({ headerInfo: { content: '' } });
+        if (MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true) {
+          MynahUIDataStore.getInstance().updateStore({
+            showingHistoricalSearch: false,
+            headerInfo: { content: '' }
+          });
+        }
       }
 
       if (this.props.onChangeContext != null) {
@@ -245,6 +255,7 @@ export class MynahUI {
         ...(data.historyItem.query.codeQuery !== undefined ? { codeQuery: data.historyItem.query.codeQuery } : {}),
         ...(data.historyItem.query.codeSelection !== undefined ? { codeSelection: data.historyItem.query.codeSelection } : {}),
         ...(data.historyItem.query.code !== undefined ? { code: data.historyItem.query.code } : {}),
+        showingHistoricalSearch: true,
         headerInfo: {
           content: data.historyItem.recordDate !== undefined
             ? `Showing the search you've performed ${getTimeDiff(

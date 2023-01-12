@@ -17,6 +17,7 @@ export interface MynahUIDataModel {
   suggestions?: Suggestion[];
   autoCompleteSuggestions?: AutocompleteItem[];
   searchHistory?: SearchHistoryItem[];
+  showingHistoricalSearch?: boolean;
   headerInfo?: {
     content: string;
     type?: NotificationType;

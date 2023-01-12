@@ -17,6 +17,7 @@ export class EmptyMynahUIDataModel {
       code: '',
       autoCompleteSuggestions: [],
       searchHistory: [],
+      showingHistoricalSearch: false,
       codeSelection: {
         selectedCode: '',
         file: {

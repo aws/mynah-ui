@@ -48,7 +48,7 @@ export class SuggestionCardBody {
                   keepHighlights: true,
                   showCopyOptions: true,
                   onCopiedToClipboard: (type, text) => {
-                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, { suggestionId: props.suggestion.id, type, text });
+                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, { suggestionId: props.suggestion.url, type, text });
                   },
                 }).render;
               }
