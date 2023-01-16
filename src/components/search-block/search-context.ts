@@ -119,18 +119,25 @@ export class SearchContext {
         ...contextItem,
         render: contextRender,
       };
-      this.contextWrapper.insertChild('beforeend', contextRender);
+      this.contextWrapper.insertChild('afterbegin', contextRender);
     });
   };
 
   private readonly contextInsertionKeydownHandler = (e: KeyboardEvent): void => {
     if (this.acceptedNagivationKeys.includes(e.key) || this.isAcceptedKeyPress(e.key)) {
-      if (e.key === KeyMap.ENTER) {
+      if (e.key === KeyMap.ENTER || e.key === KeyMap.SPACE) {
         cancelEvent(e);
         if (this.contextCheckExpression.test(this.contextInsertionInput.value)) {
           if (this.renderedContextMap[this.contextInsertionInput.value] === undefined) {
             MynahUIDataStore.getInstance().updateStore({
               userAddedContext: [ ...MynahUIDataStore.getInstance().getValue('userAddedContext'), this.contextInsertionInput.value ]
+            });
+
+            const loadingListener = MynahUIDataStore.getInstance().subscribe('loading', (loadingState) => {
+              if (!loadingState) {
+                this.enableContextInsertion();
+              }
+              MynahUIDataStore.getInstance().unsubscribe('loading', loadingListener);
             });
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, {
               type: ContextChangeType.ADD,
@@ -157,7 +164,7 @@ export class SearchContext {
             this.contextInsertionButton.addClass('shake');
             const notification = new Notification({
               content: 'You cannot add context items containing spaces.',
-              type: NotificationType.ERROR,
+              type: NotificationType.WARNING,
               onNotificationClick: () => { },
             });
             notification.notify();
@@ -193,9 +200,9 @@ export class SearchContext {
       placeholder: 'Add context',
     },
     events: {
-      focus: this.enableContextInsertion.bind(this),
-      blur: this.disableContextInsertion.bind(this),
-      keydown: this.contextInsertionKeydownHandler.bind(this),
+      focus: this.enableContextInsertion,
+      blur: this.disableContextInsertion,
+      keydown: this.contextInsertionKeydownHandler,
       input: () => {
         this.inputAutoWidth.update({
           innerHTML: this.contextInsertionInput.value,

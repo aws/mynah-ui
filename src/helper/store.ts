@@ -9,7 +9,7 @@ import { generateUID } from './guid';
 
 export class EmptyMynahUIDataModel {
   data: Required<MynahUIDataModel>;
-  constructor () {
+  constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
       loading: false,
       liveSearchState: LiveSearchState.STOP,
@@ -18,6 +18,7 @@ export class EmptyMynahUIDataModel {
       autoCompleteSuggestions: [],
       searchHistory: [],
       showingHistoricalSearch: false,
+      liveSearchAnimation: true,
       codeSelection: {
         selectedCode: '',
         file: {
@@ -35,7 +36,8 @@ export class EmptyMynahUIDataModel {
       headerInfo: {
         content: '',
         type: NotificationType.INFO
-      }
+      },
+      ...defaults
     };
   }
 }
@@ -43,6 +45,7 @@ export class MynahUIDataStore {
   private static instance: MynahUIDataStore;
   private readonly subsciptions: Record<keyof MynahUIDataModel, Record<string, (newValue?: any, oldValue?: any) => void>>;
   private store: Required<MynahUIDataModel> = (new EmptyMynahUIDataModel()).data;
+  private defaults: MynahUIDataModel | null = null;
 
   private constructor (initialData?: MynahUIDataModel) {
     this.store = Object.assign(this.store, initialData);
@@ -58,6 +61,14 @@ export class MynahUIDataStore {
     }
 
     return MynahUIDataStore.instance;
+  };
+
+  /**
+   * Sets the defaults to use while clearing the store
+   * @param defaults partial set of MynahUIDataModel for defaults
+   */
+  public setDefaults = (defaults: MynahUIDataModel | null): void => {
+    this.defaults = defaults;
   };
 
   /**
@@ -91,6 +102,13 @@ export class MynahUIDataStore {
   public getValue = (storeKey: keyof MynahUIDataModel): any => structuredClone(this.store[storeKey]);
 
   /**
+   * Returns current value of an item in data store
+   * @param storeKey One of the keys in MynahUIDataModel
+   * @returns value of the given key in data store
+   */
+  public getDefaultValue = (storeKey: keyof MynahUIDataModel): any => (new EmptyMynahUIDataModel(this.defaults)).data[storeKey];
+
+  /**
    * Updates the store and informs the subscribers.
    * @param data A full or partial set of store data model with values.
    */
@@ -107,7 +125,7 @@ export class MynahUIDataStore {
    * Clears store data and informs all the subscribers
    */
   public resetStore = (): void => {
-    this.updateStore((new EmptyMynahUIDataModel()).data);
+    this.updateStore((new EmptyMynahUIDataModel(structuredClone(this.defaults))).data);
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_STORE);
   };
 }

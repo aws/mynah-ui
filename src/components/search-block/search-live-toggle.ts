@@ -53,10 +53,9 @@ export class SearchLiveToggle {
       children: [ { type: 'b', children: [ props.label ] }, this.toggle.render ],
     });
 
-    if (MynahUIDataStore.getInstance().getValue('liveSearchState') !== LiveSearchState.STOP) {
+    if (initialValue !== LiveSearchState.STOP) {
       this.queryChangeSubscriptionId = MynahUIDataStore.getInstance().subscribe('query', this.flashToggle);
     }
-    this.queryChangeSubscriptionId = MynahUIDataStore.getInstance().subscribe('query', this.flashToggle);
 
     MynahUIDataStore.getInstance().subscribe('liveSearchState', (newState: LiveSearchState) => {
       if (newState !== this.toggle.getValue()) {
@@ -79,8 +78,10 @@ export class SearchLiveToggle {
 
   flashToggle = (): void => {
     this.render.removeClass('flash-toggle');
-    setTimeout(() => {
-      this.render.addClass('flash-toggle');
-    }, 100);
+    if (MynahUIDataStore.getInstance().getValue('liveSearchAnimation') === true) {
+      setTimeout(() => {
+        this.render.addClass('flash-toggle');
+      }, 100);
+    }
   };
 }

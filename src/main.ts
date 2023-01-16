@@ -181,7 +181,7 @@ export class MynahUI {
       if (this.props.onChangeLiveSearchState != null) {
         this.props.onChangeLiveSearchState(LiveSearchState.STOP);
         MynahUIDataStore.getInstance().updateStore({
-          liveSearchState: LiveSearchState.STOP,
+          liveSearchState: MynahUIDataStore.getInstance().getDefaultValue('liveSearchState'),
           ...(MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true
             ? {
                 headerInfo: {
@@ -214,7 +214,10 @@ export class MynahUI {
         matchPolicy: { ...currentMatchPolicy }
       });
 
-      if (this.props.onSearch !== undefined) {
+      if (this.props.onSearch !== undefined && (
+        MynahUIDataStore.getInstance().getValue('query') !== '' ||
+        MynahUIDataStore.getInstance().getValue('codeSelection').selectedCode !== ''
+      )) {
         this.props.onSearch({
           query: MynahUIDataStore.getInstance().getValue('query'),
           code: MynahUIDataStore.getInstance().getValue('code'),
@@ -226,7 +229,7 @@ export class MynahUI {
         if (MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true) {
           MynahUIDataStore.getInstance().updateStore({
             showingHistoricalSearch: false,
-            headerInfo: { content: '' }
+            headerInfo: MynahUIDataStore.getInstance().getDefaultValue('headerInfo')
           });
         }
       }
@@ -344,6 +347,15 @@ export class MynahUI {
    */
   public updateStore = (data: MynahUIDataModel): void => {
     MynahUIDataStore.getInstance().updateStore({ ...data });
+  };
+
+  /**
+   * Sets store defaults to use while clearing the store
+   * To clear the defaults, send `null`
+   * @param defaults partial set of MynahUIDataModel for defaults
+   */
+  public setStoreDefaults = (defaults: MynahUIDataModel | null): void => {
+    MynahUIDataStore.getInstance().setDefaults(defaults);
   };
 
   /**

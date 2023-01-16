@@ -8,6 +8,7 @@ import { MynahIcons } from './components/icon';
 export interface MynahUIDataModel {
   loading?: boolean;
   liveSearchState?: LiveSearchState;
+  liveSearchAnimation?: boolean;
   query?: string;
   code?: string;
   codeSelection?: SearchPayloadCodeSelection;
@@ -22,43 +23,6 @@ export interface MynahUIDataModel {
     content: string;
     type?: NotificationType;
   };
-}
-
-export interface ServiceConnector {
-  liveSearchHandler?: (searchPayload?: SearchPayload, suggestions?: Suggestion[]) => void;
-  liveSearchStateExternalChangeHandler?: (state: LiveSearchState) => void;
-  uiReady: () => void;
-  once: () => Promise<Suggestion[]>;
-  requestSuggestions: (
-    searchPayload: SearchPayload,
-    isFromHistory?: boolean,
-    isFromAutocomplete?: boolean
-  ) => Promise<Suggestion[] | undefined>;
-  updateVoteOfSuggestion: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
-  clickCodeDetails: (
-    code: string,
-    fileName?: string,
-    range?: {
-      start: { row: string; column?: string };
-      end?: { row: string; column?: string };
-    }
-  ) => void;
-  recordContextChange: (changeType: ContextChangeType, queryContext: ContextType) => void;
-  triggerSuggestionEngagement: (engagement: SuggestionEngagement) => void;
-  triggerSuggestionClipboardInteraction: (suggestionId: string, type?: string, text?: string) => void;
-  triggerSuggestionEvent: (eventName: SuggestionEventName, suggestion: Suggestion) => void;
-  sendFeedback: (feedbackPayload: FeedbackPayload) => void;
-  requestHistoryRecords: (filterPayload: SearchHistoryFilters) => Promise<SearchHistoryItem[]>;
-  requestAutocomplete: (input: string) => Promise<AutocompleteItem[]>;
-  toggleLiveSearch?: (
-    liveSearchState: LiveSearchState,
-    onFeedReceived: (searchPayload?: SearchPayload, suggestions?: Suggestion[]) => void
-  ) => void;
-  clickAutocompleteSuggestionItem: (
-    text: string,
-    currSelected?: number,
-    suggestionCount?: number
-  ) => void;
 }
 
 export enum MynahEventNames {
@@ -114,9 +78,10 @@ export interface SuggestionMetaData {
   type: string;
   stars?: number; // repo stars
   forks?: number; // repo forks
-  answerCount?: number; // total answer if it is a question
+  answerCount?: number; // total answers if it is a question
+  isOfficialDoc?: boolean; // is suggestion comes from an official api doc
   isAccepted?: boolean; // is accepted or not if it is an answer
-  score?: number; // upVote count for question or answer
+  score?: number; // relative score according to the up and down votes for a question or an answer
   lastActivityDate?: number; // creation or last update date for question or answer
 }
 export interface Suggestion {
@@ -133,6 +98,7 @@ export enum KeyMap {
   ESCAPE = 'Escape',
   ENTER = 'Enter',
   BACKSPACE = 'Backspace',
+  SPACE = ' ',
   DELETE = 'Delete',
   ARROW_UP = 'ArrowUp',
   ARROW_DOWN = 'ArrowDown',
