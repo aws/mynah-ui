@@ -72,28 +72,20 @@
         > .mynah-feedback-form-star {
             cursor: pointer;
             padding-right: var(--mynah-sizing-1);
-            color: var(--mynah-color-light);
+            color: var(--mynah-color-button);
             font-size: 1.5rem;
             transition: var(--mynah-very-short-transition);
             > .mynah-icon {
                 transition: var(--mynah-very-short-transition);
-                transform: translate3d(0, 0, 0) scale(0.75);
+                opacity: 0.4;
+                transform: translate3d(0, 0, 0) scale(0.6);
             }
         }
-        &[selected-star]:not(:hover) {
-            > :not(.mynah-feedback-form-star.selected ~ .mynah-feedback-form-star) {
-                color: var(--mynah-color-button);
-                > .mynah-icon {
-                    transform: translate3d(0, 0, 0) scale(1);
-                }
-            }
-        }
-        &:hover {
-            > :not(.mynah-feedback-form-star:hover ~ .mynah-feedback-form-star) {
-                color: var(--mynah-color-button);
-                > .mynah-icon {
-                    transform: translate3d(0, 0, 0) scale(1);
-                }
+        &[selected-star]:not(:hover) > :not(.mynah-feedback-form-star.selected ~ .mynah-feedback-form-star),
+        &:hover > :not(.mynah-feedback-form-star:hover ~ .mynah-feedback-form-star) {
+            > .mynah-icon {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) scale(1);
             }
         }
     }
