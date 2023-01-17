@@ -131,8 +131,8 @@ export class SearchInput {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.AUTOCOMPLETE_SUGGESTION_CLICK, (data: {
       autocompleteQuery: AutocompleteItem;
-      autocompleteSuggestionSelected: number;
-      autocompleteSuggestionsCount: number;}) => {
+      index: number;
+      count: number;}) => {
       this.searchTextInput.value = data.autocompleteQuery.suggestion;
       this.remainingIndicator.update({
         attributes: {
@@ -151,7 +151,15 @@ export class SearchInput {
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (e.key === KeyMap.ENTER) {
       cancelEvent(e);
-      this.triggerSearch();
+      if (this.autocompleteContent?.getIsUsed() === true) {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.AUTOCOMPLETE_SUGGESTION_CLICK, {
+          autocompleteQuery: this.autocompleteContent.suggestions[this.autocompleteContent.getCurrentSelected() - 1],
+          index: this.autocompleteContent.getCurrentSelected() - 1,
+          count: this.autocompleteContent.getSuggestionsCount()
+        });
+      } else {
+        this.triggerSearch();
+      }
     } else if (e.key === KeyMap.ARROW_DOWN) {
       if (this.autocompleteContent !== undefined) {
         this.searchTextInput.value = this.autocompleteContent.hover(false);

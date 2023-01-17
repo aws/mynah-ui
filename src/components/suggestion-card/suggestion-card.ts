@@ -73,13 +73,11 @@ export class SuggestionCard {
               y: Math.abs(this.mouseDownInfo.y - mouseUpInfo.y),
               selectedText: window?.getSelection()?.toString(),
             });
-          } else {
-            this.handleEngagement({ x: 0, y: 0 });
           }
         },
         mouseleave: () => {
           const engagementEndTime = new Date().getTime();
-          if (engagementEndTime - this.engagementStartTime > ENGAGEMENT_DURATION_LIMIT) {
+          if (this.engagementStartTime !== -1 && engagementEndTime - this.engagementStartTime > ENGAGEMENT_DURATION_LIMIT) {
             this.handleEngagement();
           } else {
             this.resetEngagement();
@@ -93,9 +91,6 @@ export class SuggestionCard {
           metadata: props.suggestion.metadata,
           onSuggestionTitleClick: () => {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: props.suggestion });
-          },
-          onSuggestionLinkClick: () => {
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_CLICK, { suggestion: props.suggestion });
           },
           onSuggestionLinkCopy: () => {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { suggestion: props.suggestion });

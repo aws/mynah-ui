@@ -13,7 +13,6 @@ export interface SuggestionCardHeaderProps {
   url: string;
   metadata?: SuggestionMetaData;
   onSuggestionTitleClick?: () => void;
-  onSuggestionLinkClick?: () => void;
   onSuggestionLinkCopy?: () => void;
 }
 export class SuggestionCardHeader {
@@ -56,8 +55,8 @@ export class SuggestionCardHeader {
               type: 'a',
               classNames: [ 'mynah-card-url' ],
               events: {
-                ...(props.onSuggestionLinkClick !== undefined && {
-                  click: props.onSuggestionLinkClick,
+                ...(props.onSuggestionTitleClick !== undefined && {
+                  click: props.onSuggestionTitleClick,
                 }),
                 ...(props.onSuggestionLinkCopy !== undefined && { copy: props.onSuggestionLinkCopy }),
               },
