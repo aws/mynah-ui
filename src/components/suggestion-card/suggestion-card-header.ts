@@ -36,23 +36,16 @@ export class SuggestionCardHeader {
         {
           type: 'div',
           classNames: [ 'mynah-card-title-wrapper' ],
-          events: {
-            ...(props.onSuggestionTitleClick !== undefined && {
-              click: (e: Event) => {
-                // to prevent double click from the anchor element inside, we need to check if it is not the anchor element
-                if (
-                  !(e.target as HTMLElement).classList.contains('mynah-card-url') &&
-                                    props.onSuggestionTitleClick !== undefined
-                ) {
-                  props.onSuggestionTitleClick();
-                }
-              },
-            }),
-          },
           children: [
             {
-              type: 'div',
+              type: 'a',
               classNames: [ 'mynah-card-title' ],
+              events: {
+                ...(props.onSuggestionTitleClick !== undefined && {
+                  click: props.onSuggestionTitleClick,
+                }),
+              },
+              attributes: { href: props.url, target: '_blank' },
               children: [ props.title, {
                 type: 'div',
                 classNames: [ 'mynah-card-expand-icon' ],

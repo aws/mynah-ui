@@ -122,6 +122,11 @@
                 align-items: center;
                 justify-content: flex-start;
                 gap: var(--mynah-sizing-2);
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                text-decoration: none;
+                outline: none;
+                overflow: hidden;
                 > .mynah-card-expand-icon {
                     transition: var(--mynah-short-transition-rev);
                     opacity: 0;
@@ -139,12 +144,12 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 text-decoration: none;
+                outline: none;
                 overflow: hidden;
                 max-width: 100%;
                 position: relative;
                 padding-bottom: var(--mynah-sizing-1);
                 display: inline-block;
-                outline: none;
                 transition: var(--mynah-short-transition-rev);
                 &:after {
                     content: "";
