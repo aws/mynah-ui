@@ -38,7 +38,6 @@ export enum MynahEventNames {
   CODE_DETAILS_CLICK = 'codeDetailsClick',
   SUGGESTION_VOTE = 'suggestionVote',
   SUGGESTION_OPEN = 'suggestionOpen',
-  SUGGESTION_LINK_CLICK = 'suggestionLinkClick',
   SUGGESTION_LINK_COPY = 'suggestionLinkCopy',
   SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
   SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
@@ -185,7 +184,6 @@ export enum ContextChangeType {
   'REMOVE' = 'remove',
 }
 export enum SuggestionEventName {
-  CLICK = 'click',
   OPEN = 'openSuggestion',
   COPY = 'copy',
 }

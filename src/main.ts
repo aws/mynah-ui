@@ -307,15 +307,6 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_LINK_CLICK, (data) => {
-      if (this.props.onSuggestionInteraction !== undefined) {
-        this.props.onSuggestionInteraction(
-          SuggestionEventName.CLICK,
-          data.suggestion
-        );
-      }
-    });
-
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_VOTE, (data) => {
       if (this.props.onClickSuggestionVote !== undefined) {
         this.props.onClickSuggestionVote(
