@@ -248,6 +248,10 @@
             * {
                 user-select: text;
             }
+            .amzn-mynah-search-result-highlight {
+                background-color: var(--mynah-color-highlight);
+                color: var(--mynah-color-highlight-text);
+            }
         }
 
         > .mynah-card-votes-wrapper {
