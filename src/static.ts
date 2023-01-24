@@ -74,7 +74,6 @@ export interface SearchPayload {
   code?: string;
 }
 export interface SuggestionMetaData {
-  type: string;
   stars?: number; // repo stars
   forks?: number; // repo forks
   answerCount?: number; // total answers if it is a question
@@ -83,6 +82,7 @@ export interface SuggestionMetaData {
   score?: number; // relative score according to the up and down votes for a question or an answer
   lastActivityDate?: number; // creation or last update date for question or answer
 }
+export type SuggestionMetaDataUnion = Record<string, SuggestionMetaData>;
 export interface Suggestion {
   id: string;
   title: string;
@@ -90,7 +90,7 @@ export interface Suggestion {
   body: string;
   context: string[];
   type?: string;
-  metadata?: SuggestionMetaData;
+  metadata?: SuggestionMetaDataUnion;
 }
 
 export enum KeyMap {

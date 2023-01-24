@@ -5,13 +5,13 @@
 
 import { getTimeDiff } from '../../helper/date-time';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
-import { SuggestionMetaData } from '../../static';
+import { SuggestionMetaDataUnion } from '../../static';
 import { Icon, MynahIcons } from '../icon';
 
 export interface SuggestionCardHeaderProps {
   title: string;
   url: string;
-  metadata?: SuggestionMetaData;
+  metadata?: SuggestionMetaDataUnion;
   onSuggestionTitleClick?: () => void;
   onSuggestionLinkCopy?: () => void;
 }
@@ -29,7 +29,7 @@ export class SuggestionCardHeader {
         ...((props.metadata != null)
           ? [ {
               type: 'span',
-              classNames: [ 'mynah-source-thumbnail', props.metadata.type ]
+              classNames: [ 'mynah-source-thumbnail', this.getSourceMetaBlockClassName(props.metadata) ]
             } ]
           : []),
         {
@@ -71,95 +71,102 @@ export class SuggestionCardHeader {
     });
   }
 
-  private readonly getSourceMetaBlock = (metadata: SuggestionMetaData): DomBuilderObject => {
-    const metaItems = [];
-    if (metadata.isAccepted === true) {
-      metaItems.push({
-        type: 'span',
-        classNames: [ 'mynah-title-meta-block-item', 'approved-answer' ],
-        children: [
-          new Icon({ icon: MynahIcons.OK }).render,
-          {
-            type: 'span',
-            classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ 'Approved answer' ]
-          }
-        ]
-      });
-    }
+  private readonly getSourceMetaBlockClassName = (metadataUnion?: SuggestionMetaDataUnion): string => metadataUnion !== null && metadataUnion !== undefined ? Object.keys(metadataUnion).join(' ') : '';
 
-    if (metadata.lastActivityDate !== undefined) {
-      metaItems.push({
-        type: 'span',
-        classNames: [ 'mynah-title-meta-block-item' ],
-        children: [
-          new Icon({ icon: MynahIcons.CALENDAR }).render,
-          {
+  private readonly getSourceMetaBlock = (metadataUnion?: SuggestionMetaDataUnion): DomBuilderObject => {
+    const metaItems: any[] = [];
+    if (metadataUnion !== null && metadataUnion !== undefined) {
+      Object.keys(metadataUnion).forEach(metadataKey => {
+        const metadata = metadataUnion[metadataKey];
+        if (metadata.isAccepted === true) {
+          metaItems.push({
             type: 'span',
-            classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${getTimeDiff((new Date()).getTime() - metadata.lastActivityDate, 2, ' and ')} ago` ]
-          }
-        ]
-      });
-    }
+            classNames: [ 'mynah-title-meta-block-item', 'approved-answer' ],
+            children: [
+              new Icon({ icon: MynahIcons.OK }).render,
+              {
+                type: 'span',
+                classNames: [ 'mynah-title-meta-block-item-text' ],
+                children: [ 'Approved answer' ]
+              }
+            ]
+          });
+        }
 
-    if (metadata.answerCount !== undefined) {
-      metaItems.push({
-        type: 'span',
-        classNames: [ 'mynah-title-meta-block-item' ],
-        children: [
-          new Icon({ icon: MynahIcons.CHAT }).render,
-          {
+        if (metadata.lastActivityDate !== undefined) {
+          metaItems.push({
             type: 'span',
-            classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metadata.answerCount.toString()} answers` ]
-          }
-        ]
-      });
-    }
+            classNames: [ 'mynah-title-meta-block-item' ],
+            children: [
+              new Icon({ icon: MynahIcons.CALENDAR }).render,
+              {
+                type: 'span',
+                classNames: [ 'mynah-title-meta-block-item-text' ],
+                children: [ `${getTimeDiff((new Date()).getTime() - metadata.lastActivityDate, 2, ' and ')} ago` ]
+              }
+            ]
+          });
+        }
 
-    if (metadata.stars !== undefined) {
-      metaItems.push({
-        type: 'span',
-        classNames: [ 'mynah-title-meta-block-item' ],
-        children: [
-          new Icon({ icon: MynahIcons.STAR }).render,
-          {
+        if (metadata.answerCount !== undefined) {
+          metaItems.push({
             type: 'span',
-            classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metadata.stars.toString()} contributors` ]
-          }
-        ]
-      });
-    }
+            classNames: [ 'mynah-title-meta-block-item' ],
+            children: [
+              new Icon({ icon: MynahIcons.CHAT }).render,
+              {
+                type: 'span',
+                classNames: [ 'mynah-title-meta-block-item-text' ],
+                children: [ `${metadata.answerCount.toString()} answers` ]
+              }
+            ]
+          });
+        }
 
-    if (metadata.forks !== undefined) {
-      metaItems.push({
-        type: 'span',
-        classNames: [ 'mynah-title-meta-block-item' ],
-        children: [
-          new Icon({ icon: MynahIcons.DOWN_OPEN }).render,
-          {
+        if (metadata.stars !== undefined) {
+          metaItems.push({
             type: 'span',
-            classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metadata.forks.toString()} forks` ]
-          }
-        ]
-      });
-    }
+            classNames: [ 'mynah-title-meta-block-item' ],
+            children: [
+              new Icon({ icon: MynahIcons.STAR }).render,
+              {
+                type: 'span',
+                classNames: [ 'mynah-title-meta-block-item-text' ],
+                children: [ `${metadata.stars.toString()} contributors` ]
+              }
+            ]
+          });
+        }
 
-    if (metadata.score !== undefined) {
-      metaItems.push({
-        type: 'span',
-        classNames: [ 'mynah-title-meta-block-item' ],
-        children: [
-          new Icon({ icon: MynahIcons.THUMBS_UP }).render,
-          {
+        if (metadata.forks !== undefined) {
+          metaItems.push({
             type: 'span',
-            classNames: [ 'mynah-title-meta-block-item-text' ],
-            children: [ `${metadata.score.toString()}` ]
-          }
-        ]
+            classNames: [ 'mynah-title-meta-block-item' ],
+            children: [
+              new Icon({ icon: MynahIcons.DOWN_OPEN }).render,
+              {
+                type: 'span',
+                classNames: [ 'mynah-title-meta-block-item-text' ],
+                children: [ `${metadata.forks.toString()} forks` ]
+              }
+            ]
+          });
+        }
+
+        if (metadata.score !== undefined) {
+          metaItems.push({
+            type: 'span',
+            classNames: [ 'mynah-title-meta-block-item' ],
+            children: [
+              new Icon({ icon: MynahIcons.THUMBS_UP }).render,
+              {
+                type: 'span',
+                classNames: [ 'mynah-title-meta-block-item-text' ],
+                children: [ `${metadata.score.toString()}` ]
+              }
+            ]
+          });
+        }
       });
     }
 
