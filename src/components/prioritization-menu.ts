@@ -70,15 +70,17 @@ export class PrioritizationMenuButtons {
   }
 
   private readonly handlePrioritizationButtonClick = (priority: ContextTypes): void => {
-    this.menuOverlay.close();
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, {
-      type: ContextChangeType.ADD,
-      context: {
-        context: this.props.context.context,
-        type: priority,
-        source: this.props.context.source,
-      },
-      oldPolicyType: this.props.context.type
-    });
+    if (priority !== this.props.context.type) {
+      this.menuOverlay.close();
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, {
+        type: ContextChangeType.ADD,
+        context: {
+          context: this.props.context.context,
+          type: priority,
+          source: this.props.context.source,
+        },
+        oldPolicyType: this.props.context.type
+      });
+    }
   };
 }
