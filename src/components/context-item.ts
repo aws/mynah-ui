@@ -23,9 +23,16 @@ export class ContextPill {
 
     this.render = DomBuilder.getInstance().build({
       type: 'span',
-      attributes: { 'pill-of': props.context.context },
       classNames: [ 'mynah-context-pill', ContextTypeClassNames[props.context.type ?? ContextTypes.SHOULD] ],
       children: [
+        ...(props.showRemoveButton !== false
+          ? [
+              new Icon({
+                icon: this.props.context.type === ContextTypes.MUST_NOT ? MynahIcons.BLOCK : MynahIcons.OK_CIRCLED,
+                classNames: [ 'mynah-context-pill-group-icon' ]
+              }).render
+            ]
+          : []),
         {
           type: 'label',
           attributes: { for: props.context.context },

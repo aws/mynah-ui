@@ -83,7 +83,7 @@ export class SearchContext {
     const addedContext: ContextType[] = [];
     Object.keys(oldMatchPolicy).forEach(policyGroup => {
       oldMatchPolicy[policyGroup as keyof SearchPayloadMatchPolicy]?.forEach(contextKey => {
-        if (matchPolicy[policyGroup as keyof SearchPayloadMatchPolicy]?.indexOf(contextKey) === -1) {
+        if (!matchPolicy[policyGroup as keyof SearchPayloadMatchPolicy]?.includes(contextKey)) {
           removedContext.push({
             context: contextKey,
             source: ContextSource.AUTO,
@@ -115,11 +115,20 @@ export class SearchContext {
         context: contextItem,
         showRemoveButton: true,
       }).render;
+      let actualContextItemRender = contextRender;
+      if (contextItem.type === ContextTypes.MUST || contextItem.type === ContextTypes.MUST_NOT) {
+        console.log(contextItem);
+        actualContextItemRender = DomBuilder.getInstance().build({
+          type: 'span',
+          classNames: [ `mynah-context-pill-group-item-${contextItem.type}` ],
+          children: [ contextRender ]
+        });
+      }
       this.renderedContextMap[contextItem.context] = {
         ...contextItem,
-        render: contextRender,
+        render: actualContextItemRender,
       };
-      this.contextWrapper.insertChild('afterbegin', contextRender);
+      this.contextWrapper.insertChild('beforeend', actualContextItemRender);
     });
   };
 
@@ -233,7 +242,13 @@ export class SearchContext {
   private readonly contextWrapper = DomBuilder.getInstance().build({
     type: 'div',
     classNames: [ 'mynah-context-wrapper' ],
-    children: [ this.contextInsertionButton ],
+    children: [
+      DomBuilder.getInstance().build({
+        type: 'span',
+        classNames: [ 'mynah-context-pill-groups-start' ]
+      }),
+      this.contextInsertionButton,
+    ],
   });
 
   render = DomBuilder.getInstance().build({
@@ -246,7 +261,7 @@ export class SearchContext {
           title: 'Error occured',
           content: [
             { type: 'span', children: [ 'An error occured while getting the suggestions for your search.' ] },
-            { type: 'span', children: [ 'This error is reported to the team automatically. We will take it into account shortly.' ] },
+            { type: 'span', children: [ 'This error is reported to the team automatically. We will shortly look to it.' ] },
           ],
           type: NotificationType.ERROR,
           onNotificationClick: () => {

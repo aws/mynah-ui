@@ -1,7 +1,7 @@
 @mixin background-shadow {
     overflow: visible;
     &:before {
-        content: '';
+        content: "";
         background-color: transparent;
         transition: var(--mynah-short-transition-rev);
         position: absolute;
@@ -19,7 +19,7 @@
 
 @mixin lighten-darken {
     &:before {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         left: 0;
@@ -42,4 +42,22 @@
     -webkit-mask-size: 100% 100%;
     mask-image: $listFader;
     mask-size: 100% 100%;
+}
+
+@mixin context-pill-group-background {
+    &:after,
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        border-radius: var(--mynah-button-radius);
+    }
+    &:after {
+        background-color: var(--mynah-card-bg);
+        z-index: 1;
+    }
 }

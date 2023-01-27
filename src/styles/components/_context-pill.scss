@@ -2,16 +2,89 @@
     display: none;
 }
 
+.mynah-context-pill-groups-start {
+    order: 5;
+    display: none;
+    & ~ .mynah-context-pill-group-item-must {
+        > .mynah-context-pill > .mynah-context-pill-group-icon {
+            display: inline-flex;
+        }
+        & ~ .mynah-context-pill-group-item-must {
+            > .mynah-context-pill > .mynah-context-pill-group-icon {
+                display: none;
+            }
+            margin-left: calc(-1 * (var(--mynah-button-radius) + var(--mynah-sizing-2)));
+        }
+    }
+    & ~ .mynah-context-pill-group-item-mustNot {
+        > .mynah-context-pill > .mynah-context-pill-group-icon {
+            display: inline-flex;
+        }
+        & ~ .mynah-context-pill-group-item-mustNot {
+            > .mynah-context-pill > .mynah-context-pill-group-icon {
+                display: none;
+            }
+            margin-left: calc(-1 * (var(--mynah-button-radius) + var(--mynah-sizing-2)));
+        }
+    }
+}
+
+.mynah-context-pill-group-item-must,
+.mynah-context-pill-group-item-mustNot {
+    position: relative;
+    display: inline-flex;
+    overflow: visible;
+    @include context-pill-group-background();
+    z-index: 3;
+    padding: calc(var(--mynah-sizing-1) + var(--mynah-sizing-half));
+    &:hover {
+        z-index: 30;
+    }
+}
+.mynah-context-pill-group-item-must {
+    order: 10;
+    &:before {
+        background-color: var(--mynah-color-status-info);
+        opacity: 0.1;
+    }
+    > .mynah-context-pill > .mynah-context-pill-group-icon {
+        color: var(--mynah-color-status-info);
+        opacity: 0.25;
+    }
+}
+.mynah-context-pill-group-item-mustNot {
+    order: 30;
+    @include context-pill-group-background();
+    &:before {
+        background-color: var(--mynah-color-status-warning);
+        opacity: 0.1;
+    }
+    > .mynah-context-pill > .mynah-context-pill-group-icon {
+        color: var(--mynah-color-status-warning);
+        opacity: 0.25;
+    }
+}
+
 .mynah-context-pill {
     position: relative;
     order: 10;
     overflow: visible;
     transition: z-index 1ms 75ms linear;
-    z-index: 1;
-
+    z-index: 3;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    &:hover {
+        z-index: 30;
+    }
+    > .mynah-context-pill-group-icon {
+        display: none;
+        font-size: var(--mynah-font-size-large);
+        margin: var(--mynah-sizing-1);
+    }
     > .mynah-prioritise-button {
         position: absolute;
-        z-index: 1;
+        z-index: 3;
         top: 0;
         transform-origin: center center;
         transform: translate3d(0, 0, 0);
@@ -70,7 +143,6 @@
     }
 
     &.mynah-must-contain {
-        order: 10;
         > .mynah-context-checkbox-label {
             cursor: default;
         }
@@ -97,7 +169,6 @@
         }
     }
     &.mynah-must-not-contain {
-        order: 30;
         > .mynah-context-checkbox-label {
             cursor: default;
         }
