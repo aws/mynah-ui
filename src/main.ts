@@ -76,7 +76,7 @@ export interface MynahUIProps {
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
   onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
-  onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion) => void;
+  onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
   onRequestHistoryRecords?: (filterPayload: SearchHistoryFilters) => void;
   onRequestAutocompleteList?: (input: string) => void;
@@ -302,7 +302,8 @@ export class MynahUI {
       if (this.props.onSuggestionInteraction !== undefined) {
         this.props.onSuggestionInteraction(
           SuggestionEventName.OPEN,
-          data.suggestion
+          data.suggestion,
+          data.event
         );
       }
     });
