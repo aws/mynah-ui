@@ -12,7 +12,7 @@ export interface SuggestionCardHeaderProps {
   title: string;
   url: string;
   metadata?: SuggestionMetaDataUnion;
-  onSuggestionTitleClick?: () => void;
+  onSuggestionTitleClick?: (e?: MouseEvent) => void;
   onSuggestionLinkCopy?: () => void;
 }
 export class SuggestionCardHeader {
@@ -87,7 +87,7 @@ export class SuggestionCardHeader {
               {
                 type: 'span',
                 classNames: [ 'mynah-title-meta-block-item-text' ],
-                children: [ 'Approved answer' ]
+                children: [ 'Accepted answer' ]
               }
             ]
           });

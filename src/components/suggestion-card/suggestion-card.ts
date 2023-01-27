@@ -89,8 +89,8 @@ export class SuggestionCard {
           title: props.suggestion.title,
           url: props.suggestion.url,
           metadata: props.suggestion.metadata,
-          onSuggestionTitleClick: () => {
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: props.suggestion });
+          onSuggestionTitleClick: (e?: MouseEvent) => {
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: props.suggestion, event: e });
           },
           onSuggestionLinkCopy: () => {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { suggestion: props.suggestion });
