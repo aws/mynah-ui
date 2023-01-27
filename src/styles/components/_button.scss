@@ -20,10 +20,10 @@ button.mynah-button {
         background-color: transparent;
         color: inherit;
         box-shadow: none;
-        opacity: 0.85;
+        opacity: 0.75;
         &:focus-visible,
         &:hover {
-            background-color: var(--mynah-color-bg);
+            opacity: 1;
         }
         &:active {
             box-shadow: none;
@@ -115,7 +115,7 @@ button.mynah-button {
     }
     > span {
         white-space: nowrap;
-        font-size: var(--mynah-font-size-small);
+        font-size: var(--mynah-font-size-medium);
         max-width: 35vw;
         transition: var(--mynah-very-long-transition);
         overflow: hidden;

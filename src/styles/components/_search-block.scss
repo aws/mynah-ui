@@ -9,7 +9,8 @@
     overflow: visible;
     position: relative;
     @include background-shadow;
-    border: var(--mynah-button-border-width) solid var(--vscode-editorGroup-border);
+    border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+    gap: var(--mynah-sizing-2);
 
     > .mynah-search-block-header {
         width: 100%;
@@ -22,9 +23,6 @@
             justify-content: space-between;
             box-sizing: border-box;
             overflow: hidden;
-            > .mynah-header-button {
-                font-size: var(--mynah-font-size-xsmall);
-            }
         }
         > .mynah-search-block-header-info-bar {
             margin: 0 var(--mynah-sizing-4) 0 var(--mynah-sizing-4);
@@ -118,7 +116,7 @@
         transition: var(--mynah-very-short-transition);
         background-color: var(--mynah-card-bg);
         color: var(--mynah-color-text-input);
-        border: var(--mynah-button-border-width) solid var(--vscode-editorGroup-border);
+        border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
         font-size: var(--mynah-sizing-6);
         > .mynah-icon {
             &-up-open {
@@ -137,7 +135,7 @@
         align-items: center;
         gap: var(--mynah-sizing-1);
         width: 100%;
-        padding: var(--mynah-sizing-3) var(--mynah-sizing-3) 0 0;
+        padding: 0 var(--mynah-sizing-4) 0 0;
 
         &.mynah-hide-content,
         &.mynah-hide-content * {
@@ -186,7 +184,7 @@
         color: var(--mynah-color-text-input);
         width: 100%;
         flex: 1 1 100%;
-        margin: var(--mynah-sizing-2) var(--mynah-sizing-4) 0 var(--mynah-sizing-4);
+        margin: 0 var(--mynah-sizing-4) 0 var(--mynah-sizing-4);
         display: flex;
     }
 
@@ -243,7 +241,7 @@
         > .mynah-search-api-help-collapser {
             display: flex;
             flex-flow: row nowrap;
-            padding: var(--mynah-sizing-2);
+            padding: var(--mynah-sizing-2) var(--mynah-sizing-2) 0 var(--mynah-sizing-2);
             justify-content: center;
             align-items: center;
             font-size: var(--mynah-sizing-6);
@@ -277,15 +275,11 @@
                 }
             }
         }
-        &:not(:empty) + .mynah-search-input-wrapper {
-            margin-top: 0;
-        }
     }
 
     > .mynah-search-input-wrapper {
         border: 1px solid var(--mynah-color-border-default);
         padding: var(--mynah-sizing-2);
-        margin-bottom: var(--mynah-sizing-3);
         border-radius: var(--mynah-card-radius);
         flex-flow: row nowrap;
         align-items: center;
@@ -340,7 +334,7 @@
         align-items: flex-start;
         overflow: hidden;
         width: 100%;
-        padding: 0 var(--mynah-sizing-4) var(--mynah-sizing-4) var(--mynah-sizing-4);
+        padding: var(--mynah-sizing-1) var(--mynah-sizing-4) var(--mynah-sizing-4) var(--mynah-sizing-4);
         transition: var(--mynah-very-short-transition);
         max-height: 50vh;
         > .mynah-context-wrapper {
@@ -348,6 +342,7 @@
             flex-flow: row wrap;
             gap: var(--mynah-sizing-2);
             flex: 1 1 0%;
+            align-items: center;
         }
     }
 
