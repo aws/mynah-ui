@@ -117,7 +117,6 @@ export class SearchContext {
       }).render;
       let actualContextItemRender = contextRender;
       if (contextItem.type === ContextTypes.MUST || contextItem.type === ContextTypes.MUST_NOT) {
-        console.log(contextItem);
         actualContextItemRender = DomBuilder.getInstance().build({
           type: 'span',
           classNames: [ `mynah-context-pill-group-item-${contextItem.type}` ],
