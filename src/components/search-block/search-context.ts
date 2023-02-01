@@ -66,12 +66,14 @@ export class SearchContext {
     }
   };
 
-  private readonly disableContextInsertion = (): void => {
+  private readonly disableContextInsertion = (keepText?: boolean): void => {
     this.contextInsertionButton.removeClass('context-insertion-activated');
-    this.contextInsertionInput.value = '';
-    this.inputAutoWidth.update({
-      innerHTML: '',
-    });
+    if (keepText !== true) {
+      this.contextInsertionInput.value = '';
+      this.inputAutoWidth.update({
+        innerHTML: '',
+      });
+    }
     if (this.onContextInsertionDisabled !== undefined) {
       this.onContextInsertionDisabled();
     }
@@ -171,7 +173,7 @@ export class SearchContext {
           setTimeout(() => {
             this.contextInsertionButton.addClass('shake');
             const notification = new Notification({
-              content: 'You cannot add context items containing spaces.',
+              content: 'You cannot add empty context items or context items containing spaces.',
               type: NotificationType.WARNING,
               onNotificationClick: () => { },
             });
@@ -209,7 +211,9 @@ export class SearchContext {
     },
     events: {
       focus: this.enableContextInsertion,
-      blur: this.disableContextInsertion,
+      blur: () => {
+        this.disableContextInsertion(true);
+      },
       keydown: this.contextInsertionKeydownHandler,
       input: () => {
         this.inputAutoWidth.update({
@@ -253,22 +257,6 @@ export class SearchContext {
   render = DomBuilder.getInstance().build({
     type: 'div',
     classNames: [ 'mynah-search-block-advanced-control' ],
-    children: [ this.contextWrapper ],
-    events: {
-      dblclick: (e) => {
-        new Notification({
-          title: 'Error occured',
-          content: [
-            { type: 'span', children: [ 'An error occured while getting the suggestions for your search.' ] },
-            { type: 'span', children: [ 'This error is reported to the team automatically. We will shortly look to it.' ] },
-          ],
-          type: NotificationType.ERROR,
-          onNotificationClick: () => {
-            //
-          },
-          duration: -1
-        }).notify();
-      }
-    }
+    children: [ this.contextWrapper ]
   });
 }

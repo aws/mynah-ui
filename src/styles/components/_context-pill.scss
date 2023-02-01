@@ -10,10 +10,15 @@
             display: inline-flex;
         }
         & ~ .mynah-context-pill-group-item-must {
+            &:before {
+                border-left: none;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
             > .mynah-context-pill > .mynah-context-pill-group-icon {
                 display: none;
             }
-            margin-left: calc(-1 * (var(--mynah-button-radius) + var(--mynah-sizing-2)));
+            margin-left: calc(-7 * var(--mynah-sizing-half));
         }
     }
     & ~ .mynah-context-pill-group-item-mustNot {
@@ -21,10 +26,15 @@
             display: inline-flex;
         }
         & ~ .mynah-context-pill-group-item-mustNot {
+            &:before {
+                border-left: none;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
             > .mynah-context-pill > .mynah-context-pill-group-icon {
                 display: none;
             }
-            margin-left: calc(-1 * (var(--mynah-button-radius) + var(--mynah-sizing-2)));
+            margin-left: calc(-7 * var(--mynah-sizing-half));
         }
     }
 }
@@ -44,24 +54,19 @@
 .mynah-context-pill-group-item-must {
     order: 10;
     &:before {
-        background-color: var(--mynah-color-status-info);
-        opacity: 0.1;
+        border-color: var(--mynah-color-status-info);
     }
     > .mynah-context-pill > .mynah-context-pill-group-icon {
         color: var(--mynah-color-status-info);
-        opacity: 0.25;
     }
 }
 .mynah-context-pill-group-item-mustNot {
     order: 30;
-    @include context-pill-group-background();
     &:before {
-        background-color: var(--mynah-color-status-warning);
-        opacity: 0.1;
+        border-color: var(--mynah-color-status-warning);
     }
     > .mynah-context-pill > .mynah-context-pill-group-icon {
         color: var(--mynah-color-status-warning);
-        opacity: 0.25;
     }
 }
 
@@ -80,7 +85,7 @@
     > .mynah-context-pill-group-icon {
         display: none;
         font-size: var(--mynah-font-size-large);
-        margin: var(--mynah-sizing-1);
+        margin: var(--mynah-sizing-1) var(--mynah-sizing-2) var(--mynah-sizing-1) var(--mynah-sizing-1);
     }
     > .mynah-prioritise-button {
         position: absolute;

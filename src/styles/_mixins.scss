@@ -54,7 +54,8 @@
         left: 0;
         right: 0;
         z-index: 2;
-        border-radius: var(--mynah-button-radius);
+        border-radius: calc(var(--mynah-button-radius) * 3 / 2);
+        border: 1px solid transparent;
     }
     &:after {
         background-color: var(--mynah-card-bg);
