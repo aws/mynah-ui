@@ -56,6 +56,7 @@ export {
 } from './static';
 
 export interface MynahUIProps {
+  rootSelector?: string;
   storeData?: MynahUIDataModel;
   onSearch?: (
     searchPayload: SearchPayload,
@@ -98,7 +99,7 @@ export class MynahUI {
     this.props = props;
     MynahUIGlobalEvents.getInstance();
     MynahUIDataStore.getInstance(props.storeData);
-    DomBuilder.getInstance('body');
+    DomBuilder.getInstance(props.rootSelector);
     this.config = new MynahConfig();
 
     I18N.getInstance(this.config.getConfig('language'));
