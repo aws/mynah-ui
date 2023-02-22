@@ -79,6 +79,9 @@
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    &.mynah-context-hidden {
+        display: none;
+    }
     &:hover {
         z-index: 30;
     }

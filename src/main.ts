@@ -33,6 +33,7 @@ import './styles/styles.scss';
 import { EmptyMynahUIDataModel, MynahUIDataStore } from './helper/store';
 import { MynahUIGlobalEvents } from './helper/events';
 import { getTimeDiff } from './helper/date-time';
+import { NavivationTabs } from './components/navigation-tabs';
 
 export {
   AutocompleteItem,
@@ -75,6 +76,7 @@ export interface MynahUIProps {
   ) => void;
   onResetStore?: () => void;
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
+  onNavigationTabChange?: (selectedTab: string) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
   onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
   onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
@@ -92,6 +94,7 @@ export class MynahUI {
   private readonly props: MynahUIProps;
   private readonly wrapper: ExtendedHTMLElement;
   private readonly searchCard: SearchCard;
+  private readonly navTabs: NavivationTabs;
   private readonly mainContainer: MainContainer;
   private readonly config: MynahConfig;
 
@@ -114,12 +117,31 @@ export class MynahUI {
     );
 
     this.searchCard = new SearchCard();
+    this.navTabs = new NavivationTabs({
+      onChange: (selectedTab: string) => {
+        if (props.onNavigationTabChange !== undefined) {
+          props.onNavigationTabChange(selectedTab);
+        }
+
+        MynahUIDataStore.getInstance().updateStore({
+          ...(MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true
+            ? {
+                headerInfo: {
+                  content: ''
+                },
+                showingHistoricalSearch: false,
+              }
+            : {}),
+        });
+      }
+    });
     this.mainContainer = new MainContainer({
       onScroll: (e: Event) => this.searchCard.setFolded((e.target as HTMLElement).scrollTop > 0),
     });
 
     this.wrapper
       .insertChild('beforeend', this.searchCard.render)
+      .insertChild('beforeend', this.navTabs.render)
       .insertChild('beforeend', this.mainContainer.render);
 
     this.searchCard.addFocusOnInput();
@@ -252,7 +274,7 @@ export class MynahUI {
           code: data.historyItem.query.code,
         }, true);
       }
-      const fullStoreData: Required<MynahUIDataModel> = Object.assign((new EmptyMynahUIDataModel()).data, {
+      const fullStoreData: Required<MynahUIDataModel> = Object.assign((new EmptyMynahUIDataModel(MynahUIDataStore.getInstance().getDefaults())).data, {
         ...(data.historyItem.query.input !== undefined ? { query: data.historyItem.query.input } : {}),
         ...(data.historyItem.query.queryContext !== undefined ? { matchPolicy: data.historyItem.query.queryContext } : {}),
         ...(data.historyItem.suggestions !== undefined ? { suggestions: data.historyItem.suggestions } : {}),
@@ -350,6 +372,17 @@ export class MynahUI {
   public setStoreDefaults = (defaults: MynahUIDataModel | null): void => {
     MynahUIDataStore.getInstance().setDefaults(defaults);
   };
+
+  /**
+   * Returns the current search payload
+   */
+  public getSearchPayload = (): SearchPayload => ({
+    query: MynahUIDataStore.getInstance().getValue('query'),
+    matchPolicy: MynahUIDataStore.getInstance().getValue('matchPolicy'),
+    codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
+    codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
+    code: MynahUIDataStore.getInstance().getValue('code'),
+  });
 
   /**
    * Simply creates and shows a notification

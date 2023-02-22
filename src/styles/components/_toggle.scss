@@ -21,7 +21,6 @@
             z-index: 100;
             padding: var(--mynah-sizing-1) var(--mynah-sizing-2) var(--mynah-sizing-1) var(--mynah-sizing-2);
             border-radius: var(--mynah-button-radius);
-            transition: var(--mynah-short-transition-rev), background-color 1ms 0ms;
             min-height: var(--mynah-sizing-8);
             min-width: var(--mynah-sizing-8);
             box-sizing: border-box;
@@ -32,12 +31,24 @@
         }
         &:checked + .mynah-toggle-option-label {
             pointer-events: none;
-            color: var(--mynah-color-button-reverse);
-            background-color: var(--mynah-color-button);
-            transition: var(--mynah-short-transition-rev), background-color 1ms 500ms;
         }
-        &:not(:checked) + .mynah-toggle-option-label {
-            background-color: rgba(0, 0, 0, 0) !important;
+    }
+    &.mynah-toggle-type-switch {
+        .mynah-toggle-option {
+            & + .mynah-toggle-option-label {
+                transition: var(--mynah-short-transition-rev), background-color 1ms 0ms;
+            }
+            &:checked + .mynah-toggle-option-label {
+                color: var(--mynah-color-button-reverse);
+                background-color: var(--mynah-color-button);
+                transition: var(--mynah-short-transition-rev), background-color 1ms 500ms;
+            }
+            &:not(:checked) + .mynah-toggle-option-label {
+                background-color: rgba(0, 0, 0, 0) !important;
+            }
+        }
+        > .mynah-toggle-indicator-transitioner {
+            top: calc(50% - var(--mynah-sizing-4));
         }
     }
     > .mynah-toggle-indicator-transitioner {
@@ -50,9 +61,25 @@
         width: var(--mynah-sizing-8);
         height: var(--mynah-sizing-8);
         left: calc(-1 * var(--mynah-sizing-8));
-        top: calc(50% - var(--mynah-sizing-4));
         &.relocate {
             transition-duration: 1ms;
+        }
+    }
+    &.mynah-toggle-type-tabs {
+        > .mynah-toggle-indicator-transitioner {
+            height: var(--mynah-sizing-1);
+            border-radius: 0;
+            left: calc(-1 * var(--mynah-sizing-8));
+            bottom: 0;
+            &.relocate {
+                transition-duration: 1ms;
+            }
+        }
+        .mynah-toggle-option {
+            &:checked + .mynah-toggle-option-label {
+                color: var(--mynah-color-button);
+                font-weight: 600;
+            }
         }
     }
 }

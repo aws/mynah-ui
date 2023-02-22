@@ -4,6 +4,7 @@
  */
 
 import { MynahIcons } from './components/icon';
+import { ToggleOption } from './components/toggle';
 
 export interface MynahUIDataModel {
   loading?: boolean;
@@ -14,6 +15,11 @@ export interface MynahUIDataModel {
   codeSelection?: SearchPayloadCodeSelection;
   codeQuery?: SearchPayloadCodeQuery;
   matchPolicy?: SearchPayloadMatchPolicy;
+  invisibleContextItems?: string[];
+  navigationTabs?: {
+    selected?: string;
+    tabs: ToggleOption[];
+  };
   userAddedContext?: string[];
   suggestions?: Suggestion[];
   autoCompleteSuggestions?: AutocompleteItem[];

@@ -15,6 +15,11 @@ export class EmptyMynahUIDataModel {
       liveSearchState: LiveSearchState.STOP,
       query: '',
       code: '',
+      invisibleContextItems: [],
+      navigationTabs: {
+        selected: undefined,
+        tabs: []
+      },
       autoCompleteSuggestions: [],
       searchHistory: [],
       showingHistoricalSearch: false,
@@ -70,6 +75,11 @@ export class MynahUIDataStore {
   public setDefaults = (defaults: MynahUIDataModel | null): void => {
     this.defaults = defaults;
   };
+
+  /**
+   * Get the defaults to use while generating an empty store data
+   */
+  public getDefaults = (): MynahUIDataModel | null => this.defaults;
 
   /**
    * Subscribe to value changes of a specific item in data store

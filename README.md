@@ -19,7 +19,7 @@ export const createMynahUI = () => {
         // initial UI state data
         // It doesn't have to be matched with backend data
         // but to update the UI and rerender its desired parts, 
-        // it expects the data in this model.
+        // it expects the data in type of MynahUIDataModel.
         storeData?: MynahUIDataModel;
         
         // All below items trigger when;
@@ -50,6 +50,9 @@ export const createMynahUI = () => {
 
         // Matching policy is changed (context items)
         onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
+
+        // When navigation tab is changed
+        onNavigationTabChange?: (selectedTab: string) => void;
 
         // User engages with a suggestion
         onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
@@ -108,6 +111,18 @@ export const createMynahUI = () => {
         ...,
         onSearch: getSuggestions
     });
+
+    // to update the store fully or partially
+    mynahUI.updateStore(...);
+
+    // set default values for the UI data store fully or partially
+    mynahUI.setStoreDefaults(...);
+
+    // get current search payload
+    mynahUI.getSearchPayload();
+
+    // Show a notification balloon
+    mynahUI.notify(...);
 }
 ```
 

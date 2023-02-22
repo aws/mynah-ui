@@ -112,13 +112,16 @@ export class SearchContext {
         delete this.renderedContextMap[contextItem.context];
       }
     });
+
+    const invisibleContextKeys = MynahUIDataStore.getInstance().getValue('invisibleContextItems');
     addedContext.forEach((contextItem: ContextType) => {
       const contextRender = new ContextPill({
         context: contextItem,
         showRemoveButton: true,
       }).render;
       let actualContextItemRender = contextRender;
-      if (contextItem.type === ContextTypes.MUST || contextItem.type === ContextTypes.MUST_NOT) {
+      if (!invisibleContextKeys.includes(contextItem.context) &&
+      (contextItem.type === ContextTypes.MUST || contextItem.type === ContextTypes.MUST_NOT)) {
         actualContextItemRender = DomBuilder.getInstance().build({
           type: 'span',
           classNames: [ `mynah-context-pill-group-item-${contextItem.type}` ],

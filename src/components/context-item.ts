@@ -20,10 +20,11 @@ export class ContextPill {
   render: ExtendedHTMLElement;
   constructor (props: ContextPillProps) {
     this.props = props;
-
     this.render = DomBuilder.getInstance().build({
       type: 'span',
-      classNames: [ 'mynah-context-pill', ContextTypeClassNames[props.context.type ?? ContextTypes.SHOULD] ],
+      attributes: { context: props.context.context },
+      classNames: [ 'mynah-context-pill', ContextTypeClassNames[props.context.type ?? ContextTypes.SHOULD],
+        ...(MynahUIDataStore.getInstance().getValue('invisibleContextItems').includes(props.context.context) === true ? [ 'mynah-context-hidden' ] : []) ],
       children: [
         ...(props.showRemoveButton !== false
           ? [
@@ -34,8 +35,7 @@ export class ContextPill {
             ]
           : []),
         {
-          type: 'label',
-          attributes: { for: props.context.context },
+          type: 'span',
           classNames: [ 'mynah-context-checkbox-label' ],
           events: !(props.showRemoveButton ?? false)
             ? {

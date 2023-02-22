@@ -13,6 +13,7 @@ export interface ToggleOption {
 }
 export interface ToggleProps {
   options: ToggleOption[];
+  type?: 'switch' | 'tabs';
   value?: string;
   name: string;
   disabled?: boolean;
@@ -25,14 +26,14 @@ export class Toggle {
   private readonly relocateTransitioner: ExtendedHTMLElement;
 
   constructor (props: ToggleProps) {
-    this.props = props;
+    this.props = { type: 'switch', ...props };
     this.relocateTransitioner = DomBuilder.getInstance().build({
       type: 'span',
       classNames: [ 'mynah-toggle-indicator-transitioner' ],
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-toggle-container' ],
+      classNames: [ 'mynah-toggle-container', `mynah-toggle-type-${this.props.type as string}` ],
       attributes: { disabled: props.disabled === true ? 'disabled' : '' },
       children: this.getChildren(props.value),
     });
@@ -85,22 +86,26 @@ export class Toggle {
     this.currentValue = value;
     setTimeout(() => {
       const renderRect = this.render.getBoundingClientRect();
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing
-      const rect = this.render
-        .querySelector(`label[for="${this.props.name}-${value}"]`)
-        ?.getBoundingClientRect() ?? {
+      const optionRender = this.render
+        .querySelector(`label[for="${this.props.name}-${value}"]`) as HTMLElement;
+      const rect = optionRender?.getBoundingClientRect() ?? {
         top: 0,
         left: 0,
         width: 0,
         height: 0,
       };
 
-      this.relocateTransitioner.style.top = `${rect.top - renderRect.top}px`;
+      if (this.props.type === 'switch') {
+        this.relocateTransitioner.style.top = `${rect.top - renderRect.top}px`;
+        this.relocateTransitioner.style.height = `${rect.height}px`;
+      }
       this.relocateTransitioner.style.left = `${rect.left - renderRect.left}px`;
       this.relocateTransitioner.style.width = `${rect.width}px`;
-      this.relocateTransitioner.style.height = `${rect.height}px`;
       if (color !== undefined) {
         this.relocateTransitioner.style.backgroundColor = color;
+        if (optionRender !== undefined) {
+          optionRender.style.color = color;
+        }
       }
     }, 5);
   };

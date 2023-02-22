@@ -1,0 +1,15 @@
+.mynah-nav-tabs-wrapper {
+    padding: var(--mynah-sizing-2);
+    border-bottom: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+    > .mynah-toggle-container {
+        height: 100%;
+    }
+    &:empty {
+        display: none;
+    }
+
+    &.mynah-nav-tabs-loading,
+    &.mynah-nav-tabs-loading * {
+        pointer-events: none;
+    }
+}
