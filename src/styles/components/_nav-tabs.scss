@@ -1,8 +1,15 @@
 .mynah-nav-tabs-wrapper {
-    padding: var(--mynah-sizing-2);
-    border-bottom: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+    padding: 0 var(--mynah-sizing-2) var(--mynah-sizing-2) var(--mynah-sizing-2);
+    border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+    background-color: var(--mynah-card-bg);
+    margin-top: var(--mynah-sizing-3);
+
     > .mynah-toggle-container {
         height: 100%;
+        background: none;
+        > span {
+            white-space: nowrap;
+        }
     }
     &:empty {
         display: none;

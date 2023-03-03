@@ -3,6 +3,7 @@
     box-sizing: border-box;
     overflow: hidden;
     margin: 0;
+    margin-bottom: var(--mynah-sizing-3);
     border: 1px solid var(--mynah-color-border-default);
     position: relative;
     &:before {

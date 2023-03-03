@@ -172,6 +172,22 @@
                         opacity: 1;
                     }
                 }
+                > span {
+                    &:not(:last-child):after {
+                        content: "/";
+                        margin-left: var(--mynah-sizing-1);
+                        margin-right: var(--mynah-sizing-1);
+                    }
+                    &:nth-child(3) ~ span:not(:last-child) {
+                        display: none;
+                    }
+                    &:last-child {
+                        font-weight: bold;
+                    }
+                    &:nth-child(3):not(:last-child):after {
+                        content: "/ ... /";
+                    }
+                }
             }
             > .mynah-title-meta-block {
                 display: flex;

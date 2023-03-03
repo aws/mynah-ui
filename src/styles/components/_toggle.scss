@@ -32,6 +32,13 @@
         &:checked + .mynah-toggle-option-label {
             pointer-events: none;
         }
+        &[disabled="disabled"] {
+            pointer-events: none;
+            & + .mynah-toggle-option-label {
+                pointer-events: none;
+                opacity: 0.25;
+            }
+        }
     }
     &.mynah-toggle-type-switch {
         .mynah-toggle-option {
@@ -66,11 +73,13 @@
         }
     }
     &.mynah-toggle-type-tabs {
+        flex-flow: row wrap;
+        justify-content: flex-start;
         > .mynah-toggle-indicator-transitioner {
             height: var(--mynah-sizing-1);
             border-radius: 0;
             left: calc(-1 * var(--mynah-sizing-8));
-            bottom: 0;
+            transform: translateY(var(--mynah-sizing-1));
             &.relocate {
                 transition-duration: 1ms;
             }
