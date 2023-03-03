@@ -9,12 +9,13 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;
   color?: string;
+  disabled?: boolean;
   value: string;
 }
 export interface ToggleProps {
   options: ToggleOption[];
   type?: 'switch' | 'tabs';
-  value?: string;
+  value?: string | null;
   name: string;
   disabled?: boolean;
   onChange?: (selectedValue: string) => void;
@@ -38,12 +39,12 @@ export class Toggle {
       children: this.getChildren(props.value),
     });
 
-    if (props.value !== undefined) {
+    if (typeof props.value === 'string') {
       this.setRelocatePosition(props.value);
     }
   }
 
-  private readonly getChildren = (value?: string): any[] => [
+  private readonly getChildren = (value?: string | null): any[] => [
     ...this.props.options.map(option => {
       if (option.value === value && option.color !== undefined) {
         this.relocateTransitioner.style.backgroundColor = option.color;
@@ -60,6 +61,7 @@ export class Toggle {
               id: `${this.props.name}-${option.value}`,
               name: this.props.name,
               ...(value === option.value ? { checked: 'checked' } : {}),
+              ...(option.disabled === true ? { disabled: 'disabled' } : {}),
             },
             events: {
               change: () => {
@@ -98,6 +100,8 @@ export class Toggle {
       if (this.props.type === 'switch') {
         this.relocateTransitioner.style.top = `${rect.top - renderRect.top}px`;
         this.relocateTransitioner.style.height = `${rect.height}px`;
+      } else if (this.props.type === 'tabs') {
+        this.relocateTransitioner.style.top = `${rect.height + rect.top - renderRect.top}px`;
       }
       this.relocateTransitioner.style.left = `${rect.left - renderRect.left}px`;
       this.relocateTransitioner.style.width = `${rect.width}px`;
