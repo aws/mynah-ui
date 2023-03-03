@@ -7,6 +7,7 @@ import { LiveSearchState, MynahEventNames, MynahUIDataModel, NotificationType } 
 import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
 
+const PrimitiveObjectTypes = [ 'string', 'number', 'boolean' ];
 export class EmptyMynahUIDataModel {
   data: Required<MynahUIDataModel>;
   constructor (defaults?: MynahUIDataModel | null) {
@@ -16,10 +17,8 @@ export class EmptyMynahUIDataModel {
       query: '',
       code: '',
       invisibleContextItems: [],
-      navigationTabs: {
-        selected: undefined,
-        tabs: []
-      },
+      selectedNavigationTab: null,
+      navigationTabs: [],
       autoCompleteSuggestions: [],
       searchHistory: [],
       showingHistoricalSearch: false,
@@ -122,12 +121,16 @@ export class MynahUIDataStore {
    * Updates the store and informs the subscribers.
    * @param data A full or partial set of store data model with values.
    */
-  public updateStore = (data: MynahUIDataModel): void => {
-    (Object.keys(data) as Array<keyof MynahUIDataModel>).forEach(storeKey => {
-      Object.keys(this.subsciptions[storeKey]).forEach((subscriptionId: string) => {
-        this.subsciptions[storeKey][subscriptionId](data[storeKey], this.store[storeKey]);
+  public updateStore = (data: MynahUIDataModel, skipSubscribers?: boolean): void => {
+    if (skipSubscribers !== true) {
+      (Object.keys(data) as Array<keyof MynahUIDataModel>).forEach(storeKey => {
+        Object.keys(this.subsciptions[storeKey]).forEach((subscriptionId: string) => {
+          if (!PrimitiveObjectTypes.includes(typeof data[storeKey]) || data[storeKey] !== this.store[storeKey]) {
+            this.subsciptions[storeKey][subscriptionId](data[storeKey], this.store[storeKey]);
+          }
+        });
       });
-    });
+    }
     this.store = Object.assign(structuredClone(this.store), data);
   };
 
