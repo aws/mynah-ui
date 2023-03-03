@@ -56,6 +56,12 @@ export {
   NotificationType,
 } from './static';
 
+export {
+  transformPayloadData,
+  validateRulesOnPayloadData,
+  PayloadTransformRule,
+} from './helper/payload-transformer';
+
 export interface MynahUIProps {
   rootSelector?: string;
   storeData?: MynahUIDataModel;
@@ -82,7 +88,7 @@ export interface MynahUIProps {
   onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
   onRequestHistoryRecords?: (filterPayload: SearchHistoryFilters) => void;
-  onRequestAutocompleteList?: (input: string) => void;
+  onInputQueryChange?: (input: string) => void;
   onChangeLiveSearchState?: (liveSearchState: LiveSearchState) => void;
   onClickAutocompleteItem?: (
     text: string,
@@ -120,6 +126,9 @@ export class MynahUI {
     this.navTabs = new NavivationTabs({
       onChange: (selectedTab: string) => {
         if (props.onNavigationTabChange !== undefined) {
+          MynahUIDataStore.getInstance().updateStore({
+            selectedNavigationTab: selectedTab
+          }, true);
           props.onNavigationTabChange(selectedTab);
         }
 
@@ -160,9 +169,9 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REQUEST_AUTOCOMPLETE_SUGGESTIONS, (data) => {
-      if (this.props.onRequestAutocompleteList !== undefined) {
-        this.props.onRequestAutocompleteList(data.input);
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INPUT_QUERY_CHANGE, (data) => {
+      if (this.props.onInputQueryChange !== undefined) {
+        this.props.onInputQueryChange(data.input);
       }
     });
 
@@ -199,6 +208,7 @@ export class MynahUI {
           codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
           matchPolicy: MynahUIDataStore.getInstance().getValue('matchPolicy'),
           codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
+          selectedTab: MynahUIDataStore.getInstance().getValue('selectedNavigationTab'),
         }, false, data.isFromAutocomplete);
       }
       if (this.props.onChangeLiveSearchState != null) {
@@ -247,6 +257,7 @@ export class MynahUI {
           codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
           matchPolicy: currentMatchPolicy,
           codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
+          selectedTab: MynahUIDataStore.getInstance().getValue('selectedNavigationTab'),
         });
 
         if (MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true) {
@@ -382,6 +393,7 @@ export class MynahUI {
     codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
     codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
     code: MynahUIDataStore.getInstance().getValue('code'),
+    selectedTab: MynahUIDataStore.getInstance().getValue('selectedNavigationTab'),
   });
 
   /**
