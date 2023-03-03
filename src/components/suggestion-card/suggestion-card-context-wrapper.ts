@@ -22,7 +22,7 @@ export class SuggestionCardContextWrapper {
         {
           type: 'div',
           classNames: [ 'mynah-card-tags' ],
-          children: props.contextList.map((context: string) => new ContextPill({
+          children: props.contextList?.map((context: string) => new ContextPill({
             context: {
               context,
               source: ContextSource.SUGGESTION,

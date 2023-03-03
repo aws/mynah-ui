@@ -5,7 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
-import { EngagementType, MynahEventNames, Suggestion } from '../../static';
+import { EngagementType, MynahEventNames, Suggestion, SuggestionMetaDataUnion } from '../../static';
 import { SuggestionCardBody } from './suggestion-card-body';
 import { SuggestionCardContextWrapper } from './suggestion-card-context-wrapper';
 import { SuggestionCardHeader } from './suggestion-card-header';
@@ -34,7 +34,7 @@ export class SuggestionCard {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       attributes: {
-        'data-filter': props.suggestion.context.map(context => `${context}, `).join(''),
+        'data-filter': props.suggestion.context?.map(context => `${context}, `).join(''),
       },
       classNames: [ 'mynah-card' ],
       events: {
@@ -88,7 +88,7 @@ export class SuggestionCard {
         new SuggestionCardHeader({
           title: props.suggestion.title,
           url: props.suggestion.url,
-          metadata: props.suggestion.metadata,
+          metadata: props.suggestion.type !== 'ApiDocsSuggestion' ? props.suggestion.metadata as SuggestionMetaDataUnion : undefined,
           onSuggestionTitleClick: (e?: MouseEvent) => {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: props.suggestion, event: e });
           },
@@ -96,7 +96,7 @@ export class SuggestionCard {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { suggestion: props.suggestion });
           },
         }).render,
-        new SuggestionCardContextWrapper({ contextList: props.suggestion.context }).render,
+        ...(props.suggestion.context?.length > 0 ? [ new SuggestionCardContextWrapper({ contextList: props.suggestion.context }).render ] : []),
         new SuggestionCardBody({ suggestion: props.suggestion }).render,
       ],
     });

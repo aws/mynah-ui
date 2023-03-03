@@ -5,6 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import {
+  CanonicalExample,
   MynahEventNames,
   Suggestion,
   SupportedCodingLanguagesExtensionToTypeMap,
@@ -13,6 +14,7 @@ import { SyntaxHighlighter } from '../syntax-highlighter';
 import { findLanguageFromSuggestion } from '../../helper/find-language';
 import { SuggestionCardRelevanceVote } from './suggestion-card-relevance-vote';
 import { MynahUIGlobalEvents } from '../../helper/events';
+import { SuggestionCard } from './suggestion-card';
 
 export interface SuggestionCardBodyProps {
   suggestion: Suggestion;
@@ -38,12 +40,11 @@ export class SuggestionCardBody {
               }).childNodes
             ).map(node => {
               const elementFromNode: HTMLElement = node as HTMLElement;
-              if (
-                elementFromNode.tagName?.toLowerCase() === 'pre' &&
-                                elementFromNode.querySelector('code') !== null
+              if ((elementFromNode.tagName?.toLowerCase() === 'pre' && elementFromNode.querySelector('code') !== null) ||
+              elementFromNode.tagName?.toLowerCase() === 'code'
               ) {
                 return new SyntaxHighlighter({
-                  codeStringWithMarkup: elementFromNode.querySelector('code')?.innerHTML ?? '',
+                  codeStringWithMarkup: (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? '',
                   language: matchingLanguage,
                   keepHighlights: true,
                   showCopyOptions: true,
@@ -54,9 +55,19 @@ export class SuggestionCardBody {
               }
               return node;
             }) as HTMLElement[]),
+            ...(props.suggestion.type === 'ApiDocsSuggestion' && props.suggestion.metadata?.canonicalExample !== undefined
+              ? [ new SuggestionCard({
+                  suggestion: {
+                    title: 'Example',
+                    id: '',
+                    context: [],
+                    ...(props.suggestion.metadata as CanonicalExample)?.canonicalExample,
+                  }
+                }).render ]
+              : [])
           ],
         },
-        new SuggestionCardRelevanceVote({ suggestion: props.suggestion }).render,
+        ...(props.suggestion.type !== 'ApiDocsSuggestion' ? [ new SuggestionCardRelevanceVote({ suggestion: props.suggestion }).render ] : []),
       ],
     });
   }

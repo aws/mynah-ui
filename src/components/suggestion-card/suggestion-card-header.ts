@@ -20,8 +20,7 @@ export class SuggestionCardHeader {
   constructor (props: SuggestionCardHeaderProps) {
     const splittedUrl = props.url
       .replace(/^(http|https):\/\//, '')
-      .split('/')
-      .slice(0, 3);
+      .split('/');
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-header', ...((props.metadata != null) ? [ 'mynah-card-header-with-source-thumbnail' ] : []) ],
@@ -61,8 +60,7 @@ export class SuggestionCardHeader {
                 ...(props.onSuggestionLinkCopy !== undefined && { copy: props.onSuggestionLinkCopy }),
               },
               attributes: { href: props.url, target: '_blank' },
-              innerHTML: `${splittedUrl.slice(0, splittedUrl.length - 1).join(' / ')} / <b>${splittedUrl[splittedUrl.length - 1]
-                                }</b>`,
+              innerHTML: splittedUrl.map(urlPart => `<span><span>${urlPart}</span></span>`).join(''),
             },
             ...((props.metadata != null) ? [ this.getSourceMetaBlock(props.metadata) ] : []),
           ],
