@@ -174,7 +174,7 @@ export class SearchInput {
             !Object.values<string>(KeyMap).includes(e.key)
     ) {
       MynahUIGlobalEvents.getInstance().dispatch(
-        MynahEventNames.REQUEST_AUTOCOMPLETE_SUGGESTIONS,
+        MynahEventNames.INPUT_QUERY_CHANGE,
         { input: this.searchTextInput.value });
     }
     this.remainingIndicator.update({
