@@ -16,10 +16,8 @@ export interface MynahUIDataModel {
   codeQuery?: SearchPayloadCodeQuery;
   matchPolicy?: SearchPayloadMatchPolicy;
   invisibleContextItems?: string[];
-  navigationTabs?: {
-    selected?: string;
-    tabs: ToggleOption[];
-  };
+  selectedNavigationTab?: string | null;
+  navigationTabs?: ToggleOption[];
   userAddedContext?: string[];
   suggestions?: Suggestion[];
   autoCompleteSuggestions?: AutocompleteItem[];
@@ -34,9 +32,9 @@ export interface MynahUIDataModel {
 export enum MynahEventNames {
   RESET_STORE = 'resetStore',
   CONTEXT_VISIBILITY_CHANGE = 'contextVisibilityChange',
-  REQUEST_AUTOCOMPLETE_SUGGESTIONS = 'requestAutocompleteSuggestions',
   AUTOCOMPLETE_SUGGESTION_CLICK = 'autoCompleteSuggestionClick',
   SEARCH = 'search',
+  INPUT_QUERY_CHANGE = 'inputQueryChange',
   REQUEST_SEARCH_HISTORY = 'requestSearchHistory',
   SEARCH_HISTORY_ITEM_CLICK = 'searchHistoryItemClick',
   LIVE_SEARCH_STATE_CHANGED = 'liveSearchStateChanged',
@@ -78,6 +76,7 @@ export interface SearchPayload {
   codeSelection: SearchPayloadCodeSelection;
   codeQuery?: SearchPayloadCodeQuery;
   code?: string;
+  selectedTab?: string;
 }
 export interface SuggestionMetaData {
   stars?: number; // repo stars
@@ -89,6 +88,7 @@ export interface SuggestionMetaData {
   lastActivityDate?: number; // creation or last update date for question or answer
 }
 export type SuggestionMetaDataUnion = Record<string, SuggestionMetaData>;
+export interface CanonicalExample {canonicalExample: {body: string; url: string}}
 export interface Suggestion {
   id: string;
   title: string;
@@ -96,7 +96,7 @@ export interface Suggestion {
   body: string;
   context: string[];
   type?: string;
-  metadata?: SuggestionMetaDataUnion;
+  metadata?: SuggestionMetaDataUnion | CanonicalExample;
 }
 
 export enum KeyMap {
