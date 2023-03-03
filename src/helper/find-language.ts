@@ -11,7 +11,7 @@ import { Suggestion, SupportedCodingLanguages, SupportedCodingLanguagesExtension
  * @returns string | undefined
  */
 export const findLanguageFromSuggestion = (suggestion: Suggestion): string | undefined => {
-  let res = suggestion.context.reduce((res: string | undefined, ctx: string): string | undefined => {
+  let res = suggestion.context?.reduce((res: string | undefined, ctx: string): string | undefined => {
     if (res === undefined && SupportedCodingLanguages.includes(ctx)) {
       return ctx;
     }
