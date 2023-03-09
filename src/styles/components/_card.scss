@@ -282,6 +282,28 @@
                 background-color: var(--mynah-color-highlight);
                 color: var(--mynah-color-highlight-text);
             }
+            .amzn-mynah-search-result-ellipsis {
+                display: block;
+                margin-top: calc(-1em + var(--mynah-sizing-2));
+                position: relative;
+                padding-left: var(--mynah-sizing-2);
+                margin-bottom: calc(1em - var(--mynah-sizing-1));
+                font-size: calc(1em + var(--mynah-sizing-1)) !important;
+                user-select: none;
+                cursor: default;
+                &:before {
+                    pointer-events: none;
+                    content: "";
+                    width: calc(1em + var(--mynah-sizing-2));
+                    height: calc(1em + var(--mynah-sizing-2));
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    background-color: currentColor;
+                    opacity: 0.1;
+                    border-radius: var(--mynah-sizing-1);
+                }
+            }
         }
 
         > .mynah-card-votes-wrapper {

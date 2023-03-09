@@ -34,6 +34,16 @@ export const highlighters = {
     textReplacement: '__mynahhighlighterend__',
   },
 };
+export const ellipsis = {
+  start: {
+    markup: '<span class="amzn-mynah-search-result-ellipsis">',
+    textReplacement: '__mynahcodeellipsisstart__',
+  },
+  end: {
+    markup: '</span>',
+    textReplacement: '__mynahcodeellipsisend__',
+  },
+};
 
 export interface SyntaxHighlighterProps {
   codeStringWithMarkup: string;
@@ -56,7 +66,9 @@ export class SyntaxHighlighter {
     if (props.keepHighlights === true) {
       codeMarkup = codeMarkup
         .replace(new RegExp(highlighters.start.markup, 'g'), highlighters.start.textReplacement)
-        .replace(new RegExp(highlighters.end.markup, 'g'), highlighters.end.textReplacement);
+        .replace(new RegExp(highlighters.end.markup, 'g'), highlighters.end.textReplacement)
+        .replace(new RegExp(ellipsis.start.markup, 'g'), ellipsis.start.textReplacement)
+        .replace(new RegExp(ellipsis.end.markup, 'g'), ellipsis.end.textReplacement);
     }
     // to get a clear plain text from html code string creating an element and getting innerText of it
     codeMarkup = DomBuilder.getInstance().build({ type: 'div', innerHTML: codeMarkup }).innerText;
@@ -72,7 +84,9 @@ export class SyntaxHighlighter {
     if (props.keepHighlights === true) {
       styledCode = styledCode
         .replace(new RegExp(highlighters.start.textReplacement, 'g'), highlighters.start.markup)
-        .replace(new RegExp(highlighters.end.textReplacement, 'g'), highlighters.end.markup);
+        .replace(new RegExp(highlighters.end.textReplacement, 'g'), highlighters.end.markup)
+        .replace(new RegExp(ellipsis.start.textReplacement, 'g'), ellipsis.start.markup)
+        .replace(new RegExp(ellipsis.end.textReplacement, 'g'), ellipsis.end.markup);
     }
 
     this.code = DomBuilder.getInstance().build({
