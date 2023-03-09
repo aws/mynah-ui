@@ -17,7 +17,6 @@ export class EmptyMynahUIDataModel {
       query: '',
       code: '',
       invisibleContextItems: [],
-      selectedNavigationTab: null,
       navigationTabs: [],
       autoCompleteSuggestions: [],
       searchHistory: [],

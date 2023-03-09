@@ -7,6 +7,8 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
 import { Toggle, ToggleOption } from './toggle';
 
+export const getSelectedTabValueFromStore = (): string => MynahUIDataStore.getInstance().getValue('navigationTabs').find((navTab: ToggleOption) => navTab.selected).value;
+
 export interface NavivationTabsProps {
   onChange?: (selectedValue: string) => void;
 }
@@ -17,24 +19,18 @@ export class NavivationTabs {
   constructor (props: NavivationTabsProps) {
     this.props = props;
     const tabs = MynahUIDataStore.getInstance().getValue('navigationTabs');
-    const selectedTab = MynahUIDataStore.getInstance().getValue('selectedNavigationTab');
     MynahUIDataStore.getInstance().subscribe('loading', this.setLoading);
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       persistent: true,
       classNames: [ 'mynah-nav-tabs-wrapper', ...(MynahUIDataStore.getInstance().getValue('loading') === true ? [ 'mynah-nav-tabs-loading' ] : []) ],
-      children: this.getTabsRender(tabs, selectedTab),
+      children: this.getTabsRender(tabs),
     });
 
     MynahUIDataStore.getInstance().subscribe('navigationTabs', (newTabs: ToggleOption[]) => {
       this.render.update({
-        children: this.getTabsRender(newTabs, MynahUIDataStore.getInstance().getValue('selectedNavigationTab'))
-      });
-    });
-    MynahUIDataStore.getInstance().subscribe('selectedNavigationTab', (newSelectedTab?: string | null) => {
-      this.render.update({
-        children: this.getTabsRender(MynahUIDataStore.getInstance().getValue('navigationTabs'), newSelectedTab)
+        children: this.getTabsRender(newTabs)
       });
     });
   }
@@ -47,14 +43,14 @@ export class NavivationTabs {
     }
   };
 
-  private readonly getTabsRender = (tabs: ToggleOption[], selected?: string | null): ExtendedHTMLElement[] => tabs.length > 0
+  private readonly getTabsRender = (tabs: ToggleOption[]): ExtendedHTMLElement[] => tabs.length > 0
     ? [
         new Toggle({
           onChange: this.props.onChange,
           type: 'tabs',
           name: 'mynah-nav-tabs',
           options: tabs,
-          value: selected
+          value: tabs.find(tab => tab.selected)?.value
         }).render
       ]
     : [];

@@ -10,6 +10,7 @@ export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;
   color?: string;
   disabled?: boolean;
+  selected?: boolean;
   value: string;
 }
 export interface ToggleProps {

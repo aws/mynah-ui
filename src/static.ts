@@ -16,7 +16,6 @@ export interface MynahUIDataModel {
   codeQuery?: SearchPayloadCodeQuery;
   matchPolicy?: SearchPayloadMatchPolicy;
   invisibleContextItems?: string[];
-  selectedNavigationTab?: string | null;
   navigationTabs?: ToggleOption[];
   userAddedContext?: string[];
   suggestions?: Suggestion[];
@@ -249,6 +248,7 @@ export interface SearchHistoryItem {
     codeQuery: CodeQuery;
     codeSelection: SearchPayloadCodeSelection;
     code?: string;
+    selectedTab?: string;
   };
   recordDate?: number;
   suggestions: Suggestion[];
