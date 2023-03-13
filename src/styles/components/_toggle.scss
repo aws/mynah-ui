@@ -92,3 +92,11 @@
         }
     }
 }
+
+.mynah-toggle-disabled-tooltip-container {
+    max-width: 30vw;
+    display: inline-block;
+    padding: var(--mynah-sizing-3);
+    font-size: 80%;
+    opacity: 0.85;
+}

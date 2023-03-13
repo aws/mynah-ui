@@ -5,6 +5,7 @@
 
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay/overlay';
 
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;
@@ -12,6 +13,84 @@ export interface ToggleOption {
   disabled?: boolean;
   selected?: boolean;
   value: string;
+  disabledTooltip?: string | ExtendedHTMLElement;
+}
+interface ToggleOptionRenderProps extends ToggleOption {
+  name: string;
+  onChange?: (selectedValue: string, selectedColor?: string) => void;
+}
+class ToggleOptionItem {
+  render: ExtendedHTMLElement;
+  private readonly props: ToggleOptionRenderProps;
+  private disabledTooltip?: Overlay;
+  private disabledTooltipTimer: ReturnType<typeof setTimeout>;
+  constructor (props: ToggleOptionRenderProps) {
+    this.props = props;
+    this.render = DomBuilder.getInstance().build({
+      type: 'span',
+      attributes: { key: `${this.props.name}-${this.props.value}` },
+      events: {
+        ...(this.props.disabled === true && this.props.disabledTooltip !== undefined
+          ? {
+              mouseenter: () => {
+                this.disabledTooltipTimer = setTimeout(() => {
+                  this.disabledTooltip = new Overlay({
+                    children: [ {
+                      type: 'span',
+                      classNames: [ 'mynah-toggle-disabled-tooltip-container' ],
+                      children: [ this.props.disabledTooltip ?? '' ]
+                    } ],
+                    closeOnOutsideClick: false,
+                    dimOutside: false,
+                    referenceElement: this.render,
+                    horizontalDirection: OverlayHorizontalDirection.CENTER,
+                    verticalDirection: OverlayVerticalDirection.TO_TOP
+                  });
+                }, 500);
+              },
+              mouseleave: () => {
+                clearTimeout(this.disabledTooltipTimer);
+                if (this.disabledTooltip !== undefined) {
+                  this.disabledTooltip.close();
+                  setTimeout(() => {
+                    this.disabledTooltip = undefined;
+                  }, 50);
+                }
+              }
+            }
+          : {})
+      },
+      children: [
+        {
+          type: 'input',
+          classNames: [ 'mynah-toggle-option' ],
+          attributes: {
+            type: 'radio',
+            id: `${this.props.name}-${this.props.value}`,
+            name: this.props.name,
+            ...(this.props.selected === true ? { checked: 'checked' } : {}),
+            ...(this.props.disabled === true ? { disabled: 'disabled' } : {}),
+          },
+          events: {
+            change: () => {
+              if (this.props.onChange != null) {
+                this.props.onChange(this.props.value, this.props.color);
+              }
+            }
+          },
+        },
+        {
+          type: 'label',
+          classNames: [ 'mynah-toggle-option-label' ],
+          attributes: {
+            for: `${this.props.name}-${this.props.value}`,
+            ...(this.props.color !== undefined ? { style: `background-color:${this.props.color}` } : {}),
+          },
+          children: [ this.props.label ?? '' ],
+        },
+      ],
+    });
+  }
 }
 export interface ToggleProps {
   options: ToggleOption[];
@@ -50,37 +129,12 @@ export class Toggle {
       if (option.value === value && option.color !== undefined) {
         this.relocateTransitioner.style.backgroundColor = option.color;
       }
-      return DomBuilder.getInstance().build({
-        type: 'span',
-        attributes: { key: `${this.props.name}-${option.value}` },
-        children: [
-          {
-            type: 'input',
-            classNames: [ 'mynah-toggle-option' ],
-            attributes: {
-              type: 'radio',
-              id: `${this.props.name}-${option.value}`,
-              name: this.props.name,
-              ...(value === option.value ? { checked: 'checked' } : {}),
-              ...(option.disabled === true ? { disabled: 'disabled' } : {}),
-            },
-            events: {
-              change: () => {
-                this.updateSelectionRender(option.value, option.color);
-              },
-            },
-          },
-          {
-            type: 'label',
-            classNames: [ 'mynah-toggle-option-label' ],
-            attributes: {
-              for: `${this.props.name}-${option.value}`,
-              ...(option.color !== undefined ? { style: `background-color:${option.color}` } : {}),
-            },
-            children: [ option.label ?? '' ],
-          },
-        ],
-      });
+      return new ToggleOptionItem({
+        ...option,
+        selected: value === option.value,
+        name: this.props.name,
+        onChange: this.updateSelectionRender
+      }).render;
     }),
     this.relocateTransitioner,
   ];

@@ -283,14 +283,16 @@
                 color: var(--mynah-color-highlight-text);
             }
             .amzn-mynah-search-result-ellipsis {
-                display: block;
-                margin-top: calc(-1em + var(--mynah-sizing-2));
+                display: inline-block;
                 position: relative;
                 padding-left: var(--mynah-sizing-2);
-                margin-bottom: calc(1em - var(--mynah-sizing-1));
+                margin-top: var(--mynah-sizing-1);
+                margin-bottom: var(--mynah-sizing-1);
                 font-size: calc(1em + var(--mynah-sizing-1)) !important;
                 user-select: none;
                 cursor: default;
+                height: var(--mynah-sizing-7);
+
                 &:before {
                     pointer-events: none;
                     content: "";
