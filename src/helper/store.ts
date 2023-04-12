@@ -32,7 +32,7 @@ export class EmptyMynahUIDataModel {
           }
         }
       },
-      codeQuery: { simpleNames: [], usedFullyQualifiedNames: [] },
+      codeQuery: { simpleNames: [], fullyQualifiedNames: { used: [] } },
       matchPolicy: { must: [], mustNot: [], should: [] },
       userAddedContext: [],
       suggestions: [],

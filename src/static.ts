@@ -45,16 +45,19 @@ export enum MynahEventNames {
   SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
   SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
 };
+
 export const MynahPortalNames = {
   WRAPPER: 'wrapper',
   OVERLAY: 'overlay',
   FEEDBACK_FORM: 'feedbackForm',
 };
+
 export interface SearchPayloadMatchPolicy {
   must: string[];
   should: string[];
   mustNot: string[];
 }
+
 export interface SearchPayloadCodeSelection {
   selectedCode: string;
   file?: {
@@ -65,10 +68,19 @@ export interface SearchPayloadCodeSelection {
     name: string;
   };
 }
+
+export interface FullyQualifiedName {
+  source: string[];
+  symbol: string[];
+}
+
 export interface SearchPayloadCodeQuery {
   simpleNames: string[];
-  usedFullyQualifiedNames: string[];
+  fullyQualifiedNames: {
+    used: FullyQualifiedName[];
+  };
 }
+
 export interface SearchPayload {
   query: string;
   matchPolicy: SearchPayloadMatchPolicy;
@@ -77,6 +89,7 @@ export interface SearchPayload {
   code?: string;
   selectedTab?: string;
 }
+
 export interface SuggestionMetaData {
   stars?: number; // repo stars
   forks?: number; // repo forks
@@ -86,8 +99,11 @@ export interface SuggestionMetaData {
   score?: number; // relative score according to the up and down votes for a question or an answer
   lastActivityDate?: number; // creation or last update date for question or answer
 }
+
 export type SuggestionMetaDataUnion = Record<string, SuggestionMetaData>;
+
 export interface CanonicalExample {canonicalExample: {body: string; url: string}}
+
 export interface Suggestion {
   id: string;
   title: string;
@@ -129,6 +145,7 @@ export const SupportedCodingLanguages = [ 'typescript', 'javascript', 'java', 'j
 type ElementType<T extends readonly unknown[]> = T extends ReadonlyArray<infer ElementType> ? ElementType : never;
 
 export type SupportedCodingLanguagesType = ElementType<typeof SupportedCodingLanguages>;
+
 export const SupportedCodingLanguagesExtensionToTypeMap = {
   ts: 'typescript',
   js: 'javascript',
@@ -181,17 +198,21 @@ export interface SearchHistoryFilters {
 
 export interface CodeQuery {
   simpleNames: string[];
-  usedFullyQualifiedNames: string[];
+  fullyQualifiedNames: {
+    used: FullyQualifiedName[];
+  };
 }
 
 export enum ContextChangeType {
   'ADD' = 'add',
   'REMOVE' = 'remove',
 }
+
 export enum SuggestionEventName {
   OPEN = 'openSuggestion',
   COPY = 'copy',
 }
+
 export enum RelevancyVoteType {
   UP = 'upvote',
   DOWN = 'downvote',
@@ -208,6 +229,7 @@ export enum EngagementType {
   INTERACTION = 'interaction',
   TIME = 'timespend',
 }
+
 export interface SuggestionEngagement {
   /**
      * Suggestion information
@@ -259,16 +281,19 @@ export enum ContextTypes {
   SHOULD = 'should',
   MUST_NOT = 'mustNot',
 }
+
 export enum ContextSource {
   AUTO = 'auto',
   USER = 'user',
   SUGGESTION = 'suggestion',
 }
+
 export enum ContextTypeClassNames {
   should = 'mynah-should-contain',
   must = 'mynah-must-contain',
   mustNot = 'mynah-must-not-contain',
 }
+
 export interface ContextType {
   context: string;
   type?: ContextTypes;
@@ -276,10 +301,12 @@ export interface ContextType {
 }
 
 export type FeedbackStars = 1 | 2 | 3 | 4 | 5;
+
 export interface FeedbackPayload {
   stars?: FeedbackStars;
   comment?: string;
 }
+
 export interface AutocompleteItem {
   suggestion: string;
   highlight: string;
