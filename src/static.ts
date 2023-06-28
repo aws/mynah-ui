@@ -18,7 +18,9 @@ export interface MynahUIDataModel {
   invisibleContextItems?: string[];
   navigationTabs?: ToggleOption[];
   userAddedContext?: string[];
+  mode?: MynahMode;
   suggestions?: Suggestion[];
+  chatItems?: ChatItem[];
   autoCompleteSuggestions?: AutocompleteItem[];
   searchHistory?: SearchHistoryItem[];
   showingHistoricalSearch?: boolean;
@@ -44,6 +46,7 @@ export enum MynahEventNames {
   SUGGESTION_LINK_COPY = 'suggestionLinkCopy',
   SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
   SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
+  CHAT_PROMPT = 'chatPrompt',
 };
 export const MynahPortalNames = {
   WRAPPER: 'wrapper',
@@ -87,7 +90,7 @@ export interface SuggestionMetaData {
   lastActivityDate?: number; // creation or last update date for question or answer
 }
 export type SuggestionMetaDataUnion = Record<string, SuggestionMetaData>;
-export interface CanonicalExample {canonicalExample: {body: string; url: string}}
+export interface CanonicalExample { canonicalExample: { body: string; url: string } }
 export interface Suggestion {
   id: string;
   title: string;
@@ -96,6 +99,37 @@ export interface Suggestion {
   context: string[];
   type?: string;
   metadata?: SuggestionMetaDataUnion | CanonicalExample;
+}
+export enum ChatItemType {
+  PROMPT = 'prompt',
+  ANSWER = 'answer'
+}
+export interface ChatItem {
+  id?: string;
+  title?: string;
+  body?: string;
+  url?: string;
+  type: ChatItemType;
+  followUp?: {
+    text?: string;
+    options?: ChatItemFollowUp[];
+  };
+}
+
+export interface ChatItemFollowUp {
+  id?: string;
+  text: string;
+  prompt: string;
+  attachment?: {
+    url?: string;
+    title?: string;
+    details?: string;
+  };
+}
+
+export enum MynahMode {
+  CHAT = 'chat',
+  SEARCH = 'search'
 }
 
 export enum KeyMap {

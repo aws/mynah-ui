@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { LiveSearchState, MynahEventNames, MynahUIDataModel, NotificationType } from '../static';
+import { LiveSearchState, MynahEventNames, MynahMode, MynahUIDataModel, NotificationType } from '../static';
 import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
 
@@ -35,7 +35,9 @@ export class EmptyMynahUIDataModel {
       codeQuery: { simpleNames: [], usedFullyQualifiedNames: [] },
       matchPolicy: { must: [], mustNot: [], should: [] },
       userAddedContext: [],
+      mode: MynahMode.SEARCH,
       suggestions: [],
+      chatItems: [],
       headerInfo: {
         content: '',
         type: NotificationType.INFO

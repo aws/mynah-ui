@@ -17,7 +17,7 @@ import { MynahUIGlobalEvents } from '../../helper/events';
 import { SuggestionCard } from './suggestion-card';
 
 export interface SuggestionCardBodyProps {
-  suggestion: Suggestion;
+  suggestion: Partial<Suggestion>;
 }
 export class SuggestionCardBody {
   render: ExtendedHTMLElement;
@@ -67,7 +67,9 @@ export class SuggestionCardBody {
               : [])
           ],
         },
-        ...(props.suggestion.type !== 'ApiDocsSuggestion' ? [ new SuggestionCardRelevanceVote({ suggestion: props.suggestion }).render ] : []),
+        ...(props.suggestion.type !== undefined && props.suggestion.type !== 'ApiDocsSuggestion'
+          ? [ new SuggestionCardRelevanceVote({ suggestion: props.suggestion as Required<Suggestion> }).render ]
+          : []),
       ],
     });
   }

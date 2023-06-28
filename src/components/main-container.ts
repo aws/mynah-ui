@@ -6,16 +6,19 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
 import { SearchPayloadCodeSelection, Suggestion } from '../static';
+import { ChatWrapper } from './chat-item/chat-wrapper';
 import { SuggestionCard } from './suggestion-card/suggestion-card';
 
 export interface MainContainerProps {
   onScroll?: (e: Event) => void;
 }
 export class MainContainer {
+  private readonly chatWrapper: ExtendedHTMLElement;
   private readonly cardsWrapper: ExtendedHTMLElement;
   private readonly skeletonWrapper: ExtendedHTMLElement;
   public render: ExtendedHTMLElement;
   constructor (props: MainContainerProps) {
+    this.chatWrapper = new ChatWrapper().render;
     this.cardsWrapper = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-cards-wrapper' ],
@@ -57,7 +60,7 @@ export class MainContainer {
       persistent: true,
       type: 'div',
       classNames: [ 'mynah-main' ],
-      children: [ this.cardsWrapper, this.skeletonWrapper ],
+      children: [ this.chatWrapper, this.cardsWrapper, this.skeletonWrapper ],
     });
 
     MynahUIDataStore.getInstance().subscribe('suggestions', this.updateCards);

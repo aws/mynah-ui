@@ -12,14 +12,20 @@
     }
 
     .mynah-main {
-        display: block;
+        display: flex;
+        flex-flow: row nowrap;
+        overflow: hidden;
         box-sizing: border-box;
         flex: 1 1 0;
-        overflow: hidden;
         position: relative;
+        > * {
+            flex: 1 0 100%;
+            width: 100%;
+        }
+        > .mynah-chat-wrapper,
         > .mynah-skeleton-wrapper,
         > .mynah-cards-wrapper {
-            padding: var(--mynah-sizing-3) 0 var(--mynah-sizing-12) 0;
+            padding: var(--mynah-sizing-2) 0 var(--mynah-sizing-3) 0;
             display: flex;
             flex-flow: column nowrap;
             gap: var(--mynah-sizing-4);
@@ -28,12 +34,12 @@
             position: relative;
             height: 100%;
         }
+        > .mynah-chat-wrapper,
         > .mynah-cards-wrapper {
             overflow-x: hidden;
             overflow-y: auto;
-            flex: 1 1 0;
             transition: var(--mynah-long-transition);
-            transform: translate3d(0, 0, 0);
+            transform: translate3d(-100%, 0, 0);
             opacity: 1;
             > .mynah-no-suggestion-indicator {
                 display: flex;
@@ -46,6 +52,7 @@
                 align-items: flex-start;
             }
         }
+
         > .mynah-skeleton-wrapper {
             position: absolute;
             transition: var(--mynah-long-transition);
@@ -61,7 +68,7 @@
         }
         &.mynah-hide-content {
             > .mynah-cards-wrapper {
-                animation: move-to-right 750ms cubic-bezier(0.25, 0.5, 0, 1) both;
+                opacity: 0;
             }
             > .mynah-skeleton-wrapper {
                 pointer-events: all;
@@ -70,19 +77,29 @@
         }
         &.mynah-show-content {
             > .mynah-cards-wrapper {
-                animation: move-to-middle 750ms cubic-bezier(0.25, 0.5, 0, 1) both;
+                opacity: 1;
             }
             > .mynah-skeleton-wrapper {
                 pointer-events: none;
                 transition-delay: 450ms;
-                animation: move-to-right 750ms cubic-bezier(0.25, 0.5, 0, 1) both;
+                animation: move-to-top 750ms cubic-bezier(0.25, 0.5, 0, 1) both;
             }
         }
     }
 }
 
+.mynah-chat-wrapper,
+.mynah-cards-wrapper {
+    @include chatMode {
+        transform: translate3d(0, 0, 0) !important;
+    }
+}
+
 @media screen and (max-width: 1024px) {
     #mynah-wrapper {
+        .mynah-chat-wrapper{
+            padding-bottom: 0;
+        }
         padding-top: 0;
         > .mynah-search-block {
             border-left: none;

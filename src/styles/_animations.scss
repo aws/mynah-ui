@@ -9,7 +9,7 @@
 
 @keyframes move-to-middle {
     0% {
-        transform: translate3d(-10%, 0, 0);
+        transform: translate3d(0, 10%, 0);
         opacity: 0;
     }
     100% {
@@ -17,13 +17,13 @@
         opacity: 1;
     }
 }
-@keyframes move-to-right {
+@keyframes move-to-top {
     0% {
         transform: translate3d(0, 0, 0);
         opacity: 1;
     }
     100% {
-        transform: translate3d(10%, 0, 0);
+        transform: translate3d(0, -10%, 0);
         opacity: 0;
     }
 }

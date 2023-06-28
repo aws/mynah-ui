@@ -12,6 +12,10 @@
     border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
     gap: var(--mynah-sizing-2);
 
+    @include chatMode{
+        display: none;
+    }
+
     > .mynah-search-block-header {
         width: 100%;
         box-sizing: border-box;

@@ -27,6 +27,8 @@ import {
   ContextTypes,
   AutocompleteItem,
   NotificationType,
+  ChatItemFollowUp,
+  ChatItem,
 } from './static';
 import { I18N } from './translations/i18n';
 import './styles/styles.scss';
@@ -55,6 +57,10 @@ export {
   ContextSource,
   ContextTypes,
   NotificationType,
+  MynahMode,
+  ChatItem,
+  ChatItemFollowUp,
+  ChatItemType
 } from './static';
 
 export {
@@ -87,6 +93,7 @@ export interface MynahUIProps {
   ) => void;
   onResetStore?: () => void;
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
+  onChatPrompt?: (prompt: string) => void;
   onNavigationTabChange?: (selectedTab: string) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
   onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
@@ -122,10 +129,17 @@ export class MynahUI {
       MynahPortalNames.WRAPPER,
       {
         type: 'div',
-        attributes: { id: 'mynah-wrapper' },
+        attributes: {
+          id: 'mynah-wrapper',
+          mode: MynahUIDataStore.getInstance().getValue('mode')
+        },
       },
       'afterbegin'
     );
+
+    MynahUIDataStore.getInstance().subscribe('mode', (newMode) => {
+      this.wrapper.setAttribute('mode', newMode);
+    });
 
     this.searchCard = new SearchCard();
     this.navTabs = new NavivationTabs({
@@ -168,6 +182,12 @@ export class MynahUI {
   }
 
   private readonly addGlobalListeners = (): void => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data) => {
+      if (this.props.onChatPrompt !== undefined) {
+        this.props.onChatPrompt(data);
+      }
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REQUEST_SEARCH_HISTORY, (data) => {
       if (this.props.onRequestHistoryRecords !== undefined) {
         this.props.onRequestHistoryRecords(data.filters);
@@ -306,8 +326,8 @@ export class MynahUI {
         headerInfo: {
           content: data.historyItem.recordDate !== undefined
             ? `Showing the search you've performed ${getTimeDiff(
-            new Date().getTime() - data.historyItem.recordDate
-          ).toString()} ago.`
+              new Date().getTime() - data.historyItem.recordDate
+            ).toString()} ago.`
             : ''
         },
         ...directStoreDataReturn
@@ -379,6 +399,16 @@ export class MynahUI {
   };
 
   /**
+   * Adds a new answer on the chat window
+   * @param anwer An ChatItem object.
+   */
+  public addChatAnswer = (answer: ChatItem): void => {
+    MynahUIDataStore.getInstance().updateStore({
+      chatItems: [ ...MynahUIDataStore.getInstance().getValue('chatItems'), answer ]
+    });
+  };
+
+  /**
    * Updates only the UI with the given data.
    * @param data A full or partial set of data with values.
    */
@@ -421,7 +451,7 @@ export class MynahUI {
   }): void => {
     new Notification({
       ...props,
-      onNotificationClick: () => {}
+      onNotificationClick: () => { }
     }).notify();
   };
 }

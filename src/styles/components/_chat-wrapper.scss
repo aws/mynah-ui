@@ -1,0 +1,90 @@
+.mynah-chat-wrapper {
+    padding-top: 0 !important;
+    > .mynah-chat-items-container {
+        display: flex;
+        flex: 1;
+        overflow-x: hidden;
+        overflow-y: auto;
+        flex-flow: column-reverse nowrap;
+        gap: var(--mynah-sizing-2);
+        align-items: flex-start;
+        .mynah-chat-item-card {
+            display: inline-flex;
+            flex-flow: column nowrap;
+            position: relative;
+            gap: var(--mynah-sizing-6);
+            &:last-child{
+                margin-top: var(--mynah-sizing-4);
+            }
+            &.mynah-chat-item-prompt {
+                padding-right: var(--mynah-sizing-12);
+                align-self: flex-end;
+                > .mynah-chat-item-card-icon-wrapper {
+                    right: var(--mynah-sizing-1);
+                }
+            }
+            &.mynah-chat-item-answer {
+                padding-left: var(--mynah-sizing-12);
+                > .mynah-chat-item-card-icon-wrapper {
+                    left: var(--mynah-sizing-1);
+                }
+            }
+            > .mynah-chat-item-card-icon-wrapper {
+                position: absolute;
+                background-color: var(--mynah-color-alternate);
+                color: var(--mynah-color-alternate-reverse);
+                padding: var(--mynah-sizing-2);
+                border-radius: 100%;
+            }
+            > .mynah-card:hover::before {
+                box-shadow: var(--mynah-shadow-card) !important;
+            }
+
+            > .mynah-chat-item-followup-question {
+                display: inline-flex;
+                flex-flow: column nowrap;
+                position: relative;
+                gap: var(--mynah-sizing-2);
+                > .mynah-chat-item-followup-question-text {
+                    color: var(--mynah-color-text-weak);
+                    font-size: 80%;
+                    font-style: italic;
+                }
+                > .mynah-chat-item-followup-question-options-wrapper {
+                    display: inline-flex;
+                    flex-flow: row wrap;
+                    max-width: 100%;
+                    gap: var(--mynah-sizing-2);
+                    > .mynah-chat-item-followup-question-option {
+                        padding: var(--mynah-sizing-2);
+                        background-color: var(--mynah-color-alternate-reverse);
+                        color: var(--mynah-color-alternate);
+                        border-radius: var(--mynah-button-radius);
+                        cursor: pointer;
+                        font-size: 80%;
+                        max-width: 100%;
+                        overflow: hidden;
+                    }
+                }
+            }
+        }
+    }
+    > .mynah-chat-prompt-wrapper {
+        display: flex;
+        overflow: hidden;
+        padding: var(--mynah-sizing-2);
+        box-sizing: border-box;
+        background-color: var(--mynah-card-bg);
+        box-shadow: var(--mynah-shadow-card);
+        border-radius: var(--mynah-card-radius);
+        > .mynah-chat-prompt-input {
+            flex: 1 1 0;
+            border: none;
+            background-color: rgba(0, 0, 0, 0);
+            font-size: var(--mynah-font-size-large);
+            color: var(--mynah-color-text-input);
+            outline: none;
+            width: 100%;
+        }
+    }
+}
