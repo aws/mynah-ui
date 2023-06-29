@@ -25,7 +25,7 @@ export class ChatItemCard {
           type: 'div',
           classNames: [ 'mynah-chat-item-card-icon-wrapper' ],
           children: [
-            new Icon({ icon: this.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MEGAPHONE }).render
+            new Icon({ icon: this.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render
           ]
         },
         {

@@ -6,6 +6,7 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 
 export enum MynahIcons {
+  MYNAH = 'mynah',
   MENU = 'menu',
   MINUS = 'minus',
   SEARCH = 'search',
