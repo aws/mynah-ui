@@ -25,6 +25,11 @@
         z-index: 10;
         position: absolute;
         right: 0;
+        background-color: var(--mynah-syntax-bg);
+        opacity: 0;
+        :hover & {
+            opacity: 1;
+        }
         .mynah-button {
             font-size: var(--mynah-sizing-5);
             color: var(--mynah-color-button);

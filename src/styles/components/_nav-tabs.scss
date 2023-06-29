@@ -4,9 +4,9 @@
     background-color: var(--mynah-card-bg);
     margin-top: var(--mynah-sizing-3);
 
-    @include chatMode {
-        border-radius: var(--mynah-card-radius);
-    }
+    /* @include chatMode {
+    } */
+    border-radius: var(--mynah-card-radius);
 
     > .mynah-toggle-container {
         height: 100%;

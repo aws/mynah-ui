@@ -102,7 +102,8 @@ export class MainContainer {
           this.cardsWrapper.insertChild(
             'beforeend',
             new SuggestionCard({
-              suggestion
+              suggestion,
+              showFooterButtons: true
             }).render
           );
         });

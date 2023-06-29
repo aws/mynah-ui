@@ -4,6 +4,8 @@
  */
 
 const en = {
+  limitByUrl: 'I want to limit by url. This post looks helpful. Can you elaborate?',
+  relatedContent: 'Related content',
   chatPromptInputPlaceholder: 'Ask anything',
   chatPromptInputFollowUpPlaceholder: 'You can ask a follow up question',
   searchInputAPIHelpPlaceholder: 'You can enrich your query here.',

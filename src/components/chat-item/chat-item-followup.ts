@@ -42,7 +42,7 @@ export class ChatItemFollowUpContainer {
                       }
                     ]
                   });
-                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, followUpOption.prompt);
+                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, { prompt: followUpOption.prompt });
 
                   this.render.remove();
                 }

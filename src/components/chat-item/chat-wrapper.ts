@@ -11,6 +11,7 @@ import { ChatPromptInput } from './chat-prompt-input';
 
 export class ChatWrapper {
   private readonly chatItemsContainer: ExtendedHTMLElement;
+  private readonly spinner: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
   constructor () {
@@ -25,6 +26,13 @@ export class ChatWrapper {
         this.chatItemsContainer.clear(true);
       }
     });
+    MynahUIDataStore.getInstance().subscribe('loadingChat', (loadingChat) => {
+      if (loadingChat === true) {
+        this.spinner.addClass('loading');
+      } else {
+        this.spinner.removeClass('loading');
+      }
+    });
 
     this.promptInput = new ChatPromptInput().render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
@@ -33,12 +41,22 @@ export class ChatWrapper {
       persistent: true,
       children: [ ]
     });
+    this.spinner = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-items-spinner' ],
+      persistent: true,
+      children: [
+        { type: 'span' },
+        { type: 'span' },
+        { type: 'span' },
+      ]
+    });
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-wrapper' ],
       persistent: true,
-      children: [ this.chatItemsContainer, this.promptInput ]
+      children: [ this.chatItemsContainer, this.spinner, this.promptInput ]
     });
   }
 

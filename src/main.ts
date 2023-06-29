@@ -27,8 +27,8 @@ import {
   ContextTypes,
   AutocompleteItem,
   NotificationType,
-  ChatItemFollowUp,
   ChatItem,
+  ChatPrompt,
 } from './static';
 import { I18N } from './translations/i18n';
 import './styles/styles.scss';
@@ -60,7 +60,8 @@ export {
   MynahMode,
   ChatItem,
   ChatItemFollowUp,
-  ChatItemType
+  ChatItemType,
+  ChatPrompt
 } from './static';
 
 export {
@@ -93,7 +94,8 @@ export interface MynahUIProps {
   ) => void;
   onResetStore?: () => void;
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
-  onChatPrompt?: (prompt: string) => void;
+  onChatPrompt?: (prompt: ChatPrompt) => void;
+  onSuggestionAttachedToChatPrompt?: (attachment: Suggestion) => void;
   onNavigationTabChange?: (selectedTab: string) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
   onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
@@ -129,6 +131,7 @@ export class MynahUI {
       MynahPortalNames.WRAPPER,
       {
         type: 'div',
+        classNames: [ 'chat' ],
         attributes: {
           id: 'mynah-wrapper',
           mode: MynahUIDataStore.getInstance().getValue('mode')
@@ -182,9 +185,15 @@ export class MynahUI {
   }
 
   private readonly addGlobalListeners = (): void => {
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: ChatPrompt) => {
       if (this.props.onChatPrompt !== undefined) {
         this.props.onChatPrompt(data);
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, (data: Suggestion) => {
+      if (this.props.onSuggestionAttachedToChatPrompt !== undefined) {
+        this.props.onSuggestionAttachedToChatPrompt(data);
       }
     });
 

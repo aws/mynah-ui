@@ -13,6 +13,7 @@ export class EmptyMynahUIDataModel {
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
       loading: false,
+      loadingChat: false,
       liveSearchState: LiveSearchState.STOP,
       query: '',
       code: '',

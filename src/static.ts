@@ -8,6 +8,7 @@ import { ToggleOption } from './components/toggle';
 
 export interface MynahUIDataModel {
   loading?: boolean;
+  loadingChat?: boolean;
   liveSearchState?: LiveSearchState;
   liveSearchAnimation?: boolean;
   query?: string;
@@ -47,6 +48,7 @@ export enum MynahEventNames {
   SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
   SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
   CHAT_PROMPT = 'chatPrompt',
+  SUGGESTION_ATTACHED_TO_CHAT = 'suggestionAttachedToChat',
 };
 
 export const MynahPortalNames = {
@@ -105,7 +107,7 @@ export interface SuggestionMetaData {
 
 export type SuggestionMetaDataUnion = Record<string, SuggestionMetaData>;
 
-export interface CanonicalExample {canonicalExample: {body: string; url: string}}
+export interface CanonicalExample { canonicalExample: { body: string; url: string } }
 
 export interface Suggestion {
   id: string;
@@ -121,26 +123,25 @@ export enum ChatItemType {
   ANSWER = 'answer'
 }
 export interface ChatItem {
-  id?: string;
-  title?: string;
   body?: string;
-  url?: string;
   type: ChatItemType;
   followUp?: {
     text?: string;
     options?: ChatItemFollowUp[];
   };
+  relatedContent?: {
+    title: string | boolean;
+    content: Suggestion[];
+  };
 }
 
-export interface ChatItemFollowUp {
-  id?: string;
-  text: string;
+export interface ChatPrompt {
   prompt: string;
-  attachment?: {
-    url?: string;
-    title?: string;
-    details?: string;
-  };
+  attachment?: Suggestion;
+}
+
+export interface ChatItemFollowUp extends ChatPrompt {
+  text: string;
 }
 
 export enum MynahMode {

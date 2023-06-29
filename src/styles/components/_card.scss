@@ -191,7 +191,7 @@
             }
             > .mynah-title-meta-block {
                 display: flex;
-                flex-flow: row nowrap;
+                flex-flow: row wrap;
                 align-items: center;
                 justify-content: flex-start;
                 gap: var(--mynah-sizing-1);
@@ -387,10 +387,20 @@
                 }
             }
         }
+
+        .mynah-card-under-body-button {
+            align-self: flex-end;
+            > span {
+                padding: 0;
+                padding-left: var(--mynah-sizing-1);
+                font-size: var(--mynah-font-size-xsmall);
+            }
+        }
     }
 
     > .mynah-card-context-wrapper {
-        display: flex;
+        // display: flex;
+        display: none;
         flex-flow: column nowrap;
         gap: var(--mynah-sizing-6);
         padding-bottom: var(--mynah-sizing-4);
@@ -481,6 +491,40 @@
             );
             background-size: 500% 500%;
             animation: glass-reflection 2000ms 1000ms linear infinite;
+        }
+    }
+
+    &.mynah-card-compact {
+        padding: var(--mynah-sizing-3);
+        > .mynah-card-header {
+            > .mynah-source-thumbnail {
+                width: var(--mynah-sizing-8);
+                height: var(--mynah-sizing-8);
+                margin-right: var(--mynah-sizing-2);
+            }
+            > .mynah-card-title-wrapper {
+                gap: 0;
+                > .mynah-card-title {
+                    font-size: var(--mynah-font-size-small);
+                }
+                > .mynah-card-url {
+                    font-size: var(--mynah-font-size-xxsmall);
+                }
+                > .mynah-title-meta-block {
+                    display: none;
+                }
+            }
+        }
+        > .mynah-card-center {
+            > .mynah-card-body {
+                font-size: var(--mynah-font-size-xsmall);
+            }
+            > .mynah-card-votes-wrapper {
+                display: none;
+            }
+        }
+        .mynah-syntax-highlighter > pre {
+            padding: var(--mynah-sizing-1);
         }
     }
 }

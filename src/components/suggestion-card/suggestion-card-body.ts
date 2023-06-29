@@ -15,9 +15,13 @@ import { findLanguageFromSuggestion } from '../../helper/find-language';
 import { SuggestionCardRelevanceVote } from './suggestion-card-relevance-vote';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { SuggestionCard } from './suggestion-card';
+import MarkdownIt from 'markdown-it';
+import { Button } from '../button';
+import { Icon, MynahIcons } from '../icon';
 
 export interface SuggestionCardBodyProps {
   suggestion: Partial<Suggestion>;
+  showFooterButtons?: boolean;
 }
 export class SuggestionCardBody {
   render: ExtendedHTMLElement;
@@ -52,6 +56,11 @@ export class SuggestionCardBody {
                     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, { suggestionId: props.suggestion.url, type, text });
                   },
                 }).render;
+              } else if (elementFromNode.tagName?.toLowerCase() === 'span' && elementFromNode.hasAttribute('markdown')) {
+                const md = new MarkdownIt();
+                const mdToHTML = md.render(elementFromNode.innerHTML);
+                elementFromNode.innerHTML = mdToHTML;
+                return elementFromNode;
               }
               return node;
             }) as HTMLElement[]),
@@ -69,6 +78,22 @@ export class SuggestionCardBody {
         },
         ...(props.suggestion.type !== undefined && props.suggestion.type !== 'ApiDocsSuggestion'
           ? [ new SuggestionCardRelevanceVote({ suggestion: props.suggestion as Required<Suggestion> }).render ]
+          : []),
+        ...(props.showFooterButtons === true
+          ? [ new Button({
+              classNames: [ 'mynah-card-under-body-button' ],
+              primary: false,
+              label: 'Attach to chat',
+              icon: DomBuilder.getInstance().build({
+                type: 'div',
+                children: [
+                  new Icon({ icon: MynahIcons.CHAT }).render,
+                ],
+              }),
+              onClick: () => {
+                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, props.suggestion);
+              },
+            }).render ]
           : []),
       ],
     });

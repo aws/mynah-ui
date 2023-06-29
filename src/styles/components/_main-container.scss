@@ -25,14 +25,17 @@
         > .mynah-chat-wrapper,
         > .mynah-skeleton-wrapper,
         > .mynah-cards-wrapper {
-            padding: var(--mynah-sizing-2) 0 var(--mynah-sizing-3) 0;
             display: flex;
             flex-flow: column nowrap;
-            gap: var(--mynah-sizing-4);
             box-sizing: border-box;
             overflow: hidden;
             position: relative;
             height: 100%;
+        }
+        > .mynah-skeleton-wrapper,
+        > .mynah-cards-wrapper {
+            padding: var(--mynah-sizing-2) 0 var(--mynah-sizing-3) 0;
+            gap: var(--mynah-sizing-4);
         }
         > .mynah-chat-wrapper,
         > .mynah-cards-wrapper {
@@ -97,7 +100,7 @@
 
 @media screen and (max-width: 1024px) {
     #mynah-wrapper {
-        .mynah-chat-wrapper{
+        .mynah-chat-wrapper {
             padding-bottom: 0;
         }
         padding-top: 0;
