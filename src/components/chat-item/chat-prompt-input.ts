@@ -70,7 +70,7 @@ export class ChatPromptInput {
         type: 'div',
         classNames: [ 'mynah-mutating-next-icon' ],
         children: [
-          new Icon({ icon: MynahIcons.ENVELOPE_SEND }).render
+          new Icon({ icon: MynahIcons.RIGHT_OPEN }).render
         ],
       }),
       onClick: () => {

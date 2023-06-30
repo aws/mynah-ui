@@ -22,7 +22,7 @@
     outline: none;
     position: relative;
     transition: var(--mynah-short-transition-rev);
-    padding: var(--mynah-sizing-5);
+    padding: var(--mynah-sizing-4);
     background-color: var(--mynah-color-bg);
     border-radius: var(--mynah-card-radius);
     box-sizing: border-box;
@@ -87,8 +87,8 @@
             font-style: normal;
             font-weight: normal;
             display: inline-flex;
-            width: var(--mynah-sizing-11);
-            height: var(--mynah-sizing-11);
+            width: var(--mynah-sizing-10);
+            height: var(--mynah-sizing-10);
             font-variant: normal;
             text-transform: none;
             border: 1px solid var(--mynah-color-border-default);
@@ -96,7 +96,7 @@
             background-size: 80%;
             background-position: center center;
             background-repeat: no-repeat;
-            margin-right: var(--mynah-sizing-3);
+            margin-right: var(--mynah-sizing-2);
             align-self: flex-start;
             box-sizing: border-box;
         }
@@ -114,8 +114,8 @@
                 align-self: baseline;
             }
             > .mynah-card-title {
-                font-size: var(--mynah-font-size-xlarge);
-                font-weight: 700;
+                font-size: var(--mynah-font-size-medium);
+                font-weight: 600;
                 color: var(--mynah-color-text-strong);
                 width: 100%;
                 display: inline-flex;
@@ -139,7 +139,7 @@
                 }
             }
             > .mynah-card-url {
-                font-size: var(--mynah-font-size-medium);
+                font-size: var(--mynah-font-size-xsmall);
                 font-weight: 300;
                 color: var(--mynah-color-text-link);
                 white-space: nowrap;
@@ -205,15 +205,16 @@
                     align-items: center;
                     justify-content: flex-start;
                     gap: var(--mynah-sizing-1);
-                    padding: var(--mynah-sizing-1) var(--mynah-sizing-2) var(--mynah-sizing-1) var(--mynah-sizing-1);
+                    padding: calc(var(--mynah-sizing-half) * 3);
                     border: 1px solid var(--mynah-color-border-default);
                     border-radius: var(--mynah-button-radius);
+                    opacity: 0.75;
                     > .mynah-icon {
                         opacity: 0.5;
                         font-size: var(--mynah-font-size-medium);
                     }
                     > .mynah-title-meta-block-item-text {
-                        font-size: var(--mynah-font-size-xsmall);
+                        font-size: var(--mynah-font-size-xxsmall);
                         &::first-letter {
                             text-transform: capitalize;
                         }
@@ -236,7 +237,8 @@
                             opacity: 1;
                             color: green;
                             border-radius: var(--mynah-button-radius);
-                            width: var(--mynah-sizing-5);
+                            width: var(--mynah-sizing-3);
+                            height: var(--mynah-sizing-3);
                         }
                     }
                 }
@@ -269,6 +271,13 @@
             flex: 1;
             overflow: hidden;
             position: relative;
+            > * {
+                margin-block-start: 0.5em;
+                margin-block-end: 0.5em;
+                &:empty {
+                    display: none;
+                }
+            }
             > *:first-child {
                 margin-top: 0;
             }
@@ -495,17 +504,27 @@
     }
 
     &.mynah-card-compact {
-        padding: var(--mynah-sizing-3);
+        padding: var(--mynah-sizing-2);
+        gap: 0;
+        background-color: transparent;
         > .mynah-card-header {
             > .mynah-source-thumbnail {
-                width: var(--mynah-sizing-8);
-                height: var(--mynah-sizing-8);
-                margin-right: var(--mynah-sizing-2);
+                width: var(--mynah-sizing-6);
+                height: var(--mynah-sizing-6);
+                margin-right: var(--mynah-sizing-1);
             }
             > .mynah-card-title-wrapper {
                 gap: 0;
                 > .mynah-card-title {
-                    font-size: var(--mynah-font-size-small);
+                    font-size: var(--mynah-font-size-xsmall);
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 100%;
+                    display: block;
+                    > .mynah-card-expand-icon {
+                        display: none;
+                    }
                 }
                 > .mynah-card-url {
                     font-size: var(--mynah-font-size-xxsmall);

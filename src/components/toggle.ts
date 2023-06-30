@@ -155,8 +155,6 @@ export class Toggle {
       if (this.props.type === 'switch') {
         this.relocateTransitioner.style.top = `${rect.top - renderRect.top}px`;
         this.relocateTransitioner.style.height = `${rect.height}px`;
-      } else if (this.props.type === 'tabs') {
-        this.relocateTransitioner.style.top = `${rect.height + rect.top - renderRect.top}px`;
       }
       this.relocateTransitioner.style.left = `${rect.left - renderRect.left}px`;
       this.relocateTransitioner.style.width = `${rect.width}px`;

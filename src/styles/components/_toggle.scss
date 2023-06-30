@@ -5,11 +5,10 @@
     overflow: hidden;
     align-items: center;
     justify-content: center;
-    padding: var(--mynah-sizing-1);
+    padding: var(--mynah-sizing-3);
     position: relative;
     background: var(--mynah-color-context-should-contain);
     color: var(--mynah-color-context-reverse);
-    border-radius: var(--mynah-button-radius);
     .mynah-toggle-option {
         display: none;
         &:not(:first-child) + .mynah-toggle-option-label {
@@ -73,13 +72,24 @@
         }
     }
     &.mynah-toggle-type-tabs {
-        flex-flow: row wrap;
-        justify-content: flex-start;
+        justify-content: stretch;
+        overflow: hidden;
+        > span:not(.mynah-toggle-indicator-transitioner) {
+            overflow: hidden;
+            > label {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                max-width: 100%;
+                display: block;
+            }
+        }
         > .mynah-toggle-indicator-transitioner {
             height: var(--mynah-sizing-1);
             border-radius: 0;
             left: calc(-1 * var(--mynah-sizing-8));
             transform: translateY(var(--mynah-sizing-1));
+            bottom: var(--mynah-sizing-1);
             &.relocate {
                 transition-duration: 1ms;
             }

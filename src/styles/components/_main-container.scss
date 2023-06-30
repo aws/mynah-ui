@@ -6,7 +6,7 @@
     max-width: 1024px;
     box-sizing: border-box;
     height: 100%;
-    padding: var(--mynah-sizing-3) 0 0 0;
+    padding: var(--mynah-sizing-3);
     .context-checkbox {
         display: none;
     }
@@ -35,7 +35,7 @@
         > .mynah-skeleton-wrapper,
         > .mynah-cards-wrapper {
             padding: var(--mynah-sizing-2) 0 var(--mynah-sizing-3) 0;
-            gap: var(--mynah-sizing-4);
+            gap: var(--mynah-sizing-2);
         }
         > .mynah-chat-wrapper,
         > .mynah-cards-wrapper {
@@ -95,26 +95,5 @@
 .mynah-cards-wrapper {
     @include chatMode {
         transform: translate3d(0, 0, 0) !important;
-    }
-}
-
-@media screen and (max-width: 1024px) {
-    #mynah-wrapper {
-        .mynah-chat-wrapper {
-            padding-bottom: 0;
-        }
-        padding-top: 0;
-        > .mynah-search-block {
-            border-left: none;
-            border-right: none;
-            border-top: none;
-        }
-        .mynah-main {
-            > .mynah-skeleton-wrapper,
-            > .mynah-cards-wrapper > .mynah-card {
-                border-right: none;
-                border-left: none;
-            }
-        }
     }
 }

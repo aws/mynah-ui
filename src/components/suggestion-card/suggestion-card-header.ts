@@ -82,11 +82,6 @@ export class SuggestionCardHeader {
             classNames: [ 'mynah-title-meta-block-item', 'approved-answer' ],
             children: [
               new Icon({ icon: MynahIcons.OK }).render,
-              {
-                type: 'span',
-                classNames: [ 'mynah-title-meta-block-item-text' ],
-                children: [ 'Accepted answer' ]
-              }
             ]
           });
         }
@@ -100,7 +95,7 @@ export class SuggestionCardHeader {
               {
                 type: 'span',
                 classNames: [ 'mynah-title-meta-block-item-text' ],
-                children: [ `${getTimeDiff((new Date()).getTime() - metadata.lastActivityDate, 2, ' and ')} ago` ]
+                children: [ getTimeDiff((new Date()).getTime() - metadata.lastActivityDate, 2) ]
               }
             ]
           });
@@ -115,7 +110,7 @@ export class SuggestionCardHeader {
               {
                 type: 'span',
                 classNames: [ 'mynah-title-meta-block-item-text' ],
-                children: [ `${metadata.answerCount.toString()} answers` ]
+                children: [ metadata.answerCount.toString() ]
               }
             ]
           });

@@ -43,27 +43,8 @@ export class SuggestionCardBody {
                 innerHTML: props.suggestion.body,
               }).childNodes
             ).map(node => {
-              const elementFromNode: HTMLElement = node as HTMLElement;
-              if ((elementFromNode.tagName?.toLowerCase() === 'pre' && elementFromNode.querySelector('code') !== null) ||
-              elementFromNode.tagName?.toLowerCase() === 'code'
-              ) {
-                return new SyntaxHighlighter({
-                  codeStringWithMarkup: (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? '',
-                  language: matchingLanguage,
-                  keepHighlights: true,
-                  showCopyOptions: true,
-                  onCopiedToClipboard: (type, text) => {
-                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, { suggestionId: props.suggestion.url, type, text });
-                  },
-                }).render;
-              } else if (elementFromNode.tagName?.toLowerCase() === 'span' && elementFromNode.hasAttribute('markdown')) {
-                const md = new MarkdownIt();
-                const mdToHTML = md.render(elementFromNode.innerHTML);
-                elementFromNode.innerHTML = mdToHTML;
-                return elementFromNode;
-              }
-              return node;
-            }) as HTMLElement[]),
+              return this.processNode(node as HTMLElement, props.suggestion, matchingLanguage);
+            })),
             ...(props.suggestion.type === 'ApiDocsSuggestion' && props.suggestion.metadata?.canonicalExample !== undefined
               ? [ new SuggestionCard({
                   suggestion: {
@@ -98,4 +79,39 @@ export class SuggestionCardBody {
       ],
     });
   }
+
+  private readonly processNode = (node: HTMLElement, suggestion?: Partial<Suggestion>, matchingLanguage?: string): HTMLElement => {
+    const elementFromNode: HTMLElement = node;
+    if (elementFromNode.tagName?.toLowerCase() === 'span' && elementFromNode.hasAttribute('markdown')) {
+      const md = new MarkdownIt();
+      const mdToHTML = md.render(elementFromNode.innerHTML);
+      elementFromNode.innerHTML = mdToHTML;
+      return DomBuilder.getInstance().build({
+        type: 'div',
+        children: (Array.from(elementFromNode.childNodes) as HTMLElement[]).map(node => {
+          let language = matchingLanguage;
+          const classes = node.getAttribute !== undefined ? node.getAttribute('class') : null;
+          if (node.nodeName === 'PRE' && classes !== null && classes.includes('language-')) {
+            language = classes.replace('language-', '');
+          }
+          return this.processNode(node, {}, language);
+        })
+      });
+    }
+
+    if ((elementFromNode.tagName?.toLowerCase() === 'pre' && elementFromNode.querySelector('code') !== null) ||
+    elementFromNode.tagName?.toLowerCase() === 'code'
+    ) {
+      return new SyntaxHighlighter({
+        codeStringWithMarkup: (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? '',
+        language: matchingLanguage,
+        keepHighlights: true,
+        showCopyOptions: true,
+        onCopiedToClipboard: (type, text) => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, { suggestionId: suggestion?.url ?? '', type, text });
+        },
+      }).render;
+    }
+    return elementFromNode;
+  };
 }

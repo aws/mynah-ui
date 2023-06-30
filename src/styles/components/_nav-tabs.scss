@@ -1,16 +1,22 @@
 .mynah-nav-tabs-wrapper {
-    padding: 0 var(--mynah-sizing-2) var(--mynah-sizing-2) var(--mynah-sizing-2);
     border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
     background-color: var(--mynah-card-bg);
-    margin-top: var(--mynah-sizing-3);
-
-    /* @include chatMode {
-    } */
     border-radius: var(--mynah-card-radius);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-radius: var(--mynah-card-radius);
+    box-shadow: var(--mynah-shadow-generic);
+    z-index: 100;
+
+    .mynah-search-block-ready-to-fold + & {
+        box-shadow: var(--mynah-shadow-generic), 0 25px 20px 5px var(--mynah-color-bg);
+    }
 
     > .mynah-toggle-container {
         height: 100%;
         background: none;
+        box-sizing: border-box;
         > span {
             white-space: nowrap;
         }

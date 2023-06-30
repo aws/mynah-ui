@@ -12,7 +12,7 @@
             display: inline-flex;
             flex-flow: column nowrap;
             position: relative;
-            gap: var(--mynah-sizing-3);
+            gap: var(--mynah-sizing-4);
             max-width: 80%;
             transition: var(--mynah-short-transition-bounce);
             transform: translate3d(0, var(--mynah-sizing-10), 0) scale(1, 0.98);
@@ -26,13 +26,12 @@
                 margin-top: var(--mynah-sizing-4);
             }
             > .mynah-chat-item-card-icon-wrapper {
-                position: absolute;
                 background-color: var(--mynah-color-alternate);
                 color: var(--mynah-color-alternate-reverse);
                 padding: var(--mynah-sizing-2);
                 border-radius: 100%;
             }
-            > .mynah-card:hover::before {
+            > .mynah-card :hover::before {
                 box-shadow: var(--mynah-shadow-card) !important;
             }
 
@@ -66,8 +65,8 @@
             > .mynah-chat-item-card-related-content {
                 display: flex;
                 flex-flow: column wrap;
-                gap: var(--mynah-sizing-2);
-                overflow: hidden;
+                gap: var(--mynah-sizing-4);
+                overflow: visible;
                 > .mynah-chat-item-card-related-content-title {
                     color: var(--mynah-color-text-weak);
                     font-size: var(--mynah-font-size-small);
@@ -77,24 +76,56 @@
                 }
             }
             &.mynah-chat-item-prompt {
-                padding-right: var(--mynah-sizing-12);
+                padding-right: var(--mynah-sizing-2);
                 align-self: flex-end;
                 > .mynah-chat-item-card-icon-wrapper {
-                    right: var(--mynah-sizing-2);
+                    align-self: flex-end;
                 }
                 > .mynah-chat-item-card-related-content {
                     align-items: flex-end;
-                    > .mynah-card {
-                        > .mynah-card-center {
-                            display: none;
-                        }
+                }
+
+                > .mynah-chat-item-card-related-content > .mynah-card,
+                > .mynah-card {
+                    background-color: var(--mynah-card-bg);
+                    box-shadow: 0px 0px 5px -5px var(--mynah-color-button);
+                    &:after {
+                        background-color: var(--mynah-color-button);
+                        opacity: 0.07;
                     }
+                }
+                > .mynah-chat-item-card-related-content > .mynah-card > .mynah-card-center {
+                    display: none;
                 }
             }
             &.mynah-chat-item-answer {
-                padding-left: var(--mynah-sizing-12);
+                padding-left: var(--mynah-sizing-2);
                 > .mynah-chat-item-card-icon-wrapper {
-                    left: var(--mynah-sizing-2);
+                    align-self: flex-start;
+                }
+                > .mynah-chat-item-card-related-content {
+                    > .mynah-card-compact {
+                        border: none;
+                        opacity: 1;
+                        padding: 0;
+                        padding-left: var(--mynah-sizing-3);
+                        > .mynah-card-header {
+                            opacity: 1;
+                        }
+                        &:after {
+                            width: var(--mynah-sizing-1);
+                            right: initial;
+                            background-color: var(--mynah-color-alternate);
+                            opacity: 0.25;
+                        }
+                        &:before {
+                            display: none;
+                        }
+                        .mynah-syntax-highlighter {
+                            border-radius: 0;
+                            border: none;
+                        }
+                    }
                 }
             }
         }
@@ -149,6 +180,7 @@
             flex-flow: row nowrap;
             overflow: hidden;
             box-sizing: border-box;
+            gap: var(--mynah-sizing-2);
             > .mynah-chat-prompt-input {
                 flex: 1 1 0;
                 border: none;
@@ -157,6 +189,11 @@
                 color: var(--mynah-color-text-input);
                 outline: none;
                 width: 100%;
+
+                &:placeholder-shown + button {
+                    pointer-events: none;
+                    opacity: 0.5;
+                }
             }
         }
         > .mynah-chat-prompt-attachment-wrapper {

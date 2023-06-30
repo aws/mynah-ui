@@ -9,6 +9,7 @@ import { ToggleOption } from './components/toggle';
 export interface MynahUIDataModel {
   loading?: boolean;
   loadingChat?: boolean;
+  showChatAvatars?: boolean;
   liveSearchState?: LiveSearchState;
   liveSearchAnimation?: boolean;
   query?: string;

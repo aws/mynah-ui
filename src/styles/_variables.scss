@@ -2,7 +2,7 @@
     font-size: var(--vscode-editor-font-size);
     font-family: var(--vscode-editor-font-family);
 
-    --mynah-sizing-base: 3px;
+    --mynah-sizing-base: 0.25rem;
     --mynah-sizing-half: calc(var(--mynah-sizing-base) / 2);
     --mynah-sizing-1: var(--mynah-sizing-base);
     --mynah-sizing-2: calc(var(--mynah-sizing-base) * 2);
@@ -66,22 +66,22 @@
 
     --mynah-card-bg: var(--vscode-editor-background);
 
-    --mynah-shadow-generic: none;
-    --mynah-shadow-card: none;
-    --mynah-shadow-card-more: none;
-    --mynah-shadow-card-active: none;
-    --mynah-shadow-prioritization-menu: 0 10px 20px -10px var(--vscode-editorGroup-border);
+    --mynah-shadow-generic: 0 5px 10px -10px rgba(0, 0, 0, 0.25);
+    --mynah-shadow-card: 0 10px 20px -15px rgba(0, 0, 0, 0.25);
+    --mynah-shadow-card-more: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
+    --mynah-shadow-card-active: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
+    --mynah-shadow-prioritization-menu: 0 10px 20px -10px #e7e7e7;
     --mynah-shadow-feedback-form: 0 0px 40px 0px var(--mynah-color-bg);
 
     --mynah-font-size-xxsmall: 0.75rem;
     --mynah-font-size-xsmall: 0.85rem;
     --mynah-font-size-small: 0.95rem;
     --mynah-font-size-medium: 1rem;
-    --mynah-font-size-large: 1.15rem;
-    --mynah-font-size-xlarge: 1.275rem;
+    --mynah-font-size-large: 1.125rem;
+    --mynah-font-size-xlarge: 1.175rem;
 
-    --mynah-card-radius: 0;
-    --mynah-button-radius: var(--mynah-sizing-1);
+    --mynah-card-radius: var(--mynah-sizing-3);
+    --mynah-button-radius: var(--mynah-sizing-4);
 
     --mynah-very-short-transition: all 250ms cubic-bezier(0.25, 1, 0, 1);
     --mynah-short-transition-transform: transform 200ms cubic-bezier(0.85, 0.15, 0, 1);

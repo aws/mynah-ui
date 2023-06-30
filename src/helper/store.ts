@@ -14,6 +14,7 @@ export class EmptyMynahUIDataModel {
     this.data = {
       loading: false,
       loadingChat: false,
+      showChatAvatars: true,
       liveSearchState: LiveSearchState.STOP,
       query: '',
       code: '',

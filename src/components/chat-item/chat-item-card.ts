@@ -4,6 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { MynahUIDataStore } from '../../helper/store';
 import { ChatItem, ChatItemType } from '../../static';
 import { I18N } from '../../translations/i18n';
 import { Icon, MynahIcons } from '../icon';
@@ -15,19 +16,25 @@ export interface ChatItemCardProps {chatItem: ChatItem}
 export class ChatItemCard {
   private readonly chatItem: ChatItem;
   render: ExtendedHTMLElement;
+  chatAvatar: ExtendedHTMLElement;
   constructor (props: ChatItemCardProps) {
     this.chatItem = props.chatItem;
+    this.chatAvatar = this.getChatAvatar();
+    MynahUIDataStore.getInstance().subscribe('showChatAvatars', (value: boolean) => {
+      if (value) {
+        this.chatAvatar = this.getChatAvatar();
+        this.render.insertChild('afterbegin', this.chatAvatar);
+      } else {
+        this.chatAvatar.remove();
+      }
+    });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.chatItem.type ?? ChatItemType.ANSWER}` ],
       children: [
-        {
-          type: 'div',
-          classNames: [ 'mynah-chat-item-card-icon-wrapper' ],
-          children: [
-            new Icon({ icon: this.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render
-          ]
-        },
+        ...(MynahUIDataStore.getInstance().getValue('showChatAvatars') === true
+          ? [ this.chatAvatar ]
+          : []),
         {
           type: 'div',
           classNames: [ 'mynah-card' ],
@@ -59,4 +66,12 @@ export class ChatItemCard {
       this.render.addClass('reveal');
     }, 10);
   }
+
+  private readonly getChatAvatar = (): ExtendedHTMLElement => DomBuilder.getInstance().build({
+    type: 'div',
+    classNames: [ 'mynah-chat-item-card-icon-wrapper' ],
+    children: [
+      new Icon({ icon: this.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render
+    ]
+  });
 }
