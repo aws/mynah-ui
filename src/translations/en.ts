@@ -4,7 +4,7 @@
  */
 
 const en = {
-  limitByUrl: 'This post looks helpful. Can you refine your answer using this post?',
+  limitByUrl: 'This post looks helpful. Could you summarize it?',
   relatedContent: 'Related content',
   chatPromptInputPlaceholder: 'Ask anything',
   chatPromptInputFollowUpPlaceholder: 'You can ask a follow up question',
