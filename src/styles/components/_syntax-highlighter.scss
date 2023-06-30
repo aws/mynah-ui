@@ -21,21 +21,22 @@
     > .mynah-syntax-highlighter-copy-buttons {
         justify-content: flex-end;
         display: flex;
-        padding: var(--mynah-sizing-1);
+        padding: var(--mynah-sizing-half);
         z-index: 10;
         position: absolute;
-        right: var(--mynah-sizing-1);
-        top: var(--mynah-sizing-1);
+        right: var(--mynah-sizing-half);
+        top: var(--mynah-sizing-half);
         background-color: var(--mynah-syntax-bg);
         opacity: 0;
-        height: var(--mynah-sizing-10);
         box-sizing: border-box;
-        border-radius: var(--mynah-button-radius);
+        border-radius: calc(var(--mynah-button-radius) / 2);
         :hover & {
             opacity: 1;
         }
         .mynah-button {
-            font-size: var(--mynah-sizing-5);
+            min-width: var(--mynah-sizing-6);
+            height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
+            font-size: var(--mynah-sizing-4);
             color: var(--mynah-color-button);
         }
     }
