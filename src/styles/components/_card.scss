@@ -536,7 +536,8 @@
         }
         > .mynah-card-center {
             > .mynah-card-body {
-                font-size: var(--mynah-font-size-xsmall);
+                // font-size: var(--mynah-font-size-xsmall);
+                display: none;
             }
             > .mynah-card-votes-wrapper {
                 display: none;

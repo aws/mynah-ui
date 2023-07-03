@@ -50,7 +50,7 @@ export class ChatPromptInput {
       this.promptTextInput.value = I18N.getInstance().texts.limitByUrl;
     });
     this.promptTextInput = DomBuilder.getInstance().build({
-      type: 'input',
+      type: 'textarea',
       classNames: [ 'mynah-chat-prompt-input' ],
       attributes: {
         tabindex: '1',
@@ -100,7 +100,7 @@ export class ChatPromptInput {
   }
 
   private readonly handleInputKeyup = (e: KeyboardEvent): void => {
-    if (e.key === KeyMap.ENTER) {
+    if (e.key === KeyMap.ENTER && !e.shiftKey) {
       cancelEvent(e);
       this.triggerSearch();
     }
