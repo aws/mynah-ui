@@ -30,9 +30,9 @@
         opacity: 0;
         box-sizing: border-box;
         border-radius: calc(var(--mynah-button-radius) / 2);
-        :hover & {
-            opacity: 1;
-        }
+        // :hover & {
+        //     opacity: 1;
+        // }
         .mynah-button {
             min-width: var(--mynah-sizing-6);
             height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));

@@ -64,7 +64,7 @@ export class SuggestionCardBody {
           ? [ new Button({
               classNames: [ 'mynah-card-under-body-button' ],
               primary: false,
-              label: 'Attach to chat',
+              label: 'Use it as a reference',
               icon: DomBuilder.getInstance().build({
                 type: 'div',
                 children: [

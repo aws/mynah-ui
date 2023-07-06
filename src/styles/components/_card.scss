@@ -23,6 +23,7 @@
     position: relative;
     transition: var(--mynah-short-transition-rev);
     padding: var(--mynah-sizing-4);
+    padding-bottom: var(--mynah-sizing-1);
     background-color: var(--mynah-color-bg);
     border-radius: var(--mynah-card-radius);
     box-sizing: border-box;
@@ -318,7 +319,8 @@
         }
 
         > .mynah-card-votes-wrapper {
-            display: inline-flex;
+            display: none;
+            // display: inline-flex;
             align-items: center;
             gap: var(--mynah-sizing-2);
             > .mynah-vote-text {
