@@ -28,7 +28,7 @@ export class SuggestionCardBody {
 
   constructor (props: SuggestionCardBodyProps) {
     const matchingLanguage =
-            findLanguageFromSuggestion(props.suggestion) ?? SupportedCodingLanguagesExtensionToTypeMap.js;
+      findLanguageFromSuggestion(props.suggestion) ?? SupportedCodingLanguagesExtensionToTypeMap.js;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-center' ],
@@ -99,8 +99,22 @@ export class SuggestionCardBody {
       });
     }
 
+    if (elementFromNode.tagName?.toLowerCase() === 'a') {
+      const url = elementFromNode.getAttribute('href') ?? '';
+      return DomBuilder.getInstance().build(
+        {
+          type: 'a',
+          events: {
+            click: (e?: MouseEvent) => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: { id: url, url }, event: e });
+            },
+          },
+          attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },
+          innerHTML: elementFromNode.innerHTML,
+        });
+    }
     if ((elementFromNode.tagName?.toLowerCase() === 'pre' && elementFromNode.querySelector('code') !== null) ||
-    elementFromNode.tagName?.toLowerCase() === 'code'
+      elementFromNode.tagName?.toLowerCase() === 'code'
     ) {
       return new SyntaxHighlighter({
         codeStringWithMarkup: (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? '',
@@ -112,6 +126,11 @@ export class SuggestionCardBody {
         },
       }).render;
     }
+
+    elementFromNode.childNodes.forEach((child) => {
+      elementFromNode.replaceChild(this.processNode(child as HTMLElement), child);
+    });
+
     return elementFromNode;
   };
 }
