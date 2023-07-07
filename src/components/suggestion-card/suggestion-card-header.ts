@@ -18,17 +18,18 @@ export interface SuggestionCardHeaderProps {
 export class SuggestionCardHeader {
   render: ExtendedHTMLElement;
   constructor (props: SuggestionCardHeaderProps) {
-    const splittedUrl = props.url
+    const splitUrl = props.url
       .replace(/^(http|https):\/\//, '')
       .split('/');
+    const thumbnail = getThumbnailClass(splitUrl[0], props.metadata);
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-card-header', ...((props.metadata != null) ? [ 'mynah-card-header-with-source-thumbnail' ] : []) ],
+      classNames: [ 'mynah-card-header', ...((thumbnail != null) ? [ 'mynah-card-header-with-source-thumbnail' ] : []) ],
       children: [
-        ...((props.metadata != null)
+        ...((thumbnail != null)
           ? [ {
               type: 'span',
-              classNames: [ 'mynah-source-thumbnail', this.getSourceMetaBlockClassName(props.metadata) ]
+              classNames: [ 'mynah-source-thumbnail', thumbnail ]
             } ]
           : []),
         {
@@ -60,7 +61,7 @@ export class SuggestionCardHeader {
                 ...(props.onSuggestionLinkCopy !== undefined && { copy: props.onSuggestionLinkCopy }),
               },
               attributes: { href: props.url, target: '_blank' },
-              innerHTML: splittedUrl.map(urlPart => `<span><span>${urlPart}</span></span>`).join(''),
+              innerHTML: splitUrl.map(urlPart => `<span><span>${urlPart}</span></span>`).join(''),
             },
             ...((props.metadata != null) ? [ this.getSourceMetaBlock(props.metadata) ] : []),
           ],
@@ -68,8 +69,6 @@ export class SuggestionCardHeader {
       ],
     });
   }
-
-  private readonly getSourceMetaBlockClassName = (metadataUnion?: SuggestionMetaDataUnion): string => metadataUnion !== null && metadataUnion !== undefined ? Object.keys(metadataUnion).join(' ') : '';
 
   private readonly getSourceMetaBlock = (metadataUnion?: SuggestionMetaDataUnion): DomBuilderObject => {
     const metaItems: any[] = [];
@@ -169,4 +168,20 @@ export class SuggestionCardHeader {
       children: metaItems
     };
   };
+}
+
+function getThumbnailClass (domain: string, metadata?: SuggestionMetaDataUnion): string | undefined {
+  if (metadata !== null && metadata !== undefined) {
+    return Object.keys(metadata).join(' ');
+  }
+  switch (domain) {
+    case 'github.com':
+      return 'github';
+    case 'docs.aws.amazon.com':
+    case 'boto3.amazonaws.com':
+    case 'sdk.amazonaws.com':
+      return 'aws';
+    default:
+      return undefined;
+  }
 }
