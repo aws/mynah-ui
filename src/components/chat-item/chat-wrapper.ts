@@ -20,7 +20,12 @@ export class ChatWrapper {
       initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
     }
     MynahUIDataStore.getInstance().subscribe('chatItems', (chatItems) => {
-      if (chatItems.length > 0) {
+      if (this.chatItemsContainer.children.length === chatItems.length) {
+        const lastItem = this.chatItemsContainer.children.item(0);
+        if (lastItem !== undefined) {
+          lastItem.innerHTML = new ChatItemCard({ chatItem: chatItems[chatItems.length - 1] }).render.innerHTML;
+        }
+      } else if (chatItems.length > 0) {
         this.insertChatItem(chatItems[chatItems.length - 1]);
       } else {
         this.chatItemsContainer.clear(true);

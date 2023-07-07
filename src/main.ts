@@ -412,8 +412,13 @@ export class MynahUI {
    * @param anwer An ChatItem object.
    */
   public addChatAnswer = (answer: ChatItem): void => {
+    const chatItems: ChatItem[] = MynahUIDataStore.getInstance().getValue('chatItems');
+    if (answer.incremental === true && chatItems.length > 0) {
+      chatItems.pop();
+    }
+    chatItems.push(answer);
     MynahUIDataStore.getInstance().updateStore({
-      chatItems: [ ...MynahUIDataStore.getInstance().getValue('chatItems'), answer ]
+      chatItems
     });
   };
 
