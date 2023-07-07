@@ -18,6 +18,9 @@
             transform: translate3d(0, var(--mynah-sizing-10), 0) scale(1, 0.98);
             opacity: 0;
             transform-origin: center bottom;
+            a {
+                color: var(--mynah-color-text-link);
+            }
             &.reveal {
                 opacity: 1;
                 transform: translate3d(0, 0, 0) scale(1, 1);
