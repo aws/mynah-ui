@@ -22,7 +22,7 @@ export class ChatWrapper {
     MynahUIDataStore.getInstance().subscribe('chatItems', (chatItems) => {
       if (this.chatItemsContainer.children.length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(0);
-        if (lastItem !== undefined) {
+        if (lastItem !== null) {
           lastItem.innerHTML = new ChatItemCard({ chatItem: chatItems[chatItems.length - 1] }).render.innerHTML;
         }
       } else if (chatItems.length > 0) {
