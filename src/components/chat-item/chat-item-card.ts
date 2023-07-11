@@ -13,6 +13,7 @@ import { SuggestionCardBody } from '../suggestion-card/suggestion-card-body';
 import { ChatItemFollowUpContainer } from './chat-item-followup';
 
 export interface ChatItemCardProps {chatItem: ChatItem}
+
 export class ChatItemCard {
   private readonly chatItem: ChatItem;
   render: ExtendedHTMLElement;

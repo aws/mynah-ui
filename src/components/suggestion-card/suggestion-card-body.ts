@@ -86,6 +86,16 @@ export class SuggestionCardBody {
       const md = new MarkdownIt();
       const mdToHTML = md.render(elementFromNode.innerHTML);
       elementFromNode.innerHTML = mdToHTML;
+      Array.from(elementFromNode.getElementsByTagName('a')).forEach(a => {
+        const url = a.href;
+        a.onclick = (event?: MouseEvent) => MynahUIGlobalEvents
+          .getInstance()
+          .dispatch(MynahEventNames.SUGGESTION_OPEN, {
+            suggestion: { id: url, url },
+            event,
+          });
+      });
+
       return DomBuilder.getInstance().build({
         type: 'div',
         children: (Array.from(elementFromNode.childNodes) as HTMLElement[]).map(node => {
