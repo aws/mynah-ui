@@ -420,9 +420,6 @@ export class MynahUI {
    */
   public addChatAnswer = (answer: ChatItem): void => {
     const chatItems: ChatItem[] = MynahUIDataStore.getInstance().getValue('chatItems');
-    if (answer.incremental === true && chatItems.length > 0) {
-      chatItems.pop();
-    }
     chatItems.push(answer);
     MynahUIDataStore.getInstance().updateStore({
       chatItems

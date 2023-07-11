@@ -130,7 +130,6 @@ export enum ChatItemType {
 export interface ChatItem {
   body?: string;
   type: ChatItemType;
-  incremental: Boolean;
   followUp?: {
     text?: string;
     options?: ChatItemFollowUp[];
