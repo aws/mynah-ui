@@ -5,7 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIDataStore } from '../../helper/store';
-import { ChatItem, ChatItemType } from '../../static';
+import { ChatItem, ChatItemType, Suggestion } from '../../static';
 import { I18N } from '../../translations/i18n';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
@@ -51,33 +51,9 @@ export class ChatItemCard {
             classNames: [ 'mynah-chat-item-card-related-content-item' ],
             events: {
               mouseenter: (e) => {
-                if (this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) {
-                  const elm: HTMLElement = e.target as HTMLElement;
-                  this.relatedContentPreview = new Overlay({
-                    background: false,
-                    closeOnOutsideClick: false,
-                    referenceElement: elm,
-                    dimOutside: false,
-                    verticalDirection: OverlayVerticalDirection.END_TO_TOP,
-                    horizontalDirection: OverlayHorizontalDirection.TO_RIGHT,
-                    children: [
-                      {
-                        type: 'div',
-                        classNames: [ 'mynah-chat-related-content-preview-wrapper' ],
-                        children: [
-                          new SuggestionCard({ suggestion }).render
-                        ]
-                      }
-                    ],
-                  });
-                }
+                this.showLinkPreview(e, suggestion);
               },
-              mouseleave: () => {
-                if (this.relatedContentPreview !== null) {
-                  this.relatedContentPreview?.close();
-                  this.relatedContentPreview = null;
-                }
-              }
+              mouseleave: this.hideLinkPreview,
             },
             children: [
               new SuggestionCard({ suggestion, compact: true }).render
@@ -99,7 +75,19 @@ export class ChatItemCard {
               classNames: [ 'mynah-card' ],
               children: [
                 ((): ExtendedHTMLElement => {
-                  this.suggestionCardBody = new SuggestionCardBody({ suggestion: { body: this.chatItem.body } });
+                  this.suggestionCardBody = new SuggestionCardBody({
+                    suggestion: { body: this.chatItem.body },
+                    onLinkMouseEnter: (e, url) => {
+                      const matchingSuggestion = [ ...MynahUIDataStore.getInstance().getValue('chatItems').map(
+                        (chatItem: ChatItem) => chatItem.relatedContent?.content)
+                      ].flat().find((relatedContent?: Suggestion) => relatedContent?.url === url);
+                      console.log(matchingSuggestion);
+                      if (matchingSuggestion !== undefined) {
+                        this.showLinkPreview(e, matchingSuggestion);
+                      }
+                    },
+                    onLinkMouseLeave: this.hideLinkPreview
+                  });
                   return this.suggestionCardBody.render;
                 })(),
               ],
@@ -127,6 +115,36 @@ export class ChatItemCard {
       this.render.addClass('reveal');
     }, 10);
   }
+
+  private readonly showLinkPreview = (e: MouseEvent, suggestion: Suggestion): void => {
+    if (this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) {
+      const elm: HTMLElement = e.target as HTMLElement;
+      this.relatedContentPreview = new Overlay({
+        background: false,
+        closeOnOutsideClick: false,
+        referenceElement: elm,
+        dimOutside: false,
+        verticalDirection: OverlayVerticalDirection.END_TO_TOP,
+        horizontalDirection: OverlayHorizontalDirection.TO_RIGHT,
+        children: [
+          {
+            type: 'div',
+            classNames: [ 'mynah-chat-related-content-preview-wrapper' ],
+            children: [
+              new SuggestionCard({ suggestion }).render
+            ]
+          }
+        ],
+      });
+    }
+  };
+
+  private readonly hideLinkPreview = (): void => {
+    if (this.relatedContentPreview !== null) {
+      this.relatedContentPreview?.close();
+      this.relatedContentPreview = null;
+    }
+  };
 
   private readonly get3rdRelatedContentTextForWidth = (): string => {
     if (this.chatItem.relatedContent?.content !== undefined && this.chatItem.relatedContent?.content.length > 2) {

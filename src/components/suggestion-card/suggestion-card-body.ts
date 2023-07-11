@@ -22,6 +22,8 @@ import { Icon, MynahIcons } from '../icon';
 export interface SuggestionCardBodyProps {
   suggestion: Partial<Suggestion>;
   showFooterButtons?: boolean;
+  onLinkMouseEnter?: (e: MouseEvent, url: string) => void;
+  onLinkMouseLeave?: (e: MouseEvent, url: string) => void;
 }
 export class SuggestionCardBody {
   render: ExtendedHTMLElement;
@@ -74,12 +76,16 @@ export class SuggestionCardBody {
       elementFromNode.innerHTML = mdToHTML;
       Array.from(elementFromNode.getElementsByTagName('a')).forEach(a => {
         const url = a.href;
-        a.onclick = (event?: MouseEvent) => MynahUIGlobalEvents
-          .getInstance()
-          .dispatch(MynahEventNames.SUGGESTION_OPEN, {
-            suggestion: { id: url, url },
-            event,
-          });
+
+        a.onclick = (event?: MouseEvent) => {
+          console.log(event);
+          MynahUIGlobalEvents
+            .getInstance()
+            .dispatch(MynahEventNames.SUGGESTION_OPEN, {
+              suggestion: { id: url, url },
+              event,
+            });
+        };
       });
 
       return DomBuilder.getInstance().build({
@@ -104,6 +110,16 @@ export class SuggestionCardBody {
             click: (e?: MouseEvent) => {
               MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: { id: url, url }, event: e });
             },
+            mouseenter: (e: MouseEvent) => {
+              if (this.props.onLinkMouseEnter !== undefined) {
+                this.props.onLinkMouseEnter(e, url);
+              }
+            },
+            mouseleave: (e: MouseEvent) => {
+              if (this.props.onLinkMouseLeave !== undefined) {
+                this.props.onLinkMouseLeave(e, url);
+              }
+            }
           },
           attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },
           innerHTML: elementFromNode.innerHTML,
