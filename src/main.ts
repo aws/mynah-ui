@@ -96,6 +96,7 @@ export interface MynahUIProps {
   onResetStore?: () => void;
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
   onChatPrompt?: (prompt: ChatPrompt) => void;
+  onFollowUpClicked?: (followUp: string) => void;
   onSuggestionAttachedToChatPrompt?: (attachment: Suggestion) => void;
   onNavigationTabChange?: (selectedTab: string) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
@@ -189,6 +190,12 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: ChatPrompt) => {
       if (this.props.onChatPrompt !== undefined) {
         this.props.onChatPrompt(data);
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (followUpName: string) => {
+      if (this.props.onFollowUpClicked !== undefined) {
+        this.props.onFollowUpClicked(followUpName);
       }
     });
 

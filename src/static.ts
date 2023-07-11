@@ -49,6 +49,7 @@ export enum MynahEventNames {
   SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
   SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
   CHAT_PROMPT = 'chatPrompt',
+  FOLLOW_UP_CLICKED = 'followUpClicked',
   SUGGESTION_ATTACHED_TO_CHAT = 'suggestionAttachedToChat',
   UPDATE_LAST_CHAT_ANSWER_STREAM = 'updateLastChatAnswerStream',
   CLEAR_CHAT = 'clearChat',
