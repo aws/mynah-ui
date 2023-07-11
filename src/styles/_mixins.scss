@@ -44,6 +44,20 @@
     mask-size: 100% 100%;
 }
 
+@mixin list-fader-bottom {
+    position: relative;
+    $listFader: linear-gradient(
+        to bottom,
+        black 0%,
+        black calc(100% - var(--mynah-sizing-6)),
+        transparent 100%
+    );
+    -webkit-mask-image: $listFader;
+    -webkit-mask-size: 100% 100%;
+    mask-image: $listFader;
+    mask-size: 100% 100%;
+}
+
 @mixin context-pill-group-background {
     &:after,
     &:before {

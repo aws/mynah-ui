@@ -23,7 +23,6 @@
     position: relative;
     transition: var(--mynah-short-transition-rev);
     padding: var(--mynah-sizing-4);
-    padding-bottom: var(--mynah-sizing-1);
     background-color: var(--mynah-color-bg);
     border-radius: var(--mynah-card-radius);
     box-sizing: border-box;
@@ -401,12 +400,18 @@
 
         .mynah-card-under-body-button {
             align-self: flex-end;
+            height: auto;
+            opacity: 0;
             > span {
                 padding: 0;
                 padding-left: var(--mynah-sizing-1);
                 font-size: var(--mynah-font-size-xsmall);
             }
         }
+    }
+
+    &:hover .mynah-card-under-body-button {
+        opacity: 1;
     }
 
     > .mynah-card-context-wrapper {

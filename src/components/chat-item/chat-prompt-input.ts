@@ -11,14 +11,19 @@ import { ChatItemType, KeyMap, MynahEventNames, Suggestion } from '../../static'
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { MynahUIDataStore } from '../../helper/store';
 import { SuggestionCard } from '../suggestion-card/suggestion-card';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 
 export class ChatPromptInput {
   render: ExtendedHTMLElement;
   private readonly attachmentWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
   private readonly sendButton: ExtendedHTMLElement;
+  private readonly clearButton: ExtendedHTMLElement;
   private attachment?: Suggestion;
   constructor () {
+    MynahUIDataStore.getInstance().subscribe('chatItems', (chatItems) => {
+      this.promptTextInput.setAttribute('placeholder', chatItems.length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder);
+    });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, (suggestion: Suggestion) => {
       this.attachment = suggestion;
       this.attachmentWrapper.insertChild('beforeend', DomBuilder.getInstance().build({
@@ -54,6 +59,7 @@ export class ChatPromptInput {
       classNames: [ 'mynah-chat-prompt-input' ],
       attributes: {
         tabindex: '1',
+        rows: '1',
         maxlength: '100000',
         type: 'text',
         placeholder: MynahUIDataStore.getInstance().getValue('chatItems').length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder,
@@ -77,6 +83,46 @@ export class ChatPromptInput {
         this.triggerSearch();
       },
     }).render;
+    this.clearButton = new Button({
+      primary: false,
+      attributes: { tabindex: '5' },
+      icon: new Icon({ icon: MynahIcons.ELLIPSIS }).render,
+      onClick: (e) => {
+        const elm: HTMLElement = e.currentTarget as HTMLElement;
+        this.render.addClass('keep-active');
+        const menuOverlay = new Overlay({
+          referenceElement: elm,
+          dimOutside: false,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.CENTER,
+          children: [
+            new Button({
+              primary: false,
+              onClick: (e: Event) => {
+                cancelEvent(e);
+                menuOverlay.close();
+                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CLEAR_CHAT);
+              },
+              label: DomBuilder.getInstance().build({
+                type: 'span',
+                innerHTML: 'Clear chat',
+              }),
+            }).render,
+            new Button({
+              primary: false,
+              onClick: (e: Event) => {
+                cancelEvent(e);
+              },
+              attributes: { disabled: 'disabled' },
+              label: DomBuilder.getInstance().build({
+                type: 'span',
+                innerHTML: 'Start new chat',
+              }),
+            }).render,
+          ],
+        });
+      },
+    }).render;
 
     this.attachmentWrapper = DomBuilder.getInstance().build({
       type: 'div',
@@ -91,7 +137,8 @@ export class ChatPromptInput {
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
             this.promptTextInput,
-            this.sendButton
+            this.clearButton,
+            this.sendButton,
           ]
         },
         this.attachmentWrapper
@@ -127,7 +174,6 @@ export class ChatPromptInput {
       });
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, { prompt: this.promptTextInput.value, attachment: this.attachment });
 
-      this.promptTextInput.setAttribute('placeholder', MynahUIDataStore.getInstance().getValue('chatItems').length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder);
       this.promptTextInput.value = '';
       this.attachmentWrapper.clear();
       this.attachment = undefined;

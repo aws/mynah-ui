@@ -18,6 +18,7 @@ export enum MynahIcons {
   CALENDAR = 'calendar',
   MEGAPHONE = 'megaphone',
   EYE = 'eye',
+  ELLIPSIS = 'ellipsis',
   OK = 'ok',
   UP_CIRCLED = 'up-circled',
   UP_OPEN = 'up-open',

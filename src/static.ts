@@ -50,6 +50,8 @@ export enum MynahEventNames {
   SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
   CHAT_PROMPT = 'chatPrompt',
   SUGGESTION_ATTACHED_TO_CHAT = 'suggestionAttachedToChat',
+  UPDATE_LAST_CHAT_ANSWER_STREAM = 'updateLastChatAnswerStream',
+  CLEAR_CHAT = 'clearChat',
 };
 
 export const MynahPortalNames = {
@@ -121,7 +123,9 @@ export interface Suggestion {
 }
 export enum ChatItemType {
   PROMPT = 'prompt',
-  ANSWER = 'answer'
+  SYSTEM_PROMPT = 'system-prompt',
+  ANSWER = 'answer',
+  ANSWER_STREAM = 'answer-stream'
 }
 export interface ChatItem {
   body?: string;

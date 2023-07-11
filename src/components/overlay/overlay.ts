@@ -69,6 +69,7 @@ export interface OverlayProps {
   verticalDirection?: OverlayVerticalDirection;
   dimOutside?: boolean;
   closeOnOutsideClick?: boolean;
+  background?: boolean;
   onClose?: () => void;
 }
 export class Overlay {
@@ -96,7 +97,7 @@ export class Overlay {
 
     this.container = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-overlay-container', horizontalDirection, verticalDirection ],
+      classNames: [ 'mynah-overlay-container', horizontalDirection, verticalDirection, props.background !== false ? 'background' : '' ],
       attributes: {
         style: `top: ${calculatedTop}px; left: ${calculatedLeft}px;`,
       },

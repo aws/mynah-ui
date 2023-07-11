@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import {
   CanonicalExample,
   MynahEventNames,
@@ -25,38 +25,24 @@ export interface SuggestionCardBodyProps {
 }
 export class SuggestionCardBody {
   render: ExtendedHTMLElement;
+  cardBody: ExtendedHTMLElement;
+  matchingLanguage: string;
+  props: SuggestionCardBodyProps;
 
   constructor (props: SuggestionCardBodyProps) {
-    const matchingLanguage =
+    this.props = props;
+    this.matchingLanguage =
       findLanguageFromSuggestion(props.suggestion) ?? SupportedCodingLanguagesExtensionToTypeMap.js;
+    this.cardBody = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-card-body' ],
+      children: this.getCardBodyChildren(this.props),
+    });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-center' ],
       children: [
-        {
-          type: 'div',
-          classNames: [ 'mynah-card-body' ],
-          children: [
-            ...(Array.from(
-              DomBuilder.getInstance().build({
-                type: 'div',
-                innerHTML: props.suggestion.body,
-              }).childNodes
-            ).map(node => {
-              return this.processNode(node as HTMLElement, props.suggestion, matchingLanguage);
-            })),
-            ...(props.suggestion.type === 'ApiDocsSuggestion' && props.suggestion.metadata?.canonicalExample !== undefined
-              ? [ new SuggestionCard({
-                  suggestion: {
-                    title: 'Example',
-                    id: '',
-                    context: [],
-                    ...(props.suggestion.metadata as CanonicalExample)?.canonicalExample,
-                  }
-                }).render ]
-              : [])
-          ],
-        },
+        this.cardBody,
         ...(props.suggestion.type !== undefined && props.suggestion.type !== 'ApiDocsSuggestion'
           ? [ new SuggestionCardRelevanceVote({ suggestion: props.suggestion as Required<Suggestion> }).render ]
           : []),
@@ -64,7 +50,7 @@ export class SuggestionCardBody {
           ? [ new Button({
               classNames: [ 'mynah-card-under-body-button' ],
               primary: false,
-              label: 'Use it as a reference',
+              label: 'Follow up on chat',
               icon: DomBuilder.getInstance().build({
                 type: 'div',
                 children: [
@@ -142,5 +128,40 @@ export class SuggestionCardBody {
     });
 
     return elementFromNode;
+  };
+
+  private readonly getCardBodyChildren = (props: SuggestionCardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
+    return [
+      ...(Array.from(
+        DomBuilder.getInstance().build({
+          type: 'div',
+          innerHTML: props.suggestion.body,
+        }).childNodes
+      ).map(node => {
+        return this.processNode(node as HTMLElement, props.suggestion, this.matchingLanguage);
+      })),
+      ...(props.suggestion.type === 'ApiDocsSuggestion' && props.suggestion.metadata?.canonicalExample !== undefined
+        ? [ new SuggestionCard({
+            suggestion: {
+              title: 'Example',
+              id: '',
+              context: [],
+              ...(props.suggestion.metadata as CanonicalExample)?.canonicalExample,
+            }
+          }).render ]
+        : [])
+    ];
+  };
+
+  public readonly updateCardBody = (body: string): void => {
+    this.cardBody.update({
+      children: this.getCardBodyChildren({
+        ...this.props,
+        suggestion: {
+          ...this.props.suggestion,
+          body
+        }
+      })
+    });
   };
 }

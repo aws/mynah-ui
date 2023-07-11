@@ -1,3 +1,7 @@
+.mynah-chat-related-content-preview-wrapper{
+    max-width: 80vw;
+    max-height: 80vh;
+}
 .mynah-chat-wrapper {
     > .mynah-chat-items-container {
         display: flex;
@@ -5,9 +9,10 @@
         overflow-x: hidden;
         overflow-y: auto;
         flex-flow: column-reverse nowrap;
-        gap: var(--mynah-sizing-6);
+        gap: var(--mynah-sizing-4);
         align-items: flex-start;
-        padding-bottom: var(--mynah-sizing-8);
+        padding-bottom: var(--mynah-sizing-9);
+        padding-top: var(--mynah-sizing-7);
         .mynah-chat-item-card {
             display: inline-flex;
             flex-flow: column nowrap;
@@ -34,8 +39,23 @@
                 padding: var(--mynah-sizing-2);
                 border-radius: 100%;
             }
-            > .mynah-card :hover::before {
-                box-shadow: var(--mynah-shadow-card) !important;
+            > .mynah-card {
+                > .mynah-card-center > .mynah-card-body > div {
+                    > .mynah-syntax-highlighter {
+                        filter: contrast(1.15) brightness(0.85);
+                    }
+                    > h1,
+                    > h2,
+                    > h3,
+                    > h4 {
+                        &:first-child {
+                            margin-top: 0;
+                        }
+                    }
+                }
+                :hover::before {
+                    box-shadow: var(--mynah-shadow-card) !important;
+                }
             }
 
             > .mynah-chat-item-followup-question {
@@ -67,17 +87,55 @@
             }
             > .mynah-chat-item-card-related-content {
                 display: flex;
-                flex-flow: column wrap;
-                gap: var(--mynah-sizing-4);
-                overflow: visible;
+                flex-flow: column nowrap;
+                gap: var(--mynah-sizing-3);
+                overflow: hidden;
+                position: relative;
                 > .mynah-chat-item-card-related-content-title {
                     color: var(--mynah-color-text-weak);
                     font-size: var(--mynah-font-size-small);
                 }
-                > .mynah-card-compact {
+                > .mynah-chat-item-card-related-content-item {
                     max-width: 80%;
                 }
+                &:not(.expanded) {
+                    @include list-fader-bottom();
+                    > .mynah-chat-item-card-related-content-item {
+                        &:not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(4)) {
+                            display: none;
+                        }
+                        &:nth-child(4) {
+                            margin-bottom: calc(-1 * var(--mynah-sizing-5));
+                            pointer-events: none;
+                        }
+                    }
+                    + .mynah-chat-item-card-related-content-show-more {
+                        display: inline-flex;
+                        max-width: 80%;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        flex-flow: row nowrap;
+                        justify-content: center;
+                        align-items: center;
+                        pointer-events: all;
+                        cursor: pointer;
+                        z-index: 10000;
+                        margin-top: calc(-1 * var(--mynah-sizing-3));
+                        color: transparent;
+                        align-self: flex-start;
+                        > i {
+                            position: absolute;
+                            color: var(--mynah-color-text-default);
+                            font-size: var(--mynah-font-size-medium);
+                        }
+                    }
+                }
             }
+            > .mynah-chat-item-card-related-content-show-more {
+                display: none;
+            }
+            &.mynah-chat-item-system-prompt,
             &.mynah-chat-item-prompt {
                 padding-right: var(--mynah-sizing-2);
                 align-self: flex-end;
@@ -103,13 +161,22 @@
                     display: none;
                 }
             }
-            &.mynah-chat-item-answer {
+            &.mynah-chat-item-system-prompt{
+                > .mynah-card {
+                    box-shadow: 0px 0px 5px -5px var(--mynah-color-status-warning);
+                    &:after {
+                        background-color: var(--mynah-color-status-warning);
+                    }
+                }
+            }
+            &.mynah-chat-item-answer,
+            &.mynah-chat-item-answer-stream {
                 padding-left: var(--mynah-sizing-2);
                 > .mynah-chat-item-card-icon-wrapper {
                     align-self: flex-start;
                 }
                 > .mynah-chat-item-card-related-content {
-                    > .mynah-card-compact {
+                    > .mynah-chat-item-card-related-content-item > .mynah-card-compact {
                         border: none;
                         opacity: 1;
                         padding: 0;
@@ -186,16 +253,19 @@
             overflow: hidden;
             box-sizing: border-box;
             gap: var(--mynah-sizing-2);
+            align-items: center;
             > .mynah-chat-prompt-input {
+                font-family: "Amazon Ember";
                 flex: 1 1 0;
                 border: none;
+                resize: none;
                 background-color: rgba(0, 0, 0, 0);
                 font-size: var(--mynah-font-size-large);
                 color: var(--mynah-color-text-input);
                 outline: none;
                 width: 100%;
 
-                &:placeholder-shown + button {
+                &:placeholder-shown + button + button{
                     pointer-events: none;
                     opacity: 0.5;
                 }

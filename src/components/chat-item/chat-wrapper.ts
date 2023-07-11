@@ -4,8 +4,9 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUIDataStore } from '../../helper/store';
-import { ChatItem } from '../../static';
+import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 
@@ -13,6 +14,7 @@ export class ChatWrapper {
   private readonly chatItemsContainer: ExtendedHTMLElement;
   private readonly spinner: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
+  private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
   constructor () {
     const initChatItems = MynahUIDataStore.getInstance().getValue('chatItems');
@@ -36,6 +38,11 @@ export class ChatWrapper {
         this.spinner.addClass('loading');
       } else {
         this.spinner.removeClass('loading');
+      }
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (body) => {
+      if (this.lastChatItemCard !== null) {
+        this.lastChatItemCard.updateAnswerBody(body);
       }
     });
 
@@ -66,6 +73,12 @@ export class ChatWrapper {
   }
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
-    this.chatItemsContainer.insertChild('afterbegin', new ChatItemCard({ chatItem }).render);
+    const chatItemCard = new ChatItemCard({ chatItem });
+    if (chatItem.type === ChatItemType.ANSWER_STREAM) {
+      this.lastChatItemCard = chatItemCard;
+    } else {
+      this.lastChatItemCard = null;
+    }
+    this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
   };
 }

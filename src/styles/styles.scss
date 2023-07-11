@@ -1,6 +1,7 @@
 @import "mixins";
 @import "variables";
 @import "animations";
+@import "font-face";
 @import "dark";
 
 // Components
@@ -22,6 +23,7 @@
 
 body,
 html {
+    font-family: 'Amazon Ember';
     background-color: var(--mynah-color-bg);
     height: 100%;
     width: 100%;

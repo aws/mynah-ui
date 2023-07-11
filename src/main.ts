@@ -92,6 +92,7 @@ export interface MynahUIProps {
       end?: { row: string; column?: string };
     }
   ) => void;
+  onClearChat?: () => void;
   onResetStore?: () => void;
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
   onChatPrompt?: (prompt: ChatPrompt) => void;
@@ -188,6 +189,12 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: ChatPrompt) => {
       if (this.props.onChatPrompt !== undefined) {
         this.props.onChatPrompt(data);
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CLEAR_CHAT, () => {
+      if (this.props.onClearChat !== undefined) {
+        this.props.onClearChat();
       }
     });
 
@@ -420,6 +427,14 @@ export class MynahUI {
     MynahUIDataStore.getInstance().updateStore({
       chatItems
     });
+  };
+
+  /**
+   * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
+   * @param body new body stream as string.
+   */
+  public updateLastChatAnswerStream = (body: string): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, body);
   };
 
   /**
