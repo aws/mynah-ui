@@ -29,6 +29,7 @@ import {
   NotificationType,
   ChatItem,
   ChatPrompt,
+  ChatItemType,
 } from './static';
 import { I18N } from './translations/i18n';
 import './styles/styles.scss';
@@ -431,6 +432,16 @@ export class MynahUI {
     MynahUIDataStore.getInstance().updateStore({
       chatItems
     });
+  };
+
+  public getLastChatAnswer = (): ChatItem | undefined => {
+    const chatItems: ChatItem[] = MynahUIDataStore.getInstance().getValue('chatItems');
+    for (let i = chatItems.length - 1; i >= 0; i--) {
+      if (chatItems[i].type === ChatItemType.ANSWER) {
+        return chatItems[i];
+      }
+    }
+    return undefined;
   };
 
   /**
