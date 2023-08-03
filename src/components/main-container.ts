@@ -6,61 +6,63 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
 import { SearchPayloadCodeSelection, Suggestion } from '../static';
-import { ChatWrapper } from './chat-item/chat-wrapper';
+import { NavivationTabs } from './navigation-tabs';
 import { SuggestionCard } from './suggestion-card/suggestion-card';
+import { SuggestionSkeleton } from './suggestion-card/suggestion-skeleton';
+import { ToggleOption } from './toggle';
 
 export interface MainContainerProps {
-  onScroll?: (e: Event) => void;
+  onNavigationTabChange?: (selectedTab: string) => void;
 }
 export class MainContainer {
-  private readonly chatWrapper: ExtendedHTMLElement;
+  private readonly navTabs: NavivationTabs;
   private readonly cardsWrapper: ExtendedHTMLElement;
   private readonly skeletonWrapper: ExtendedHTMLElement;
+  private readonly mainContainer: ExtendedHTMLElement;
   public render: ExtendedHTMLElement;
   constructor (props: MainContainerProps) {
-    this.chatWrapper = new ChatWrapper().render;
     this.cardsWrapper = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-cards-wrapper' ],
-      events: { ...(props.onScroll !== undefined && { scroll: props.onScroll }) },
       persistent: true,
     });
-    this.skeletonWrapper = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-skeleton-wrapper' ],
-      persistent: true,
-      children: [
-        new SuggestionCard({
-          suggestion: {
-            title: 'Lorem ipsum dolor sit',
-            url: '#mynahisawesome.com/mynah',
-            body: `<p>Lorem ipsum dolor sit amet</p>
-                      <p>Nunc sit amet nulla sit amet est rhoncus ornare. In sodales tristique finibus.</p>
-                      <pre><code>lorem sit amet</code></pre>`,
-            id: 'skeleton-1',
-            context: [ 'skl-con-1', 'skl-con-2' ],
-          },
-        }).render.addClass('mynah-card-skeleton'),
-        new SuggestionCard({
-          suggestion: {
-            title: 'Lorem ipsum dolor sit',
-            url: '#mynahismorenadmoreawesome.com/mynah',
-            body: `<p>Lorem ipsum dolor sit amet</p>
-                      <pre><code>sit amet
-                      loremasdasdsadasdasdasd
-                      asd</code></pre>`,
-            id: 'skeleton-2',
-            context: [ 'skl-con-3', 'skl-con-4' ],
-          },
-        }).render.addClass('mynah-card-skeleton'),
-      ],
+    this.skeletonWrapper = new SuggestionSkeleton().render;
+
+    this.navTabs = new NavivationTabs({
+      onChange: (selectedTab: string) => {
+        if (props.onNavigationTabChange !== undefined) {
+          MynahUIDataStore.getInstance().updateStore({
+            navigationTabs: MynahUIDataStore.getInstance().getValue('navigationTabs').map((navTab: ToggleOption) => ({ ...navTab, selected: navTab.value === selectedTab }))
+          }, true);
+          props.onNavigationTabChange(selectedTab);
+        }
+
+        MynahUIDataStore.getInstance().updateStore({
+          ...(MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true
+            ? {
+                headerInfo: {
+                  content: ''
+                },
+                showingHistoricalSearch: false,
+              }
+            : {}),
+        });
+      }
     });
 
+    this.mainContainer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-main' ],
+      children: [ this.cardsWrapper, this.skeletonWrapper ],
+    });
     this.render = DomBuilder.getInstance().build({
       persistent: true,
       type: 'div',
-      classNames: [ 'mynah-main' ],
-      children: [ this.chatWrapper, this.cardsWrapper, this.skeletonWrapper ],
+      classNames: [ 'mynah-main-wrapper' ],
+      children: [
+        this.navTabs.render,
+        this.mainContainer,
+      ],
     });
 
     MynahUIDataStore.getInstance().subscribe('suggestions', this.updateCards);
@@ -72,9 +74,9 @@ export class MainContainer {
   }
 
   clearCards = (): void => {
-    this.render.removeClass('mynah-hide-content').removeClass('mynah-show-content');
+    this.mainContainer.removeClass('mynah-hide-content').removeClass('mynah-show-content');
     setTimeout(() => {
-      this.render.addClass('mynah-hide-content');
+      this.mainContainer.addClass('mynah-hide-content');
     }, 10);
   };
 
@@ -110,7 +112,7 @@ export class MainContainer {
       }
 
       setTimeout(() => {
-        this.render.addClass('mynah-show-content');
+        this.mainContainer.addClass('mynah-show-content');
       }, 10);
     }, 250);
   };

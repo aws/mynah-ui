@@ -5,22 +5,16 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
+import { NavivationTabsProps } from './navigation-tabs';
 import { Toggle, ToggleOption } from './toggle';
 
-export const getSelectedTabValueFromStore = (): string => {
-  return MynahUIDataStore.getInstance().getValue('navigationTabs').find((navTab: ToggleOption) => navTab.selected).value;
-};
-
-export interface NavivationTabsProps {
-  onChange?: (selectedValue: string) => void;
-}
-export class NavivationTabs {
+export class NavivationTabsVertical {
   render: ExtendedHTMLElement;
   private readonly props: NavivationTabsProps;
 
   constructor (props: NavivationTabsProps) {
     this.props = props;
-    const tabs = MynahUIDataStore.getInstance().getValue('navigationTabs');
+    const tabs = MynahUIDataStore.getInstance().getValue('sideNavigationTabs');
     MynahUIDataStore.getInstance().subscribe('loading', this.setLoading);
 
     this.render = DomBuilder.getInstance().build({
@@ -30,7 +24,7 @@ export class NavivationTabs {
       children: this.getTabsRender(tabs),
     });
 
-    MynahUIDataStore.getInstance().subscribe('navigationTabs', (newTabs: ToggleOption[]) => {
+    MynahUIDataStore.getInstance().subscribe('sideNavigationTabs', (newTabs: ToggleOption[]) => {
       this.render.update({
         children: this.getTabsRender(newTabs)
       });
@@ -49,8 +43,9 @@ export class NavivationTabs {
     ? [
         new Toggle({
           onChange: this.props.onChange,
-          type: 'tabs',
-          name: 'mynah-nav-tabs',
+          type: 'switch',
+          name: 'mynah-side-nav-tabs',
+          direction: 'vertical',
           options: tabs,
           value: tabs.find(tab => tab.selected)?.value
         }).render

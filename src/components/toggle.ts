@@ -5,11 +5,13 @@
 
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { Icon, MynahIcons } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay/overlay';
 
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;
   color?: string;
+  icon?: MynahIcons;
   disabled?: boolean;
   selected?: boolean;
   value: string;
@@ -86,7 +88,15 @@ class ToggleOptionItem {
             for: `${this.props.name}-${this.props.value}`,
             ...(this.props.color !== undefined ? { style: `background-color:${this.props.color}` } : {}),
           },
-          children: [ this.props.label ?? '' ],
+          children: [
+            this.props.icon !== undefined ? new Icon({ icon: props.icon as MynahIcons }).render : '',
+            this.props.label !== undefined
+              ? {
+                  type: 'span',
+                  children: [ this.props.label ]
+                }
+              : ''
+          ],
         },
       ],
     });
@@ -95,6 +105,7 @@ class ToggleOptionItem {
 export interface ToggleProps {
   options: ToggleOption[];
   type?: 'switch' | 'tabs';
+  direction?: 'horizontal' | 'vertical';
   value?: string | null;
   name: string;
   disabled?: boolean;
@@ -107,14 +118,14 @@ export class Toggle {
   private readonly relocateTransitioner: ExtendedHTMLElement;
 
   constructor (props: ToggleProps) {
-    this.props = { type: 'switch', ...props };
+    this.props = { type: 'switch', direction: 'horizontal', ...props };
     this.relocateTransitioner = DomBuilder.getInstance().build({
       type: 'span',
       classNames: [ 'mynah-toggle-indicator-transitioner' ],
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-toggle-container', `mynah-toggle-type-${this.props.type as string}` ],
+      classNames: [ 'mynah-toggle-container', `mynah-toggle-type-${this.props.type as string}`, `mynah-toggle-direction-${this.props.direction as string}` ],
       attributes: { disabled: props.disabled === true ? 'disabled' : '' },
       children: this.getChildren(props.value),
     });

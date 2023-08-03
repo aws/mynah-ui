@@ -5,7 +5,6 @@
 
 import { MainContainer } from './components/main-container';
 import { Notification } from './components/notification/notification';
-import { SearchCard } from './components/search-block/search-card';
 import { MynahConfig } from './helper/config';
 import { DomBuilder, ExtendedHTMLElement } from './helper/dom';
 import {
@@ -36,7 +35,9 @@ import './styles/styles.scss';
 import { EmptyMynahUIDataModel, MynahUIDataStore } from './helper/store';
 import { MynahUIGlobalEvents } from './helper/events';
 import { getTimeDiff } from './helper/date-time';
-import { getSelectedTabValueFromStore, NavivationTabs } from './components/navigation-tabs';
+import { getSelectedTabValueFromStore } from './components/navigation-tabs';
+import { ChatWrapper } from './components/chat-item/chat-wrapper';
+import { NavivationTabsVertical } from './components/navigation-tabs-vertical';
 import { ToggleOption } from './components/toggle';
 
 export {
@@ -64,6 +65,12 @@ export {
   ChatItemType,
   ChatPrompt
 } from './static';
+export {
+  ToggleOption
+} from './components/toggle';
+export {
+  MynahIcons
+} from './components/icon';
 
 export {
   transformPayloadData,
@@ -100,6 +107,7 @@ export interface MynahUIProps {
   onFollowUpClicked?: (followUp: string) => void;
   onSuggestionAttachedToChatPrompt?: (attachment: Suggestion) => void;
   onNavigationTabChange?: (selectedTab: string) => void;
+  onSideNavigationTabChange?: (selectedTab: string) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
   onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
   onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
@@ -116,9 +124,10 @@ export interface MynahUIProps {
 export class MynahUI {
   private readonly props: MynahUIProps;
   private readonly wrapper: ExtendedHTMLElement;
-  private readonly searchCard: SearchCard;
-  private readonly navTabs: NavivationTabs;
+  private readonly sideNav: ExtendedHTMLElement;
+
   private readonly mainContainer: MainContainer;
+  private readonly chatWrapper: ChatWrapper;
   private readonly config: MynahConfig;
 
   constructor (props: MynahUIProps) {
@@ -130,15 +139,45 @@ export class MynahUI {
 
     I18N.getInstance(this.config.getConfig('language'));
 
+    this.chatWrapper = new ChatWrapper();
+    this.mainContainer = new MainContainer({
+      onNavigationTabChange: props.onNavigationTabChange,
+    });
+
+    this.sideNav = DomBuilder.getInstance().build(
+      {
+        type: 'div',
+        attributes: {
+          id: 'mynah-side-nav'
+        },
+        children: [
+          new NavivationTabsVertical({
+            onChange: (selectedTab: string) => {
+              if (props.onSideNavigationTabChange !== undefined) {
+                MynahUIDataStore.getInstance().updateStore({
+                  sideNavigationTabs: MynahUIDataStore.getInstance().getValue('sideNavigationTabs').map((navTab: ToggleOption) => ({ ...navTab, selected: navTab.value === selectedTab }))
+                }, true);
+                props.onSideNavigationTabChange(selectedTab);
+              }
+            }
+          }).render
+        ]
+      }
+    );
+
     this.wrapper = DomBuilder.getInstance().createPortal(
       MynahPortalNames.WRAPPER,
       {
         type: 'div',
-        classNames: [ 'chat' ],
         attributes: {
           id: 'mynah-wrapper',
           mode: MynahUIDataStore.getInstance().getValue('mode')
         },
+        children: [
+          this.chatWrapper.render,
+          this.mainContainer.render,
+          this.sideNav
+        ]
       },
       'afterbegin'
     );
@@ -147,38 +186,6 @@ export class MynahUI {
       this.wrapper.setAttribute('mode', newMode);
     });
 
-    this.searchCard = new SearchCard();
-    this.navTabs = new NavivationTabs({
-      onChange: (selectedTab: string) => {
-        if (props.onNavigationTabChange !== undefined) {
-          MynahUIDataStore.getInstance().updateStore({
-            navigationTabs: MynahUIDataStore.getInstance().getValue('navigationTabs').map((navTab: ToggleOption) => ({ ...navTab, selected: navTab.value === selectedTab }))
-          }, true);
-          props.onNavigationTabChange(selectedTab);
-        }
-
-        MynahUIDataStore.getInstance().updateStore({
-          ...(MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true
-            ? {
-                headerInfo: {
-                  content: ''
-                },
-                showingHistoricalSearch: false,
-              }
-            : {}),
-        });
-      }
-    });
-    this.mainContainer = new MainContainer({
-      onScroll: (e: Event) => this.searchCard.setFolded((e.target as HTMLElement).scrollTop > 0),
-    });
-
-    this.wrapper
-      .insertChild('beforeend', this.searchCard.render)
-      .insertChild('beforeend', this.navTabs.render)
-      .insertChild('beforeend', this.mainContainer.render);
-
-    this.searchCard.addFocusOnInput();
     this.addGlobalListeners();
     setTimeout(() => {
       if (this.props.onReady !== undefined) {

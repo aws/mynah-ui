@@ -9,9 +9,10 @@
     box-shadow: var(--mynah-shadow-generic);
     z-index: 100;
 
-    #mynah-wrapper[mode="chat"] > &,
     .mynah-search-block-ready-to-fold + & {
-        box-shadow: var(--mynah-shadow-generic), 0 25px 20px 5px var(--mynah-color-bg);
+        box-shadow:
+            var(--mynah-shadow-generic),
+            0 25px 20px 5px var(--mynah-color-bg);
     }
 
     > .mynah-toggle-container {
@@ -29,5 +30,56 @@
     &.mynah-nav-tabs-loading,
     &.mynah-nav-tabs-loading * {
         pointer-events: none;
+    }
+}
+
+#mynah-side-nav {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: auto;
+    z-index: 9999;
+    width: calc(2 * var(--mynah-sizing-12));
+    padding: var(--mynah-sizing-3) var(--mynah-sizing-2) var(--mynah-sizing-3) var(--mynah-sizing-2);
+    box-sizing: border-box;
+
+    .mynah-nav-tabs-wrapper {
+        height: 100%;
+        > .mynah-toggle-container {
+            justify-content: flex-start;
+            padding: var(--mynah-sizing-2);
+            > span {
+                white-space: normal;
+                text-align: center;
+                border-radius: var((--mynah-card-radius));
+                width: 100%;
+                > label {
+                    width: 100%;
+                    padding: var(--mynah-sizing-3) var(--mynah-sizing-2) var(--mynah-sizing-2) var(--mynah-sizing-2);
+                    display: flex;
+                    flex-flow: column nowrap;
+                    gap: var(--mynah-sizing-1);
+                    > span {
+                        font-size: var(--mynah-font-size-xsmall);
+                        white-space: normal;
+                        max-width: 100%;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                    > i {
+                        font-size: var(--mynah-font-size-large);
+                    }
+                }
+            }
+        }
+        &:empty {
+            display: none;
+        }
+
+        &.mynah-nav-tabs-loading,
+        &.mynah-nav-tabs-loading * {
+            pointer-events: none;
+        }
     }
 }

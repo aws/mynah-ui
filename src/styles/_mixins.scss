@@ -78,7 +78,7 @@
 }
 
 @mixin chatMode {
-    #mynah-wrapper[mode="chat"] & {
+    &[mode="chat"] {
         @content;
     }
 }

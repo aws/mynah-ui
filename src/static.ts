@@ -19,6 +19,7 @@ export interface MynahUIDataModel {
   matchPolicy?: SearchPayloadMatchPolicy;
   invisibleContextItems?: string[];
   navigationTabs?: ToggleOption[];
+  sideNavigationTabs?: ToggleOption[];
   userAddedContext?: string[];
   mode?: MynahMode;
   suggestions?: Suggestion[];
@@ -57,6 +58,7 @@ export enum MynahEventNames {
 
 export const MynahPortalNames = {
   WRAPPER: 'wrapper',
+  SIDE_NAV: 'sideNav',
   OVERLAY: 'overlay',
   FEEDBACK_FORM: 'feedbackForm',
 };

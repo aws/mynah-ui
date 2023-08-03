@@ -101,6 +101,11 @@
             }
         }
     }
+
+    &.mynah-toggle-direction-vertical{
+        flex-flow: column nowrap;
+        gap: var(--mynah-sizing-3);
+    }
 }
 
 .mynah-toggle-disabled-tooltip-container {

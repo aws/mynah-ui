@@ -20,6 +20,7 @@ export class EmptyMynahUIDataModel {
       code: '',
       invisibleContextItems: [],
       navigationTabs: [],
+      sideNavigationTabs: [],
       autoCompleteSuggestions: [],
       searchHistory: [],
       showingHistoricalSearch: false,
