@@ -40,8 +40,8 @@
     bottom: 0;
     height: auto;
     z-index: 9999;
-    width: calc(2 * var(--mynah-sizing-12));
-    padding: var(--mynah-sizing-3) var(--mynah-sizing-2) var(--mynah-sizing-3) var(--mynah-sizing-2);
+    width: calc(2 * var(--mynah-sizing-10));
+    padding: var(--mynah-sizing-3) var(--mynah-sizing-1);
     box-sizing: border-box;
 
     .mynah-nav-tabs-wrapper {
@@ -56,12 +56,12 @@
                 width: 100%;
                 > label {
                     width: 100%;
-                    padding: var(--mynah-sizing-3) var(--mynah-sizing-2) var(--mynah-sizing-2) var(--mynah-sizing-2);
+                    padding: var(--mynah-sizing-3) var(--mynah-sizing-1);
                     display: flex;
                     flex-flow: column nowrap;
                     gap: var(--mynah-sizing-1);
                     > span {
-                        font-size: var(--mynah-font-size-xsmall);
+                        font-size: var(--mynah-font-size-xxsmall);
                         white-space: normal;
                         max-width: 100%;
                         text-overflow: ellipsis;

@@ -137,7 +137,7 @@ export class DomBuilder {
   };
 
   clearChildren = function (this: ExtendedHTMLElement, removePersistent: boolean): ExtendedHTMLElement {
-    Array.from(this.children).forEach((child: ExtendedHTMLElement | Element) => {
+    Array.from(this.childNodes).forEach((child: ExtendedHTMLElement | ChildNode) => {
       if (
         removePersistent ||
                 // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions

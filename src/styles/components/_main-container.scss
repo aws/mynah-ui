@@ -18,7 +18,7 @@
             opacity: 1;
         }
         > .mynah-main-wrapper {
-            transform: translate3d(-10%, 0, 0);
+            transform: translate3d(-30%, 0, 0);
             opacity: 0;
             &,
             & * {
@@ -38,14 +38,14 @@
     > .mynah-chat-wrapper,
     > .mynah-main-wrapper {
         position: absolute;
-        transform: translate3d(10%, 0, 0);
+        transform: translate3d(30%, 0, 0);
         top: var(--mynah-sizing-3);
-        right: calc(2 * var(--mynah-sizing-12));
+        right: calc((2 * var(--mynah-sizing-10)) + var(--mynah-sizing-1));
         bottom: var(--mynah-sizing-3);
         left: var(--mynah-sizing-3);
         width: auto;
         height: auto;
-        transition: var(--mynah-long-transition);
+        transition: var(--mynah-pretty-long-transition);
     }
     > .mynah-chat-wrapper {
         opacity: 0;
@@ -61,6 +61,38 @@
         box-sizing: border-box;
         transform: translate3d(0, 0, 0);
         opacity: 1;
+        gap: var(--mynah-sizing-3);
+
+        > .mynah-query-text-short-view {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: flex-start;
+            gap: var(--mynah-sizing-2);
+            padding: var(--mynah-sizing-5) var(--mynah-sizing-3);
+            border: 1px solid var(--mynah-color-border-default);
+            border-radius: var(--mynah-card-radius);
+            width: 100%;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-style: italic;
+            color: var(--mynah-color-text-weak);
+            > i {
+                font-size: var(--mynah-sizing-4);
+                flex-shrink: 0;
+            }
+            > .mynah-query-text-short-view-text {
+                flex: 1;
+                max-height: var(--mynah-sizing-8);
+                padding-bottom: var(--mynah-sizing-4);
+                margin-bottom: calc(-1 * var(--mynah-sizing-4));
+                font-size: var(--mynah-font-size-small);
+                overflow: hidden;
+                @include list-fader-bottom();
+                &:first-letter {
+                    text-transform: capitalize;
+                }
+            }
+        }
 
         > .mynah-main {
             display: flex;
@@ -71,7 +103,7 @@
             position: relative;
             > .mynah-skeleton-wrapper,
             > .mynah-cards-wrapper {
-                padding: var(--mynah-sizing-3) 0 var(--mynah-sizing-12) 0;
+                padding-bottom: var(--mynah-sizing-6);
                 display: flex;
                 flex-flow: column nowrap;
                 gap: var(--mynah-sizing-4);
@@ -87,6 +119,9 @@
                 flex: 1 1 0;
                 transform: translate3d(0, 0, 0);
                 opacity: 1;
+                &.mynah-cards-wrapper-scrolled {
+                    @include list-fader();
+                }
                 > .mynah-no-suggestion-indicator {
                     display: flex;
                     box-sizing: border-box;

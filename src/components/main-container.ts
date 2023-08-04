@@ -7,10 +7,12 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
 import { SearchPayloadCodeSelection, Suggestion } from '../static';
 import { NavivationTabs } from './navigation-tabs';
+import { QueryTextShortView } from './query-text-short-view';
 import { SuggestionCard } from './suggestion-card/suggestion-card';
 import { SuggestionSkeleton } from './suggestion-card/suggestion-skeleton';
 import { ToggleOption } from './toggle';
 
+const CARDS_WRAPPER_SCROLLED_CLASS = 'mynah-cards-wrapper-scrolled';
 export interface MainContainerProps {
   onNavigationTabChange?: (selectedTab: string) => void;
 }
@@ -24,6 +26,15 @@ export class MainContainer {
     this.cardsWrapper = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-cards-wrapper' ],
+      events: {
+        scroll: () => {
+          if (this.cardsWrapper.scrollTop > 0) {
+            this.cardsWrapper.addClass(CARDS_WRAPPER_SCROLLED_CLASS);
+          } else {
+            this.cardsWrapper.removeClass(CARDS_WRAPPER_SCROLLED_CLASS);
+          }
+        }
+      },
       persistent: true,
     });
     this.skeletonWrapper = new SuggestionSkeleton().render;
@@ -53,13 +64,17 @@ export class MainContainer {
     this.mainContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-main' ],
-      children: [ this.cardsWrapper, this.skeletonWrapper ],
+      children: [
+        this.cardsWrapper,
+        this.skeletonWrapper
+      ],
     });
     this.render = DomBuilder.getInstance().build({
       persistent: true,
       type: 'div',
       classNames: [ 'mynah-main-wrapper' ],
       children: [
+        new QueryTextShortView().render,
         this.navTabs.render,
         this.mainContainer,
       ],
@@ -83,6 +98,7 @@ export class MainContainer {
   updateCards = (suggestions: Suggestion[]): void => {
     setTimeout(() => {
       this.cardsWrapper.clear();
+      this.cardsWrapper.scrollTop = 0;
       if (suggestions.length === 0 && (MynahUIDataStore.getInstance().getValue('query') !== '' || (MynahUIDataStore.getInstance().getValue('codeSelection') as SearchPayloadCodeSelection).selectedCode !== '')) {
         this.cardsWrapper.insertChild(
           'beforeend',
