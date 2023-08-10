@@ -128,7 +128,8 @@ export enum ChatItemType {
   PROMPT = 'prompt',
   SYSTEM_PROMPT = 'system-prompt',
   ANSWER = 'answer',
-  ANSWER_STREAM = 'answer-stream'
+  ANSWER_STREAM = 'answer-stream',
+  ANSWER_PART = 'answer-part'
 }
 export interface ChatItem {
   body?: string;

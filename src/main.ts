@@ -453,6 +453,14 @@ export class MynahUI {
     });
   };
 
+  public cleanLastFollowUps = (): void => {
+    const paras = document.getElementsByClassName('mynah-chat-item-followup-question');
+
+    while (paras[0]) {
+      paras[0].parentNode?.removeChild(paras[0]);
+    }
+  };
+
   public getLastChatAnswer = (): ChatItem | undefined => {
     const chatItems: ChatItem[] = MynahUIDataStore.getInstance().getValue('chatItems');
     for (let i = chatItems.length - 1; i >= 0; i--) {
