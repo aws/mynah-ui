@@ -187,7 +187,7 @@ export class Toggle {
       if (this.props.onChange !== undefined) {
         this.props.onChange(value);
       }
-    }, 200);
+    }, 10);
   };
 
   setValue = (value: string): void => {

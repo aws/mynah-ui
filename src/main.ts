@@ -29,6 +29,7 @@ import {
   ChatItem,
   ChatPrompt,
   ChatItemType,
+  MynahMode,
 } from './static';
 import { I18N } from './translations/i18n';
 import './styles/styles.scss';
@@ -183,7 +184,18 @@ export class MynahUI {
     );
 
     MynahUIDataStore.getInstance().subscribe('mode', (newMode) => {
-      this.wrapper.setAttribute('mode', newMode);
+      if (newMode === MynahMode.SEARCH) {
+        const rect = this.wrapper.querySelector('.mynah-chat-item-prompt')?.getBoundingClientRect();
+        const effectedItems: HTMLElement[] = Array.from(this.mainContainer.render.querySelectorAll('.mynah-query-text-short-view,.mynah-nav-tabs-wrapper,.mynah-main'));
+        if (rect !== undefined && rect.top > 0) {
+          effectedItems.forEach(node => {
+            node.setAttribute('style', `transform: translate3d(0, ${rect.y - 9}px, 0) scale(1, 1.05);`);
+          });
+        }
+      }
+      setTimeout(() => {
+        this.wrapper.setAttribute('mode', newMode);
+      }, 10);
     });
 
     this.addGlobalListeners();

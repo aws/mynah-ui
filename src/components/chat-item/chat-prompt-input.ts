@@ -19,10 +19,26 @@ export class ChatPromptInput {
   private readonly promptTextInput: ExtendedHTMLElement;
   private readonly sendButton: ExtendedHTMLElement;
   private readonly clearButton: ExtendedHTMLElement;
+  private readonly loading: boolean;
   private attachment?: Suggestion;
   constructor () {
+    this.loading = MynahUIDataStore.getInstance().getValue('loadingChat') as boolean;
     MynahUIDataStore.getInstance().subscribe('chatItems', (chatItems) => {
       this.promptTextInput.setAttribute('placeholder', chatItems.length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder);
+    });
+    MynahUIDataStore.getInstance().subscribe('loadingChat', (newLoadingValue: boolean) => {
+      if (newLoadingValue) {
+        this.promptTextInput.setAttribute('placeholder', '...');
+        this.promptTextInput.setAttribute('disabled', 'disabled');
+        this.clearButton.setAttribute('disabled', 'disabled');
+        this.sendButton.setAttribute('disabled', 'disabled');
+      } else {
+        const placeHolder = MynahUIDataStore.getInstance().getValue('chatItems').length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder;
+        this.promptTextInput.setAttribute('placeholder', placeHolder);
+        this.promptTextInput.removeAttribute('disabled');
+        this.clearButton.removeAttribute('disabled');
+        this.sendButton.removeAttribute('disabled');
+      }
     });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, (suggestion: Suggestion) => {
       this.attachment = suggestion;
@@ -58,6 +74,7 @@ export class ChatPromptInput {
       type: 'textarea',
       classNames: [ 'mynah-chat-prompt-input' ],
       attributes: {
+        ...(this.loading ? { disabled: 'disabled' } : {}),
         tabindex: '1',
         rows: '1',
         maxlength: '100000',
@@ -71,7 +88,10 @@ export class ChatPromptInput {
     });
     this.sendButton = new Button({
       classNames: [ 'mynah-icon-button', 'mynah-search-button' ],
-      attributes: { tabindex: '5' },
+      attributes: {
+        ...(this.loading ? { disabled: 'disabled' } : {}),
+        tabindex: '5'
+      },
       icon: DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-mutating-next-icon' ],
@@ -85,7 +105,10 @@ export class ChatPromptInput {
     }).render;
     this.clearButton = new Button({
       primary: false,
-      attributes: { tabindex: '5' },
+      attributes: {
+        ...(this.loading ? { disabled: 'disabled' } : {}),
+        tabindex: '4'
+      },
       icon: new Icon({ icon: MynahIcons.ELLIPSIS }).render,
       onClick: (e) => {
         const elm: HTMLElement = e.currentTarget as HTMLElement;

@@ -50,6 +50,7 @@ export interface SyntaxHighlighterProps {
   language?: SupportedCodingLanguagesType;
   keepHighlights?: boolean;
   showLineNumbers?: boolean;
+  block?: boolean;
   startingLineNumber?: number;
   showCopyOptions?: boolean;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
@@ -70,8 +71,6 @@ export class SyntaxHighlighter {
         .replace(new RegExp(ellipsis.start.markup, 'g'), ellipsis.start.textReplacement)
         .replace(new RegExp(ellipsis.end.markup, 'g'), ellipsis.end.textReplacement);
     }
-    // to get a clear plain text from html code string creating an element and getting innerText of it
-    codeMarkup = DomBuilder.getInstance().build({ type: 'div', innerHTML: codeMarkup }).innerText;
 
     // Converting to prism styled markup
     let styledCode = Prism.highlight(
@@ -95,7 +94,9 @@ export class SyntaxHighlighter {
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-syntax-highlighter' ],
+      classNames: [ 'mynah-syntax-highlighter',
+        ...(props.block !== true ? [ 'mynah-inline-code' ] : []),
+      ],
       children: [
         ...(props.showCopyOptions === true
           ? [
@@ -146,8 +147,8 @@ export class SyntaxHighlighter {
         {
           type: 'pre',
           classNames: [
-                        `language-${props.language ?? DEFAULT_LANG}`,
-                        ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
+            `language-${props.language ?? DEFAULT_LANG}`,
+            ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
           ],
           children: [
             this.code,

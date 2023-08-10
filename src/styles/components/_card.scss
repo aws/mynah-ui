@@ -271,48 +271,51 @@
             flex: 1;
             overflow: hidden;
             position: relative;
-            > * {
-                margin-block-start: 0.5em;
-                margin-block-end: 0.5em;
-                &:empty {
-                    display: none;
+            display: block;
+            > div {
+                > * {
+                    margin-block-start: 0.5em;
+                    margin-block-end: 0.5em;
+                    &:empty {
+                        display: none;
+                    }
                 }
-            }
-            > *:first-child {
-                margin-top: 0;
-            }
-            > *:last-child {
-                margin-bottom: 0;
-            }
-            * {
-                user-select: text;
-            }
-            .amzn-mynah-search-result-highlight {
-                background-color: var(--mynah-color-highlight);
-                color: var(--mynah-color-highlight-text);
-            }
-            .amzn-mynah-search-result-ellipsis {
-                display: inline-block;
-                position: relative;
-                padding-left: var(--mynah-sizing-2);
-                margin-top: var(--mynah-sizing-1);
-                margin-bottom: var(--mynah-sizing-1);
-                font-size: calc(1em + var(--mynah-sizing-1)) !important;
-                user-select: none;
-                cursor: default;
-                height: var(--mynah-sizing-7);
+                > *:first-child {
+                    margin-top: 0;
+                }
+                > *:last-child {
+                    margin-bottom: 0;
+                }
+                * {
+                    user-select: text;
+                }
+                .amzn-mynah-search-result-highlight {
+                    background-color: var(--mynah-color-highlight);
+                    color: var(--mynah-color-highlight-text);
+                }
+                .amzn-mynah-search-result-ellipsis {
+                    display: inline-block;
+                    position: relative;
+                    padding-left: var(--mynah-sizing-2);
+                    margin-top: var(--mynah-sizing-1);
+                    margin-bottom: var(--mynah-sizing-1);
+                    font-size: calc(1em + var(--mynah-sizing-1)) !important;
+                    user-select: none;
+                    cursor: default;
+                    height: var(--mynah-sizing-7);
 
-                &:before {
-                    pointer-events: none;
-                    content: "";
-                    width: calc(1em + var(--mynah-sizing-2));
-                    height: calc(1em + var(--mynah-sizing-2));
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    background-color: currentColor;
-                    opacity: 0.1;
-                    border-radius: var(--mynah-sizing-1);
+                    &:before {
+                        pointer-events: none;
+                        content: "";
+                        width: calc(1em + var(--mynah-sizing-2));
+                        height: calc(1em + var(--mynah-sizing-2));
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        background-color: currentColor;
+                        opacity: 0.1;
+                        border-radius: var(--mynah-sizing-1);
+                    }
                 }
             }
         }

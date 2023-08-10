@@ -37,6 +37,23 @@
     }
 }
 
+@keyframes from-center-top-neg-top {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(0, -75px, 0) scale(1, 1.15);
+    }
+}
+@keyframes from-neg-bottom-to-center {
+    from {
+        transform: translate3d(0, 75px, 0) scale(1, 1.15);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
 @keyframes shake {
     0% {
         transform: translate3d(0, 0, 0);

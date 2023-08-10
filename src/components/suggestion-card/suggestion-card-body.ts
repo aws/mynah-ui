@@ -18,6 +18,21 @@ import { SuggestionCard } from './suggestion-card';
 import MarkdownIt from 'markdown-it';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
+import sanitize from 'sanitize-html';
+
+const sanitizeOptions = {
+  allowedTags: [ 'b', 'i', 'em', 'pre', 'code', 'p', 'li', 'ul', 'span' ],
+  allowedAttributes: {
+    span: [
+      {
+        name: 'class',
+        multiple: false,
+        values: [ 'amzn-mynah-search-result-highlight' ],
+      },
+      'markdown',
+    ],
+  },
+};
 
 export interface SuggestionCardBodyProps {
   suggestion: Partial<Suggestion>;
@@ -78,7 +93,6 @@ export class SuggestionCardBody {
         const url = a.href;
 
         a.onclick = (event?: MouseEvent) => {
-          console.log(event);
           MynahUIGlobalEvents
             .getInstance()
             .dispatch(MynahEventNames.SUGGESTION_OPEN, {
@@ -96,7 +110,7 @@ export class SuggestionCardBody {
           if (node.nodeName === 'PRE' && classes !== null && classes.includes('language-')) {
             language = classes.replace('language-', '');
           }
-          return this.processNode(node, {}, language);
+          return this.processNode(node, suggestion, language);
         })
       });
     }
@@ -128,11 +142,14 @@ export class SuggestionCardBody {
     if ((elementFromNode.tagName?.toLowerCase() === 'pre' && elementFromNode.querySelector('code') !== null) ||
       elementFromNode.tagName?.toLowerCase() === 'code'
     ) {
+      const isBlockCode = elementFromNode.tagName?.toLowerCase() === 'pre' || elementFromNode.innerHTML.match(/\r|\n/) !== null;
+
       return new SyntaxHighlighter({
         codeStringWithMarkup: (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? '',
         language: matchingLanguage,
         keepHighlights: true,
-        showCopyOptions: true,
+        showCopyOptions: isBlockCode,
+        block: isBlockCode,
         onCopiedToClipboard: (type, text) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, { suggestionId: suggestion?.url ?? '', type, text });
         },
@@ -140,7 +157,7 @@ export class SuggestionCardBody {
     }
 
     elementFromNode.childNodes.forEach((child) => {
-      elementFromNode.replaceChild(this.processNode(child as HTMLElement), child);
+      elementFromNode.replaceChild(this.processNode(child as HTMLElement, suggestion), child);
     });
 
     return elementFromNode;
@@ -151,7 +168,7 @@ export class SuggestionCardBody {
       ...(Array.from(
         DomBuilder.getInstance().build({
           type: 'div',
-          innerHTML: props.suggestion.body,
+          innerHTML: `<div>${sanitize(props.suggestion.body as string, sanitizeOptions)}</div>`,
         }).childNodes
       ).map(node => {
         return this.processNode(node as HTMLElement, props.suggestion, this.matchingLanguage);

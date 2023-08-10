@@ -1,3 +1,5 @@
+$smoothbezier: cubic-bezier(0.250, 0, 0.000, 1.000);
+$smoothduration: 400ms;
 #mynah-wrapper {
     display: block;
     margin: 0 auto;
@@ -14,12 +16,34 @@
 
     &[mode="chat"] {
         > .mynah-chat-wrapper {
-            transform: translate3d(0, 0, 0);
-            opacity: 1;
+            > .mynah-chat-items-container,
+            > .mynah-chat-prompt-wrapper {
+                opacity: 1;
+                transform: translate3d(0, 0px, 0);
+            }
+            > .mynah-chat-items-container {
+                transition-delay: 60ms;
+            }
+            > .mynah-chat-prompt-wrapper {
+                transition-delay: 45ms;
+            }
         }
         > .mynah-main-wrapper {
-            transform: translate3d(-30%, 0, 0);
-            opacity: 0;
+            > .mynah-query-text-short-view,
+            > .mynah-nav-tabs-wrapper,
+            > .mynah-main {
+                opacity: 0;
+                transform: translate3d(0, 75px, 0) scale(1, 1.1);
+            }
+            > .mynah-query-text-short-view {
+                transition-delay: 30ms;
+            }
+            > .mynah-nav-tabs-wrapper {
+                transition-delay: 15ms;
+            }
+            > .mynah-main {
+                transition-delay: 0ms;
+            }
             &,
             & * {
                 pointer-events: none;
@@ -28,9 +52,41 @@
     }
     &:not([mode="chat"]) {
         > .mynah-chat-wrapper {
+            > .mynah-chat-items-container,
+            > .mynah-chat-prompt-wrapper {
+                opacity: 0;
+                transform: translate3d(0, -75px, 0) scale(1, 1.1);
+            }
+            > .mynah-chat-items-container {
+                transition-delay: 30ms;
+            }
+            > .mynah-chat-prompt-wrapper {
+                transition-delay: 45ms;
+            }
+
             &,
             & * {
                 pointer-events: none;
+            }
+        }
+        > .mynah-main-wrapper {
+            > .mynah-query-text-short-view,
+            > .mynah-nav-tabs-wrapper,
+            > .mynah-main {
+                opacity: 1;
+                transform: translate3d(0, 0px, 0) !important;
+            }
+
+            > .mynah-query-text-short-view {
+                transition:
+                    transform $smoothduration ($smoothduration / 12) $smoothbezier,
+                    opacity ($smoothduration - 100ms) 0ms $smoothbezier;
+            }
+            > .mynah-nav-tabs-wrapper {
+                transition-delay: ($smoothduration / 11);
+            }
+            > .mynah-main {
+                transition-delay: ($smoothduration / 10);
             }
         }
     }
@@ -38,19 +94,25 @@
     > .mynah-chat-wrapper,
     > .mynah-main-wrapper {
         position: absolute;
-        transform: translate3d(30%, 0, 0);
         top: var(--mynah-sizing-3);
         right: calc((2 * var(--mynah-sizing-10)) + var(--mynah-sizing-1));
         bottom: var(--mynah-sizing-3);
         left: var(--mynah-sizing-3);
         width: auto;
         height: auto;
-        transition: var(--mynah-pretty-long-transition);
     }
     > .mynah-chat-wrapper {
-        opacity: 0;
         display: flex;
         flex-flow: column nowrap;
+
+        > .mynah-chat-items-container,
+        > .mynah-chat-prompt-wrapper {
+            transition: all $smoothduration $smoothbezier;
+            transform-origin: top center;
+        }
+        > .mynah-chat-prompt-wrapper {
+            transition-delay: 10ms;
+        }
     }
     > .mynah-main-wrapper {
         position: absolute;
@@ -59,37 +121,54 @@
         margin: 0 auto;
         max-width: 1024px;
         box-sizing: border-box;
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-        gap: var(--mynah-sizing-3);
+
+        > .mynah-query-text-short-view,
+        > .mynah-nav-tabs-wrapper,
+        > .mynah-main {
+            transition: all $smoothduration $smoothbezier;
+            transform-origin: top center;
+        }
+        > .mynah-nav-tabs-wrapper {
+            transition-delay: 10ms;
+        }
+        > .mynah-main {
+            transition-delay: 20ms;
+        }
 
         > .mynah-query-text-short-view {
             display: flex;
             flex-flow: row nowrap;
             align-items: flex-start;
             gap: var(--mynah-sizing-2);
-            padding: var(--mynah-sizing-5) var(--mynah-sizing-3);
-            border: 1px solid var(--mynah-color-border-default);
-            border-radius: var(--mynah-card-radius);
             width: 100%;
             overflow: hidden;
             box-sizing: border-box;
-            font-style: italic;
-            color: var(--mynah-color-text-weak);
-            > i {
-                font-size: var(--mynah-sizing-4);
-                flex-shrink: 0;
+            justify-content: flex-end;
+            z-index: 100;
+            & + .mynah-nav-tabs-wrapper {
+                box-shadow: 20px -20px 24px -20px rgba(0, 0, 0, 0.15);
             }
             > .mynah-query-text-short-view-text {
-                flex: 1;
-                max-height: var(--mynah-sizing-8);
-                padding-bottom: var(--mynah-sizing-4);
-                margin-bottom: calc(-1 * var(--mynah-sizing-4));
-                font-size: var(--mynah-font-size-small);
                 overflow: hidden;
-                @include list-fader-bottom();
-                &:first-letter {
-                    text-transform: capitalize;
+                max-width: 90%;
+                max-height: var(--mynah-sizing-14);
+                @include list-fader-bottom(var(--mynah-sizing-16));
+                > .mynah-chat-item-card {
+                    display: inline;
+                    .mynah-chat-item-card-related-content-show-more,
+                    .mynah-chat-item-card-related-content {
+                        display: none;
+                    }
+                    .mynah-card {
+                        background-color: var(--mynah-card-bg);
+                        box-shadow: 0px 0px 5px -5px var(--mynah-color-button);
+                        white-space: pre-wrap;
+                        padding: var(--mynah-sizing-4);
+                        &:after {
+                            background-color: var(--mynah-color-button);
+                            opacity: 0.07;
+                        }
+                    }
                 }
             }
         }
@@ -103,6 +182,7 @@
             position: relative;
             > .mynah-skeleton-wrapper,
             > .mynah-cards-wrapper {
+                padding-top: var(--mynah-sizing-3);
                 padding-bottom: var(--mynah-sizing-6);
                 display: flex;
                 flex-flow: column nowrap;
@@ -111,13 +191,23 @@
                 overflow: hidden;
                 position: relative;
                 height: 100%;
-                transition: var(--mynah-long-transition);
+                transition: opacity 200ms linear;
+                > .mynah-card {
+                    animation-duration: $smoothduration;
+                    animation-timing-function: $smoothbezier;
+                    animation-fill-mode: backwards;
+                    transform-origin: center top;
+                    @for $i from 1 through 150 {
+                        &:nth-child(#{$i}) {
+                            animation-delay: $i * 5ms;
+                        }
+                    }
+                }
             }
             > .mynah-cards-wrapper {
                 overflow-x: hidden;
                 overflow-y: auto;
                 flex: 1 1 0;
-                transform: translate3d(0, 0, 0);
                 opacity: 1;
                 &.mynah-cards-wrapper-scrolled {
                     @include list-fader();
@@ -142,24 +232,34 @@
                 height: 100%;
                 z-index: 100;
                 pointer-events: none;
-                transform: translate3d(-10%, 0, 0);
                 opacity: 0;
             }
             &.mynah-hide-content {
                 > .mynah-cards-wrapper {
-                    animation: move-to-right 750ms cubic-bezier(0.25, 0.5, 0, 1) both;
+                    opacity: 0;
+                    > .mynah-card {
+                        animation-name: from-center-top-neg-top;
+                    }
                 }
                 > .mynah-skeleton-wrapper {
-                    animation: move-to-middle 750ms cubic-bezier(0.25, 0.5, 0, 1) both;
+                    opacity: 1;
+                    > .mynah-card {
+                        animation-name: from-neg-bottom-to-center;
+                    }
                 }
             }
             &.mynah-show-content {
                 > .mynah-cards-wrapper {
-                    animation: move-to-middle 750ms cubic-bezier(0.25, 0.5, 0, 1) both;
+                    opacity: 1;
+                    > .mynah-card {
+                        animation-name: from-neg-bottom-to-center;
+                    }
                 }
                 > .mynah-skeleton-wrapper {
-                    transition-delay: 450ms;
-                    animation: move-to-right 750ms cubic-bezier(0.25, 0.5, 0, 1) both;
+                    opacity: 0;
+                    > .mynah-card {
+                        animation-name: from-center-top-neg-top;
+                    }
                 }
             }
         }

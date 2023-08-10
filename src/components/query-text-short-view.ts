@@ -5,7 +5,8 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
-import { Icon, MynahIcons } from './icon';
+import { ChatItemType } from '../static';
+import { ChatItemCard } from './chat-item/chat-item-card';
 export class QueryTextShortView {
   render: ExtendedHTMLElement;
   private readonly textBlock: ExtendedHTMLElement;
@@ -16,7 +17,16 @@ export class QueryTextShortView {
         'mynah-query-text-short-view-text'
       ],
       children: [
-        MynahUIDataStore.getInstance().getValue('query')
+        new ChatItemCard({
+          chatItem: {
+            type: ChatItemType.PROMPT,
+            relatedContent: {
+              title: false,
+              content: []
+            },
+            body: `<div>${MynahUIDataStore.getInstance().getValue('query') as string}</div>`
+          }
+        }).render
       ],
     });
     this.render = DomBuilder.getInstance().build({
@@ -25,14 +35,24 @@ export class QueryTextShortView {
         'mynah-query-text-short-view'
       ],
       children: [
-        new Icon({ icon: MynahIcons.SEARCH }).render,
         this.textBlock
       ],
     });
 
     MynahUIDataStore.getInstance().subscribe('query', (query) => {
       this.textBlock.clear();
-      this.textBlock.update({ children: [ query ] });
+      this.textBlock.update({
+        children: [ new ChatItemCard({
+          chatItem: {
+            type: ChatItemType.PROMPT,
+            relatedContent: {
+              title: false,
+              content: []
+            },
+            body: `<div>${query as string}</div>`
+          }
+        }).render ]
+      });
     });
   }
 }

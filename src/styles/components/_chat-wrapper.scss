@@ -9,7 +9,7 @@
         overflow-x: hidden;
         overflow-y: auto;
         flex-flow: column-reverse nowrap;
-        gap: var(--mynah-sizing-4);
+        gap: var(--mynah-sizing-3);
         align-items: flex-start;
         padding-bottom: var(--mynah-sizing-9);
         padding-top: var(--mynah-sizing-7);
@@ -137,7 +137,6 @@
             }
             &.mynah-chat-item-system-prompt,
             &.mynah-chat-item-prompt {
-                padding-right: var(--mynah-sizing-2);
                 align-self: flex-end;
                 > .mynah-chat-item-card-icon-wrapper {
                     align-self: flex-end;

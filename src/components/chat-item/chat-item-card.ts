@@ -81,7 +81,6 @@ export class ChatItemCard {
                       const matchingSuggestion = [ ...MynahUIDataStore.getInstance().getValue('chatItems').map(
                         (chatItem: ChatItem) => chatItem.relatedContent?.content)
                       ].flat().find((relatedContent?: Suggestion) => relatedContent?.url === url);
-                      console.log(matchingSuggestion);
                       if (matchingSuggestion !== undefined) {
                         this.showLinkPreview(e, matchingSuggestion);
                       }
