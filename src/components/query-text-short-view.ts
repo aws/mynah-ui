@@ -16,18 +16,7 @@ export class QueryTextShortView {
       classNames: [
         'mynah-query-text-short-view-text'
       ],
-      children: [
-        new ChatItemCard({
-          chatItem: {
-            type: ChatItemType.PROMPT,
-            relatedContent: {
-              title: false,
-              content: []
-            },
-            body: `<div>${MynahUIDataStore.getInstance().getValue('query') as string}</div>`
-          }
-        }).render
-      ],
+      children: [],
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -39,20 +28,26 @@ export class QueryTextShortView {
       ],
     });
 
-    MynahUIDataStore.getInstance().subscribe('query', (query) => {
+    MynahUIDataStore.getInstance().subscribe('chatMessageOnTopOfSearchResults', (chatMessageOnTopOfSearchResults) => {
       this.textBlock.clear();
-      this.textBlock.update({
-        children: [ new ChatItemCard({
-          chatItem: {
-            type: ChatItemType.PROMPT,
-            relatedContent: {
-              title: false,
-              content: []
-            },
-            body: `<div>${query as string}</div>`
-          }
-        }).render ]
-      });
+      if (chatMessageOnTopOfSearchResults !== '') {
+        this.textBlock.update({
+          children: [ new ChatItemCard({
+            chatItem: {
+              type: ChatItemType.PROMPT,
+              relatedContent: {
+                title: false,
+                content: []
+              },
+              body: `<div>${chatMessageOnTopOfSearchResults as string}</div>`
+            }
+          }).render ]
+        });
+      } else {
+        this.textBlock.update({
+          children: []
+        });
+      }
     });
   }
 }

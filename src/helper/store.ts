@@ -18,6 +18,7 @@ export class EmptyMynahUIDataModel {
       liveSearchState: LiveSearchState.STOP,
       query: '',
       code: '',
+      chatMessageOnTopOfSearchResults: '',
       invisibleContextItems: [],
       navigationTabs: [],
       sideNavigationTabs: [],

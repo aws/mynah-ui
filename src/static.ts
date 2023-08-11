@@ -13,6 +13,7 @@ export interface MynahUIDataModel {
   liveSearchState?: LiveSearchState;
   liveSearchAnimation?: boolean;
   query?: string;
+  chatMessageOnTopOfSearchResults?: string;
   code?: string;
   codeSelection?: SearchPayloadCodeSelection;
   codeQuery?: SearchPayloadCodeQuery;
