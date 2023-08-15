@@ -7,6 +7,7 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUIDataStore } from '../../helper/store';
 import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
+import MarkdownIt from 'markdown-it';
 
 export interface ChatItemFollowUpProps {chatItem: ChatItem}
 export class ChatItemFollowUpContainer {
@@ -14,6 +15,8 @@ export class ChatItemFollowUpContainer {
   render: ExtendedHTMLElement;
   constructor (props: ChatItemFollowUpProps) {
     this.chatItem = props.chatItem;
+    const md = new MarkdownIt();
+    md.options.html = true;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-followup-question' ],
@@ -51,6 +54,22 @@ export class ChatItemFollowUpContainer {
           )) as DomBuilderObject[]
         },
       ]
+    });
+
+    Array.from(this.render.getElementsByClassName('mynah-chat-item-followup-question-option')).forEach(option => {
+      option.innerHTML = md.render(option.innerHTML).replace('<p>', '').replace('</p>', '');
+    });
+    Array.from(this.render.getElementsByTagName('a')).forEach(a => {
+      const url = a.href;
+
+      a.onclick = (event?: MouseEvent) => {
+        MynahUIGlobalEvents
+          .getInstance()
+          .dispatch(MynahEventNames.SUGGESTION_OPEN, {
+            suggestion: { id: url, url },
+            event,
+          });
+      };
     });
   }
 }
