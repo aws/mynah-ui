@@ -487,6 +487,10 @@ export class MynahUI {
     MynahUIDataStore.getInstance().updateStore({ ...data });
   };
 
+  public getMode = (): MynahMode | undefined => {
+    return MynahUIDataStore.getInstance().getValue('mode');
+  };
+
   /**
    * Sets store defaults to use while clearing the store
    * To clear the defaults, send `null`
