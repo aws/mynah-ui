@@ -26,12 +26,10 @@ export class SuggestionCardHeader {
       type: 'div',
       classNames: [ 'mynah-card-header', ...((thumbnail != null) ? [ 'mynah-card-header-with-source-thumbnail' ] : []) ],
       children: [
-        ...((thumbnail != null)
-          ? [ {
-              type: 'span',
-              classNames: [ 'mynah-source-thumbnail', thumbnail ]
-            } ]
-          : []),
+        {
+          type: 'span',
+          classNames: [ 'mynah-source-thumbnail', thumbnail ?? 'default' ]
+        },
         {
           type: 'div',
           classNames: [ 'mynah-card-title-wrapper' ],

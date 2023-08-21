@@ -15,14 +15,15 @@ import { findLanguageFromSuggestion } from '../../helper/find-language';
 import { SuggestionCardRelevanceVote } from './suggestion-card-relevance-vote';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { SuggestionCard } from './suggestion-card';
-import MarkdownIt from 'markdown-it';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import sanitize from 'sanitize-html';
+import { marked } from 'marked';
 
 const sanitizeOptions = {
-  allowedTags: [ 'b', 'i', 'em', 'pre', 'code', 'p', 'li', 'ul', 'span' ],
+  allowedTags: [ 'b', 'i', 'em', 'pre', 'code', 'p', 'li', 'ul', 'span', 'a' ],
   allowedAttributes: {
+    a: [ 'href' ],
     span: [
       {
         name: 'class',
@@ -86,9 +87,7 @@ export class SuggestionCardBody {
   private readonly processNode = (node: HTMLElement, suggestion?: Partial<Suggestion>, matchingLanguage?: string): HTMLElement => {
     const elementFromNode: HTMLElement = node;
     if (elementFromNode.tagName?.toLowerCase() === 'span' && elementFromNode.hasAttribute('markdown')) {
-      const md = new MarkdownIt();
-      const mdToHTML = md.render(elementFromNode.innerHTML);
-      elementFromNode.innerHTML = mdToHTML;
+      elementFromNode.innerHTML = marked(elementFromNode.innerHTML);
       Array.from(elementFromNode.getElementsByTagName('a')).forEach(a => {
         const url = a.href;
 
@@ -163,28 +162,26 @@ export class SuggestionCardBody {
     return elementFromNode;
   };
 
-  private readonly getCardBodyChildren = (props: SuggestionCardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
-    return [
-      ...(Array.from(
-        DomBuilder.getInstance().build({
-          type: 'div',
-          innerHTML: `<div>${sanitize(props.suggestion.body as string, sanitizeOptions)}</div>`,
-        }).childNodes
-      ).map(node => {
-        return this.processNode(node as HTMLElement, props.suggestion, this.matchingLanguage);
-      })),
-      ...(props.suggestion.type === 'ApiDocsSuggestion' && props.suggestion.metadata?.canonicalExample !== undefined
-        ? [ new SuggestionCard({
-            suggestion: {
-              title: 'Example',
-              id: '',
-              context: [],
-              ...(props.suggestion.metadata as CanonicalExample)?.canonicalExample,
-            }
-          }).render ]
-        : [])
-    ];
-  };
+  private readonly getCardBodyChildren = (props: SuggestionCardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => [
+    ...(Array.from(
+      DomBuilder.getInstance().build({
+        type: 'div',
+        innerHTML: `<div>${sanitize(marked(props.suggestion.body as string), sanitizeOptions)}</div>`,
+      }).childNodes
+    ).map(node => {
+      return this.processNode(node as HTMLElement, props.suggestion, this.matchingLanguage);
+    })),
+    ...(props.suggestion.type === 'ApiDocsSuggestion' && props.suggestion.metadata?.canonicalExample !== undefined
+      ? [ new SuggestionCard({
+          suggestion: {
+            title: 'Example',
+            id: '',
+            context: [],
+            ...(props.suggestion.metadata as CanonicalExample)?.canonicalExample,
+          }
+        }).render ]
+      : [])
+  ];
 
   public readonly updateCardBody = (body: string): void => {
     this.cardBody.update({

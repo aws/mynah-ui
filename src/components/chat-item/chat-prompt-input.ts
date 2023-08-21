@@ -83,7 +83,7 @@ export class ChatPromptInput {
         value: '',
       },
       events: {
-        keyup: this.handleInputKeyup.bind(this),
+        keydown: this.handleInputKeyup.bind(this),
       },
     });
     this.sendButton = new Button({

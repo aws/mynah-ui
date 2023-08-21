@@ -143,6 +143,10 @@ export interface ChatItem {
     title: string | boolean;
     content: Suggestion[];
   };
+  suggestions?: {
+    title: string | boolean;
+    suggestions: Suggestion[];
+  };
 }
 
 export interface ChatPrompt {

@@ -21,7 +21,7 @@ const ENGAGEMENT_DURATION_LIMIT = 3000;
 const ENGAGEMENT_MIN_SELECTION_DISTANCE = 6;
 const ENGAGEMENT_MIN_CLICK_DURATION = 300;
 
-export interface SuggestionCardProps {suggestion: Suggestion; compact?: boolean; showFooterButtons?: boolean}
+export interface SuggestionCardProps {suggestion: Suggestion; compact?: 'withBody' | true; showFooterButtons?: boolean}
 export class SuggestionCard {
   private engagementStartTime: number = -1;
   private totalMouseDistanceTraveled: { x: number; y: number } = { x: 0, y: 0 };
@@ -36,7 +36,7 @@ export class SuggestionCard {
       attributes: {
         'data-filter': props.suggestion.context?.map(context => `${context}, `).join(''),
       },
-      classNames: [ 'mynah-card', props.compact === true ? 'mynah-card-compact' : '' ],
+      classNames: [ 'mynah-card', props.compact !== undefined ? 'mynah-card-compact' : '', props.compact === 'withBody' ? 'mynah-card-compact-with-body' : '' ],
       events: {
         mouseenter: e => {
           if (this.engagementStartTime === -1) {

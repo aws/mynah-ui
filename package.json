@@ -19,8 +19,9 @@
     "lint": "npx eslint \"./**\""
   },
   "dependencies": {
+    "@types/marked": "^5.0.1",
     "i18n-ts": "1.0.5",
-    "markdown-it": "^13.0.1",
+    "marked": "^7.0.3",
     "prismjs": "1.29.0",
     "sanitize-html": "^2.11.0"
   },
@@ -31,7 +32,6 @@
     "@types/estree": "0.0.49",
     "@types/glob": "7.1.3",
     "@types/json-schema": "7.0.7",
-    "@types/markdown-it": "^12.2.3",
     "@types/node": "17.0.29",
     "@types/prismjs": "1.26.0",
     "@types/sanitize-html": "^2.9.0",

@@ -1,6 +1,6 @@
 :root {
-    font-size: var(--vscode-editor-font-size);
-    font-family: var(--vscode-editor-font-family);
+    font-size: 14px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
     --mynah-sizing-base: 0.25rem;
     --mynah-sizing-half: calc(var(--mynah-sizing-base) / 2);

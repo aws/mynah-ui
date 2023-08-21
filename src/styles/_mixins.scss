@@ -57,6 +57,19 @@
     mask-image: $listFader;
     mask-size: 100% 100%;
 }
+@mixin list-fader-right($height: var(--mynah-sizing-6)) {
+    position: relative;
+    $listFader: linear-gradient(
+        to right,
+        black 30%,
+        black calc(100% - $height),
+        transparent 100%
+    );
+    -webkit-mask-image: $listFader;
+    -webkit-mask-size: 100% 100%;
+    mask-image: $listFader;
+    mask-size: 100% 100%;
+}
 
 @mixin context-pill-group-background {
     &:after,

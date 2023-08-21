@@ -13,12 +13,15 @@ import { SuggestionCard } from '../suggestion-card/suggestion-card';
 import { SuggestionCardBody } from '../suggestion-card/suggestion-card-body';
 import { ChatItemFollowUpContainer } from './chat-item-followup';
 
-export interface ChatItemCardProps {chatItem: ChatItem}
+const PREVIEW_DELAY = 500;
 
+export interface ChatItemCardProps {chatItem: ChatItem}
 export class ChatItemCard {
   private readonly chatItem: ChatItem;
   private readonly relatedContentWrapper: ExtendedHTMLElement | string;
+  private readonly referencesWrapper: ExtendedHTMLElement | string;
   private relatedContentPreview: Overlay | null;
+  private relatedContentPreviewTimeout: ReturnType<typeof setTimeout>;
   render: ExtendedHTMLElement;
   suggestionCardBody: SuggestionCardBody;
   chatAvatar: ExtendedHTMLElement;
@@ -33,20 +36,20 @@ export class ChatItemCard {
         this.chatAvatar.remove();
       }
     });
-    this.relatedContentWrapper = this.chatItem.relatedContent !== undefined
+    this.relatedContentWrapper = this.chatItem.suggestions !== undefined
       ? DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-card-related-content',
-          this.chatItem.relatedContent.content !== undefined && this.chatItem.relatedContent.content.length < 3 ? 'expanded' : '' ],
+          this.chatItem.suggestions.suggestions !== undefined && this.chatItem.suggestions.suggestions.length < 3 ? 'expanded' : '' ],
         children: [
-          ...(this.chatItem.relatedContent.title !== false
+          ...(this.chatItem.suggestions.title !== false
             ? [ {
                 type: 'span',
                 classNames: [ 'mynah-chat-item-card-related-content-title' ],
-                children: [ typeof this.chatItem.relatedContent.title === 'string' ? this.chatItem.relatedContent.title : I18N.getInstance().texts.relatedContent ],
+                children: [ typeof this.chatItem.suggestions.title === 'string' ? this.chatItem.suggestions.title : I18N.getInstance().texts.relatedContent ],
               } ]
             : []),
-          ...this.chatItem.relatedContent.content.map(suggestion => DomBuilder.getInstance().build({
+          ...this.chatItem.suggestions.suggestions.map(suggestion => DomBuilder.getInstance().build({
             type: 'div',
             classNames: [ 'mynah-chat-item-card-related-content-item' ],
             events: {
@@ -56,9 +59,41 @@ export class ChatItemCard {
               mouseleave: this.hideLinkPreview,
             },
             children: [
-              new SuggestionCard({ suggestion, compact: true }).render
+              new SuggestionCard({ suggestion, compact: 'withBody' }).render
             ]
           })),
+        ]
+      })
+      : '';
+    this.referencesWrapper = this.chatItem.relatedContent !== undefined
+      ? DomBuilder.getInstance().build({
+        type: 'div',
+        classNames: [ 'mynah-chat-item-card-references-wrapper' ],
+        children: [
+          ...(this.chatItem.relatedContent.title !== false
+            ? [ {
+                type: 'span',
+                classNames: [ 'mynah-chat-item-card-references-title' ],
+                children: [ typeof this.chatItem.relatedContent.title === 'string' ? this.chatItem.relatedContent.title : I18N.getInstance().texts.relatedContent ],
+              } ]
+            : []),
+          {
+            type: 'div',
+            classNames: [ 'mynah-chat-item-card-references-container' ],
+            children: this.chatItem.relatedContent.content.map(suggestion => DomBuilder.getInstance().build({
+              type: 'div',
+              classNames: [ 'mynah-chat-item-card-reference-item' ],
+              events: {
+                mouseenter: (e) => {
+                  this.showLinkPreview(e, suggestion);
+                },
+                mouseleave: this.hideLinkPreview,
+              },
+              children: [
+                new SuggestionCard({ suggestion, compact: true }).render
+              ]
+            }))
+          },
         ]
       })
       : '';
@@ -92,6 +127,7 @@ export class ChatItemCard {
               ],
             } ]
           : ''),
+        this.referencesWrapper,
         this.relatedContentWrapper,
         {
           type: 'div',
@@ -117,28 +153,32 @@ export class ChatItemCard {
 
   private readonly showLinkPreview = (e: MouseEvent, suggestion: Suggestion): void => {
     if (this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) {
-      const elm: HTMLElement = e.target as HTMLElement;
-      this.relatedContentPreview = new Overlay({
-        background: false,
-        closeOnOutsideClick: false,
-        referenceElement: elm,
-        dimOutside: false,
-        verticalDirection: OverlayVerticalDirection.END_TO_TOP,
-        horizontalDirection: OverlayHorizontalDirection.TO_RIGHT,
-        children: [
-          {
-            type: 'div',
-            classNames: [ 'mynah-chat-related-content-preview-wrapper' ],
-            children: [
-              new SuggestionCard({ suggestion }).render
-            ]
-          }
-        ],
-      });
+      clearTimeout(this.relatedContentPreviewTimeout);
+      this.relatedContentPreviewTimeout = setTimeout(() => {
+        const elm: HTMLElement = e.target as HTMLElement;
+        this.relatedContentPreview = new Overlay({
+          background: false,
+          closeOnOutsideClick: false,
+          referenceElement: elm,
+          dimOutside: false,
+          verticalDirection: OverlayVerticalDirection.END_TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.TO_RIGHT,
+          children: [
+            {
+              type: 'div',
+              classNames: [ 'mynah-chat-related-content-preview-wrapper' ],
+              children: [
+                new SuggestionCard({ suggestion }).render
+              ]
+            }
+          ],
+        });
+      }, PREVIEW_DELAY);
     }
   };
 
   private readonly hideLinkPreview = (): void => {
+    clearTimeout(this.relatedContentPreviewTimeout);
     if (this.relatedContentPreview !== null) {
       this.relatedContentPreview?.close();
       this.relatedContentPreview = null;

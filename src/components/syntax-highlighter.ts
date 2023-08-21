@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { DomBuilder, ExtendedHTMLElement, htmlDecode } from '../helper/dom';
 import * as Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-python';
@@ -62,7 +62,7 @@ export class SyntaxHighlighter {
 
   constructor (props: SyntaxHighlighterProps) {
     this.onCopiedToClipboard = props.onCopiedToClipboard;
-    let codeMarkup = props.codeStringWithMarkup;
+    let codeMarkup = htmlDecode(props.codeStringWithMarkup);
     // Replacing the markups with plain text replacement blocks
     if (props.keepHighlights === true) {
       codeMarkup = codeMarkup

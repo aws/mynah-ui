@@ -266,3 +266,9 @@ export class DomBuilder {
   getPortal = (portalName: string): ExtendedHTMLElement => this.portals[portalName];
   removePortal = (portalName: string): void => this.portals[portalName].remove();
 }
+
+export const htmlDecode = (input: string): string => {
+  const e = document.createElement('textarea');
+  e.innerHTML = input;
+  return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue ?? input;
+};

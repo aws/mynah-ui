@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { marked } from 'marked';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUIDataStore } from '../../helper/store';
 import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
-import MarkdownIt from 'markdown-it';
 
 export interface ChatItemFollowUpProps {chatItem: ChatItem}
 export class ChatItemFollowUpContainer {
@@ -15,8 +15,6 @@ export class ChatItemFollowUpContainer {
   render: ExtendedHTMLElement;
   constructor (props: ChatItemFollowUpProps) {
     this.chatItem = props.chatItem;
-    const md = new MarkdownIt();
-    md.options.html = true;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-followup-question' ],
@@ -57,7 +55,7 @@ export class ChatItemFollowUpContainer {
     });
 
     Array.from(this.render.getElementsByClassName('mynah-chat-item-followup-question-option')).forEach(option => {
-      option.innerHTML = md.render(option.innerHTML).replace('<p>', '').replace('</p>', '');
+      option.innerHTML = marked(option.innerHTML).replace('<p>', '').replace('</p>', '');
     });
     Array.from(this.render.getElementsByTagName('a')).forEach(a => {
       const url = a.href;
