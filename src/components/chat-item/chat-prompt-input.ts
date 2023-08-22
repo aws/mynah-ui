@@ -13,15 +13,27 @@ import { MynahUIDataStore } from '../../helper/store';
 import { SuggestionCard } from '../suggestion-card/suggestion-card';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 
+export interface CharPromptInputProps {
+  onStopChatResponse?: () => void;
+}
 export class ChatPromptInput {
   render: ExtendedHTMLElement;
   private readonly attachmentWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
-  private readonly sendButton: ExtendedHTMLElement;
+  private sendButton: ExtendedHTMLElement;
   private readonly clearButton: ExtendedHTMLElement;
   private readonly loading: boolean;
+  private readonly onStopChatResponse = (): void => {};
   private attachment?: Suggestion;
-  constructor () {
+  constructor (props?: CharPromptInputProps) {
+    this.onStopChatResponse = () => {
+      if (props?.onStopChatResponse !== undefined) {
+        props?.onStopChatResponse();
+        const newButton = this.getButton(false, false);
+        this.sendButton.replaceWith(newButton);
+        this.sendButton = newButton;
+      }
+    };
     this.loading = MynahUIDataStore.getInstance().getValue('loadingChat') as boolean;
     MynahUIDataStore.getInstance().subscribe('chatItems', (chatItems) => {
       this.promptTextInput.setAttribute('placeholder', chatItems.length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder);
@@ -31,14 +43,16 @@ export class ChatPromptInput {
         this.promptTextInput.setAttribute('placeholder', '...');
         this.promptTextInput.setAttribute('disabled', 'disabled');
         this.clearButton.setAttribute('disabled', 'disabled');
-        this.sendButton.setAttribute('disabled', 'disabled');
       } else {
         const placeHolder = MynahUIDataStore.getInstance().getValue('chatItems').length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder;
         this.promptTextInput.setAttribute('placeholder', placeHolder);
         this.promptTextInput.removeAttribute('disabled');
         this.clearButton.removeAttribute('disabled');
-        this.sendButton.removeAttribute('disabled');
       }
+
+      const newButton = this.getButton(newLoadingValue, props?.onStopChatResponse !== undefined);
+      this.sendButton.replaceWith(newButton);
+      this.sendButton = newButton;
     });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, (suggestion: Suggestion) => {
       this.attachment = suggestion;
@@ -86,23 +100,7 @@ export class ChatPromptInput {
         keydown: this.handleInputKeyup.bind(this),
       },
     });
-    this.sendButton = new Button({
-      classNames: [ 'mynah-icon-button', 'mynah-search-button' ],
-      attributes: {
-        ...(this.loading ? { disabled: 'disabled' } : {}),
-        tabindex: '5'
-      },
-      icon: DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-mutating-next-icon' ],
-        children: [
-          new Icon({ icon: MynahIcons.RIGHT_OPEN }).render
-        ],
-      }),
-      onClick: () => {
-        this.triggerSearch();
-      },
-    }).render;
+    this.sendButton = this.getButton(this.loading, props?.onStopChatResponse !== undefined);
     this.clearButton = new Button({
       primary: false,
       attributes: {
@@ -168,6 +166,28 @@ export class ChatPromptInput {
       ],
     });
   }
+
+  private readonly getButton = (loading: boolean, isStoppable: boolean): ExtendedHTMLElement => new Button({
+    classNames: [ 'mynah-icon-button', 'mynah-search-button', ...(loading && isStoppable ? [ 'mynah-search-button-cancel-state' ] : []) ],
+    attributes: {
+      ...(loading && !isStoppable ? { disabled: 'disabled' } : {}),
+      tabindex: '5'
+    },
+    icon: DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-mutating-next-icon' ],
+      children: [
+        new Icon({ icon: loading && isStoppable ? MynahIcons.CANCEL : MynahIcons.RIGHT_OPEN }).render
+      ],
+    }),
+    onClick: () => {
+      if (isStoppable && loading) {
+        this.onStopChatResponse();
+      } else {
+        this.triggerSearch();
+      }
+    },
+  }).render;
 
   private readonly handleInputKeyup = (e: KeyboardEvent): void => {
     if (e.key === KeyMap.ENTER && !e.shiftKey) {

@@ -519,6 +519,11 @@
         padding: var(--mynah-sizing-2);
         gap: var(--mynah-sizing-1);
         background-color: transparent;
+        &,
+        &:after,
+        &:before {
+            box-shadow: none;
+        }
         > .mynah-card-header {
             gap: var(--mynah-sizing-1);
             > .mynah-source-thumbnail {
@@ -563,7 +568,6 @@
                 border-radius: 0;
                 border: none;
                 margin-bottom: var(--mynah-sizing-3);
-                box-shadow: none;
                 padding: 0;
             }
 
@@ -574,7 +578,7 @@
                     display: -webkit-box;
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
-                    .mynah-syntax-highlighter{
+                    .mynah-syntax-highlighter {
                         display: none;
                     }
                     &,

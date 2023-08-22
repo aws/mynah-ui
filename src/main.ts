@@ -102,6 +102,7 @@ export interface MynahUIProps {
     }
   ) => void;
   onClearChat?: () => void;
+  onStopChatResponse?: () => void;
   onResetStore?: () => void;
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
   onChatPrompt?: (prompt: ChatPrompt) => void;
@@ -140,14 +141,18 @@ export class MynahUI {
 
     I18N.getInstance(this.config.getConfig('language'));
 
-    this.chatWrapper = new ChatWrapper();
+    this.chatWrapper = new ChatWrapper({ onStopChatResponse: props.onStopChatResponse });
     this.mainContainer = new MainContainer({
       onNavigationTabChange: props.onNavigationTabChange,
     });
 
+    const sideNavTabItems = MynahUIDataStore.getInstance().getValue('sideNavigationTabs');
     this.sideNav = DomBuilder.getInstance().build(
       {
         type: 'div',
+        classNames: [
+          ...(sideNavTabItems.length === 0 ? [ 'mynah-no-tabs' ] : []),
+        ],
         attributes: {
           id: 'mynah-side-nav'
         },
@@ -165,6 +170,13 @@ export class MynahUI {
         ]
       }
     );
+    MynahUIDataStore.getInstance().subscribe('sideNavigationTabs', (newTabs: ToggleOption[]) => {
+      if (newTabs.length === 0) {
+        this.sideNav.addClass('mynah-no-tabs');
+      } else {
+        this.sideNav.removeClass('mynah-no-tabs');
+      }
+    });
 
     this.wrapper = DomBuilder.getInstance().createPortal(
       MynahPortalNames.WRAPPER,
@@ -175,9 +187,9 @@ export class MynahUI {
           mode: MynahUIDataStore.getInstance().getValue('mode')
         },
         children: [
+          this.sideNav,
           this.chatWrapper.render,
-          this.mainContainer.render,
-          this.sideNav
+          this.mainContainer.render
         ]
       },
       'afterbegin'
@@ -454,11 +466,10 @@ export class MynahUI {
   };
 
   public cleanLastFollowUps = (): void => {
-    const paras = document.getElementsByClassName('mynah-chat-item-followup-question');
-
-    while (paras[0]) {
-      paras[0].parentNode?.removeChild(paras[0]);
-    }
+    const followUps = document.getElementsByClassName('mynah-chat-item-followup-question');
+    Array.from(followUps).forEach(followUp => {
+      followUp.remove();
+    });
   };
 
   public getLastChatAnswer = (): ChatItem | undefined => {

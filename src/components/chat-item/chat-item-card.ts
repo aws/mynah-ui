@@ -7,6 +7,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIDataStore } from '../../helper/store';
 import { ChatItem, ChatItemType, Suggestion } from '../../static';
 import { I18N } from '../../translations/i18n';
+import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { SuggestionCard } from '../suggestion-card/suggestion-card';
@@ -70,6 +71,28 @@ export class ChatItemCard {
         type: 'div',
         classNames: [ 'mynah-chat-item-card-references-wrapper' ],
         children: [
+          ...(this.chatItem.relatedContent.content.length > 2
+            ? [
+                new Button({
+                  classNames: [ 'mynah-chat-item-card-references-left-scroll-button', 'hidden' ],
+                  primary: false,
+                  onClick: () => {
+                    const container = (this.referencesWrapper as ExtendedHTMLElement).querySelector('.mynah-chat-item-card-references-container') as ExtendedHTMLElement;
+                    container.scrollLeft = container.scrollLeft - container.clientWidth / 5 * 2;
+                  },
+                  icon: new Icon({ icon: MynahIcons.LEFT_OPEN }).render
+                }).render,
+                new Button({
+                  classNames: [ 'mynah-chat-item-card-references-right-scroll-button' ],
+                  primary: false,
+                  onClick: () => {
+                    const container = (this.referencesWrapper as ExtendedHTMLElement).querySelector('.mynah-chat-item-card-references-container') as ExtendedHTMLElement;
+                    container.scrollLeft = container.scrollLeft + container.clientWidth / 5 * 2;
+                  },
+                  icon: new Icon({ icon: MynahIcons.RIGHT_OPEN }).render
+                }).render
+              ]
+            : []),
           ...(this.chatItem.relatedContent.title !== false
             ? [ {
                 type: 'span',
@@ -80,6 +103,25 @@ export class ChatItemCard {
           {
             type: 'div',
             classNames: [ 'mynah-chat-item-card-references-container' ],
+            events: {
+              scroll: (e) => {
+                const leftButton = (this.referencesWrapper as ExtendedHTMLElement).querySelector('.mynah-chat-item-card-references-left-scroll-button');
+                const rightButton = (this.referencesWrapper as ExtendedHTMLElement).querySelector('.mynah-chat-item-card-references-right-scroll-button');
+                const container = e.target as HTMLDivElement;
+                const maxScrollAmount = container.scrollWidth - container.clientWidth - 30;
+                if (container.scrollLeft > 0) {
+                  leftButton?.classList.remove('hidden');
+                } else {
+                  leftButton?.classList.add('hidden');
+                }
+
+                if (container.scrollLeft >= maxScrollAmount) {
+                  rightButton?.classList.add('hidden');
+                } else {
+                  rightButton?.classList.remove('hidden');
+                }
+              }
+            },
             children: this.chatItem.relatedContent.content.map(suggestion => DomBuilder.getInstance().build({
               type: 'div',
               classNames: [ 'mynah-chat-item-card-reference-item' ],

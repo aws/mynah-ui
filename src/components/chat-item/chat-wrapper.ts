@@ -10,13 +10,16 @@ import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 
+export interface ChatWrapperProps {
+  onStopChatResponse?: () => void;
+}
 export class ChatWrapper {
   private readonly chatItemsContainer: ExtendedHTMLElement;
   private readonly spinner: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
-  constructor () {
+  constructor (props?: ChatWrapperProps) {
     const initChatItems = MynahUIDataStore.getInstance().getValue('chatItems');
     if (initChatItems.length > 0) {
       initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
@@ -46,7 +49,9 @@ export class ChatWrapper {
       }
     });
 
-    this.promptInput = new ChatPromptInput().render;
+    this.promptInput = new ChatPromptInput({
+      onStopChatResponse: props?.onStopChatResponse
+    }).render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-items-container' ],

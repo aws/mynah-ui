@@ -43,6 +43,13 @@
     width: calc(2 * var(--mynah-sizing-10));
     padding: var(--mynah-sizing-3) var(--mynah-sizing-1);
     box-sizing: border-box;
+    &.mynah-no-tabs {
+        display: none;
+        & ~ .mynah-chat-wrapper,
+        & ~ .mynah-main-wrapper {
+            right: var(--mynah-sizing-1);
+        }
+    }
 
     .mynah-nav-tabs-wrapper {
         height: 100%;

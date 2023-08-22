@@ -96,15 +96,46 @@
                 gap: var(--mynah-sizing-2);
                 overflow: hidden;
                 position: relative;
+                > .mynah-button.mynah-chat-item-card-references-left-scroll-button,
+                > .mynah-button.mynah-chat-item-card-references-right-scroll-button {
+                    position: absolute;
+                    z-index: 10000;
+                    bottom: 0;
+                    opacity: 1;
+                    background-color: var(--mynah-color-bg);
+                    filter: none !important;
+                    height: calc(100% - var(--mynah-sizing-4));
+                    border-radius: 0;
+                    min-width: var(--mynah-sizing-4);
+                    padding: 0;
+                    transition: var(--mynah-long-transition);
+                    &.hidden {
+                        opacity: 0;
+                        pointer-events: none !important;
+                    }
+                }
+                > .mynah-button.mynah-chat-item-card-references-left-scroll-button {
+                    box-shadow: 10px 0 20px 5px var(--mynah-color-bg);
+                    left: 0;
+                }
+                > .mynah-button.mynah-chat-item-card-references-right-scroll-button {
+                    box-shadow: -10px 0 20px 5px var(--mynah-color-bg);
+                    right: 0;
+                }
                 > .mynah-chat-item-card-references-container {
                     display: flex;
                     overflow-x: auto;
                     overflow-y: hidden;
-                    gap: var(--mynah-sizing-2);
                     width: 100%;
-                    @include list-fader-right(var(--mynah-sizing-12));
+                    scroll-snap-type: x mandatory;
+                    scroll-behavior: smooth;
                     > .mynah-chat-item-card-reference-item {
-                        max-width: 40%;
+                        width: 40%;
+                        scroll-snap-align: start;
+                        &:not(:first-child) {
+                            padding-left: var(--mynah-sizing-9);
+                            margin-left: calc(-1 * var(--mynah-sizing-7));
+                        }
                         &:last-child {
                             margin-right: var(--mynah-sizing-12);
                         }
@@ -281,10 +312,12 @@
                 color: var(--mynah-color-text-input);
                 outline: none;
                 width: 100%;
-
-                &:placeholder-shown + button + button {
+                & + button + button.mynah-search-button-cancel-state {
+                    background-color: var(--mynah-color-code-text);
+                }
+                &:placeholder-shown + button + button:not([disabled]):not(.mynah-search-button-cancel-state) {
                     pointer-events: none;
-                    opacity: 0.5;
+                    opacity: 0.25;
                 }
             }
         }
