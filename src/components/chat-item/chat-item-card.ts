@@ -16,11 +16,15 @@ import { ChatItemFollowUpContainer } from './chat-item-followup';
 
 const PREVIEW_DELAY = 500;
 
-export interface ChatItemCardProps {chatItem: ChatItem}
+export interface ChatItemCardProps {
+  chatItem: ChatItem;
+  onShowAllWebResultsClick?: () => void;
+}
 export class ChatItemCard {
   private readonly chatItem: ChatItem;
   private readonly relatedContentWrapper: ExtendedHTMLElement | string;
   private readonly referencesWrapper: ExtendedHTMLElement | string;
+  private showMoreButtonBlock: ExtendedHTMLElement;
   private relatedContentPreview: Overlay | null;
   private relatedContentPreviewTimeout: ReturnType<typeof setTimeout>;
   render: ExtendedHTMLElement;
@@ -35,6 +39,31 @@ export class ChatItemCard {
         this.render.insertChild('afterbegin', this.chatAvatar);
       } else {
         this.chatAvatar.remove();
+      }
+    });
+
+    this.showMoreButtonBlock = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-item-card-related-content-show-more' ],
+      children: [
+        this.get3rdRelatedContentTextForWidth(),
+        new Icon({ icon: MynahIcons.DOWN_OPEN }).render
+      ],
+      events: {
+        click: () => {
+          const showAllButton = new Button({
+            classNames: [ 'mynah-chat-item-card-related-content-show-all' ],
+            onClick: () => {
+              if (props.onShowAllWebResultsClick !== undefined) {
+                props.onShowAllWebResultsClick();
+              }
+            },
+            label: 'Show all web results',
+          }).render;
+          this.showMoreButtonBlock.replaceWith(showAllButton);
+          this.showMoreButtonBlock = showAllButton;
+          (this.relatedContentWrapper as HTMLElement).classList.add('expanded');
+        }
       }
     });
     this.relatedContentWrapper = this.chatItem.suggestions !== undefined
@@ -171,19 +200,7 @@ export class ChatItemCard {
           : ''),
         this.referencesWrapper,
         this.relatedContentWrapper,
-        {
-          type: 'div',
-          classNames: [ 'mynah-chat-item-card-related-content-show-more' ],
-          children: [
-            this.get3rdRelatedContentTextForWidth(),
-            new Icon({ icon: MynahIcons.DOWN_OPEN }).render
-          ],
-          events: {
-            click: (e: MouseEvent) => {
-              (this.relatedContentWrapper as HTMLElement).classList.add('expanded');
-            }
-          }
-        },
+        this.showMoreButtonBlock,
         this.chatItem.followUp?.text !== undefined ? new ChatItemFollowUpContainer({ chatItem: this.chatItem }).render : '',
       ],
     });

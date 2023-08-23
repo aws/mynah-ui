@@ -201,6 +201,13 @@
             > .mynah-chat-item-card-related-content-show-more {
                 display: none;
             }
+            > .mynah-chat-item-card-related-content-show-all {
+                > span {
+                    font-size: var(--mynah-font-size-xsmall);
+                }
+                margin-top: calc(-1 * var(--mynah-sizing-4));
+                align-self: center;
+            }
             &.mynah-chat-item-system-prompt,
             &.mynah-chat-item-prompt {
                 align-self: flex-end;

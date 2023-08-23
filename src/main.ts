@@ -141,9 +141,17 @@ export class MynahUI {
 
     I18N.getInstance(this.config.getConfig('language'));
 
-    this.chatWrapper = new ChatWrapper({ onStopChatResponse: props.onStopChatResponse });
+    this.chatWrapper = new ChatWrapper({
+      onStopChatResponse: props.onStopChatResponse,
+      onShowAllWebResultsClick: () => {
+        this.sideNavigationTabChanged(MynahMode.SEARCH, true);
+      }
+    });
     this.mainContainer = new MainContainer({
       onNavigationTabChange: props.onNavigationTabChange,
+      onCloseButtonClick: () => {
+        this.sideNavigationTabChanged(MynahMode.CHAT, true);
+      }
     });
 
     const sideNavTabItems = MynahUIDataStore.getInstance().getValue('sideNavigationTabs');
@@ -158,14 +166,7 @@ export class MynahUI {
         },
         children: [
           new NavivationTabsVertical({
-            onChange: (selectedTab: string) => {
-              if (props.onSideNavigationTabChange !== undefined) {
-                MynahUIDataStore.getInstance().updateStore({
-                  sideNavigationTabs: MynahUIDataStore.getInstance().getValue('sideNavigationTabs').map((navTab: ToggleOption) => ({ ...navTab, selected: navTab.value === selectedTab }))
-                }, true);
-                props.onSideNavigationTabChange(selectedTab);
-              }
-            }
+            onChange: this.sideNavigationTabChanged
           }).render
         ]
       }
@@ -196,18 +197,7 @@ export class MynahUI {
     );
 
     MynahUIDataStore.getInstance().subscribe('mode', (newMode) => {
-      if (newMode === MynahMode.SEARCH) {
-        const rect = this.wrapper.querySelector('.mynah-chat-item-prompt')?.getBoundingClientRect();
-        const effectedItems: HTMLElement[] = Array.from(this.mainContainer.render.querySelectorAll('.mynah-query-text-short-view,.mynah-nav-tabs-wrapper,.mynah-main'));
-        if (rect !== undefined && rect.top > 0) {
-          effectedItems.forEach(node => {
-            node.setAttribute('style', `transform: translate3d(0, ${rect.y - 9}px, 0) scale(1, 1.05);`);
-          });
-        }
-      }
-      setTimeout(() => {
-        this.wrapper.setAttribute('mode', newMode);
-      }, 10);
+      this.wrapper.setAttribute('mode', newMode);
     });
 
     this.addGlobalListeners();
@@ -218,16 +208,31 @@ export class MynahUI {
     }, 1000);
   }
 
+  private readonly sideNavigationTabChanged = (selectedTab: string, informSubscribers?: boolean): void => {
+    if (this.props.onSideNavigationTabChange !== undefined) {
+      MynahUIDataStore.getInstance().updateStore({
+        sideNavigationTabs: MynahUIDataStore.getInstance().getValue('sideNavigationTabs').map((navTab: ToggleOption) => (
+          { ...navTab, selected: navTab.value === selectedTab }
+        ))
+      }, informSubscribers !== true);
+      this.props.onSideNavigationTabChange(selectedTab);
+    }
+  };
+
   private readonly addGlobalListeners = (): void => {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: ChatPrompt) => {
       if (this.props.onChatPrompt !== undefined) {
         this.props.onChatPrompt(data);
+        this.chatWrapper.removeLastShowAllWebResultsButton();
+        this.chatWrapper.removeLastFollowUps();
       }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (followUpName: string) => {
       if (this.props.onFollowUpClicked !== undefined) {
         this.props.onFollowUpClicked(followUpName);
+        this.chatWrapper.removeLastShowAllWebResultsButton();
+        this.chatWrapper.removeLastFollowUps();
       }
     });
 
@@ -462,13 +467,6 @@ export class MynahUI {
     chatItems.push(answer);
     MynahUIDataStore.getInstance().updateStore({
       chatItems
-    });
-  };
-
-  public cleanLastFollowUps = (): void => {
-    const followUps = document.getElementsByClassName('mynah-chat-item-followup-question');
-    Array.from(followUps).forEach(followUp => {
-      followUp.remove();
     });
   };
 

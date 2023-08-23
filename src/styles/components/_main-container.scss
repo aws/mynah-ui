@@ -1,4 +1,4 @@
-$smoothbezier: cubic-bezier(0.250, 0, 0.000, 1.000);
+$smoothbezier: cubic-bezier(0.25, 0, 0, 1);
 $smoothduration: 400ms;
 #mynah-wrapper {
     display: block;
@@ -16,34 +16,17 @@ $smoothduration: 400ms;
 
     &[mode="chat"] {
         > .mynah-chat-wrapper {
-            > .mynah-chat-items-container,
-            > .mynah-chat-prompt-wrapper {
-                opacity: 1;
-                transform: translate3d(0, 0px, 0);
-            }
-            > .mynah-chat-items-container {
-                transition-delay: 60ms;
-            }
-            > .mynah-chat-prompt-wrapper {
-                transition-delay: 45ms;
+            transform: translate3d(0, 0, 0);
+            transform-origin: top center;
+            opacity: 1;
+            &:after {
+                opacity: 0;
             }
         }
         > .mynah-main-wrapper {
-            > .mynah-query-text-short-view,
-            > .mynah-nav-tabs-wrapper,
-            > .mynah-main {
-                opacity: 0;
-                transform: translate3d(0, 75px, 0) scale(1, 1.1);
-            }
-            > .mynah-query-text-short-view {
-                transition-delay: 30ms;
-            }
-            > .mynah-nav-tabs-wrapper {
-                transition-delay: 15ms;
-            }
-            > .mynah-main {
-                transition-delay: 0ms;
-            }
+            transform: translate3d(0, 20vh, 0);
+            opacity: 0;
+
             &,
             & * {
                 pointer-events: none;
@@ -52,16 +35,11 @@ $smoothduration: 400ms;
     }
     &:not([mode="chat"]) {
         > .mynah-chat-wrapper {
-            > .mynah-chat-items-container,
-            > .mynah-chat-prompt-wrapper {
-                opacity: 0;
-                transform: translate3d(0, -75px, 0) scale(1, 1.1);
-            }
-            > .mynah-chat-items-container {
-                transition-delay: 30ms;
-            }
-            > .mynah-chat-prompt-wrapper {
-                transition-delay: 45ms;
+            transform: translate3d(0, 0px, 0) scale(0.95);
+            transform-origin: top center;
+            opacity: 0.25;
+            &:after {
+                opacity: 0.5;
             }
 
             &,
@@ -70,48 +48,45 @@ $smoothduration: 400ms;
             }
         }
         > .mynah-main-wrapper {
-            > .mynah-query-text-short-view,
-            > .mynah-nav-tabs-wrapper,
-            > .mynah-main {
-                opacity: 1;
-                transform: translate3d(0, 0px, 0) !important;
-            }
-
-            > .mynah-query-text-short-view {
-                transition:
-                    transform $smoothduration ($smoothduration / 12) $smoothbezier,
-                    opacity ($smoothduration - 100ms) 0ms $smoothbezier;
-            }
-            > .mynah-nav-tabs-wrapper {
-                transition-delay: ($smoothduration / 11);
-            }
-            > .mynah-main {
-                transition-delay: ($smoothduration / 10);
-            }
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
         }
     }
 
     > .mynah-chat-wrapper,
     > .mynah-main-wrapper {
+        transition: all 400ms cubic-bezier(0.25, 0, 0, 1);
         position: absolute;
-        top: var(--mynah-sizing-3);
-        right: calc((2 * var(--mynah-sizing-10)) + var(--mynah-sizing-1));
-        bottom: var(--mynah-sizing-3);
-        left: var(--mynah-sizing-3);
+        top: 0;
+        right: calc(2 * var(--mynah-sizing-9) + var(--mynah-sizing-1));
+        bottom: 0;
+        left: 0;
         width: auto;
         height: auto;
+        padding: var(--mynah-sizing-3);
     }
     > .mynah-chat-wrapper {
         display: flex;
         flex-flow: column nowrap;
-
-        > .mynah-chat-items-container,
-        > .mynah-chat-prompt-wrapper {
+        overflow: visible;
+        padding-top: 0;
+        &:after {
             transition: all $smoothduration $smoothbezier;
-            transform-origin: top center;
-        }
-        > .mynah-chat-prompt-wrapper {
-            transition-delay: 10ms;
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: auto;
+            height: auto;
+            background-color: black;
+            opacity: 0.15;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate3d(0, 0, 0) scale(2);
+            transform-origin: center center;
         }
     }
     > .mynah-main-wrapper {
@@ -121,18 +96,37 @@ $smoothduration: 400ms;
         margin: 0 auto;
         max-width: 1024px;
         box-sizing: border-box;
+        margin-left: var(--mynah-sizing-2);
+        margin-right: var(--mynah-sizing-2);
+        padding: var(--mynah-sizing-3);
+        border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+        border-top-right-radius: var(--mynah-card-radius);
+        border-top-left-radius: var(--mynah-card-radius);
+        border-bottom: none;
+        top: max(50px, 10vh);
+        box-shadow: 0px -25px 20px -25px rgba(0, 0, 0, 0.15);
+        &:before {
+            content: "";
+            border-top-right-radius: var(--mynah-card-radius);
+            border-top-left-radius: var(--mynah-card-radius);
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: auto;
+            height: auto;
+            background-color: var(--mynah-color-bg);
+            opacity: 1;
+        }
 
-        > .mynah-query-text-short-view,
-        > .mynah-nav-tabs-wrapper,
-        > .mynah-main {
-            transition: all $smoothduration $smoothbezier;
-            transform-origin: top center;
-        }
-        > .mynah-nav-tabs-wrapper {
-            transition-delay: 10ms;
-        }
-        > .mynah-main {
-            transition-delay: 20ms;
+        > .mynah-suggestions-block-close-button {
+            position: absolute;
+            align-self: flex-end;
+            transform: translate3d(var(--mynah-sizing-2), calc(-100% - var(--mynah-sizing-6)), 0px);
+            background-color: var(--mynah-card-bg);
+            color: var(--mynah-color-text-default);
+            box-shadow: var(--mynah-shadow-feedback-form);
         }
 
         > .mynah-query-text-short-view {
@@ -168,7 +162,7 @@ $smoothduration: 400ms;
                             background-color: var(--mynah-color-button);
                             opacity: 0.07;
                         }
-                        >.mynah-card-center{
+                        > .mynah-card-center {
                             padding-left: 0;
                         }
                     }

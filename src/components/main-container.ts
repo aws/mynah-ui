@@ -6,6 +6,8 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
 import { SearchPayloadCodeSelection, Suggestion } from '../static';
+import { Button } from './button';
+import { Icon, MynahIcons } from './icon';
 import { NavivationTabs } from './navigation-tabs';
 import { QueryTextShortView } from './query-text-short-view';
 import { SuggestionCard } from './suggestion-card/suggestion-card';
@@ -15,6 +17,7 @@ import { ToggleOption } from './toggle';
 const CARDS_WRAPPER_SCROLLED_CLASS = 'mynah-cards-wrapper-scrolled';
 export interface MainContainerProps {
   onNavigationTabChange?: (selectedTab: string) => void;
+  onCloseButtonClick?: () => void;
 }
 export class MainContainer {
   private readonly navTabs: NavivationTabs;
@@ -74,6 +77,15 @@ export class MainContainer {
       type: 'div',
       classNames: [ 'mynah-main-wrapper' ],
       children: [
+        new Button({
+          classNames: [ 'mynah-suggestions-block-close-button' ],
+          onClick: () => {
+            if (props.onCloseButtonClick !== undefined) {
+              props.onCloseButtonClick();
+            }
+          },
+          icon: new Icon({ icon: MynahIcons.CANCEL }).render
+        }).render,
         new QueryTextShortView().render,
         this.navTabs.render,
         this.mainContainer,

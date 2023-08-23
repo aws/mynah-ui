@@ -12,14 +12,17 @@ import { ChatPromptInput } from './chat-prompt-input';
 
 export interface ChatWrapperProps {
   onStopChatResponse?: () => void;
+  onShowAllWebResultsClick?: () => void;
 }
 export class ChatWrapper {
+  private readonly props?: ChatWrapperProps;
   private readonly chatItemsContainer: ExtendedHTMLElement;
   private readonly spinner: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
   constructor (props?: ChatWrapperProps) {
+    this.props = props;
     const initChatItems = MynahUIDataStore.getInstance().getValue('chatItems');
     if (initChatItems.length > 0) {
       initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
@@ -78,12 +81,27 @@ export class ChatWrapper {
   }
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
-    const chatItemCard = new ChatItemCard({ chatItem });
+    const chatItemCard = new ChatItemCard({
+      chatItem,
+      onShowAllWebResultsClick: this.props?.onShowAllWebResultsClick
+    });
     if (chatItem.type === ChatItemType.ANSWER_STREAM) {
       this.lastChatItemCard = chatItemCard;
     } else {
       this.lastChatItemCard = null;
     }
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
+  };
+
+  public removeLastShowAllWebResultsButton = (): void => {
+    Array.from(this.render.querySelectorAll('.mynah-chat-item-card-related-content-show-all')).forEach((showAllResultsButton) => {
+      showAllResultsButton.remove();
+    });
+  };
+
+  public removeLastFollowUps = (): void => {
+    Array.from(this.render.querySelectorAll('.mynah-chat-item-followup-question')).forEach((followUp) => {
+      followUp.remove();
+    });
   };
 }
