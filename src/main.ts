@@ -27,6 +27,7 @@ import {
   AutocompleteItem,
   NotificationType,
   ChatItem,
+  ChatItemFollowUp,
   ChatPrompt,
   ChatItemType,
   MynahMode,
@@ -105,7 +106,7 @@ export interface MynahUIProps {
   onResetStore?: () => void;
   onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
   onChatPrompt?: (prompt: ChatPrompt) => void;
-  onFollowUpClicked?: (followUp: string) => void;
+  onFollowUpClicked?: (followUp: ChatItemFollowUp) => void;
   onSuggestionAttachedToChatPrompt?: (attachment: Suggestion) => void;
   onNavigationTabChange?: (selectedTab: string) => void;
   onSideNavigationTabChange?: (selectedTab: string) => void;
@@ -213,9 +214,9 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (followUpName: string) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: ChatItemFollowUp) => {
       if (this.props.onFollowUpClicked !== undefined) {
-        this.props.onFollowUpClicked(followUpName);
+        this.props.onFollowUpClicked(data);
       }
     });
 
