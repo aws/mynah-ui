@@ -36,12 +36,9 @@ export class ChatWrapper {
         }
       } else if (chatItems.length > 0) {
         if (chatItemToInsert.type === ChatItemType.PROMPT || chatItemToInsert.type === ChatItemType.SYSTEM_PROMPT) {
-          this.removeAllExceptAnswersAndPrompts().finally(() => {
-            this.insertChatItem(chatItemToInsert);
-          });
-        } else {
-          this.insertChatItem(chatItemToInsert);
+          this.removeAllExceptAnswersAndPrompts();
         }
+        this.insertChatItem(chatItemToInsert);
       } else {
         this.chatItemsContainer.clear(true);
       }
@@ -105,32 +102,13 @@ export class ChatWrapper {
     }
   };
 
-  public removeLastShowAllWebResultsButton = (): void => {
-    Array.from(this.render.querySelectorAll('.mynah-chat-item-card-related-content-show-all')).forEach((showAllResultsButton) => {
-      showAllResultsButton.remove();
-    });
-  };
-
-  public removeLastFollowUps = (): void => {
-    Array.from(this.render.querySelectorAll('.mynah-chat-item-followup-question')).forEach((followUp) => {
-      followUp.remove();
-    });
-  };
-
-  public removeAllExceptAnswersAndPrompts = async (): Promise<boolean> => await new Promise((resolve) => {
-    const itemsToRemove = Array.from(this.render.querySelectorAll('.mynah-chat-item-answer:not(:has(> .mynah-card)), .mynah-chat-item-answer-stream:not(:has(> .mynah-card))'));
+  public removeAllExceptAnswersAndPrompts = (): void => {
+    const itemsToRemove = Array.from(this.render.querySelectorAll('.mynah-chat-item-card-references-wrapper, .mynah-chat-item-card-related-content, .mynah-chat-item-card-related-content-show-more, .mynah-chat-item-card-related-content-show-all, .mynah-chat-item-followup-question'));
     if (itemsToRemove.length === 0) {
-      resolve(true);
-    } else {
-      itemsToRemove.forEach((itemToRemove, index) => {
-        (itemToRemove as ExtendedHTMLElement)?.addClass('remove');
-        setTimeout(() => {
-          itemToRemove.remove();
-          if (index === itemsToRemove.length - 1) {
-            resolve(true);
-          }
-        }, 200);
-      });
+      return;
     }
-  });
+    itemsToRemove.forEach(itemToRemove => {
+      itemToRemove.remove();
+    });
+  };
 }

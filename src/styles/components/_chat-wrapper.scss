@@ -37,15 +37,6 @@
                 opacity: 1;
                 transform: translate3d(0, 0, 0) scale(1, 1);
             }
-            &.remove {
-                &,
-                & * {
-                    pointer-events: none !important;
-                }
-                transition: var(--mynah-pretty-long-transition);
-                opacity: 0;
-                transform: translate3d(0, calc(-1 * var(--mynah-sizing-10)), 0) scale(1, 0.98);
-            }
             > .mynah-chat-item-card-icon-wrapper {
                 background-color: var(--mynah-color-alternate);
                 color: var(--mynah-color-alternate-reverse);
