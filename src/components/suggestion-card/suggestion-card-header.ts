@@ -179,6 +179,8 @@ function getThumbnailClass (domain: string, metadata?: SuggestionMetaDataUnion):
     case 'boto3.amazonaws.com':
     case 'sdk.amazonaws.com':
       return 'aws';
+    case 'stackoverflow.com':
+      return 'stackOverflow';
     default:
       return undefined;
   }
