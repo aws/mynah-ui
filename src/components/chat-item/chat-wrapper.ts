@@ -28,13 +28,20 @@ export class ChatWrapper {
       initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
     }
     MynahUIDataStore.getInstance().subscribe('chatItems', (chatItems) => {
+      const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (this.chatItemsContainer.children.length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(0);
         if (lastItem !== null) {
-          lastItem.innerHTML = new ChatItemCard({ chatItem: chatItems[chatItems.length - 1] }).render.innerHTML;
+          lastItem.innerHTML = new ChatItemCard({ chatItem: chatItemToInsert }).render.innerHTML;
         }
       } else if (chatItems.length > 0) {
-        this.insertChatItem(chatItems[chatItems.length - 1]);
+        if (chatItemToInsert.type === ChatItemType.PROMPT || chatItemToInsert.type === ChatItemType.SYSTEM_PROMPT) {
+          this.removeAllExceptAnswersAndPrompts().finally(() => {
+            this.insertChatItem(chatItemToInsert);
+          });
+        } else {
+          this.insertChatItem(chatItemToInsert);
+        }
       } else {
         this.chatItemsContainer.clear(true);
       }
@@ -90,7 +97,12 @@ export class ChatWrapper {
     } else {
       this.lastChatItemCard = null;
     }
-    this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
+    this.chatItemsContainer.insertChild('beforeend', chatItemCard.render);
+    if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
+      setTimeout(() => {
+        this.chatItemsContainer.scrollTop = chatItemCard.render.offsetTop - 30;
+      }, 10);
+    }
   };
 
   public removeLastShowAllWebResultsButton = (): void => {
@@ -104,4 +116,21 @@ export class ChatWrapper {
       followUp.remove();
     });
   };
+
+  public removeAllExceptAnswersAndPrompts = async (): Promise<boolean> => await new Promise((resolve) => {
+    const itemsToRemove = Array.from(this.render.querySelectorAll('.mynah-chat-item-answer:not(:has(> .mynah-card)), .mynah-chat-item-answer-stream:not(:has(> .mynah-card))'));
+    if (itemsToRemove.length === 0) {
+      resolve(true);
+    } else {
+      itemsToRemove.forEach((itemToRemove, index) => {
+        (itemToRemove as ExtendedHTMLElement)?.addClass('remove');
+        setTimeout(() => {
+          itemToRemove.remove();
+          if (index === itemsToRemove.length - 1) {
+            resolve(true);
+          }
+        }, 200);
+      });
+    }
+  });
 }

@@ -223,16 +223,12 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: ChatPrompt) => {
       if (this.props.onChatPrompt !== undefined) {
         this.props.onChatPrompt(data);
-        this.chatWrapper.removeLastShowAllWebResultsButton();
-        this.chatWrapper.removeLastFollowUps();
       }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (followUpName: string) => {
       if (this.props.onFollowUpClicked !== undefined) {
         this.props.onFollowUpClicked(followUpName);
-        this.chatWrapper.removeLastShowAllWebResultsButton();
-        this.chatWrapper.removeLastFollowUps();
       }
     });
 

@@ -8,11 +8,11 @@
         flex: 1;
         overflow-x: hidden;
         overflow-y: auto;
-        flex-flow: column-reverse nowrap;
+        flex-flow: column nowrap;
         gap: var(--mynah-sizing-3);
         align-items: flex-start;
-        padding-bottom: var(--mynah-sizing-9);
         padding-top: var(--mynah-sizing-7);
+        padding-bottom: var(--mynah-sizing-7);
         .mynah-chat-item-card {
             display: inline-flex;
             flex-flow: column nowrap;
@@ -23,6 +23,12 @@
             transform: translate3d(0, var(--mynah-sizing-10), 0) scale(1, 0.98);
             opacity: 0;
             transform-origin: center bottom;
+            &:empty {
+                display: none;
+            }
+            &:has(> .mynah-card):last-child {
+                margin-bottom: calc(100vh - (var(--mynah-sizing-16) * 3));
+            }
             a {
                 pointer-events: bounding-box;
                 color: var(--mynah-color-text-link);
@@ -31,8 +37,14 @@
                 opacity: 1;
                 transform: translate3d(0, 0, 0) scale(1, 1);
             }
-            &:last-child {
-                margin-top: var(--mynah-sizing-4);
+            &.remove {
+                &,
+                & * {
+                    pointer-events: none !important;
+                }
+                transition: var(--mynah-pretty-long-transition);
+                opacity: 0;
+                transform: translate3d(0, calc(-1 * var(--mynah-sizing-10)), 0) scale(1, 0.98);
             }
             > .mynah-chat-item-card-icon-wrapper {
                 background-color: var(--mynah-color-alternate);
