@@ -31,7 +31,7 @@ export class ChatItemFollowUpContainer {
             {
               type: 'div',
               classNames: [ 'mynah-chat-item-followup-question-option' ],
-              children: [ followUpOption.text ],
+              children: [ followUpOption.pillText ],
               events: {
                 click: (e) => {
                   MynahUIDataStore.getInstance().updateStore({
@@ -43,7 +43,7 @@ export class ChatItemFollowUpContainer {
                       }
                     ]
                   });
-                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, followUpOption.text);
+                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, followUpOption);
 
                   this.render.remove();
                 }

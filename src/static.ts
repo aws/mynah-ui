@@ -155,7 +155,8 @@ export interface ChatPrompt {
 }
 
 export interface ChatItemFollowUp extends ChatPrompt {
-  text: string;
+  type: string;
+  pillText: string;
 }
 
 export enum MynahMode {
