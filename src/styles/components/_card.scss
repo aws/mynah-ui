@@ -335,7 +335,6 @@
 
         > .mynah-card-votes-wrapper {
             display: none;
-            // display: inline-flex;
             align-items: center;
             gap: var(--mynah-sizing-2);
             > .mynah-vote-text {
@@ -431,7 +430,6 @@
     }
 
     > .mynah-card-context-wrapper {
-        // display: flex;
         display: none;
         flex-flow: column nowrap;
         gap: var(--mynah-sizing-6);
