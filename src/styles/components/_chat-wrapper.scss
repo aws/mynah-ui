@@ -28,7 +28,7 @@
             &:empty {
                 display: none;
             }
-            &:has(> .mynah-card):last-child {
+            &:not(.mynah-chat-item-card-muted):last-child {
                 margin-bottom: calc(100vh - (var(--mynah-sizing-16) * 3));
             }
             a {
@@ -302,6 +302,7 @@
             > .mynah-chat-prompt-input {
                 font-family: "Amazon Ember";
                 max-height: 20vh;
+                min-height: var(--mynah-sizing-6);
                 flex: 1 1 0;
                 border: none;
                 resize: none;
@@ -317,6 +318,14 @@
                     pointer-events: none;
                     opacity: 0.25;
                 }
+            }
+            >.mynah-chat-prompt-input-sizer{
+                position: absolute;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                overflow: hidden;
+                white-space: pre-wrap;
             }
         }
         > .mynah-chat-prompt-attachment-wrapper {

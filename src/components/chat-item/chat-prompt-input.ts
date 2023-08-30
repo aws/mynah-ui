@@ -20,6 +20,7 @@ export class ChatPromptInput {
   render: ExtendedHTMLElement;
   private readonly attachmentWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
+  private readonly promptTextInputSizer: ExtendedHTMLElement;
   private sendButton: ExtendedHTMLElement;
   private readonly clearButton: ExtendedHTMLElement;
   private readonly loading: boolean;
@@ -84,6 +85,13 @@ export class ChatPromptInput {
       }));
       this.promptTextInput.value = I18N.getInstance().texts.limitByUrl;
     });
+    this.promptTextInputSizer = DomBuilder.getInstance().build({
+      type: 'span',
+      classNames: [ 'mynah-chat-prompt-input', 'mynah-chat-prompt-input-sizer' ],
+      attributes: {
+        ...(this.loading ? { disabled: 'disabled' } : {}),
+      },
+    });
     this.promptTextInput = DomBuilder.getInstance().build({
       type: 'textarea',
       classNames: [ 'mynah-chat-prompt-input' ],
@@ -97,10 +105,15 @@ export class ChatPromptInput {
         value: '',
       },
       events: {
-        keydown: this.handleInputKeyup.bind(this),
-        keyup: (e) => {
+        keydown: this.handleInputKeydown,
+        input: (e) => {
           const element = (e.target as HTMLTextAreaElement);
-          element.style.height = `${(element.scrollHeight)}px`;
+          this.promptTextInputSizer.innerHTML = element.value;
+          this.promptTextInputSizer.style.width = `${element.offsetWidth}px`;
+
+          setTimeout(() => {
+            element.style.height = `${(this.promptTextInputSizer.offsetHeight)}px`;
+          }, 1);
         }
       },
     });
@@ -162,6 +175,7 @@ export class ChatPromptInput {
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
             this.promptTextInput,
+            this.promptTextInputSizer,
             this.clearButton,
             this.sendButton,
           ]
@@ -193,7 +207,7 @@ export class ChatPromptInput {
     },
   }).render;
 
-  private readonly handleInputKeyup = (e: KeyboardEvent): void => {
+  private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (e.key === KeyMap.ENTER && !e.shiftKey) {
       cancelEvent(e);
       this.triggerSearch();

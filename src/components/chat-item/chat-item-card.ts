@@ -161,7 +161,7 @@ export class ChatItemCard {
       : '';
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.chatItem.type ?? ChatItemType.ANSWER}` ],
+      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.chatItem.type ?? ChatItemType.ANSWER}`, ...(this.checkIsMuted() ? [ 'mynah-chat-item-card-muted' ] : []) ],
       children: [
         ...(MynahUIDataStore.getInstance().getValue('showChatAvatars') === true
           ? [ this.chatAvatar ]
@@ -200,6 +200,11 @@ export class ChatItemCard {
       this.render.addClass('reveal');
     }, 10);
   }
+
+  private readonly checkIsMuted = (): boolean => (this.chatItem.body === undefined &&
+    ((this.chatItem.followUp?.options !== undefined && this.chatItem.followUp.options.length > 0) ||
+      (this.chatItem.relatedContent !== undefined && this.chatItem.relatedContent?.content.length > 0) ||
+      (this.chatItem.suggestions !== undefined && this.chatItem.suggestions?.suggestions.length > 0)));
 
   private readonly showLinkPreview = (e: MouseEvent, suggestion: Suggestion): void => {
     if (this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) {

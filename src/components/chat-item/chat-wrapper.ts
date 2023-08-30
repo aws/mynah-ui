@@ -112,7 +112,7 @@ export class ChatWrapper {
   };
 
   public removeAllExceptAnswersAndPrompts = (): void => {
-    const itemsToRemove = Array.from(this.render.querySelectorAll('.mynah-chat-item-card-references-wrapper, .mynah-chat-item-card-related-content, .mynah-chat-item-card-related-content-show-more, .mynah-chat-item-followup-question'));
+    const itemsToRemove = Array.from(this.render.querySelectorAll('.mynah-chat-item-card-muted'));
     if (itemsToRemove.length === 0) {
       return;
     }

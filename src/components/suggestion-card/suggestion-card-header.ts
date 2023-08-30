@@ -5,6 +5,7 @@
 
 import { getTimeDiff } from '../../helper/date-time';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { getOrigin } from '../../helper/url';
 import { SuggestionMetaDataUnion } from '../../static';
 import { Icon, MynahIcons } from '../icon';
 
@@ -28,7 +29,10 @@ export class SuggestionCardHeader {
       children: [
         {
           type: 'span',
-          classNames: [ 'mynah-source-thumbnail', thumbnail ?? 'default' ]
+          attributes: {
+            origin: getOrigin(props.url)
+          },
+          classNames: [ 'mynah-source-thumbnail' ]
         },
         {
           type: 'div',
