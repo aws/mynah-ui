@@ -103,7 +103,7 @@ $smoothduration: 400ms;
         border-top-right-radius: var(--mynah-card-radius);
         border-top-left-radius: var(--mynah-card-radius);
         border-bottom: none;
-        top: max(50px, 10vh);
+        top: 50px;
         box-shadow: 0px -25px 20px -25px rgba(0, 0, 0, 0.15);
         &:before {
             content: "";

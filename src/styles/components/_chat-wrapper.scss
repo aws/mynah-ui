@@ -13,6 +13,8 @@
         align-items: flex-start;
         padding-top: var(--mynah-sizing-7);
         padding-bottom: var(--mynah-sizing-7);
+        @include list-fader-bottom(var(--mynah-sizing-8));
+        scroll-behavior: smooth;
         .mynah-chat-item-card {
             display: inline-flex;
             flex-flow: column nowrap;
@@ -178,38 +180,23 @@
                             pointer-events: none;
                         }
                     }
-                    + .mynah-chat-item-card-related-content-show-more {
-                        display: inline-flex;
-                        max-width: 80%;
+                }
+                + .mynah-chat-item-card-related-content-show-more {
+                    display: inline-flex;
+                    max-width: 80%;
+                    z-index: 10000;
+                    margin-top: calc(-1 * var(--mynah-sizing-4));
+                    align-self: center;
+                    > span {
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
-                        flex-flow: row nowrap;
-                        justify-content: center;
-                        align-items: center;
-                        pointer-events: all;
-                        cursor: pointer;
-                        z-index: 10000;
-                        margin-top: calc(-1 * var(--mynah-sizing-1));
-                        color: transparent;
-                        align-self: center;
-                        > i {
-                            position: absolute;
-                            color: var(--mynah-color-text-default);
-                            font-size: var(--mynah-font-size-medium);
-                        }
+                        font-size: var(--mynah-font-size-xsmall);
                     }
                 }
             }
             > .mynah-chat-item-card-related-content-show-more {
                 display: none;
-            }
-            > .mynah-chat-item-card-related-content-show-all {
-                > span {
-                    font-size: var(--mynah-font-size-xsmall);
-                }
-                margin-top: calc(-1 * var(--mynah-sizing-4));
-                align-self: center;
             }
             &.mynah-chat-item-system-prompt,
             &.mynah-chat-item-prompt {
@@ -314,6 +301,7 @@
             align-items: center;
             > .mynah-chat-prompt-input {
                 font-family: "Amazon Ember";
+                max-height: 20vh;
                 flex: 1 1 0;
                 border: none;
                 resize: none;

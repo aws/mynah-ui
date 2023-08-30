@@ -17,23 +17,7 @@ import { MynahUIGlobalEvents } from '../../helper/events';
 import { SuggestionCard } from './suggestion-card';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
-import sanitize from 'sanitize-html';
 import { marked } from 'marked';
-
-const sanitizeOptions = {
-  allowedTags: [ 'b', 'i', 'em', 'pre', 'code', 'p', 'li', 'ul', 'span', 'a' ],
-  allowedAttributes: {
-    a: [ 'href' ],
-    span: [
-      {
-        name: 'class',
-        multiple: false,
-        values: [ 'amzn-mynah-search-result-highlight' ],
-      },
-      'markdown',
-    ],
-  },
-};
 
 export interface SuggestionCardBodyProps {
   suggestion: Partial<Suggestion>;
@@ -166,7 +150,7 @@ export class SuggestionCardBody {
     ...(Array.from(
       DomBuilder.getInstance().build({
         type: 'div',
-        innerHTML: `<div>${sanitize(marked(props.suggestion.body as string), sanitizeOptions)}</div>`,
+        innerHTML: `${marked(props.suggestion.body as string)}`,
       }).childNodes
     ).map(node => {
       return this.processNode(node as HTMLElement, props.suggestion, this.matchingLanguage);

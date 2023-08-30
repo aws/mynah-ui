@@ -98,6 +98,10 @@ export class ChatPromptInput {
       },
       events: {
         keydown: this.handleInputKeyup.bind(this),
+        keyup: (e) => {
+          const element = (e.target as HTMLTextAreaElement);
+          element.style.height = `${(element.scrollHeight)}px`;
+        }
       },
     });
     this.sendButton = this.getButton(this.loading, props?.onStopChatResponse !== undefined);
@@ -196,8 +200,13 @@ export class ChatPromptInput {
     }
   };
 
+  private readonly resetTextAreaHeight = (): void => {
+    this.promptTextInput.style.height = 'initial';
+  };
+
   private readonly triggerSearch = (): void => {
     if (this.promptTextInput.value.trim() !== '') {
+      this.resetTextAreaHeight();
       MynahUIDataStore.getInstance().updateStore({
         chatItems: [
           ...MynahUIDataStore.getInstance().getValue('chatItems'),

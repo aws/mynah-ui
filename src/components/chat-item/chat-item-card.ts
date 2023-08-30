@@ -24,7 +24,7 @@ export class ChatItemCard {
   private readonly chatItem: ChatItem;
   private readonly relatedContentWrapper: ExtendedHTMLElement | string;
   private readonly referencesWrapper: ExtendedHTMLElement | string;
-  private showMoreButtonBlock: ExtendedHTMLElement;
+  private readonly showMoreButtonBlock: Button;
   private relatedContentPreview: Overlay | null;
   private relatedContentPreviewTimeout: ReturnType<typeof setTimeout>;
   render: ExtendedHTMLElement;
@@ -42,30 +42,21 @@ export class ChatItemCard {
       }
     });
 
-    this.showMoreButtonBlock = DomBuilder.getInstance().build({
-      type: 'div',
+    this.showMoreButtonBlock = new Button({
       classNames: [ 'mynah-chat-item-card-related-content-show-more' ],
-      children: [
-        this.get3rdRelatedContentTextForWidth(),
-        new Icon({ icon: MynahIcons.DOWN_OPEN }).render
-      ],
-      events: {
-        click: () => {
-          const showAllButton = new Button({
-            classNames: [ 'mynah-chat-item-card-related-content-show-all' ],
-            onClick: () => {
-              if (props.onShowAllWebResultsClick !== undefined) {
-                props.onShowAllWebResultsClick();
-              }
-            },
-            label: 'Show all web results',
-          }).render;
-          this.showMoreButtonBlock.replaceWith(showAllButton);
-          this.showMoreButtonBlock = showAllButton;
+      onClick: () => {
+        if ((this.relatedContentWrapper as ExtendedHTMLElement).hasClass('expanded')) {
+          if (props.onShowAllWebResultsClick !== undefined) {
+            props.onShowAllWebResultsClick();
+          }
+        } else {
+          this.showMoreButtonBlock.updateLabel('Show all web results');
           (this.relatedContentWrapper as HTMLElement).classList.add('expanded');
         }
-      }
+      },
+      label: 'Show more',
     });
+
     this.relatedContentWrapper = this.chatItem.suggestions !== undefined
       ? DomBuilder.getInstance().build({
         type: 'div',
@@ -200,7 +191,7 @@ export class ChatItemCard {
           : ''),
         this.referencesWrapper,
         this.relatedContentWrapper,
-        this.showMoreButtonBlock,
+        this.showMoreButtonBlock.render,
         this.chatItem.followUp?.text !== undefined ? new ChatItemFollowUpContainer({ chatItem: this.chatItem }).render : '',
       ],
     });

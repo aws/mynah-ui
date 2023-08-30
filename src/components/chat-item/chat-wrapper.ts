@@ -53,6 +53,7 @@ export class ChatWrapper {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (body) => {
       if (this.lastChatItemCard !== null) {
         this.lastChatItemCard.updateAnswerBody(body);
+        this.scrollToStreamingCardBottom();
       }
     });
 
@@ -102,8 +103,16 @@ export class ChatWrapper {
     }
   };
 
+  private readonly scrollToStreamingCardBottom = (): void => {
+    if (this.lastChatItemCard != null) {
+      if (this.lastChatItemCard.render.offsetHeight >= (this.chatItemsContainer.offsetHeight - 150)) {
+        this.chatItemsContainer.scrollTop = this.lastChatItemCard.render.offsetTop + this.lastChatItemCard.render.offsetHeight - this.chatItemsContainer.offsetHeight + 75;
+      }
+    }
+  };
+
   public removeAllExceptAnswersAndPrompts = (): void => {
-    const itemsToRemove = Array.from(this.render.querySelectorAll('.mynah-chat-item-card-references-wrapper, .mynah-chat-item-card-related-content, .mynah-chat-item-card-related-content-show-more, .mynah-chat-item-card-related-content-show-all, .mynah-chat-item-followup-question'));
+    const itemsToRemove = Array.from(this.render.querySelectorAll('.mynah-chat-item-card-references-wrapper, .mynah-chat-item-card-related-content, .mynah-chat-item-card-related-content-show-more, .mynah-chat-item-followup-question'));
     if (itemsToRemove.length === 0) {
       return;
     }
