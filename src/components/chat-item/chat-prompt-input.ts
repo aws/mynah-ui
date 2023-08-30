@@ -19,6 +19,7 @@ export interface CharPromptInputProps {
 export class ChatPromptInput {
   render: ExtendedHTMLElement;
   private readonly attachmentWrapper: ExtendedHTMLElement;
+  private readonly promptTextInputWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
   private readonly promptTextInputSizer: ExtendedHTMLElement;
   private sendButton: ExtendedHTMLElement;
@@ -106,16 +107,16 @@ export class ChatPromptInput {
       },
       events: {
         keydown: this.handleInputKeydown,
-        input: (e) => {
-          const element = (e.target as HTMLTextAreaElement);
-          this.promptTextInputSizer.innerHTML = element.value;
-          this.promptTextInputSizer.style.width = `${element.offsetWidth}px`;
-
-          setTimeout(() => {
-            element.style.height = `${(this.promptTextInputSizer.offsetHeight)}px`;
-          }, 1);
-        }
+        input: this.calculateTextAreaHeight,
       },
+    });
+    this.promptTextInputWrapper = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-prompt-input-wrapper', 'no-text' ],
+      children: [
+        this.promptTextInputSizer,
+        this.promptTextInput,
+      ]
     });
     this.sendButton = this.getButton(this.loading, props?.onStopChatResponse !== undefined);
     this.clearButton = new Button({
@@ -174,8 +175,7 @@ export class ChatPromptInput {
           type: 'div',
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
-            this.promptTextInput,
-            this.promptTextInputSizer,
+            this.promptTextInputWrapper,
             this.clearButton,
             this.sendButton,
           ]
@@ -211,11 +211,25 @@ export class ChatPromptInput {
     if (e.key === KeyMap.ENTER && !e.shiftKey) {
       cancelEvent(e);
       this.triggerSearch();
+    } else if (e.key === KeyMap.ENTER && e.shiftKey) {
+      this.promptTextInput.value = this.promptTextInput.value + ' ';
+      setTimeout(() => {
+        this.calculateTextAreaHeight();
+      }, 10);
     }
   };
 
+  private readonly calculateTextAreaHeight = (): void => {
+    if (this.promptTextInput.value.trim() !== '') {
+      this.promptTextInputWrapper.removeClass('no-text');
+    } else {
+      this.promptTextInputWrapper.addClass('no-text');
+    }
+    this.promptTextInputSizer.innerHTML = this.promptTextInput.value.replace(/\r?\n/g, '</br>');
+  };
+
   private readonly resetTextAreaHeight = (): void => {
-    this.promptTextInput.style.height = 'initial';
+    this.promptTextInputSizer.innerHTML = '';
   };
 
   private readonly triggerSearch = (): void => {
