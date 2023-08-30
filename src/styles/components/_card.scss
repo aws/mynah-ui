@@ -292,8 +292,8 @@
             display: block;
             &, & > div {
                 > * {
-                    margin-block-start: 0.25em;
-                    margin-block-end: 0.25em;
+                    margin-block-start: 0.45em;
+                    margin-block-end: 0.45em;
                     user-select: text;
                     &:empty {
                         display: none;
