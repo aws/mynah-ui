@@ -231,6 +231,7 @@
                 }
             }
             &.mynah-chat-item-answer,
+            &.mynah-chat-item-ai-prompt,
             &.mynah-chat-item-answer-stream {
                 padding-left: var(--mynah-sizing-2);
                 > .mynah-chat-item-card-icon-wrapper {
