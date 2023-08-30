@@ -128,6 +128,7 @@ export interface Suggestion {
 export enum ChatItemType {
   PROMPT = 'prompt',
   SYSTEM_PROMPT = 'system-prompt',
+  AI_PROMPT = 'ai-prompt',
   ANSWER = 'answer',
   ANSWER_STREAM = 'answer-stream',
   ANSWER_PART = 'answer-part'
