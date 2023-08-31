@@ -20,6 +20,7 @@ export class ChatWrapper {
   private readonly spinner: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
+  private containerScollState: 'idle' | 'streaming' | 'break';
   render: ExtendedHTMLElement;
   constructor (props?: ChatWrapperProps) {
     this.props = props;
@@ -51,7 +52,8 @@ export class ChatWrapper {
       }
     });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (body) => {
-      if (this.lastChatItemCard !== null) {
+      if (this.containerScollState !== 'break' && this.lastChatItemCard !== null) {
+        this.containerScollState = 'streaming';
         this.lastChatItemCard.updateAnswerBody(body);
         this.scrollToStreamingCardBottom();
       }
@@ -64,7 +66,14 @@ export class ChatWrapper {
       type: 'div',
       classNames: [ 'mynah-chat-items-container' ],
       persistent: true,
-      children: [ ]
+      children: [ ],
+      events: {
+        wheel: (e) => {
+          if (this.containerScollState === 'streaming') {
+            this.containerScollState = 'break';
+          }
+        }
+      }
     });
     this.spinner = DomBuilder.getInstance().build({
       type: 'div',
@@ -86,6 +95,7 @@ export class ChatWrapper {
   }
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
+    this.containerScollState = 'idle';
     const chatItemCard = new ChatItemCard({
       chatItem,
       onShowAllWebResultsClick: this.props?.onShowAllWebResultsClick
@@ -104,7 +114,7 @@ export class ChatWrapper {
   };
 
   private readonly scrollToStreamingCardBottom = (): void => {
-    if (this.lastChatItemCard != null) {
+    if (this.containerScollState === 'streaming' && this.lastChatItemCard != null) {
       if (this.lastChatItemCard.render.offsetHeight >= (this.chatItemsContainer.offsetHeight - 150)) {
         this.chatItemsContainer.scrollTop = this.lastChatItemCard.render.offsetTop + this.lastChatItemCard.render.offsetHeight - this.chatItemsContainer.offsetHeight + 75;
       }

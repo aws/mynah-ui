@@ -176,7 +176,19 @@ export class ChatItemCard {
                     suggestion: { body: this.chatItem.body },
                     onLinkMouseEnter: (e, url) => {
                       const matchingSuggestion = [ ...MynahUIDataStore.getInstance().getValue('chatItems').map(
-                        (chatItem: ChatItem) => chatItem.relatedContent?.content)
+                        (chatItem: ChatItem) => {
+                          let mergedList: Suggestion[] = [];
+                          if (chatItem.relatedContent?.content !== undefined &&
+                            chatItem.relatedContent?.content.length > 0) {
+                            mergedList = chatItem.relatedContent?.content;
+                          }
+                          if (chatItem.suggestions?.suggestions !== undefined &&
+                            chatItem.suggestions?.suggestions.length > 0) {
+                            mergedList = [ ...mergedList, ...chatItem.suggestions?.suggestions ];
+                          }
+                          console.log(mergedList);
+                          return mergedList;
+                        })
                       ].flat().find((relatedContent?: Suggestion) => relatedContent?.url === url);
                       if (matchingSuggestion !== undefined) {
                         this.showLinkPreview(e, matchingSuggestion);
