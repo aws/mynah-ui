@@ -186,7 +186,6 @@ export class ChatItemCard {
                             chatItem.suggestions?.suggestions.length > 0) {
                             mergedList = [ ...mergedList, ...chatItem.suggestions?.suggestions ];
                           }
-                          console.log(mergedList);
                           return mergedList;
                         })
                       ].flat().find((relatedContent?: Suggestion) => relatedContent?.url === url);

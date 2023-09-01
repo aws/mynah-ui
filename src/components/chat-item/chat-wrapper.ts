@@ -52,10 +52,12 @@ export class ChatWrapper {
       }
     });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (body) => {
-      if (this.containerScollState !== 'break' && this.lastChatItemCard !== null) {
-        this.containerScollState = 'streaming';
+      if (this.lastChatItemCard !== null) {
+        if (this.containerScollState !== 'break') {
+          this.containerScollState = 'streaming';
+          this.scrollToStreamingCardBottom();
+        }
         this.lastChatItemCard.updateAnswerBody(body);
-        this.scrollToStreamingCardBottom();
       }
     });
 
@@ -116,7 +118,7 @@ export class ChatWrapper {
   private readonly scrollToStreamingCardBottom = (): void => {
     if (this.containerScollState === 'streaming' && this.lastChatItemCard != null) {
       if (this.lastChatItemCard.render.offsetHeight >= (this.chatItemsContainer.offsetHeight - 150)) {
-        this.chatItemsContainer.scrollTop = this.lastChatItemCard.render.offsetTop + this.lastChatItemCard.render.offsetHeight - this.chatItemsContainer.offsetHeight + 75;
+        this.chatItemsContainer.scrollTop = this.lastChatItemCard.render.offsetTop + this.lastChatItemCard.render.offsetHeight - this.chatItemsContainer.offsetHeight + 125;
       }
     }
   };

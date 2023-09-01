@@ -28,7 +28,12 @@
             &:empty {
                 display: none;
             }
-            &:not(.mynah-chat-item-card-muted):last-child {
+            &.mynah-chat-item-card-muted {
+                & + .mynah-chat-item-answer {
+                    margin-top: var(--mynah-sizing-3);
+                }
+            }
+            &:last-child {
                 margin-bottom: calc(100vh - (var(--mynah-sizing-16) * 3));
             }
             a {
