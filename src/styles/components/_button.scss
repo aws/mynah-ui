@@ -16,6 +16,14 @@ button.mynah-button {
     position: relative;
     transform: translate3d(0, 0, 0) scale(1.00001);
     padding: 0;
+    &.mynah-bottom-block-close-button {
+        position: absolute;
+        align-self: flex-end;
+        transform: translate3d(var(--mynah-sizing-2), calc(-100% - var(--mynah-sizing-6)), 0px);
+        background-color: var(--mynah-card-bg);
+        color: var(--mynah-color-text-default);
+        box-shadow: var(--mynah-shadow-feedback-form);
+    }
     &[disabled="disabled"] {
         opacity: 0.25 !important;
         pointer-events: none;

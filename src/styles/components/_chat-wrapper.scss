@@ -2,6 +2,14 @@
     max-width: 80vw;
     max-height: 80vh;
 }
+.mynah-chat-prompt-overlay-buttons-container{
+    display: inline-flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-2);
+    justify-content: flex-start;
+    align-items: flex-start;
+
+}
 .mynah-chat-wrapper {
     > .mynah-chat-items-container {
         display: flex;

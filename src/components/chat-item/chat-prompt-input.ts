@@ -15,6 +15,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 
 export interface CharPromptInputProps {
   onStopChatResponse?: () => void;
+  showFeedbackButton?: boolean;
 }
 export class ChatPromptInput {
   render: ExtendedHTMLElement;
@@ -135,29 +136,49 @@ export class ChatPromptInput {
           verticalDirection: OverlayVerticalDirection.TO_TOP,
           horizontalDirection: OverlayHorizontalDirection.CENTER,
           children: [
-            new Button({
-              primary: false,
-              onClick: (e: Event) => {
-                cancelEvent(e);
-                menuOverlay.close();
-                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CLEAR_CHAT);
-              },
-              label: DomBuilder.getInstance().build({
-                type: 'span',
-                innerHTML: 'Clear chat',
-              }),
-            }).render,
-            new Button({
-              primary: false,
-              onClick: (e: Event) => {
-                cancelEvent(e);
-              },
-              attributes: { disabled: 'disabled' },
-              label: DomBuilder.getInstance().build({
-                type: 'span',
-                innerHTML: 'Start new chat',
-              }),
-            }).render,
+            {
+              type: 'div',
+              classNames: [ 'mynah-chat-prompt-overlay-buttons-container' ],
+              children: [
+                ...(props?.showFeedbackButton === true
+                  ? [ new Button({
+                      primary: false,
+                      onClick: (e: Event) => {
+                        cancelEvent(e);
+                        menuOverlay.close();
+                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_FEEDBACK_FORM_CLICK);
+                      },
+                      label: DomBuilder.getInstance().build({
+                        type: 'span',
+                        innerHTML: 'Send feedback',
+                      }),
+                    }).render ]
+                  : []),
+                new Button({
+                  primary: false,
+                  onClick: (e: Event) => {
+                    cancelEvent(e);
+                    menuOverlay.close();
+                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CLEAR_CHAT);
+                  },
+                  label: DomBuilder.getInstance().build({
+                    type: 'span',
+                    innerHTML: 'Clear chat',
+                  }),
+                }).render,
+                new Button({
+                  primary: false,
+                  onClick: (e: Event) => {
+                    cancelEvent(e);
+                  },
+                  attributes: { disabled: 'disabled' },
+                  label: DomBuilder.getInstance().build({
+                    type: 'span',
+                    innerHTML: 'Start new chat',
+                  }),
+                }).render,
+              ]
+            }
           ],
         });
       },

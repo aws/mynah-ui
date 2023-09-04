@@ -55,7 +55,7 @@ $smoothduration: 400ms;
 
     > .mynah-chat-wrapper,
     > .mynah-main-wrapper {
-        transition: all 400ms cubic-bezier(0.25, 0, 0, 1);
+        transition: var(--mynah-bottom-panel-transition);
         position: absolute;
         top: 0;
         right: calc(2 * var(--mynah-sizing-9) + var(--mynah-sizing-1));
@@ -81,7 +81,6 @@ $smoothduration: 400ms;
             width: auto;
             height: auto;
             background-color: black;
-            opacity: 0.15;
             z-index: 1000;
             opacity: 0;
             pointer-events: none;
@@ -118,15 +117,6 @@ $smoothduration: 400ms;
             height: auto;
             background-color: var(--mynah-color-bg);
             opacity: 1;
-        }
-
-        > .mynah-suggestions-block-close-button {
-            position: absolute;
-            align-self: flex-end;
-            transform: translate3d(var(--mynah-sizing-2), calc(-100% - var(--mynah-sizing-6)), 0px);
-            background-color: var(--mynah-card-bg);
-            color: var(--mynah-color-text-default);
-            box-shadow: var(--mynah-shadow-feedback-form);
         }
 
         > .mynah-query-text-short-view {

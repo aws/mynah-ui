@@ -41,6 +41,7 @@ import { getSelectedTabValueFromStore } from './components/navigation-tabs';
 import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { NavivationTabsVertical } from './components/navigation-tabs-vertical';
 import { ToggleOption } from './components/toggle';
+import { FeedbackForm } from './components/feedback-form/feedback-form';
 
 export {
   AutocompleteItem,
@@ -92,6 +93,7 @@ export interface MynahUIProps {
     isFromHistory?: boolean,
     isFromAutocomplete?: boolean
   ) => MynahUIDataModel);
+  onShowMoreWebResultsClick?: () => void;
   onReady?: () => void;
   onClickSuggestionVote?: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
   onClickCodeDetails?: (
@@ -128,6 +130,7 @@ export class MynahUI {
   private readonly props: MynahUIProps;
   private readonly wrapper: ExtendedHTMLElement;
   private readonly sideNav: ExtendedHTMLElement;
+  private readonly feedbackForm?: FeedbackForm;
 
   private readonly mainContainer: MainContainer;
   private readonly chatWrapper: ChatWrapper;
@@ -146,7 +149,8 @@ export class MynahUI {
       onStopChatResponse: props.onStopChatResponse,
       onShowAllWebResultsClick: () => {
         this.sideNavigationTabChanged(MynahMode.SEARCH, true);
-      }
+      },
+      showFeedbackButton: props.onSendFeedback !== undefined
     });
     this.mainContainer = new MainContainer({
       onNavigationTabChange: props.onNavigationTabChange,
@@ -154,6 +158,10 @@ export class MynahUI {
         this.sideNavigationTabChanged(MynahMode.CHAT, true);
       }
     });
+
+    if (props.onSendFeedback !== undefined) {
+      this.feedbackForm = new FeedbackForm();
+    }
 
     const sideNavTabItems = MynahUIDataStore.getInstance().getValue('sideNavigationTabs');
     this.sideNav = DomBuilder.getInstance().build(
@@ -236,6 +244,12 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CLEAR_CHAT, () => {
       if (this.props.onClearChat !== undefined) {
         this.props.onClearChat();
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, () => {
+      if (this.props.onShowMoreWebResultsClick !== undefined) {
+        this.props.onShowMoreWebResultsClick();
       }
     });
 

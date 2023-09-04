@@ -7,16 +7,13 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIDataStore } from '../../helper/store';
 import { NotificationType } from '../../static';
 import { Button } from '../button';
-import { FeedbackForm } from '../feedback-form/feedback-form';
 import { Icon, MynahIcons } from '../icon';
 
 export class SearchCardHeader {
-  private readonly feedbackForm: FeedbackForm;
   private readonly infoBar: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
 
   constructor () {
-    this.feedbackForm = new FeedbackForm();
     this.infoBar = DomBuilder.getInstance().build({
       type: 'div',
       persistent: true,
@@ -46,7 +43,6 @@ export class SearchCardHeader {
               label: 'Clear All',
               classNames: [ 'mynah-header-button' ],
             }).render,
-            this.feedbackForm.feedbackContainer,
           ],
         },
         this.infoBar

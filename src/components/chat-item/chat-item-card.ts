@@ -4,8 +4,9 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUIDataStore } from '../../helper/store';
-import { ChatItem, ChatItemType, Suggestion } from '../../static';
+import { ChatItem, ChatItemType, MynahEventNames, Suggestion } from '../../static';
 import { I18N } from '../../translations/i18n';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
@@ -50,6 +51,7 @@ export class ChatItemCard {
             props.onShowAllWebResultsClick();
           }
         } else {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK);
           this.showMoreButtonBlock.updateLabel('Show all web results');
           (this.relatedContentWrapper as HTMLElement).classList.add('expanded');
         }
@@ -249,14 +251,6 @@ export class ChatItemCard {
       this.relatedContentPreview?.close();
       this.relatedContentPreview = null;
     }
-  };
-
-  private readonly get3rdRelatedContentTextForWidth = (): string => {
-    if (this.chatItem.relatedContent?.content !== undefined && this.chatItem.relatedContent?.content.length > 2) {
-      return (this.chatItem.relatedContent?.content[2].title +
-        this.chatItem.relatedContent?.content[2].url.substring(this.chatItem.relatedContent?.content[2].title.length));
-    }
-    return '';
   };
 
   private readonly getChatAvatar = (): ExtendedHTMLElement => DomBuilder.getInstance().build({

@@ -55,6 +55,8 @@ export enum MynahEventNames {
   SUGGESTION_ATTACHED_TO_CHAT = 'suggestionAttachedToChat',
   UPDATE_LAST_CHAT_ANSWER_STREAM = 'updateLastChatAnswerStream',
   CLEAR_CHAT = 'clearChat',
+  SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
+  SHOW_FEEDBACK_FORM_CLICK = 'showFeedbackFormClick',
 };
 
 export const MynahPortalNames = {

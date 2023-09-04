@@ -3,26 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FeedbackPayload, FeedbackStars, MynahEventNames } from '../../static';
+import { FeedbackPayload, FeedbackStars, MynahEventNames, MynahPortalNames } from '../../static';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { FeedbackFormComment } from './feedback-form-comment';
 import { FeedbackFormStars } from './feedback-form-stars';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
+import { Icon, MynahIcons } from '../icon';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;
 }
 export class FeedbackForm {
-  private formOverlay!: Overlay;
+  private feedbackFormWrapper: ExtendedHTMLElement;
   private readonly feedbackStars: FeedbackFormStars;
   private readonly feedbackComment: FeedbackFormComment;
   private feedbackPayload: FeedbackPayload = {};
-  private readonly triggerButton: ExtendedHTMLElement;
   private readonly feedbackSubmitButton: Button;
   public readonly feedbackFormContainer: ExtendedHTMLElement;
-  public readonly feedbackContainer: ExtendedHTMLElement;
 
   constructor (props?: FeedbackFormProps) {
     if (props?.initPayload !== undefined) {
@@ -32,21 +30,33 @@ export class FeedbackForm {
       };
     }
 
-    this.triggerButton = new Button({
-      onClick: () => {
-        this.formOverlay = new Overlay({
-          children: [ this.feedbackFormContainer ],
-          closeOnOutsideClick: true,
-          dimOutside: false,
-          horizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
-          verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
-          referenceElement: this.triggerButton,
-        });
-      },
-      primary: false,
-      label: 'Leave us feedback',
-      classNames: [ 'mynah-header-button' ],
-    }).render;
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM_CLICK, () => {
+      if (this.feedbackFormWrapper === undefined) {
+        this.feedbackFormWrapper = DomBuilder.getInstance().createPortal(
+          MynahPortalNames.FEEDBACK_FORM,
+          {
+            type: 'div',
+            attributes: {
+              id: 'mynah-feedback-form-wrapper'
+            },
+            children: [
+              new Button({
+                classNames: [ 'mynah-bottom-block-close-button' ],
+                onClick: () => {
+                  this.feedbackFormWrapper.removeClass('mynah-feedback-form-show');
+                },
+                icon: new Icon({ icon: MynahIcons.CANCEL }).render
+              }).render,
+              this.feedbackFormContainer
+            ]
+          },
+          'afterbegin'
+        );
+      }
+      setTimeout(() => {
+        this.feedbackFormWrapper.addClass('mynah-feedback-form-show');
+      }, 5);
+    });
 
     this.feedbackStars = new FeedbackFormStars({
       onChange: (star: FeedbackStars) => {
@@ -72,7 +82,7 @@ export class FeedbackForm {
           this.onFeedbackSet({ comment: this.feedbackPayload.comment });
         }
         this.feedbackComment.setComment('');
-        this.formOverlay.close();
+        this.feedbackFormWrapper.removeClass('mynah-feedback-form-show');
       },
     });
     this.feedbackSubmitButton.setEnabled(false);
@@ -82,12 +92,6 @@ export class FeedbackForm {
       classNames: [ 'mynah-feedback-form' ],
       events: { click: cancelEvent },
       children: [ this.feedbackStars.render, this.feedbackComment.render, this.feedbackSubmitButton.render ],
-    });
-
-    this.feedbackContainer = DomBuilder.getInstance().build({
-      type: 'div',
-      attributes: { id: 'mynah-feedback-form-container' },
-      children: [ this.triggerButton ],
     });
   }
 

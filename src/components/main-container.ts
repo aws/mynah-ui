@@ -78,7 +78,7 @@ export class MainContainer {
       classNames: [ 'mynah-main-wrapper' ],
       children: [
         new Button({
-          classNames: [ 'mynah-suggestions-block-close-button' ],
+          classNames: [ 'mynah-bottom-block-close-button' ],
           onClick: () => {
             if (props.onCloseButtonClick !== undefined) {
               props.onCloseButtonClick();

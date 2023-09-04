@@ -13,6 +13,7 @@ import { ChatPromptInput } from './chat-prompt-input';
 export interface ChatWrapperProps {
   onStopChatResponse?: () => void;
   onShowAllWebResultsClick?: () => void;
+  showFeedbackButton?: boolean;
 }
 export class ChatWrapper {
   private readonly props?: ChatWrapperProps;
@@ -62,7 +63,8 @@ export class ChatWrapper {
     });
 
     this.promptInput = new ChatPromptInput({
-      onStopChatResponse: props?.onStopChatResponse
+      onStopChatResponse: props?.onStopChatResponse,
+      showFeedbackButton: props?.showFeedbackButton,
     }).render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
