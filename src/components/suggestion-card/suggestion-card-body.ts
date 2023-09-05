@@ -52,7 +52,7 @@ export class SuggestionCardBody {
           ? [ new Button({
               classNames: [ 'mynah-card-under-body-button' ],
               primary: false,
-              label: 'Follow up on chat',
+              label: 'Follow up in chat',
               icon: DomBuilder.getInstance().build({
                 type: 'div',
                 children: [
