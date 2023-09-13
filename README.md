@@ -1,6 +1,5 @@
 # Mynah UI
-
-This package is the whole UI of AWS Tookit Mynah extension UI for VSCode and Intellij IDEs written in typescript without any framework or third-party UI library dependency. Purpose of the separated UI is to handle the interactions and look & feel of the UI from one single source. 
+This package is the whole UI of AWS Codewhisperer Chat extension UI for Web, VSCode and Intellij IDEs written in typescript without any framework or third-party UI library dependency. Purpose of the separated UI is to handle the interactions and look & feel of the UI from one single source. 
 
 ## How to install
 
