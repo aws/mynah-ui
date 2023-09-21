@@ -2,16 +2,6 @@
     cursor: pointer;
 }
 
-.mynah-history-must-contain {
-    background: var(--mynah-color-context-must-contain);
-}
-.mynah-history-should-contain {
-    background: var(--mynah-color-context-should-contain);
-}
-.mynah-history-must-not-contain {
-    background: var(--mynah-color-context-must-not-contain);
-}
-
 .mynah-card {
     @for $i from 0 through 50 {
         &:nth-child(#{$i}) {
@@ -261,10 +251,6 @@
                 }
             }
         }
-
-        &.mynah-card-header-with-source-thumbnail + .mynah-card-context-wrapper > .mynah-card-tags {
-            padding-left: var(--mynah-sizing-14);
-        }
     }
     > .mynah-card-center {
         border: var(--mynah-button-border-width) solid var(--mynah-border-default);
@@ -427,38 +413,6 @@
 
     &:hover .mynah-card-under-body-button {
         opacity: 1;
-    }
-
-    > .mynah-card-context-wrapper {
-        display: none;
-        flex-flow: column nowrap;
-        gap: var(--mynah-sizing-6);
-        padding-bottom: var(--mynah-sizing-4);
-        margin-bottom: var(--mynah-sizing-2);
-        border-bottom: 1px solid var(--mynah-color-border-default);
-        > .mynah-card-tags {
-            display: inline-flex;
-            flex-wrap: wrap;
-            gap: var(--mynah-sizing-3);
-        }
-        > .mynah-card-badges {
-            display: inline-flex;
-            gap: var(--mynah-sizing-3);
-            &:empty {
-                display: none;
-            }
-            > div {
-                display: inline-flex;
-                align-items: center;
-                gap: var(--mynah-sizing-base);
-                font-size: var(--mynah-font-size-small);
-                color: var(--mynah-color-text-weak);
-                &:not(:last-child) {
-                    border-right: 1px solid var(--mynah-color-border-default);
-                    padding-right: var(--mynah-sizing-3);
-                }
-            }
-        }
     }
 
     &.mynah-card-skeleton {

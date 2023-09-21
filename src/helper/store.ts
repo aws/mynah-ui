@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { LiveSearchState, MynahEventNames, MynahMode, MynahUIDataModel, NotificationType } from '../static';
+import { MynahEventNames, MynahMode, MynahUIDataModel } from '../static';
 import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
 
@@ -15,37 +15,12 @@ export class EmptyMynahUIDataModel {
       loading: false,
       loadingChat: false,
       showChatAvatars: true,
-      liveSearchState: LiveSearchState.STOP,
-      query: '',
-      code: '',
       chatMessageOnTopOfSearchResults: '',
-      invisibleContextItems: [],
       navigationTabs: [],
       sideNavigationTabs: [],
-      autoCompleteSuggestions: [],
-      searchHistory: [],
-      showingHistoricalSearch: false,
-      liveSearchAnimation: true,
-      codeSelection: {
-        selectedCode: '',
-        file: {
-          name: '',
-          range: {
-            start: { row: '0', column: '0' },
-            end: { row: '0', column: '0' }
-          }
-        }
-      },
-      codeQuery: { simpleNames: [], fullyQualifiedNames: { used: [] } },
-      matchPolicy: { must: [], mustNot: [], should: [] },
-      userAddedContext: [],
-      mode: MynahMode.SEARCH,
+      mode: MynahMode.CHAT,
       suggestions: [],
       chatItems: [],
-      headerInfo: {
-        content: '',
-        type: NotificationType.INFO
-      },
       ...defaults
     };
   }

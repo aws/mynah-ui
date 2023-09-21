@@ -159,8 +159,6 @@ export class SuggestionCardBody {
       ? [ new SuggestionCard({
           suggestion: {
             title: 'Example',
-            id: '',
-            context: [],
             ...(props.suggestion.metadata as CanonicalExample)?.canonicalExample,
           }
         }).render ]

@@ -24,7 +24,12 @@ export const transformPayloadData = (rules: PayloadTransformRule[], payloadData:
   });
   processedRules.forEach(rule => {
     let targetNode: any = payloadData;
-    rule.targetRoute.forEach(targetRouteKey => (targetNode = targetNode[targetRouteKey]));
+    rule.targetRoute.forEach((targetRouteKey, index) => {
+      if (targetNode[targetRouteKey] === undefined) {
+        targetNode[targetRouteKey] = index === rule.targetRoute.length - 1 ? [] : {};
+      }
+      targetNode = targetNode[targetRouteKey];
+    });
 
     switch (rule.method) {
       case 'add':
@@ -56,7 +61,12 @@ export const validateRulesOnPayloadData = (rules: PayloadTransformRule[], payloa
   });
   processedRules.forEach(rule => {
     let targetNode: any = payloadData;
-    rule.targetRoute.forEach(targetRouteKey => (targetNode = targetNode[targetRouteKey]));
+    rule.targetRoute.forEach((targetRouteKey, index) => {
+      if (targetNode[targetRouteKey] === undefined) {
+        targetNode[targetRouteKey] = index === rule.targetRoute.length - 1 ? [] : {};
+      }
+      targetNode = targetNode[targetRouteKey];
+    });
 
     switch (rule.method) {
       case 'add':

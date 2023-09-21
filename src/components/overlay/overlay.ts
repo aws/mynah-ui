@@ -62,7 +62,7 @@ export enum OverlayVerticalDirection {
 }
 
 export interface OverlayProps {
-  referenceElement?: Element | ExtendedHTMLElement;
+  referenceElement?: HTMLElement | ExtendedHTMLElement;
   referencePoint?: { top: number; left: number };
   children: Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject>;
   horizontalDirection?: OverlayHorizontalDirection;
@@ -209,7 +209,7 @@ export class Overlay {
 
   private readonly getCalculatedLeft = (
     horizontalDirection: OverlayHorizontalDirection,
-    referenceElement?: Element | ExtendedHTMLElement,
+    referenceElement?: HTMLElement | ExtendedHTMLElement,
     referencePoint?: { top?: number; left: number }
   ): number => {
     const referenceRectangle =
@@ -237,7 +237,7 @@ export class Overlay {
 
   private readonly getCalculatedTop = (
     verticalDirection: OverlayVerticalDirection,
-    referenceElement?: Element | ExtendedHTMLElement,
+    referenceElement?: HTMLElement | ExtendedHTMLElement,
     referencePoint?: { top: number; left?: number }
   ): number => {
     const referenceRectangle =

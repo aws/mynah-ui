@@ -52,7 +52,11 @@ export class ChatItemCard {
           }
         } else {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK);
-          this.showMoreButtonBlock.updateLabel('Show all web results');
+          if (props.onShowAllWebResultsClick !== undefined) {
+            this.showMoreButtonBlock.updateLabel('Show all web results');
+          } else {
+            this.showMoreButtonBlock.render.remove();
+          }
           (this.relatedContentWrapper as HTMLElement).classList.add('expanded');
         }
       },

@@ -7,7 +7,6 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { EngagementType, MynahEventNames, Suggestion, SuggestionMetaDataUnion } from '../../static';
 import { SuggestionCardBody } from './suggestion-card-body';
-import { SuggestionCardContextWrapper } from './suggestion-card-context-wrapper';
 import { SuggestionCardHeader } from './suggestion-card-header';
 
 /**
@@ -33,9 +32,6 @@ export class SuggestionCard {
     this.suggestion = props.suggestion;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      attributes: {
-        'data-filter': props.suggestion.context?.map(context => `${context}, `).join(''),
-      },
       classNames: [ 'mynah-card', props.compact !== undefined ? 'mynah-card-compact' : '', props.compact === 'withBody' ? 'mynah-card-compact-with-body' : '' ],
       events: {
         mouseenter: e => {
@@ -96,7 +92,6 @@ export class SuggestionCard {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { suggestion: props.suggestion });
           },
         }).render,
-        ...(props.suggestion.context?.length > 0 ? [ new SuggestionCardContextWrapper({ contextList: props.suggestion.context }).render ] : []),
         new SuggestionCardBody({ suggestion: props.suggestion, showFooterButtons: props.showFooterButtons }).render,
       ],
     });

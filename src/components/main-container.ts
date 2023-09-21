@@ -5,7 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIDataStore } from '../helper/store';
-import { SearchPayloadCodeSelection, Suggestion } from '../static';
+import { Suggestion } from '../static';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
 import { NavivationTabs } from './navigation-tabs';
@@ -50,17 +50,6 @@ export class MainContainer {
           }, true);
           props.onNavigationTabChange(selectedTab);
         }
-
-        MynahUIDataStore.getInstance().updateStore({
-          ...(MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true
-            ? {
-                headerInfo: {
-                  content: ''
-                },
-                showingHistoricalSearch: false,
-              }
-            : {}),
-        });
       }
     });
 
@@ -111,7 +100,7 @@ export class MainContainer {
     setTimeout(() => {
       this.cardsWrapper.clear();
       this.cardsWrapper.scrollTop = 0;
-      if (suggestions.length === 0 && (MynahUIDataStore.getInstance().getValue('query') !== '' || (MynahUIDataStore.getInstance().getValue('codeSelection') as SearchPayloadCodeSelection).selectedCode !== '')) {
+      if (suggestions.length === 0) {
         this.cardsWrapper.insertChild(
           'beforeend',
           DomBuilder.getInstance().build({

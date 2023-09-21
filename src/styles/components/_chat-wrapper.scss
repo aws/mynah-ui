@@ -20,7 +20,7 @@
         gap: var(--mynah-sizing-3);
         align-items: flex-start;
         padding-top: var(--mynah-sizing-7);
-        padding-bottom: var(--mynah-sizing-7);
+        padding-bottom: calc(100vh - (var(--mynah-sizing-10) * 4));
         @include list-fader-bottom(var(--mynah-sizing-8));
         scroll-behavior: smooth;
         .mynah-chat-item-card {
@@ -40,9 +40,6 @@
                 & + .mynah-chat-item-answer {
                     margin-top: var(--mynah-sizing-3);
                 }
-            }
-            &:last-child {
-                margin-bottom: calc(100vh - (var(--mynah-sizing-16) * 3));
             }
             a {
                 pointer-events: bounding-box;

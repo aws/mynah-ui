@@ -12,19 +12,11 @@ import {
   MynahPortalNames,
   Suggestion,
   SearchPayload,
-  LiveSearchState,
   SuggestionEventName,
   RelevancyVoteType,
   FeedbackPayload,
   MynahUIDataModel,
-  ContextChangeType,
-  ContextType,
-  SearchHistoryFilters,
   MynahEventNames,
-  SearchHistoryItem,
-  SearchPayloadMatchPolicy,
-  ContextTypes,
-  AutocompleteItem,
   NotificationType,
   ChatItem,
   ChatItemFollowUp,
@@ -34,9 +26,8 @@ import {
 } from './static';
 import { I18N } from './translations/i18n';
 import './styles/styles.scss';
-import { EmptyMynahUIDataModel, MynahUIDataStore } from './helper/store';
+import { MynahUIDataStore } from './helper/store';
 import { MynahUIGlobalEvents } from './helper/events';
-import { getTimeDiff } from './helper/date-time';
 import { getSelectedTabValueFromStore } from './components/navigation-tabs';
 import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { NavivationTabsVertical } from './components/navigation-tabs-vertical';
@@ -44,23 +35,15 @@ import { ToggleOption } from './components/toggle';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 
 export {
-  AutocompleteItem,
   SearchPayloadCodeSelection,
   FeedbackPayload,
   RelevancyVoteType,
-  LiveSearchState,
   SearchPayload,
   Suggestion,
-  ContextType,
-  SearchHistoryItem,
   EngagementType,
   SuggestionEngagement,
   SuggestionEventName,
-  SearchHistoryFilters,
   MynahUIDataModel,
-  ContextChangeType,
-  ContextSource,
-  ContextTypes,
   NotificationType,
   MynahMode,
   ChatItem,
@@ -85,29 +68,16 @@ export interface MynahUIProps {
   rootSelector?: string;
   storeData?: MynahUIDataModel;
   onSearch?: ((
-    searchPayload: SearchPayload,
-    isFromHistory?: boolean,
-    isFromAutocomplete?: boolean
+    searchPayload: SearchPayload
   ) => void) | ((
-    searchPayload: SearchPayload,
-    isFromHistory?: boolean,
-    isFromAutocomplete?: boolean
+    searchPayload: SearchPayload
   ) => MynahUIDataModel);
   onShowMoreWebResultsClick?: () => void;
   onReady?: () => void;
   onClickSuggestionVote?: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
-  onClickCodeDetails?: (
-    code: string,
-    fileName?: string,
-    range?: {
-      start: { row: string; column?: string };
-      end?: { row: string; column?: string };
-    }
-  ) => void;
   onClearChat?: () => void;
   onStopChatResponse?: () => void;
   onResetStore?: () => void;
-  onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
   onChatPrompt?: (prompt: ChatPrompt) => void;
   onFollowUpClicked?: (followUp: ChatItemFollowUp) => void;
   onSuggestionAttachedToChatPrompt?: (attachment: Suggestion) => void;
@@ -117,14 +87,6 @@ export interface MynahUIProps {
   onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
   onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
-  onRequestHistoryRecords?: (filterPayload: SearchHistoryFilters) => void;
-  onInputQueryChange?: (input: string) => void;
-  onChangeLiveSearchState?: (liveSearchState: LiveSearchState) => void;
-  onClickAutocompleteItem?: (
-    text: string,
-    currSelected?: number,
-    suggestionCount?: number
-  ) => void;
 }
 export class MynahUI {
   private readonly props: MynahUIProps;
@@ -147,9 +109,11 @@ export class MynahUI {
 
     this.chatWrapper = new ChatWrapper({
       onStopChatResponse: props.onStopChatResponse,
-      onShowAllWebResultsClick: () => {
-        this.sideNavigationTabChanged(MynahMode.SEARCH, true);
-      },
+      onShowAllWebResultsClick: (this.props.onSearch !== undefined)
+        ? () => {
+            this.sideNavigationTabChanged(MynahMode.SEARCH, true);
+          }
+        : undefined,
       showFeedbackButton: props.onSendFeedback !== undefined
     });
     this.mainContainer = new MainContainer({
@@ -259,160 +223,24 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REQUEST_SEARCH_HISTORY, (data) => {
-      if (this.props.onRequestHistoryRecords !== undefined) {
-        this.props.onRequestHistoryRecords(data.filters);
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INPUT_QUERY_CHANGE, (data) => {
-      if (this.props.onInputQueryChange !== undefined) {
-        this.props.onInputQueryChange(data.input);
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.AUTOCOMPLETE_SUGGESTION_CLICK, (data: {
-      autocompleteQuery: AutocompleteItem;
-      index: number;
-      count: number;
-    }) => {
-      if (this.props.onClickAutocompleteItem !== undefined) {
-        this.props.onClickAutocompleteItem(data.autocompleteQuery.suggestion, data.index, data.count);
-      }
-    });
-
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FEEDBACK_SET, (feedbackData) => {
       if (this.props.onSendFeedback !== undefined) {
         this.props.onSendFeedback(feedbackData);
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.LIVE_SEARCH_STATE_CHANGED, (data) => {
-      if (this.props.onChangeLiveSearchState !== undefined) {
-        this.props.onChangeLiveSearchState(data.liveSearchState);
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SEARCH, (data: {
-      query: string;
-      isFromAutocomplete?: boolean;
-    }) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SEARCH, () => {
       let directStoreDataReturn: MynahUIDataModel = {};
       if (this.props.onSearch !== undefined) {
         directStoreDataReturn = this.props.onSearch({
-          query: data.query,
-          code: MynahUIDataStore.getInstance().getValue('code'),
-          codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
-          matchPolicy: MynahUIDataStore.getInstance().getValue('matchPolicy'),
-          codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
-          selectedTab: getSelectedTabValueFromStore(),
-        }, false, data.isFromAutocomplete) ?? {};
-      }
-      if (this.props.onChangeLiveSearchState != null) {
-        this.props.onChangeLiveSearchState(LiveSearchState.STOP);
-        MynahUIDataStore.getInstance().updateStore({
-          liveSearchState: MynahUIDataStore.getInstance().getDefaultValue('liveSearchState'),
-          ...(MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true
-            ? {
-                headerInfo: {
-                  content: ''
-                },
-                showingHistoricalSearch: false,
-              }
-            : {}),
-          ...directStoreDataReturn
-        });
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_VISIBILITY_CHANGE, (data: {
-      type: ContextChangeType;
-      context: ContextType;
-      oldPolicyType?: ContextTypes;
-    }) => {
-      const currentMatchPolicy = Object.assign({}, MynahUIDataStore.getInstance().getValue('matchPolicy') as SearchPayloadMatchPolicy);
-      if (data.type === ContextChangeType.ADD) {
-        if (data.oldPolicyType !== undefined && data.oldPolicyType !== data.context.type) {
-          currentMatchPolicy[data.oldPolicyType] = currentMatchPolicy[data.oldPolicyType]
-            .filter((contextKey: string) => contextKey !== data.context.context);
-        }
-        currentMatchPolicy[data.context.type as ContextTypes].push(data.context.context);
-      } else if (data.type === ContextChangeType.REMOVE) {
-        currentMatchPolicy[data.context.type as ContextTypes] = currentMatchPolicy[data.context.type as ContextTypes]
-          .filter((contextKey: string) => contextKey !== data.context.context);
-      }
-      MynahUIDataStore.getInstance().updateStore({
-        matchPolicy: { ...currentMatchPolicy }
-      });
-
-      if (this.props.onSearch !== undefined && (
-        MynahUIDataStore.getInstance().getValue('query') !== '' ||
-        MynahUIDataStore.getInstance().getValue('codeSelection').selectedCode !== ''
-      )) {
-        const directStoreDataReturn: MynahUIDataModel = this.props.onSearch({
-          query: MynahUIDataStore.getInstance().getValue('query'),
-          code: MynahUIDataStore.getInstance().getValue('code'),
-          codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
-          matchPolicy: currentMatchPolicy,
-          codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
           selectedTab: getSelectedTabValueFromStore(),
         }) ?? {};
-
-        if (MynahUIDataStore.getInstance().getValue('showingHistoricalSearch') === true) {
-          MynahUIDataStore.getInstance().updateStore({
-            showingHistoricalSearch: false,
-            headerInfo: MynahUIDataStore.getInstance().getDefaultValue('headerInfo'),
-            ...directStoreDataReturn
-          });
-        }
       }
 
-      if (this.props.onChangeContext != null) {
-        this.props.onChangeContext(data.type, data.context);
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SEARCH_HISTORY_ITEM_CLICK, (data: {
-      historyItem: SearchHistoryItem;
-    }) => {
-      let directStoreDataReturn: MynahUIDataModel = {};
-      if (this.props.onSearch !== undefined) {
-        directStoreDataReturn = this.props.onSearch({
-          query: data.historyItem.query.input,
-          codeSelection: data.historyItem.query.codeSelection,
-          matchPolicy: data.historyItem.query.queryContext,
-          codeQuery: data.historyItem.query.codeQuery,
-          code: data.historyItem.query.code,
-          selectedTab: data.historyItem.query.selectedTab
-        }, true) ?? {};
-      }
-      const fullStoreData: Required<MynahUIDataModel> = Object.assign((new EmptyMynahUIDataModel(MynahUIDataStore.getInstance().getDefaults())).data, {
-        ...(data.historyItem.query.input !== undefined ? { query: data.historyItem.query.input } : {}),
-        ...(data.historyItem.query.queryContext !== undefined ? { matchPolicy: data.historyItem.query.queryContext } : {}),
-        ...(data.historyItem.suggestions !== undefined ? { suggestions: data.historyItem.suggestions } : {}),
-        ...(data.historyItem.query.codeQuery !== undefined ? { codeQuery: data.historyItem.query.codeQuery } : {}),
-        ...(data.historyItem.query.codeSelection !== undefined ? { codeSelection: data.historyItem.query.codeSelection } : {}),
-        ...(data.historyItem.query.code !== undefined ? { code: data.historyItem.query.code } : {}),
-        showingHistoricalSearch: true,
-        headerInfo: {
-          content: data.historyItem.recordDate !== undefined
-            ? `Showing the search you've performed ${getTimeDiff(
-              new Date().getTime() - data.historyItem.recordDate
-            ).toString()} ago.`
-            : ''
-        },
-        ...directStoreDataReturn
-      });
-      MynahUIDataStore.getInstance().updateStore(fullStoreData);
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CODE_DETAILS_CLICK, (data) => {
-      if (this.props.onClickCodeDetails !== undefined) {
-        this.props.onClickCodeDetails(
-          data.code,
-          data.fileName,
-          data.range
-        );
+      if (directStoreDataReturn !== undefined && Object.keys(directStoreDataReturn).length > 0) {
+        MynahUIDataStore.getInstance().updateStore({
+          ...directStoreDataReturn
+        });
       }
     });
 
@@ -524,11 +352,6 @@ export class MynahUI {
    * Returns the current search payload
    */
   public getSearchPayload = (): SearchPayload => ({
-    query: MynahUIDataStore.getInstance().getValue('query'),
-    matchPolicy: MynahUIDataStore.getInstance().getValue('matchPolicy'),
-    codeSelection: MynahUIDataStore.getInstance().getValue('codeSelection'),
-    codeQuery: MynahUIDataStore.getInstance().getValue('codeQuery'),
-    code: MynahUIDataStore.getInstance().getValue('code'),
     selectedTab: getSelectedTabValueFromStore(),
   });
 

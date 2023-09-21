@@ -11,23 +11,15 @@ import { Suggestion, SupportedCodingLanguages, SupportedCodingLanguagesExtension
  * @returns string | undefined
  */
 export const findLanguageFromSuggestion = (suggestion: Partial<Suggestion>): string | undefined => {
-  let res = suggestion.context?.reduce((res: string | undefined, ctx: string): string | undefined => {
-    if (res === undefined && SupportedCodingLanguages.includes(ctx)) {
-      return ctx;
+  let res;
+  SupportedCodingLanguages.forEach(codingLang => {
+    if (
+      suggestion.title?.match(new RegExp(codingLang, 'gi')) !== null ||
+      suggestion.body?.match(new RegExp(codingLang, 'gi')) !== null
+    ) {
+      res = codingLang;
     }
-    return res;
-  }, undefined);
-
-  if (res === undefined) {
-    SupportedCodingLanguages.forEach(codingLang => {
-      if (
-        suggestion.title?.match(new RegExp(codingLang, 'gi')) !== null ||
-        suggestion.body?.match(new RegExp(codingLang, 'gi')) !== null
-      ) {
-        res = codingLang;
-      }
-    });
-  }
+  });
 
   if (res === undefined) {
     res = getLanguageFromFileName(suggestion.title ?? '');

@@ -9,12 +9,6 @@
     box-shadow: var(--mynah-shadow-generic);
     z-index: 100;
 
-    .mynah-search-block-ready-to-fold + & {
-        box-shadow:
-            var(--mynah-shadow-generic),
-            0 25px 20px 5px var(--mynah-color-bg);
-    }
-
     > .mynah-toggle-container {
         height: 100%;
         background: none;

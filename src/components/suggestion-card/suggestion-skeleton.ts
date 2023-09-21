@@ -17,8 +17,6 @@ export class SuggestionSkeleton {
             body: `<p>Lorem ipsum dolor sit amet</p>
                             <p>Nunc sit amet nulla sit amet est rhoncus ornare. In sodales tristique finibus.</p>
                             <pre><code>lorem sit amet</code></pre>`,
-            id: 'skeleton-1',
-            context: [ 'skl-con-1', 'skl-con-2' ],
           },
         }).render.addClass('mynah-card-skeleton'),
         new SuggestionCard({
@@ -29,8 +27,6 @@ export class SuggestionSkeleton {
                             <pre><code>sit amet
                             loremasdasdsadasdasdasd
                             asd</code></pre>`,
-            id: 'skeleton-2',
-            context: [ 'skl-con-3', 'skl-con-4' ],
           },
         }).render.addClass('mynah-card-skeleton'),
       ],
