@@ -142,7 +142,7 @@ export interface ChatItem {
 }
 
 export interface ChatPrompt {
-  prompt: string;
+  prompt?: string;
   attachment?: Suggestion;
 }
 
