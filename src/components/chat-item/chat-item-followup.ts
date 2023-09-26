@@ -34,15 +34,17 @@ export class ChatItemFollowUpContainer {
               children: [ followUpOption.pillText ],
               events: {
                 click: (e) => {
-                  MynahUIDataStore.getInstance().updateStore({
-                    chatItems: [
-                      ...MynahUIDataStore.getInstance().getValue('chatItems'),
-                      {
-                        type: ChatItemType.PROMPT,
-                        body: `<span>${followUpOption.prompt}</span>`,
-                      }
-                    ]
-                  });
+                  if (followUpOption.prompt != null) {
+                    MynahUIDataStore.getInstance().updateStore({
+                      chatItems: [
+                        ...MynahUIDataStore.getInstance().getValue('chatItems'),
+                        {
+                          type: ChatItemType.PROMPT,
+                          body: `<span>${followUpOption.prompt}</span>`,
+                        }
+                      ]
+                    });
+                  }
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, followUpOption);
 
                   this.render.remove();
