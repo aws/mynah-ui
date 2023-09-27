@@ -56,7 +56,8 @@ export enum MynahEventNames {
   SUGGESTION_OPEN = 'suggestionOpen',
   SUGGESTION_LINK_COPY = 'suggestionLinkCopy',
   SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
-  SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
+  COPY_CODE_TO_CLIPBOARD = 'copyCodeToClipboard',
+  INSERT_CODE_TO_CURSOR_POSITION = 'insertCodeToCursorPosition',
   CHAT_PROMPT = 'chatPrompt',
   FOLLOW_UP_CLICKED = 'followUpClicked',
   SUGGESTION_ATTACHED_TO_CHAT = 'suggestionAttachedToChat',
@@ -127,6 +128,8 @@ export enum ChatItemType {
 export interface ChatItem {
   body?: string;
   type: ChatItemType;
+  id?: string;
+  canBeVoted?: boolean;
   followUp?: {
     text?: string;
     options?: ChatItemFollowUp[];
@@ -191,6 +194,7 @@ export const SupportedCodingLanguagesExtensionToTypeMap = {
 };
 
 export type OnCopiedToClipboardFunction = (type?: 'selection' | 'block', text?: string) => void;
+export type OnInsertToCursorPositionFunction = (type?: 'selection' | 'block', text?: string) => void;
 
 export enum SuggestionEventName {
   OPEN = 'openSuggestion',

@@ -3,17 +3,12 @@
 }
 
 .mynah-card {
-    @for $i from 0 through 50 {
-        &:nth-child(#{$i}) {
-            z-index: (50 - $i) * 100;
-        }
-    }
     text-decoration: none;
     outline: none;
     position: relative;
     transition: var(--mynah-short-transition-rev);
-    padding: var(--mynah-sizing-4);
-    background-color: var(--mynah-color-bg);
+    padding: var(--mynah-sizing-5);
+    background-color: var(--mynah-card-bg);
     border-radius: var(--mynah-card-radius);
     box-sizing: border-box;
     display: flex;
@@ -22,56 +17,19 @@
     transform: translate3d(0, 0, 0);
     flex: auto 0 0;
     width: 100%;
-    border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
-    @include background-shadow;
-
-    &:hover:active:before {
-        box-shadow: var(--mynah-shadow-card-more);
-        opacity: 0.75;
-    }
+    overflow: hidden;
+    border: 1px solid var(--mynah-color-border-default);
 
     > * {
         z-index: 10;
         position: relative;
-    }
-    &:after {
-        content: "";
-        pointer-events: none;
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        width: auto;
-        height: auto;
-        background-color: var(--mynah-card-bg);
-        border-radius: inherit;
-        box-sizing: border-box;
-        opacity: 0;
-        z-index: 0;
-        box-sizing: border-box;
-        transform-origin: center center;
-        transition: var(--mynah-very-short-transition);
-        opacity: 0.6;
-    }
-    &:hover {
-        &:before {
-            border-color: var(--mynah-color-main);
-            box-shadow: var(--mynah-shadow-card-more);
-        }
-        &:after {
-            opacity: 1;
-        }
-        > .mynah-card-header {
-            opacity: 1;
-        }
     }
 
     > .mynah-card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        opacity: 0.75;
+        opacity: 1;
         gap: var(--mynah-sizing-2);
         transition: var(--mynah-very-short-transition);
         > .mynah-source-thumbnail {
@@ -219,9 +177,11 @@
                     > .mynah-icon {
                         opacity: 0.5;
                         font-size: var(--mynah-font-size-medium);
+                        color: var(--mynah-color-text-weak);
                     }
                     > .mynah-title-meta-block-item-text {
                         font-size: var(--mynah-font-size-xxsmall);
+                        color: var(--mynah-color-text-weak);
                         &::first-letter {
                             text-transform: capitalize;
                         }
@@ -276,7 +236,8 @@
             overflow: hidden;
             position: relative;
             display: block;
-            &, & > div {
+            &,
+            & > div {
                 > * {
                     margin-block-start: 0.45em;
                     margin-block-end: 0.45em;
@@ -302,7 +263,7 @@
                     user-select: none;
                     cursor: default;
                     height: var(--mynah-sizing-7);
-    
+
                     &:before {
                         pointer-events: none;
                         content: "";
@@ -481,12 +442,6 @@
     &.mynah-card-compact {
         padding: var(--mynah-sizing-2);
         gap: var(--mynah-sizing-1);
-        background-color: transparent;
-        &,
-        &:after,
-        &:before {
-            box-shadow: none;
-        }
         > .mynah-card-header {
             gap: var(--mynah-sizing-1);
             > .mynah-source-thumbnail {
@@ -525,13 +480,9 @@
         &.mynah-card-compact-with-body {
             gap: 0;
             &,
-            &:after,
-            &:before {
+            &:after {
                 background-color: transparent;
-                border-radius: 0;
-                border: none;
-                margin-bottom: var(--mynah-sizing-3);
-                padding: 0;
+                border-color: transparent;
             }
 
             > .mynah-card-center {

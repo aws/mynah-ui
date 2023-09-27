@@ -68,7 +68,8 @@ $smoothduration: 400ms;
     > .mynah-chat-wrapper {
         display: flex;
         flex-flow: column nowrap;
-        overflow: visible;
+        overflow: hidden;
+        justify-content: space-around;
         padding-top: 0;
         &:after {
             transition: all $smoothduration $smoothbezier;

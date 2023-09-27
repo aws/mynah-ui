@@ -134,8 +134,11 @@ export class SuggestionCardBody {
         showCopyOptions: isBlockCode,
         block: isBlockCode,
         onCopiedToClipboard: (type, text) => {
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, { suggestionId: suggestion?.url ?? '', type, text });
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, { type, text });
         },
+        onInsertToCursorPosition: (type, text) => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, { type, text });
+        }
       }).render;
     }
 

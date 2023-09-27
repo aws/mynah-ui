@@ -84,7 +84,8 @@ export interface MynahUIProps {
   onNavigationTabChange?: (selectedTab: string) => void;
   onSideNavigationTabChange?: (selectedTab: string) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
-  onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
+  onCopyCodeToClipboard?: (code?: string, type?: 'selection' | 'block') => void;
+  onCodeInsertToCursorPosition?: (code?: string, type?: 'selection' | 'block') => void;
   onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
 }
@@ -252,12 +253,20 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_COPY_TO_CLIPBOARD, (data) => {
-      if (this.props.onSuggestionClipboardInteraction !== undefined) {
-        this.props.onSuggestionClipboardInteraction(
-          data.suggestionId,
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.COPY_CODE_TO_CLIPBOARD, (data) => {
+      if (this.props.onCopyCodeToClipboard !== undefined) {
+        this.props.onCopyCodeToClipboard(
+          data.text,
           data.type,
-          data.text
+        );
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, (data) => {
+      if (this.props.onCodeInsertToCursorPosition !== undefined) {
+        this.props.onCodeInsertToCursorPosition(
+          data.text,
+          data.type,
         );
       }
     });

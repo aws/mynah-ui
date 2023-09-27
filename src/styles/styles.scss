@@ -9,6 +9,7 @@
 @import "./components/main-container";
 @import "./components/button";
 @import "./components/toggle";
+@import "./components/icon";
 @import "./components/nav-tabs";
 @import "./components/card";
 @import "./components/feedback-form";
@@ -19,7 +20,7 @@
 
 body,
 html {
-    font-family: 'Amazon Ember';
+    font-family: "Amazon Ember";
     background-color: var(--mynah-color-bg);
     height: 100%;
     width: 100%;
@@ -39,9 +40,13 @@ h6 {
 }
 
 ::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
-    opacity: 0.5;
+    width: 2px;
+    height: 2px;
+    opacity: 0.25;
+    &:horizontal {
+        width: 0px;
+        height: 0px;
+    }
 }
 
 *:focus {

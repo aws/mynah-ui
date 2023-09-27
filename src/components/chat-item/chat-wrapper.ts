@@ -7,6 +7,8 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUIDataStore } from '../../helper/store';
 import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
+import { Button } from '../button';
+import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 
@@ -18,7 +20,7 @@ export interface ChatWrapperProps {
 export class ChatWrapper {
   private readonly props?: ChatWrapperProps;
   private readonly chatItemsContainer: ExtendedHTMLElement;
-  private readonly spinner: ExtendedHTMLElement;
+  private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
   private containerScollState: 'idle' | 'streaming' | 'break';
@@ -47,9 +49,9 @@ export class ChatWrapper {
     });
     MynahUIDataStore.getInstance().subscribe('loadingChat', (loadingChat) => {
       if (loadingChat === true) {
-        this.spinner.addClass('loading');
+        this.render.addClass('loading');
       } else {
-        this.spinner.removeClass('loading');
+        this.render.removeClass('loading');
       }
     });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (body) => {
@@ -63,7 +65,6 @@ export class ChatWrapper {
     });
 
     this.promptInput = new ChatPromptInput({
-      onStopChatResponse: props?.onStopChatResponse,
       showFeedbackButton: props?.showFeedbackButton,
     }).render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
@@ -79,14 +80,23 @@ export class ChatWrapper {
         }
       }
     });
-    this.spinner = DomBuilder.getInstance().build({
+
+    this.intermediateBlockContainer = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-items-spinner' ],
-      persistent: true,
+      classNames: [ 'mynah-chat-overflowing-intermediate-block' ],
       children: [
-        { type: 'span' },
-        { type: 'span' },
-        { type: 'span' },
+        ...(this.props?.onStopChatResponse !== undefined
+          ? [ new Button({
+              classNames: [ 'mynah-chat-stop-chat-response-button' ],
+              label: 'Stop generating',
+              icon: new Icon({ icon: MynahIcons.CANCEL }).render,
+              onClick: () => {
+                if ((this.props?.onStopChatResponse) !== undefined) {
+                  this.props?.onStopChatResponse();
+                }
+              },
+            }).render ]
+          : [])
       ]
     });
 
@@ -94,7 +104,7 @@ export class ChatWrapper {
       type: 'div',
       classNames: [ 'mynah-chat-wrapper' ],
       persistent: true,
-      children: [ this.chatItemsContainer, this.spinner, this.promptInput ]
+      children: [ this.chatItemsContainer, this.intermediateBlockContainer, this.promptInput ]
     });
   }
 
@@ -119,8 +129,8 @@ export class ChatWrapper {
 
   private readonly scrollToStreamingCardBottom = (): void => {
     if (this.containerScollState === 'streaming' && this.lastChatItemCard != null) {
-      if (this.lastChatItemCard.render.offsetHeight >= (this.chatItemsContainer.offsetHeight - 150)) {
-        this.chatItemsContainer.scrollTop = this.lastChatItemCard.render.offsetTop + this.lastChatItemCard.render.offsetHeight - this.chatItemsContainer.offsetHeight + 125;
+      if ((this.lastChatItemCard.render.offsetHeight + this.lastChatItemCard.render.getBoundingClientRect().top) >= (this.chatItemsContainer.offsetHeight - 75)) {
+        this.chatItemsContainer.scrollTop = this.lastChatItemCard.render.offsetTop + this.lastChatItemCard.render.offsetHeight - this.chatItemsContainer.offsetHeight + 75;
       }
     }
   };

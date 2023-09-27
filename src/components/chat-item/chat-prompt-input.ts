@@ -14,7 +14,6 @@ import { SuggestionCard } from '../suggestion-card/suggestion-card';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 
 export interface CharPromptInputProps {
-  onStopChatResponse?: () => void;
   showFeedbackButton?: boolean;
 }
 export class ChatPromptInput {
@@ -23,39 +22,27 @@ export class ChatPromptInput {
   private readonly promptTextInputWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
   private readonly promptTextInputSizer: ExtendedHTMLElement;
-  private sendButton: ExtendedHTMLElement;
+  private readonly sendButton: ExtendedHTMLElement;
   private readonly clearButton: ExtendedHTMLElement;
-  private readonly loading: boolean;
-  private readonly onStopChatResponse = (): void => {};
+  private loading: boolean;
   private attachment?: Suggestion;
   constructor (props?: CharPromptInputProps) {
-    this.onStopChatResponse = () => {
-      if (props?.onStopChatResponse !== undefined) {
-        props?.onStopChatResponse();
-        const newButton = this.getButton(false, false);
-        this.sendButton.replaceWith(newButton);
-        this.sendButton = newButton;
-      }
-    };
     this.loading = MynahUIDataStore.getInstance().getValue('loadingChat') as boolean;
-    MynahUIDataStore.getInstance().subscribe('chatItems', (chatItems) => {
-      this.promptTextInput.setAttribute('placeholder', chatItems.length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder);
-    });
     MynahUIDataStore.getInstance().subscribe('loadingChat', (newLoadingValue: boolean) => {
+      this.loading = newLoadingValue;
       if (newLoadingValue) {
+        console.log('setting placeholder to ...');
         this.promptTextInput.setAttribute('placeholder', '...');
         this.promptTextInput.setAttribute('disabled', 'disabled');
         this.clearButton.setAttribute('disabled', 'disabled');
+        this.sendButton.setAttribute('disabled', 'disabled');
       } else {
         const placeHolder = MynahUIDataStore.getInstance().getValue('chatItems').length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder;
         this.promptTextInput.setAttribute('placeholder', placeHolder);
         this.promptTextInput.removeAttribute('disabled');
+        this.sendButton.removeAttribute('disabled');
         this.clearButton.removeAttribute('disabled');
       }
-
-      const newButton = this.getButton(newLoadingValue, props?.onStopChatResponse !== undefined);
-      this.sendButton.replaceWith(newButton);
-      this.sendButton = newButton;
     });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, (suggestion: Suggestion) => {
       this.attachment = suggestion;
@@ -113,15 +100,26 @@ export class ChatPromptInput {
     });
     this.promptTextInputWrapper = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-prompt-input-wrapper', 'no-text' ],
+      classNames: [ 'mynah-chat-prompt-input-inner-wrapper', 'no-text' ],
       children: [
         this.promptTextInputSizer,
         this.promptTextInput,
       ]
     });
-    this.sendButton = this.getButton(this.loading, props?.onStopChatResponse !== undefined);
+    this.sendButton = new Button({
+      classNames: [ 'mynah-icon-button', 'mynah-chat-prompt-button' ],
+      attributes: {
+        ...(this.loading ? { disabled: 'disabled' } : {}),
+        tabindex: '5'
+      },
+      icon: new Icon({ icon: MynahIcons.ENVELOPE_SEND }).render,
+      onClick: () => {
+        this.sendPrompt();
+      },
+    }).render;
     this.clearButton = new Button({
       primary: false,
+      classNames: [ 'mynah-icon-button' ],
       attributes: {
         ...(this.loading ? { disabled: 'disabled' } : {}),
         tabindex: '4'
@@ -206,32 +204,10 @@ export class ChatPromptInput {
     });
   }
 
-  private readonly getButton = (loading: boolean, isStoppable: boolean): ExtendedHTMLElement => new Button({
-    classNames: [ 'mynah-icon-button', 'mynah-search-button', ...(loading && isStoppable ? [ 'mynah-search-button-cancel-state' ] : []) ],
-    attributes: {
-      ...(loading && !isStoppable ? { disabled: 'disabled' } : {}),
-      tabindex: '5'
-    },
-    icon: DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-mutating-next-icon' ],
-      children: [
-        new Icon({ icon: loading && isStoppable ? MynahIcons.CANCEL : MynahIcons.RIGHT_OPEN }).render
-      ],
-    }),
-    onClick: () => {
-      if (isStoppable && loading) {
-        this.onStopChatResponse();
-      } else {
-        this.triggerSearch();
-      }
-    },
-  }).render;
-
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (e.key === KeyMap.ENTER && !e.shiftKey) {
       cancelEvent(e);
-      this.triggerSearch();
+      this.sendPrompt();
     } else if (e.key === KeyMap.ENTER && e.shiftKey) {
       this.promptTextInput.value = this.promptTextInput.value + ' ';
       setTimeout(() => {
@@ -253,7 +229,7 @@ export class ChatPromptInput {
     this.promptTextInputSizer.innerHTML = '';
   };
 
-  private readonly triggerSearch = (): void => {
+  private readonly sendPrompt = (): void => {
     if (this.promptTextInput.value.trim() !== '') {
       this.resetTextAreaHeight();
       MynahUIDataStore.getInstance().updateStore({

@@ -167,7 +167,7 @@ export class ChatItemCard {
       : '';
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.chatItem.type ?? ChatItemType.ANSWER}`, ...(this.checkIsMuted() ? [ 'mynah-chat-item-card-muted' ] : []) ],
+      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.chatItem.type ?? ChatItemType.ANSWER}`, ...(this.checkIsMuted() ? [ 'mynah-chat-item-card-muted' ] : []), ...(this.chatItem.body?.trim() === '' ? [ 'mynah-chat-item-empty' ] : []) ],
       children: [
         ...(MynahUIDataStore.getInstance().getValue('showChatAvatars') === true
           ? [ this.chatAvatar ]
@@ -210,6 +210,18 @@ export class ChatItemCard {
         this.relatedContentWrapper,
         this.showMoreButtonBlock.render,
         this.chatItem.followUp?.text !== undefined ? new ChatItemFollowUpContainer({ chatItem: this.chatItem }).render : '',
+        ...(this.chatItem.type === ChatItemType.ANSWER_STREAM
+          ? [ {
+              type: 'div',
+              classNames: [ 'mynah-chat-items-spinner' ],
+              persistent: true,
+              children: [
+                { type: 'span' },
+                { type: 'span' },
+                { type: 'span' },
+              ]
+            } ]
+          : [])
       ],
     });
 
@@ -266,6 +278,9 @@ export class ChatItemCard {
   });
 
   public readonly updateAnswerBody = (body: string): void => {
+    if (body.trim() !== '') {
+      this.render.removeClass('mynah-chat-item-empty');
+    }
     this.suggestionCardBody.updateCardBody(body);
   };
 }

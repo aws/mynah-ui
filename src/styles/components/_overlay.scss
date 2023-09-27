@@ -34,6 +34,12 @@
         .mynah-card,
         .mynah-card * {
             pointer-events: none !important;
+            .mynah-syntax-highlighter-copy-buttons {
+                display: none;
+                & ~ *:last-child {
+                    margin-bottom: 0 !important;
+                }
+            }
         }
 
         &.background {
