@@ -65,6 +65,7 @@ export enum MynahEventNames {
   CLEAR_CHAT = 'clearChat',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM_CLICK = 'showFeedbackFormClick',
+  OPEN_DIFF = 'openDiff'
 };
 
 export const MynahPortalNames = {
@@ -122,7 +123,8 @@ export enum ChatItemType {
   AI_PROMPT = 'ai-prompt',
   ANSWER = 'answer',
   ANSWER_STREAM = 'answer-stream',
-  ANSWER_PART = 'answer-part'
+  ANSWER_PART = 'answer-part',
+  CODE_RESULT = 'code-result',
 }
 
 export interface ChatItem {

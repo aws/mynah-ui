@@ -88,6 +88,7 @@ export interface MynahUIProps {
   onCodeInsertToCursorPosition?: (code?: string, type?: 'selection' | 'block') => void;
   onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
+  onOpenDiff?: (leftPath: string, rightPath: string) => void;
 }
 export class MynahUI {
   private readonly props: MynahUIProps;
@@ -302,6 +303,12 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, () => {
       if (this.props.onResetStore !== undefined) {
         this.props.onResetStore();
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_DIFF, (data) => {
+      if (this.props.onOpenDiff !== undefined) {
+        this.props.onOpenDiff(data.leftPath, data.rightPath);
       }
     });
   };
