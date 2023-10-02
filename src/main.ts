@@ -74,8 +74,7 @@ export interface MynahUIProps {
   ) => MynahUIDataModel);
   onShowMoreWebResultsClick?: () => void;
   onReady?: () => void;
-  onClickSuggestionVote?: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
-  onClearChat?: () => void;
+  onVote?: (votedItemID: string, vote: RelevancyVoteType) => void;
   onStopChatResponse?: () => void;
   onResetStore?: () => void;
   onChatPrompt?: (prompt: ChatPrompt) => void;
@@ -90,6 +89,7 @@ export interface MynahUIProps {
   onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
   onOpenDiff?: (leftPath: string, rightPath: string) => void;
 }
+
 export class MynahUI {
   private readonly props: MynahUIProps;
   private readonly wrapper: ExtendedHTMLElement;
@@ -115,8 +115,7 @@ export class MynahUI {
         ? () => {
             this.sideNavigationTabChanged(MynahMode.SEARCH, true);
           }
-        : undefined,
-      showFeedbackButton: props.onSendFeedback !== undefined
+        : undefined
     });
     this.mainContainer = new MainContainer({
       onNavigationTabChange: props.onNavigationTabChange,
@@ -207,12 +206,6 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CLEAR_CHAT, () => {
-      if (this.props.onClearChat !== undefined) {
-        this.props.onClearChat();
-      }
-    });
-
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, () => {
       if (this.props.onShowMoreWebResultsClick !== undefined) {
         this.props.onShowMoreWebResultsClick();
@@ -282,10 +275,10 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_VOTE, (data) => {
-      if (this.props.onClickSuggestionVote !== undefined) {
-        this.props.onClickSuggestionVote(
-          data.suggestion,
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CARD_VOTE, (data) => {
+      if (this.props.onVote !== undefined) {
+        this.props.onVote(
+          data.id,
           data.vote
         );
       }
@@ -339,8 +332,11 @@ export class MynahUI {
    * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
    * @param body new body stream as string.
    */
-  public updateLastChatAnswerStream = (body: string): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, body);
+  public updateLastChatAnswerStream = (updateWith: string | {
+    title?: string;
+    suggestions: Suggestion[];
+  }): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, updateWith);
   };
 
   /**
@@ -370,6 +366,13 @@ export class MynahUI {
   public getSearchPayload = (): SearchPayload => ({
     selectedTab: getSelectedTabValueFromStore(),
   });
+
+  /**
+   * Shows up the feedback form
+   */
+  public showFeedbackForm = (): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_FEEDBACK_FORM_CLICK);
+  };
 
   /**
    * Simply creates and shows a notification

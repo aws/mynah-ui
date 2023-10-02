@@ -7,22 +7,20 @@ import { MynahEventNames, RelevancyVoteType, Suggestion } from '../../static';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Icon, MynahIcons } from '../icon';
 import { MynahUIGlobalEvents } from '../../helper/events';
+import { generateUID } from '../../helper/guid';
 
 export interface SuggestionCardRelevanceVoteProps {
   suggestion: Suggestion;
 }
 export class SuggestionCardRelevanceVote {
   render: ExtendedHTMLElement;
+  votingId: string;
   constructor (props: SuggestionCardRelevanceVoteProps) {
+    this.votingId = props.suggestion.url ?? props.suggestion.id ?? generateUID();
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-votes-wrapper' ],
       children: [
-        {
-          type: 'div',
-          classNames: [ 'mynah-vote-text' ],
-          innerHTML: '<b>Is this relevant?</b>',
-        },
         {
           type: 'div',
           classNames: [ 'mynah-card-vote' ],
@@ -36,8 +34,8 @@ export class SuggestionCardRelevanceVote {
               },
               attributes: {
                 type: 'radio',
-                id: `${props.suggestion.url}-vote-up`,
-                name: `${props.suggestion.url}-vote`,
+                id: `${this.votingId}-vote-up`,
+                name: `${this.votingId}-vote`,
                 value: 'up',
               },
               classNames: [ 'mynah-vote-radio', 'mynah-vote-up-radio' ],
@@ -51,27 +49,23 @@ export class SuggestionCardRelevanceVote {
               },
               attributes: {
                 type: 'radio',
-                id: `${props.suggestion.url}-vote-down`,
-                name: `${props.suggestion.url}-vote`,
+                id: `${this.votingId}-vote-down`,
+                name: `${this.votingId}-vote`,
                 value: 'down',
               },
               classNames: [ 'mynah-vote-radio', 'mynah-vote-down-radio' ],
             },
             {
               type: 'label',
-              attributes: { for: `${props.suggestion.url}-vote-up` },
+              attributes: { for: `${this.votingId}-vote-up` },
               classNames: [ 'mynah-vote-label', 'mynah-vote-up' ],
               children: [ new Icon({ icon: MynahIcons.THUMBS_UP }).render ],
             },
             {
               type: 'label',
-              attributes: { for: `${props.suggestion.url}-vote-down` },
+              attributes: { for: `${this.votingId}-vote-down` },
               classNames: [ 'mynah-vote-label', 'mynah-vote-down' ],
               children: [ new Icon({ icon: MynahIcons.THUMBS_DOWN }).render ],
-            },
-            {
-              type: 'span',
-              classNames: [ 'mynah-vote-indicator' ],
             },
           ],
         },
@@ -80,6 +74,6 @@ export class SuggestionCardRelevanceVote {
   }
 
   private readonly handleVoteChange = (vote: RelevancyVoteType, suggestion: Suggestion): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_VOTE, { suggestion, vote });
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CARD_VOTE, { id: this.votingId, vote });
   };
 }

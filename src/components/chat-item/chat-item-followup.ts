@@ -47,7 +47,11 @@ export class ChatItemFollowUpContainer {
                   }
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, followUpOption);
 
-                  this.render.remove();
+                  if ((this.render.parentNode as HTMLElement).classList.contains('mynah-chat-item-card-muted')) {
+                    (this.render.parentNode as HTMLElement).remove();
+                  } else {
+                    this.render.remove();
+                  }
                 }
               }
             }

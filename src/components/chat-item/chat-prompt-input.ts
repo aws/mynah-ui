@@ -13,9 +13,6 @@ import { MynahUIDataStore } from '../../helper/store';
 import { SuggestionCard } from '../suggestion-card/suggestion-card';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 
-export interface CharPromptInputProps {
-  showFeedbackButton?: boolean;
-}
 export class ChatPromptInput {
   render: ExtendedHTMLElement;
   private readonly attachmentWrapper: ExtendedHTMLElement;
@@ -23,26 +20,23 @@ export class ChatPromptInput {
   private readonly promptTextInput: ExtendedHTMLElement;
   private readonly promptTextInputSizer: ExtendedHTMLElement;
   private readonly sendButton: ExtendedHTMLElement;
-  private readonly clearButton: ExtendedHTMLElement;
-  private loading: boolean;
+  private commandSelector: Overlay;
+  private inputDisabled: boolean;
   private attachment?: Suggestion;
-  constructor (props?: CharPromptInputProps) {
-    this.loading = MynahUIDataStore.getInstance().getValue('loadingChat') as boolean;
-    MynahUIDataStore.getInstance().subscribe('loadingChat', (newLoadingValue: boolean) => {
-      this.loading = newLoadingValue;
-      if (newLoadingValue) {
-        console.log('setting placeholder to ...');
-        this.promptTextInput.setAttribute('placeholder', '...');
+  constructor () {
+    this.inputDisabled = MynahUIDataStore.getInstance().getValue('promptInputDisabledState') as boolean;
+    MynahUIDataStore.getInstance().subscribe('promptInputDisabledState', (isDisabled: boolean) => {
+      this.inputDisabled = isDisabled;
+      if (isDisabled) {
         this.promptTextInput.setAttribute('disabled', 'disabled');
-        this.clearButton.setAttribute('disabled', 'disabled');
         this.sendButton.setAttribute('disabled', 'disabled');
       } else {
-        const placeHolder = MynahUIDataStore.getInstance().getValue('chatItems').length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder;
-        this.promptTextInput.setAttribute('placeholder', placeHolder);
         this.promptTextInput.removeAttribute('disabled');
         this.sendButton.removeAttribute('disabled');
-        this.clearButton.removeAttribute('disabled');
       }
+    });
+    MynahUIDataStore.getInstance().subscribe('promptInputPlaceholder', (placeholderText: string) => {
+      this.promptTextInput.setAttribute('placeholder', placeholderText);
     });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, (suggestion: Suggestion) => {
       this.attachment = suggestion;
@@ -77,25 +71,28 @@ export class ChatPromptInput {
     this.promptTextInputSizer = DomBuilder.getInstance().build({
       type: 'span',
       classNames: [ 'mynah-chat-prompt-input', 'mynah-chat-prompt-input-sizer' ],
-      attributes: {
-        ...(this.loading ? { disabled: 'disabled' } : {}),
-      },
     });
     this.promptTextInput = DomBuilder.getInstance().build({
       type: 'textarea',
       classNames: [ 'mynah-chat-prompt-input' ],
       attributes: {
-        ...(this.loading ? { disabled: 'disabled' } : {}),
+        ...(this.inputDisabled ? { disabled: 'disabled' } : {}),
         tabindex: '1',
         rows: '1',
         maxlength: '100000',
         type: 'text',
-        placeholder: MynahUIDataStore.getInstance().getValue('chatItems').length > 0 ? I18N.getInstance().texts.chatPromptInputFollowUpPlaceholder : I18N.getInstance().texts.chatPromptInputPlaceholder,
+        placeholder: MynahUIDataStore.getInstance().getValue('promptInputPlaceholder'),
         value: '',
       },
       events: {
         keydown: this.handleInputKeydown,
         input: this.calculateTextAreaHeight,
+        focus: () => {
+          this.render.addClass('input-has-focus');
+        },
+        blur: () => {
+          this.render.removeClass('input-has-focus');
+        }
       },
     });
     this.promptTextInputWrapper = DomBuilder.getInstance().build({
@@ -109,76 +106,12 @@ export class ChatPromptInput {
     this.sendButton = new Button({
       classNames: [ 'mynah-icon-button', 'mynah-chat-prompt-button' ],
       attributes: {
-        ...(this.loading ? { disabled: 'disabled' } : {}),
+        ...(this.inputDisabled ? { disabled: 'disabled' } : {}),
         tabindex: '5'
       },
       icon: new Icon({ icon: MynahIcons.ENVELOPE_SEND }).render,
       onClick: () => {
         this.sendPrompt();
-      },
-    }).render;
-    this.clearButton = new Button({
-      primary: false,
-      classNames: [ 'mynah-icon-button' ],
-      attributes: {
-        ...(this.loading ? { disabled: 'disabled' } : {}),
-        tabindex: '4'
-      },
-      icon: new Icon({ icon: MynahIcons.ELLIPSIS }).render,
-      onClick: (e) => {
-        const elm: HTMLElement = e.currentTarget as HTMLElement;
-        this.render.addClass('keep-active');
-        const menuOverlay = new Overlay({
-          referenceElement: elm,
-          dimOutside: false,
-          verticalDirection: OverlayVerticalDirection.TO_TOP,
-          horizontalDirection: OverlayHorizontalDirection.CENTER,
-          children: [
-            {
-              type: 'div',
-              classNames: [ 'mynah-chat-prompt-overlay-buttons-container' ],
-              children: [
-                ...(props?.showFeedbackButton === true
-                  ? [ new Button({
-                      primary: false,
-                      onClick: (e: Event) => {
-                        cancelEvent(e);
-                        menuOverlay.close();
-                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_FEEDBACK_FORM_CLICK);
-                      },
-                      label: DomBuilder.getInstance().build({
-                        type: 'span',
-                        innerHTML: 'Send feedback',
-                      }),
-                    }).render ]
-                  : []),
-                new Button({
-                  primary: false,
-                  onClick: (e: Event) => {
-                    cancelEvent(e);
-                    menuOverlay.close();
-                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CLEAR_CHAT);
-                  },
-                  label: DomBuilder.getInstance().build({
-                    type: 'span',
-                    innerHTML: 'Clear chat',
-                  }),
-                }).render,
-                new Button({
-                  primary: false,
-                  onClick: (e: Event) => {
-                    cancelEvent(e);
-                  },
-                  attributes: { disabled: 'disabled' },
-                  label: DomBuilder.getInstance().build({
-                    type: 'span',
-                    innerHTML: 'Start new chat',
-                  }),
-                }).render,
-              ]
-            }
-          ],
-        });
       },
     }).render;
 
@@ -195,7 +128,6 @@ export class ChatPromptInput {
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
             this.promptTextInputWrapper,
-            this.clearButton,
             this.sendButton,
           ]
         },
@@ -213,6 +145,26 @@ export class ChatPromptInput {
       setTimeout(() => {
         this.calculateTextAreaHeight();
       }, 10);
+    } else if (e.key === KeyMap.SLASH) {
+      // will show prompt list
+      this.commandSelector = new Overlay({
+        background: false,
+        closeOnOutsideClick: false,
+        referenceElement: this.render,
+        dimOutside: false,
+        stretchWidth: true,
+        verticalDirection: OverlayVerticalDirection.TO_TOP,
+        horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+        children: [
+          {
+            type: 'div',
+            classNames: [ 'mynah-chat-command-selector' ],
+            children: [
+              'HELLOOOO!!'
+            ]
+          }
+        ],
+      });
     }
   };
 
@@ -252,6 +204,7 @@ export class ChatPromptInput {
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, { prompt: this.promptTextInput.value, attachment: this.attachment });
 
       this.promptTextInput.value = '';
+      this.promptTextInputWrapper.addClass('no-text');
       this.attachmentWrapper.clear();
       this.attachment = undefined;
     }

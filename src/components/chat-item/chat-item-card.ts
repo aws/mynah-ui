@@ -86,7 +86,7 @@ export class ChatItemCard {
               mouseleave: this.hideLinkPreview,
             },
             children: [
-              new SuggestionCard({ suggestion, compact: 'withBody' }).render
+              new SuggestionCard({ suggestion, compact: 'flat' }).render
             ]
           })),
         ]
@@ -179,7 +179,7 @@ export class ChatItemCard {
               children: [
                 ((): ExtendedHTMLElement => {
                   this.suggestionCardBody = new SuggestionCardBody({
-                    suggestion: { body: this.chatItem.body },
+                    suggestion: { id: this.chatItem.id, body: this.chatItem.body, ...(((this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) && this.chatItem.canBeVoted === true && this.chatItem.id !== undefined && !this.checkIsMuted()) ? { type: '' } : {}) },
                     onLinkMouseEnter: (e, url) => {
                       const matchingSuggestion = [ ...MynahUIDataStore.getInstance().getValue('chatItems').map(
                         (chatItem: ChatItem) => {
@@ -199,7 +199,7 @@ export class ChatItemCard {
                         this.showLinkPreview(e, matchingSuggestion);
                       }
                     },
-                    onLinkMouseLeave: this.hideLinkPreview
+                    onLinkMouseLeave: this.hideLinkPreview,
                   });
                   return this.suggestionCardBody.render;
                 })(),
@@ -246,7 +246,8 @@ export class ChatItemCard {
       (this.chatItem.suggestions !== undefined && this.chatItem.suggestions?.suggestions.length > 0)));
 
   private readonly showLinkPreview = (e: MouseEvent, suggestion: Suggestion): void => {
-    if (this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) {
+    if ((this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) &&
+    suggestion.body !== undefined) {
       clearTimeout(this.relatedContentPreviewTimeout);
       this.relatedContentPreviewTimeout = setTimeout(() => {
         const elm: HTMLElement = e.target as HTMLElement;
@@ -287,10 +288,14 @@ export class ChatItemCard {
     ]
   });
 
-  public readonly updateAnswerBody = (body: string): void => {
-    if (body.trim() !== '') {
-      this.render.removeClass('mynah-chat-item-empty');
+  public readonly updateAnswerBody = (body: ExtendedHTMLElement | HTMLElement | string): void => {
+    if (typeof body === 'string') {
+      if (body.trim() !== '') {
+        this.render.removeClass('mynah-chat-item-empty');
+      }
+      this.suggestionCardBody.updateCardBody(body);
+    } else {
+      this.suggestionCardBody.addToCardBody(body);
     }
-    this.suggestionCardBody.updateCardBody(body);
   };
 }

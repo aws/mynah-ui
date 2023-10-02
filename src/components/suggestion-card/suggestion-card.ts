@@ -20,7 +20,7 @@ const ENGAGEMENT_DURATION_LIMIT = 3000;
 const ENGAGEMENT_MIN_SELECTION_DISTANCE = 6;
 const ENGAGEMENT_MIN_CLICK_DURATION = 300;
 
-export interface SuggestionCardProps {suggestion: Suggestion; compact?: 'withBody' | true; showFooterButtons?: boolean}
+export interface SuggestionCardProps {suggestion: Suggestion; compact?: 'flat' | true; showFooterButtons?: boolean}
 export class SuggestionCard {
   private engagementStartTime: number = -1;
   private totalMouseDistanceTraveled: { x: number; y: number } = { x: 0, y: 0 };
@@ -32,7 +32,7 @@ export class SuggestionCard {
     this.suggestion = props.suggestion;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-card', props.compact !== undefined ? 'mynah-card-compact' : '', props.compact === 'withBody' ? 'mynah-card-compact-with-body' : '' ],
+      classNames: [ 'mynah-card', props.compact !== undefined ? 'mynah-card-compact' : '', props.compact === 'flat' ? 'mynah-card-compact-flat' : '' ],
       events: {
         mouseenter: e => {
           if (this.engagementStartTime === -1) {
@@ -83,7 +83,7 @@ export class SuggestionCard {
       children: [
         new SuggestionCardHeader({
           title: props.suggestion.title,
-          url: props.suggestion.url,
+          url: props.suggestion.url ?? '',
           metadata: props.suggestion.type !== 'ApiDocsSuggestion' ? props.suggestion.metadata as SuggestionMetaDataUnion : undefined,
           onSuggestionTitleClick: (e?: MouseEvent) => {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: props.suggestion, event: e });
@@ -92,7 +92,7 @@ export class SuggestionCard {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { suggestion: props.suggestion });
           },
         }).render,
-        new SuggestionCardBody({ suggestion: props.suggestion, showFooterButtons: props.showFooterButtons }).render,
+        ...(props.suggestion.body !== undefined ? [ new SuggestionCardBody({ suggestion: props.suggestion, showFooterButtons: props.showFooterButtons }).render ] : []),
       ],
     });
   }

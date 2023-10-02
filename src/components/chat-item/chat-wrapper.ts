@@ -15,7 +15,6 @@ import { ChatPromptInput } from './chat-prompt-input';
 export interface ChatWrapperProps {
   onStopChatResponse?: () => void;
   onShowAllWebResultsClick?: () => void;
-  showFeedbackButton?: boolean;
 }
 export class ChatWrapper {
   private readonly props?: ChatWrapperProps;
@@ -54,19 +53,28 @@ export class ChatWrapper {
         this.render.removeClass('loading');
       }
     });
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (body) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (updateWith) => {
       if (this.lastChatItemCard !== null) {
         if (this.containerScollState !== 'break') {
           this.containerScollState = 'streaming';
           this.scrollToStreamingCardBottom();
         }
-        this.lastChatItemCard.updateAnswerBody(body);
+        if (typeof updateWith === 'string') {
+          this.lastChatItemCard.updateAnswerBody(updateWith);
+        } else if (typeof updateWith === 'object' && updateWith.suggestions !== undefined) {
+          this.lastChatItemCard.updateAnswerBody(
+            new ChatItemCard({
+              chatItem: {
+                type: ChatItemType.ANSWER,
+                suggestions: updateWith
+              }
+            }).render
+          );
+        }
       }
     });
 
-    this.promptInput = new ChatPromptInput({
-      showFeedbackButton: props?.showFeedbackButton,
-    }).render;
+    this.promptInput = new ChatPromptInput().render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-items-container' ],
@@ -117,10 +125,11 @@ export class ChatWrapper {
     if (chatItem.type === ChatItemType.ANSWER_STREAM) {
       this.lastChatItemCard = chatItemCard;
     } else {
+      this.lastChatItemCard?.render.addClass('stream-ended');
       this.lastChatItemCard = null;
     }
     this.chatItemsContainer.insertChild('beforeend', chatItemCard.render);
-    if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
+    if (chatItem.type === ChatItemType.PROMPT) {
       setTimeout(() => {
         this.chatItemsContainer.scrollTop = chatItemCard.render.offsetTop - 30;
       }, 10);
@@ -136,7 +145,7 @@ export class ChatWrapper {
   };
 
   public removeAllExceptAnswersAndPrompts = (): void => {
-    const itemsToRemove = Array.from(this.render.querySelectorAll('.mynah-chat-item-card-muted'));
+    const itemsToRemove = Array.from(this.render.querySelectorAll(':scope > .mynah-chat-items-container > .mynah-chat-item-card-muted'));
     if (itemsToRemove.length === 0) {
       return;
     }

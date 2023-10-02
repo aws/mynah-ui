@@ -35,6 +35,14 @@ export interface MynahUIDataModel {
    */
   sideNavigationTabs?: ToggleOption[];
   /**
+   * Placeholder to be shown on prompt input
+   */
+  promptInputPlaceholder?: string;
+  /**
+   * Prompt input field disabled state, set to tru to disable it
+   */
+  promptInputDisabledState?: boolean;
+  /**
    * Is mynah shows the web suggestions search screen or the chat screen
    */
   mode?: MynahMode;
@@ -52,7 +60,7 @@ export enum MynahEventNames {
   RESET_STORE = 'resetStore',
   SEARCH = 'search',
   FEEDBACK_SET = 'feedbackSet',
-  SUGGESTION_VOTE = 'suggestionVote',
+  CARD_VOTE = 'cardVote',
   SUGGESTION_OPEN = 'suggestionOpen',
   SUGGESTION_LINK_COPY = 'suggestionLinkCopy',
   SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
@@ -62,7 +70,6 @@ export enum MynahEventNames {
   FOLLOW_UP_CLICKED = 'followUpClicked',
   SUGGESTION_ATTACHED_TO_CHAT = 'suggestionAttachedToChat',
   UPDATE_LAST_CHAT_ANSWER_STREAM = 'updateLastChatAnswerStream',
-  CLEAR_CHAT = 'clearChat',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM_CLICK = 'showFeedbackFormClick',
   OPEN_DIFF = 'openDiff'
@@ -112,7 +119,8 @@ export interface CanonicalExample { canonicalExample: { body: string; url: strin
 
 export interface Suggestion {
   title: string;
-  url: string;
+  id?: string;
+  url?: string;
   body?: string;
   type?: string;
   metadata?: SuggestionMetaDataUnion | CanonicalExample;
@@ -180,6 +188,7 @@ export enum KeyMap {
   SHIFT = 'Shift',
   CONTROL = 'Control',
   ALT = 'Alt',
+  SLASH = '/'
 }
 
 export const SupportedCodingLanguages = [ 'typescript', 'javascript', 'java', 'json', 'python' ];

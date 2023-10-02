@@ -19,6 +19,8 @@ export class EmptyMynahUIDataModel {
       navigationTabs: [],
       sideNavigationTabs: [],
       mode: MynahMode.CHAT,
+      promptInputPlaceholder: '',
+      promptInputDisabledState: false,
       suggestions: [],
       chatItems: [],
       ...defaults

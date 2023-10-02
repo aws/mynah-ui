@@ -67,6 +67,7 @@ export interface OverlayProps {
   children: Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject>;
   horizontalDirection?: OverlayHorizontalDirection;
   verticalDirection?: OverlayVerticalDirection;
+  stretchWidth?: boolean;
   dimOutside?: boolean;
   closeOnOutsideClick?: boolean;
   background?: boolean;
@@ -88,6 +89,7 @@ export class Overlay {
 
     const calculatedTop = this.getCalculatedTop(verticalDirection, props.referenceElement, props.referencePoint);
     const calculatedLeft = this.getCalculatedLeft(horizontalDirection, props.referenceElement, props.referencePoint);
+    const calculatedWidth = props.stretchWidth === true ? this.getCalculatedWidth(props.referenceElement) : 0;
 
     this.innerContainer = DomBuilder.getInstance().build({
       type: 'div',
@@ -99,7 +101,7 @@ export class Overlay {
       type: 'div',
       classNames: [ 'mynah-overlay-container', horizontalDirection, verticalDirection, props.background !== false ? 'background' : '' ],
       attributes: {
-        style: `top: ${calculatedTop}px; left: ${calculatedLeft}px;`,
+        style: `top: ${calculatedTop}px; left: ${calculatedLeft}px; ${calculatedWidth !== 0 ? `width: ${calculatedWidth}px;` : ''}`,
       },
       children: [ this.innerContainer ],
     });
@@ -233,6 +235,14 @@ export class Overlay {
       default:
         return 0;
     }
+  };
+
+  private readonly getCalculatedWidth = (
+    referenceElement?: HTMLElement | ExtendedHTMLElement
+  ): number => {
+    return (referenceElement !== undefined
+      ? referenceElement.getBoundingClientRect()
+      : { width: 0 }).width;
   };
 
   private readonly getCalculatedTop = (
