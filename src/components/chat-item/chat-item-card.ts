@@ -221,7 +221,17 @@ export class ChatItemCard {
                 { type: 'span' },
               ]
             } ]
-          : [])
+          : []),
+        ...(this.chatItem.type === ChatItemType.CODE_RESULT
+          ? [ new Button({
+              label: '...',
+              onClick: () => {
+                console.log('CLICKED ON THE CODE RESULT CHAT ITEM');
+                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_DIFF, { leftPath: 'empty', rightPath: this.chatItem.body });
+              }
+            }).render ]
+          : []),
+
       ],
     });
 
