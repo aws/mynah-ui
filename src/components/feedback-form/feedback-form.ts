@@ -18,7 +18,7 @@ export class FeedbackForm {
   private feedbackFormWrapper: ExtendedHTMLElement;
   private readonly feedbackStars: FeedbackFormStars;
   private readonly feedbackComment: FeedbackFormComment;
-  private feedbackPayload: FeedbackPayload = {};
+  private readonly feedbackPayload: FeedbackPayload = {};
   private readonly feedbackSubmitButton: Button;
   public readonly feedbackFormContainer: ExtendedHTMLElement;
 
