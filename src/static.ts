@@ -6,6 +6,14 @@
 import { MynahIcons } from './components/icon';
 import { ToggleOption } from './components/toggle';
 
+export interface QuickActionCommandGroup {
+  groupName?: string;
+  commands: Array<{
+    command: string;
+    description?: string;
+    promptText?: string;
+  }>;
+}
 /**
  * data store model to update the mynah ui partially or fully
  */
@@ -26,6 +34,10 @@ export interface MynahUIDataModel {
    * Text to be appeared on top of the search web suggestions (also above the tabs)
    */
   chatMessageOnTopOfSearchResults?: string;
+  /**
+   * Quick Action commands to show when user hits / to the input initially
+   */
+  quickActionCommands?: QuickActionCommandGroup[];
   /**
    * Navigation tabs on the web suggestions search screen
    */

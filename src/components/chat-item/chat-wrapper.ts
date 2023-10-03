@@ -22,7 +22,6 @@ export class ChatWrapper {
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
-  private containerScollState: 'idle' | 'streaming' | 'break';
   render: ExtendedHTMLElement;
   constructor (props?: ChatWrapperProps) {
     this.props = props;
@@ -55,10 +54,6 @@ export class ChatWrapper {
     });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (updateWith) => {
       if (this.lastChatItemCard !== null) {
-        if (this.containerScollState !== 'break') {
-          this.containerScollState = 'streaming';
-          this.scrollToStreamingCardBottom();
-        }
         if (typeof updateWith === 'string') {
           this.lastChatItemCard.updateAnswerBody(updateWith);
         } else if (typeof updateWith === 'object' && updateWith.suggestions !== undefined) {
@@ -80,13 +75,13 @@ export class ChatWrapper {
       classNames: [ 'mynah-chat-items-container' ],
       persistent: true,
       children: [ ],
-      events: {
+      /* events: {
         wheel: (e) => {
           if (this.containerScollState === 'streaming') {
             this.containerScollState = 'break';
           }
         }
-      }
+      } */
     });
 
     this.intermediateBlockContainer = DomBuilder.getInstance().build({
@@ -117,7 +112,6 @@ export class ChatWrapper {
   }
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
-    this.containerScollState = 'idle';
     const chatItemCard = new ChatItemCard({
       chatItem,
       onShowAllWebResultsClick: this.props?.onShowAllWebResultsClick
@@ -128,20 +122,7 @@ export class ChatWrapper {
       this.lastChatItemCard?.render.addClass('stream-ended');
       this.lastChatItemCard = null;
     }
-    this.chatItemsContainer.insertChild('beforeend', chatItemCard.render);
-    if (chatItem.type === ChatItemType.PROMPT) {
-      setTimeout(() => {
-        this.chatItemsContainer.scrollTop = chatItemCard.render.offsetTop - 30;
-      }, 10);
-    }
-  };
-
-  private readonly scrollToStreamingCardBottom = (): void => {
-    if (this.containerScollState === 'streaming' && this.lastChatItemCard != null) {
-      if ((this.lastChatItemCard.render.offsetHeight + this.lastChatItemCard.render.getBoundingClientRect().top) >= (this.chatItemsContainer.offsetHeight - 75)) {
-        this.chatItemsContainer.scrollTop = this.lastChatItemCard.render.offsetTop + this.lastChatItemCard.render.offsetHeight - this.chatItemsContainer.offsetHeight + 75;
-      }
-    }
+    this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
   };
 
   public removeAllExceptAnswersAndPrompts = (): void => {

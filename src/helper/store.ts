@@ -16,6 +16,7 @@ export class EmptyMynahUIDataModel {
       loadingChat: false,
       showChatAvatars: true,
       chatMessageOnTopOfSearchResults: '',
+      quickActionCommands: [],
       navigationTabs: [],
       sideNavigationTabs: [],
       mode: MynahMode.CHAT,
