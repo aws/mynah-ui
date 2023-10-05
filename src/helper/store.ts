@@ -13,7 +13,7 @@ export class EmptyMynahUIDataModel {
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
       loadingChat: false,
-      showChatAvatars: true,
+      showChatAvatars: false,
       quickActionCommands: [],
       promptInputPlaceholder: '',
       promptInputDisabledState: false,

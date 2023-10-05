@@ -35,11 +35,15 @@ export class MynahUITabsStore {
     selectedTabChange: {}
   };
 
+  private readonly tabDefaults: MynahUITabStoreTab = {};
   private readonly tabsStore: Required<MynahUITabStoreModel> = {};
   private readonly tabsDataStore: Record<string, MynahUIDataStore> = {};
 
-  private constructor (initialData?: MynahUITabStoreModel) {
+  private constructor (initialData?: MynahUITabStoreModel, defaults?: MynahUITabStoreTab) {
     this.tabsStore = Object.assign(this.tabsStore, initialData);
+    if (defaults != null) {
+      this.tabDefaults = defaults;
+    }
     if ((initialData != null) && Object.keys(initialData).length > 0) {
       Object.keys(initialData).forEach((tabId: string) => {
         this.tabsDataStore[tabId] = new MynahUIDataStore(initialData[tabId].store ?? {});
@@ -47,11 +51,13 @@ export class MynahUITabsStore {
     }
   }
 
-  public readonly addTab = (tabData: MynahUITabStoreTab): string => {
+  public readonly addTab = (tabData?: MynahUITabStoreTab): string => {
     const tabId = generateUID();
-    this.updateTab(this.getSelectedTabId(), { isSelected: false });
-    this.tabsStore[tabId] = { ...tabData, isSelected: true };
-    this.tabsDataStore[tabId] = new MynahUIDataStore(tabData.store ?? {});
+    if (Object.keys(this.tabsStore).length > 0) {
+      this.tabsStore[this.getSelectedTabId()].isSelected = false;
+    }
+    this.tabsStore[tabId] = { ...this.tabDefaults, ...tabData, isSelected: true };
+    this.tabsDataStore[tabId] = new MynahUIDataStore(this.tabsStore[tabId].store ?? {});
     this.informSubscribers('add', tabId, tabData);
     this.informSubscribers('selectedTabChange', tabId);
     return tabId;
@@ -65,10 +71,17 @@ export class MynahUITabsStore {
     this.informSubscribers('remove', tabId);
     if (wasSelected) {
       const tabIds = Object.keys(this.tabsStore);
-      this.tabsStore[tabIds[tabIds.length - 1]].isSelected = true;
-      this.informSubscribers('selectedTabChange', tabIds[tabIds.length - 1]);
+      if (tabIds.length > 0) {
+        this.tabsStore[tabIds[tabIds.length - 1]].isSelected = true;
+        this.informSubscribers('selectedTabChange', tabIds[tabIds.length - 1]);
+      }
     }
     return tabId;
+  };
+
+  public readonly selectTab = (tabId: string): void => {
+    this.tabsStore[tabId].isSelected = true;
+    this.informSubscribers('selectedTabChange', tabId);
   };
 
   /**
@@ -78,7 +91,7 @@ export class MynahUITabsStore {
   public updateTab = (tabId: string, tabData?: Partial<MynahUITabStoreTab>, skipSubscribers?: boolean): void => {
     if (this.tabsStore[tabId] !== undefined) {
       if (tabData?.isSelected === true && this.getSelectedTabId() !== tabId) {
-        this.updateTab(this.getSelectedTabId(), { isSelected: false });
+        this.tabsStore[this.getSelectedTabId()].isSelected = false;
         this.informSubscribers('selectedTabChange', tabId);
       }
       this.tabsStore[tabId] = { ...this.tabsStore[tabId], ...tabData };
@@ -94,9 +107,9 @@ export class MynahUITabsStore {
     }
   };
 
-  public static getInstance = (initialData?: MynahUITabStoreModel): MynahUITabsStore => {
+  public static getInstance = (initialData?: MynahUITabStoreModel, defaults?: MynahUITabStoreTab): MynahUITabsStore => {
     if (MynahUITabsStore.instance === undefined) {
-      MynahUITabsStore.instance = new MynahUITabsStore(initialData);
+      MynahUITabsStore.instance = new MynahUITabsStore(initialData, defaults);
     }
 
     return MynahUITabsStore.instance;

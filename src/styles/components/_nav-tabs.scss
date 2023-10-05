@@ -1,13 +1,13 @@
 .mynah-nav-tabs-wrapper {
-    border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
-    background-color: var(--mynah-card-bg);
-    border-radius: var(--mynah-card-radius);
+    border-bottom: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+    background-color: var(--mynah-color-bg);
     display: flex;
     align-items: center;
     overflow: hidden;
-    border-radius: var(--mynah-card-radius);
     box-shadow: var(--mynah-shadow-generic);
     z-index: 100;
+    min-height: var(--mynah-sizing-10);
+    max-height: var(--mynah-sizing-10);
 
     > .mynah-toggle-container {
         height: 100%;

@@ -25,10 +25,6 @@ export class ChatWrapper {
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
     this.props = props;
-    const initChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
-    if (initChatItems.length > 0) {
-      initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
-    }
     MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (this.chatItemsContainer.children.length === chatItems.length) {
@@ -102,6 +98,11 @@ export class ChatWrapper {
         this.intermediateBlockContainer,
         this.promptInput ]
     });
+
+    const initChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
+    if (initChatItems.length > 0) {
+      initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
+    }
   }
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {

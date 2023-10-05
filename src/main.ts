@@ -21,6 +21,7 @@ import {
   ChatPrompt,
   ChatItemType,
   MynahUITabStoreModel,
+  MynahUITabStoreTab,
 } from './static';
 import { I18N } from './translations/i18n';
 import { MynahUIGlobalEvents } from './helper/events';
@@ -53,6 +54,7 @@ export {
 
 export interface MynahUIProps {
   rootSelector?: string;
+  defaults?: MynahUITabStoreTab;
   tabs?: MynahUITabStoreModel;
   onShowMoreWebResultsClick?: () => void;
   onReady?: () => void;
@@ -62,6 +64,8 @@ export interface MynahUIProps {
   onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
   onFollowUpClicked?: (tabId: string, followUp: ChatItemFollowUp) => void;
   onTabChange?: (selectedTabId: string) => void;
+  onTabAdd?: (tabId: string) => void;
+  onTabRemove?: (tabId: string) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
   onCopyCodeToClipboard?: (code?: string, type?: 'selection' | 'block') => void;
   onCodeInsertToCursorPosition?: (code?: string, type?: 'selection' | 'block') => void;
@@ -81,7 +85,7 @@ export class MynahUI {
 
   constructor (props: MynahUIProps) {
     this.props = props;
-    MynahUITabsStore.getInstance(this.props.tabs);
+    MynahUITabsStore.getInstance(this.props.tabs, this.props.defaults);
     MynahUIGlobalEvents.getInstance();
 
     DomBuilder.getInstance(props.rootSelector);
@@ -137,6 +141,17 @@ export class MynahUI {
         onStopChatResponse: props.onStopChatResponse,
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
+      if (this.props.onTabAdd !== undefined) {
+        this.props.onTabAdd(tabId);
+      }
+    });
+    MynahUITabsStore.getInstance().addListener('remove', (tabId: string) => {
+      this.chatWrappers[tabId].render.remove();
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete this.chatWrappers[tabId];
+      if (this.props.onTabRemove !== undefined) {
+        this.props.onTabRemove(tabId);
+      }
     });
 
     this.addGlobalListeners();
@@ -213,12 +228,6 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CARD_VOTE, (data) => {
       if (this.props.onVote !== undefined) {
-        if (data.vote === RelevancyVoteType.UP) {
-          const newTabId = MynahUITabsStore.getInstance().addTab({
-            tabTitle: 'New Tab!'
-          });
-          console.log(`New TAB: ${newTabId}`);
-        }
         this.props.onVote(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.id,
@@ -285,11 +294,17 @@ export class MynahUI {
   };
 
   /**
-   * Updates only the UI with the given data.
+   * Updates only the UI with the given data for the given tab
+   * Send tab id as an empty string to open a new tab!
    * @param data A full or partial set of data with values.
    */
-  public updateStore = (tabId: string, data: MynahUIDataModel): void => {
-    MynahUITabsStore.getInstance().updateTab(tabId, { store: { ...data } });
+  public updateStore = (tabId: string | '', data: MynahUIDataModel): void => {
+    const cleanTabId = tabId;
+    if (cleanTabId === '') {
+      MynahUITabsStore.getInstance().addTab({ store: { ...data } });
+    } else {
+      MynahUITabsStore.getInstance().updateTab(tabId, { store: { ...data } });
+    }
   };
 
   /**

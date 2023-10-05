@@ -5,6 +5,8 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUITabsStore } from '../helper/tabs-store';
+import { Button } from './button';
+import { Icon, MynahIcons } from './icon';
 import { Toggle, ToggleOption } from './toggle';
 
 export interface TabsProps {
@@ -12,6 +14,7 @@ export interface TabsProps {
 }
 export class Tabs {
   render: ExtendedHTMLElement;
+  private toggleGroup: Toggle;
   private readonly props: TabsProps;
 
   constructor (props: TabsProps) {
@@ -21,22 +24,24 @@ export class Tabs {
       type: 'div',
       persistent: true,
       classNames: [ 'mynah-nav-tabs-wrapper' ],
-      children: this.getTabsRender(),
+      children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
     });
 
-    MynahUITabsStore.getInstance().addListener('add', () => {
-      this.render.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
+    MynahUITabsStore.getInstance().addListener('add', (tabId) => {
       this.render.update({
-        children: this.getTabsRender()
+        children: this.getTabsRender(tabId)
       });
+      this.render.setAttribute('selected-tab', tabId);
     });
     MynahUITabsStore.getInstance().addListener('remove', () => {
       this.render.update({
-        children: this.getTabsRender()
+        children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId())
       });
+      this.render.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
     });
     MynahUITabsStore.getInstance().addListener('selectedTabChange', (selectedTabId) => {
       this.render.setAttribute('selected-tab', selectedTabId);
+      this.toggleGroup.setValue(selectedTabId);
     });
   }
 
@@ -52,23 +57,32 @@ export class Tabs {
     });
   };
 
-  private readonly getTabsRender = (): ExtendedHTMLElement[] => {
+  private readonly getTabsRender = (selectedTabId?: string): ExtendedHTMLElement[] => {
     const tabs = this.getTabOptionsFromTabStoreData();
-    return tabs.length > 0
-      ? [
-          new Toggle({
-            onChange: (selectedTabId: string) => {
-              MynahUITabsStore.getInstance().updateTab(selectedTabId, { isSelected: true });
-              if (this.props.onChange !== undefined) {
-                this.props.onChange(selectedTabId);
-              }
-            },
-            type: 'tabs',
-            name: 'mynah-main-tabs',
-            options: tabs,
-            value: MynahUITabsStore.getInstance().getSelectedTabId()
-          }).render
-        ]
-      : [];
+    this.toggleGroup = new Toggle({
+      onChange: (selectedTabId: string) => {
+        MynahUITabsStore.getInstance().selectTab(selectedTabId);
+        if (this.props.onChange !== undefined) {
+          this.props.onChange(selectedTabId);
+        }
+      },
+      onRemove: (selectedTabId) => {
+        MynahUITabsStore.getInstance().removeTab(selectedTabId);
+      },
+      name: 'mynah-main-tabs',
+      options: tabs,
+      value: selectedTabId
+    });
+    return [
+      this.toggleGroup.render,
+      new Button({
+        classNames: [ 'mynah-toggle-close-button' ],
+        onClick: () => {
+          MynahUITabsStore.getInstance().addTab();
+        },
+        icon: new Icon({ icon: MynahIcons.PLUS }).render,
+        primary: false
+      }).render
+    ];
   };
 }

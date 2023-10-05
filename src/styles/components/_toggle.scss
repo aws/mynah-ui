@@ -1,108 +1,71 @@
 .mynah-toggle-container {
-    display: inline-flex;
     flex-flow: row nowrap;
     max-width: 100%;
     overflow: hidden;
     align-items: center;
-    justify-content: center;
-    padding: var(--mynah-sizing-3);
     position: relative;
     background: var(--mynah-color-context-should-contain);
     color: var(--mynah-color-context-reverse);
-    .mynah-toggle-option {
-        display: none;
-        &:not(:first-child) + .mynah-toggle-option-label {
-            margin-left: calc(-1 * var(--mynah-sizing-1));
-        }
-        & + .mynah-toggle-option-label {
-            cursor: pointer;
-            position: relative;
-            z-index: 100;
-            padding: var(--mynah-sizing-1) var(--mynah-sizing-2) var(--mynah-sizing-1) var(--mynah-sizing-2);
-            border-radius: var(--mynah-button-radius);
-            min-height: var(--mynah-sizing-8);
-            min-width: var(--mynah-sizing-8);
-            box-sizing: border-box;
-            display: inline-flex;
-            overflow: hidden;
-            justify-content: center;
-            align-items: center;
-        }
-        &:checked + .mynah-toggle-option-label {
-            pointer-events: none;
-        }
-        &[disabled="disabled"] {
-            pointer-events: none;
-            & + .mynah-toggle-option-label {
-                pointer-events: none;
-                opacity: 0.25;
-            }
-        }
-    }
-    &.mynah-toggle-type-switch {
-        .mynah-toggle-option {
-            & + .mynah-toggle-option-label {
-                transition: var(--mynah-short-transition-rev), background-color 1ms 0ms;
-            }
-            &:checked + .mynah-toggle-option-label {
-                color: var(--mynah-color-button-reverse);
-                background-color: var(--mynah-color-button);
-                transition: var(--mynah-short-transition-rev), background-color 1ms 500ms;
-            }
-            &:not(:checked) + .mynah-toggle-option-label {
-                background-color: rgba(0, 0, 0, 0) !important;
-            }
-        }
-        > .mynah-toggle-indicator-transitioner {
-            top: calc(50% - var(--mynah-sizing-4));
-        }
-    }
-    > .mynah-toggle-indicator-transitioner {
-        background-color: var(--mynah-color-button);
-        display: inline-block;
-        transition: var(--mynah-short-transition-rev);
-        border-radius: var(--mynah-button-radius);
-        position: absolute;
-        z-index: 30;
-        width: var(--mynah-sizing-8);
-        height: var(--mynah-sizing-8);
-        left: calc(-1 * var(--mynah-sizing-8));
-        &.relocate {
-            transition-duration: 1ms;
-        }
-    }
-    &.mynah-toggle-type-tabs {
-        justify-content: stretch;
+    justify-content: flex-start;
+    overflow-y: hidden;
+    overflow-x: auto;
+    display: flex;
+    > span {
         overflow: hidden;
-        > span:not(.mynah-toggle-indicator-transitioner) {
-            overflow: hidden;
-            > label {
-                text-overflow: ellipsis;
+        height: 100%;
+        min-width: var(--mynah-sizing-8);
+        max-width: calc(3 * var(--mynah-sizing-15));
+        flex-shrink: 0;
+        > .mynah-toggle-option {
+            display: none;
+            &:not(:first-child) + .mynah-toggle-option-label {
+                margin-left: calc(-1 * var(--mynah-sizing-1));
+            }
+            & + .mynah-toggle-option-label {
+                cursor: pointer;
+                position: relative;
+                z-index: 100;
+                padding: 0 var(--mynah-sizing-3);
+                height: 100%;
+                box-sizing: border-box;
+                display: inline-flex;
                 overflow: hidden;
-                white-space: nowrap;
+                justify-content: stretch;
+                align-items: center;
+                color: var(--mynah-color-text-weak);
+                border-right: 1px solid var(--mynah-color-border-default);
+                border-top: 1px solid transparent;
+                background-color: var(--mynah-color-bg);
                 max-width: 100%;
-                display: block;
+                > span {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    max-width: 100%;
+                    display: block;
+                }
+                > .mynah-toggle-close-button {
+                    margin-left: var(--mynah-sizing-3);
+                    font-size: var(--mynah-font-size-xsmall);
+                    min-width: 1em;
+                }
             }
-        }
-        > .mynah-toggle-indicator-transitioner {
-            height: var(--mynah-sizing-1);
-            border-radius: 0;
-            left: calc(-1 * var(--mynah-sizing-8));
-            transform: translateY(var(--mynah-sizing-1));
-            bottom: var(--mynah-sizing-1);
-            &.relocate {
-                transition-duration: 1ms;
-            }
-        }
-        .mynah-toggle-option {
             &:checked + .mynah-toggle-option-label {
-                color: var(--mynah-color-button);
-                font-weight: 600;
+                border-top-color: var(--mynah-color-button);
+                color: var(--mynah-color-text-default);
+                background-color: var(--mynah-card-bg);
+            }
+            &[disabled="disabled"] {
+                pointer-events: none!important;
+                & + .mynah-toggle-option-label {
+                    pointer-events: none!important;
+                    opacity: 0.25;
+                }
             }
         }
     }
 
-    &.mynah-toggle-direction-vertical{
+    &.mynah-toggle-direction-vertical {
         flex-flow: column nowrap;
         gap: var(--mynah-sizing-3);
     }
