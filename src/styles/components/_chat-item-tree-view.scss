@@ -1,0 +1,37 @@
+.mynah-chat-item-tree-view-wrapper {
+    padding: var(--mynah-sizing-2);
+    border-radius: var(--mynah-card-radius);
+    background-color: var(--mynah-card-bg);
+}
+
+.mynah-chat-item-tree-view {
+    background-color: var(--mynah-card-bg);
+    min-width: calc(var(--mynah-sizing-base) * 100);
+    padding-left: var(--mynah-sizing-3);
+    border-bottom-left-radius: var(--mynah-card-radius);
+    border-bottom-right-radius: var(--mynah-card-radius);
+
+    > button.mynah-button {
+        background: none;
+    }
+}
+
+.mynah-chat-item-tree-view-wrapper-label {
+    border-top-left-radius: var(--mynah-card-radius);
+    border-top-right-radius: var(--mynah-card-radius);
+    background-color: var(--mynah-color-alternate);
+    margin-bottom: 0px;
+    padding: var(--mynah-sizing-4);
+}
+
+.mynah-chat-item-tree-view-wrapper-feedback-label {
+    padding-left: var(--mynah-sizing-4);
+}
+
+.mynah-chat-item-tree-view-wrapper-feedback-div {
+    float: right;
+
+    button:first-child {
+        margin-right: var(--mynah-sizing-2);
+    }
+}

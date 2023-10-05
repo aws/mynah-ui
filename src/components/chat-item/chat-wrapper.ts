@@ -10,6 +10,7 @@ import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
+import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { ChatPromptInput } from './chat-prompt-input';
 
 export interface ChatWrapperProps {
@@ -112,12 +113,14 @@ export class ChatWrapper {
   }
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
-    const chatItemCard = new ChatItemCard({
-      chatItem,
-      onShowAllWebResultsClick: this.props?.onShowAllWebResultsClick
-    });
+    const chatItemCard = chatItem.type === ChatItemType.CODE_RESULT
+      ? new ChatItemTreeViewWrapper({ files: chatItem.body as string[] })
+      : new ChatItemCard({
+        chatItem,
+        onShowAllWebResultsClick: this.props?.onShowAllWebResultsClick
+      });
     if (chatItem.type === ChatItemType.ANSWER_STREAM) {
-      this.lastChatItemCard = chatItemCard;
+      this.lastChatItemCard = chatItemCard as ChatItemCard;
     } else {
       this.lastChatItemCard?.render.addClass('stream-ended');
       this.lastChatItemCard = null;

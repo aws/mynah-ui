@@ -165,14 +165,18 @@ export class ChatItemCard {
         ]
       })
       : '';
+    let isChatItemEmpty = false;
+    if (this.chatItem.body !== undefined && ((typeof this.chatItem.body === 'string' && this.chatItem.body.trim() === '') || (this.chatItem.body.length === 0))) {
+      isChatItemEmpty = true;
+    }
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.chatItem.type ?? ChatItemType.ANSWER}`, ...(this.checkIsMuted() ? [ 'mynah-chat-item-card-muted' ] : []), ...(this.chatItem.body?.trim() === '' ? [ 'mynah-chat-item-empty' ] : []) ],
+      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.chatItem.type ?? ChatItemType.ANSWER}`, ...(this.checkIsMuted() ? [ 'mynah-chat-item-card-muted' ] : []), ...(isChatItemEmpty ? [ 'mynah-chat-item-empty' ] : []) ],
       children: [
         ...(MynahUIDataStore.getInstance().getValue('showChatAvatars') === true
           ? [ this.chatAvatar ]
           : []),
-        ...(this.chatItem.body !== undefined
+        ...(this.chatItem.body !== undefined && typeof this.chatItem.body === 'string'
           ? [ {
               type: 'div',
               classNames: [ 'mynah-card' ],
@@ -222,16 +226,6 @@ export class ChatItemCard {
               ]
             } ]
           : []),
-        ...(this.chatItem.type === ChatItemType.CODE_RESULT
-          ? [ new Button({
-              label: '...',
-              onClick: () => {
-                console.log('CLICKED ON THE CODE RESULT CHAT ITEM');
-                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_DIFF, { leftPath: 'empty', rightPath: this.chatItem.body });
-              }
-            }).render ]
-          : []),
-
       ],
     });
 

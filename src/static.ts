@@ -148,7 +148,7 @@ export enum ChatItemType {
 }
 
 export interface ChatItem {
-  body?: string;
+  body?: string | string[];
   type: ChatItemType;
   id?: string;
   canBeVoted?: boolean;
