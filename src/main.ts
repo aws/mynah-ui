@@ -298,13 +298,14 @@ export class MynahUI {
    * Send tab id as an empty string to open a new tab!
    * @param data A full or partial set of data with values.
    */
-  public updateStore = (tabId: string | '', data: MynahUIDataModel): void => {
+  public updateStore = (tabId: string | '', data: MynahUIDataModel): string => {
     const cleanTabId = tabId;
     if (cleanTabId === '') {
-      MynahUITabsStore.getInstance().addTab({ store: { ...data } });
+      return MynahUITabsStore.getInstance().addTab({ store: { ...data } });
     } else {
       MynahUITabsStore.getInstance().updateTab(tabId, { store: { ...data } });
     }
+    return tabId;
   };
 
   /**
