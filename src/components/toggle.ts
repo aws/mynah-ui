@@ -69,6 +69,7 @@ class ToggleOptionItem {
           attributes: {
             type: 'radio',
             id: `${this.props.name}-${this.props.value}`,
+            value: this.props.value,
             name: this.props.name,
             ...(this.props.selected === true ? { checked: 'checked' } : {}),
             ...(this.props.disabled === true ? { disabled: 'disabled' } : {}),

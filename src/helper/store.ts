@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { MynahEventNames, MynahMode, MynahUIDataModel } from '../static';
+import { MynahEventNames, MynahUIDataModel } from '../static';
 import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
 
@@ -12,43 +12,28 @@ export class EmptyMynahUIDataModel {
   data: Required<MynahUIDataModel>;
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
-      loading: false,
       loadingChat: false,
       showChatAvatars: true,
-      chatMessageOnTopOfSearchResults: '',
       quickActionCommands: [],
-      navigationTabs: [],
-      sideNavigationTabs: [],
-      mode: MynahMode.CHAT,
       promptInputPlaceholder: '',
       promptInputDisabledState: false,
-      suggestions: [],
       chatItems: [],
       ...defaults
     };
   }
 }
 export class MynahUIDataStore {
-  private static instance: MynahUIDataStore;
   private readonly subsciptions: Record<keyof MynahUIDataModel, Record<string, (newValue?: any, oldValue?: any) => void>>;
   private store: Required<MynahUIDataModel> = (new EmptyMynahUIDataModel()).data;
   private defaults: MynahUIDataModel | null = null;
 
-  private constructor (initialData?: MynahUIDataModel) {
+  constructor (initialData?: MynahUIDataModel) {
     this.store = Object.assign(this.store, initialData);
     this.subsciptions = Object.create({});
     (Object.keys(this.store) as Array<keyof MynahUIDataModel>).forEach((storeKey) => {
       Object.assign(this.subsciptions, { [storeKey]: {} });
     });
   }
-
-  public static getInstance = (initialData?: MynahUIDataModel): MynahUIDataStore => {
-    if (MynahUIDataStore.instance === undefined) {
-      MynahUIDataStore.instance = new MynahUIDataStore(initialData);
-    }
-
-    return MynahUIDataStore.instance;
-  };
 
   /**
    * Sets the defaults to use while clearing the store

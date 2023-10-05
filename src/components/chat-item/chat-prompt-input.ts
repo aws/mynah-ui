@@ -6,15 +6,17 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
-import { I18N } from '../../translations/i18n';
 import { ChatItemType, KeyMap, MynahEventNames, QuickActionCommandGroup, Suggestion } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
-import { MynahUIDataStore } from '../../helper/store';
-import { SuggestionCard } from '../suggestion-card/suggestion-card';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
+import { MynahUITabsStore } from '../../helper/tabs-store';
 
+export interface ChatPromptInputProps {
+  tabId: string;
+}
 export class ChatPromptInput {
   render: ExtendedHTMLElement;
+  private readonly props: ChatPromptInputProps;
   private readonly attachmentWrapper: ExtendedHTMLElement;
   private readonly promptTextInputWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
@@ -26,10 +28,11 @@ export class ChatPromptInput {
   private inputDisabled: boolean;
   private attachment?: Suggestion;
   private filteredCommandsList: QuickActionCommandGroup[];
-  constructor () {
-    this.inputDisabled = MynahUIDataStore.getInstance().getValue('promptInputDisabledState') as boolean;
-    this.quickActionCommands = MynahUIDataStore.getInstance().getValue('quickActionCommands') as QuickActionCommandGroup[];
-    MynahUIDataStore.getInstance().subscribe('promptInputDisabledState', (isDisabled: boolean) => {
+  constructor (props: ChatPromptInputProps) {
+    this.props = props;
+    this.inputDisabled = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputDisabledState') as boolean;
+    this.quickActionCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputDisabledState', (isDisabled: boolean) => {
       this.inputDisabled = isDisabled;
       if (isDisabled) {
         this.promptTextInput.setAttribute('disabled', 'disabled');
@@ -39,38 +42,8 @@ export class ChatPromptInput {
         this.sendButton.removeAttribute('disabled');
       }
     });
-    MynahUIDataStore.getInstance().subscribe('promptInputPlaceholder', (placeholderText: string) => {
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputPlaceholder', (placeholderText: string) => {
       this.promptTextInput.setAttribute('placeholder', placeholderText);
-    });
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, (suggestion: Suggestion) => {
-      this.attachment = suggestion;
-      this.attachmentWrapper.insertChild('beforeend', DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-chat-attachment-item' ],
-        events: {
-          click: () => {
-            this.attachmentWrapper.clear();
-            this.attachment = undefined;
-          }
-        },
-        children: [
-          {
-            type: 'div',
-            classNames: [ 'mynah-chat-attachment-delete-icon' ],
-            children: [
-              new Icon({ icon: MynahIcons.CANCEL }).render
-            ]
-          },
-          new SuggestionCard({
-            suggestion: {
-              ...suggestion,
-              body: ''
-            },
-            compact: true
-          }).render
-        ]
-      }));
-      this.promptTextInput.value = I18N.getInstance().texts.limitByUrl;
     });
     this.promptTextInputSizer = DomBuilder.getInstance().build({
       type: 'span',
@@ -85,7 +58,7 @@ export class ChatPromptInput {
         rows: '1',
         maxlength: '100000',
         type: 'text',
-        placeholder: MynahUIDataStore.getInstance().getValue('promptInputPlaceholder'),
+        placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
         value: '',
       },
       events: {
@@ -292,9 +265,9 @@ export class ChatPromptInput {
   private readonly sendPrompt = (): void => {
     if (this.promptTextInput.value.trim() !== '') {
       this.resetTextAreaHeight();
-      MynahUIDataStore.getInstance().updateStore({
+      MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
         chatItems: [
-          ...MynahUIDataStore.getInstance().getValue('chatItems'),
+          ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),
           {
             type: ChatItemType.PROMPT,
             body: `<span>${this.promptTextInput.value}</span>`,
@@ -309,7 +282,7 @@ export class ChatPromptInput {
           }
         ]
       });
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, { prompt: this.promptTextInput.value, attachment: this.attachment });
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, { tabId: this.props.tabId, prompt: { prompt: this.promptTextInput.value, attachment: this.attachment } });
 
       this.promptTextInput.value = '';
       this.promptTextInputWrapper.addClass('no-text');

@@ -4,56 +4,71 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
-import { MynahUIDataStore } from '../helper/store';
+import { MynahUITabsStore } from '../helper/tabs-store';
 import { Toggle, ToggleOption } from './toggle';
 
-export const getSelectedTabValueFromStore = (): string => {
-  return MynahUIDataStore.getInstance().getValue('navigationTabs').find((navTab: ToggleOption) => navTab.selected).value;
-};
-
-export interface NavivationTabsProps {
-  onChange?: (selectedValue: string) => void;
+export interface TabsProps {
+  onChange?: (selectedTabId: string) => void;
 }
-export class NavivationTabs {
+export class Tabs {
   render: ExtendedHTMLElement;
-  private readonly props: NavivationTabsProps;
+  private readonly props: TabsProps;
 
-  constructor (props: NavivationTabsProps) {
+  constructor (props: TabsProps) {
     this.props = props;
-    const tabs = MynahUIDataStore.getInstance().getValue('navigationTabs');
-    MynahUIDataStore.getInstance().subscribe('loading', this.setLoading);
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       persistent: true,
-      classNames: [ 'mynah-nav-tabs-wrapper', ...(MynahUIDataStore.getInstance().getValue('loading') === true ? [ 'mynah-nav-tabs-loading' ] : []) ],
-      children: this.getTabsRender(tabs),
+      classNames: [ 'mynah-nav-tabs-wrapper' ],
+      children: this.getTabsRender(),
     });
 
-    MynahUIDataStore.getInstance().subscribe('navigationTabs', (newTabs: ToggleOption[]) => {
+    MynahUITabsStore.getInstance().addListener('add', () => {
+      this.render.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
       this.render.update({
-        children: this.getTabsRender(newTabs)
+        children: this.getTabsRender()
       });
+    });
+    MynahUITabsStore.getInstance().addListener('remove', () => {
+      this.render.update({
+        children: this.getTabsRender()
+      });
+    });
+    MynahUITabsStore.getInstance().addListener('selectedTabChange', (selectedTabId) => {
+      this.render.setAttribute('selected-tab', selectedTabId);
     });
   }
 
-  private readonly setLoading = (isLoading: boolean): void => {
-    if (isLoading) {
-      this.render.addClass('mynah-nav-tabs-loading');
-    } else {
-      this.render.removeClass('mynah-nav-tabs-loading');
-    }
+  private readonly getTabOptionsFromTabStoreData = (): ToggleOption[] => {
+    const tabs = MynahUITabsStore.getInstance().getAllTabs();
+    return Object.keys(tabs).map((tabId: string) => {
+      const tabOption = {
+        value: tabId,
+        label: tabs[tabId].tabTitle,
+        selected: tabs[tabId].isSelected
+      };
+      return tabOption;
+    });
   };
 
-  private readonly getTabsRender = (tabs: ToggleOption[]): ExtendedHTMLElement[] => tabs.length > 0
-    ? [
-        new Toggle({
-          onChange: this.props.onChange,
-          type: 'tabs',
-          name: 'mynah-nav-tabs',
-          options: tabs,
-          value: tabs.find(tab => tab.selected)?.value
-        }).render
-      ]
-    : [];
+  private readonly getTabsRender = (): ExtendedHTMLElement[] => {
+    const tabs = this.getTabOptionsFromTabStoreData();
+    return tabs.length > 0
+      ? [
+          new Toggle({
+            onChange: (selectedTabId: string) => {
+              MynahUITabsStore.getInstance().updateTab(selectedTabId, { isSelected: true });
+              if (this.props.onChange !== undefined) {
+                this.props.onChange(selectedTabId);
+              }
+            },
+            type: 'tabs',
+            name: 'mynah-main-tabs',
+            options: tabs,
+            value: MynahUITabsStore.getInstance().getSelectedTabId()
+          }).render
+        ]
+      : [];
+  };
 }

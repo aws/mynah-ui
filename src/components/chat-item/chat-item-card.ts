@@ -5,7 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
-import { MynahUIDataStore } from '../../helper/store';
+import { MynahUITabsStore } from '../../helper/tabs-store';
 import { ChatItem, ChatItemType, MynahEventNames, Suggestion } from '../../static';
 import { I18N } from '../../translations/i18n';
 import { Button } from '../button';
@@ -18,12 +18,12 @@ import { ChatItemFollowUpContainer } from './chat-item-followup';
 const PREVIEW_DELAY = 500;
 
 export interface ChatItemCardProps {
+  tabId: string;
   chatItem: ChatItem;
-  onShowAllWebResultsClick?: () => void;
 }
 export class ChatItemCard {
-  private readonly chatItem: ChatItem;
-  private readonly relatedContentWrapper: ExtendedHTMLElement | string;
+  private readonly props: ChatItemCardProps;
+  private readonly relatedContentWrapper: ExtendedHTMLElement;
   private readonly referencesWrapper: ExtendedHTMLElement | string;
   private readonly showMoreButtonBlock: Button;
   private relatedContentPreview: Overlay | null;
@@ -32,9 +32,9 @@ export class ChatItemCard {
   suggestionCardBody: SuggestionCardBody;
   chatAvatar: ExtendedHTMLElement;
   constructor (props: ChatItemCardProps) {
-    this.chatItem = props.chatItem;
+    this.props = props;
     this.chatAvatar = this.getChatAvatar();
-    MynahUIDataStore.getInstance().subscribe('showChatAvatars', (value: boolean) => {
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('showChatAvatars', (value: boolean) => {
       if (value) {
         this.chatAvatar = this.getChatAvatar();
         this.render.insertChild('afterbegin', this.chatAvatar);
@@ -46,37 +46,27 @@ export class ChatItemCard {
     this.showMoreButtonBlock = new Button({
       classNames: [ 'mynah-chat-item-card-related-content-show-more' ],
       onClick: () => {
-        if ((this.relatedContentWrapper as ExtendedHTMLElement).hasClass('expanded')) {
-          if (props.onShowAllWebResultsClick !== undefined) {
-            props.onShowAllWebResultsClick();
-          }
-        } else {
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK);
-          if (props.onShowAllWebResultsClick !== undefined) {
-            this.showMoreButtonBlock.updateLabel('Show all web results');
-          } else {
-            this.showMoreButtonBlock.render.remove();
-          }
-          (this.relatedContentWrapper as HTMLElement).classList.add('expanded');
-        }
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK);
+        this.showMoreButtonBlock.render.remove();
+        (this.relatedContentWrapper).addClass('expanded');
       },
       label: 'Show more',
     });
 
-    this.relatedContentWrapper = this.chatItem.suggestions !== undefined
+    this.relatedContentWrapper = this.props.chatItem.suggestions !== undefined
       ? DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-card-related-content',
-          this.chatItem.suggestions.suggestions !== undefined && this.chatItem.suggestions.suggestions.length < 3 ? 'expanded' : '' ],
+          this.props.chatItem.suggestions.suggestions !== undefined && this.props.chatItem.suggestions.suggestions.length < 3 ? 'expanded' : '' ],
         children: [
-          ...(this.chatItem.suggestions.title !== false
+          ...(this.props.chatItem.suggestions.title !== false
             ? [ {
                 type: 'span',
                 classNames: [ 'mynah-chat-item-card-related-content-title' ],
-                children: [ typeof this.chatItem.suggestions.title === 'string' ? this.chatItem.suggestions.title : I18N.getInstance().texts.relatedContent ],
+                children: [ typeof this.props.chatItem.suggestions.title === 'string' ? this.props.chatItem.suggestions.title : I18N.getInstance().texts.relatedContent ],
               } ]
             : []),
-          ...this.chatItem.suggestions.suggestions.map(suggestion => DomBuilder.getInstance().build({
+          ...this.props.chatItem.suggestions.suggestions.map(suggestion => DomBuilder.getInstance().build({
             type: 'div',
             classNames: [ 'mynah-chat-item-card-related-content-item' ],
             events: {
@@ -91,13 +81,13 @@ export class ChatItemCard {
           })),
         ]
       })
-      : '';
-    this.referencesWrapper = this.chatItem.relatedContent !== undefined
+      : DomBuilder.getInstance().build({ type: 'span', classNames: [ 'invisible' ] });
+    this.referencesWrapper = this.props.chatItem.relatedContent !== undefined
       ? DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-card-references-wrapper' ],
         children: [
-          ...(this.chatItem.relatedContent.content.length > 2
+          ...(this.props.chatItem.relatedContent.content.length > 2
             ? [
                 new Button({
                   classNames: [ 'mynah-chat-item-card-references-left-scroll-button', 'hidden' ],
@@ -119,11 +109,11 @@ export class ChatItemCard {
                 }).render
               ]
             : []),
-          ...(this.chatItem.relatedContent.title !== false
+          ...(this.props.chatItem.relatedContent.title !== false
             ? [ {
                 type: 'span',
                 classNames: [ 'mynah-chat-item-card-references-title' ],
-                children: [ typeof this.chatItem.relatedContent.title === 'string' ? this.chatItem.relatedContent.title : I18N.getInstance().texts.relatedContent ],
+                children: [ typeof this.props.chatItem.relatedContent.title === 'string' ? this.props.chatItem.relatedContent.title : I18N.getInstance().texts.relatedContent ],
               } ]
             : []),
           {
@@ -148,7 +138,7 @@ export class ChatItemCard {
                 }
               }
             },
-            children: this.chatItem.relatedContent.content.map(suggestion => DomBuilder.getInstance().build({
+            children: this.props.chatItem.relatedContent.content.map(suggestion => DomBuilder.getInstance().build({
               type: 'div',
               classNames: [ 'mynah-chat-item-card-reference-item' ],
               events: {
@@ -165,27 +155,24 @@ export class ChatItemCard {
         ]
       })
       : '';
-    let isChatItemEmpty = false;
-    if (this.chatItem.body !== undefined && ((typeof this.chatItem.body === 'string' && this.chatItem.body.trim() === '') || (this.chatItem.body.length === 0))) {
-      isChatItemEmpty = true;
-    }
+    const isChatItemEmpty = this.props.chatItem.body !== undefined && ((typeof this.props.chatItem.body === 'string' && this.props.chatItem.body.trim() === '') || (this.props.chatItem.body?.length === 0));
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.chatItem.type ?? ChatItemType.ANSWER}`, ...(this.checkIsMuted() ? [ 'mynah-chat-item-card-muted' ] : []), ...(isChatItemEmpty ? [ 'mynah-chat-item-empty' ] : []) ],
+      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.props.chatItem.type ?? ChatItemType.ANSWER}`, ...(this.checkIsMuted() ? [ 'mynah-chat-item-card-muted' ] : []), ...(isChatItemEmpty ? [ 'mynah-chat-item-empty' ] : []) ],
       children: [
-        ...(MynahUIDataStore.getInstance().getValue('showChatAvatars') === true
+        ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true
           ? [ this.chatAvatar ]
           : []),
-        ...(this.chatItem.body !== undefined && typeof this.chatItem.body === 'string'
+        ...(this.props.chatItem.body !== undefined && typeof this.props.chatItem.body === 'string'
           ? [ {
               type: 'div',
               classNames: [ 'mynah-card' ],
               children: [
                 ((): ExtendedHTMLElement => {
                   this.suggestionCardBody = new SuggestionCardBody({
-                    suggestion: { id: this.chatItem.id, body: this.chatItem.body, ...(((this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) && this.chatItem.canBeVoted === true && this.chatItem.id !== undefined && !this.checkIsMuted()) ? { type: '' } : {}) },
+                    suggestion: { id: this.props.chatItem.id, body: this.props.chatItem.body, ...(((this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM) && this.props.chatItem.canBeVoted === true && this.props.chatItem.id !== undefined && !this.checkIsMuted()) ? { type: '' } : {}) },
                     onLinkMouseEnter: (e, url) => {
-                      const matchingSuggestion = [ ...MynahUIDataStore.getInstance().getValue('chatItems').map(
+                      const matchingSuggestion = [ ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems').map(
                         (chatItem: ChatItem) => {
                           let mergedList: Suggestion[] = [];
                           if (chatItem.relatedContent?.content !== undefined &&
@@ -213,8 +200,8 @@ export class ChatItemCard {
         this.referencesWrapper,
         this.relatedContentWrapper,
         this.showMoreButtonBlock.render,
-        this.chatItem.followUp?.text !== undefined ? new ChatItemFollowUpContainer({ chatItem: this.chatItem }).render : '',
-        ...(this.chatItem.type === ChatItemType.ANSWER_STREAM
+        this.props.chatItem.followUp?.text !== undefined ? new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render : '',
+        ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM
           ? [ {
               type: 'div',
               classNames: [ 'mynah-chat-items-spinner' ],
@@ -226,6 +213,15 @@ export class ChatItemCard {
               ]
             } ]
           : []),
+        ...(this.props.chatItem.type === ChatItemType.CODE_RESULT
+          ? [ new Button({
+              label: '...',
+              onClick: () => {
+                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_DIFF, { leftPath: 'empty', rightPath: this.props.chatItem.body });
+              }
+            }).render ]
+          : []),
+
       ],
     });
 
@@ -234,13 +230,13 @@ export class ChatItemCard {
     }, 10);
   }
 
-  private readonly checkIsMuted = (): boolean => (this.chatItem.body === undefined &&
-    ((this.chatItem.followUp?.options !== undefined && this.chatItem.followUp.options.length > 0) ||
-      (this.chatItem.relatedContent !== undefined && this.chatItem.relatedContent?.content.length > 0) ||
-      (this.chatItem.suggestions !== undefined && this.chatItem.suggestions?.suggestions.length > 0)));
+  private readonly checkIsMuted = (): boolean => (this.props.chatItem.body === undefined &&
+    ((this.props.chatItem.followUp?.options !== undefined && this.props.chatItem.followUp.options.length > 0) ||
+      (this.props.chatItem.relatedContent !== undefined && this.props.chatItem.relatedContent?.content.length > 0) ||
+      (this.props.chatItem.suggestions !== undefined && this.props.chatItem.suggestions?.suggestions.length > 0)));
 
   private readonly showLinkPreview = (e: MouseEvent, suggestion: Suggestion): void => {
-    if ((this.chatItem.type === ChatItemType.ANSWER || this.chatItem.type === ChatItemType.ANSWER_STREAM) &&
+    if ((this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM) &&
     suggestion.body !== undefined) {
       clearTimeout(this.relatedContentPreviewTimeout);
       this.relatedContentPreviewTimeout = setTimeout(() => {
@@ -278,7 +274,7 @@ export class ChatItemCard {
     type: 'div',
     classNames: [ 'mynah-chat-item-card-icon-wrapper' ],
     children: [
-      new Icon({ icon: this.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render
+      new Icon({ icon: this.props.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render
     ]
   });
 

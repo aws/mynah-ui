@@ -5,7 +5,6 @@
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import {
-  CanonicalExample,
   MynahEventNames,
   Suggestion,
   SupportedCodingLanguagesExtensionToTypeMap,
@@ -14,9 +13,6 @@ import { SyntaxHighlighter } from '../syntax-highlighter';
 import { findLanguageFromSuggestion } from '../../helper/find-language';
 import { SuggestionCardRelevanceVote } from './suggestion-card-relevance-vote';
 import { MynahUIGlobalEvents } from '../../helper/events';
-import { SuggestionCard } from './suggestion-card';
-import { Button } from '../button';
-import { Icon, MynahIcons } from '../icon';
 import { marked } from 'marked';
 
 export interface SuggestionCardBodyProps {
@@ -47,22 +43,6 @@ export class SuggestionCardBody {
         this.cardBody,
         ...(props.suggestion.type !== undefined && props.suggestion.type !== 'ApiDocsSuggestion'
           ? [ new SuggestionCardRelevanceVote({ suggestion: props.suggestion as Required<Suggestion> }).render ]
-          : []),
-        ...(props.showFooterButtons === true
-          ? [ new Button({
-              classNames: [ 'mynah-card-under-body-button' ],
-              primary: false,
-              label: 'Follow up in chat',
-              icon: DomBuilder.getInstance().build({
-                type: 'div',
-                children: [
-                  new Icon({ icon: MynahIcons.CHAT }).render,
-                ],
-              }),
-              onClick: () => {
-                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, props.suggestion);
-              },
-            }).render ]
           : []),
       ],
     });
@@ -157,15 +137,7 @@ export class SuggestionCardBody {
       }).childNodes
     ).map(node => {
       return this.processNode(node as HTMLElement, props.suggestion, this.matchingLanguage);
-    })),
-    ...(props.suggestion.type === 'ApiDocsSuggestion' && props.suggestion.metadata?.canonicalExample !== undefined
-      ? [ new SuggestionCard({
-          suggestion: {
-            title: 'Example',
-            ...(props.suggestion.metadata as CanonicalExample)?.canonicalExample,
-          }
-        }).render ]
-      : [])
+    }))
   ];
 
   public readonly updateCardBody = (body: string): void => {

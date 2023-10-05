@@ -4,9 +4,8 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { MynahUIGlobalEvents } from '../../helper/events';
-import { MynahUIDataStore } from '../../helper/store';
-import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
+import { MynahUITabsStore } from '../../helper/tabs-store';
+import { ChatItem, ChatItemType, Suggestion } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
@@ -14,28 +13,28 @@ import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { ChatPromptInput } from './chat-prompt-input';
 
 export interface ChatWrapperProps {
-  onStopChatResponse?: () => void;
-  onShowAllWebResultsClick?: () => void;
+  onStopChatResponse?: (tabId: string) => void;
+  tabId: string;
 }
 export class ChatWrapper {
-  private readonly props?: ChatWrapperProps;
+  private readonly props: ChatWrapperProps;
   private readonly chatItemsContainer: ExtendedHTMLElement;
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
-  constructor (props?: ChatWrapperProps) {
+  constructor (props: ChatWrapperProps) {
     this.props = props;
-    const initChatItems = MynahUIDataStore.getInstance().getValue('chatItems');
+    const initChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
     if (initChatItems.length > 0) {
       initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
     }
-    MynahUIDataStore.getInstance().subscribe('chatItems', (chatItems) => {
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (this.chatItemsContainer.children.length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(0);
         if (lastItem !== null) {
-          lastItem.innerHTML = new ChatItemCard({ chatItem: chatItemToInsert }).render.innerHTML;
+          lastItem.innerHTML = new ChatItemCard({ tabId: this.props.tabId, chatItem: chatItemToInsert }).render.innerHTML;
         }
       } else if (chatItems.length > 0) {
         if (chatItemToInsert.type === ChatItemType.PROMPT || chatItemToInsert.type === ChatItemType.SYSTEM_PROMPT) {
@@ -46,43 +45,20 @@ export class ChatWrapper {
         this.chatItemsContainer.clear(true);
       }
     });
-    MynahUIDataStore.getInstance().subscribe('loadingChat', (loadingChat) => {
-      if (loadingChat === true) {
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('loadingChat', (loadingChat: boolean) => {
+      if (loadingChat) {
         this.render.addClass('loading');
       } else {
         this.render.removeClass('loading');
       }
     });
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, (updateWith) => {
-      if (this.lastChatItemCard !== null) {
-        if (typeof updateWith === 'string') {
-          this.lastChatItemCard.updateAnswerBody(updateWith);
-        } else if (typeof updateWith === 'object' && updateWith.suggestions !== undefined) {
-          this.lastChatItemCard.updateAnswerBody(
-            new ChatItemCard({
-              chatItem: {
-                type: ChatItemType.ANSWER,
-                suggestions: updateWith
-              }
-            }).render
-          );
-        }
-      }
-    });
 
-    this.promptInput = new ChatPromptInput().render;
+    this.promptInput = new ChatPromptInput({ tabId: this.props.tabId }).render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-items-container' ],
       persistent: true,
-      children: [ ],
-      /* events: {
-        wheel: (e) => {
-          if (this.containerScollState === 'streaming') {
-            this.containerScollState = 'break';
-          }
-        }
-      } */
+      children: [],
     });
 
     this.intermediateBlockContainer = DomBuilder.getInstance().build({
@@ -96,7 +72,7 @@ export class ChatWrapper {
               icon: new Icon({ icon: MynahIcons.CANCEL }).render,
               onClick: () => {
                 if ((this.props?.onStopChatResponse) !== undefined) {
-                  this.props?.onStopChatResponse();
+                  this.props?.onStopChatResponse(this.props.tabId);
                 }
               },
             }).render ]
@@ -107,8 +83,24 @@ export class ChatWrapper {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-wrapper' ],
+      attributes: {
+        'mynah-tab-id': this.props.tabId,
+      },
       persistent: true,
-      children: [ this.chatItemsContainer, this.intermediateBlockContainer, this.promptInput ]
+      children: [
+        {
+          type: 'style',
+          children: [ `
+          .mynah-nav-tabs-wrapper[selected-tab="${this.props.tabId}"] + .mynah-ui-tab-contents-wrapper > .mynah-chat-wrapper[mynah-tab-id="${this.props.tabId}"]{
+              display: flex;
+            }
+            .mynah-nav-tabs-wrapper[selected-tab="${this.props.tabId}"] + .mynah-ui-tab-contents-wrapper > .mynah-chat-wrapper:not([mynah-tab-id="${this.props.tabId}"]) * {
+              pointer-events: none !important;
+            }` ],
+        },
+        this.chatItemsContainer,
+        this.intermediateBlockContainer,
+        this.promptInput ]
     });
   }
 
@@ -116,8 +108,8 @@ export class ChatWrapper {
     const chatItemCard = chatItem.type === ChatItemType.CODE_RESULT
       ? new ChatItemTreeViewWrapper({ files: chatItem.body as string[] })
       : new ChatItemCard({
-        chatItem,
-        onShowAllWebResultsClick: this.props?.onShowAllWebResultsClick
+        tabId: this.props.tabId,
+        chatItem
       });
     if (chatItem.type === ChatItemType.ANSWER_STREAM) {
       this.lastChatItemCard = chatItemCard as ChatItemCard;
@@ -136,5 +128,26 @@ export class ChatWrapper {
     itemsToRemove.forEach(itemToRemove => {
       itemToRemove.remove();
     });
+  };
+
+  public updateLastCharAnswerStream = (updateWith: string | {
+    title: string | boolean;
+    suggestions: Suggestion[];
+  }): void => {
+    if (this.lastChatItemCard !== null) {
+      if (typeof updateWith === 'string') {
+        this.lastChatItemCard.updateAnswerBody(updateWith);
+      } else if (typeof updateWith === 'object' && updateWith.suggestions !== undefined) {
+        this.lastChatItemCard.updateAnswerBody(
+          new ChatItemCard({
+            tabId: this.props.tabId,
+            chatItem: {
+              type: ChatItemType.ANSWER,
+              suggestions: updateWith
+            }
+          }).render
+        );
+      }
+    }
   };
 }

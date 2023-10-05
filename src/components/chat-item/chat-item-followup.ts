@@ -6,15 +6,16 @@
 import { marked } from 'marked';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
-import { MynahUIDataStore } from '../../helper/store';
 import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
+import { MynahUITabsStore } from '../../helper/tabs-store';
 
-export interface ChatItemFollowUpProps {chatItem: ChatItem}
+export interface ChatItemFollowUpProps {tabId: string; chatItem: ChatItem}
 export class ChatItemFollowUpContainer {
-  private readonly chatItem: ChatItem;
+  private readonly props: ChatItemFollowUpProps;
   render: ExtendedHTMLElement;
   constructor (props: ChatItemFollowUpProps) {
-    this.chatItem = props.chatItem;
+    this.props = props;
+    this.props.chatItem = props.chatItem;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-followup-question' ],
@@ -22,12 +23,12 @@ export class ChatItemFollowUpContainer {
         {
           type: 'div',
           classNames: [ 'mynah-chat-item-followup-question-text' ],
-          children: [ this.chatItem.followUp?.text ?? '' ]
+          children: [ this.props.chatItem.followUp?.text ?? '' ]
         },
         {
           type: 'div',
           classNames: [ 'mynah-chat-item-followup-question-options-wrapper' ],
-          children: this.chatItem.followUp?.options?.map(followUpOption => (
+          children: this.props.chatItem.followUp?.options?.map(followUpOption => (
             {
               type: 'div',
               classNames: [ 'mynah-chat-item-followup-question-option' ],
@@ -35,9 +36,9 @@ export class ChatItemFollowUpContainer {
               events: {
                 click: (e) => {
                   if (followUpOption.prompt != null) {
-                    MynahUIDataStore.getInstance().updateStore({
+                    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
                       chatItems: [
-                        ...MynahUIDataStore.getInstance().getValue('chatItems'),
+                        ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),
                         {
                           type: ChatItemType.PROMPT,
                           body: `<span>${followUpOption.prompt}</span>`,
@@ -45,7 +46,7 @@ export class ChatItemFollowUpContainer {
                       ]
                     });
                   }
-                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, followUpOption);
+                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, followUpOption });
 
                   if ((this.render.parentNode as HTMLElement).classList.contains('mynah-chat-item-card-muted')) {
                     (this.render.parentNode as HTMLElement).remove();
@@ -70,6 +71,7 @@ export class ChatItemFollowUpContainer {
         MynahUIGlobalEvents
           .getInstance()
           .dispatch(MynahEventNames.SUGGESTION_OPEN, {
+            tabId: this.props.tabId,
             suggestion: { id: url, url },
             event,
           });

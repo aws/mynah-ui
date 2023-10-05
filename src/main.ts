@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MainContainer } from './components/main-container';
 import { Notification } from './components/notification/notification';
 import { MynahConfig } from './helper/config';
 import { DomBuilder, ExtendedHTMLElement } from './helper/dom';
@@ -11,7 +10,6 @@ import {
   SuggestionEngagement,
   MynahPortalNames,
   Suggestion,
-  SearchPayload,
   SuggestionEventName,
   RelevancyVoteType,
   FeedbackPayload,
@@ -22,30 +20,25 @@ import {
   ChatItemFollowUp,
   ChatPrompt,
   ChatItemType,
-  MynahMode,
+  MynahUITabStoreModel,
 } from './static';
 import { I18N } from './translations/i18n';
-import './styles/styles.scss';
-import { MynahUIDataStore } from './helper/store';
 import { MynahUIGlobalEvents } from './helper/events';
-import { getSelectedTabValueFromStore } from './components/navigation-tabs';
+import { Tabs } from './components/navigation-tabs';
 import { ChatWrapper } from './components/chat-item/chat-wrapper';
-import { NavivationTabsVertical } from './components/navigation-tabs-vertical';
-import { ToggleOption } from './components/toggle';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
+import { MynahUITabsStore } from './helper/tabs-store';
+import './styles/styles.scss';
 
 export {
-  SearchPayloadCodeSelection,
   FeedbackPayload,
   RelevancyVoteType,
-  SearchPayload,
   Suggestion,
   EngagementType,
   SuggestionEngagement,
   SuggestionEventName,
   MynahUIDataModel,
   NotificationType,
-  MynahMode,
   ChatItem,
   ChatItemFollowUp,
   ChatItemType,
@@ -58,120 +51,92 @@ export {
   MynahIcons
 } from './components/icon';
 
-export {
-  transformPayloadData,
-  validateRulesOnPayloadData,
-  PayloadTransformRule,
-} from './helper/payload-transformer';
-
 export interface MynahUIProps {
   rootSelector?: string;
-  storeData?: MynahUIDataModel;
-  onSearch?: ((
-    searchPayload: SearchPayload
-  ) => void) | ((
-    searchPayload: SearchPayload
-  ) => MynahUIDataModel);
+  tabs?: MynahUITabStoreModel;
   onShowMoreWebResultsClick?: () => void;
   onReady?: () => void;
-  onVote?: (votedItemID: string, vote: RelevancyVoteType) => void;
-  onStopChatResponse?: () => void;
+  onVote?: (tabId: string, votedItemID: string, vote: RelevancyVoteType) => void;
+  onStopChatResponse?: (tabId: string) => void;
   onResetStore?: () => void;
-  onChatPrompt?: (prompt: ChatPrompt) => void;
-  onFollowUpClicked?: (followUp: ChatItemFollowUp) => void;
-  onSuggestionAttachedToChatPrompt?: (attachment: Suggestion) => void;
-  onNavigationTabChange?: (selectedTab: string) => void;
-  onSideNavigationTabChange?: (selectedTab: string) => void;
+  onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
+  onFollowUpClicked?: (tabId: string, followUp: ChatItemFollowUp) => void;
+  onTabChange?: (selectedTabId: string) => void;
   onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
   onCopyCodeToClipboard?: (code?: string, type?: 'selection' | 'block') => void;
   onCodeInsertToCursorPosition?: (code?: string, type?: 'selection' | 'block') => void;
   onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
-  onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
-  onOpenDiff?: (leftPath: string, rightPath: string) => void;
+  onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
+  onOpenDiff?: (tabId: string, leftPath: string, rightPath: string) => void;
 }
 
 export class MynahUI {
   private readonly props: MynahUIProps;
   private readonly wrapper: ExtendedHTMLElement;
-  private readonly sideNav: ExtendedHTMLElement;
+  private readonly tabsWrapper: ExtendedHTMLElement;
+  private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
-
-  private readonly mainContainer: MainContainer;
-  private readonly chatWrapper: ChatWrapper;
+  private readonly chatWrappers: Record<string, ChatWrapper> = {};
   private readonly config: MynahConfig;
 
   constructor (props: MynahUIProps) {
     this.props = props;
+    MynahUITabsStore.getInstance(this.props.tabs);
     MynahUIGlobalEvents.getInstance();
-    MynahUIDataStore.getInstance(props.storeData);
+
     DomBuilder.getInstance(props.rootSelector);
     this.config = new MynahConfig();
 
     I18N.getInstance(this.config.getConfig('language'));
 
-    this.chatWrapper = new ChatWrapper({
-      onStopChatResponse: props.onStopChatResponse,
-      onShowAllWebResultsClick: (this.props.onSearch !== undefined)
-        ? () => {
-            this.sideNavigationTabChanged(MynahMode.SEARCH, true);
-          }
-        : undefined
-    });
-    this.mainContainer = new MainContainer({
-      onNavigationTabChange: props.onNavigationTabChange,
-      onCloseButtonClick: () => {
-        this.sideNavigationTabChanged(MynahMode.CHAT, true);
-      }
+    const initTabs = MynahUITabsStore.getInstance().getAllTabs();
+    this.tabContentsWrapper = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-ui-tab-contents-wrapper' ],
+      children: Object.keys(initTabs).map((tabId: string) => {
+        this.chatWrappers[tabId] = new ChatWrapper({
+          tabId,
+          onStopChatResponse: props.onStopChatResponse,
+        });
+        return this.chatWrappers[tabId].render;
+      })
     });
 
     if (props.onSendFeedback !== undefined) {
       this.feedbackForm = new FeedbackForm();
     }
 
-    const sideNavTabItems = MynahUIDataStore.getInstance().getValue('sideNavigationTabs');
-    this.sideNav = DomBuilder.getInstance().build(
-      {
-        type: 'div',
-        classNames: [
-          ...(sideNavTabItems.length === 0 ? [ 'mynah-no-tabs' ] : []),
-        ],
-        attributes: {
-          id: 'mynah-side-nav'
-        },
-        children: [
-          new NavivationTabsVertical({
-            onChange: this.sideNavigationTabChanged
-          }).render
-        ]
+    this.tabsWrapper = (new Tabs({
+      onChange: (selectedTabId: string) => {
+        if (this.props.onTabChange !== undefined) {
+          this.props.onTabChange(selectedTabId);
+        }
       }
-    );
-    MynahUIDataStore.getInstance().subscribe('sideNavigationTabs', (newTabs: ToggleOption[]) => {
-      if (newTabs.length === 0) {
-        this.sideNav.addClass('mynah-no-tabs');
-      } else {
-        this.sideNav.removeClass('mynah-no-tabs');
-      }
-    });
+    })).render;
+
+    this.tabsWrapper.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
 
     this.wrapper = DomBuilder.getInstance().createPortal(
       MynahPortalNames.WRAPPER,
       {
         type: 'div',
         attributes: {
-          id: 'mynah-wrapper',
-          mode: MynahUIDataStore.getInstance().getValue('mode')
+          id: 'mynah-wrapper'
         },
         children: [
-          this.sideNav,
-          this.chatWrapper.render,
-          this.mainContainer.render
+          this.tabsWrapper,
+          this.tabContentsWrapper,
         ]
       },
       'afterbegin'
     );
 
-    MynahUIDataStore.getInstance().subscribe('mode', (newMode) => {
-      this.wrapper.setAttribute('mode', newMode);
+    MynahUITabsStore.getInstance().addListener('add', (tabId: string) => {
+      this.chatWrappers[tabId] = new ChatWrapper({
+        tabId,
+        onStopChatResponse: props.onStopChatResponse,
+      });
+      this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
     });
 
     this.addGlobalListeners();
@@ -179,30 +144,22 @@ export class MynahUI {
       if (this.props.onReady !== undefined) {
         this.props.onReady();
       }
-    }, 1000);
+    }, 100);
   }
 
-  private readonly sideNavigationTabChanged = (selectedTab: string, informSubscribers?: boolean): void => {
-    if (this.props.onSideNavigationTabChange !== undefined) {
-      MynahUIDataStore.getInstance().updateStore({
-        sideNavigationTabs: MynahUIDataStore.getInstance().getValue('sideNavigationTabs').map((navTab: ToggleOption) => (
-          { ...navTab, selected: navTab.value === selectedTab }
-        ))
-      }, informSubscribers !== true);
-      this.props.onSideNavigationTabChange(selectedTab);
-    }
-  };
-
   private readonly addGlobalListeners = (): void => {
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: ChatPrompt) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: {tabId: string; prompt: ChatPrompt}) => {
       if (this.props.onChatPrompt !== undefined) {
-        this.props.onChatPrompt(data);
+        this.props.onChatPrompt(data.tabId, data.prompt);
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: ChatItemFollowUp) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: {
+      tabId: string;
+      followUpOption: ChatItemFollowUp;
+    }) => {
       if (this.props.onFollowUpClicked !== undefined) {
-        this.props.onFollowUpClicked(data);
+        this.props.onFollowUpClicked(data.tabId, data.followUpOption);
       }
     });
 
@@ -212,30 +169,9 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ATTACHED_TO_CHAT, (data: Suggestion) => {
-      if (this.props.onSuggestionAttachedToChatPrompt !== undefined) {
-        this.props.onSuggestionAttachedToChatPrompt(data);
-      }
-    });
-
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FEEDBACK_SET, (feedbackData) => {
       if (this.props.onSendFeedback !== undefined) {
-        this.props.onSendFeedback(feedbackData);
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SEARCH, () => {
-      let directStoreDataReturn: MynahUIDataModel = {};
-      if (this.props.onSearch !== undefined) {
-        directStoreDataReturn = this.props.onSearch({
-          selectedTab: getSelectedTabValueFromStore(),
-        }) ?? {};
-      }
-
-      if (directStoreDataReturn !== undefined && Object.keys(directStoreDataReturn).length > 0) {
-        MynahUIDataStore.getInstance().updateStore({
-          ...directStoreDataReturn
-        });
+        this.props.onSendFeedback(MynahUITabsStore.getInstance().getSelectedTabId(), feedbackData);
       }
     });
 
@@ -277,7 +213,14 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CARD_VOTE, (data) => {
       if (this.props.onVote !== undefined) {
+        if (data.vote === RelevancyVoteType.UP) {
+          const newTabId = MynahUITabsStore.getInstance().addTab({
+            tabTitle: 'New Tab!'
+          });
+          console.log(`New TAB: ${newTabId}`);
+        }
         this.props.onVote(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
           data.id,
           data.vote
         );
@@ -301,7 +244,7 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_DIFF, (data) => {
       if (this.props.onOpenDiff !== undefined) {
-        this.props.onOpenDiff(data.leftPath, data.rightPath);
+        this.props.onOpenDiff(MynahUITabsStore.getInstance().getSelectedTabId(), data.leftPath, data.rightPath);
       }
     });
   };
@@ -310,16 +253,16 @@ export class MynahUI {
    * Adds a new answer on the chat window
    * @param anwer An ChatItem object.
    */
-  public addChatAnswer = (answer: ChatItem): void => {
-    const chatItems: ChatItem[] = MynahUIDataStore.getInstance().getValue('chatItems');
+  public addChatAnswer = (tabId: string, answer: ChatItem): void => {
+    const chatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems');
     chatItems.push(answer);
-    MynahUIDataStore.getInstance().updateStore({
+    MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
       chatItems
     });
   };
 
-  public getLastChatAnswer = (): ChatItem | undefined => {
-    const chatItems: ChatItem[] = MynahUIDataStore.getInstance().getValue('chatItems');
+  public getLastChatAnswer = (tabId: string): ChatItem | undefined => {
+    const chatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems');
     for (let i = chatItems.length - 1; i >= 0; i--) {
       if (chatItems[i].type === ChatItemType.ANSWER) {
         return chatItems[i];
@@ -332,40 +275,22 @@ export class MynahUI {
    * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
    * @param body new body stream as string.
    */
-  public updateLastChatAnswerStream = (updateWith: string | {
-    title?: string;
+  public updateLastChatAnswerStream = (tabId: string, updateWith: string | {
+    title: string | boolean;
     suggestions: Suggestion[];
   }): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.UPDATE_LAST_CHAT_ANSWER_STREAM, updateWith);
+    if (this.chatWrappers[tabId] !== undefined) {
+      this.chatWrappers[tabId].updateLastCharAnswerStream(updateWith);
+    }
   };
 
   /**
    * Updates only the UI with the given data.
    * @param data A full or partial set of data with values.
    */
-  public updateStore = (data: MynahUIDataModel): void => {
-    MynahUIDataStore.getInstance().updateStore({ ...data });
+  public updateStore = (tabId: string, data: MynahUIDataModel): void => {
+    MynahUITabsStore.getInstance().updateTab(tabId, { store: { ...data } });
   };
-
-  public getMode = (): MynahMode | undefined => {
-    return MynahUIDataStore.getInstance().getValue('mode');
-  };
-
-  /**
-   * Sets store defaults to use while clearing the store
-   * To clear the defaults, send `null`
-   * @param defaults partial set of MynahUIDataModel for defaults
-   */
-  public setStoreDefaults = (defaults: MynahUIDataModel | null): void => {
-    MynahUIDataStore.getInstance().setDefaults(defaults);
-  };
-
-  /**
-   * Returns the current search payload
-   */
-  public getSearchPayload = (): SearchPayload => ({
-    selectedTab: getSelectedTabValueFromStore(),
-  });
 
   /**
    * Shows up the feedback form

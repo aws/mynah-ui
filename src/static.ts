@@ -4,7 +4,6 @@
  */
 
 import { MynahIcons } from './components/icon';
-import { ToggleOption } from './components/toggle';
 
 export interface QuickActionCommandGroup {
   groupName?: string;
@@ -19,58 +18,54 @@ export interface QuickActionCommandGroup {
  */
 export interface MynahUIDataModel {
   /**
-   * Web suggestions search loading animation state
-   */
-  loading?: boolean;
-  /**
    * Chat screen loading animation state (mainly use during the stream or getting the initial answer)
    */
   loadingChat?: boolean;
   /**
    * Show chat avatars or not
-   */
+   * */
   showChatAvatars?: boolean;
   /**
-   * Text to be appeared on top of the search web suggestions (also above the tabs)
-   */
-  chatMessageOnTopOfSearchResults?: string;
-  /**
-   * Quick Action commands to show when user hits / to the input initially
-   */
+  * Quick Action commands to show when user hits / to the input initially
+  */
   quickActionCommands?: QuickActionCommandGroup[];
   /**
-   * Navigation tabs on the web suggestions search screen
-   */
-  navigationTabs?: ToggleOption[];
-  /**
-   * Right side navigation tabs
-   */
-  sideNavigationTabs?: ToggleOption[];
-  /**
-   * Placeholder to be shown on prompt input
-   */
+  * Placeholder to be shown on prompt input
+  */
   promptInputPlaceholder?: string;
   /**
-   * Prompt input field disabled state, set to tru to disable it
-   */
+  * Prompt input field disabled state, set to tru to disable it
+  */
   promptInputDisabledState?: boolean;
   /**
-   * Is mynah shows the web suggestions search screen or the chat screen
-   */
-  mode?: MynahMode;
-  /**
-   * List of Suggestion objects to be shown on the web suggestions search screen
-   */
-  suggestions?: Suggestion[];
-  /**
-   * List of ChatItem objects to be shown on the chat screen
-   */
+  * List of Suggestion objects to be shown on the web suggestions search screen
+  */
   chatItems?: ChatItem[];
+}
+
+export interface MynahUITabStoreTab {
+  /**
+   * Tab title
+   * */
+  tabTitle?: string;
+  /**
+   * Is tab selected
+   */
+  isSelected?: boolean;
+  /**
+  * Tab items data store
+  */
+  store?: MynahUIDataModel;
+}
+/**
+ * tabs store model to update the tabs partially or fully
+ */
+export interface MynahUITabStoreModel {
+  [tabId: string]: MynahUITabStoreTab;
 }
 
 export enum MynahEventNames {
   RESET_STORE = 'resetStore',
-  SEARCH = 'search',
   FEEDBACK_SET = 'feedbackSet',
   CARD_VOTE = 'cardVote',
   SUGGESTION_OPEN = 'suggestionOpen',
@@ -94,27 +89,6 @@ export const MynahPortalNames = {
   FEEDBACK_FORM: 'feedbackForm',
 };
 
-export interface SearchPayloadMatchPolicy {
-  must: string[];
-  should: string[];
-  mustNot: string[];
-}
-
-export interface SearchPayloadCodeSelection {
-  selectedCode: string;
-  file?: {
-    range: {
-      start: { row: string; column: string };
-      end: { row: string; column: string };
-    };
-    name: string;
-  };
-}
-
-export interface SearchPayload {
-  selectedTab?: string;
-}
-
 export interface SuggestionMetaData {
   stars?: number; // repo stars
   forks?: number; // repo forks
@@ -127,15 +101,13 @@ export interface SuggestionMetaData {
 
 export type SuggestionMetaDataUnion = Record<string, SuggestionMetaData>;
 
-export interface CanonicalExample { canonicalExample: { body: string; url: string } }
-
 export interface Suggestion {
   title: string;
   id?: string;
   url?: string;
   body?: string;
   type?: string;
-  metadata?: SuggestionMetaDataUnion | CanonicalExample;
+  metadata?: SuggestionMetaDataUnion;
 }
 export enum ChatItemType {
   PROMPT = 'prompt',
@@ -174,11 +146,6 @@ export interface ChatPrompt {
 export interface ChatItemFollowUp extends ChatPrompt {
   type?: string;
   pillText: string;
-}
-
-export enum MynahMode {
-  CHAT = 'chat',
-  SEARCH = 'search'
 }
 
 export enum KeyMap {
