@@ -47,7 +47,7 @@ export class SuggestionCardBody {
   private readonly processNode = (node: HTMLElement, suggestion?: Partial<Suggestion>, matchingLanguage?: string): HTMLElement => {
     const elementFromNode: HTMLElement = node;
     if (elementFromNode.tagName?.toLowerCase() === 'span' && elementFromNode.hasAttribute('markdown')) {
-      elementFromNode.innerHTML = marked(elementFromNode.innerHTML);
+      elementFromNode.innerHTML = marked.parse(elementFromNode.innerHTML);
       Array.from(elementFromNode.getElementsByTagName('a')).forEach(a => {
         const url = a.href;
 
@@ -129,7 +129,7 @@ export class SuggestionCardBody {
     ...(Array.from(
       DomBuilder.getInstance().build({
         type: 'div',
-        innerHTML: `${marked(props.suggestion.body as string)}`,
+        innerHTML: `${marked.parse(props.suggestion.body as string)}`,
       }).childNodes
     ).map(node => {
       return this.processNode(node as HTMLElement, props.suggestion, this.matchingLanguage);
