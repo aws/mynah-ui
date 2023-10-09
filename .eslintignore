@@ -3,6 +3,7 @@ node_modules/**
 **/*.md
 **/*.css
 **/*.scss
+**/*.svg
 **/*rc.js
 **/*config.js
 dist/**
