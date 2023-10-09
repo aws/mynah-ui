@@ -3,34 +3,37 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FeedbackPayload, FeedbackStars, MynahEventNames, MynahPortalNames } from '../../static';
-import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { FeedbackPayload, MynahEventNames, MynahPortalNames } from '../../static';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { FeedbackFormComment } from './feedback-form-comment';
-import { FeedbackFormStars } from './feedback-form-stars';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { Icon, MynahIcons } from '../icon';
+import { Config } from '../../helper/config';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;
 }
 export class FeedbackForm {
   private feedbackFormWrapper: ExtendedHTMLElement;
-  private readonly feedbackStars: FeedbackFormStars;
+  private readonly feedbackSelect: ExtendedHTMLElement;
+  private readonly feedbackOptionsWrapper: ExtendedHTMLElement;
   private readonly feedbackComment: FeedbackFormComment;
-  private readonly feedbackPayload: FeedbackPayload = {};
   private readonly feedbackSubmitButton: Button;
+  private feedbackPayload: FeedbackPayload = { messageId: '', selectedOption: '', tabId: '', comment: '' };
   public readonly feedbackFormContainer: ExtendedHTMLElement;
 
   constructor (props?: FeedbackFormProps) {
     if (props?.initPayload !== undefined) {
       this.feedbackPayload = {
-        ...(props.initPayload.stars !== undefined && { stars: props.initPayload.stars }),
-        ...(props.initPayload.comment !== undefined && { comment: props.initPayload.comment }),
+        selectedOption: Config.getInstance().config.feedbackOptions[0].value,
+        messageId: '',
+        tabId: '',
+        comment: ''
       };
     }
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM_CLICK, () => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM, (data: {messageId: string; tabId: string}) => {
       if (this.feedbackFormWrapper === undefined) {
         this.feedbackFormWrapper = DomBuilder.getInstance().createPortal(
           MynahPortalNames.FEEDBACK_FORM,
@@ -40,32 +43,41 @@ export class FeedbackForm {
               id: 'mynah-feedback-form-wrapper'
             },
             children: [
-              new Button({
-                classNames: [ 'mynah-bottom-block-close-button' ],
-                onClick: () => {
-                  this.feedbackFormWrapper.removeClass('mynah-feedback-form-show');
-                },
-                icon: new Icon({ icon: MynahIcons.CANCEL }).render
-              }).render,
               this.feedbackFormContainer
             ]
           },
           'afterbegin'
         );
       }
+      this.feedbackPayload.messageId = data.messageId;
+      this.feedbackPayload.tabId = data.tabId;
       setTimeout(() => {
-        this.feedbackFormWrapper.addClass('mynah-feedback-form-show');
+        this.show();
       }, 5);
     });
 
-    this.feedbackStars = new FeedbackFormStars({
-      onChange: (star: FeedbackStars) => {
-        this.feedbackPayload.stars = star;
-        this.onFeedbackSet({ stars: star });
-        this.feedbackComment.setEnabled(true);
-        this.feedbackSubmitButton.setEnabled(true);
+    this.feedbackSelect = DomBuilder.getInstance().build({
+      type: 'select',
+      attributes: { value: Config.getInstance().config.feedbackOptions[0].value },
+      classNames: [ 'mynah-feedback-form-select' ],
+      events: {
+        change: () => {
+          this.feedbackPayload.selectedOption = this.feedbackSelect.value;
+        }
       },
-      initStar: this.feedbackPayload?.stars,
+      children:
+        Config.getInstance().config.feedbackOptions.map(option => ({
+          type: 'option',
+          attributes: { value: option.value },
+          children: [ option.label ]
+        })) as DomBuilderObject[]
+    });
+    this.feedbackOptionsWrapper = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-feedback-form-select-wrapper' ],
+      children: [
+        this.feedbackSelect,
+        new Icon({ icon: MynahIcons.DOWN_OPEN, classNames: [ 'mynah-feedback-form-select-handle' ] }).render ]
     });
 
     this.feedbackComment = new FeedbackFormComment({
@@ -76,26 +88,80 @@ export class FeedbackForm {
     });
 
     this.feedbackSubmitButton = new Button({
-      label: 'Submit',
+      label: Config.getInstance().config.texts.submit,
       onClick: () => {
-        if (this.feedbackPayload.comment !== undefined && this.feedbackPayload.comment.trim() !== '') {
-          this.onFeedbackSet({ comment: this.feedbackPayload.comment });
-        }
-        this.feedbackComment.setComment('');
-        this.feedbackFormWrapper.removeClass('mynah-feedback-form-show');
+        this.onFeedbackSet(this.feedbackPayload);
+        this.close();
       },
     });
-    this.feedbackSubmitButton.setEnabled(false);
 
     this.feedbackFormContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-feedback-form' ],
       events: { click: cancelEvent },
-      children: [ this.feedbackStars.render, this.feedbackComment.render, this.feedbackSubmitButton.render ],
+      children: [
+        {
+          type: 'div',
+          classNames: [ 'mynah-feedback-form-header' ],
+          children: [
+            {
+              type: 'h4',
+              children: [ Config.getInstance().config.texts.feedbackFormTitle ]
+            },
+            new Button({
+              primary: false,
+              onClick: () => {
+                this.close();
+              },
+              icon: new Icon({ icon: MynahIcons.CANCEL }).render
+            }).render
+          ]
+        },
+        {
+          type: 'span',
+          children: [ Config.getInstance().config.texts.feedbackFormOptionsLabel ],
+        },
+        this.feedbackOptionsWrapper,
+        {
+          type: 'span',
+          children: [ Config.getInstance().config.texts.feedbackFormCommentLabel ],
+        },
+        this.feedbackComment.render,
+        {
+          type: 'div',
+          classNames: [ 'mynah-feedback-form-buttons-container' ],
+          children: [
+            new Button({
+              primary: false,
+              label: Config.getInstance().config.texts.cancel,
+              onClick: () => {
+                this.close();
+              }
+            }).render,
+            this.feedbackSubmitButton.render
+          ]
+        }
+      ],
     });
   }
 
   private readonly onFeedbackSet = (feedbackData: FeedbackPayload): void => {
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FEEDBACK_SET, feedbackData);
+  };
+
+  close = (): void => {
+    this.feedbackComment.clear();
+    this.feedbackSelect.value = Config.getInstance().config.feedbackOptions[0].value;
+    this.feedbackPayload = {
+      messageId: '',
+      selectedOption: Config.getInstance().config.feedbackOptions[0].value,
+      tabId: '',
+      comment: ''
+    };
+    this.feedbackFormWrapper.removeClass('mynah-feedback-form-show');
+  };
+
+  show = (): void => {
+    this.feedbackFormWrapper.addClass('mynah-feedback-form-show');
   };
 }

@@ -11,7 +11,6 @@ import {
 } from '../../static';
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { findLanguageFromSuggestion } from '../../helper/find-language';
-import { SuggestionCardRelevanceVote } from './suggestion-card-relevance-vote';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { marked } from 'marked';
 
@@ -40,10 +39,7 @@ export class SuggestionCardBody {
       type: 'div',
       classNames: [ 'mynah-card-center' ],
       children: [
-        this.cardBody,
-        ...(props.suggestion.type !== undefined && props.suggestion.type !== 'ApiDocsSuggestion'
-          ? [ new SuggestionCardRelevanceVote({ suggestion: props.suggestion as Required<Suggestion> }).render ]
-          : []),
+        this.cardBody
       ],
     });
   }

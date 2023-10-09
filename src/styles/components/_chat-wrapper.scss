@@ -165,15 +165,32 @@
                     gap: var(--mynah-sizing-2);
                     > .mynah-chat-item-followup-question-option {
                         padding: var(--mynah-sizing-2);
-                        border: 1px solid var(--mynah-color-text-default);
                         color: var(--mynah-color-text-default);
+                        border: 1px solid currentColor;
                         border-radius: var(--mynah-card-radius);
                         cursor: pointer;
                         font-size: 80%;
                         max-width: 100%;
                         overflow: hidden;
+                        display: inline-flex;
+                        gap: var(--mynah-sizing-2);
+                        align-items: center;
                         &:not(:hover) {
                             opacity: 0.75;
+                        }
+                        &-status {
+                            &-success {
+                                color: var(--mynah-color-status-success);
+                            }
+                            &-error {
+                                color: var(--mynah-color-status-error);
+                            }
+                            &-warning {
+                                color: var(--mynah-color-status-warning);
+                            }
+                            &-info {
+                                color: var(--mynah-color-status-info);
+                            }
                         }
                     }
                 }
@@ -293,6 +310,14 @@
                     align-items: flex-end;
                 }
 
+                .mynah-syntax-highlighter {
+                    opacity: 0.95;
+                    border: none;
+                    > .mynah-syntax-highlighter-copy-buttons {
+                        display: none;
+                    }
+                }
+
                 > .mynah-chat-item-card-related-content > .mynah-card,
                 > .mynah-card {
                     box-shadow: 0px 0px 5px -5px var(--mynah-color-button);
@@ -317,7 +342,7 @@
             }
 
             &.mynah-chat-item-answer-stream {
-                &:not(.stream-ended) > .mynah-card > .mynah-card-center > .mynah-card-votes-wrapper {
+                &:not(.stream-ended) > .mynah-card > .mynah-card-votes-wrapper {
                     display: none;
                 }
             }
@@ -337,6 +362,72 @@
                     > .mynah-chat-item-card-related-content-item > .mynah-card-compact {
                         opacity: 1;
                         > .mynah-card-header {
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+
+            > .mynah-card > .mynah-card-votes-wrapper {
+                align-items: center;
+                gap: var(--mynah-sizing-2);
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                border-top: 1px solid var(--mynah-color-border-default);
+                margin-top: var(--mynah-sizing-3);
+                padding-top: var(--mynah-sizing-3);
+                font-size: var(--mynah-font-size-xsmall);
+                > span.mynah-feedback-thanks {
+                    overflow: hidden;
+                }
+                > .mynah-button > span {
+                    padding: 0;
+                    font-size: var(--mynah-font-size-xsmall);
+                    color: var(--mynah-color-text-link);
+                }
+                > .mynah-vote-text {
+                    color: var(--mynah-color-text-weak);
+                    font-size: var(--mynah-font-size-xsmall);
+                }
+                > .mynah-card-vote {
+                    position: relative;
+                    overflow: visible;
+                    display: inline-flex;
+                    align-items: center;
+                    box-sizing: border-box;
+                    gap: var(--mynah-sizing-3);
+                    > .mynah-vote-radio {
+                        display: none;
+                    }
+                    > .mynah-vote-label {
+                        z-index: 10;
+                        cursor: pointer;
+                        font-size: var(--mynah-font-size-small);
+                        transition: var(--mynah-short-transition);
+                        width: var(--mynah-sizing-5);
+                        height: var(--mynah-sizing-5);
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                        color: var(--mynah-color-text-weak);
+                        opacity: 0.5;
+                        > * {
+                            pointer-events: none;
+                        }
+                        > i {
+                            height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
+                        }
+                    }
+                    > .mynah-vote-up-radio:checked {
+                        & ~ .mynah-vote-up {
+                            color: var(--mynah-color-text-default);
+                            opacity: 1;
+                        }
+                    }
+                    > .mynah-vote-down-radio:checked {
+                        & ~ .mynah-vote-down {
+                            color: var(--mynah-color-text-default);
                             opacity: 1;
                         }
                     }

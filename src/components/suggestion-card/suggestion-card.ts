@@ -5,7 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
-import { EngagementType, MynahEventNames, Suggestion, SuggestionMetaDataUnion } from '../../static';
+import { EngagementType, MynahEventNames, Suggestion, SuggestionMetaData } from '../../static';
 import { SuggestionCardBody } from './suggestion-card-body';
 import { SuggestionCardHeader } from './suggestion-card-header';
 
@@ -84,7 +84,7 @@ export class SuggestionCard {
         new SuggestionCardHeader({
           title: props.suggestion.title,
           url: props.suggestion.url ?? '',
-          metadata: props.suggestion.type !== 'ApiDocsSuggestion' ? props.suggestion.metadata as SuggestionMetaDataUnion : undefined,
+          metadata: props.suggestion.type !== 'ApiDocsSuggestion' ? props.suggestion.metadata as Record<string, SuggestionMetaData> : undefined,
           onSuggestionTitleClick: (e?: MouseEvent) => {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: props.suggestion, event: e });
           },

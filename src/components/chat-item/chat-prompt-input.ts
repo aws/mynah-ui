@@ -40,6 +40,7 @@ export class ChatPromptInput {
       } else {
         this.promptTextInput.removeAttribute('disabled');
         this.sendButton.removeAttribute('disabled');
+        this.promptTextInput.focus();
       }
     });
     MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputPlaceholder', (placeholderText: string) => {
@@ -115,13 +116,14 @@ export class ChatPromptInput {
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (!this.commandSelectorOpen) {
-      if (e.key === KeyMap.ENTER && !e.shiftKey) {
+      if (e.key === KeyMap.ENTER && !e.shiftKey && !e.ctrlKey) {
         cancelEvent(e);
         this.sendPrompt();
-      } else if (e.key === KeyMap.ENTER && e.shiftKey) {
-        this.promptTextInput.value = this.promptTextInput.value + ' ';
+      } else if (e.key === KeyMap.ENTER && (e.shiftKey || e.ctrlKey)) {
+        cancelEvent(e);
+        this.promptTextInput.value = `${this.promptTextInput.value}\n`;
         setTimeout(() => {
-          this.calculateTextAreaHeight();
+          this.calculateTextAreaHeight(true);
         }, 10);
       } else if (this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.value === '') {
         // will show prompt list
@@ -137,6 +139,9 @@ export class ChatPromptInput {
           stretchWidth: true,
           verticalDirection: OverlayVerticalDirection.TO_TOP,
           horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+          onClose: () => {
+            this.commandSelectorOpen = false;
+          },
           children: [
             this.getQuickCommandActions(this.quickActionCommands)
           ],
@@ -156,7 +161,6 @@ export class ChatPromptInput {
         if (this.commandSelector !== undefined) {
           this.commandSelector.close();
         }
-        this.commandSelectorOpen = false;
       } else if (navigationalKeys.includes(e.key)) {
         e.preventDefault();
         const commandElements = Array.from(this.commandSelector.render.querySelectorAll('.mynah-chat-command-selector-command'));
@@ -185,7 +189,6 @@ export class ChatPromptInput {
           setTimeout(() => {
             if (this.promptTextInput.value === '') {
               this.commandSelector.close();
-              this.commandSelectorOpen = false;
             } else {
               this.filteredCommandsList = [];
               [ ...this.quickActionCommands ].forEach((quickActionGroup: QuickActionCommandGroup) => {
@@ -227,6 +230,13 @@ export class ChatPromptInput {
                   command: quickActionCommand.command,
                   prompt: quickActionCommand.promptText ?? ''
                 },
+                events: {
+                  click: () => {
+                    this.promptTextInput.value = `${quickActionCommand.command} `;
+                    this.commandSelector.close();
+                    this.promptTextInput.focus();
+                  }
+                },
                 children: [
                   {
                     type: 'div',
@@ -249,13 +259,13 @@ export class ChatPromptInput {
     });
   };
 
-  private readonly calculateTextAreaHeight = (): void => {
+  private readonly calculateTextAreaHeight = (newLine?: boolean): void => {
     if (this.promptTextInput.value.trim() !== '') {
       this.promptTextInputWrapper.removeClass('no-text');
     } else {
       this.promptTextInputWrapper.addClass('no-text');
     }
-    this.promptTextInputSizer.innerHTML = this.promptTextInput.value.replace(/\r?\n/g, '</br>');
+    this.promptTextInputSizer.innerHTML = this.promptTextInput.value.replace(/\n/g, `</br>${newLine === true ? '&nbsp;' : ''}`);
   };
 
   private readonly resetTextAreaHeight = (): void => {
@@ -270,7 +280,8 @@ export class ChatPromptInput {
           ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),
           {
             type: ChatItemType.PROMPT,
-            body: `<span>${this.promptTextInput.value}</span>`,
+            body: `<span markdown="1">${this.promptTextInput.value}
+</span>`,
             ...(this.attachment !== undefined
               ? {
                   relatedContent: {

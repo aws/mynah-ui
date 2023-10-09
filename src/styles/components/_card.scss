@@ -246,9 +246,6 @@
                         display: none;
                     }
                 }
-                > *:last-child {
-                    margin-bottom: 0;
-                }
                 .amzn-mynah-search-result-highlight {
                     background-color: var(--mynah-color-highlight);
                     color: var(--mynah-color-highlight-text);
@@ -275,63 +272,6 @@
                         background-color: currentColor;
                         opacity: 0.1;
                         border-radius: var(--mynah-sizing-1);
-                    }
-                }
-            }
-        }
-
-        > .mynah-card-votes-wrapper {
-            align-items: center;
-            gap: var(--mynah-sizing-2);
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            border-top: 1px solid var(--mynah-color-border-default);
-            margin-top: var(--mynah-sizing-3);
-            padding-top: var(--mynah-sizing-3);
-            > .mynah-vote-text {
-                color: var(--mynah-color-text-weak);
-                font-size: var(--mynah-font-size-xsmall);
-            }
-            > .mynah-card-vote {
-                position: relative;
-                overflow: visible;
-                display: inline-flex;
-                align-items: center;
-                box-sizing: border-box;
-                gap: var(--mynah-sizing-3);
-                > .mynah-vote-radio {
-                    display: none;
-                }
-                > .mynah-vote-label {
-                    z-index: 10;
-                    cursor: pointer;
-                    font-size: var(--mynah-font-size-small);
-                    transition: var(--mynah-short-transition);
-                    width: var(--mynah-sizing-5);
-                    height: var(--mynah-sizing-5);
-                    display: inline-flex;
-                    justify-content: center;
-                    align-items: center;
-                    color: var(--mynah-color-text-weak);
-                    opacity: 0.5;
-                    > * {
-                        pointer-events: none;
-                    }
-                    > i {
-                        height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
-                    }
-                }
-                > .mynah-vote-up-radio:checked {
-                    & ~ .mynah-vote-up {
-                        color: var(--mynah-color-text-default);
-                        opacity: 1;
-                    }
-                }
-                > .mynah-vote-down-radio:checked {
-                    & ~ .mynah-vote-down {
-                        color: var(--mynah-color-text-default);
-                        opacity: 1;
                     }
                 }
             }
@@ -479,9 +419,6 @@
         }
         > .mynah-card-center {
             padding-left: var(--mynah-sizing-8);
-            > .mynah-card-votes-wrapper {
-                display: none;
-            }
         }
         .mynah-syntax-highlighter > pre {
             padding: var(--mynah-sizing-1);

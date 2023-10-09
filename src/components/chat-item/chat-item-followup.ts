@@ -8,6 +8,7 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { MynahUITabsStore } from '../../helper/tabs-store';
+import { Icon } from '../icon';
 
 export interface ChatItemFollowUpProps {tabId: string; chatItem: ChatItem}
 export class ChatItemFollowUpContainer {
@@ -31,8 +32,15 @@ export class ChatItemFollowUpContainer {
           children: this.props.chatItem.followUp?.options?.map(followUpOption => (
             {
               type: 'div',
-              classNames: [ 'mynah-chat-item-followup-question-option' ],
-              children: [ followUpOption.pillText ],
+              classNames: [ 'mynah-chat-item-followup-question-option', `mynah-chat-item-followup-question-option-status-${followUpOption.status ?? 'default'}` ],
+              children: [
+                ...(followUpOption.icon !== undefined
+                  ? [
+                      new Icon({ icon: followUpOption.icon }).render
+                    ]
+                  : []),
+                followUpOption.pillText
+              ],
               events: {
                 click: (e) => {
                   if (followUpOption.prompt != null) {

@@ -4,7 +4,6 @@
  */
 
 import { Notification } from './components/notification/notification';
-import { MynahConfig } from './helper/config';
 import { DomBuilder, ExtendedHTMLElement } from './helper/dom';
 import {
   SuggestionEngagement,
@@ -22,14 +21,15 @@ import {
   ChatItemType,
   MynahUITabStoreModel,
   MynahUITabStoreTab,
+  ConfigModel,
 } from './static';
-import { I18N } from './translations/i18n';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
 import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import './styles/styles.scss';
+import { Config } from './helper/config';
 
 export {
   FeedbackPayload,
@@ -56,9 +56,10 @@ export interface MynahUIProps {
   rootSelector?: string;
   defaults?: MynahUITabStoreTab;
   tabs?: MynahUITabStoreModel;
+  config?: ConfigModel;
   onShowMoreWebResultsClick?: () => void;
   onReady?: () => void;
-  onVote?: (tabId: string, votedItemID: string, vote: RelevancyVoteType) => void;
+  onVote?: (tabId: string, messageId: string, vote: RelevancyVoteType) => void;
   onStopChatResponse?: (tabId: string) => void;
   onResetStore?: () => void;
   onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
@@ -81,7 +82,6 @@ export class MynahUI {
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
-  private readonly config: MynahConfig;
 
   constructor (props: MynahUIProps) {
     this.props = props;
@@ -89,9 +89,8 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance();
 
     DomBuilder.getInstance(props.rootSelector);
-    this.config = new MynahConfig();
 
-    I18N.getInstance(this.config.getConfig('language'));
+    Config.getInstance(props.config);
 
     const initTabs = MynahUITabsStore.getInstance().getAllTabs();
     this.tabContentsWrapper = DomBuilder.getInstance().build({
@@ -229,8 +228,8 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CARD_VOTE, (data) => {
       if (this.props.onVote !== undefined) {
         this.props.onVote(
-          MynahUITabsStore.getInstance().getSelectedTabId(),
-          data.id,
+          data.tabId,
+          data.messageId,
           data.vote
         );
       }
@@ -263,11 +262,13 @@ export class MynahUI {
    * @param anwer An ChatItem object.
    */
   public addChatAnswer = (tabId: string, answer: ChatItem): void => {
-    const chatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems');
-    chatItems.push(answer);
-    MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
-      chatItems
-    });
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      const chatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems');
+      chatItems.push(answer);
+      MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
+        chatItems
+      });
+    }
   };
 
   public getLastChatAnswer = (tabId: string): ChatItem | undefined => {
@@ -288,7 +289,7 @@ export class MynahUI {
     title: string | boolean;
     suggestions: Suggestion[];
   }): void => {
-    if (this.chatWrappers[tabId] !== undefined) {
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].updateLastCharAnswerStream(updateWith);
     }
   };
@@ -299,20 +300,12 @@ export class MynahUI {
    * @param data A full or partial set of data with values.
    */
   public updateStore = (tabId: string | '', data: MynahUIDataModel): string => {
-    const cleanTabId = tabId;
-    if (cleanTabId === '') {
+    if (tabId === '') {
       return MynahUITabsStore.getInstance().addTab({ store: { ...data } });
-    } else {
+    } else if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       MynahUITabsStore.getInstance().updateTab(tabId, { store: { ...data } });
     }
     return tabId;
-  };
-
-  /**
-   * Shows up the feedback form
-   */
-  public showFeedbackForm = (): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_FEEDBACK_FORM_CLICK);
   };
 
   /**

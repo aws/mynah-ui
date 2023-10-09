@@ -138,10 +138,11 @@ export interface ToggleProps {
 export class Toggle {
   render: ExtendedHTMLElement;
   private readonly props: ToggleProps;
-  private readonly currentValue?: string;
+  private readonly currentValue?: string | null;
 
   constructor (props: ToggleProps) {
     this.props = { direction: 'horizontal', ...props };
+    this.currentValue = this.props.value;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-toggle-container', 'mynah-toggle-type-tabs', `mynah-toggle-direction-${this.props.direction as string}` ],
@@ -180,15 +181,43 @@ export class Toggle {
   };
 
   setValue = (value: string): void => {
-    // Since the html elements are not interactable when there is no user action
-    // such as a real physical input event, we need to redraw the elements
-    const elmToCheck = this.render.querySelector(`#${this.props.name}-${value}`);
-    if (elmToCheck !== undefined) {
-      (elmToCheck as HTMLInputElement).click();
-      (elmToCheck as HTMLInputElement).checked = true;
+    if (value !== this.getValue()) {
+      const elmToCheck = this.render.querySelector(`#${this.props.name}-${value}`);
+      if (elmToCheck !== undefined) {
+        (elmToCheck as HTMLInputElement).click();
+        (elmToCheck as HTMLInputElement).checked = true;
+      }
     }
-    // this.render.update({ children: this.getChildren(value) });
   };
 
-  getValue = (): string | undefined => this.currentValue;
+  addOption = (option: ToggleOption): void => {
+    this.props.options.push(option);
+    this.render.appendChild(new ToggleOptionItem({
+      ...option,
+      name: this.props.name,
+      onChange: this.updateSelectionRender,
+      onRemove: this.props.onRemove
+    }).render);
+    if (option.selected === true) {
+      this.setValue(option.value);
+      this.snapToOption(option.value);
+    }
+  };
+
+  removeOption = (value: string): void => {
+    this.props.options = this.props.options.filter(option => option.value !== value);
+    const elmToCheck = this.render.querySelector(`span[key="${this.props.name}-${value}"]`);
+    if (elmToCheck !== undefined) {
+      elmToCheck?.remove();
+    }
+  };
+
+  snapToOption = (value: string): void => {
+    const elmToCheck = this.render.querySelector(`#${this.props.name}-${value}`);
+    if (elmToCheck !== undefined) {
+      this.render.scrollLeft = (elmToCheck?.parentNode as HTMLElement).offsetLeft;
+    }
+  };
+
+  getValue = (): string | undefined | null => this.currentValue;
 }

@@ -110,7 +110,7 @@ export class SyntaxHighlighter {
                 classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
                 children: [
                   new Button({
-                    icon: new Icon({ icon: MynahIcons.PLUS }).render,
+                    icon: new Icon({ icon: MynahIcons.CURSOR_INSERT }).render,
                     label: 'Insert at cursor',
                     attributes: { title: 'Insert at cursor' },
                     primary: false,

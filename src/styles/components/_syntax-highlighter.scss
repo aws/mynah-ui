@@ -1,8 +1,11 @@
 .mynah-syntax-highlighter {
-    display: block;
+    display: flex;
+    flex-flow: column nowrap;
     box-sizing: border-box;
     overflow: hidden;
     margin: 0;
+    background-color: var(--mynah-card-bg);
+    max-width: 100%;
     & + *:not(:empty) {
         margin-top: var(--mynah-sizing-2);
     }
@@ -25,18 +28,12 @@
         justify-content: flex-end;
         display: flex;
         padding: var(--mynah-sizing-half);
-        z-index: 10;
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        padding-left: var(--mynah-sizing-3);
+        order: 256000;
         box-sizing: border-box;
         margin: 0;
         margin-block: 0 !important;
         background-color: var(--mynah-color-border-default);
-        & ~ *:last-child {
-            margin-bottom: var(--mynah-sizing-9) !important;
-        }
         .mynah-button {
             min-width: var(--mynah-sizing-6);
             height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));

@@ -7,13 +7,13 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { ChatItem, ChatItemType, MynahEventNames, Suggestion } from '../../static';
-import { I18N } from '../../translations/i18n';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { SuggestionCard } from '../suggestion-card/suggestion-card';
 import { SuggestionCardBody } from '../suggestion-card/suggestion-card-body';
 import { ChatItemFollowUpContainer } from './chat-item-followup';
+import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 
 const PREVIEW_DELAY = 500;
 
@@ -63,7 +63,7 @@ export class ChatItemCard {
             ? [ {
                 type: 'span',
                 classNames: [ 'mynah-chat-item-card-related-content-title' ],
-                children: [ typeof this.props.chatItem.suggestions.title === 'string' ? this.props.chatItem.suggestions.title : I18N.getInstance().texts.relatedContent ],
+                children: [ typeof this.props.chatItem.suggestions.title === 'string' ? this.props.chatItem.suggestions.title : '' ],
               } ]
             : []),
           ...this.props.chatItem.suggestions.suggestions.map(suggestion => DomBuilder.getInstance().build({
@@ -113,7 +113,7 @@ export class ChatItemCard {
             ? [ {
                 type: 'span',
                 classNames: [ 'mynah-chat-item-card-references-title' ],
-                children: [ typeof this.props.chatItem.relatedContent.title === 'string' ? this.props.chatItem.relatedContent.title : I18N.getInstance().texts.relatedContent ],
+                children: [ typeof this.props.chatItem.relatedContent.title === 'string' ? this.props.chatItem.relatedContent.title : '' ],
               } ]
             : []),
           {
@@ -170,7 +170,7 @@ export class ChatItemCard {
               children: [
                 ((): ExtendedHTMLElement => {
                   this.suggestionCardBody = new SuggestionCardBody({
-                    suggestion: { id: this.props.chatItem.id, body: this.props.chatItem.body, ...(((this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM) && this.props.chatItem.canBeVoted === true && this.props.chatItem.id !== undefined && !this.checkIsMuted()) ? { type: '' } : {}) },
+                    suggestion: { id: this.props.chatItem.messageId, body: this.props.chatItem.body },
                     onLinkMouseEnter: (e, url) => {
                       const matchingSuggestion = [ ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems').map(
                         (chatItem: ChatItem) => {
@@ -194,6 +194,7 @@ export class ChatItemCard {
                   });
                   return this.suggestionCardBody.render;
                 })(),
+                ...(this.props.chatItem.canBeVoted === true && this.props.chatItem.messageId !== undefined ? [ new ChatItemRelevanceVote({ tabId: this.props.tabId, messageId: this.props.chatItem.messageId }).render ] : [])
               ],
             } ]
           : ''),
@@ -220,8 +221,7 @@ export class ChatItemCard {
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_DIFF, { leftPath: 'empty', rightPath: this.props.chatItem.body });
               }
             }).render ]
-          : []),
-
+          : [])
       ],
     });
 

@@ -28,7 +28,7 @@
         transform-origin: center center;
         z-index: -1;
     }
-    >.mynah-bottom-block-close-button{
+    > .mynah-bottom-block-close-button {
         transform: translate3d(calc(-1 * var(--mynah-sizing-1)), calc(-100% - var(--mynah-sizing-3)), 0px);
     }
     & + #mynah-wrapper {
@@ -65,7 +65,7 @@
     transform: translate3d(0, 0, 0);
     display: flex;
     flex-flow: column;
-    gap: var(--mynah-sizing-6);
+    gap: var(--mynah-sizing-4);
     align-items: stretch;
     transform-origin: right bottom;
     z-index: 10;
@@ -76,7 +76,18 @@
     border-bottom: none;
     box-shadow: 0px -25px 20px -25px rgba(0, 0, 0, 0.15);
     background-color: var(--mynah-color-bg);
-    padding: var(--mynah-sizing-3);
+    padding: var(--mynah-sizing-4);
+
+    > .mynah-feedback-form-header {
+        display: flex;
+        box-sizing: border-box;
+        align-items: center;
+        margin-bottom: var(--mynah-sizing-4);
+        > h4 {
+            flex: 1;
+            margin: 0;
+        }
+    }
 
     > .mynah-feedback-form-comment {
         background-color: transparent;
@@ -91,42 +102,39 @@
         outline: none;
         color: var(--mynah-color-text-input);
         background-color: var(--mynah-card-bg);
-        &:disabled {
-            opacity: 0.5;
+    }
+
+    > .mynah-feedback-form-select-wrapper {
+        position: relative;
+        display: flex;
+        box-sizing: border-box;
+        padding: var(--mynah-sizing-3);
+        justify-content: flex-end;
+        align-items: center;
+        > .mynah-feedback-form-select {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            border-radius: var(--mynah-card-radius);
+            padding: var(--mynah-sizing-3);
+            border: 1px solid var(--mynah-color-border-default);
+            background-color: var(--mynah-card-bg);
+            -webkit-appearance: none;
+            appearance: none;
+            text-indent: 1px;
+            text-overflow: clip;
+            outline: none;
         }
-        &::placeholder {
+        > .mynah-feedback-form-select-handle {
             color: var(--mynah-color-text-weak);
-            font-size: var(--mynah-font-size-small);
+            pointer-events: none;
         }
     }
 
-    > .mynah-feedback-form-stars-container {
-        display: inline-flex;
-        flex-flow: row nowrap;
-        > .mynah-feedback-form-star {
-            cursor: pointer;
-            padding-right: var(--mynah-sizing-1);
-            color: var(--mynah-color-button);
-            font-size: 1.5rem;
-            transition: var(--mynah-very-short-transition);
-            > .mynah-icon {
-                transition: var(--mynah-very-short-transition);
-                opacity: 0.4;
-                transform: translate3d(0, 0, 0) scale(0.6);
-            }
-        }
-        &[selected-star]:not(:hover) > :not(.mynah-feedback-form-star.selected ~ .mynah-feedback-form-star),
-        &:hover > :not(.mynah-feedback-form-star:hover ~ .mynah-feedback-form-star) {
-            > .mynah-icon {
-                opacity: 1;
-                transform: translate3d(0, 0, 0) scale(1);
-            }
-        }
-    }
-
-    > .mynah-feedback-form-comment,
-    > .mynah-feedback-form-stars-container {
-        transition: var(--mynah-short-transition-rev);
-        transform-origin: right bottom;
+    > .mynah-feedback-form-buttons-container {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--mynah-sizing-1);
+        box-sizing: border-box;
     }
 }

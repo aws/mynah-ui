@@ -5,6 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUITabsStore } from '../helper/tabs-store';
+import { MynahUITabStoreTab } from '../static';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
 import { Toggle, ToggleOption } from './toggle';
@@ -27,16 +28,26 @@ export class Tabs {
       children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
     });
 
-    MynahUITabsStore.getInstance().addListener('add', (tabId) => {
-      this.render.update({
+    MynahUITabsStore.getInstance().addListener('add', (tabId, tabData) => {
+      /* this.render.update({
         children: this.getTabsRender(tabId)
+      }); */
+
+      this.toggleGroup.addOption({
+        value: tabId,
+        label: tabData?.tabTitle,
+        selected: tabData?.isSelected
       });
       this.render.setAttribute('selected-tab', tabId);
     });
-    MynahUITabsStore.getInstance().addListener('remove', () => {
-      this.render.update({
+    MynahUITabsStore.getInstance().addListener('remove', (tabId, newSelectedTab?: MynahUITabStoreTab) => {
+      /* this.render.update({
         children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId())
-      });
+      }); */
+      this.toggleGroup.removeOption(tabId);
+      if (newSelectedTab !== undefined) {
+        this.toggleGroup.snapToOption(MynahUITabsStore.getInstance().getSelectedTabId());
+      }
       this.render.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
     });
     MynahUITabsStore.getInstance().addListener('selectedTabChange', (selectedTabId) => {

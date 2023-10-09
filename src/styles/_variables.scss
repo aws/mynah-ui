@@ -37,7 +37,7 @@
 
     --mynah-color-text-default: var(--vscode-foreground);
     --mynah-color-text-strong: var(--vscode-input-foreground);
-    --mynah-color-text-weak: var(--vscode-list-deemphasizedForeground);
+    --mynah-color-text-weak: var(--vscode-disabledForeground);
     --mynah-color-text-link: var(--vscode-textLink-foreground);
     --mynah-color-text-input: var(--vscode-input-foreground);
 
@@ -59,7 +59,7 @@
     --mynah-color-context-filter: 0.975;
 
     --mynah-color-status-info: var(--vscode-editorInfo-foreground);
-    --mynah-color-status-success: var(--vscode-list-activeSelectionBackground);
+    --mynah-color-status-success: var(--vscode-terminal-ansiGreen);
     --mynah-color-status-warning: var(--vscode-editorWarning-foreground);
     --mynah-color-status-error: var(--vscode-editorError-foreground);
 

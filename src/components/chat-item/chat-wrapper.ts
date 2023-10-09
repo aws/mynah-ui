@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { ChatItem, ChatItemType, Suggestion } from '../../static';
@@ -64,8 +65,8 @@ export class ChatWrapper {
         ...(this.props?.onStopChatResponse !== undefined
           ? [ new Button({
               classNames: [ 'mynah-chat-stop-chat-response-button' ],
-              label: 'Stop generating',
-              icon: new Icon({ icon: MynahIcons.CANCEL }).render,
+              label: Config.getInstance().config.texts.stopGenerating,
+              icon: new Icon({ icon: MynahIcons.BLOCK }).render,
               onClick: () => {
                 if ((this.props?.onStopChatResponse) !== undefined) {
                   this.props?.onStopChatResponse(this.props.tabId);

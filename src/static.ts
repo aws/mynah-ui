@@ -75,10 +75,9 @@ export enum MynahEventNames {
   INSERT_CODE_TO_CURSOR_POSITION = 'insertCodeToCursorPosition',
   CHAT_PROMPT = 'chatPrompt',
   FOLLOW_UP_CLICKED = 'followUpClicked',
-  SUGGESTION_ATTACHED_TO_CHAT = 'suggestionAttachedToChat',
   UPDATE_LAST_CHAT_ANSWER_STREAM = 'updateLastChatAnswerStream',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
-  SHOW_FEEDBACK_FORM_CLICK = 'showFeedbackFormClick',
+  SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   OPEN_DIFF = 'openDiff'
 };
 
@@ -99,15 +98,13 @@ export interface SuggestionMetaData {
   lastActivityDate?: number; // creation or last update date for question or answer
 }
 
-export type SuggestionMetaDataUnion = Record<string, SuggestionMetaData>;
-
 export interface Suggestion {
   title: string;
   id?: string;
   url?: string;
   body?: string;
   type?: string;
-  metadata?: SuggestionMetaDataUnion;
+  metadata?: Record<string, SuggestionMetaData>;
 }
 export enum ChatItemType {
   PROMPT = 'prompt',
@@ -122,7 +119,7 @@ export enum ChatItemType {
 export interface ChatItem {
   body?: string | string[];
   type: ChatItemType;
-  id?: string;
+  messageId?: string;
   canBeVoted?: boolean;
   followUp?: {
     text?: string;
@@ -146,6 +143,8 @@ export interface ChatPrompt {
 export interface ChatItemFollowUp extends ChatPrompt {
   type?: string;
   pillText: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon?: MynahIcons;
 }
 
 export enum KeyMap {
@@ -239,10 +238,10 @@ export interface SuggestionEngagement {
   selectionDistanceTraveled?: { x: number; y: number; selectedText?: string };
 }
 
-export type FeedbackStars = 1 | 2 | 3 | 4 | 5;
-
 export interface FeedbackPayload {
-  stars?: FeedbackStars;
+  messageId: string;
+  tabId: string;
+  selectedOption: string;
   comment?: string;
 }
 
@@ -251,4 +250,25 @@ export enum NotificationType {
   SUCCESS = MynahIcons.OK_CIRCLED,
   WARNING = MynahIcons.WARNING,
   ERROR = MynahIcons.ERROR,
+}
+
+export interface ConfigModel {
+  texts: {
+    feedbackFormTitle: string;
+    feedbackFormOptionsLabel: string;
+    feedbackFormCommentLabel: string;
+    feedbackThanks: string;
+    feedbackReportButtonLabel: string;
+    insertAtCursorLabel: string;
+    copy: string;
+    showMore: string;
+    save: string;
+    cancel: string;
+    submit: string;
+    stopGenerating: string;
+  };
+  feedbackOptions: Array<{
+    label: string;
+    value: string;
+  }>;
 }

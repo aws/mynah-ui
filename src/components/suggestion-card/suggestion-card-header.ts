@@ -6,13 +6,13 @@
 import { getTimeDiff } from '../../helper/date-time';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { getOrigin } from '../../helper/url';
-import { SuggestionMetaDataUnion } from '../../static';
+import { SuggestionMetaData } from '../../static';
 import { Icon, MynahIcons } from '../icon';
 
 export interface SuggestionCardHeaderProps {
   title: string;
   url: string;
-  metadata?: SuggestionMetaDataUnion;
+  metadata?: Record<string, SuggestionMetaData>;
   onSuggestionTitleClick?: (e?: MouseEvent) => void;
   onSuggestionLinkCopy?: () => void;
 }
@@ -72,7 +72,7 @@ export class SuggestionCardHeader {
     });
   }
 
-  private readonly getSourceMetaBlock = (metadataUnion?: SuggestionMetaDataUnion): DomBuilderObject => {
+  private readonly getSourceMetaBlock = (metadataUnion?: Record<string, SuggestionMetaData>): DomBuilderObject => {
     const metaItems: any[] = [];
     if (metadataUnion !== null && metadataUnion !== undefined) {
       Object.keys(metadataUnion).forEach(metadataKey => {
@@ -172,7 +172,7 @@ export class SuggestionCardHeader {
   };
 }
 
-function getThumbnailClass (domain: string, metadata?: SuggestionMetaDataUnion): string | undefined {
+function getThumbnailClass (domain: string, metadata?: Record<string, SuggestionMetaData>): string | undefined {
   if (metadata !== null && metadata !== undefined) {
     return Object.keys(metadata).join(' ');
   }
