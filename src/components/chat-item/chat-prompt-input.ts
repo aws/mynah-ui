@@ -54,7 +54,6 @@ export class ChatPromptInput {
       type: 'textarea',
       classNames: [ 'mynah-chat-prompt-input' ],
       attributes: {
-        autofocus: 'autofocus',
         ...(this.inputDisabled ? { disabled: 'disabled' } : {}),
         tabindex: '1',
         rows: '1',
