@@ -23,6 +23,7 @@
             }
             & + .mynah-toggle-option-label {
                 cursor: pointer;
+                pointer-events: all;
                 position: relative;
                 z-index: 100;
                 padding: 0 var(--mynah-sizing-3);
@@ -36,6 +37,7 @@
                 border-right: 1px solid var(--mynah-color-border-default);
                 border-top: 1px solid transparent;
                 background-color: var(--mynah-color-bg);
+                opacity: 0.75;
                 max-width: 100%;
                 &,
                 & * {
@@ -57,7 +59,8 @@
             &:checked + .mynah-toggle-option-label {
                 border-top-color: var(--mynah-color-button);
                 color: var(--mynah-color-text-default);
-                background-color: var(--mynah-card-bg);
+                opacity: 1;
+                background-color: var(--mynah-color-tab-active);
             }
             &[disabled="disabled"] {
                 pointer-events: none !important;

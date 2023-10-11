@@ -1,5 +1,5 @@
 :root {
-    font-size: 14px;
+    font-size: var(--vscode-font-size, 13px);
     font-family:
         system-ui,
         -apple-system,
@@ -42,11 +42,13 @@
     --mynah-color-text-input: var(--vscode-input-foreground);
 
     --mynah-color-bg: var(--vscode-sideBar-background);
+    --mynah-color-bg-alt: var(--vscode-editorPane-background, var(--mynah-color-bg));
+    --mynah-color-tab-active: var(--vscode-tab-activeBackground, var(--vscode-editor-background, var(--mynah-card-bg)));
     --mynah-color-light: rgba(0, 0, 0, 0.05);
 
     --mynah-color-deep: var(--vscode-checkbox-background);
     --mynah-color-deep-reverse: var(--vscode-checkbox-foreground);
-    --mynah-color-border-default: var(--vscode-sideBar-border, rgba(0, 0, 0, 0.1));
+    --mynah-color-border-default: var(--vscode-panel-border, var(--vscode-tab-border, rgba(0, 0, 0, 0.1)));
     --mynah-color-input-bg: var(--vscode-input-background);
 
     --mynah-color-highlight: rgba(255, 199, 72, 0.3);
@@ -57,6 +59,18 @@
     --mynah-color-context-must-not-contain: #f3cac7;
     --mynah-color-context-reverse: rgba(0, 0, 0, 0.5);
     --mynah-color-context-filter: 0.975;
+
+    --mynah-color-syntax-bg: var(--vscode-terminal-dropBackground);
+    --mynah-color-syntax-variable: var(--vscode-debugTokenExpression-name);
+    --mynah-color-syntax-function: var(--vscode-gitDecoration-modifiedResourceForeground);
+    --mynah-color-syntax-operator: var(--vscode-debugTokenExpression-name);
+    --mynah-color-syntax-attr-value: var(--vscode-debugIcon-stepBackForeground);
+    --mynah-color-syntax-attr: var(--vscode-debugTokenExpression-string);
+    --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan);
+    --mynah-color-syntax-comment: var(--vscode-debugConsole-sourceForeground);
+    --mynah-color-syntax-code: var(--vscode-terminal-ansiBlue);
+    --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
+    --mynah-syntax-code-font-size: var(--vscode-editor-font-size);
 
     --mynah-color-status-info: var(--vscode-editorInfo-foreground);
     --mynah-color-status-success: var(--vscode-terminal-ansiGreen);

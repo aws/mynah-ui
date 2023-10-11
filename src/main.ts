@@ -22,6 +22,7 @@ import {
   MynahUITabStoreModel,
   MynahUITabStoreTab,
   ConfigModel,
+  ReferenceTrackerInformation,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -57,20 +58,20 @@ export interface MynahUIProps {
   defaults?: MynahUITabStoreTab;
   tabs?: MynahUITabStoreModel;
   config?: ConfigModel;
-  onShowMoreWebResultsClick?: () => void;
+  onShowMoreWebResultsClick?: (tabId: string, messageId: string) => void;
   onReady?: () => void;
   onVote?: (tabId: string, messageId: string, vote: RelevancyVoteType) => void;
   onStopChatResponse?: (tabId: string) => void;
-  onResetStore?: () => void;
+  onResetStore?: (tabId: string) => void;
   onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
   onFollowUpClicked?: (tabId: string, followUp: ChatItemFollowUp) => void;
-  onTabChange?: (selectedTabId: string) => void;
+  onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
   onTabRemove?: (tabId: string) => void;
-  onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
-  onCopyCodeToClipboard?: (code?: string, type?: 'selection' | 'block') => void;
-  onCodeInsertToCursorPosition?: (code?: string, type?: 'selection' | 'block') => void;
-  onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
+  onSuggestionEngagement?: (tabId: string, engagement: SuggestionEngagement) => void;
+  onCopyCodeToClipboard?: (tabId: string, code?: string, type?: 'selection' | 'block', referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+  onCodeInsertToCursorPosition?: (tabId: string, code?: string, type?: 'selection' | 'block', referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+  onSuggestionInteraction?: (tabId: string, eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
   onOpenDiff?: (tabId: string, leftPath: string, rightPath: string) => void;
 }
@@ -177,9 +178,9 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, () => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, (data: {messageId: string}) => {
       if (this.props.onShowMoreWebResultsClick !== undefined) {
-        this.props.onShowMoreWebResultsClick();
+        this.props.onShowMoreWebResultsClick(MynahUITabsStore.getInstance().getSelectedTabId(), data.messageId);
       }
     });
 
@@ -192,6 +193,7 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ENGAGEMENT, (engagement: SuggestionEngagement) => {
       if (this.props.onSuggestionEngagement !== undefined) {
         this.props.onSuggestionEngagement(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
           engagement
         );
       }
@@ -200,8 +202,10 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.COPY_CODE_TO_CLIPBOARD, (data) => {
       if (this.props.onCopyCodeToClipboard !== undefined) {
         this.props.onCopyCodeToClipboard(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
           data.text,
           data.type,
+          data.referenceTrackerInformation
         );
       }
     });
@@ -209,8 +213,10 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, (data) => {
       if (this.props.onCodeInsertToCursorPosition !== undefined) {
         this.props.onCodeInsertToCursorPosition(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
           data.text,
           data.type,
+          data.referenceTrackerInformation
         );
       }
     });
@@ -218,6 +224,7 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_OPEN, (data) => {
       if (this.props.onSuggestionInteraction !== undefined) {
         this.props.onSuggestionInteraction(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
           SuggestionEventName.OPEN,
           data.suggestion,
           data.event
@@ -238,15 +245,16 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_LINK_COPY, (data) => {
       if (this.props.onSuggestionInteraction !== undefined) {
         this.props.onSuggestionInteraction(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
           SuggestionEventName.COPY,
           data.suggestion
         );
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, () => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, (data: {tabId: string}) => {
       if (this.props.onResetStore !== undefined) {
-        this.props.onResetStore();
+        this.props.onResetStore(data.tabId);
       }
     });
 

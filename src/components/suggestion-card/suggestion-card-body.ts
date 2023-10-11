@@ -7,10 +7,8 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import {
   MynahEventNames,
   Suggestion,
-  SupportedCodingLanguagesExtensionToTypeMap,
 } from '../../static';
 import { SyntaxHighlighter } from '../syntax-highlighter';
-import { findLanguageFromSuggestion } from '../../helper/find-language';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { marked } from 'marked';
 
@@ -23,13 +21,17 @@ export interface SuggestionCardBodyProps {
 export class SuggestionCardBody {
   render: ExtendedHTMLElement;
   cardBody: ExtendedHTMLElement;
-  matchingLanguage: string;
   props: SuggestionCardBodyProps;
+  private readonly syntaxHighlighterHighlightWithTooltipRangeItems: Array<Array<{
+    range: {
+      start: number;
+      end: number;
+    };
+    tooltipMarkdown: string;
+  }>> = [ [] ];
 
   constructor (props: SuggestionCardBodyProps) {
     this.props = props;
-    this.matchingLanguage =
-      findLanguageFromSuggestion(props.suggestion) ?? SupportedCodingLanguagesExtensionToTypeMap.js;
     this.cardBody = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-body' ],
@@ -47,7 +49,9 @@ export class SuggestionCardBody {
   private readonly processNode = (node: HTMLElement, suggestion?: Partial<Suggestion>, matchingLanguage?: string): HTMLElement => {
     const elementFromNode: HTMLElement = node;
     if (elementFromNode.tagName?.toLowerCase() === 'span' && elementFromNode.hasAttribute('markdown')) {
-      elementFromNode.innerHTML = marked.parse(elementFromNode.innerHTML);
+      elementFromNode.innerHTML = marked.parse(elementFromNode.innerHTML, {
+        breaks: true
+      });
       Array.from(elementFromNode.getElementsByTagName('a')).forEach(a => {
         const url = a.href;
 
@@ -68,6 +72,7 @@ export class SuggestionCardBody {
           const classes = node.getAttribute !== undefined ? node.getAttribute('class') : null;
           if (node.nodeName === 'PRE' && classes !== null && classes.includes('language-')) {
             language = classes.replace('language-', '');
+            node.setAttribute('data-line', '1-3');
           }
           return this.processNode(node, suggestion, language);
         })
@@ -107,13 +112,14 @@ export class SuggestionCardBody {
         codeStringWithMarkup: (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? '',
         language: matchingLanguage,
         keepHighlights: true,
+        highlightRangeWithTooltip: isBlockCode ? this.syntaxHighlighterHighlightWithTooltipRangeItems[0] : undefined,
         showCopyOptions: isBlockCode,
         block: isBlockCode,
-        onCopiedToClipboard: (type, text) => {
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, { type, text });
+        onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, { type, text, referenceTrackerInformation });
         },
-        onInsertToCursorPosition: (type, text) => {
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, { type, text });
+        onInsertToCursorPosition: (type, text, referenceTrackerInformation) => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, { type, text, referenceTrackerInformation });
         }
       }).render;
     }
@@ -125,16 +131,35 @@ export class SuggestionCardBody {
     return elementFromNode;
   };
 
-  private readonly getCardBodyChildren = (props: SuggestionCardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => [
-    ...(Array.from(
-      DomBuilder.getInstance().build({
-        type: 'div',
-        innerHTML: `${marked.parse(props.suggestion.body as string)}`,
-      }).childNodes
-    ).map(node => {
-      return this.processNode(node as HTMLElement, props.suggestion, this.matchingLanguage);
-    }))
-  ];
+  private readonly getCardBodyChildren = (props: SuggestionCardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
+    // TODO: Implement the Regex selector solution: props.suggestion.body?.match(/<span\s+start="([^"]+)"\s+end="([^"]+)"[^>]*>.*?<\/span>/g));
+    const tempParser = DomBuilder.getInstance().build({
+      type: 'div',
+      innerHTML: props.suggestion.body
+    });
+    Array.from(tempParser.querySelectorAll('span[start]')).forEach((syntaxHighlighterHighlightWithTooltipElement) => {
+      this.syntaxHighlighterHighlightWithTooltipRangeItems[0].push({
+        range: {
+          start: parseInt(syntaxHighlighterHighlightWithTooltipElement.getAttribute('start') ?? '0'),
+          end: parseInt(syntaxHighlighterHighlightWithTooltipElement.getAttribute('end') ?? '0'),
+        },
+        tooltipMarkdown: syntaxHighlighterHighlightWithTooltipElement.innerHTML
+      });
+    });
+    const markedString = marked.parse(props.suggestion.body as string, {
+      breaks: true
+    });
+    return [
+      ...(Array.from(
+        DomBuilder.getInstance().build({
+          type: 'div',
+          innerHTML: `${markedString}`,
+        }).childNodes
+      ).map(node => {
+        return this.processNode(node as HTMLElement, props.suggestion);
+      }))
+    ];
+  };
 
   public readonly updateCardBody = (body: string): void => {
     this.cardBody.update({

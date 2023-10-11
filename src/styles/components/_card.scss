@@ -236,15 +236,37 @@
             overflow: hidden;
             position: relative;
             display: block;
+            span[start][end] {
+                display: none;
+            }
+            > p:first-child {
+                &,
+                & h1:first-child,
+                & h2:first-child,
+                & h3:first-child,
+                & h4:first-child,
+                & h5:first-child {
+                    margin-top: 0;
+                }
+            }
+            > p:first-child:last-of-type,
+            > p p:first-child {
+                margin: 0;
+            }
             &,
             & > div {
                 > * {
-                    margin-block-start: 0.45em;
-                    margin-block-end: 0.45em;
+                    margin-block-start: 0.75em;
+                    margin-block-end: 0.75em;
                     user-select: text;
                     &:empty {
                         display: none;
                     }
+                }
+                .amzn-mynah-ui-reference-tracker-highlight {
+                    background-color: var(--mynah-color-syntax-bg);
+                    color: inherit;
+                    cursor: help;
                 }
                 .amzn-mynah-search-result-highlight {
                     background-color: var(--mynah-color-highlight);

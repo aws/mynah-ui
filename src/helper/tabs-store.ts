@@ -46,7 +46,7 @@ export class MynahUITabsStore {
     }
     if ((initialData != null) && Object.keys(initialData).length > 0) {
       Object.keys(initialData).forEach((tabId: string) => {
-        this.tabsDataStore[tabId] = new MynahUIDataStore(initialData[tabId].store ?? {});
+        this.tabsDataStore[tabId] = new MynahUIDataStore(tabId, initialData[tabId].store ?? {});
       });
     }
   }
@@ -61,7 +61,7 @@ export class MynahUITabsStore {
     const tabId = generateUID();
     this.deselectAllTabs();
     this.tabsStore[tabId] = { ...this.tabDefaults, ...tabData, isSelected: true };
-    this.tabsDataStore[tabId] = new MynahUIDataStore(this.tabsStore[tabId].store ?? {});
+    this.tabsDataStore[tabId] = new MynahUIDataStore(tabId, this.tabsStore[tabId].store ?? {});
     this.informSubscribers('add', tabId, this.tabsStore[tabId]);
     this.informSubscribers('selectedTabChange', tabId);
     return tabId;
@@ -104,7 +104,7 @@ export class MynahUITabsStore {
       this.tabsStore[tabId] = { ...this.tabsStore[tabId], ...tabData };
       if (tabData?.store !== undefined) {
         if (this.tabsDataStore[tabId] === undefined) {
-          this.tabsDataStore[tabId] = new MynahUIDataStore();
+          this.tabsDataStore[tabId] = new MynahUIDataStore(tabId);
         }
         this.tabsDataStore[tabId].updateStore(tabData?.store);
       }

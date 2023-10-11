@@ -14,15 +14,16 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import {
   OnCopiedToClipboardFunction,
   OnInsertToCursorPositionFunction,
-  SupportedCodingLanguagesExtensionToTypeMap,
-  SupportedCodingLanguagesType,
+  ReferenceTrackerInformation,
 } from '../static';
 import { Button } from './button';
 import { Notification } from './notification/notification';
 import { Icon, MynahIcons } from './icon';
 import { cancelEvent } from '../helper/events';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay/overlay';
+import { SuggestionCardBody } from './suggestion-card/suggestion-card-body';
 
-const DEFAULT_LANG = SupportedCodingLanguagesExtensionToTypeMap.js;
+const DEFAULT_LANG = 'typescript';
 
 // they'll be used to replaced within the code, so making them unique is a must
 export const highlighters = {
@@ -33,6 +34,16 @@ export const highlighters = {
   end: {
     markup: '</span>',
     textReplacement: '__mynahhighlighterend__',
+  },
+};
+export const highlightersWithTooltip = {
+  start: {
+    markup: '<mark class="amzn-mynah-ui-reference-tracker-highlight">',
+    textReplacement: '__mynahhighlighterwithtooltipstart__',
+  },
+  end: {
+    markup: '</mark>',
+    textReplacement: '__mynahhighlighterwithtooltipend__',
   },
 };
 export const ellipsis = {
@@ -48,27 +59,50 @@ export const ellipsis = {
 
 export interface SyntaxHighlighterProps {
   codeStringWithMarkup: string;
-  language?: SupportedCodingLanguagesType;
+  language?: string;
   keepHighlights?: boolean;
   showLineNumbers?: boolean;
   block?: boolean;
   startingLineNumber?: number;
   showCopyOptions?: boolean;
+  highlightRangeWithTooltip?: ReferenceTrackerInformation[];
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
   onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
 }
+const PREVIEW_DELAY = 500;
+
 export class SyntaxHighlighter {
-  private readonly code: ExtendedHTMLElement;
   private readonly onCopiedToClipboard?: OnCopiedToClipboardFunction;
   private readonly onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
+  private readonly highlightRangeWithTooltip: ReferenceTrackerInformation[] | undefined;
+  private highlightRangeTooltipTimeout: ReturnType<typeof setTimeout>;
+  private highlightRangeTooltip: Overlay | null;
   render: ExtendedHTMLElement;
 
   constructor (props: SyntaxHighlighterProps) {
     this.onCopiedToClipboard = props.onCopiedToClipboard;
     this.onInsertToCursorPosition = props.onInsertToCursorPosition;
+    this.highlightRangeWithTooltip = props.highlightRangeWithTooltip;
 
     let codeMarkup = htmlDecode(props.codeStringWithMarkup);
-    // Replacing the markups with plain text replacement blocks
+
+    // Adding simple static keywords for highlighting
+    if (props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
+      props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
+        let calculatedStartIndex = (highlightRangeWithTooltip.range.start + (index * (highlightersWithTooltip.start.textReplacement.length + highlightersWithTooltip.end.textReplacement.length)));
+        let calculatedEndIndex = (calculatedStartIndex + highlightersWithTooltip.start.textReplacement.length - highlightRangeWithTooltip.range.start) + highlightRangeWithTooltip.range.end;
+        if (calculatedEndIndex > codeMarkup.length) {
+          calculatedStartIndex = codeMarkup.length - 1;
+        }
+        if (calculatedEndIndex > codeMarkup.length) {
+          calculatedEndIndex = codeMarkup.length - 1;
+        }
+        codeMarkup = codeMarkup.slice(0, calculatedStartIndex) + highlightersWithTooltip.start.textReplacement + codeMarkup.slice(calculatedStartIndex);
+        codeMarkup = codeMarkup.slice(0, calculatedEndIndex) + highlightersWithTooltip.end.textReplacement + codeMarkup.slice(calculatedEndIndex);
+      });
+    }
+
+    // Replacing the incoming markups with keyword matching static texts
     if (props.keepHighlights === true) {
       codeMarkup = codeMarkup
         .replace(new RegExp(highlighters.start.markup, 'g'), highlighters.start.textReplacement)
@@ -78,25 +112,37 @@ export class SyntaxHighlighter {
     }
 
     // Converting to prism styled markup
-    let styledCode = Prism.highlight(
-            `${codeMarkup}`,
-            Prism.languages[props.language ?? DEFAULT_LANG],
-            props.language ?? DEFAULT_LANG
-    );
+    const preElement = DomBuilder.getInstance().build({
+      type: 'pre',
+      classNames: [ 'keep-markup',
+          `language-${props.language ?? DEFAULT_LANG}`,
+          ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
+      ],
+      children: [
+        {
+          type: 'code',
+          innerHTML: Prism.highlight(codeMarkup, Prism.languages[props.language ?? DEFAULT_LANG], `language-${props.language ?? DEFAULT_LANG}`),
+        }
+      ],
+    });
+    Prism.highlightElement(preElement);
 
-    // replacing back the plain text to markup for highlighting code
+    // Convert simple keyword matchings to defined html markups
+    if (props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
+      preElement.innerHTML = preElement.innerHTML
+        .replace(new RegExp(highlightersWithTooltip.start.textReplacement, 'g'), highlightersWithTooltip.start.markup)
+        .replace(new RegExp(highlightersWithTooltip.end.textReplacement, 'g'), highlightersWithTooltip.end.markup);
+    }
+
+    // replacing back the keyword matchings for incoming highlights to markup for highlighting code
     if (props.keepHighlights === true) {
-      styledCode = styledCode
+      preElement.innerHTML = preElement.innerHTML
         .replace(new RegExp(highlighters.start.textReplacement, 'g'), highlighters.start.markup)
         .replace(new RegExp(highlighters.end.textReplacement, 'g'), highlighters.end.markup)
         .replace(new RegExp(ellipsis.start.textReplacement, 'g'), ellipsis.start.markup)
         .replace(new RegExp(ellipsis.end.textReplacement, 'g'), ellipsis.end.markup);
     }
 
-    this.code = DomBuilder.getInstance().build({
-      type: 'code',
-      innerHTML: styledCode,
-    });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-syntax-highlighter',
@@ -121,6 +167,7 @@ export class SyntaxHighlighter {
                         this.onInsertToCursorPosition(
                           selectedCode.type,
                           selectedCode.code,
+                          this.highlightRangeWithTooltip
                         );
                       }
                     },
@@ -142,52 +189,78 @@ export class SyntaxHighlighter {
               },
             ]
           : []),
-        {
-          type: 'pre',
-          classNames: [
-            `language-${props.language ?? DEFAULT_LANG}`,
-            ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
-          ],
-          children: [
-            this.code,
-            ...(props.showLineNumbers === true
-              ? [
-                  {
-                    type: 'span',
-                    classNames: [ 'line-numbers-rows' ],
-                    children: styledCode.split(/\n/).map((n: string, i: number) => ({
-                      type: 'span',
-                      innerHTML: String(i + (props.startingLineNumber ?? 1)),
-                    })),
-                  },
-                ]
-              : []),
-          ],
-        },
+        preElement,
+        ...(props.showLineNumbers === true
+          ? [
+              {
+                type: 'span',
+                classNames: [ 'line-numbers-rows' ],
+                children: (preElement.innerHTML).split(/\n/).slice(0, -1).map((n: string, i: number) => ({
+                  type: 'span',
+                  innerHTML: String(i + (props.startingLineNumber ?? 1)),
+                })),
+              }
+            ]
+          : [])
       ],
     });
+
+    Array.from(this.render.querySelectorAll('.amzn-mynah-ui-reference-tracker-highlight')).forEach((highlightRangeElement, index) => {
+      highlightRangeElement.addEventListener('mouseenter', (e) => {
+        if (props.highlightRangeWithTooltip?.[index] !== undefined) {
+          this.showHighlightRangeTooltip(e as MouseEvent, props.highlightRangeWithTooltip[index].tooltipMarkdown);
+        }
+      });
+      highlightRangeElement.addEventListener('mouseleave', this.hideHighlightRangeTooltip);
+    });
   }
+
+  private readonly showHighlightRangeTooltip = (e: MouseEvent, tooltipText: string): void => {
+    clearTimeout(this.highlightRangeTooltipTimeout);
+    this.highlightRangeTooltipTimeout = setTimeout(() => {
+      this.highlightRangeTooltip = new Overlay({
+        background: false,
+        closeOnOutsideClick: false,
+        referencePoint: {
+          left: e.pageX,
+          top: e.pageY
+        },
+        removeOtherOverlays: true,
+        dimOutside: false,
+        verticalDirection: OverlayVerticalDirection.TO_TOP,
+        horizontalDirection: OverlayHorizontalDirection.CENTER,
+        children: [
+          {
+            type: 'div',
+            classNames: [ 'mynah-ui-syntax-highlighter-highlight-tooltip' ],
+            children: [
+              new SuggestionCardBody({
+                suggestion: {
+                  body: tooltipText,
+                }
+              }).render
+            ]
+          }
+        ],
+      });
+    }, PREVIEW_DELAY);
+  };
+
+  private readonly hideHighlightRangeTooltip = (): void => {
+    clearTimeout(this.highlightRangeTooltipTimeout);
+    if (this.highlightRangeTooltip !== null) {
+      this.highlightRangeTooltip?.close();
+      this.highlightRangeTooltip = null;
+    }
+  };
 
   private readonly getSelectedCode = (): {
     code: string;
     type: 'selection' | 'block';
-  } => {
-    try {
-      const currentRange = window.getSelection() !== null ? window.getSelection()?.getRangeAt(0) ?? null : null;
-      if (currentRange?.commonAncestorContainer?.isSameNode(this.code) ?? false) {
-        return {
-          code: window.getSelection()?.toString() ?? '',
-          type: 'selection'
-        };
-      }
-    } catch (err) {
-      //
-    }
-    return {
-      code: this.code.innerText,
-      type: 'block'
-    };
-  };
+  } => ({
+    code: this.render.querySelector('pre')?.innerText ?? '',
+    type: 'block'
+  });
 
   private readonly copyToClipboard = (
     textToSendClipboard: string,
@@ -198,7 +271,7 @@ export class SyntaxHighlighter {
       .writeText(textToSendClipboard)
       .then(() => {
         if (this.onCopiedToClipboard !== undefined) {
-          this.onCopiedToClipboard(type, textToSendClipboard);
+          this.onCopiedToClipboard(type, textToSendClipboard, this.highlightRangeWithTooltip);
         }
         if (notificationText !== undefined) {
           // eslint-disable no-new

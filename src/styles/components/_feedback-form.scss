@@ -102,6 +102,8 @@
         outline: none;
         color: var(--mynah-color-text-input);
         background-color: var(--mynah-card-bg);
+        box-sizing: border-box;
+        font-family: inherit;
     }
 
     > .mynah-feedback-form-select-wrapper {

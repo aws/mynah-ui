@@ -1,5 +1,5 @@
 .mynah-nav-tabs-wrapper {
-    border-bottom: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+    border-top: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
     background-color: var(--mynah-color-bg);
     display: flex;
     align-items: center;
@@ -8,6 +8,17 @@
     z-index: 100;
     min-height: var(--mynah-sizing-10);
     max-height: var(--mynah-sizing-10);
+    position: relative;
+    &:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: auto;
+        height: var(--mynah-button-border-width);
+        background-color: var(--mynah-color-border-default);
+    }
 
     > .mynah-toggle-container {
         height: 100%;

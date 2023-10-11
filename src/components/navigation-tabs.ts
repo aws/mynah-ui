@@ -4,6 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { cancelEvent } from '../helper/events';
 import { MynahUITabsStore } from '../helper/tabs-store';
 import { MynahUITabStoreTab } from '../static';
 import { Button } from './button';
@@ -25,6 +26,12 @@ export class Tabs {
       type: 'div',
       persistent: true,
       classNames: [ 'mynah-nav-tabs-wrapper' ],
+      events: {
+        dblclick: (e) => {
+          cancelEvent(e);
+          MynahUITabsStore.getInstance().addTab();
+        }
+      },
       children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
     });
 
@@ -88,7 +95,8 @@ export class Tabs {
       this.toggleGroup.render,
       new Button({
         classNames: [ 'mynah-toggle-close-button' ],
-        onClick: () => {
+        onClick: (e) => {
+          cancelEvent(e);
           MynahUITabsStore.getInstance().addTab();
         },
         icon: new Icon({ icon: MynahIcons.PLUS }).render,

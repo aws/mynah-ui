@@ -275,7 +275,6 @@ export class ChatPromptInput {
   private readonly sendPrompt = (): void => {
     if (this.promptTextInput.value.trim() !== '') {
       this.resetTextAreaHeight();
-      console.log(this.promptTextInput.value);
       MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
         chatItems: [
           ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),

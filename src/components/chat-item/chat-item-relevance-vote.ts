@@ -90,7 +90,6 @@ export class ChatItemRelevanceVote {
               onClick: () => {
                 if (this.sendFeedbackListenerId === undefined) {
                   this.sendFeedbackListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FEEDBACK_SET, (data: FeedbackPayload) => {
-                    console.log(data);
                     if (data.messageId === this.props.messageId && data.tabId === this.props.tabId) {
                       MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.FEEDBACK_SET, this.sendFeedbackListenerId as string);
                       this.render.remove();

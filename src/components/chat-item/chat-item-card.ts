@@ -46,7 +46,7 @@ export class ChatItemCard {
     this.showMoreButtonBlock = new Button({
       classNames: [ 'mynah-chat-item-card-related-content-show-more' ],
       onClick: () => {
-        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK);
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, { messageId: this.props.chatItem.messageId });
         this.showMoreButtonBlock.render.remove();
         (this.relatedContentWrapper).addClass('expanded');
       },
@@ -246,6 +246,7 @@ export class ChatItemCard {
           closeOnOutsideClick: false,
           referenceElement: elm,
           dimOutside: false,
+          removeOtherOverlays: true,
           verticalDirection: OverlayVerticalDirection.END_TO_TOP,
           horizontalDirection: OverlayHorizontalDirection.TO_RIGHT,
           children: [

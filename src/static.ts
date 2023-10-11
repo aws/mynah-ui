@@ -81,11 +81,11 @@ export enum MynahEventNames {
   OPEN_DIFF = 'openDiff'
 };
 
-export const MynahPortalNames = {
-  WRAPPER: 'wrapper',
-  SIDE_NAV: 'sideNav',
-  OVERLAY: 'overlay',
-  FEEDBACK_FORM: 'feedbackForm',
+export enum MynahPortalNames {
+  WRAPPER = 'wrapper',
+  SIDE_NAV = 'sideNav',
+  OVERLAY = 'overlay',
+  FEEDBACK_FORM = 'feedbackForm',
 };
 
 export interface SuggestionMetaData {
@@ -169,21 +169,15 @@ export enum KeyMap {
   SLASH = '/'
 }
 
-export const SupportedCodingLanguages = [ 'typescript', 'javascript', 'java', 'json', 'python' ];
-type ElementType<T extends readonly unknown[]> = T extends ReadonlyArray<infer ElementType> ? ElementType : never;
-
-export type SupportedCodingLanguagesType = ElementType<typeof SupportedCodingLanguages>;
-
-export const SupportedCodingLanguagesExtensionToTypeMap = {
-  ts: 'typescript',
-  js: 'javascript',
-  py: 'python',
-  java: 'java',
-  json: 'json',
-};
-
-export type OnCopiedToClipboardFunction = (type?: 'selection' | 'block', text?: string) => void;
-export type OnInsertToCursorPositionFunction = (type?: 'selection' | 'block', text?: string) => void;
+export interface ReferenceTrackerInformation {
+  range: {
+    start: number;
+    end: number;
+  };
+  tooltipMarkdown: string;
+}
+export type OnCopiedToClipboardFunction = (type?: 'selection' | 'block', text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+export type OnInsertToCursorPositionFunction = (type?: 'selection' | 'block', text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
 
 export enum SuggestionEventName {
   OPEN = 'openSuggestion',

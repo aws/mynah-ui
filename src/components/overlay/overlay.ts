@@ -72,6 +72,7 @@ export interface OverlayProps {
   closeOnOutsideClick?: boolean;
   background?: boolean;
   onClose?: () => void;
+  removeOtherOverlays?: boolean;
 }
 export class Overlay {
   render: ExtendedHTMLElement;
@@ -106,24 +107,28 @@ export class Overlay {
       children: [ this.innerContainer ],
     });
 
+    if (props.removeOtherOverlays === true) {
+      DomBuilder.getInstance().removeAllPortals(MynahPortalNames.OVERLAY);
+    }
+
     // this is a portal that goes over all the other items
     // to make it as an overlay item
     this.render = DomBuilder.getInstance().createPortal(
-            `${MynahPortalNames.OVERLAY}-${this.guid}`,
-            {
-              type: 'div',
-              attributes: { id: `mynah-overlay-${this.guid}` },
-              classNames: [
-                'mynah-overlay',
-                ...(dimOutside ? [ 'mynah-overlay-dim-outside' ] : []),
-                ...(closeOnOutsideClick ? [ 'mynah-overlay-close-on-outside-click' ] : []),
-              ],
-              events: {
-                click: closeOnOutsideClick ? this.close : () => {},
-              },
-              children: [ this.container ],
-            },
-            'beforeend'
+      `${MynahPortalNames.OVERLAY}-${this.guid}`,
+      {
+        type: 'div',
+        attributes: { id: `mynah-overlay-${this.guid}` },
+        classNames: [
+          'mynah-overlay',
+          ...(dimOutside ? [ 'mynah-overlay-dim-outside' ] : []),
+          ...(closeOnOutsideClick ? [ 'mynah-overlay-close-on-outside-click' ] : []),
+        ],
+        events: {
+          click: closeOnOutsideClick ? this.close : () => {},
+        },
+        children: [ this.container ],
+      },
+      'beforeend'
     );
 
     const containerRectangle = this.container.getBoundingClientRect();

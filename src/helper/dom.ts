@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { MynahPortalNames } from '../static';
 import { cancelEvent } from './events';
 
 /* eslint-disable @typescript-eslint/method-signature-style */
@@ -265,6 +266,15 @@ export class DomBuilder {
 
   getPortal = (portalName: string): ExtendedHTMLElement => this.portals[portalName];
   removePortal = (portalName: string): void => this.portals[portalName].remove();
+  removeAllPortals = (portalsWithName: MynahPortalNames): void => {
+    Object.keys(this.portals).forEach(portalName => {
+      if (portalName.match(portalsWithName) !== null) {
+        this.portals[portalName].remove();
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.portals[portalName];
+      }
+    });
+  };
 }
 
 export const htmlDecode = (input: string): string => {

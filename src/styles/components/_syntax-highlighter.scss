@@ -12,14 +12,16 @@
     border: 1px solid var(--mynah-color-border-default);
     position: relative;
     border-radius: var(--mynah-card-radius);
-    &:before {
+    line-height: normal;
+    &:before,
+    & > .line-numbers-rows:before {
         content: "";
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: var(--vscode-terminal-dropBackground);
+        background-color: var(--mynah-color-syntax-bg);
         opacity: 0.2;
         pointer-events: none;
         user-select: none;
@@ -47,6 +49,10 @@
     &.mynah-inline-code > pre {
         display: inline-flex;
         max-width: 100%;
+        line-height: normal;
+        padding: 1px var(--mynah-sizing-half);
+        margin-top: -1px;
+        margin-bottom: -0.5px;
     }
     > pre {
         padding: var(--mynah-sizing-2);
@@ -57,11 +63,11 @@
 
         *,
         & {
-            font-size: var(--vscode-editor-font-size) !important;
-            font-family: var(--vscode-editor-font-family) !important;
+            font-size: var(--mynah-syntax-code-font-size) !important;
+            font-family: var(--mynah-syntax-code-font-family) !important;
         }
         > code {
-            color: var(--vscode-terminal-ansiBlue);
+            color: var(--mynah-color-syntax-code);
             filter: brightness(0.95);
             white-space: pre;
         }
@@ -86,7 +92,7 @@
         .token.prolog,
         .token.doctype,
         .token.cdata {
-            color: var(--vscode-debugConsole-sourceForeground);
+            color: var(--mynah-color-syntax-comment);
         }
 
         .token.punctuation {
@@ -104,7 +110,7 @@
         .token.constant,
         .token.symbol,
         .token.deleted {
-            color: var(--vscode-terminal-ansiCyan);
+            color: var(--mynah-color-syntax-property);
         }
 
         .token.selector,
@@ -113,7 +119,7 @@
         .token.char,
         .token.builtin,
         .token.inserted {
-            color: var(--vscode-debugTokenExpression-string);
+            color: var(--mynah-color-syntax-attr);
         }
 
         .token.operator,
@@ -121,26 +127,24 @@
         .token.url,
         .language-css .token.string,
         .style .token.string {
-            color: var(--vscode-debugTokenExpression-name);
+            color: var(--mynah-color-syntax-operator);
         }
 
         .token.atrule,
         .token.attr-value,
+        .token.class-name,
         .token.keyword {
-            color: var(--vscode-debugIcon-stepBackForeground);
+            color: var(--mynah-color-syntax-attr-value);
         }
 
-        .token.class-name {
-            color: var(--vscode-debugIcon-stepBackForeground);
-        }
         .token.function {
-            color: var(--vscode-gitDecoration-modifiedResourceForeground);
+            color: var(--mynah-color-syntax-function);
         }
 
         .token.regex,
         .token.important,
         .token.variable {
-            color: var(--vscode-debugTokenExpression-name);
+            color: var(--mynah-color-syntax-variable);
         }
 
         .token.important,
@@ -161,29 +165,45 @@
             counter-reset: linenumber;
             position: relative;
         }
+    }
+    > .line-numbers-rows {
+        position: absolute;
+        background-color: inherit;
+        > span,
+        & {
+            pointer-events: none;
+            user-select: none;
+        }
+        top: var(--mynah-sizing-2);
+        font-size: 100%;
+        left: 0;
+        width: var(--mynah-sizing-12);
+        overflow: hidden;
+        text-overflow: clip;
+        letter-spacing: -1px;
+        border-right: 1px solid var(--mynah-color-border-default);
 
-        > .line-numbers-rows {
-            position: absolute;
-            > span,
-            & {
-                pointer-events: none;
-                user-select: none;
-            }
-            top: var(--mynah-sizing-3);
-            font-size: 100%;
-            left: 0;
-            width: var(--mynah-sizing-12);
-            overflow: hidden;
-            text-overflow: clip;
-            letter-spacing: -1px;
-            border-right: 1px solid var(--mynah-color-border-default);
+        > span {
+            display: block;
+            color: var(--mynah-color-border-default);
+            padding-right: 0.8em;
+            text-align: right;
+        }
+    }
+}
 
-            > span {
-                display: block;
-                color: var(--mynah-color-border-default);
-                padding-right: 0.8em;
-                text-align: right;
-            }
+.mynah-ui-syntax-highlighter-highlight-tooltip {
+    max-width: 80vw;
+    min-width: 10vw;
+    max-height: 80vh;
+    background-color: var(--mynah-card-bg);
+    border-radius: var(--mynah-card-radius);
+    border: 1px solid var(--mynah-color-border-default);
+    padding: var(--mynah-sizing-5);
+    .mynah-card-body {
+        > p:first-child:last-of-type,
+        > p p:first-child {
+            margin: 0;
         }
     }
 }

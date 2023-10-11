@@ -94,6 +94,9 @@ class ToggleOptionItem {
             for: `${this.props.name}-${this.props.value}`,
           },
           events: {
+            dblclick: (e) => {
+              cancelEvent(e);
+            },
             auxclick: () => {
               if (this.props.onRemove !== undefined) {
                 this.props.onRemove(this.props.value);

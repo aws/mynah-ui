@@ -24,10 +24,12 @@ export class EmptyMynahUIDataModel {
 }
 export class MynahUIDataStore {
   private readonly subsciptions: Record<keyof MynahUIDataModel, Record<string, (newValue?: any, oldValue?: any) => void>>;
+  private readonly tabId: string;
   private store: Required<MynahUIDataModel> = (new EmptyMynahUIDataModel()).data;
   private defaults: MynahUIDataModel | null = null;
 
-  constructor (initialData?: MynahUIDataModel) {
+  constructor (tabId: string, initialData?: MynahUIDataModel) {
+    this.tabId = tabId;
     this.store = Object.assign(this.store, initialData);
     this.subsciptions = Object.create({});
     (Object.keys(this.store) as Array<keyof MynahUIDataModel>).forEach((storeKey) => {
@@ -107,6 +109,6 @@ export class MynahUIDataStore {
    */
   public resetStore = (): void => {
     this.updateStore((new EmptyMynahUIDataModel(structuredClone(this.defaults))).data);
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_STORE);
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_STORE, { tabId: this.tabId });
   };
 }
