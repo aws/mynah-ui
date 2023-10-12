@@ -14,6 +14,7 @@ import SEARCH from './icons/search.svg';
 import PLUS from './icons/plus.svg';
 import CHAT from './icons/chat.svg';
 import LINK from './icons/link.svg';
+import DOC from './icons/doc.svg';
 import EXTERNAL from './icons/external.svg';
 import CANCEL from './icons/cancel.svg';
 import CALENDAR from './icons/calendar.svg';
@@ -59,6 +60,7 @@ export class MynahUIIconImporter {
       PLUS,
       CHAT,
       LINK,
+      DOC,
       EXTERNAL,
       CANCEL,
       CALENDAR,

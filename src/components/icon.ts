@@ -14,6 +14,7 @@ export enum MynahIcons {
   PLUS = 'plus',
   CHAT = 'chat',
   LINK = 'link',
+  DOC = 'doc',
   EXTERNAL = 'external',
   CANCEL = 'cancel',
   CALENDAR = 'calendar',

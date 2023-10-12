@@ -48,9 +48,6 @@ export class Tabs {
       this.render.setAttribute('selected-tab', tabId);
     });
     MynahUITabsStore.getInstance().addListener('remove', (tabId, newSelectedTab?: MynahUITabStoreTab) => {
-      /* this.render.update({
-        children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId())
-      }); */
       this.toggleGroup.removeOption(tabId);
       if (newSelectedTab !== undefined) {
         this.toggleGroup.snapToOption(MynahUITabsStore.getInstance().getSelectedTabId());

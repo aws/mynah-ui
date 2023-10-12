@@ -141,7 +141,7 @@ export interface ToggleProps {
 export class Toggle {
   render: ExtendedHTMLElement;
   private readonly props: ToggleProps;
-  private readonly currentValue?: string | null;
+  private currentValue?: string | null;
 
   constructor (props: ToggleProps) {
     this.props = { direction: 'horizontal', ...props };
@@ -185,6 +185,7 @@ export class Toggle {
 
   setValue = (value: string): void => {
     if (value !== this.getValue()) {
+      this.currentValue = value;
       const elmToCheck = this.render.querySelector(`#${this.props.name}-${value}`);
       if (elmToCheck !== undefined) {
         (elmToCheck as HTMLInputElement).click();

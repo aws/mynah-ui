@@ -253,6 +253,9 @@ export interface ConfigModel {
     feedbackFormCommentLabel: string;
     feedbackThanks: string;
     feedbackReportButtonLabel: string;
+    codeSuggestions: string;
+    clickFileToViewDiff: string;
+    files: string;
     insertAtCursorLabel: string;
     copy: string;
     showMore: string;

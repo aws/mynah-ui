@@ -107,6 +107,9 @@
                     }
                 }
             }
+            &.mynah-chat-item-code-result {
+                min-width: 70%;
+            }
             &.mynah-chat-item-card-muted {
                 & + .mynah-chat-item-answer {
                     margin-top: var(--mynah-sizing-3);

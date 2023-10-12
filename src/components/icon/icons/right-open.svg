@@ -1,12 +1,14 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- Generator: Adobe Illustrator 24.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-<g id="caret_right">
-	<path d="M10,18c-0.256,0-0.512-0.098-0.707-0.293c-0.391-0.391-0.391-1.023,0-1.414L13.586,12L9.293,7.707
-		c-0.391-0.391-0.391-1.023,0-1.414s1.023-0.391,1.414,0l5,5c0.391,0.391,0.391,1.023,0,1.414l-5,5C10.512,17.902,10.256,18,10,18z"
-		/>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+	width="1080" height="1080" viewBox="0 0 1080 1080" xml:space="preserve">
+<desc>Created with Fabric.js 5.2.4</desc>
+<defs>
+</defs>
+<g transform="matrix(1 0 0 1 540 540)" id="dbd7551a-5ca7-4c5f-ae98-7188b4b3edeb"  >
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
 </g>
-<g id="Layer_1">
+<g transform="matrix(1 0 0 1 540 540)" id="3fe771df-b2bc-474a-a540-a8eac852571e"  >
+</g>
+<g transform="matrix(0 -90 90 0 540 540)"  >
+<path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(209,213,219); fill-rule: evenodd; opacity: 1;"  transform=" translate(-6, -6)" d="M 0.75 3.85666 L 1.71335 2.89331 L 6 7.17943 L 10.2867 2.89331 L 11.25 3.85666 L 6 9.10666 L 0.75 3.85666 Z" stroke-linecap="round" />
 </g>
 </svg>
