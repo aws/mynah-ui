@@ -43,6 +43,7 @@
             border: 1px solid var(--mynah-color-border-default);
             border-radius: 100%;
             background-size: 85%;
+            background-clip: content-box;
             background-position: center center;
             background-repeat: no-repeat;
             align-self: flex-start;

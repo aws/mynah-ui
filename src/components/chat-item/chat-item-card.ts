@@ -253,8 +253,8 @@ export class ChatItemCard {
           referenceElement: elm,
           dimOutside: false,
           removeOtherOverlays: true,
-          verticalDirection: OverlayVerticalDirection.END_TO_TOP,
-          horizontalDirection: OverlayHorizontalDirection.TO_RIGHT,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
           children: [
             {
               type: 'div',
