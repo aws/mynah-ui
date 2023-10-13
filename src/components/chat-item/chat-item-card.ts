@@ -236,7 +236,7 @@ export class ChatItemCard {
     }, 10);
   }
 
-  private readonly checkIsMuted = (): boolean => (this.props.chatItem.type === ChatItemType.CODE_RESULT && this.props.chatItem.body === undefined &&
+  private readonly checkIsMuted = (): boolean => (this.props.chatItem.type !== ChatItemType.CODE_RESULT && this.props.chatItem.body === undefined &&
     ((this.props.chatItem.followUp?.options !== undefined && this.props.chatItem.followUp.options.length > 0) ||
       (this.props.chatItem.relatedContent !== undefined && this.props.chatItem.relatedContent?.content.length > 0) ||
       (this.props.chatItem.suggestions !== undefined && this.props.chatItem.suggestions?.suggestions.length > 0)));
