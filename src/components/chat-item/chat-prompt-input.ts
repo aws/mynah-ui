@@ -10,6 +10,7 @@ import { ChatItemType, KeyMap, MynahEventNames, QuickActionCommandGroup, Suggest
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
+import { marked } from 'marked';
 
 export interface ChatPromptInputProps {
   tabId: string;
@@ -285,7 +286,7 @@ export class ChatPromptInput {
           ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),
           {
             type: ChatItemType.PROMPT,
-            body: `<span markdown="1">${this.promptTextInput.value}\n</span>`,
+            body: marked(this.promptTextInput.value),
             ...(this.attachment !== undefined
               ? {
                   relatedContent: {

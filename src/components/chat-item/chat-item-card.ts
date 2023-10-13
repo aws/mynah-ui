@@ -161,10 +161,14 @@ export class ChatItemCard {
       innerHTML: typeof this.props.chatItem.body === 'string' ? this.props.chatItem.body : ''
     });
     const isChatItemEmpty = emptyCheckDom.innerText.trim() === '';
+    const isNoContent = isChatItemEmpty && this.props.chatItem.followUp === undefined && this.props.chatItem.relatedContent === undefined && this.props.chatItem.suggestions === undefined && this.props.chatItem.type === ChatItemType.ANSWER;
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.props.chatItem.type ?? ChatItemType.ANSWER}`, ...(this.checkIsMuted() ? [ 'mynah-chat-item-card-muted' ] : []), ...(isChatItemEmpty ? [ 'mynah-chat-item-empty' ] : []) ],
+      classNames: [ 'mynah-chat-item-card', `mynah-chat-item-${this.props.chatItem.type ?? ChatItemType.ANSWER}`,
+        ...(isChatItemEmpty ? [ 'mynah-chat-item-empty' ] : []),
+        ...(isNoContent ? [ 'mynah-chat-item-no-content' ] : []),
+      ],
       children: [
         ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true
           ? [ this.chatAvatar ]
@@ -216,6 +220,10 @@ export class ChatItemCard {
         this.relatedContentWrapper,
         ...(this.props.chatItem.type !== ChatItemType.CODE_RESULT ? [ this.showMoreButtonBlock.render ] : []),
         this.props.chatItem.followUp?.text !== undefined ? new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render : '',
+        {
+          type: 'span',
+          classNames: [ 'mynah-chat-item-spacer' ]
+        },
         ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM
           ? [ {
               type: 'div',
@@ -236,7 +244,7 @@ export class ChatItemCard {
     }, 10);
   }
 
-  private readonly checkIsMuted = (): boolean => (this.props.chatItem.type !== ChatItemType.CODE_RESULT && this.props.chatItem.body === undefined &&
+  private readonly checkIsMuted = (): boolean => !(this.props.chatItem.body === undefined &&
     ((this.props.chatItem.followUp?.options !== undefined && this.props.chatItem.followUp.options.length > 0) ||
       (this.props.chatItem.relatedContent !== undefined && this.props.chatItem.relatedContent?.content.length > 0) ||
       (this.props.chatItem.suggestions !== undefined && this.props.chatItem.suggestions?.suggestions.length > 0)));

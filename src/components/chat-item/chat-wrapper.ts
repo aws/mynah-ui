@@ -33,9 +33,6 @@ export class ChatWrapper {
           lastItem.innerHTML = new ChatItemCard({ tabId: this.props.tabId, chatItem: chatItemToInsert }).render.innerHTML;
         }
       } else if (chatItems.length > 0) {
-        if (chatItemToInsert.type === ChatItemType.PROMPT || chatItemToInsert.type === ChatItemType.SYSTEM_PROMPT) {
-          this.removeAllExceptAnswersAndPrompts();
-        }
         this.insertChatItem(chatItemToInsert);
       } else {
         this.chatItemsContainer.clear(true);
@@ -117,16 +114,6 @@ export class ChatWrapper {
       this.lastChatItemCard = null;
     }
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
-  };
-
-  public removeAllExceptAnswersAndPrompts = (): void => {
-    const itemsToRemove = Array.from(this.render.querySelectorAll(':scope > .mynah-chat-items-container > .mynah-chat-item-card-muted'));
-    if (itemsToRemove.length === 0) {
-      return;
-    }
-    itemsToRemove.forEach(itemToRemove => {
-      itemToRemove.remove();
-    });
   };
 
   public updateLastCharAnswerStream = (updateWith: string | {

@@ -19,7 +19,7 @@ export class ChatItemFollowUpContainer {
     this.props.chatItem = props.chatItem;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-followup-question' ],
+      classNames: [ 'mynah-chat-item-followup-question', 'mynah-chat-item-temporary-element' ],
       children: [
         {
           type: 'div',
@@ -43,24 +43,21 @@ export class ChatItemFollowUpContainer {
               ],
               events: {
                 click: (e) => {
-                  if (followUpOption.prompt != null) {
-                    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-                      chatItems: [
-                        ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),
-                        {
-                          type: ChatItemType.PROMPT,
-                          body: `<span>${followUpOption.prompt}</span>`,
-                        }
-                      ]
-                    });
-                  }
+                  MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+                    chatItems: [
+                      ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),
+                      ...(followUpOption.prompt != null
+                        ? [ {
+                            type: ChatItemType.PROMPT,
+                            body: `<span>${followUpOption.prompt}</span>`,
+                          } ]
+                        : [ {
+                            type: ChatItemType.ANSWER,
+                            body: '',
+                          } ])
+                    ]
+                  });
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, followUpOption });
-
-                  if ((this.render.parentNode as HTMLElement).classList.contains('mynah-chat-item-card-muted')) {
-                    (this.render.parentNode as HTMLElement).remove();
-                  } else {
-                    this.render.remove();
-                  }
                 }
               }
             }

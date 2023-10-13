@@ -47,19 +47,36 @@
         overflow-x: hidden;
         overflow-y: auto;
         flex-flow: column-reverse nowrap;
-        gap: var(--mynah-sizing-6);
+        // gap: var(--mynah-sizing-6);
         align-items: flex-start;
         padding: var(--mynah-sizing-3);
         .mynah-chat-item-card {
             display: inline-flex;
             flex-flow: column nowrap;
             position: relative;
-            gap: var(--mynah-sizing-4);
+            // gap: var(--mynah-sizing-4);
             max-width: 90%;
             transition: var(--mynah-short-transition-bounce);
             transform: translate3d(0, var(--mynah-sizing-10), 0) scale(1, 0.98);
             opacity: 0;
             transform-origin: center bottom;
+            &.mynah-chat-item-no-content {
+                display: none !important;
+            }
+            > .mynah-chat-item-spacer {
+                display: block;
+                width: 100%;
+                height: var(--mynah-sizing-6);
+            }
+            & ~ .mynah-chat-item-temporary-element,
+            & ~ * .mynah-chat-item-temporary-element {
+                display: none !important;
+                visibility: hidden !important;
+                & ~ .mynah-chat-item-spacer {
+                    display: none;
+                    height: 0;
+                }
+            }
 
             .mynah-chat-item-card {
                 max-width: 100%;
@@ -84,6 +101,8 @@
                 left: 50%;
                 margin-left: -50px;
                 width: 100px;
+                top: 49%;
+                margin-top: calc(-1 * var(--mynah-sizing-2));
                 height: var(--mynah-sizing-4);
                 overflow: visible;
                 z-index: 10000;
@@ -109,11 +128,6 @@
             }
             &.mynah-chat-item-code-result {
                 min-width: 70%;
-            }
-            &.mynah-chat-item-card-muted {
-                & + .mynah-chat-item-answer {
-                    margin-top: var(--mynah-sizing-3);
-                }
             }
             a {
                 pointer-events: bounding-box;
