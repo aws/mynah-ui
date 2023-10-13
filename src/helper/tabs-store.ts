@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { MynahUITabStoreModel, MynahUITabStoreTab } from '../static';
+import { MynahUIDataModel, MynahUITabStoreModel, MynahUITabStoreTab } from '../static';
 import { generateUID } from './guid';
 import { MynahUIDataStore } from './store';
 
@@ -19,7 +19,6 @@ export class EmptyMynahUITabsStoreModel {
     const guid = generateUID();
     this.data = {
       [guid]: {
-        tabTitle: 'Welcome to Q',
         isSelected: true,
         store: {},
       }
@@ -131,6 +130,29 @@ export class MynahUITabsStore {
     const subscriptionId: string = generateUID();
     this.subsciptions[eventName][subscriptionId] = handler;
     return subscriptionId;
+  };
+
+  /**
+   * Subscribe to changes of the tabs' data store
+   * @param handler function will be called when tabs changed
+   * @returns subscriptionId which needed to unsubscribe
+   */
+  public addListenerToDataStore = (tabId: string, storeKey: keyof MynahUIDataModel, handler: (newValue: any, oldValue?: any) => void): string | null => {
+    if (this.tabsDataStore[tabId] !== undefined) {
+      return this.tabsDataStore[tabId].subscribe(storeKey, handler);
+    }
+    return null;
+  };
+
+  /**
+   * Unsubscribe from changes of the tabs' data store
+   * @param handler function will be called when tabs changed
+   * @returns subscriptionId which needed to unsubscribe
+   */
+  public removeListenerFromDataStore = (tabId: string, subscriptionId: string, storeKey: keyof MynahUIDataModel): void => {
+    if (this.tabsDataStore[tabId] !== undefined) {
+      this.tabsDataStore[tabId].unsubscribe(storeKey, subscriptionId);
+    }
   };
 
   /**

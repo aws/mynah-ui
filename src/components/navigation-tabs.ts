@@ -16,6 +16,7 @@ export interface TabsProps {
 }
 export class Tabs {
   render: ExtendedHTMLElement;
+  private tabIdSubscriptions: Record<string, string> = {};
   private toggleGroup: Toggle;
   private readonly props: TabsProps;
 
@@ -36,18 +37,18 @@ export class Tabs {
     });
 
     MynahUITabsStore.getInstance().addListener('add', (tabId, tabData) => {
-      /* this.render.update({
-        children: this.getTabsRender(tabId)
-      }); */
-
+      this.tabIdSubscriptions[tabId] = MynahUITabsStore.getInstance().addListenerToDataStore(tabId, 'tabTitle', (title) => {
+        this.toggleGroup.updateOptionTitle(tabId, title);
+      }) ?? '';
       this.toggleGroup.addOption({
         value: tabId,
-        label: tabData?.tabTitle,
+        label: tabData?.store?.tabTitle,
         selected: tabData?.isSelected
       });
       this.render.setAttribute('selected-tab', tabId);
     });
     MynahUITabsStore.getInstance().addListener('remove', (tabId, newSelectedTab?: MynahUITabStoreTab) => {
+      MynahUITabsStore.getInstance().removeListenerFromDataStore(tabId, this.tabIdSubscriptions[tabId], 'tabTitle');
       this.toggleGroup.removeOption(tabId);
       if (newSelectedTab !== undefined) {
         this.toggleGroup.snapToOption(MynahUITabsStore.getInstance().getSelectedTabId());
@@ -65,7 +66,7 @@ export class Tabs {
     return Object.keys(tabs).map((tabId: string) => {
       const tabOption = {
         value: tabId,
-        label: tabs[tabId].tabTitle,
+        label: tabs[tabId].store?.tabTitle,
         selected: tabs[tabId].isSelected
       };
       return tabOption;
@@ -74,6 +75,11 @@ export class Tabs {
 
   private readonly getTabsRender = (selectedTabId?: string): ExtendedHTMLElement[] => {
     const tabs = this.getTabOptionsFromTabStoreData();
+    tabs.forEach(tab => {
+      this.tabIdSubscriptions[tab.value] = MynahUITabsStore.getInstance().addListenerToDataStore(tab.value, 'tabTitle', (title) => {
+        this.toggleGroup.updateOptionTitle(tab.value, title);
+      }) ?? '';
+    });
     this.toggleGroup = new Toggle({
       onChange: (selectedTabId: string) => {
         MynahUITabsStore.getInstance().selectTab(selectedTabId);

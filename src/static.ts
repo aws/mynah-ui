@@ -18,6 +18,10 @@ export interface QuickActionCommandGroup {
  */
 export interface MynahUIDataModel {
   /**
+   * Tab title
+   * */
+  tabTitle?: string;
+  /**
    * Chat screen loading animation state (mainly use during the stream or getting the initial answer)
    */
   loadingChat?: boolean;
@@ -44,10 +48,6 @@ export interface MynahUIDataModel {
 }
 
 export interface MynahUITabStoreTab {
-  /**
-   * Tab title
-   * */
-  tabTitle?: string;
   /**
    * Is tab selected
    */

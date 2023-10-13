@@ -105,12 +105,11 @@ class ToggleOptionItem {
           },
           children: [
             this.props.icon !== undefined ? new Icon({ icon: props.icon as MynahIcons }).render : '',
-            this.props.label !== undefined
-              ? {
-                  type: 'span',
-                  children: [ this.props.label ]
-                }
-              : '',
+            {
+              type: 'span',
+              classNames: [ 'mynah-toggle-option-label-text' ],
+              children: [ this.props.label ?? '' ]
+            },
             this.props.onRemove !== undefined
               ? new Button({
                 classNames: [ 'mynah-toggle-close-button' ],
@@ -213,6 +212,14 @@ export class Toggle {
     const elmToCheck = this.render.querySelector(`span[key="${this.props.name}-${value}"]`);
     if (elmToCheck !== undefined) {
       elmToCheck?.remove();
+    }
+  };
+
+  updateOptionTitle = (value: string, title: string): void => {
+    this.props.options = this.props.options.filter(option => option.value !== value);
+    const elmToCheck = this.render.querySelector(`span[key="${this.props.name}-${value}"] .mynah-toggle-option-label-text`);
+    if (elmToCheck !== undefined) {
+      (elmToCheck as HTMLSpanElement).innerHTML = title;
     }
   };
 

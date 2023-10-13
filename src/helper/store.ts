@@ -12,6 +12,7 @@ export class EmptyMynahUIDataModel {
   data: Required<MynahUIDataModel>;
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
+      tabTitle: 'AQS Q',
       loadingChat: false,
       showChatAvatars: false,
       quickActionCommands: [],
