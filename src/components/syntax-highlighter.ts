@@ -277,7 +277,7 @@ export class SyntaxHighlighter {
           // eslint-disable no-new
           new Notification({
             content: notificationText,
-            title: 'Copied to clipbard',
+            title: 'Copied to clipboard',
             duration: 2000,
           }).notify();
         }

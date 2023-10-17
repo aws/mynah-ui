@@ -27,7 +27,7 @@ export class EmptyMynahUITabsStoreModel {
 }
 export class MynahUITabsStore {
   private static instance: MynahUITabsStore;
-  private readonly subsciptions: TabStoreSubscription = {
+  private readonly subscriptions: TabStoreSubscription = {
     add: {},
     remove: {},
     update: {},
@@ -128,7 +128,7 @@ export class MynahUITabsStore {
    */
   public addListener = (eventName: keyof TabStoreSubscription, handler: (tabId: string, tabData?: MynahUITabStoreTab) => void): string => {
     const subscriptionId: string = generateUID();
-    this.subsciptions[eventName][subscriptionId] = handler;
+    this.subscriptions[eventName][subscriptionId] = handler;
     return subscriptionId;
   };
 
@@ -157,18 +157,18 @@ export class MynahUITabsStore {
 
   /**
    * Unsubscribe from changes of the tabs store
-   * @param subscriptionId subsciptionId which is returned from subscribe function
+   * @param subscriptionId subscriptionId which is returned from subscribe function
    */
   public removeListener = (eventName: keyof TabStoreSubscription, subscriptionId: string): void => {
-    if (this.subsciptions[eventName][subscriptionId] !== undefined) {
-      delete this.subsciptions[eventName][subscriptionId];
+    if (this.subscriptions[eventName][subscriptionId] !== undefined) {
+      delete this.subscriptions[eventName][subscriptionId];
     }
   };
 
   private readonly informSubscribers = (eventName: keyof TabStoreSubscription, tabId: string, tabData?: MynahUITabStoreTab): void => {
-    const subsriberKeys = Object.keys(this.subsciptions[eventName]);
-    subsriberKeys.forEach(subscriberKey => {
-      this.subsciptions[eventName][subscriberKey](tabId, tabData);
+    const subscriberKeys = Object.keys(this.subscriptions[eventName]);
+    subscriberKeys.forEach(subscriberKey => {
+      this.subscriptions[eventName][subscriberKey](tabId, tabData);
     });
   };
 

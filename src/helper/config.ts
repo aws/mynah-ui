@@ -40,7 +40,7 @@ const configDefaults: ConfigModel = {
     copy: 'Copy',
     insertAtCursorLabel: 'Insert at cursor',
     feedbackFormTitle: 'Report an issue',
-    feedbackFormOptionsLabel: 'What type of issue woudl you like to report?',
+    feedbackFormOptionsLabel: 'What type of issue would you like to report?',
     feedbackFormCommentLabel: 'Description of issue (optional):',
     feedbackThanks: 'Thanks!',
     feedbackReportButtonLabel: 'Report an issue',

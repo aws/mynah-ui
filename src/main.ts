@@ -31,6 +31,7 @@ import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import './styles/styles.scss';
 import { Config } from './helper/config';
+import { marked } from 'marked';
 
 export {
   FeedbackPayload,
@@ -266,8 +267,34 @@ export class MynahUI {
   };
 
   /**
+   * Adds a new user prompt in the chat window
+   * @param tabId Corresponding tab ID.
+   * @param chatPrompt An ChatPrompt object with prompt and attachment value.
+   */
+  public addChatPrompt = (tabId: string, chatPrompt: ChatPrompt): void => {
+    MynahUITabsStore.getInstance()
+      .getTabDataStore(tabId)
+      .updateStore({
+        chatItems: [
+          ...MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems'),
+          {
+            type: ChatItemType.PROMPT,
+            body: marked(chatPrompt.prompt ?? ''),
+            ...(chatPrompt.attachment !== undefined && {
+              relatedContent: {
+                title: false,
+                content: [ chatPrompt.attachment ],
+              },
+            }),
+          },
+        ],
+      });
+  };
+
+  /**
    * Adds a new answer on the chat window
-   * @param anwer An ChatItem object.
+   * @param tabId Corresponding tab ID.
+   * @param answer An ChatItem object.
    */
   public addChatAnswer = (tabId: string, answer: ChatItem): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
