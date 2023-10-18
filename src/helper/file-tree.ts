@@ -10,14 +10,10 @@ export interface FolderNode { name: string; type: 'folder'; children: Array<Fold
 /*
  * Converts a list of file Paths into a tree
  *
- * @input: The list of `{ path: string }`
+ * @input: The list of path in string format
  * Example Input: [
- *   {
- *      path: "project/src/hello.js",
- *   },
- *   {
- *      path: "project/src/goodbye.js",
- *   }
+ *   "project/src/hello.js",
+ *   "project/src/goodbye.js",
  * ]
  *
  * Example output:
@@ -31,8 +27,8 @@ export interface FolderNode { name: string; type: 'folder'; children: Array<Fold
  *          name: 'src',
  *          type: 'folder',
  *          children: [
- *              { name: 'hello.js', type: 'file', filePath: 'project/src/hello.js' }
- *              { name: 'goodbye.js', type: 'file', filePath: 'project/src/goodbye.js' }
+ *              { name: 'hello.js', type: 'file', filePath: 'project/src/hello.js' },
+ *              { name: 'goodbye.js', type: 'file', filePath: 'project/src/goodbye.js' },
  *          ]
  *      }]
  *  }]

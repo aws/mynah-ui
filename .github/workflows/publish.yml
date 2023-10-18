@@ -12,9 +12,10 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
-      - run: npm install
+      - run: npm ci
       - run: npm run lint
       - run: npm run build
+      - run: npm test
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
