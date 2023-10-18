@@ -4,6 +4,7 @@
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { MynahEventNames, MynahUIDataModel } from '../static';
+import { Config } from './config';
 import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
 
@@ -12,7 +13,7 @@ export class EmptyMynahUIDataModel {
   data: Required<MynahUIDataModel>;
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
-      tabTitle: 'AWS Q',
+      tabTitle: Config.getInstance().config.texts.awsqTitle,
       loadingChat: false,
       showChatAvatars: false,
       quickActionCommands: [],

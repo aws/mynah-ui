@@ -37,6 +37,7 @@ const configDefaults: ConfigModel = {
     }
   ],
   texts: {
+    awsqTitle: 'AWS Q',
     copy: 'Copy',
     insertAtCursorLabel: 'Insert at cursor',
     feedbackFormTitle: 'Report an issue',
@@ -51,7 +52,8 @@ const configDefaults: ConfigModel = {
     save: 'Save',
     cancel: 'Cancel',
     submit: 'Submit',
-    stopGenerating: 'Stop generating'
+    stopGenerating: 'Stop generating',
+    copyToClipboard: 'Copied to clipboard',
   }
 };
 export class Config {

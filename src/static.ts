@@ -248,6 +248,7 @@ export enum NotificationType {
 
 export interface ConfigModel {
   texts: {
+    awsqTitle: string;
     feedbackFormTitle: string;
     feedbackFormOptionsLabel: string;
     feedbackFormCommentLabel: string;
@@ -263,6 +264,7 @@ export interface ConfigModel {
     cancel: string;
     submit: string;
     stopGenerating: string;
+    copyToClipboard: string;
   };
   feedbackOptions: Array<{
     label: string;
