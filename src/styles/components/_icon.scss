@@ -14,4 +14,7 @@
     mask-repeat: no-repeat;
     color: inherit;
     background-color: currentColor;
+    > span {
+        display: none;
+    }
 }

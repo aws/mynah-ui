@@ -126,12 +126,8 @@ export interface ChatItem {
     options?: ChatItemFollowUp[];
   };
   relatedContent?: {
-    title: string | boolean;
+    title?: string;
     content: Suggestion[];
-  };
-  suggestions?: {
-    title: string | boolean;
-    suggestions: Suggestion[];
   };
 }
 

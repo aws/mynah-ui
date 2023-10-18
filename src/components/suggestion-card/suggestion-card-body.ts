@@ -177,6 +177,6 @@ export class SuggestionCardBody {
   };
 
   public readonly addToCardBody = (elementToAdd: ExtendedHTMLElement | HTMLElement | string): void => {
-    this.cardBody.insertChild('beforeend', elementToAdd);
+    this.render.insertChild('beforeend', elementToAdd);
   };
 }

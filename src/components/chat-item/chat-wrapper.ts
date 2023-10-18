@@ -10,6 +10,7 @@ import { ChatItem, ChatItemType, Suggestion } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
+import { ChatItemRelatedContent } from './chat-item-related-content';
 import { ChatPromptInput } from './chat-prompt-input';
 
 export interface ChatWrapperProps {
@@ -108,8 +109,13 @@ export class ChatWrapper {
       chatItem
     });
     if (chatItem.type === ChatItemType.ANSWER_STREAM) {
+      this.lastChatItemCard?.render.addClass('stream-ended');
       this.lastChatItemCard = chatItemCard;
-    } else {
+    } else if (
+      (chatItem.type === ChatItemType.ANSWER ||
+        chatItem.type === ChatItemType.PROMPT ||
+        chatItem.type === ChatItemType.AI_PROMPT ||
+        chatItem.type === ChatItemType.SYSTEM_PROMPT) && chatItem.body !== undefined) {
       this.lastChatItemCard?.render.addClass('stream-ended');
       this.lastChatItemCard = null;
     }
@@ -117,20 +123,19 @@ export class ChatWrapper {
   };
 
   public updateLastCharAnswerStream = (updateWith: string | {
-    title: string | boolean;
-    suggestions: Suggestion[];
+    title?: string;
+    content: Suggestion[];
   }): void => {
     if (this.lastChatItemCard !== null) {
       if (typeof updateWith === 'string') {
         this.lastChatItemCard.updateAnswerBody(updateWith);
-      } else if (typeof updateWith === 'object' && updateWith.suggestions !== undefined) {
+      } else if (typeof updateWith === 'object' && updateWith.content !== undefined) {
         this.lastChatItemCard.updateAnswerBody(
-          new ChatItemCard({
-            tabId: this.props.tabId,
-            chatItem: {
-              type: ChatItemType.ANSWER,
-              suggestions: updateWith
-            }
+          new ChatItemRelatedContent({
+            tabId: this.lastChatItemCard.props.tabId,
+            messageId: this.lastChatItemCard.props.chatItem.messageId ?? 'unknown',
+            title: updateWith.title,
+            relatedContent: updateWith.content
           }).render
         );
       }

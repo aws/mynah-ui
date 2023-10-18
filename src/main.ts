@@ -18,7 +18,6 @@ import {
   ChatItem,
   ChatItemFollowUp,
   ChatPrompt,
-  ChatItemType,
   MynahUITabStoreModel,
   MynahUITabStoreTab,
   ConfigModel,
@@ -31,7 +30,6 @@ import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import './styles/styles.scss';
 import { Config } from './helper/config';
-import { marked } from 'marked';
 
 export {
   FeedbackPayload,
@@ -297,53 +295,22 @@ export class MynahUI {
   };
 
   /**
-   * Adds a new user prompt in the chat window
-   * @param tabId Corresponding tab ID.
-   * @param chatPrompt An ChatPrompt object with prompt and attachment value.
-   */
-  public addChatPrompt = (tabId: string, chatPrompt: ChatPrompt): void => {
-    MynahUITabsStore.getInstance()
-      .getTabDataStore(tabId)
-      .updateStore({
-        chatItems: [
-          ...MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems'),
-          {
-            type: ChatItemType.PROMPT,
-            body: marked(chatPrompt.prompt ?? ''),
-            ...(chatPrompt.attachment !== undefined && {
-              relatedContent: {
-                title: false,
-                content: [ chatPrompt.attachment ],
-              },
-            }),
-          },
-        ],
-      });
-  };
-
-  /**
    * Adds a new answer on the chat window
    * @param tabId Corresponding tab ID.
    * @param answer An ChatItem object.
    */
-  public addChatAnswer = (tabId: string, answer: ChatItem): void => {
+  public addChatItem = (tabId: string, chatItem: ChatItem): void => {
+    /* const isItemCompletelyEmpty = chatItem.body === undefined &&
+    (chatItem.followUp === undefined || chatItem.followUp.options?.length === 0) &&
+    (chatItem.relatedContent === undefined || chatItem.relatedContent.content?.length === 0); */
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      const chatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems');
-      chatItems.push(answer);
       MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
-        chatItems
+        chatItems: [
+          ...MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems'),
+          chatItem
+        ]
       });
     }
-  };
-
-  public getLastChatAnswer = (tabId: string): ChatItem | undefined => {
-    const chatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems');
-    for (let i = chatItems.length - 1; i >= 0; i--) {
-      if (chatItems[i].type === ChatItemType.ANSWER) {
-        return chatItems[i];
-      }
-    }
-    return undefined;
   };
 
   /**
@@ -351,8 +318,8 @@ export class MynahUI {
    * @param body new body stream as string.
    */
   public updateLastChatAnswerStream = (tabId: string, updateWith: string | {
-    title: string | boolean;
-    suggestions: Suggestion[];
+    title?: string;
+    content: Suggestion[];
   }): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].updateLastCharAnswerStream(updateWith);

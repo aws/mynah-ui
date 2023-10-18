@@ -6,8 +6,7 @@
 import { marked } from 'marked';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
-import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
-import { MynahUITabsStore } from '../../helper/tabs-store';
+import { ChatItem, MynahEventNames } from '../../static';
 import { Icon } from '../icon';
 
 export interface ChatItemFollowUpProps {tabId: string; chatItem: ChatItem}
@@ -43,20 +42,6 @@ export class ChatItemFollowUpContainer {
               ],
               events: {
                 click: (e) => {
-                  MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-                    chatItems: [
-                      ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),
-                      ...(followUpOption.prompt != null
-                        ? [ {
-                            type: ChatItemType.PROMPT,
-                            body: `<span>${followUpOption.prompt}</span>`,
-                          } ]
-                        : [ {
-                            type: ChatItemType.ANSWER,
-                            body: '',
-                          } ])
-                    ]
-                  });
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, followUpOption });
                 }
               }
