@@ -303,9 +303,11 @@
                     display: inline-flex;
                     max-width: 80%;
                     z-index: 10000;
-                    margin-top: calc(-1 * var(--mynah-sizing-4));
+                    margin-block-start: 0;
+                    margin-block-end: 0;
                     align-self: center;
-                    > span {
+                    > span,
+                    > i {
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
@@ -707,10 +709,9 @@
             display: flex;
             box-sizing: border-box;
             width: 100%;
-            flex-flow: row nowrap;
+            flex-flow: column nowrap;
             align-items: flex-start;
             justify-content: flex-start;
-            gap: var(--mynah-sizing-2);
             overflow: hidden;
             cursor: pointer;
             padding: var(--mynah-sizing-2);
@@ -730,6 +731,7 @@
                 flex: 0 1 0%;
             }
             > .mynah-chat-command-selector-command-description {
+                font-size: var(--mynah-font-size-xsmall);
                 font-weight: lighter;
                 opacity: 0.75;
                 flex: 1 0 100%;

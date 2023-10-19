@@ -115,7 +115,7 @@ export class ChatPromptInput {
 
     setTimeout(() => {
       this.promptTextInput.focus();
-    }, 100);
+    }, 500);
   }
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
@@ -131,7 +131,6 @@ export class ChatPromptInput {
           this.calculateTextAreaHeight(true);
         }, 10);
       } else if (this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.value === '') {
-        // update the prompt list every time
         if (this.commandSelector !== undefined) {
           this.commandSelector.close();
         }
@@ -198,7 +197,8 @@ export class ChatPromptInput {
               this.filteredCommandsList = [];
               [ ...this.quickActionCommands ].forEach((quickActionGroup: QuickActionCommandGroup) => {
                 const newQuickActionCommandGroup = { ...quickActionGroup };
-                newQuickActionCommandGroup.commands = newQuickActionCommandGroup.commands.filter(command => command.command.substring(1).match(this.promptTextInput.value.substring(1)));
+                newQuickActionCommandGroup.commands = newQuickActionCommandGroup
+                  .commands.filter(command => command.command.match(new RegExp(this.promptTextInput.value.substring(1), 'gi')));
                 if (newQuickActionCommandGroup.commands.length > 0) {
                   this.filteredCommandsList.push(newQuickActionCommandGroup);
                 }

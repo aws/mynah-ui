@@ -46,6 +46,8 @@ export class ChatItemCard {
 
     this.showMoreButtonBlock = new Button({
       classNames: [ 'mynah-chat-item-card-related-content-show-more' ],
+      primary: false,
+      icon: new Icon({ icon: MynahIcons.DOWN_OPEN }).render,
       onClick: () => {
         MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, { messageId: this.props.chatItem.messageId });
         this.showMoreButtonBlock.render.remove();
