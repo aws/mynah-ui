@@ -185,11 +185,11 @@ export class DomBuilder {
 
     if (typeof readyToBuildObject.innerHTML === 'string') {
       buildedDom.innerHTML = readyToBuildObject.innerHTML;
-    } else if (readyToBuildObject.children !== undefined && readyToBuildObject.children.length > 0) {
+    } else if (readyToBuildObject.children !== undefined && readyToBuildObject.children?.length > 0) {
       this.insertChild.apply(buildedDom as ExtendedHTMLElement, [
         'beforeend',
         [
-          ...(readyToBuildObject.children as any[]).map(
+          ...(readyToBuildObject.children).map(
             (child: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject) => {
               if (typeof child === 'string' || child instanceof HTMLElement) {
                 return child;
@@ -199,10 +199,10 @@ export class DomBuilder {
           ),
         ],
       ]);
-    }
+    };
 
-    ;(buildedDom as ExtendedHTMLElement).builderObject = readyToBuildObject
-    ;(buildedDom as ExtendedHTMLElement).update = (builderObject: DomBuilderObjectFilled): ExtendedHTMLElement => {
+    (buildedDom as ExtendedHTMLElement).builderObject = readyToBuildObject;
+    (buildedDom as ExtendedHTMLElement).update = (builderObject: DomBuilderObjectFilled): ExtendedHTMLElement => {
       return this.update(buildedDom as ExtendedHTMLElement, builderObject);
     };
     this.extendDomFunctionality(buildedDom);

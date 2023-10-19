@@ -4,6 +4,7 @@
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { MynahEventNames, MynahUIDataModel } from '../static';
+import { Config } from './config';
 import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
 
@@ -12,7 +13,7 @@ export class EmptyMynahUIDataModel {
   data: Required<MynahUIDataModel>;
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
-      tabTitle: 'AQS Q',
+      tabTitle: Config.getInstance().config.texts.awsqTitle,
       loadingChat: false,
       showChatAvatars: false,
       quickActionCommands: [],
@@ -24,7 +25,7 @@ export class EmptyMynahUIDataModel {
   }
 }
 export class MynahUIDataStore {
-  private readonly subsciptions: Record<keyof MynahUIDataModel, Record<string, (newValue?: any, oldValue?: any) => void>>;
+  private readonly subscriptions: Record<keyof MynahUIDataModel, Record<string, (newValue?: any, oldValue?: any) => void>>;
   private readonly tabId: string;
   private store: Required<MynahUIDataModel> = (new EmptyMynahUIDataModel()).data;
   private defaults: MynahUIDataModel | null = null;
@@ -32,9 +33,9 @@ export class MynahUIDataStore {
   constructor (tabId: string, initialData?: MynahUIDataModel) {
     this.tabId = tabId;
     this.store = Object.assign(this.store, initialData);
-    this.subsciptions = Object.create({});
+    this.subscriptions = Object.create({});
     (Object.keys(this.store) as Array<keyof MynahUIDataModel>).forEach((storeKey) => {
-      Object.assign(this.subsciptions, { [storeKey]: {} });
+      Object.assign(this.subscriptions, { [storeKey]: {} });
     });
   }
 
@@ -59,18 +60,18 @@ export class MynahUIDataStore {
    */
   public subscribe = (storeKey: keyof MynahUIDataModel, handler: (newValue: any, oldValue?: any) => void): string => {
     const subscriptionId: string = generateUID();
-    this.subsciptions[storeKey][subscriptionId] = handler;
+    this.subscriptions[storeKey][subscriptionId] = handler;
     return subscriptionId;
   };
 
   /**
    * Unsubscribe from changes of a specific item in data store
    * @param storeKey One of the keys in MynahUIDataModel
-   * @param subscriptionId subsciptionId which is returned from subscribe function
+   * @param subscriptionId subscriptionId which is returned from subscribe function
    */
   public unsubscribe = (storeKey: keyof MynahUIDataModel, subscriptionId: string): void => {
-    if (this.subsciptions[storeKey]?.[subscriptionId] !== undefined) {
-      delete this.subsciptions[storeKey][subscriptionId];
+    if (this.subscriptions[storeKey]?.[subscriptionId] !== undefined) {
+      delete this.subscriptions[storeKey][subscriptionId];
     }
   };
 
@@ -95,9 +96,9 @@ export class MynahUIDataStore {
   public updateStore = (data: MynahUIDataModel, skipSubscribers?: boolean): void => {
     if (skipSubscribers !== true) {
       (Object.keys(data) as Array<keyof MynahUIDataModel>).forEach(storeKey => {
-        Object.keys(this.subsciptions[storeKey]).forEach((subscriptionId: string) => {
+        Object.keys(this.subscriptions[storeKey]).forEach((subscriptionId: string) => {
           if (!PrimitiveObjectTypes.includes(typeof data[storeKey]) || data[storeKey] !== this.store[storeKey]) {
-            this.subsciptions[storeKey][subscriptionId](data[storeKey], this.store[storeKey]);
+            this.subscriptions[storeKey][subscriptionId](data[storeKey], this.store[storeKey]);
           }
         });
       });

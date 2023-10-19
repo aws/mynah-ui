@@ -22,6 +22,7 @@ import { Icon, MynahIcons } from './icon';
 import { cancelEvent } from '../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay/overlay';
 import { SuggestionCardBody } from './suggestion-card/suggestion-card-body';
+import { Config } from '../helper/config';
 
 const DEFAULT_LANG = 'typescript';
 
@@ -157,8 +158,8 @@ export class SyntaxHighlighter {
                 children: [
                   new Button({
                     icon: new Icon({ icon: MynahIcons.CURSOR_INSERT }).render,
-                    label: 'Insert at cursor',
-                    attributes: { title: 'Insert at cursor' },
+                    label: Config.getInstance().config.texts.insertAtCursorLabel,
+                    attributes: { title: Config.getInstance().config.texts.insertAtCursorLabel },
                     primary: false,
                     onClick: e => {
                       cancelEvent(e);
@@ -175,8 +176,8 @@ export class SyntaxHighlighter {
                   }).render,
                   new Button({
                     icon: new Icon({ icon: MynahIcons.COPY }).render,
-                    label: 'Copy',
-                    attributes: { title: 'Copy' },
+                    label: Config.getInstance().config.texts.copy,
+                    attributes: { title: Config.getInstance().config.texts.copy },
                     primary: false,
                     onClick: e => {
                       cancelEvent(e);
@@ -277,7 +278,7 @@ export class SyntaxHighlighter {
           // eslint-disable no-new
           new Notification({
             content: notificationText,
-            title: 'Copied to clipbard',
+            title: Config.getInstance().config.texts.copyToClipboard,
             duration: 2000,
           }).notify();
         }
