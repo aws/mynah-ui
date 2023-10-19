@@ -268,6 +268,9 @@ export class SyntaxHighlighter {
     type?: 'selection' | 'block',
     notificationText?: string,
   ): void => {
+    if (!document.hasFocus()) {
+      window.focus();
+    }
     navigator.clipboard
       .writeText(textToSendClipboard)
       .then(() => {
