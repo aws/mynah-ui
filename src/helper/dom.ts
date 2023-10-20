@@ -265,7 +265,7 @@ export class DomBuilder {
   };
 
   getPortal = (portalName: string): ExtendedHTMLElement => this.portals[portalName];
-  removePortal = (portalName: string): void => this.portals[portalName].remove();
+  removePortal = (portalName: string): void => this.portals[portalName]?.remove();
   removeAllPortals = (portalsWithName: MynahPortalNames): void => {
     Object.keys(this.portals).forEach(portalName => {
       if (portalName.match(portalsWithName) !== null) {
