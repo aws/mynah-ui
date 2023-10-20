@@ -18,7 +18,6 @@ import {
   ChatItem,
   ChatItemFollowUp,
   ChatPrompt,
-  ChatItemType,
   MynahUITabStoreModel,
   MynahUITabStoreTab,
   ConfigModel,
@@ -110,13 +109,13 @@ export class MynahUI {
       this.feedbackForm = new FeedbackForm();
     }
 
-    this.tabsWrapper = (new Tabs({
+    this.tabsWrapper = new Tabs({
       onChange: (selectedTabId: string) => {
         if (this.props.onTabChange !== undefined) {
           this.props.onTabChange(selectedTabId);
         }
       }
-    })).render;
+    }).render;
 
     this.tabsWrapper.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
 
@@ -266,27 +265,52 @@ export class MynahUI {
   };
 
   /**
-   * Adds a new answer on the chat window
-   * @param anwer An ChatItem object.
+   * Create a new tab and set it to the currently-selected tab
+   * @param initialTabData Data used to initialize the new tab.
+   * @returns The tab ID of the created tab.
    */
-  public addChatAnswer = (tabId: string, answer: ChatItem): void => {
-    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      const chatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems');
-      chatItems.push(answer);
-      MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
-        chatItems
-      });
-    }
+  public createNewTab = (initialTabData: MynahUIDataModel): string => {
+    return MynahUITabsStore.getInstance().addTab({ store: { ...initialTabData } });
   };
 
-  public getLastChatAnswer = (tabId: string): ChatItem | undefined => {
-    const chatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems');
-    for (let i = chatItems.length - 1; i >= 0; i--) {
-      if (chatItems[i].type === ChatItemType.ANSWER) {
-        return chatItems[i];
-      }
+  /**
+   * Update a tab's data
+   * @param tabData Tab data to update to.
+   */
+  public updateTab = (tabId: string, tabData: MynahUIDataModel): void => {
+    MynahUITabsStore.getInstance().updateTab(tabId, { store: { ...tabData } });
+  };
+
+  /**
+   * Set the loading state for chat window. When loading, a loading bubble will show
+   * and user input will be disabled
+   * @param tabId Corresponding tab ID.
+   * @param isLoading True if is loading, false otherwise.
+   */
+  public setChatLoadingState = (tabId: string, isLoading: boolean): void => {
+    MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
+      loadingChat: isLoading,
+      promptInputDisabledState: isLoading,
+    });
+  };
+
+  /**
+   * Adds a new answer on the chat window
+   * @param tabId Corresponding tab ID.
+   * @param answer An ChatItem object.
+   */
+  public addChatItem = (tabId: string, chatItem: ChatItem): void => {
+    /* const isItemCompletelyEmpty = chatItem.body === undefined &&
+    (chatItem.followUp === undefined || chatItem.followUp.options?.length === 0) &&
+    (chatItem.relatedContent === undefined || chatItem.relatedContent.content?.length === 0); */
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
+        chatItems: [
+          ...MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems'),
+          chatItem
+        ]
+      });
     }
-    return undefined;
   };
 
   /**
@@ -294,8 +318,8 @@ export class MynahUI {
    * @param body new body stream as string.
    */
   public updateLastChatAnswerStream = (tabId: string, updateWith: string | {
-    title: string | boolean;
-    suggestions: Suggestion[];
+    title?: string;
+    content: Suggestion[];
   }): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].updateLastCharAnswerStream(updateWith);
@@ -330,7 +354,7 @@ export class MynahUI {
   }): void => {
     new Notification({
       ...props,
-      onNotificationClick: () => { }
+      onNotificationClick: () => {},
     }).notify();
   };
 }

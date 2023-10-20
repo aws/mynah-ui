@@ -3,7 +3,7 @@
     flex-flow: column nowrap;
     box-sizing: border-box;
     overflow: hidden;
-    margin: 0;
+    margin: var(--mynah-sizing-1) 0;
     background-color: var(--mynah-card-bg);
     max-width: 100%;
     & + *:not(:empty) {
@@ -38,8 +38,8 @@
         margin-block: 0 !important;
         position: relative;
         border-top: 1px solid var(--mynah-color-border-default);
-        &:before{
-            content: '';
+        &:before {
+            content: "";
             position: absolute;
             left: 0;
             top: 0;
@@ -57,14 +57,20 @@
             }
         }
     }
-    &.mynah-inline-code,
-    &.mynah-inline-code > pre {
+    &.mynah-inline-code {
         display: inline-flex;
         max-width: 100%;
         line-height: normal;
-        padding: 1px var(--mynah-sizing-half);
-        margin-top: -1px;
-        margin-bottom: -0.5px;
+        padding: 0px var(--mynah-sizing-half);
+        margin-top: -2px;
+        margin-bottom: 0px;
+        border-radius: calc(var(--mynah-card-radius) / 2);
+        > pre {
+            padding: 0;
+        }
+        &:before {
+            opacity: 0.5;
+        }
     }
     > pre {
         padding: var(--mynah-sizing-2);

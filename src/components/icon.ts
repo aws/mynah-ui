@@ -65,6 +65,13 @@ export class Icon {
                 `mynah-ui-icon-${props.icon}`,
                 ...(props.classNames !== undefined ? props.classNames : []),
       ],
+      children: [ {
+        type: 'span',
+        attributes: {
+          'aria-hidden': 'true'
+        },
+        children: [ props.icon ]
+      } ]
     });
   }
 }

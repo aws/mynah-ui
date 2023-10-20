@@ -47,14 +47,12 @@
         overflow-x: hidden;
         overflow-y: auto;
         flex-flow: column-reverse nowrap;
-        // gap: var(--mynah-sizing-6);
         align-items: flex-start;
         padding: var(--mynah-sizing-3);
         .mynah-chat-item-card {
             display: inline-flex;
             flex-flow: column nowrap;
             position: relative;
-            // gap: var(--mynah-sizing-4);
             max-width: 90%;
             transition: var(--mynah-short-transition-bounce);
             transform: translate3d(0, var(--mynah-sizing-10), 0) scale(1, 0.98);
@@ -85,7 +83,7 @@
                 border-top: 1px solid var(--mynah-color-border-default);
                 margin-top: var(--mynah-sizing-3);
                 padding-bottom: 0;
-                > .mynah-chat-item-card-related-content > .mynah-chat-item-card-related-content-title {
+                .mynah-chat-item-card-related-content > .mynah-chat-item-card-related-content-title {
                     font-size: var(--mynah-font-size-large);
                 }
             }
@@ -146,16 +144,27 @@
             > .mynah-card {
                 > .mynah-card-center {
                     padding-left: 0;
-                    & > .mynah-card-body > div {
-                        > .mynah-syntax-highlighter {
-                            filter: contrast(1.15) brightness(0.85);
+                    & > .mynah-card-body {
+                        & > div {
+                            > .mynah-syntax-highlighter {
+                                filter: contrast(1.15) brightness(0.85);
+                            }
+                            > h1,
+                            > h2,
+                            > h3,
+                            > h4 {
+                                &:first-child {
+                                    margin-top: 0;
+                                }
+                            }
                         }
-                        > h1,
-                        > h2,
-                        > h3,
-                        > h4 {
-                            &:first-child {
-                                margin-top: 0;
+                        & + .mynah-chat-item-card-related-content {
+                            margin-top: var(--mynah-sizing-3);
+                            padding-top: var(--mynah-sizing-4);
+                            border-top: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+                            > .mynah-chat-item-card-related-content-title {
+                                color: var(--mynah-color-text-weak);
+                                font-size: var(--mynah-font-size-xsmall);
                             }
                         }
                     }
@@ -212,69 +221,8 @@
                     }
                 }
             }
-            > .mynah-chat-item-card-references-wrapper {
-                width: 100%;
-                display: flex;
-                flex-flow: column nowrap;
-                gap: var(--mynah-sizing-2);
-                overflow: hidden;
-                position: relative;
-                > .mynah-button.mynah-chat-item-card-references-left-scroll-button,
-                > .mynah-button.mynah-chat-item-card-references-right-scroll-button {
-                    position: absolute;
-                    z-index: 10000;
-                    bottom: 0;
-                    opacity: 1;
-                    background-color: var(--mynah-color-bg);
-                    filter: none !important;
-                    height: calc(100% - var(--mynah-sizing-4));
-                    border-radius: 0;
-                    min-width: var(--mynah-sizing-4);
-                    padding: 0;
-                    transition: var(--mynah-long-transition);
-                    &.hidden {
-                        opacity: 0;
-                        pointer-events: none !important;
-                    }
-                }
-                > .mynah-button.mynah-chat-item-card-references-left-scroll-button {
-                    box-shadow: 10px 15px 20px 5px var(--mynah-color-bg);
-                    left: 0;
-                }
-                > .mynah-button.mynah-chat-item-card-references-right-scroll-button {
-                    box-shadow: -10px 15px 20px 5px var(--mynah-color-bg);
-                    right: 0;
-                }
-                > .mynah-chat-item-card-references-container {
-                    display: flex;
-                    overflow-x: auto;
-                    overflow-y: hidden;
-                    width: 100%;
-                    scroll-snap-type: x mandatory;
-                    scroll-behavior: smooth;
-                    > .mynah-chat-item-card-reference-item {
-                        width: 40%;
-                        scroll-snap-align: start;
-                        &:not(:first-child) {
-                            padding-left: var(--mynah-sizing-9);
-                            margin-left: calc(-1 * var(--mynah-sizing-7));
-                        }
-                        &:last-child {
-                            margin-right: var(--mynah-sizing-12);
-                        }
-                    }
-                }
-            }
 
-            > .mynah-chat-item-card-related-content,
-            > .mynah-chat-item-card-references-wrapper {
-                > .mynah-chat-item-card-references-title,
-                > .mynah-chat-item-card-related-content-title {
-                    color: var(--mynah-color-text-weak);
-                    font-size: var(--mynah-font-size-xsmall);
-                }
-            }
-            > .mynah-chat-item-card-related-content {
+            .mynah-chat-item-card-related-content {
                 display: flex;
                 flex-flow: column nowrap;
                 gap: var(--mynah-sizing-2);
@@ -282,30 +230,42 @@
                 position: relative;
                 > .mynah-chat-item-card-related-content-item {
                     max-width: 100%;
+                    > .mynah-card {
+                        padding: 0;
+                    }
                     .amzn-mynah-search-result-highlight {
                         background-color: inherit;
                         color: inherit;
                     }
                 }
                 &:not(.expanded) {
-                    @include list-fader-bottom();
                     > .mynah-chat-item-card-related-content-item {
-                        &:not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(4)) {
+                        &:not(:nth-of-type(1)):not(:nth-of-type(2)):not(:nth-of-type(3)) {
                             display: none;
                         }
-                        &:nth-child(4) {
-                            margin-bottom: calc(-1 * var(--mynah-sizing-5));
+                        &:nth-of-type(3) {
+                            margin-bottom: calc(-1 * var(--mynah-sizing-3));
                             pointer-events: none;
+                            @include list-fader-bottom();
+                        }
+                        &:nth-of-type(4) {
+                            & ~ .mynah-chat-item-card-related-content-show-more {
+                                display: flex;
+                            }
                         }
                     }
                 }
-                + .mynah-chat-item-card-related-content-show-more {
-                    display: inline-flex;
+
+                > .mynah-chat-item-card-related-content-show-more {
+                    display: none;
                     max-width: 80%;
                     z-index: 10000;
-                    margin-top: calc(-1 * var(--mynah-sizing-4));
+                    margin-block-start: 0;
+                    margin-block-end: 0;
                     align-self: center;
-                    > span {
+                    height: var(--mynah-sizing-8);
+                    > span,
+                    > i {
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
@@ -313,17 +273,14 @@
                     }
                 }
             }
-            > .mynah-chat-item-card-related-content-show-more {
-                display: none;
-            }
             &.mynah-chat-item-system-prompt,
             &.mynah-chat-item-prompt {
                 align-self: flex-end;
                 > .mynah-chat-item-card-icon-wrapper {
                     align-self: flex-end;
                 }
-                > .mynah-chat-item-followup-question,
-                > .mynah-chat-item-card-related-content {
+                .mynah-chat-item-followup-question,
+                .mynah-chat-item-card-related-content {
                     align-items: flex-end;
                 }
 
@@ -335,7 +292,7 @@
                     }
                 }
 
-                > .mynah-chat-item-card-related-content > .mynah-card,
+                .mynah-chat-item-card-related-content > .mynah-card,
                 > .mynah-card {
                     box-shadow: 0px 0px 5px -5px var(--mynah-color-button);
                     padding: var(--mynah-sizing-4);
@@ -347,9 +304,6 @@
                     > .mynah-card-center > .mynah-card-body {
                         color: var(--mynah-color-button-reverse);
                     }
-                }
-                > .mynah-chat-item-card-related-content > .mynah-card > .mynah-card-center {
-                    display: none;
                 }
             }
             &.mynah-chat-item-system-prompt {
@@ -380,76 +334,6 @@
                         opacity: 1;
                         > .mynah-card-header {
                             opacity: 1;
-                        }
-                    }
-                }
-            }
-
-            > .mynah-card {
-                > .mynah-card-center > .mynah-card-body > .mynah-chat-item-card:last-child {
-                    margin-bottom: 0;
-                }
-                & > .mynah-card-votes-wrapper {
-                    align-items: center;
-                    gap: var(--mynah-sizing-2);
-                    display: flex;
-                    align-items: center;
-                    justify-content: flex-end;
-                    border-top: 1px solid var(--mynah-color-border-default);
-                    padding-top: var(--mynah-sizing-3);
-                    font-size: var(--mynah-font-size-xsmall);
-                    > span.mynah-feedback-thanks {
-                        overflow: hidden;
-                    }
-                    > .mynah-button > span {
-                        padding: 0;
-                        font-size: var(--mynah-font-size-xsmall);
-                        color: var(--mynah-color-text-link);
-                    }
-                    > .mynah-vote-text {
-                        color: var(--mynah-color-text-weak);
-                        font-size: var(--mynah-font-size-xsmall);
-                    }
-                    > .mynah-card-vote {
-                        position: relative;
-                        overflow: visible;
-                        display: inline-flex;
-                        align-items: center;
-                        box-sizing: border-box;
-                        gap: var(--mynah-sizing-3);
-                        > .mynah-vote-radio {
-                            display: none;
-                        }
-                        > .mynah-vote-label {
-                            z-index: 10;
-                            cursor: pointer;
-                            font-size: var(--mynah-font-size-small);
-                            transition: var(--mynah-short-transition);
-                            width: var(--mynah-sizing-5);
-                            height: var(--mynah-sizing-5);
-                            display: inline-flex;
-                            justify-content: center;
-                            align-items: center;
-                            color: var(--mynah-color-text-weak);
-                            opacity: 0.5;
-                            > * {
-                                pointer-events: none;
-                            }
-                            > i {
-                                height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
-                            }
-                        }
-                        > .mynah-vote-up-radio:checked {
-                            & ~ .mynah-vote-up {
-                                color: var(--mynah-color-text-default);
-                                opacity: 1;
-                            }
-                        }
-                        > .mynah-vote-down-radio:checked {
-                            & ~ .mynah-vote-down {
-                                color: var(--mynah-color-text-default);
-                                opacity: 1;
-                            }
                         }
                     }
                 }
@@ -707,10 +591,9 @@
             display: flex;
             box-sizing: border-box;
             width: 100%;
-            flex-flow: row nowrap;
+            flex-flow: column nowrap;
             align-items: flex-start;
             justify-content: flex-start;
-            gap: var(--mynah-sizing-2);
             overflow: hidden;
             cursor: pointer;
             padding: var(--mynah-sizing-2);
@@ -730,6 +613,7 @@
                 flex: 0 1 0%;
             }
             > .mynah-chat-command-selector-command-description {
+                font-size: var(--mynah-font-size-xsmall);
                 font-weight: lighter;
                 opacity: 0.75;
                 flex: 1 0 100%;

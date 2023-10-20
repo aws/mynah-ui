@@ -127,7 +127,6 @@ export class SuggestionCardBody {
     elementFromNode.childNodes.forEach((child) => {
       elementFromNode.replaceChild(this.processNode(child as HTMLElement, suggestion), child);
     });
-
     return elementFromNode;
   };
 
@@ -156,7 +155,11 @@ export class SuggestionCardBody {
           innerHTML: `${markedString}`,
         }).childNodes
       ).map(node => {
-        return this.processNode(node as HTMLElement, props.suggestion);
+        const processedNode = this.processNode(node as HTMLElement, props.suggestion);
+        if (processedNode.querySelectorAll !== undefined) {
+          Array.from(processedNode.querySelectorAll('*:empty')).forEach(emptyElement => { emptyElement.remove(); });
+        }
+        return processedNode;
       }))
     ];
   };
@@ -174,6 +177,6 @@ export class SuggestionCardBody {
   };
 
   public readonly addToCardBody = (elementToAdd: ExtendedHTMLElement | HTMLElement | string): void => {
-    this.cardBody.insertChild('beforeend', elementToAdd);
+    this.render.insertChild('beforeend', elementToAdd);
   };
 }

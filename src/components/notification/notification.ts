@@ -90,9 +90,9 @@ export class Notification {
   }
 
   /**
-     * Calculates the top according to the previously shown and still visible notifications
-     * @returns number
-     */
+   * Calculates the top according to the previously shown and still visible notifications
+   * @returns number
+   */
   private readonly getNextCalculatedTop = (): number => {
     const prevNotifications = DS('.mynah-notification');
     if (prevNotifications.length > 0) {

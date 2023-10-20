@@ -13,7 +13,7 @@
     box-sizing: border-box;
     display: flex;
     flex-flow: column nowrap;
-    gap: var(--mynah-sizing-2);
+    gap: var(--mynah-sizing-3);
     transform: translate3d(0, 0, 0);
     flex: auto 0 0;
     width: 100%;
@@ -256,13 +256,19 @@
             }
             &,
             & > div {
-                > * {
+                > *:not(div):not(pre) {
                     margin-block-start: 0.75em;
                     margin-block-end: 0.75em;
+                    &:first-child {
+                        margin-block-start: 0;
+                    }
                     user-select: text;
                     &:empty {
                         display: none;
                     }
+                }
+                > p:last-of-type {
+                    margin-block-end: 0;
                 }
                 .amzn-mynah-ui-reference-tracker-highlight {
                     background-color: var(--mynah-color-syntax-bg);
@@ -314,69 +320,6 @@
 
     &:hover .mynah-card-under-body-button {
         opacity: 1;
-    }
-
-    &.mynah-card-skeleton {
-        pointer-events: none !important;
-        * {
-            color: rgba(0, 0, 0, 0) !important;
-            pointer-events: none !important;
-        }
-        i {
-            color: var(--mynah-color-light) !important;
-        }
-        .mynah-vote-text,
-        .mynah-card-title {
-            border-radius: var(--mynah-sizing-base);
-            background-color: var(--mynah-color-light);
-        }
-        .mynah-card-url {
-            border-radius: var(--mynah-sizing-base);
-            background-color: var(--mynah-color-text-link);
-            opacity: 0.15 !important;
-            line-height: 0.5rem;
-        }
-        .mynah-card-center {
-            p {
-                z-index: 0;
-                border-radius: var(--mynah-sizing-base);
-                background-color: var(--mynah-color-light);
-            }
-            code {
-                background-color: var(--mynah-color-code-text);
-                opacity: 0.25;
-                line-height: 150%;
-            }
-        }
-        .mynah-card-badges span {
-            border-radius: var(--mynah-sizing-base);
-            background-color: var(--mynah-color-light);
-        }
-
-        &:last-child {
-            -webkit-mask-image: var(--mynah-mask-image-skeleton);
-            -webkit-mask-size: 100% 100%;
-            mask-image: var(--mynah-mask-image-skeleton);
-            mask-size: 100% 100%;
-        }
-
-        &:after {
-            content: "";
-            opacity: 1;
-            background-color: var(--mynah-card-bg);
-            transform: translate3d(0, 0, 0);
-            border: none;
-            background-image: linear-gradient(
-                -75deg,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0) 30%,
-                rgba(0, 0, 0, 0.05) 50%,
-                rgba(255, 255, 255, 0) 70%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            background-size: 500% 500%;
-            animation: glass-reflection 2000ms 1000ms linear infinite;
-        }
     }
 
     &.mynah-card-compact {
@@ -445,6 +388,71 @@
         }
         .mynah-syntax-highlighter > pre {
             padding: var(--mynah-sizing-1);
+        }
+    }
+
+    > .mynah-card-votes-wrapper {
+        align-items: center;
+        gap: var(--mynah-sizing-2);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        border-top: 1px solid var(--mynah-color-border-default);
+        padding-top: var(--mynah-sizing-3);
+        font-size: var(--mynah-font-size-xsmall);
+        > span.mynah-feedback-thanks {
+            overflow: hidden;
+        }
+        > .mynah-button > span {
+            padding: 0;
+            font-size: var(--mynah-font-size-xsmall);
+            color: var(--mynah-color-text-link);
+        }
+        > .mynah-vote-text {
+            color: var(--mynah-color-text-weak);
+            font-size: var(--mynah-font-size-xsmall);
+        }
+        > .mynah-card-vote {
+            position: relative;
+            overflow: visible;
+            display: inline-flex;
+            align-items: center;
+            box-sizing: border-box;
+            gap: var(--mynah-sizing-3);
+            > .mynah-vote-radio {
+                display: none;
+            }
+            > .mynah-vote-label {
+                z-index: 10;
+                cursor: pointer;
+                font-size: var(--mynah-font-size-small);
+                transition: var(--mynah-short-transition);
+                width: var(--mynah-sizing-5);
+                height: var(--mynah-sizing-5);
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                color: var(--mynah-color-text-weak);
+                opacity: 0.5;
+                > * {
+                    pointer-events: none;
+                }
+                > i {
+                    height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
+                }
+            }
+            > .mynah-vote-up-radio:checked {
+                & ~ .mynah-vote-up {
+                    color: var(--mynah-color-text-default);
+                    opacity: 1;
+                }
+            }
+            > .mynah-vote-down-radio:checked {
+                & ~ .mynah-vote-down {
+                    color: var(--mynah-color-text-default);
+                    opacity: 1;
+                }
+            }
         }
     }
 }

@@ -33,6 +33,7 @@ button.mynah-button {
         color: inherit;
         box-shadow: none;
         opacity: 0.75;
+        height: var(--mynah-sizing-6);
         &:focus-visible,
         &:hover {
             opacity: 1;

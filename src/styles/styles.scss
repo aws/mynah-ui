@@ -21,7 +21,7 @@
 
 body,
 html {
-    font-family: "Amazon Ember";
+    font-family: var(--mynah-font-family);
     background-color: var(--mynah-color-bg);
     color: var(--mynah-color-text-default);
     height: 100%;

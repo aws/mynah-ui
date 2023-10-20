@@ -6,11 +6,10 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
-import { ChatItemType, KeyMap, MynahEventNames, QuickActionCommandGroup, Suggestion } from '../../static';
+import { KeyMap, MynahEventNames, QuickActionCommandGroup, Suggestion } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { marked } from 'marked';
 
 export interface ChatPromptInputProps {
   tabId: string;
@@ -116,7 +115,7 @@ export class ChatPromptInput {
 
     setTimeout(() => {
       this.promptTextInput.focus();
-    }, 100);
+    }, 500);
   }
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
@@ -132,7 +131,6 @@ export class ChatPromptInput {
           this.calculateTextAreaHeight(true);
         }, 10);
       } else if (this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.value === '') {
-        // update the prompt list every time
         if (this.commandSelector !== undefined) {
           this.commandSelector.close();
         }
@@ -199,7 +197,8 @@ export class ChatPromptInput {
               this.filteredCommandsList = [];
               [ ...this.quickActionCommands ].forEach((quickActionGroup: QuickActionCommandGroup) => {
                 const newQuickActionCommandGroup = { ...quickActionGroup };
-                newQuickActionCommandGroup.commands = newQuickActionCommandGroup.commands.filter(command => command.command.substring(1).match(this.promptTextInput.value.substring(1)));
+                newQuickActionCommandGroup.commands = newQuickActionCommandGroup
+                  .commands.filter(command => command.command.match(new RegExp(this.promptTextInput.value.substring(1), 'gi')));
                 if (newQuickActionCommandGroup.commands.length > 0) {
                   this.filteredCommandsList.push(newQuickActionCommandGroup);
                 }
@@ -278,32 +277,18 @@ export class ChatPromptInput {
     this.promptTextInputSizer.innerHTML = '';
   };
 
+  public readonly clearTextArea = (): void => {
+    this.resetTextAreaHeight();
+    this.promptTextInput.value = '';
+    this.promptTextInputWrapper.addClass('no-text');
+    this.attachmentWrapper.clear();
+    this.attachment = undefined;
+  };
+
   private readonly sendPrompt = (): void => {
     if (this.promptTextInput.value.trim() !== '') {
-      this.resetTextAreaHeight();
-      MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-        chatItems: [
-          ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems'),
-          {
-            type: ChatItemType.PROMPT,
-            body: marked(this.promptTextInput.value),
-            ...(this.attachment !== undefined
-              ? {
-                  relatedContent: {
-                    title: false,
-                    content: [ this.attachment ]
-                  }
-                }
-              : {})
-          }
-        ]
-      });
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, { tabId: this.props.tabId, prompt: { prompt: this.promptTextInput.value, attachment: this.attachment } });
-
-      this.promptTextInput.value = '';
-      this.promptTextInputWrapper.addClass('no-text');
-      this.attachmentWrapper.clear();
-      this.attachment = undefined;
+      this.clearTextArea();
     }
   };
 }

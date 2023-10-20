@@ -126,12 +126,8 @@ export interface ChatItem {
     options?: ChatItemFollowUp[];
   };
   relatedContent?: {
-    title: string | boolean;
+    title?: string;
     content: Suggestion[];
-  };
-  suggestions?: {
-    title: string | boolean;
-    suggestions: Suggestion[];
   };
 }
 
@@ -221,7 +217,7 @@ export interface SuggestionEngagement {
      */
   scrollDistanceToEngage: number;
   /**
-     * Total mouse movement in x and y directions till the engagament triggered.
+     * Total mouse movement in x and y directions till the engagement triggered.
      * To avoid confusion: this is not the distance between start and end points, this is the total traveled distance.
      */
   totalMouseDistanceTraveled: { x: number; y: number };
@@ -248,6 +244,7 @@ export enum NotificationType {
 
 export interface ConfigModel {
   texts: {
+    awsqTitle: string;
     feedbackFormTitle: string;
     feedbackFormOptionsLabel: string;
     feedbackFormCommentLabel: string;
@@ -263,6 +260,7 @@ export interface ConfigModel {
     cancel: string;
     submit: string;
     stopGenerating: string;
+    copyToClipboard: string;
   };
   feedbackOptions: Array<{
     label: string;
