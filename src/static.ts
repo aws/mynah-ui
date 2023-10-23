@@ -133,6 +133,7 @@ export interface ChatItem {
 
 export interface ChatPrompt {
   prompt?: string;
+  escapedPrompt?: string;
   attachment?: Suggestion;
 }
 

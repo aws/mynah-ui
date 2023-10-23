@@ -11,12 +11,11 @@ import {
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { marked } from 'marked';
+import unescapeHTML from 'unescape-html';
 
 export interface SuggestionCardBodyProps {
   suggestion: Partial<Suggestion>;
   showFooterButtons?: boolean;
-  onLinkMouseEnter?: (e: MouseEvent, url: string) => void;
-  onLinkMouseLeave?: (e: MouseEvent, url: string) => void;
 }
 export class SuggestionCardBody {
   render: ExtendedHTMLElement;
@@ -72,7 +71,6 @@ export class SuggestionCardBody {
           const classes = node.getAttribute !== undefined ? node.getAttribute('class') : null;
           if (node.nodeName === 'PRE' && classes !== null && classes.includes('language-')) {
             language = classes.replace('language-', '');
-            node.setAttribute('data-line', '1-3');
           }
           return this.processNode(node, suggestion, language);
         })
@@ -88,16 +86,6 @@ export class SuggestionCardBody {
             click: (e?: MouseEvent) => {
               MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: { id: url, url }, event: e });
             },
-            mouseenter: (e: MouseEvent) => {
-              if (this.props.onLinkMouseEnter !== undefined) {
-                this.props.onLinkMouseEnter(e, url);
-              }
-            },
-            mouseleave: (e: MouseEvent) => {
-              if (this.props.onLinkMouseLeave !== undefined) {
-                this.props.onLinkMouseLeave(e, url);
-              }
-            }
           },
           attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },
           innerHTML: elementFromNode.innerHTML,
@@ -109,7 +97,7 @@ export class SuggestionCardBody {
       const isBlockCode = elementFromNode.tagName?.toLowerCase() === 'pre' || elementFromNode.innerHTML.match(/\r|\n/) !== null;
 
       return new SyntaxHighlighter({
-        codeStringWithMarkup: (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? '',
+        codeStringWithMarkup: unescapeHTML((elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? ''),
         language: matchingLanguage,
         keepHighlights: true,
         highlightRangeWithTooltip: isBlockCode ? this.syntaxHighlighterHighlightWithTooltipRangeItems[0] : undefined,
@@ -145,9 +133,7 @@ export class SuggestionCardBody {
         tooltipMarkdown: syntaxHighlighterHighlightWithTooltipElement.innerHTML
       });
     });
-    const markedString = marked.parse(props.suggestion.body as string, {
-      breaks: true
-    });
+    const markedString = marked((props.suggestion.body as string), { breaks: true });
     return [
       ...(Array.from(
         DomBuilder.getInstance().build({

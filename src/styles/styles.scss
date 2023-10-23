@@ -1,7 +1,6 @@
 @import "mixins";
 @import "variables";
 @import "animations";
-@import "font-face";
 @import "dark";
 @import "favicons";
 
@@ -21,7 +20,6 @@
 
 body,
 html {
-    font-family: var(--mynah-font-family);
     background-color: var(--mynah-color-bg);
     color: var(--mynah-color-text-default);
     height: 100%;

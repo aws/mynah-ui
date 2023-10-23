@@ -10,6 +10,7 @@ import { KeyMap, MynahEventNames, QuickActionCommandGroup, Suggestion } from '..
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
+import escapeHTML from 'escape-html';
 
 export interface ChatPromptInputProps {
   tabId: string;
@@ -287,7 +288,14 @@ export class ChatPromptInput {
 
   private readonly sendPrompt = (): void => {
     if (this.promptTextInput.value.trim() !== '') {
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, { tabId: this.props.tabId, prompt: { prompt: this.promptTextInput.value, attachment: this.attachment } });
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, {
+        tabId: this.props.tabId,
+        prompt: {
+          prompt: this.promptTextInput.value,
+          escapedPrompt: escapeHTML(this.promptTextInput.value),
+          attachment: this.attachment
+        }
+      });
       this.clearTextArea();
     }
   };

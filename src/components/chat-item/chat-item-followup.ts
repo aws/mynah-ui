@@ -43,6 +43,9 @@ export class ChatItemFollowUpContainer {
               events: {
                 click: (e) => {
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, followUpOption });
+                  if ((this.render.parentElement as ExtendedHTMLElement)?.hasClass('mynah-chat-item-empty')) {
+                    this.render.parentElement?.remove();
+                  };
                 }
               }
             }
@@ -52,7 +55,7 @@ export class ChatItemFollowUpContainer {
     });
 
     Array.from(this.render.getElementsByClassName('mynah-chat-item-followup-question-option')).forEach(option => {
-      option.innerHTML = marked(option.innerHTML).replace('<p>', '').replace('</p>', '');
+      option.innerHTML = marked(option.innerHTML, { breaks: true }).replace('<p>', '').replace('</p>', '');
     });
     Array.from(this.render.getElementsByTagName('a')).forEach(a => {
       const url = a.href;
