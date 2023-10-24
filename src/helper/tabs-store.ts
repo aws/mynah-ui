@@ -191,7 +191,7 @@ export class MynahUITabsStore {
    * @param tabId Tab Id
    * @returns data of the tab
    */
-  public getTabDataStore = (tabId: string): any => this.tabsDataStore[tabId];
+  public getTabDataStore = (tabId: string): MynahUIDataStore => this.tabsDataStore[tabId];
 
   /**
    * Returns the data of the tab

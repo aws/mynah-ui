@@ -294,6 +294,13 @@ export class MynahUI {
     });
   };
 
+  // TODO
+  public addToUserPrompt = (tabId: string, prompt: string): void => {
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      this.chatWrappers[tabId].addToPrompt(prompt);
+    }
+  };
+
   /**
    * Adds a new answer on the chat window
    * @param tabId Corresponding tab ID.

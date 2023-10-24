@@ -286,6 +286,10 @@ export class ChatPromptInput {
     this.attachment = undefined;
   };
 
+  public readonly addText = (textToAdd: string): void => {
+    this.promptTextInput.value = this.promptTextInput.value + textToAdd;
+  };
+
   private readonly sendPrompt = (): void => {
     if (this.promptTextInput.value.trim() !== '') {
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, {

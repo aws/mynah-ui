@@ -21,7 +21,8 @@ export class ChatWrapper {
   private readonly props: ChatWrapperProps;
   private readonly chatItemsContainer: ExtendedHTMLElement;
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
-  private readonly promptInput: ExtendedHTMLElement;
+  private readonly promptInputElement: ExtendedHTMLElement;
+  private readonly promptInput: ChatPromptInput;
   private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
@@ -47,7 +48,8 @@ export class ChatWrapper {
       }
     });
 
-    this.promptInput = new ChatPromptInput({ tabId: this.props.tabId }).render;
+    this.promptInput = new ChatPromptInput({ tabId: this.props.tabId });
+    this.promptInputElement = this.promptInput.render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-items-container' ],
@@ -94,7 +96,7 @@ export class ChatWrapper {
         },
         this.chatItemsContainer,
         this.intermediateBlockContainer,
-        this.promptInput ]
+        this.promptInputElement ]
     });
 
     const initChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
@@ -140,5 +142,9 @@ export class ChatWrapper {
         );
       }
     }
+  };
+
+  public addToPrompt = (textToAdd: string): void => {
+    this.promptInput.addText(textToAdd);
   };
 }
