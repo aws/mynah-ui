@@ -300,9 +300,6 @@ export class MynahUI {
    * @param answer An ChatItem object.
    */
   public addChatItem = (tabId: string, chatItem: ChatItem): void => {
-    /* const isItemCompletelyEmpty = chatItem.body === undefined &&
-    (chatItem.followUp === undefined || chatItem.followUp.options?.length === 0) &&
-    (chatItem.relatedContent === undefined || chatItem.relatedContent.content?.length === 0); */
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
         chatItems: [
@@ -317,12 +314,9 @@ export class MynahUI {
    * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
    * @param body new body stream as string.
    */
-  public updateLastChatAnswerStream = (tabId: string, updateWith: string | {
-    title?: string;
-    content: Suggestion[];
-  }): void => {
+  public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      this.chatWrappers[tabId].updateLastCharAnswerStream(updateWith);
+      this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
     }
   };
 

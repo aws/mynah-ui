@@ -42,8 +42,8 @@ export class ChatItemRelatedContent {
       label: 'Show more',
     });
 
-    this.render = this.props.relatedContent !== undefined
-      ? DomBuilder.getInstance().build({
+    if (this.props.relatedContent !== undefined) {
+      this.render = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-card-related-content',
           this.props.relatedContent !== undefined && this.props.relatedContent.length < 3 ? 'expanded' : '' ],
@@ -70,8 +70,8 @@ export class ChatItemRelatedContent {
           })),
           this.showMoreButtonBlock.render
         ]
-      })
-      : DomBuilder.getInstance().build({ type: 'span', classNames: [ 'invisible' ] });
+      });
+    }
   }
 
   private readonly showLinkPreview = (e: MouseEvent, suggestion: Suggestion): void => {

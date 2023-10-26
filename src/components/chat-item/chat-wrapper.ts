@@ -6,11 +6,10 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { ChatItem, ChatItemType, Suggestion } from '../../static';
+import { ChatItem, ChatItemType } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
-import { ChatItemRelatedContent } from './chat-item-related-content';
 import { ChatPromptInput } from './chat-prompt-input';
 
 export interface ChatWrapperProps {
@@ -122,23 +121,9 @@ export class ChatWrapper {
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
   };
 
-  public updateLastCharAnswerStream = (updateWith: string | {
-    title?: string;
-    content: Suggestion[];
-  }): void => {
+  public updateLastChatAnswer = (chatItem: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
-      if (typeof updateWith === 'string') {
-        this.lastChatItemCard.updateAnswerBody(updateWith);
-      } else if (typeof updateWith === 'object' && updateWith.content !== undefined) {
-        this.lastChatItemCard.updateAnswerBody(
-          new ChatItemRelatedContent({
-            tabId: this.lastChatItemCard.props.tabId,
-            messageId: this.lastChatItemCard.props.chatItem.messageId ?? 'unknown',
-            title: updateWith.title,
-            relatedContent: updateWith.content
-          }).render
-        );
-      }
+      this.lastChatItemCard.updateCard(chatItem);
     }
   };
 }

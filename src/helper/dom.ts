@@ -243,7 +243,7 @@ export class DomBuilder {
         domToUpdate.innerHTML = domBuilderObject.innerHTML;
       } else if (domBuilderObject.children !== undefined && domBuilderObject.children.length > 0) {
         domToUpdate.clear();
-        domToUpdate.insertChild('beforeend', domBuilderObject.children);
+        domToUpdate.insertChild('afterbegin', domBuilderObject.children);
       }
 
       domToUpdate.builderObject = { ...EmptyDomBuilderObject, ...domBuilderObject } as DomBuilderObject;
