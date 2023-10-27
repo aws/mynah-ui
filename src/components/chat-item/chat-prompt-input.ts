@@ -145,11 +145,19 @@ export class ChatPromptInput {
         cancelEvent(e);
         this.sendPrompt();
       } else if (e.key === KeyMap.ENTER && (e.shiftKey || e.ctrlKey)) {
+        // Insert a newline in the prompt, could be the beginning, middle or end of the sentence
         cancelEvent(e);
-        this.promptTextInput.value = `${this.promptTextInput.value}\n`;
+        const selectionStartIndex = this.promptTextInput.selectionStart ?? 0;
+        const before = this.promptTextInput.value.slice(0, selectionStartIndex);
+        const after = this.promptTextInput.value.slice(this.promptTextInput.selectionEnd ?? this.promptTextInput.value.length);
+        this.promptTextInput.value = `${before}\n${after}`;
         setTimeout(() => {
           this.calculateTextAreaHeight(true);
         }, 10);
+        // Set the cursor to the right location
+        this.promptTextInput.focus();
+        this.promptTextInput.selectionStart = selectionStartIndex + 1;
+        this.promptTextInput.selectionEnd = selectionStartIndex + 1;
       } else if (this.selectedCommand === '' && this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.value === '') {
         if (this.commandSelector !== undefined) {
           this.commandSelector.close();
