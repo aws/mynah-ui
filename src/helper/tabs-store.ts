@@ -62,7 +62,7 @@ export class MynahUITabsStore {
     this.tabsStore[tabId] = { ...this.tabDefaults, ...tabData, isSelected: true };
     this.tabsDataStore[tabId] = new MynahUIDataStore(tabId, this.tabsStore[tabId].store ?? {});
     this.informSubscribers('add', tabId, this.tabsStore[tabId]);
-    this.informSubscribers('selectedTabChange', tabId);
+    this.informSubscribers('selectedTabChange', tabId, this.tabsStore[tabId]);
     return tabId;
   };
 
@@ -87,7 +87,7 @@ export class MynahUITabsStore {
   public readonly selectTab = (tabId: string): void => {
     this.deselectAllTabs();
     this.tabsStore[tabId].isSelected = true;
-    this.informSubscribers('selectedTabChange', tabId);
+    this.informSubscribers('selectedTabChange', tabId, this.tabsStore[tabId]);
   };
 
   /**
@@ -191,7 +191,7 @@ export class MynahUITabsStore {
    * @param tabId Tab Id
    * @returns data of the tab
    */
-  public getTabDataStore = (tabId: string): any => this.tabsDataStore[tabId];
+  public getTabDataStore = (tabId: string): MynahUIDataStore => this.tabsDataStore[tabId];
 
   /**
    * Returns the data of the tab

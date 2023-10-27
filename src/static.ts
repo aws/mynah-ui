@@ -39,6 +39,10 @@ export interface MynahUIDataModel {
   */
   promptInputPlaceholder?: string;
   /**
+  * Info block to be shown under prompt input
+  */
+  promptInputInfo?: string;
+  /**
   * Prompt input field disabled state, set to tru to disable it
   */
   promptInputDisabledState?: boolean;
