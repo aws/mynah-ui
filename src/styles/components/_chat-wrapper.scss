@@ -311,6 +311,9 @@
                 }
             }
 
+            &.mynah-chat-item-answer-stream.mynah-chat-item-empty.stream-ended {
+                display: none;
+            }
             &.mynah-chat-item-answer,
             &.mynah-chat-item-answer-stream {
                 > .mynah-card {
@@ -574,6 +577,19 @@
                     }
                 }
             }
+        }
+    }
+
+    > .mynah-chat-prompt-input-info {
+        display: flex;
+        flex-flow: row nowrap;
+        box-sizing: border-box;
+        overflow: hidden;
+        padding: 0 var(--mynah-sizing-3) var(--mynah-sizing-3) var(--mynah-sizing-3);
+        > * {
+            margin: 0;
+            margin-block-start: 0;
+            margin-block-end: 0;
         }
     }
 }

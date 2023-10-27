@@ -11,6 +11,7 @@ import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
+import { ChatPromptInputInfo } from './chat-prompt-input-info';
 
 export interface ChatWrapperProps {
   onStopChatResponse?: (tabId: string) => void;
@@ -21,6 +22,7 @@ export class ChatWrapper {
   private readonly chatItemsContainer: ExtendedHTMLElement;
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInput: ExtendedHTMLElement;
+  private readonly promptInfo: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
@@ -47,6 +49,7 @@ export class ChatWrapper {
     });
 
     this.promptInput = new ChatPromptInput({ tabId: this.props.tabId }).render;
+    this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-items-container' ],
@@ -93,7 +96,9 @@ export class ChatWrapper {
         },
         this.chatItemsContainer,
         this.intermediateBlockContainer,
-        this.promptInput ]
+        this.promptInput,
+        this.promptInfo
+      ]
     });
 
     const initChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
