@@ -311,6 +311,9 @@
                 }
             }
 
+            &.mynah-chat-item-answer-stream.mynah-chat-item-empty.stream-ended {
+                display: none;
+            }
             &.mynah-chat-item-answer,
             &.mynah-chat-item-answer-stream {
                 > .mynah-card {
