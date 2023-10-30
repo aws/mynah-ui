@@ -18,6 +18,7 @@ export class EmptyMynahUIDataModel {
       showChatAvatars: false,
       quickActionCommands: [],
       promptInputPlaceholder: '',
+      promptInputInfo: '',
       promptInputDisabledState: false,
       chatItems: [],
       ...defaults

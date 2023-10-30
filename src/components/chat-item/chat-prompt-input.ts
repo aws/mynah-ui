@@ -6,11 +6,12 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
-import { KeyMap, MynahEventNames, QuickActionCommandGroup, Suggestion } from '../../static';
+import { KeyMap, MynahEventNames, QuickActionCommand, QuickActionCommandGroup, Suggestion } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
+import { ChatPromptInputCommand } from './chat-prompt-input-command';
 
 export interface ChatPromptInputProps {
   tabId: string;
@@ -22,10 +23,12 @@ export class ChatPromptInput {
   private readonly promptTextInputWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
   private readonly promptTextInputSizer: ExtendedHTMLElement;
+  private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly sendButton: ExtendedHTMLElement;
   private quickActionCommands: QuickActionCommandGroup[];
   private commandSelector: Overlay;
   private commandSelectorOpen: boolean = false;
+  private selectedCommand: string = '';
   private inputDisabled: boolean;
   private attachment?: Suggestion;
   private filteredCommandsList: QuickActionCommandGroup[];
@@ -46,6 +49,18 @@ export class ChatPromptInput {
     });
     MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputPlaceholder', (placeholderText: string) => {
       this.promptTextInput.setAttribute('placeholder', placeholderText);
+    });
+    this.promptTextInputCommand = new ChatPromptInputCommand({
+      command: '',
+      onRemoveClick: () => {
+        this.selectedCommand = '';
+        this.promptTextInputCommand.setCommand('');
+        this.promptTextInput.update({
+          attributes: {
+            placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder')
+          }
+        });
+      }
     });
     this.promptTextInputSizer = DomBuilder.getInstance().build({
       type: 'span',
@@ -106,6 +121,7 @@ export class ChatPromptInput {
           type: 'div',
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
+            this.promptTextInputCommand.render,
             this.promptTextInputWrapper,
             this.sendButton,
           ]
@@ -122,7 +138,10 @@ export class ChatPromptInput {
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (!this.commandSelectorOpen) {
       this.quickActionCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
-      if (e.key === KeyMap.ENTER && !e.shiftKey && !e.ctrlKey) {
+      if (e.key === KeyMap.BACKSPACE && this.selectedCommand !== '' && this.promptTextInput.value === '') {
+        cancelEvent(e);
+        this.clearTextArea();
+      } else if (e.key === KeyMap.ENTER && !e.shiftKey && !e.ctrlKey) {
         cancelEvent(e);
         this.sendPrompt();
       } else if (e.key === KeyMap.ENTER && (e.shiftKey || e.ctrlKey)) {
@@ -131,7 +150,7 @@ export class ChatPromptInput {
         setTimeout(() => {
           this.calculateTextAreaHeight(true);
         }, 10);
-      } else if (this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.value === '') {
+      } else if (this.selectedCommand === '' && this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.value === '') {
         if (this.commandSelector !== undefined) {
           this.commandSelector.close();
         }
@@ -155,14 +174,18 @@ export class ChatPromptInput {
         this.commandSelectorOpen = true;
       }
     } else {
-      const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB ] as string[];
+      const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
       const navigationalKeys = [ KeyMap.ARROW_UP, KeyMap.ARROW_DOWN ] as string[];
       if (blockedKeys.includes(e.key)) {
         e.preventDefault();
-        if ((e.key === KeyMap.ENTER || e.key === KeyMap.TAB) && this.commandSelector.render.querySelectorAll('.target-command').length === 0) {
-          this.promptTextInput.value = this.commandSelector.render.querySelector('.mynah-chat-command-selector-command')?.getAttribute('prompt') ?? this.promptTextInput.value;
+        if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
+          // let quickAction: QuickActionCommand;
+          const targetElement = this.commandSelector.render.querySelector('.target-command') ?? this.commandSelector.render.querySelector('.mynah-chat-command-selector-command');
+          this.handleCommandSelection({
+            command: targetElement?.getAttribute('command') ?? '',
+            placeholder: targetElement?.getAttribute('placeholder') ?? undefined,
+          });
         }
-        this.promptTextInput.value = this.promptTextInput.value + ' ';
         if (this.commandSelector !== undefined) {
           this.commandSelector.close();
         }
@@ -199,7 +222,7 @@ export class ChatPromptInput {
               [ ...this.quickActionCommands ].forEach((quickActionGroup: QuickActionCommandGroup) => {
                 const newQuickActionCommandGroup = { ...quickActionGroup };
                 newQuickActionCommandGroup.commands = newQuickActionCommandGroup
-                  .commands.filter(command => command.command.match(new RegExp(this.promptTextInput.value.substring(1), 'gi')));
+                  .commands.filter(command => command.command.match(new RegExp(`${this.promptTextInput.value.substring(1)}` ?? '', 'gi')));
                 if (newQuickActionCommandGroup.commands.length > 0) {
                   this.filteredCommandsList.push(newQuickActionCommandGroup);
                 }
@@ -233,14 +256,11 @@ export class ChatPromptInput {
                 type: 'div',
                 classNames: [ 'mynah-chat-command-selector-command' ],
                 attributes: {
-                  command: quickActionCommand.command,
-                  prompt: quickActionCommand.promptText ?? quickActionCommand.command
+                  ...quickActionCommand
                 },
                 events: {
                   click: () => {
-                    this.promptTextInput.value = `${quickActionCommand.command} `;
-                    this.commandSelector.close();
-                    this.promptTextInput.focus();
+                    this.handleCommandSelection(quickActionCommand);
                   }
                 },
                 children: [
@@ -265,6 +285,24 @@ export class ChatPromptInput {
     });
   };
 
+  private readonly handleCommandSelection = (quickActionCommand: QuickActionCommand): void => {
+    this.selectedCommand = quickActionCommand.command;
+    if (quickActionCommand.placeholder !== undefined) {
+      this.promptTextInput.value = '';
+      this.promptTextInputCommand.setCommand(this.selectedCommand);
+      this.promptTextInput.update({
+        attributes: {
+          placeholder: quickActionCommand.placeholder
+        }
+      });
+    } else {
+      this.promptTextInput.value = '';
+      this.sendPrompt();
+    }
+    this.commandSelector.close();
+    this.promptTextInput.focus();
+  };
+
   private readonly calculateTextAreaHeight = (newLine?: boolean): void => {
     if (this.promptTextInput.value.trim() !== '') {
       this.promptTextInputWrapper.removeClass('no-text');
@@ -280,7 +318,14 @@ export class ChatPromptInput {
 
   public readonly clearTextArea = (): void => {
     this.resetTextAreaHeight();
+    this.selectedCommand = '';
+    this.promptTextInputCommand.setCommand('');
     this.promptTextInput.value = '';
+    this.promptTextInput.update({
+      attributes: {
+        placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder')
+      }
+    });
     this.promptTextInputWrapper.addClass('no-text');
     this.attachmentWrapper.clear();
     this.attachment = undefined;
@@ -291,12 +336,13 @@ export class ChatPromptInput {
   };
 
   private readonly sendPrompt = (): void => {
-    if (this.promptTextInput.value.trim() !== '') {
+    if (this.promptTextInput.value.trim() !== '' || this.selectedCommand.trim() !== '') {
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, {
         tabId: this.props.tabId,
         prompt: {
           prompt: this.promptTextInput.value,
           escapedPrompt: escapeHTML(this.promptTextInput.value),
+          ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
           attachment: this.attachment
         }
       });

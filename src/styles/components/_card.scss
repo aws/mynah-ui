@@ -18,7 +18,7 @@
     flex: auto 0 0;
     width: 100%;
     overflow: hidden;
-    border: 1px solid var(--mynah-color-border-default);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
 
     > * {
         z-index: 10;
@@ -40,7 +40,7 @@
             height: var(--mynah-sizing-8);
             font-variant: normal;
             text-transform: none;
-            border: 1px solid var(--mynah-color-border-default);
+            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
             border-radius: 100%;
             background-size: 85%;
             background-clip: content-box;
@@ -100,7 +100,7 @@
                     font-size: var(--mynah-font-size-xsmall);
                     display: inline;
                     padding: var(--mynah-sizing-1);
-                    border: 1px solid currentColor;
+                    border: var(--mynah-border-width) solid currentColor;
                     border-radius: 2px;
                 }
             }
@@ -172,7 +172,7 @@
                     justify-content: flex-start;
                     gap: var(--mynah-sizing-1);
                     padding: calc(var(--mynah-sizing-half) * 3);
-                    border: 1px solid var(--mynah-color-border-default);
+                    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
                     border-radius: var(--mynah-button-radius);
                     opacity: 0.75;
                     > .mynah-icon {
@@ -259,6 +259,7 @@
                 > *:not(div):not(pre) {
                     margin-block-start: 0.75em;
                     margin-block-end: 0.75em;
+                    padding-bottom: 1px !important;
                     &:first-child {
                         margin-block-start: 0;
                     }
@@ -270,7 +271,7 @@
                 > p:last-of-type {
                     margin-block-end: 0;
                 }
-                .amzn-mynah-ui-reference-tracker-highlight {
+                mark[reference-tracker] {
                     background-color: var(--mynah-color-syntax-bg);
                     color: inherit;
                     cursor: help;

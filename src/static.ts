@@ -5,13 +5,14 @@
 
 import { MynahIcons } from './components/icon';
 
+export interface QuickActionCommand {
+  command: string;
+  description?: string;
+  placeholder?: string;
+}
 export interface QuickActionCommandGroup {
   groupName?: string;
-  commands: Array<{
-    command: string;
-    description?: string;
-    promptText?: string;
-  }>;
+  commands: QuickActionCommand[];
 }
 /**
  * data store model to update the mynah ui partially or fully
@@ -37,6 +38,10 @@ export interface MynahUIDataModel {
   * Placeholder to be shown on prompt input
   */
   promptInputPlaceholder?: string;
+  /**
+  * Info block to be shown under prompt input
+  */
+  promptInputInfo?: string;
   /**
   * Prompt input field disabled state, set to tru to disable it
   */
@@ -129,11 +134,13 @@ export interface ChatItem {
     title?: string;
     content: Suggestion[];
   };
+  codeReference?: ReferenceTrackerInformation[];
 }
 
 export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
+  command?: string;
   attachment?: Suggestion;
 }
 
@@ -163,15 +170,19 @@ export enum KeyMap {
   SHIFT = 'Shift',
   CONTROL = 'Control',
   ALT = 'Alt',
-  SLASH = '/'
+  SLASH = '/',
+  BACK_SLASH = '\\'
 }
 
 export interface ReferenceTrackerInformation {
-  range: {
+  licenseName?: string;
+  repository?: string;
+  url?: string;
+  recommendationContentSpan: {
     start: number;
     end: number;
   };
-  tooltipMarkdown: string;
+  information: string;
 }
 export type OnCopiedToClipboardFunction = (type?: 'selection' | 'block', text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
 export type OnInsertToCursorPositionFunction = (type?: 'selection' | 'block', text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;

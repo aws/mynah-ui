@@ -6,12 +6,12 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { ChatItem, ChatItemType, Suggestion } from '../../static';
+import { ChatItem, ChatItemType } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
-import { ChatItemRelatedContent } from './chat-item-related-content';
 import { ChatPromptInput } from './chat-prompt-input';
+import { ChatPromptInputInfo } from './chat-prompt-input-info';
 
 export interface ChatWrapperProps {
   onStopChatResponse?: (tabId: string) => void;
@@ -23,6 +23,7 @@ export class ChatWrapper {
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInputElement: ExtendedHTMLElement;
   private readonly promptInput: ChatPromptInput;
+  private readonly promptInfo: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
@@ -50,6 +51,7 @@ export class ChatWrapper {
 
     this.promptInput = new ChatPromptInput({ tabId: this.props.tabId });
     this.promptInputElement = this.promptInput.render;
+    this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-items-container' ],
@@ -96,7 +98,9 @@ export class ChatWrapper {
         },
         this.chatItemsContainer,
         this.intermediateBlockContainer,
-        this.promptInputElement ]
+        this.promptInputElement,
+        this.promptInfo
+      ]
     });
 
     const initChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
@@ -124,23 +128,9 @@ export class ChatWrapper {
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
   };
 
-  public updateLastCharAnswerStream = (updateWith: string | {
-    title?: string;
-    content: Suggestion[];
-  }): void => {
+  public updateLastChatAnswer = (chatItem: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
-      if (typeof updateWith === 'string') {
-        this.lastChatItemCard.updateAnswerBody(updateWith);
-      } else if (typeof updateWith === 'object' && updateWith.content !== undefined) {
-        this.lastChatItemCard.updateAnswerBody(
-          new ChatItemRelatedContent({
-            tabId: this.lastChatItemCard.props.tabId,
-            messageId: this.lastChatItemCard.props.chatItem.messageId ?? 'unknown',
-            title: updateWith.title,
-            relatedContent: updateWith.content
-          }).render
-        );
-      }
+      this.lastChatItemCard.updateCard(chatItem);
     }
   };
 

@@ -9,7 +9,7 @@
     & + *:not(:empty) {
         margin-top: var(--mynah-sizing-2);
     }
-    border: 1px solid var(--mynah-color-border-default);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     position: relative;
     border-radius: var(--mynah-card-radius);
     line-height: normal;
@@ -61,15 +61,39 @@
         display: inline-flex;
         max-width: 100%;
         line-height: normal;
-        padding: 0px var(--mynah-sizing-half);
-        margin-top: -2px;
-        margin-bottom: 0px;
-        border-radius: calc(var(--mynah-card-radius) / 2);
+        padding: 0 !important;
+        margin: 0;
+        margin-block-start: 0;
+        margin-block-end: 0;
+        overflow: visible;
+        border: none;
+        color: var(--mynah-color-syntax-attr);
+        margin-left: 2px;
+        margin-right: 2px;
+        padding-bottom: 1px !important;
+        margin-bottom: -1px;
+        background-color: transparent !important;
         > pre {
             padding: 0;
         }
+        &:after {
+            content: "";
+            position: absolute;
+            box-sizing: border-box;
+            top: 0;
+            height: 100%;
+            left: -2px;
+            width: calc(100% + 4px);
+            border-radius: calc(var(--mynah-card-radius) / 2);
+            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+            background-color: var(--mynah-card-bg);
+            z-index: -1;
+        }
         &:before {
-            opacity: 0.5;
+            left: -2px;
+            width: calc(100% + 4px);
+            border-radius: calc(var(--mynah-card-radius) / 2);
+            box-sizing: border-box;
         }
     }
     > pre {
@@ -216,7 +240,7 @@
     max-height: 80vh;
     background-color: var(--mynah-card-bg);
     border-radius: var(--mynah-card-radius);
-    border: 1px solid var(--mynah-color-border-default);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     padding: var(--mynah-sizing-5);
     .mynah-card-body {
         > p:first-child:last-of-type,
