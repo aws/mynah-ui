@@ -124,14 +124,11 @@ export class SuggestionCardBody {
       this.highlightRangeTooltip = new Overlay({
         background: false,
         closeOnOutsideClick: false,
-        referencePoint: {
-          left: e.pageX,
-          top: e.pageY
-        },
+        referenceElement: (e.currentTarget ?? e.target) as HTMLElement,
         removeOtherOverlays: true,
         dimOutside: false,
         verticalDirection: OverlayVerticalDirection.TO_TOP,
-        horizontalDirection: OverlayHorizontalDirection.CENTER,
+        horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
         children: [
           {
             type: 'div',
@@ -161,10 +158,11 @@ export class SuggestionCardBody {
     let incomingBody = props.suggestion.body;
     if (props.suggestion.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
       props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
+        console.log(highlightRangeWithTooltip);
         if (incomingBody !== undefined) {
           const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttirubtes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
-          let calculatedStartIndex = (highlightRangeWithTooltip.range.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
-          let calculatedEndIndex = (calculatedStartIndex + generatedStartMarkup.length - highlightRangeWithTooltip.range.start) + highlightRangeWithTooltip.range.end;
+          let calculatedStartIndex = (highlightRangeWithTooltip.recommendationContentSpan.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
+          let calculatedEndIndex = (calculatedStartIndex + generatedStartMarkup.length - highlightRangeWithTooltip.recommendationContentSpan.start) + highlightRangeWithTooltip.recommendationContentSpan.end;
           if (calculatedEndIndex > incomingBody.length) {
             calculatedStartIndex = incomingBody.length - 1;
           }

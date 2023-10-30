@@ -175,7 +175,10 @@ export enum KeyMap {
 }
 
 export interface ReferenceTrackerInformation {
-  range: {
+  licenseName?: string;
+  repository?: string;
+  url?: string;
+  recommendationContentSpan: {
     start: number;
     end: number;
   };
