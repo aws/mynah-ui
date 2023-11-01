@@ -13,7 +13,7 @@ import { SuggestionCard } from '../suggestion-card/suggestion-card';
 import { SuggestionCardBody } from '../suggestion-card/suggestion-card-body';
 
 const PREVIEW_DELAY = 500;
-
+const MAX_ITEMS = 1;
 export interface ChatItemRelatedContentProps {
   tabId: string;
   messageId: string;
@@ -46,7 +46,7 @@ export class ChatItemRelatedContent {
       this.render = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-card-related-content',
-          this.props.relatedContent !== undefined && this.props.relatedContent.length < 3 ? 'expanded' : '' ],
+          this.props.relatedContent !== undefined && this.props.relatedContent.length < MAX_ITEMS ? 'expanded' : '' ],
         children: [
           ...(this.props.title !== undefined
             ? [ {
