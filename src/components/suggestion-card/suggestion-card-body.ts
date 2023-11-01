@@ -158,7 +158,6 @@ export class SuggestionCardBody {
     let incomingBody = props.suggestion.body;
     if (props.suggestion.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
       props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
-        console.log(highlightRangeWithTooltip);
         if (incomingBody !== undefined) {
           const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttirubtes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
           let calculatedStartIndex = (highlightRangeWithTooltip.recommendationContentSpan.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
