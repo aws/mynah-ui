@@ -1,10 +1,10 @@
-import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay/overlay';
 import { Icon, MynahIcons } from '../../icon';
 import { Button } from '../../button';
 import { MynahUIGlobalEvents, cancelEvent } from '../../../helper/events';
 import { MynahEventNames } from '../../../static';
+import { SuggestionCardBody } from '../../suggestion-card/suggestion-card-body';
 
 export interface ICodeSnippetWidgetProps {
   tabId: string;
@@ -32,12 +32,13 @@ export class CodeSnippetWidget {
       children: [
         {
           type: 'div',
-          classNames: [ 'mynah-chat-related-content-preview-wrapper' ],
           children: [
-            DomBuilder.getInstance().build({
-              type: 'div',
-              innerHTML: marked.parse(markdownText)
-            })
+            new SuggestionCardBody({
+              suggestion: {
+                body: markdownText
+              },
+              showFooterButtons: false,
+            }).render,
           ]
         }
       ],
@@ -58,8 +59,6 @@ export class CodeSnippetWidget {
       children: [
         DomBuilder.getInstance().build({
           type: 'div',
-          classNames: [ 'snippet-card-content' ],
-          innerHTML: marked.parse(markdownText),
           events: {
             mouseenter: () => {
               // TODO delay showing
@@ -67,19 +66,27 @@ export class CodeSnippetWidget {
             },
             mouseleave: () => {
               this.closePreviewOverLay();
-            }
+            },
           },
+          children: [
+            new SuggestionCardBody({
+              suggestion: {
+                body: markdownText
+              },
+              showFooterButtons: false,
+            }).render,
+          ],
         }),
         new Button({
           classNames: [ 'code-snippet-close-button' ],
-          onClick: (e) => {
+          onClick: e => {
             cancelEvent(e);
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.REMOVE_CODE_SNIPPET, this.props.tabId);
             this.closePreviewOverLay();
           },
           icon: new Icon({ icon: MynahIcons.CANCEL }).render,
-          primary: false
-        }).render
+          primary: false,
+        }).render,
       ],
     });
   };

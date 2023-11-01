@@ -335,7 +335,7 @@ export class ChatPromptInput {
     });
     this.promptTextInputWrapper.addClass('no-text');
     this.attachmentWrapper.clear();
-    this.codeSnippet.render.clear();
+    this.codeSnippet.clear();
     this.attachment = undefined;
   };
 

@@ -31,20 +31,32 @@ export class CodeSnippet {
       });
     });
 
-    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('selectedCodeSnippet', (selectedCodeSnippet: string) => {
-      this.render.clear();
-      if (selectedCodeSnippet !== undefined && selectedCodeSnippet !== '') {
-        this.render.insertChild('afterbegin', new CodeSnippetWidget({
-          tabId: props.tabId,
-          markdownText: selectedCodeSnippet,
-        }).render);
-      }
-    });
+    MynahUITabsStore.getInstance()
+      .getTabDataStore(this.props.tabId)
+      .subscribe('selectedCodeSnippet', (selectedCodeSnippet: string) => {
+        this.render.clear();
+        if (selectedCodeSnippet !== undefined && selectedCodeSnippet !== '') {
+          this.render.insertChild(
+            'afterbegin',
+            new CodeSnippetWidget({
+              tabId: props.tabId,
+              markdownText: selectedCodeSnippet,
+            }).render
+          );
+        }
+      });
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'outer-container' ],
+      classNames: ['outer-container'],
       persistent: true,
     });
   }
+
+  public readonly clear = (): void => {
+    this.render.clear();
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+      selectedCodeSnippet: '',
+    });
+  };
 }

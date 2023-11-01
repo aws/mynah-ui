@@ -82,7 +82,7 @@ export class SuggestionCardBody {
         codeStringWithMarkup: unescapeHTML(codeString),
         language: matchingLanguage,
         keepHighlights: true,
-        showCopyOptions: isBlockCode,
+        showCopyOptions: isBlockCode && (this.props.showFooterButtons ?? true),
         block: isBlockCode,
         onCopiedToClipboard: (type, text) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
