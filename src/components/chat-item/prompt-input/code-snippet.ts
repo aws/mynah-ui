@@ -48,7 +48,7 @@ export class CodeSnippet {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: ['outer-container'],
+      classNames: [ 'outer-container' ],
       persistent: true,
     });
   }
