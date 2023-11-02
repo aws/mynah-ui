@@ -86,6 +86,7 @@ export class SuggestionCardBody {
         block: isBlockCode,
         onCopiedToClipboard: (type, text) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
+            messageId: suggestion?.id,
             type,
             text,
             referenceTrackerInformation: this.getReferenceTrackerInformationFromElement(highlighter)
@@ -93,6 +94,7 @@ export class SuggestionCardBody {
         },
         onInsertToCursorPosition: (type, text) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
+            messageId: suggestion?.id,
             type,
             text,
             referenceTrackerInformation: this.getReferenceTrackerInformationFromElement(highlighter)

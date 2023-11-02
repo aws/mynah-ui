@@ -1,7 +1,7 @@
 {
   "name": "@aws/mynah-ui",
   "displayName": "AWS Mynah UI",
-  "version": "2.0.0-beta.13.2",
+  "version": "2.0.0-beta.13.3",
   "description": "AWS Tookit VSCode and Intellij IDE Extension Mynah UI",
   "publisher": "Amazon Web Services",
   "license": "Apache License 2.0",
