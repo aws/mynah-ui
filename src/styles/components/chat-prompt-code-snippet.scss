@@ -1,0 +1,20 @@
+
+.outer-container {
+  display: flex;
+}
+
+.snippet-card-container {
+  position: relative;
+}
+
+.snippet-card-content {
+  padding: 0 1rem;
+  border: 1px solid red;
+  border-radius: 4px;
+}
+
+.code-snippet-close-button {
+  position: absolute !important;
+  right: 0;
+  top: 0;
+}

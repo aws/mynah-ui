@@ -50,6 +50,9 @@ export interface MynahUIDataModel {
   * List of Suggestion objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
+
+  // TODO
+  selectedCodeSnippet?: string;
 }
 
 export interface MynahUITabStoreTab {
@@ -83,7 +86,9 @@ export enum MynahEventNames {
   UPDATE_LAST_CHAT_ANSWER_STREAM = 'updateLastChatAnswerStream',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
-  OPEN_DIFF = 'openDiff'
+  OPEN_DIFF = 'openDiff',
+  ADD_CODE_SNIPPET = 'addCodeSnippet',
+  REMOVE_CODE_SNIPPET = 'removeCodeSnippet',
 };
 
 export enum MynahPortalNames {

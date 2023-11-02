@@ -21,6 +21,7 @@ export class EmptyMynahUIDataModel {
       promptInputInfo: '',
       promptInputDisabledState: false,
       chatItems: [],
+      selectedCodeSnippet: '',
       ...defaults
     };
   }

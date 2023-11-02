@@ -19,7 +19,7 @@ const PREVIEW_DELAY = 500;
 export const highlightersWithTooltip = {
   start: {
     markupStart: '<mark ',
-    markupAttirubtes: (markerIndex: string) => `marker-index=${markerIndex}`,
+    markupAttributes: (markerIndex: string) => `marker-index=${markerIndex}`,
     markupEnd: ' reference-tracker>'
   },
   end: {
@@ -82,7 +82,7 @@ export class SuggestionCardBody {
         codeStringWithMarkup: unescapeHTML(codeString),
         language: matchingLanguage,
         keepHighlights: true,
-        showCopyOptions: isBlockCode,
+        showCopyOptions: isBlockCode && (this.props.showFooterButtons ?? true),
         block: isBlockCode,
         onCopiedToClipboard: (type, text) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
@@ -161,7 +161,7 @@ export class SuggestionCardBody {
     if (props.suggestion.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
       props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
         if (incomingBody !== undefined) {
-          const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttirubtes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
+          const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttributes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
           let calculatedStartIndex = (highlightRangeWithTooltip.recommendationContentSpan.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
           let calculatedEndIndex = (calculatedStartIndex + generatedStartMarkup.length - highlightRangeWithTooltip.recommendationContentSpan.start) + highlightRangeWithTooltip.recommendationContentSpan.end;
           if (calculatedEndIndex > incomingBody.length) {
