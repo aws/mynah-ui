@@ -12,6 +12,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
+import { CodeSnippet } from './prompt-input/code-snippet';
 
 export interface ChatPromptInputProps {
   tabId: string;
@@ -25,6 +26,7 @@ export class ChatPromptInput {
   private readonly promptTextInputSizer: ExtendedHTMLElement;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly sendButton: ExtendedHTMLElement;
+  private readonly codeSnippet: CodeSnippet;
   private quickActionCommands: QuickActionCommandGroup[];
   private commandSelector: Overlay;
   private commandSelectorOpen: boolean = false;
@@ -109,9 +111,14 @@ export class ChatPromptInput {
       },
     }).render;
 
+    this.codeSnippet = new CodeSnippet({ tabId: this.props.tabId });
+
     this.attachmentWrapper = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-prompt-attachment-wrapper' ],
+      children: [
+        this.codeSnippet.render
+      ]
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -119,14 +126,20 @@ export class ChatPromptInput {
       children: [
         {
           type: 'div',
-          classNames: [ 'mynah-chat-prompt-input-wrapper' ],
+          classNames: [ 'mynah-chat-prompt' ],
           children: [
-            this.promptTextInputCommand.render,
-            this.promptTextInputWrapper,
-            this.sendButton,
+            {
+              type: 'div',
+              classNames: [ 'mynah-chat-prompt-input-wrapper' ],
+              children: [
+                this.promptTextInputCommand.render,
+                this.promptTextInputWrapper,
+                this.sendButton,
+              ]
+            },
+            this.attachmentWrapper
           ]
-        },
-        this.attachmentWrapper
+        }
       ],
     });
 
@@ -336,16 +349,25 @@ export class ChatPromptInput {
     });
     this.promptTextInputWrapper.addClass('no-text');
     this.attachmentWrapper.clear();
+    this.codeSnippet.clear();
     this.attachment = undefined;
+  };
+
+  public readonly addText = (textToAdd: string): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, {
+      tabId: this.props.tabId,
+      selectedCodeSnippet: textToAdd,
+    });
   };
 
   private readonly sendPrompt = (): void => {
     if (this.promptTextInput.value.trim() !== '' || this.selectedCommand.trim() !== '') {
+      const selectedCodeSnippet: string | undefined = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('selectedCodeSnippet');
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, {
         tabId: this.props.tabId,
         prompt: {
-          prompt: this.promptTextInput.value,
-          escapedPrompt: escapeHTML(this.promptTextInput.value),
+          prompt: this.promptTextInput.value + (selectedCodeSnippet ?? ''),
+          escapedPrompt: escapeHTML(this.promptTextInput.value + (selectedCodeSnippet ?? '')),
           ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
           attachment: this.attachment
         }

@@ -19,7 +19,7 @@ const PREVIEW_DELAY = 500;
 export const highlightersWithTooltip = {
   start: {
     markupStart: '<mark ',
-    markupAttirubtes: (markerIndex: string) => `marker-index=${markerIndex}`,
+    markupAttributes: (markerIndex: string) => `marker-index=${markerIndex}`,
     markupEnd: ' reference-tracker>'
   },
   end: {
@@ -82,10 +82,11 @@ export class SuggestionCardBody {
         codeStringWithMarkup: unescapeHTML(codeString),
         language: matchingLanguage,
         keepHighlights: true,
-        showCopyOptions: isBlockCode,
+        showCopyOptions: isBlockCode && (this.props.showFooterButtons ?? true),
         block: isBlockCode,
         onCopiedToClipboard: (type, text) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
+            messageId: suggestion?.id,
             type,
             text,
             referenceTrackerInformation: this.getReferenceTrackerInformationFromElement(highlighter)
@@ -93,6 +94,7 @@ export class SuggestionCardBody {
         },
         onInsertToCursorPosition: (type, text) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
+            messageId: suggestion?.id,
             type,
             text,
             referenceTrackerInformation: this.getReferenceTrackerInformationFromElement(highlighter)
@@ -124,14 +126,11 @@ export class SuggestionCardBody {
       this.highlightRangeTooltip = new Overlay({
         background: false,
         closeOnOutsideClick: false,
-        referencePoint: {
-          left: e.pageX,
-          top: e.pageY
-        },
+        referenceElement: (e.currentTarget ?? e.target) as HTMLElement,
         removeOtherOverlays: true,
         dimOutside: false,
         verticalDirection: OverlayVerticalDirection.TO_TOP,
-        horizontalDirection: OverlayHorizontalDirection.CENTER,
+        horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
         children: [
           {
             type: 'div',
@@ -162,9 +161,9 @@ export class SuggestionCardBody {
     if (props.suggestion.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
       props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
         if (incomingBody !== undefined) {
-          const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttirubtes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
-          let calculatedStartIndex = (highlightRangeWithTooltip.range.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
-          let calculatedEndIndex = (calculatedStartIndex + generatedStartMarkup.length - highlightRangeWithTooltip.range.start) + highlightRangeWithTooltip.range.end;
+          const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttributes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
+          let calculatedStartIndex = (highlightRangeWithTooltip.recommendationContentSpan.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
+          let calculatedEndIndex = (calculatedStartIndex + generatedStartMarkup.length - highlightRangeWithTooltip.recommendationContentSpan.start) + highlightRangeWithTooltip.recommendationContentSpan.end;
           if (calculatedEndIndex > incomingBody.length) {
             calculatedStartIndex = incomingBody.length - 1;
           }

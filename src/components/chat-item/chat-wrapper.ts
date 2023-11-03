@@ -21,7 +21,8 @@ export class ChatWrapper {
   private readonly props: ChatWrapperProps;
   private readonly chatItemsContainer: ExtendedHTMLElement;
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
-  private readonly promptInput: ExtendedHTMLElement;
+  private readonly promptInputElement: ExtendedHTMLElement;
+  private readonly promptInput: ChatPromptInput;
   private readonly promptInfo: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
@@ -48,7 +49,8 @@ export class ChatWrapper {
       }
     });
 
-    this.promptInput = new ChatPromptInput({ tabId: this.props.tabId }).render;
+    this.promptInput = new ChatPromptInput({ tabId: this.props.tabId });
+    this.promptInputElement = this.promptInput.render;
     this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
@@ -96,7 +98,7 @@ export class ChatWrapper {
         },
         this.chatItemsContainer,
         this.intermediateBlockContainer,
-        this.promptInput,
+        this.promptInputElement,
         this.promptInfo
       ]
     });
@@ -130,5 +132,9 @@ export class ChatWrapper {
     if (this.lastChatItemCard !== null) {
       this.lastChatItemCard.updateCard(updateWith);
     }
+  };
+
+  public addToPrompt = (textToAdd: string): void => {
+    this.promptInput.addText(textToAdd);
   };
 }

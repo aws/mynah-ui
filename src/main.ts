@@ -63,13 +63,13 @@ export interface MynahUIProps {
   onStopChatResponse?: (tabId: string) => void;
   onResetStore?: (tabId: string) => void;
   onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
-  onFollowUpClicked?: (tabId: string, followUp: ChatItemFollowUp) => void;
+  onFollowUpClicked?: (tabId: string, messageId: string, followUp: ChatItemFollowUp) => void;
   onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
   onTabRemove?: (tabId: string) => void;
   onSuggestionEngagement?: (tabId: string, engagement: SuggestionEngagement) => void;
-  onCopyCodeToClipboard?: (tabId: string, code?: string, type?: 'selection' | 'block', referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
-  onCodeInsertToCursorPosition?: (tabId: string, code?: string, type?: 'selection' | 'block', referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+  onCopyCodeToClipboard?: (tabId: string, messageId: string, code?: string, type?: 'selection' | 'block', referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+  onCodeInsertToCursorPosition?: (tabId: string, messageId: string, code?: string, type?: 'selection' | 'block', referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
   onSuggestionInteraction?: (tabId: string, eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
   onOpenDiff?: (tabId: string, leftPath: string, rightPath: string, messageId?: string) => void;
@@ -170,10 +170,11 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: {
       tabId: string;
+      messageId: string;
       followUpOption: ChatItemFollowUp;
     }) => {
       if (this.props.onFollowUpClicked !== undefined) {
-        this.props.onFollowUpClicked(data.tabId, data.followUpOption);
+        this.props.onFollowUpClicked(data.tabId, data.messageId, data.followUpOption);
       }
     });
 
@@ -202,6 +203,7 @@ export class MynahUI {
       if (this.props.onCopyCodeToClipboard !== undefined) {
         this.props.onCopyCodeToClipboard(
           MynahUITabsStore.getInstance().getSelectedTabId(),
+          data.messageId,
           data.text,
           data.type,
           data.referenceTrackerInformation
@@ -213,6 +215,7 @@ export class MynahUI {
       if (this.props.onCodeInsertToCursorPosition !== undefined) {
         this.props.onCodeInsertToCursorPosition(
           MynahUITabsStore.getInstance().getSelectedTabId(),
+          data.messageId,
           data.text,
           data.type,
           data.referenceTrackerInformation
@@ -292,6 +295,13 @@ export class MynahUI {
       loadingChat: isLoading,
       promptInputDisabledState: isLoading,
     });
+  };
+
+  // TODO
+  public addToUserPrompt = (tabId: string, prompt: string): void => {
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      this.chatWrappers[tabId].addToPrompt(prompt);
+    }
   };
 
   /**

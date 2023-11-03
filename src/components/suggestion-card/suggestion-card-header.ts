@@ -22,6 +22,9 @@ export class SuggestionCardHeader {
     const splitUrl = props.url
       .replace(/^(http|https):\/\//, '')
       .split('/');
+    if (splitUrl[splitUrl.length - 1].trim() === '') {
+      splitUrl.pop();
+    }
     const thumbnail = getThumbnailClass(splitUrl[0], props.metadata);
     this.render = DomBuilder.getInstance().build({
       type: 'div',

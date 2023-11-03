@@ -24,14 +24,13 @@ export class FeedbackForm {
   public readonly feedbackFormContainer: ExtendedHTMLElement;
 
   constructor (props?: FeedbackFormProps) {
-    if (props?.initPayload !== undefined) {
-      this.feedbackPayload = {
-        selectedOption: Config.getInstance().config.feedbackOptions[0].value,
-        messageId: '',
-        tabId: '',
-        comment: ''
-      };
-    }
+    this.feedbackPayload = {
+      selectedOption: Config.getInstance().config.feedbackOptions[0].value,
+      messageId: '',
+      tabId: '',
+      comment: '',
+      ...props?.initPayload
+    };
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM, (data: {messageId: string; tabId: string}) => {
       if (this.feedbackFormWrapper === undefined) {
