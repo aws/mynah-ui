@@ -48,7 +48,7 @@ export class ChatItemFollowUpContainer {
               events: {
                 click: (e) => {
                   this.hideCroppedFollowupText();
-                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, followUpOption });
+                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, messageId: this.props.chatItem.messageId, followUpOption });
                   if ((this.render.parentElement as ExtendedHTMLElement)?.hasClass('mynah-chat-item-empty')) {
                     this.render.parentElement?.remove();
                   };
