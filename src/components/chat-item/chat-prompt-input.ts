@@ -126,14 +126,20 @@ export class ChatPromptInput {
       children: [
         {
           type: 'div',
-          classNames: [ 'mynah-chat-prompt-input-wrapper' ],
+          classNames: [ 'mynah-chat-prompt' ],
           children: [
-            this.promptTextInputCommand.render,
-            this.promptTextInputWrapper,
-            this.sendButton,
+            {
+              type: 'div',
+              classNames: [ 'mynah-chat-prompt-input-wrapper' ],
+              children: [
+                this.promptTextInputCommand.render,
+                this.promptTextInputWrapper,
+                this.sendButton,
+              ]
+            },
+            this.attachmentWrapper
           ]
-        },
-        this.attachmentWrapper
+        }
       ],
     });
 

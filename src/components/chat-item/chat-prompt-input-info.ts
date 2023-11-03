@@ -20,7 +20,7 @@ export class ChatPromptInputInfo {
     });
 
     this.render = DomBuilder.getInstance().build({
-      type: 'span',
+      type: 'div',
       persistent: true,
       classNames: [ 'mynah-chat-prompt-input-info' ],
       innerHTML: marked.parse(MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo') ?? '', { breaks: true })
