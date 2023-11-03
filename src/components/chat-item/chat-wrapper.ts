@@ -128,9 +128,9 @@ export class ChatWrapper {
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
   };
 
-  public updateLastChatAnswer = (chatItem: Partial<ChatItem>): void => {
+  public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
-      this.lastChatItemCard.updateCard(chatItem);
+      this.lastChatItemCard.updateCard(updateWith);
     }
   };
 

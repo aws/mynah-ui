@@ -133,10 +133,10 @@ export class ChatItemCard {
     ]
   });
 
-  public readonly updateCard = (chatItemToUpdate: Partial<ChatItem>): void => {
+  public readonly updateCard = (updateWith: Partial<ChatItem>): void => {
     this.props.chatItem = {
       ...this.props.chatItem,
-      ...chatItemToUpdate
+      ...updateWith
     };
     this.render.update({
       classNames: [ ...this.getCardClasses(), 'reveal' ],
