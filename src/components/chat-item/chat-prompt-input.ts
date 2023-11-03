@@ -158,20 +158,13 @@ export class ChatPromptInput {
         cancelEvent(e);
         this.sendPrompt();
       } else if (e.key === KeyMap.ENTER && (e.shiftKey || e.ctrlKey)) {
-        // Insert a newline in the prompt, could be the beginning, middle or end of the sentence
-        cancelEvent(e);
-        const selectionStartIndex = this.promptTextInput.selectionStart ?? 0;
-        const before = this.promptTextInput.value.slice(0, selectionStartIndex);
-        const after = this.promptTextInput.value.slice(this.promptTextInput.selectionEnd ?? this.promptTextInput.value.length);
-        this.promptTextInput.value = `${before}\n${after}`;
+        // To insert a new line, press shift/ctrl + enter
+        // Calculate the height again so that input text area is displayed correctly
         setTimeout(() => {
           this.calculateTextAreaHeight(true);
         }, 10);
-        // Set the cursor to the right location
-        this.promptTextInput.focus();
-        this.promptTextInput.selectionStart = selectionStartIndex + 1;
-        this.promptTextInput.selectionEnd = selectionStartIndex + 1;
       } else if (this.selectedCommand === '' && this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.value === '') {
+        // Show available quick actions
         if (this.commandSelector !== undefined) {
           this.commandSelector.close();
         }
