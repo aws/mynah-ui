@@ -15,6 +15,7 @@ export class EmptyMynahUIDataModel {
     this.data = {
       tabTitle: Config.getInstance().config.texts.awsqTitle,
       loadingChat: false,
+      cancelButtonWhenLoading: true,
       showChatAvatars: false,
       quickActionCommands: [],
       promptInputPlaceholder: '',

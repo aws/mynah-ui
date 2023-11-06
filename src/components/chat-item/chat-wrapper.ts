@@ -49,6 +49,14 @@ export class ChatWrapper {
       }
     });
 
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('cancelButtonWhenLoading', (showCancelButton: boolean) => {
+      if (showCancelButton) {
+        this.intermediateBlockContainer.removeClass('hidden');
+      } else {
+        this.intermediateBlockContainer.addClass('hidden');
+      }
+    });
+
     this.promptInput = new ChatPromptInput({ tabId: this.props.tabId });
     this.promptInputElement = this.promptInput.render;
     this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
@@ -61,7 +69,8 @@ export class ChatWrapper {
 
     this.intermediateBlockContainer = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-overflowing-intermediate-block' ],
+      classNames: [ 'mynah-chat-overflowing-intermediate-block',
+        ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('cancelButtonWhenLoading') === false ? [ 'hidden' ] : []) ],
       children: [
         ...(this.props?.onStopChatResponse !== undefined
           ? [ new Button({

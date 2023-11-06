@@ -31,6 +31,10 @@ export interface MynahUIDataModel {
    * */
   showChatAvatars?: boolean;
   /**
+   * Show cancel button while loading the chat
+   * */
+  cancelButtonWhenLoading?: boolean;
+  /**
   * Quick Action commands to show when user hits / to the input initially
   */
   quickActionCommands?: QuickActionCommandGroup[];
@@ -50,7 +54,6 @@ export interface MynahUIDataModel {
   * List of Suggestion objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
-
   // TODO
   selectedCodeSnippet?: string;
 }

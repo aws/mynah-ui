@@ -422,6 +422,9 @@
         justify-content: flex-end;
         align-items: center;
         border-bottom: 1px solid var(--mynah-color-border-default);
+        &.hidden {
+            display: none;
+        }
         > .mynah-chat-stop-chat-response-button {
             margin-bottom: var(--mynah-sizing-2);
             display: none;
