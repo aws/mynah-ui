@@ -5,6 +5,14 @@
 
 .snippet-card-container {
   position: relative;
+  .mynah-syntax-highlighter {
+    max-height: 5rem;
+    overflow-y: hidden;
+  }
+  .mynah-syntax-highlighter::after {
+    content: "...";
+    text-align: center;
+  }
 }
 
 .snippet-card-content {

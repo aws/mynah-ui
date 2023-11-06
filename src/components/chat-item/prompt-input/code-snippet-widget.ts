@@ -61,8 +61,9 @@ export class CodeSnippetWidget {
           type: 'div',
           events: {
             mouseenter: () => {
-              // TODO delay showing
-              this.showPreviewOverLay(markdownText);
+              setTimeout(() => {
+                this.showPreviewOverLay(markdownText);
+              }, 10);
             },
             mouseleave: () => {
               this.closePreviewOverLay();
