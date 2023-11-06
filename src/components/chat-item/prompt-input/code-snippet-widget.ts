@@ -4,7 +4,9 @@ import { Icon, MynahIcons } from '../../icon';
 import { Button } from '../../button';
 import { MynahUIGlobalEvents, cancelEvent } from '../../../helper/events';
 import { MynahEventNames } from '../../../static';
-import { SuggestionCardBody } from '../../suggestion-card/suggestion-card-body';
+import { Card } from '../../card';
+import { SyntaxHighlighter } from '../../syntax-highlighter';
+import { marked } from 'marked';
 
 export interface ICodeSnippetWidgetProps {
   tabId: string;
@@ -14,6 +16,7 @@ export interface ICodeSnippetWidgetProps {
 export class CodeSnippetWidget {
   private readonly props: ICodeSnippetWidgetProps;
   private previewOverlay: Overlay | undefined;
+  private parsedCode: string = '';
   render: ExtendedHTMLElement;
   constructor (props: ICodeSnippetWidgetProps) {
     this.props = props;
@@ -22,7 +25,7 @@ export class CodeSnippetWidget {
 
   private readonly showPreviewOverLay = (markdownText: string): void => {
     this.previewOverlay = new Overlay({
-      background: true,
+      background: false,
       closeOnOutsideClick: false,
       referenceElement: this.render,
       dimOutside: false,
@@ -30,17 +33,16 @@ export class CodeSnippetWidget {
       verticalDirection: OverlayVerticalDirection.TO_TOP,
       horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
       children: [
-        {
-          type: 'div',
+        new Card({
+          classNames: [ 'snippet-card-container-preview' ],
           children: [
-            new SuggestionCardBody({
-              suggestion: {
-                body: markdownText
-              },
-              showFooterButtons: false,
+            new SyntaxHighlighter({
+              codeStringWithMarkup: this.parsedCode,
+              block: true,
+              showCopyOptions: false
             }).render,
           ]
-        }
+        }).render
       ],
     });
   };
@@ -53,15 +55,17 @@ export class CodeSnippetWidget {
   };
 
   private readonly renderCodeSnippetWidget = (markdownText: string): ExtendedHTMLElement => {
+    this.parsedCode = DomBuilder.getInstance().build({
+      type: 'code',
+      innerHTML: marked(markdownText)
+    }).querySelector('code')?.innerHTML ?? '';
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'snippet-card-container' ],
       children: [
-        DomBuilder.getInstance().build({
-          type: 'div',
+        new Card({
           events: {
             mouseenter: () => {
-              // TODO delay showing
               this.showPreviewOverLay(markdownText);
             },
             mouseleave: () => {
@@ -69,14 +73,13 @@ export class CodeSnippetWidget {
             },
           },
           children: [
-            new SuggestionCardBody({
-              suggestion: {
-                body: markdownText
-              },
-              showFooterButtons: false,
+            new SyntaxHighlighter({
+              codeStringWithMarkup: this.parsedCode,
+              block: true,
+              showCopyOptions: false
             }).render,
           ],
-        }),
+        }).render,
         new Button({
           classNames: [ 'code-snippet-close-button' ],
           onClick: e => {

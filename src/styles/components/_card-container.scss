@@ -1,0 +1,15 @@
+.mynah-card-container {
+    text-decoration: none;
+    outline: none;
+    position: relative;
+    padding: var(--mynah-sizing-3);
+    background-color: var(--mynah-card-bg);
+    border-radius: var(--mynah-card-radius);
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-3);
+    width: 100%;
+    overflow: hidden;
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+}

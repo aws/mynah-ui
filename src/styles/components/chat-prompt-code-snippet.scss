@@ -1,20 +1,49 @@
-
 .outer-container {
   display: flex;
+  &:not(:empty) {
+    margin-top: var(--mynah-sizing-3);
+  }
 }
 
 .snippet-card-container {
   position: relative;
+  max-width: calc(5 * var(--mynah-sizing-18));
+  max-height: var(--mynah-sizing-16);
+  overflow: visible;
+  width: 100%;
+  box-sizing: border-box;
+  > .mynah-button {
+    position: absolute;
+    background-color: var(--mynah-card-bg) !important;
+    width: var(--mynah-sizing-7) !important;
+    min-width: var(--mynah-sizing-7) !important;
+    max-width: var(--mynah-sizing-7) !important;
+    height: var(--mynah-sizing-7) !important;
+    border-radius: 100%;
+    right: calc(-1 * var(--mynah-sizing-2));
+    top: calc(-1 * var(--mynah-sizing-2));
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    opacity: 1 !important;
+    filter: brightness(0.95);
+  }
+  &:not(:hover) {
+    > .mynah-button {
+      display: none;
+    }
+  }
 }
 
-.snippet-card-content {
-  padding: 0 1rem;
-  border: 1px solid red;
-  border-radius: 4px;
+.snippet-card-container-preview {
+  max-width: 70vw;
+  max-height: 70vh;
 }
-
-.code-snippet-close-button {
-  position: absolute !important;
-  right: 0;
-  top: 0;
+.snippet-card-container,
+.snippet-card-container-preview {
+  > .mynah-card-container {
+    max-height: 100%;
+    > .mynah-syntax-highlighter {
+      pointer-events: none;
+      margin: 0;
+    }
+  }
 }
