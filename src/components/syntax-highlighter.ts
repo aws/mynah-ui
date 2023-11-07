@@ -32,6 +32,7 @@ import 'prismjs/components/prism-less.min';
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
 import {
+  CodeSelectionType,
   OnCopiedToClipboardFunction,
   OnInsertToCursorPositionFunction,
 } from '../static';
@@ -143,6 +144,13 @@ export class SyntaxHighlighter {
           innerHTML: escapedCodeBlock,
         }
       ],
+      events: {
+        copy: (e) => {
+          cancelEvent(e);
+          const selectedCode = this.getSelectedCodeContextMenu();
+          if (selectedCode.code.length > 0) { this.copyToClipboard(selectedCode.code, selectedCode.type); }
+        }
+      }
     });
     highlightElement(preElement);
 
@@ -224,9 +232,17 @@ export class SyntaxHighlighter {
     });
   }
 
+  private readonly getSelectedCodeContextMenu = (): {
+    code: string;
+    type: CodeSelectionType;
+  } => ({
+    code: document.getSelection()?.toString() ?? '',
+    type: 'selection'
+  });
+
   private readonly getSelectedCode = (): {
     code: string;
-    type: 'selection' | 'block';
+    type: CodeSelectionType;
   } => ({
     code: this.render.querySelector('pre')?.innerText ?? '',
     type: 'block'
@@ -234,7 +250,7 @@ export class SyntaxHighlighter {
 
   private readonly copyToClipboard = (
     textToSendClipboard: string,
-    type?: 'selection' | 'block',
+    type?: CodeSelectionType,
     notificationText?: string,
   ): void => {
     if (!document.hasFocus()) {
