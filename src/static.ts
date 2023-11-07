@@ -192,8 +192,10 @@ export interface ReferenceTrackerInformation {
   };
   information: string;
 }
-export type OnCopiedToClipboardFunction = (type?: 'selection' | 'block', text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
-export type OnInsertToCursorPositionFunction = (type?: 'selection' | 'block', text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+
+export type CodeSelectionType = 'selection' | 'block';
+export type OnCopiedToClipboardFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+export type OnInsertToCursorPositionFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
 
 export enum SuggestionEventName {
   OPEN = 'openSuggestion',
