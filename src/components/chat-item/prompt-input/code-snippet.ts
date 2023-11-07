@@ -44,7 +44,8 @@ export class CodeSnippet {
             }).render
           );
         }
-        const isCodeOverflowVertically = this.render.getBoundingClientRect().height < this.render.getElementsByTagName('code')[0].getBoundingClientRect().height;
+        const isCodeOverflowVertically =
+          (this.render.getBoundingClientRect()?.height ?? 0) < (this.render.getElementsByTagName('code')?.[0]?.getBoundingClientRect()?.height ?? 0);
         if (isCodeOverflowVertically) {
           this.render.children[0].classList.add('vertical-overflow');
         }
