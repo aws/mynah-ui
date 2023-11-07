@@ -46,7 +46,7 @@ export class ChatItemRelatedContent {
       this.render = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-card-related-content',
-          this.props.relatedContent !== undefined && this.props.relatedContent.length < MAX_ITEMS ? 'expanded' : '' ],
+          this.props.relatedContent !== undefined && this.props.relatedContent.length <= MAX_ITEMS ? 'expanded' : '' ],
         children: [
           ...(this.props.title !== undefined
             ? [ {

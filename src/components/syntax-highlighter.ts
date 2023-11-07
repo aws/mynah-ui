@@ -4,12 +4,31 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
-import * as Prism from 'prismjs';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-java';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-json';
+import { highlightElement } from 'prismjs';
+
+import 'prismjs/components/prism-markup.min';
+import 'prismjs/components/prism-xml-doc.min';
+import 'prismjs/components/prism-css.min';
+import 'prismjs/components/prism-clike.min'; // default
+import 'prismjs/components/prism-javascript.min';
+import 'prismjs/components/prism-typescript.min';
+import 'prismjs/components/prism-jsx.min';
+import 'prismjs/components/prism-tsx.min';
+import 'prismjs/components/prism-lua.min';
+import 'prismjs/components/prism-java.min';
+import 'prismjs/components/prism-json.min';
+import 'prismjs/components/prism-markdown.min';
+import 'prismjs/components/prism-mongodb.min';
+import 'prismjs/components/prism-c.min';
+import 'prismjs/components/prism-bash.min';
+import 'prismjs/components/prism-csharp.min';
+import 'prismjs/components/prism-objectivec.min';
+import 'prismjs/components/prism-python.min';
+import 'prismjs/components/prism-regex.min';
+import 'prismjs/components/prism-scala.min';
+import 'prismjs/components/prism-scss.min';
+import 'prismjs/components/prism-less.min';
+
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
 import {
@@ -25,7 +44,31 @@ import { highlightersWithTooltip } from './suggestion-card/suggestion-card-body'
 import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
 
-const DEFAULT_LANG = 'typescript';
+const IMPORTED_LANGS = [
+  'markup',
+  'xml',
+  'css',
+  'clike',
+  'javascript',
+  'typescript',
+  'jsx',
+  'tsx',
+  'lua',
+  'java',
+  'json',
+  'markdown',
+  'mongodb',
+  'c',
+  'bash',
+  'csharp',
+  'objectivec',
+  'python',
+  'regex',
+  'scala',
+  'scss',
+  'less',
+];
+const DEFAULT_LANG = 'clike';
 
 // they'll be used to replaced within the code, so making them unique is a must
 export const highlighters = {
@@ -91,7 +134,7 @@ export class SyntaxHighlighter {
     const preElement = DomBuilder.getInstance().build({
       type: 'pre',
       classNames: [ 'keep-markup',
-          `language-${props.language ?? DEFAULT_LANG}`,
+          `language-${props.language !== undefined && IMPORTED_LANGS.includes(props.language) ? props.language : DEFAULT_LANG}`,
           ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
       ],
       children: [
@@ -101,7 +144,7 @@ export class SyntaxHighlighter {
         }
       ],
     });
-    Prism.highlightElement(preElement);
+    highlightElement(preElement);
 
     // replacing back the keyword matchings for incoming highlights to markup for highlighting code
     if (props.keepHighlights === true) {
@@ -124,6 +167,13 @@ export class SyntaxHighlighter {
                 type: 'div',
                 classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
                 children: [
+                  ...(props.language !== undefined
+                    ? [ {
+                        type: 'span',
+                        classNames: [ 'mynah-syntax-highlighter-language' ],
+                        children: [ props.language ]
+                      } ]
+                    : []),
                   new Button({
                     icon: new Icon({ icon: MynahIcons.CURSOR_INSERT }).render,
                     label: Config.getInstance().config.texts.insertAtCursorLabel,

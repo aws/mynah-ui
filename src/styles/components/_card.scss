@@ -35,7 +35,7 @@
         > .mynah-source-thumbnail {
             font-style: normal;
             font-weight: normal;
-            display: inline-flex;
+            display: none;
             width: var(--mynah-sizing-8);
             height: var(--mynah-sizing-8);
             font-variant: normal;
@@ -222,7 +222,6 @@
         line-height: normal;
         pointer-events: all;
         z-index: 100;
-        padding-left: var(--mynah-sizing-10);
         display: flex;
         flex-flow: column nowrap;
         gap: var(--mynah-sizing-2);

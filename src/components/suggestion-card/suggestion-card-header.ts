@@ -29,12 +29,12 @@ export class SuggestionCardHeader {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-header', ...((thumbnail != null) ? [ 'mynah-card-header-with-source-thumbnail' ] : []) ],
+      attributes: {
+        origin: getOrigin(props.url)
+      },
       children: [
         {
           type: 'span',
-          attributes: {
-            origin: getOrigin(props.url)
-          },
           classNames: [ 'mynah-source-thumbnail' ]
         },
         {

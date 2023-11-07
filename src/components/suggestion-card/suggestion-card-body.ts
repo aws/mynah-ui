@@ -76,11 +76,13 @@ export class SuggestionCardBody {
       elementFromNode.tagName?.toLowerCase() === 'code'
     ) {
       const isBlockCode = elementFromNode.tagName?.toLowerCase() === 'pre' || elementFromNode.innerHTML.match(/\r|\n/) !== null;
-      const codeString = (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode)?.innerHTML ?? '';
+      const codeElement = (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode);
+      const snippetLanguage = Array.from(codeElement?.classList ?? []).find(className => className.match('language-'))?.replace('language-', '');
+      const codeString = codeElement?.innerHTML ?? '';
 
       const highlighter = new SyntaxHighlighter({
         codeStringWithMarkup: unescapeHTML(codeString),
-        language: matchingLanguage,
+        language: snippetLanguage?.trim() !== '' ? snippetLanguage : matchingLanguage,
         keepHighlights: true,
         showCopyOptions: isBlockCode && (this.props.showFooterButtons ?? true),
         block: isBlockCode,

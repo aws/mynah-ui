@@ -28,8 +28,9 @@
         user-select: none;
     }
     > .mynah-syntax-highlighter-copy-buttons {
-        justify-content: flex-end;
         display: flex;
+        align-items: center;
+        justify-content: flex-end;
         padding: var(--mynah-sizing-half);
         padding-left: var(--mynah-sizing-3);
         order: 256000;
@@ -47,6 +48,15 @@
             height: 100%;
             background-color: var(--mynah-color-border-default);
             opacity: 0.25;
+        }
+        > .mynah-syntax-highlighter-language {
+            flex: 1;
+            font-size: var(--mynah-font-size-xsmall);
+            display: inline-block;
+            opacity: 0.65;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .mynah-button {
             min-width: var(--mynah-sizing-6);
