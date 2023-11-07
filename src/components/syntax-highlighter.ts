@@ -143,6 +143,13 @@ export class SyntaxHighlighter {
           innerHTML: escapedCodeBlock,
         }
       ],
+      events: {
+        copy: (e) => {
+          cancelEvent(e);
+          const selectedCode = this.getSelectedCodeContextMenu();
+          this.copyToClipboard(selectedCode.code, selectedCode.type);
+        }
+      }
     });
     highlightElement(preElement);
 
@@ -223,6 +230,14 @@ export class SyntaxHighlighter {
       ],
     });
   }
+
+  private readonly getSelectedCodeContextMenu = (): {
+    code: string;
+    type: 'selection' | 'block';
+  } => ({
+    code: document.getSelection()?.toString() ?? '',
+    type: 'selection'
+  });
 
   private readonly getSelectedCode = (): {
     code: string;
