@@ -5,17 +5,19 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { highlightElement } from 'prismjs';
-import 'prismjs/components/prism-clike.min'; // using as the default one
 
-import 'prismjs/components/prism-typescript.min';
+import 'prismjs/components/prism-markup.min';
+import 'prismjs/components/prism-xml-doc.min';
+import 'prismjs/components/prism-css.min';
+import 'prismjs/components/prism-clike.min'; // default
 import 'prismjs/components/prism-javascript.min';
+import 'prismjs/components/prism-typescript.min';
 import 'prismjs/components/prism-jsx.min';
 import 'prismjs/components/prism-tsx.min';
 import 'prismjs/components/prism-lua.min';
 import 'prismjs/components/prism-java.min';
 import 'prismjs/components/prism-json.min';
 import 'prismjs/components/prism-markdown.min';
-import 'prismjs/components/prism-markup.min';
 import 'prismjs/components/prism-mongodb.min';
 import 'prismjs/components/prism-c.min';
 import 'prismjs/components/prism-bash.min';
@@ -25,9 +27,7 @@ import 'prismjs/components/prism-python.min';
 import 'prismjs/components/prism-regex.min';
 import 'prismjs/components/prism-scala.min';
 import 'prismjs/components/prism-scss.min';
-import 'prismjs/components/prism-css.min';
 import 'prismjs/components/prism-less.min';
-import 'prismjs/components/prism-xml-doc.min';
 
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
@@ -45,15 +45,18 @@ import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
 
 const IMPORTED_LANGS = [
-  'typescript',
+  'markup',
+  'xml',
+  'css',
+  'clike',
   'javascript',
+  'typescript',
   'jsx',
   'tsx',
   'lua',
   'java',
   'json',
   'markdown',
-  'markup',
   'mongodb',
   'c',
   'bash',
@@ -63,9 +66,7 @@ const IMPORTED_LANGS = [
   'regex',
   'scala',
   'scss',
-  'css',
   'less',
-  'xml',
 ];
 const DEFAULT_LANG = 'clike';
 
