@@ -70,7 +70,7 @@ export interface MynahUIProps {
   onSuggestionEngagement?: (tabId: string, engagement: SuggestionEngagement) => void;
   onCopyCodeToClipboard?: (tabId: string, messageId: string, code?: string, type?: 'selection' | 'block', referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
   onCodeInsertToCursorPosition?: (tabId: string, messageId: string, code?: string, type?: 'selection' | 'block', referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
-  onSuggestionInteraction?: (tabId: string, eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
+  onSuggestionInteraction?: (tabId: string, messageId: string, eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
   onOpenDiff?: (tabId: string, leftPath: string, rightPath: string, messageId?: string) => void;
 }
@@ -227,6 +227,7 @@ export class MynahUI {
       if (this.props.onSuggestionInteraction !== undefined) {
         this.props.onSuggestionInteraction(
           MynahUITabsStore.getInstance().getSelectedTabId(),
+          data.messageId,
           SuggestionEventName.OPEN,
           data.suggestion,
           data.event
@@ -248,6 +249,7 @@ export class MynahUI {
       if (this.props.onSuggestionInteraction !== undefined) {
         this.props.onSuggestionInteraction(
           MynahUITabsStore.getInstance().getSelectedTabId(),
+          data.messageId,
           SuggestionEventName.COPY,
           data.suggestion
         );

@@ -65,7 +65,7 @@ export class SuggestionCardBody {
           type: 'a',
           events: {
             click: (e?: MouseEvent) => {
-              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: { id: url, url }, event: e });
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { messageId: url, suggestion: { id: url, url }, event: e });
             },
           },
           attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },

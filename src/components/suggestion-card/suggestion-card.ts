@@ -86,10 +86,10 @@ export class SuggestionCard {
           url: props.suggestion.url ?? '',
           metadata: props.suggestion.type !== 'ApiDocsSuggestion' ? props.suggestion.metadata as Record<string, SuggestionMetaData> : undefined,
           onSuggestionTitleClick: (e?: MouseEvent) => {
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: props.suggestion, event: e });
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { messageId: props.suggestion.id ?? '', suggestion: props.suggestion, event: e });
           },
           onSuggestionLinkCopy: () => {
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { suggestion: props.suggestion });
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { messageId: props.suggestion.id ?? '', suggestion: props.suggestion });
           },
         }).render,
         ...(props.suggestion.body !== undefined ? [ new SuggestionCardBody({ suggestion: props.suggestion, showFooterButtons: props.showFooterButtons }).render ] : []),
