@@ -182,6 +182,9 @@
         box-sizing: border-box;
         overflow: hidden;
         padding: 0 var(--mynah-sizing-4) var(--mynah-sizing-4) var(--mynah-sizing-4);
+        &:empty{
+            display: none;
+        }
         > * {
             margin: 0;
             margin-block-start: 0;
