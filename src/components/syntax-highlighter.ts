@@ -41,7 +41,7 @@ import { Notification } from './notification/notification';
 import { Icon, MynahIcons } from './icon';
 import { cancelEvent } from '../helper/events';
 import { Config } from '../helper/config';
-import { highlightersWithTooltip } from './suggestion-card/suggestion-card-body';
+import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
 

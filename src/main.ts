@@ -235,6 +235,17 @@ export class MynahUI {
       }
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.LINK_OPEN, (data) => {
+      if (this.props.onSuggestionInteraction !== undefined) {
+        this.props.onSuggestionInteraction(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
+          SuggestionEventName.OPEN,
+          data.link,
+          data.event
+        );
+      }
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CARD_VOTE, (data) => {
       if (this.props.onVote !== undefined) {
         this.props.onVote(
@@ -270,7 +281,7 @@ export class MynahUI {
 
   public addToUserPrompt = (tabId: string, prompt: string): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      this.chatWrappers[tabId].addToPrompt(prompt.substring(0, 2000));
+      this.chatWrappers[tabId].addToPrompt(prompt);
     }
   };
 

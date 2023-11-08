@@ -1,38 +1,9 @@
-@keyframes glass-reflection {
-    0% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
 @keyframes horizontal-roll {
     0% {
         background-position: 0% bottom;
     }
     100% {
         background-position: -200% bottom;
-    }
-}
-@keyframes move-to-middle {
-    0% {
-        transform: translate3d(-10%, 0, 0);
-        opacity: 0;
-    }
-    100% {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-    }
-}
-@keyframes move-to-right {
-    0% {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-    }
-    100% {
-        transform: translate3d(10%, 0, 0);
-        opacity: 0;
     }
 }
 
@@ -42,61 +13,5 @@
     }
     to {
         transform: translate3d(0, calc(-1 * var(--mynah-sizing-2)), 0);
-    }
-}
-
-@keyframes from-center-top-neg-top {
-    from {
-        transform: translate3d(0, 0, 0);
-    }
-    to {
-        transform: translate3d(0, -75px, 0) scale(1, 1.15);
-    }
-}
-@keyframes from-neg-bottom-to-center {
-    from {
-        transform: translate3d(0, 75px, 0) scale(1, 1.15);
-    }
-    to {
-        transform: translate3d(0, 0, 0);
-    }
-}
-
-@keyframes shake {
-    0% {
-        transform: translate3d(0, 0, 0);
-        border-color: red;
-    }
-    10% {
-        transform: translate3d(5px, 0, 0);
-    }
-    20% {
-        transform: translate3d(-5px, 0, 0);
-    }
-    30% {
-        transform: translate3d(5px, 0, 0);
-    }
-    40% {
-        transform: translate3d(-5px, 0, 0);
-    }
-    50% {
-        transform: translate3d(5px, 0, 0);
-    }
-    60% {
-        transform: translate3d(-5px, 0, 0);
-    }
-    70% {
-        transform: translate3d(5px, 0, 0);
-    }
-    80% {
-        transform: translate3d(-5px, 0, 0);
-    }
-    90% {
-        transform: translate3d(5px, 0, 0);
-        border-color: red;
-    }
-    100% {
-        transform: translate3d(0, 0, 0);
-        border-color: rgba(0, 0, 0, 0);
     }
 }

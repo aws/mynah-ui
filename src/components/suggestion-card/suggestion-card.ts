@@ -21,7 +21,7 @@ const ENGAGEMENT_DURATION_LIMIT = 3000;
 const ENGAGEMENT_MIN_SELECTION_DISTANCE = 6;
 const ENGAGEMENT_MIN_CLICK_DURATION = 300;
 
-export interface SuggestionCardProps {suggestion: Suggestion; compact?: 'flat' | true; showFooterButtons?: boolean}
+export interface SuggestionCardProps {suggestion: Suggestion; compact?: 'flat' | true}
 export class SuggestionCard {
   private engagementStartTime: number = -1;
   private totalMouseDistanceTraveled: { x: number; y: number } = { x: 0, y: 0 };
@@ -91,7 +91,7 @@ export class SuggestionCard {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { suggestion: props.suggestion });
           },
         }).render,
-        ...(props.suggestion.body !== undefined ? [ new SuggestionCardBody({ suggestion: props.suggestion, showFooterButtons: props.showFooterButtons }).render ] : []),
+        ...(props.suggestion.body !== undefined ? [ new SuggestionCardBody({ suggestion: props.suggestion }).render ] : []),
       ],
     }).render;
   }
