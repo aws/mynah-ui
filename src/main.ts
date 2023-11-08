@@ -236,6 +236,17 @@ export class MynahUI {
       }
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.LINK_OPEN, (data) => {
+      if (this.props.onSuggestionInteraction !== undefined) {
+        this.props.onSuggestionInteraction(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
+          SuggestionEventName.OPEN,
+          data.link,
+          data.event
+        );
+      }
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CARD_VOTE, (data) => {
       if (this.props.onVote !== undefined) {
         this.props.onVote(
@@ -270,37 +281,6 @@ export class MynahUI {
     });
   };
 
-  /**
-   * Create a new tab and set it to the currently-selected tab
-   * @param initialTabData Data used to initialize the new tab.
-   * @returns The tab ID of the created tab.
-   */
-  public createNewTab = (initialTabData: MynahUIDataModel): string => {
-    return MynahUITabsStore.getInstance().addTab({ store: { ...initialTabData } });
-  };
-
-  /**
-   * Update a tab's data
-   * @param tabData Tab data to update to.
-   */
-  public updateTab = (tabId: string, tabData: MynahUIDataModel): void => {
-    MynahUITabsStore.getInstance().updateTab(tabId, { store: { ...tabData } });
-  };
-
-  /**
-   * Set the loading state for chat window. When loading, a loading bubble will show
-   * and user input will be disabled
-   * @param tabId Corresponding tab ID.
-   * @param isLoading True if is loading, false otherwise.
-   */
-  public setChatLoadingState = (tabId: string, isLoading: boolean): void => {
-    MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
-      loadingChat: isLoading,
-      promptInputDisabledState: isLoading,
-    });
-  };
-
-  // TODO
   public addToUserPrompt = (tabId: string, prompt: string): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].addToPrompt(prompt);

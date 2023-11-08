@@ -1,12 +1,11 @@
-import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
+import { ExtendedHTMLElement } from '../../../helper/dom';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay/overlay';
 import { Icon, MynahIcons } from '../../icon';
 import { Button } from '../../button';
 import { MynahUIGlobalEvents, cancelEvent } from '../../../helper/events';
 import { MynahEventNames } from '../../../static';
-import { Card } from '../../card';
-import { SyntaxHighlighter } from '../../syntax-highlighter';
-import { marked } from 'marked';
+import { Card } from '../../card/card';
+import { CardBody } from '../../card/card-body';
 
 export interface ICodeSnippetWidgetProps {
   tabId: string;
@@ -16,7 +15,6 @@ export interface ICodeSnippetWidgetProps {
 export class CodeSnippetWidget {
   private readonly props: ICodeSnippetWidgetProps;
   private previewOverlay: Overlay | undefined;
-  private parsedCode: string = '';
   render: ExtendedHTMLElement;
   constructor (props: ICodeSnippetWidgetProps) {
     this.props = props;
@@ -36,10 +34,8 @@ export class CodeSnippetWidget {
         new Card({
           classNames: [ 'snippet-card-container-preview' ],
           children: [
-            new SyntaxHighlighter({
-              codeStringWithMarkup: this.parsedCode,
-              block: true,
-              showCopyOptions: false
+            new CardBody({
+              body: markdownText,
             }).render,
           ]
         }).render
@@ -55,30 +51,20 @@ export class CodeSnippetWidget {
   };
 
   private readonly renderCodeSnippetWidget = (markdownText: string): ExtendedHTMLElement => {
-    this.parsedCode = DomBuilder.getInstance().build({
-      type: 'code',
-      innerHTML: marked(markdownText)
-    }).querySelector('code')?.innerHTML ?? '';
-    return DomBuilder.getInstance().build({
-      type: 'div',
+    return new Card({
+      padding: 'none',
+      events: {
+        mouseenter: () => {
+          this.showPreviewOverLay(markdownText);
+        },
+        mouseleave: () => {
+          this.closePreviewOverLay();
+        },
+      },
       classNames: [ 'snippet-card-container' ],
       children: [
-        new Card({
-          events: {
-            mouseenter: () => {
-              this.showPreviewOverLay(markdownText);
-            },
-            mouseleave: () => {
-              this.closePreviewOverLay();
-            },
-          },
-          children: [
-            new SyntaxHighlighter({
-              codeStringWithMarkup: this.parsedCode,
-              block: true,
-              showCopyOptions: false
-            }).render,
-          ],
+        new CardBody({
+          body: markdownText,
         }).render,
         new Button({
           classNames: [ 'code-snippet-close-button' ],
@@ -91,6 +77,6 @@ export class CodeSnippetWidget {
           primary: false,
         }).render,
       ],
-    });
+    }).render;
   };
 }

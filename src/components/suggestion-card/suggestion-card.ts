@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { EngagementType, MynahEventNames, Suggestion, SuggestionMetaData } from '../../static';
+import { Card } from '../card/card';
 import { SuggestionCardBody } from './suggestion-card-body';
 import { SuggestionCardHeader } from './suggestion-card-header';
 
@@ -20,7 +21,7 @@ const ENGAGEMENT_DURATION_LIMIT = 3000;
 const ENGAGEMENT_MIN_SELECTION_DISTANCE = 6;
 const ENGAGEMENT_MIN_CLICK_DURATION = 300;
 
-export interface SuggestionCardProps {suggestion: Suggestion; compact?: 'flat' | true; showFooterButtons?: boolean}
+export interface SuggestionCardProps {suggestion: Suggestion; compact?: 'flat' | true}
 export class SuggestionCard {
   private engagementStartTime: number = -1;
   private totalMouseDistanceTraveled: { x: number; y: number } = { x: 0, y: 0 };
@@ -30,9 +31,7 @@ export class SuggestionCard {
   render: ExtendedHTMLElement;
   constructor (props: SuggestionCardProps) {
     this.suggestion = props.suggestion;
-    this.render = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-card', props.compact !== undefined ? 'mynah-card-compact' : '', props.compact === 'flat' ? 'mynah-card-compact-flat' : '' ],
+    this.render = new Card({
       events: {
         mouseenter: e => {
           if (this.engagementStartTime === -1) {
@@ -92,9 +91,9 @@ export class SuggestionCard {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_LINK_COPY, { messageId: props.suggestion.id ?? '', suggestion: props.suggestion });
           },
         }).render,
-        ...(props.suggestion.body !== undefined ? [ new SuggestionCardBody({ suggestion: props.suggestion, showFooterButtons: props.showFooterButtons }).render ] : []),
+        ...(props.suggestion.body !== undefined ? [ new SuggestionCardBody({ suggestion: props.suggestion }).render ] : []),
       ],
-    });
+    }).render;
   }
 
   private readonly resetEngagement = (): void => {

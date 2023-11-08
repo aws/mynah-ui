@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 export interface CardProps extends Partial<DomBuilderObject> {
+  border?: boolean;
+  background?: boolean;
+  padding?: 'small' | 'medium' | 'large' | 'none';
   children?: Array<HTMLElement | ExtendedHTMLElement | string>;
 }
 export class Card {
@@ -12,7 +15,13 @@ export class Card {
   constructor (props: CardProps) {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-card-container', ...(props.classNames ?? []) ],
+      classNames: [
+        'mynah-card',
+        `padding-${props.padding ?? 'large'}`,
+        props.border !== false ? 'border' : '',
+        props.background !== false ? 'background' : '',
+        ...(props.classNames ?? [])
+      ],
       persistent: props.persistent,
       innerHTML: props.innerHTML,
       children: [

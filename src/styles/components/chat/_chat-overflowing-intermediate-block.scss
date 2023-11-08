@@ -1,0 +1,41 @@
+@mixin chat-overflowing-intermediate-block() {
+    &.loading {
+        > .mynah-chat-overflowing-intermediate-block {
+            display: flex;
+            flex-flow: column nowrap;
+            max-height: 0;
+            overflow: visible;
+            justify-content: flex-end;
+            > .mynah-chat-stop-chat-response-button {
+                display: inline-flex;
+            }
+        }
+    }
+    > .mynah-chat-overflowing-intermediate-block {
+        display: flex;
+        flex-flow: column nowrap;
+        max-height: 0;
+        overflow: visible;
+        justify-content: flex-end;
+        align-items: center;
+        border-bottom: 1px solid var(--mynah-color-border-default);
+        &.hidden {
+            display: none;
+        }
+        > .mynah-chat-stop-chat-response-button {
+            margin-bottom: var(--mynah-sizing-2);
+            display: none;
+            min-height: var(--mynah-sizing-8);
+            background-color: var(--mynah-card-bg);
+            padding-left: var(--mynah-sizing-2);
+            &:active {
+                box-shadow: none;
+                filter: none;
+            }
+            * {
+                color: var(--mynah-color-text-weak);
+                font-size: var(--mynah-font-size-xsmall);
+            }
+        }
+    }
+}

@@ -6,12 +6,8 @@
 }
 
 .snippet-card-container {
-  position: relative;
   max-width: calc(5 * var(--mynah-sizing-18));
-  max-height: var(--mynah-sizing-16);
-  overflow: visible;
-  width: 100%;
-  box-sizing: border-box;
+  max-height: var(--mynah-sizing-10);
   > .mynah-button {
     position: absolute;
     background-color: var(--mynah-card-bg) !important;
@@ -31,19 +27,40 @@
       display: none;
     }
   }
+  > .mynah-card-body > .mynah-syntax-highlighter {
+    border: none;
+    > pre {
+      @include list-fader-bottom();
+    }
+  }
 }
 
 .snippet-card-container-preview {
   max-width: 70vw;
   max-height: 70vh;
+  > .mynah-card-body {
+    > .mynah-syntax-highlighter {
+      max-height: calc(70vh - var(--mynah-sizing-12)) !important;
+    }
+  }
 }
 .snippet-card-container,
 .snippet-card-container-preview {
-  > .mynah-card-container {
+  position: relative;
+  overflow: visible;
+  width: 100%;
+  box-sizing: border-box;
+  > .mynah-card-body {
     max-height: 100%;
     > .mynah-syntax-highlighter {
+      user-select: none;
       pointer-events: none;
       margin: 0;
+      max-height: 100%;
+      overflow: hidden;
+      > .mynah-syntax-highlighter-copy-buttons {
+        display: none;
+      }
     }
   }
 }

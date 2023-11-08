@@ -7,10 +7,11 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahEventNames, Suggestion } from '../../static';
 import { Button } from '../button';
+import { Card } from '../card/card';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { SuggestionCard } from '../suggestion-card/suggestion-card';
-import { SuggestionCardBody } from '../suggestion-card/suggestion-card-body';
+import { SuggestionCardHeader } from '../suggestion-card/suggestion-card-header';
 
 const PREVIEW_DELAY = 500;
 const MAX_ITEMS = 1;
@@ -26,7 +27,6 @@ export class ChatItemRelatedContent {
   private relatedContentPreview: Overlay | null;
   private relatedContentPreviewTimeout: ReturnType<typeof setTimeout>;
   render: ExtendedHTMLElement;
-  suggestionCardBody: SuggestionCardBody;
   chatAvatar: ExtendedHTMLElement;
   constructor (props: ChatItemRelatedContentProps) {
     this.props = props;
@@ -65,7 +65,17 @@ export class ChatItemRelatedContent {
               mouseleave: this.hideLinkPreview,
             },
             children: [
-              new SuggestionCard({ suggestion, compact: 'flat' }).render
+              new Card({
+                background: false,
+                border: false,
+                padding: 'none',
+                children: [
+                  new SuggestionCardHeader({
+                    title: suggestion.title,
+                    url: suggestion.url ?? '',
+                  }).render
+                ]
+              }).render
             ]
           })),
           this.showMoreButtonBlock.render

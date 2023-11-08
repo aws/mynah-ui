@@ -191,12 +191,14 @@
 
         .token.function {
             color: var(--mynah-color-syntax-function);
+            font-weight: 500;
         }
-
+        
         .token.regex,
         .token.important,
         .token.variable {
             color: var(--mynah-color-syntax-variable);
+            font-weight: 500;
         }
 
         .token.important,

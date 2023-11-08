@@ -10,15 +10,14 @@
 @import "./components/toggle";
 @import "./components/icon";
 @import "./components/nav-tabs";
-@import "./components/card-container";
-@import "./components/card";
+@import "./components/card/card";
 @import "./components/feedback-form";
 @import "./components/overlay";
 @import "./components/notification";
 @import "./components/syntax-highlighter";
-@import "./components/chat-wrapper";
-@import "./components/chat-item-tree-view";
-@import "./components/chat-prompt-code-snippet";
+@import "./components/chat/chat-wrapper";
+@import "./components/chat/chat-item-tree-view";
+@import "./components/chat/chat-prompt-code-snippet";
 
 body,
 html {

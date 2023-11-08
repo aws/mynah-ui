@@ -14,6 +14,7 @@ import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
 import { CodeSnippet } from './prompt-input/code-snippet';
 
+export const MAX_USER_INPUT = 4000;
 export interface ChatPromptInputProps {
   tabId: string;
 }
@@ -25,8 +26,10 @@ export class ChatPromptInput {
   private readonly promptTextInput: ExtendedHTMLElement;
   private readonly promptTextInputSizer: ExtendedHTMLElement;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
+  private readonly remainingCharsIndicator: ExtendedHTMLElement;
   private readonly sendButton: ExtendedHTMLElement;
   private readonly codeSnippet: CodeSnippet;
+  private currentAttachmentLength: number = 0;
   private quickActionCommands: QuickActionCommandGroup[];
   private commandSelector: Overlay;
   private commandSelectorOpen: boolean = false;
@@ -75,7 +78,7 @@ export class ChatPromptInput {
         ...(this.inputDisabled ? { disabled: 'disabled' } : {}),
         tabindex: '1',
         rows: '1',
-        maxlength: '100000',
+        maxlength: MAX_USER_INPUT.toString(),
         type: 'text',
         placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
         value: '',
@@ -99,6 +102,11 @@ export class ChatPromptInput {
         this.promptTextInput,
       ]
     });
+    this.remainingCharsIndicator = DomBuilder.getInstance().build({
+      type: 'span',
+      classNames: [ 'mynah-chat-prompt-chars-indicator' ],
+      innerHTML: `${MAX_USER_INPUT - this.promptTextInput.value.length}/${MAX_USER_INPUT}`
+    });
     this.sendButton = new Button({
       classNames: [ 'mynah-icon-button', 'mynah-chat-prompt-button' ],
       attributes: {
@@ -111,7 +119,17 @@ export class ChatPromptInput {
       },
     }).render;
 
-    this.codeSnippet = new CodeSnippet({ tabId: this.props.tabId });
+    this.codeSnippet = new CodeSnippet({
+      tabId: this.props.tabId,
+      onCodeSnippetAdd: (codeSnippetString) => {
+        this.currentAttachmentLength = codeSnippetString.trim().length;
+        this.updateAvailableChars();
+      },
+      onCodeSnippetRemove: () => {
+        this.currentAttachmentLength = 0;
+        this.updateAvailableChars();
+      }
+    });
 
     this.attachmentWrapper = DomBuilder.getInstance().build({
       type: 'div',
@@ -139,7 +157,8 @@ export class ChatPromptInput {
             },
             this.attachmentWrapper
           ]
-        }
+        },
+        this.remainingCharsIndicator,
       ],
     });
 
@@ -147,6 +166,19 @@ export class ChatPromptInput {
       this.promptTextInput.focus();
     }, 500);
   }
+
+  private readonly updateAvailableChars = (): void => {
+    const totalCharsUsed = this.promptTextInput.value.trim().length + this.currentAttachmentLength;
+    this.codeSnippet.availableChars = MAX_USER_INPUT - totalCharsUsed - 100;
+    this.remainingCharsIndicator.update({
+      innerHTML: `${MAX_USER_INPUT - totalCharsUsed}/${MAX_USER_INPUT}`
+    });
+    this.promptTextInput.update({
+      attributes: {
+        maxlength: (MAX_USER_INPUT - this.currentAttachmentLength).toString(),
+      }
+    });
+  };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (!this.commandSelectorOpen) {
@@ -318,6 +350,7 @@ export class ChatPromptInput {
   };
 
   private readonly calculateTextAreaHeight = (newLine?: boolean): void => {
+    this.updateAvailableChars();
     if (this.promptTextInput.value.trim() !== '') {
       this.promptTextInputWrapper.removeClass('no-text');
     } else {
@@ -337,13 +370,14 @@ export class ChatPromptInput {
     this.promptTextInput.value = '';
     this.promptTextInput.update({
       attributes: {
-        placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder')
+        placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
       }
     });
     this.promptTextInputWrapper.addClass('no-text');
     this.attachmentWrapper.clear();
     this.codeSnippet.clear();
     this.attachment = undefined;
+    this.updateAvailableChars();
   };
 
   public readonly addText = (textToAdd: string): void => {
