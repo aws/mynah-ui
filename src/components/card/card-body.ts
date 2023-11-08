@@ -50,6 +50,16 @@ export class CardBody {
         ...(this.props.children ?? [])
       ],
     });
+
+    Array.from(this.render.querySelectorAll('mark[reference-tracker]')).forEach((highlightRangeElement) => {
+      highlightRangeElement.addEventListener('mouseenter', (e) => {
+        const index = parseInt((e.target as HTMLElement).getAttribute('marker-index') ?? '0');
+        if (props.highlightRangeWithTooltip?.[index] !== undefined) {
+          this.showHighlightRangeTooltip(e as MouseEvent, props.highlightRangeWithTooltip[index].information);
+        }
+      });
+      highlightRangeElement.addEventListener('mouseleave', this.hideHighlightRangeTooltip);
+    });
   }
 
   private readonly processNode = (node: HTMLElement, contentString: string, matchingLanguage?: string): HTMLElement => {
@@ -176,16 +186,6 @@ export class CardBody {
         const processedNode = this.processNode(node as HTMLElement, props.body);
         if (processedNode.querySelectorAll !== undefined) {
           Array.from(processedNode.querySelectorAll('*:empty')).forEach(emptyElement => { emptyElement.remove(); });
-
-          Array.from(processedNode.querySelectorAll('mark[reference-tracker]')).forEach((highlightRangeElement) => {
-            highlightRangeElement.addEventListener('mouseenter', (e) => {
-              const index = parseInt((e.target as HTMLElement).getAttribute('marker-index') ?? '0');
-              if (props.highlightRangeWithTooltip?.[index] !== undefined) {
-                this.showHighlightRangeTooltip(e as MouseEvent, props.highlightRangeWithTooltip[index].information);
-              }
-            });
-            highlightRangeElement.addEventListener('mouseleave', this.hideHighlightRangeTooltip);
-          });
         }
         return processedNode;
       }))
