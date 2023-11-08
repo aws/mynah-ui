@@ -1,0 +1,80 @@
+@mixin card-body {
+    > .mynah-card-body {
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+        display: block;
+
+        > *:not(pre) {
+            font-size: var(--mynah-font-size-medium);
+        }
+        span[start][end] {
+            display: none;
+        }
+        > p:first-child {
+            &,
+            & h1:first-child,
+            & h2:first-child,
+            & h3:first-child,
+            & h4:first-child,
+            & h5:first-child {
+                margin-top: 0;
+            }
+        }
+        > p:first-child:last-of-type,
+        > p p:first-child {
+            margin: 0;
+        }
+        &,
+        & > div {
+            > *:not(div):not(pre) {
+                margin-block-start: 0.75em;
+                margin-block-end: 0.75em;
+                padding-bottom: 1px !important;
+                &:first-child {
+                    margin-block-start: 0;
+                }
+                user-select: text;
+                &:empty {
+                    display: none;
+                }
+            }
+            > p:last-of-type {
+                margin-block-end: 0;
+            }
+            mark[reference-tracker] {
+                background-color: var(--mynah-color-syntax-bg);
+                color: inherit;
+                cursor: help;
+            }
+            .amzn-mynah-search-result-highlight {
+                background-color: var(--mynah-color-highlight);
+                color: var(--mynah-color-highlight-text);
+            }
+            .amzn-mynah-search-result-ellipsis {
+                display: inline-block;
+                position: relative;
+                padding-left: var(--mynah-sizing-2);
+                margin-top: var(--mynah-sizing-1);
+                margin-bottom: var(--mynah-sizing-1);
+                font-size: calc(1em + var(--mynah-sizing-1)) !important;
+                user-select: none;
+                cursor: default;
+                height: var(--mynah-sizing-7);
+
+                &:before {
+                    pointer-events: none;
+                    content: "";
+                    width: calc(1em + var(--mynah-sizing-2));
+                    height: calc(1em + var(--mynah-sizing-2));
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    background-color: currentColor;
+                    opacity: 0.1;
+                    border-radius: var(--mynah-sizing-1);
+                }
+            }
+        }
+    }
+}

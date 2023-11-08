@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { EngagementType, MynahEventNames, Suggestion, SuggestionMetaData } from '../../static';
+import { Card } from '../card/card';
 import { SuggestionCardBody } from './suggestion-card-body';
 import { SuggestionCardHeader } from './suggestion-card-header';
 
@@ -30,9 +31,7 @@ export class SuggestionCard {
   render: ExtendedHTMLElement;
   constructor (props: SuggestionCardProps) {
     this.suggestion = props.suggestion;
-    this.render = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-card', props.compact !== undefined ? 'mynah-card-compact' : '', props.compact === 'flat' ? 'mynah-card-compact-flat' : '' ],
+    this.render = new Card({
       events: {
         mouseenter: e => {
           if (this.engagementStartTime === -1) {
@@ -94,7 +93,7 @@ export class SuggestionCard {
         }).render,
         ...(props.suggestion.body !== undefined ? [ new SuggestionCardBody({ suggestion: props.suggestion, showFooterButtons: props.showFooterButtons }).render ] : []),
       ],
-    });
+    }).render;
   }
 
   private readonly resetEngagement = (): void => {

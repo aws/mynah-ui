@@ -79,6 +79,7 @@ export enum MynahEventNames {
   RESET_STORE = 'resetStore',
   FEEDBACK_SET = 'feedbackSet',
   CARD_VOTE = 'cardVote',
+  LINK_OPEN = 'linkOpen',
   SUGGESTION_OPEN = 'suggestionOpen',
   SUGGESTION_LINK_COPY = 'suggestionLinkCopy',
   SUGGESTION_ENGAGEMENT = 'suggestionEngagement',

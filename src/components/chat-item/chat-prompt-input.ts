@@ -14,6 +14,7 @@ import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
 import { CodeSnippet } from './prompt-input/code-snippet';
 
+const MAX_INPUT = 2000;
 export interface ChatPromptInputProps {
   tabId: string;
 }
@@ -25,6 +26,7 @@ export class ChatPromptInput {
   private readonly promptTextInput: ExtendedHTMLElement;
   private readonly promptTextInputSizer: ExtendedHTMLElement;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
+  private readonly remainingCharsIndicator: ExtendedHTMLElement;
   private readonly sendButton: ExtendedHTMLElement;
   private readonly codeSnippet: CodeSnippet;
   private quickActionCommands: QuickActionCommandGroup[];
@@ -75,7 +77,7 @@ export class ChatPromptInput {
         ...(this.inputDisabled ? { disabled: 'disabled' } : {}),
         tabindex: '1',
         rows: '1',
-        maxlength: '100000',
+        maxlength: MAX_INPUT.toString(),
         type: 'text',
         placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
         value: '',
@@ -98,6 +100,11 @@ export class ChatPromptInput {
         this.promptTextInputSizer,
         this.promptTextInput,
       ]
+    });
+    this.remainingCharsIndicator = DomBuilder.getInstance().build({
+      type: 'span',
+      classNames: [ 'mynah-chat-prompt-chars-indicator' ],
+      innerHTML: `${MAX_INPUT - this.promptTextInput.value.length}`
     });
     this.sendButton = new Button({
       classNames: [ 'mynah-icon-button', 'mynah-chat-prompt-button' ],
@@ -134,6 +141,7 @@ export class ChatPromptInput {
               children: [
                 this.promptTextInputCommand.render,
                 this.promptTextInputWrapper,
+                this.remainingCharsIndicator,
                 this.sendButton,
               ]
             },
@@ -318,6 +326,9 @@ export class ChatPromptInput {
   };
 
   private readonly calculateTextAreaHeight = (newLine?: boolean): void => {
+    this.remainingCharsIndicator.update({
+      innerHTML: `${MAX_INPUT - this.promptTextInput.value.trim().length}`
+    });
     if (this.promptTextInput.value.trim() !== '') {
       this.promptTextInputWrapper.removeClass('no-text');
     } else {
@@ -331,6 +342,9 @@ export class ChatPromptInput {
   };
 
   public readonly clearTextArea = (): void => {
+    this.remainingCharsIndicator.update({
+      innerHTML: `${MAX_INPUT}`
+    });
     this.resetTextAreaHeight();
     this.selectedCommand = '';
     this.promptTextInputCommand.setCommand('');

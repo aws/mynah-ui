@@ -4,10 +4,12 @@
  */
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { ChatItem, ChatItemType } from '../../static';
+import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
+import { Card } from '../card/card';
+import { CardBody } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
-import { SuggestionCardBody } from '../suggestion-card/suggestion-card-body';
 import { ChatItemFollowUpContainer } from './chat-item-followup';
 import { ChatItemRelatedContent } from './chat-item-related-content';
 import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
@@ -20,7 +22,7 @@ export interface ChatItemCardProps {
 export class ChatItemCard {
   readonly props: ChatItemCardProps;
   render: ExtendedHTMLElement;
-  suggestionCardBody: SuggestionCardBody;
+  contentBody: CardBody;
   chatAvatar: ExtendedHTMLElement;
   constructor (props: ChatItemCardProps) {
     this.props = props;
@@ -88,9 +90,7 @@ export class ChatItemCard {
         ? [ this.chatAvatar ]
         : []),
       ...(this.props.chatItem.body !== undefined
-        ? [ DomBuilder.getInstance().build({
-            type: 'div',
-            classNames: [ 'mynah-card' ],
+        ? [ new Card({
             children: [
               ((): ExtendedHTMLElement => {
                 let treeWrapper;
@@ -98,8 +98,8 @@ export class ChatItemCard {
                   treeWrapper = new ChatItemTreeViewWrapper({ tabId: this.props.tabId, messageId: this.props.chatItem.messageId ?? '', files: this.props.chatItem.body as unknown as string[] });
                   this.props.chatItem.body = '';
                 }
-                this.suggestionCardBody = new SuggestionCardBody({
-                  suggestion: { id: this.props.chatItem.messageId, body: this.props.chatItem.body as string },
+                this.contentBody = new CardBody({
+                  body: this.props.chatItem.body as string,
                   highlightRangeWithTooltip: this.props.chatItem.codeReference,
                   children: this.props.chatItem.relatedContent !== undefined
                     ? [
@@ -110,16 +110,32 @@ export class ChatItemCard {
                           title: this.props.chatItem.relatedContent?.title
                         }).render
                       ]
-                    : []
+                    : [],
+                  onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
+                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
+                      messageId: this.props.chatItem.messageId,
+                      type,
+                      text,
+                      referenceTrackerInformation
+                    });
+                  },
+                  onInsertToCursorPosition: (type, text, referenceTrackerInformation) => {
+                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
+                      messageId: this.props.chatItem.messageId,
+                      type,
+                      text,
+                      referenceTrackerInformation
+                    });
+                  }
                 });
                 if (treeWrapper !== undefined) {
-                  this.suggestionCardBody.cardBody.update({ children: [ treeWrapper.render ] });
+                  this.contentBody.render.update({ children: [ treeWrapper.render ] });
                 }
-                return this.suggestionCardBody.render;
+                return this.contentBody.render;
               })(),
               ...(this.props.chatItem.canBeVoted === true && this.props.chatItem.messageId !== undefined ? [ new ChatItemRelevanceVote({ tabId: this.props.tabId, messageId: this.props.chatItem.messageId }).render ] : [])
-            ],
-          }) ]
+            ]
+          }).render ]
         : ''),
       this.props.chatItem.followUp?.text !== undefined ? new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render : ''
     ];

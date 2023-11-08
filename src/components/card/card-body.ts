@@ -6,14 +6,15 @@
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import {
   MynahEventNames,
+  OnCopiedToClipboardFunction,
+  OnInsertToCursorPositionFunction,
   ReferenceTrackerInformation,
-  Suggestion,
 } from '../../static';
-import { SyntaxHighlighter } from '../syntax-highlighter';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { marked } from 'marked';
 import unescapeHTML from 'unescape-html';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
+import { SyntaxHighlighter } from '../syntax-highlighter';
 
 const PREVIEW_DELAY = 500;
 export const highlightersWithTooltip = {
@@ -27,30 +28,31 @@ export const highlightersWithTooltip = {
   },
 };
 
-export interface SuggestionCardBodyProps {
-  suggestion: Partial<Suggestion>;
+export interface CardBodyProps {
+  body: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   highlightRangeWithTooltip?: ReferenceTrackerInformation[];
-  showFooterButtons?: boolean;
+  onCopiedToClipboard?: OnCopiedToClipboardFunction;
+  onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
 }
-export class SuggestionCardBody {
+export class CardBody {
   render: ExtendedHTMLElement;
-  props: SuggestionCardBodyProps;
+  props: CardBodyProps;
   private highlightRangeTooltip: Overlay | null;
   private highlightRangeTooltipTimeout: ReturnType<typeof setTimeout>;
-  constructor (props: SuggestionCardBodyProps) {
+  constructor (props: CardBodyProps) {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-body' ],
       children: [
-        ...this.getCardBodyChildren(this.props),
+        ...this.getContentBodyChildren(this.props),
         ...(this.props.children ?? [])
       ],
     });
   }
 
-  private readonly processNode = (node: HTMLElement, suggestion?: Partial<Suggestion>, matchingLanguage?: string): HTMLElement => {
+  private readonly processNode = (node: HTMLElement, contentString: string, matchingLanguage?: string): HTMLElement => {
     const elementFromNode: HTMLElement = node;
     if (elementFromNode.tagName?.toLowerCase() === 'a') {
       const url = elementFromNode.getAttribute('href') ?? '';
@@ -59,7 +61,7 @@ export class SuggestionCardBody {
           type: 'a',
           events: {
             click: (e?: MouseEvent) => {
-              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SUGGESTION_OPEN, { suggestion: { id: url, url }, event: e });
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.LINK_OPEN, { link: url, event: e });
             },
           },
           attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },
@@ -78,30 +80,24 @@ export class SuggestionCardBody {
         codeStringWithMarkup: unescapeHTML(codeString),
         language: snippetLanguage?.trim() !== '' ? snippetLanguage : matchingLanguage,
         keepHighlights: true,
-        showCopyOptions: isBlockCode && (this.props.showFooterButtons ?? true),
+        showCopyOptions: isBlockCode,
         block: isBlockCode,
         onCopiedToClipboard: (type, text) => {
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
-            messageId: suggestion?.id,
-            type,
-            text,
-            referenceTrackerInformation: this.getReferenceTrackerInformationFromElement(highlighter)
-          });
+          if (this.props.onCopiedToClipboard != null) {
+            this.props.onCopiedToClipboard(type, text, this.getReferenceTrackerInformationFromElement(highlighter));
+          }
         },
         onInsertToCursorPosition: (type, text) => {
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
-            messageId: suggestion?.id,
-            type,
-            text,
-            referenceTrackerInformation: this.getReferenceTrackerInformationFromElement(highlighter)
-          });
+          if (this.props.onInsertToCursorPosition != null) {
+            this.props.onInsertToCursorPosition(type, text, this.getReferenceTrackerInformationFromElement(highlighter));
+          }
         }
       }).render;
       return highlighter;
     }
 
     elementFromNode.childNodes.forEach((child) => {
-      elementFromNode.replaceChild(this.processNode(child as HTMLElement, suggestion), child);
+      elementFromNode.replaceChild(this.processNode(child as HTMLElement, contentString), child);
     });
     return elementFromNode;
   };
@@ -132,10 +128,8 @@ export class SuggestionCardBody {
             type: 'div',
             classNames: [ 'mynah-ui-syntax-highlighter-highlight-tooltip' ],
             children: [
-              new SuggestionCardBody({
-                suggestion: {
-                  body: tooltipText,
-                }
+              new CardBody({
+                body: tooltipText,
               }).render
             ]
           }
@@ -152,9 +146,9 @@ export class SuggestionCardBody {
     }
   };
 
-  private readonly getCardBodyChildren = (props: SuggestionCardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
-    let incomingBody = props.suggestion.body;
-    if (props.suggestion.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
+  private readonly getContentBodyChildren = (props: CardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
+    let incomingBody = props.body;
+    if (props.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
       props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
         if (incomingBody !== undefined) {
           const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttributes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
@@ -176,10 +170,10 @@ export class SuggestionCardBody {
       ...(Array.from(
         DomBuilder.getInstance().build({
           type: 'div',
-          innerHTML: `${marked((incomingBody as string), { breaks: true })}`,
+          innerHTML: `${marked((incomingBody), { breaks: true })}`,
         }).childNodes
       ).map(node => {
-        const processedNode = this.processNode(node as HTMLElement, props.suggestion);
+        const processedNode = this.processNode(node as HTMLElement, props.body);
         if (processedNode.querySelectorAll !== undefined) {
           Array.from(processedNode.querySelectorAll('*:empty')).forEach(emptyElement => { emptyElement.remove(); });
 

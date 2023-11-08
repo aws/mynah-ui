@@ -1,15 +1,12 @@
-.pointer {
-    cursor: pointer;
-}
+@import "votes-wrapper";
+@import "card-header";
+@import "card-body";
 
 .mynah-card {
     text-decoration: none;
     outline: none;
     position: relative;
     transition: var(--mynah-short-transition-rev);
-    padding: var(--mynah-sizing-5);
-    background-color: var(--mynah-card-bg);
-    border-radius: var(--mynah-card-radius);
     box-sizing: border-box;
     display: flex;
     flex-flow: column nowrap;
@@ -18,441 +15,35 @@
     flex: auto 0 0;
     width: 100%;
     overflow: hidden;
-    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    border-radius: var(--mynah-card-radius);
+
+    &.padding {
+        &-none {
+            padding: 0;
+        }
+        &-small {
+            padding: var(--mynah-sizing-1);
+        }
+        &-medium {
+            padding: var(--mynah-sizing-3);
+        }
+        &-large {
+            padding: var(--mynah-sizing-5);
+        }
+    }
+    &.background {
+        background-color: var(--mynah-card-bg);
+    }
+    &.border {
+        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    }
 
     > * {
         z-index: 10;
         position: relative;
     }
 
-    > .mynah-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        opacity: 1;
-        gap: var(--mynah-sizing-2);
-        transition: var(--mynah-very-short-transition);
-        > .mynah-source-thumbnail {
-            font-style: normal;
-            font-weight: normal;
-            display: none;
-            width: var(--mynah-sizing-8);
-            height: var(--mynah-sizing-8);
-            font-variant: normal;
-            text-transform: none;
-            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-            border-radius: 100%;
-            background-size: 85%;
-            background-clip: content-box;
-            background-position: center center;
-            background-repeat: no-repeat;
-            align-self: flex-start;
-            box-sizing: border-box;
-            background-color: var(--mynah-card-bg);
-            position: relative;
-            overflow: hidden;
-            &:after {
-                content: "";
-                pointer-events: none;
-                box-sizing: border-box;
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                width: auto;
-                height: auto;
-                border: 2px solid var(--mynah-card-bg);
-                border-radius: 100%;
-            }
-        }
-        > .mynah-card-title-wrapper {
-            flex: 1 1 0;
-            display: flex;
-            flex-flow: column nowrap;
-            align-items: flex-start;
-            gap: var(--mynah-sizing-half);
-            max-width: 100%;
-            overflow: hidden;
-            cursor: pointer;
-            &:hover > .mynah-card-title > .mynah-card-expand-icon {
-                opacity: 0.75;
-                align-self: baseline;
-            }
-            > .mynah-card-title {
-                font-size: var(--mynah-font-size-medium);
-                font-weight: 500;
-                color: var(--mynah-color-text-strong);
-                width: 100%;
-                display: inline-flex;
-                flex-flow: row nowrap;
-                align-items: center;
-                justify-content: flex-start;
-                gap: var(--mynah-sizing-2);
-                white-space: normal;
-                text-overflow: ellipsis;
-                text-decoration: none;
-                outline: none;
-                overflow: hidden;
-                > .mynah-card-expand-icon {
-                    transition: var(--mynah-short-transition-rev);
-                    opacity: 0;
-                    font-size: var(--mynah-font-size-xsmall);
-                    display: inline;
-                    padding: var(--mynah-sizing-1);
-                    border: var(--mynah-border-width) solid currentColor;
-                    border-radius: 2px;
-                }
-            }
-            > .mynah-card-url {
-                font-size: var(--mynah-font-size-xsmall);
-                font-weight: 300;
-                color: var(--mynah-color-text-link);
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                text-decoration: none;
-                outline: none;
-                overflow: hidden;
-                max-width: 100%;
-                position: relative;
-                padding-bottom: var(--mynah-sizing-1);
-                display: inline-block;
-                transition: var(--mynah-short-transition-rev);
-                &:after {
-                    content: "";
-                    position: relative;
-                    display: block;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 1px;
-                    border-radius: var(--mynah-sizing-half);
-                    background-color: currentColor;
-                    transform: translate3d(-30%, 0, 0);
-                    transition: var(--mynah-short-transition-rev);
-                    opacity: 0;
-                }
-                &:hover {
-                    &:after {
-                        transform: translate3d(0, 0, 0);
-                        opacity: 1;
-                    }
-                }
-                > span {
-                    &:not(:last-child):after {
-                        content: ">";
-                        margin-left: var(--mynah-sizing-1);
-                        margin-right: var(--mynah-sizing-1);
-                    }
-                    &:nth-child(3) ~ span:not(:last-child) {
-                        display: none;
-                    }
-                    &:last-child {
-                        font-weight: bold;
-                    }
-                    &:nth-child(3):not(:last-child):after {
-                        content: "> ... >";
-                    }
-                }
-            }
-            > .mynah-title-meta-block {
-                display: flex;
-                flex-flow: row wrap;
-                align-items: center;
-                justify-content: flex-start;
-                gap: var(--mynah-sizing-1);
-                margin-bottom: var(--mynah-sizing-half);
-                &:empty {
-                    display: none;
-                }
-                > .mynah-title-meta-block-item {
-                    display: inline-flex;
-                    flex-flow: row nowrap;
-                    align-items: center;
-                    justify-content: flex-start;
-                    gap: var(--mynah-sizing-1);
-                    padding: calc(var(--mynah-sizing-half) * 3);
-                    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-                    border-radius: var(--mynah-button-radius);
-                    opacity: 0.75;
-                    > .mynah-icon {
-                        opacity: 0.5;
-                        font-size: var(--mynah-font-size-medium);
-                        color: var(--mynah-color-text-weak);
-                    }
-                    > .mynah-title-meta-block-item-text {
-                        font-size: var(--mynah-font-size-xxsmall);
-                        color: var(--mynah-color-text-weak);
-                        &::first-letter {
-                            text-transform: capitalize;
-                        }
-                    }
-                    &.approved-answer {
-                        border-color: green;
-                        position: relative;
-                        &:before {
-                            content: "";
-                            border-radius: var(--mynah-button-radius);
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            right: 0;
-                            bottom: 0;
-                            background-color: green;
-                            opacity: 0.04;
-                        }
-                        > .mynah-icon {
-                            opacity: 1;
-                            color: green;
-                            border-radius: var(--mynah-button-radius);
-                            width: var(--mynah-sizing-3);
-                            height: var(--mynah-sizing-3);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    > .mynah-card-center {
-        border: var(--mynah-button-border-width) solid var(--mynah-border-default);
-        width: 100%;
-        color: var(--mynah-color-text-default);
-        flex: 1 1 0%;
-        overflow: hidden;
-        line-height: normal;
-        pointer-events: all;
-        z-index: 100;
-        display: flex;
-        flex-flow: column nowrap;
-        gap: var(--mynah-sizing-2);
-        box-sizing: border-box;
-
-        > *:not(pre) {
-            font-size: var(--mynah-font-size-medium);
-        }
-
-        > .mynah-card-body {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-            display: block;
-            span[start][end] {
-                display: none;
-            }
-            > p:first-child {
-                &,
-                & h1:first-child,
-                & h2:first-child,
-                & h3:first-child,
-                & h4:first-child,
-                & h5:first-child {
-                    margin-top: 0;
-                }
-            }
-            > p:first-child:last-of-type,
-            > p p:first-child {
-                margin: 0;
-            }
-            &,
-            & > div {
-                > *:not(div):not(pre) {
-                    margin-block-start: 0.75em;
-                    margin-block-end: 0.75em;
-                    padding-bottom: 1px !important;
-                    &:first-child {
-                        margin-block-start: 0;
-                    }
-                    user-select: text;
-                    &:empty {
-                        display: none;
-                    }
-                }
-                > p:last-of-type {
-                    margin-block-end: 0;
-                }
-                mark[reference-tracker] {
-                    background-color: var(--mynah-color-syntax-bg);
-                    color: inherit;
-                    cursor: help;
-                }
-                .amzn-mynah-search-result-highlight {
-                    background-color: var(--mynah-color-highlight);
-                    color: var(--mynah-color-highlight-text);
-                }
-                .amzn-mynah-search-result-ellipsis {
-                    display: inline-block;
-                    position: relative;
-                    padding-left: var(--mynah-sizing-2);
-                    margin-top: var(--mynah-sizing-1);
-                    margin-bottom: var(--mynah-sizing-1);
-                    font-size: calc(1em + var(--mynah-sizing-1)) !important;
-                    user-select: none;
-                    cursor: default;
-                    height: var(--mynah-sizing-7);
-
-                    &:before {
-                        pointer-events: none;
-                        content: "";
-                        width: calc(1em + var(--mynah-sizing-2));
-                        height: calc(1em + var(--mynah-sizing-2));
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        background-color: currentColor;
-                        opacity: 0.1;
-                        border-radius: var(--mynah-sizing-1);
-                    }
-                }
-            }
-        }
-
-        .mynah-card-under-body-button {
-            align-self: flex-end;
-            height: auto;
-            opacity: 0;
-            > span {
-                padding: 0;
-                padding-left: var(--mynah-sizing-1);
-                font-size: var(--mynah-font-size-xsmall);
-            }
-        }
-    }
-
-    &:hover .mynah-card-under-body-button {
-        opacity: 1;
-    }
-
-    &.mynah-card-compact {
-        padding: var(--mynah-sizing-2);
-        gap: var(--mynah-sizing-1);
-        > .mynah-card-header {
-            gap: var(--mynah-sizing-1);
-            > .mynah-source-thumbnail {
-                width: var(--mynah-sizing-6);
-                height: var(--mynah-sizing-6);
-                margin-right: var(--mynah-sizing-1);
-            }
-            > .mynah-card-title-wrapper {
-                gap: 0;
-                > .mynah-card-title {
-                    font-size: var(--mynah-font-size-small);
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    width: 100%;
-                    display: block;
-                    > .mynah-card-expand-icon {
-                        display: none;
-                    }
-                }
-                > .mynah-card-url {
-                    font-size: var(--mynah-font-size-xsmall);
-                }
-                > .mynah-title-meta-block {
-                    display: none;
-                }
-            }
-        }
-        > .mynah-card-center {
-            display: none;
-        }
-        &.mynah-card-compact-flat {
-            gap: 0;
-            &,
-            &:after {
-                background-color: transparent;
-                border-color: transparent;
-            }
-
-            > .mynah-card-center {
-                > .mynah-card-body {
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    .mynah-syntax-highlighter {
-                        display: none;
-                    }
-                    &,
-                    & * {
-                        font-size: var(--mynah-font-size-xsmall);
-                    }
-                    max-height: 50px;
-                    color: var(--mynah-color-text-weak);
-                }
-            }
-        }
-        > .mynah-card-center {
-            padding-left: var(--mynah-sizing-8);
-        }
-        .mynah-syntax-highlighter > pre {
-            padding: var(--mynah-sizing-1);
-        }
-    }
-
-    > .mynah-card-votes-wrapper {
-        align-items: center;
-        gap: var(--mynah-sizing-2);
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        border-top: 1px solid var(--mynah-color-border-default);
-        padding-top: var(--mynah-sizing-3);
-        font-size: var(--mynah-font-size-xsmall);
-        > span.mynah-feedback-thanks {
-            overflow: hidden;
-        }
-        > .mynah-button > span {
-            padding: 0;
-            font-size: var(--mynah-font-size-xsmall);
-            color: var(--mynah-color-text-link);
-        }
-        > .mynah-vote-text {
-            color: var(--mynah-color-text-weak);
-            font-size: var(--mynah-font-size-xsmall);
-        }
-        > .mynah-card-vote {
-            position: relative;
-            overflow: visible;
-            display: inline-flex;
-            align-items: center;
-            box-sizing: border-box;
-            gap: var(--mynah-sizing-3);
-            > .mynah-vote-radio {
-                display: none;
-            }
-            > .mynah-vote-label {
-                z-index: 10;
-                cursor: pointer;
-                font-size: var(--mynah-font-size-small);
-                transition: var(--mynah-short-transition);
-                width: var(--mynah-sizing-5);
-                height: var(--mynah-sizing-5);
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
-                color: var(--mynah-color-text-weak);
-                opacity: 0.5;
-                > * {
-                    pointer-events: none;
-                }
-                > i {
-                    height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
-                }
-            }
-            > .mynah-vote-up-radio:checked {
-                & ~ .mynah-vote-up {
-                    color: var(--mynah-color-text-default);
-                    opacity: 1;
-                }
-            }
-            > .mynah-vote-down-radio:checked {
-                & ~ .mynah-vote-down {
-                    color: var(--mynah-color-text-default);
-                    opacity: 1;
-                }
-            }
-        }
-    }
+    @include card-header();
+    @include card-body();
+    @include votes-wrapper();
 }
