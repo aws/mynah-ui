@@ -79,6 +79,7 @@ export class ChatItemFollowUpContainer {
           .getInstance()
           .dispatch(MynahEventNames.SUGGESTION_OPEN, {
             tabId: this.props.tabId,
+            messageId: this.props.chatItem.messageId,
             suggestion: { id: url, url },
             event,
           });
