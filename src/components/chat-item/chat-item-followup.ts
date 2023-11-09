@@ -77,10 +77,10 @@ export class ChatItemFollowUpContainer {
       a.onclick = (event?: MouseEvent) => {
         MynahUIGlobalEvents
           .getInstance()
-          .dispatch(MynahEventNames.SUGGESTION_OPEN, {
+          .dispatch(MynahEventNames.LINK_CLICK, {
             tabId: this.props.tabId,
             messageId: this.props.chatItem.messageId,
-            suggestion: { id: url, url },
+            link: url,
             event,
           });
       };

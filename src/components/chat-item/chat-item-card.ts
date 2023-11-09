@@ -11,7 +11,7 @@ import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemFollowUpContainer } from './chat-item-followup';
-import { ChatItemRelatedContent } from './chat-item-related-content';
+import { ChatItemSourceLinksContainer } from './chat-item-source-links';
 import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 
@@ -91,6 +91,12 @@ export class ChatItemCard {
         : []),
       ...(this.props.chatItem.body !== undefined
         ? [ new Card({
+            onCardEngaged: (engagement) => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ENGAGEMENT, {
+                engagement,
+                messageId: this.props.chatItem.messageId
+              });
+            },
             children: [
               ((): ExtendedHTMLElement => {
                 let treeWrapper;
@@ -103,7 +109,7 @@ export class ChatItemCard {
                   highlightRangeWithTooltip: this.props.chatItem.codeReference,
                   children: this.props.chatItem.relatedContent !== undefined
                     ? [
-                        new ChatItemRelatedContent({
+                        new ChatItemSourceLinksContainer({
                           messageId: this.props.chatItem.messageId ?? 'unknown',
                           tabId: this.props.tabId,
                           relatedContent: this.props.chatItem.relatedContent?.content,
@@ -125,6 +131,13 @@ export class ChatItemCard {
                       type,
                       text,
                       referenceTrackerInformation
+                    });
+                  },
+                  onLinkClick: (url, e) => {
+                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.LINK_CLICK, {
+                      messageId: this.props.chatItem.messageId,
+                      link: url,
+                      event: e
                     });
                   }
                 });

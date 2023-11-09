@@ -124,7 +124,7 @@
                             font-size: var(--mynah-font-size-xsmall);
                             margin: 0;
                         }
-                        .mynah-card-title {
+                        .mynah-source-link-title {
                             font-size: var(--mynah-font-size-small);
                             font-weight: 400;
                         }
@@ -296,7 +296,7 @@
                 > .mynah-chat-item-card-related-content {
                     > .mynah-chat-item-card-related-content-item > .mynah-card-compact {
                         opacity: 1;
-                        > .mynah-card-header {
+                        > .mynah-source-link-header {
                             opacity: 1;
                         }
                     }

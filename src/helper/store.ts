@@ -13,7 +13,7 @@ export class EmptyMynahUIDataModel {
   data: Required<MynahUIDataModel>;
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
-      tabTitle: Config.getInstance().config.texts.awsqTitle,
+      tabTitle: Config.getInstance().config.texts.mainTitle,
       loadingChat: false,
       cancelButtonWhenLoading: true,
       showChatAvatars: false,

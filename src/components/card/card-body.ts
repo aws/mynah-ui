@@ -5,12 +5,10 @@
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import {
-  MynahEventNames,
   OnCopiedToClipboardFunction,
   OnInsertToCursorPositionFunction,
   ReferenceTrackerInformation,
 } from '../../static';
-import { MynahUIGlobalEvents } from '../../helper/events';
 import { marked } from 'marked';
 import unescapeHTML from 'unescape-html';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
@@ -32,6 +30,7 @@ export interface CardBodyProps {
   body: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   highlightRangeWithTooltip?: ReferenceTrackerInformation[];
+  onLinkClick?: (url: string, e: MouseEvent) => void;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
   onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
 }
@@ -70,8 +69,10 @@ export class CardBody {
         {
           type: 'a',
           events: {
-            click: (e?: MouseEvent) => {
-              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.LINK_OPEN, { link: url, event: e });
+            click: (e: MouseEvent) => {
+              if (this.props.onLinkClick !== undefined) {
+                this.props.onLinkClick(url, e);
+              }
             },
           },
           attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },

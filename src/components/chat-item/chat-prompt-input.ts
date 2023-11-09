@@ -6,7 +6,7 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
-import { KeyMap, MynahEventNames, QuickActionCommand, QuickActionCommandGroup, Suggestion } from '../../static';
+import { KeyMap, MynahEventNames, QuickActionCommand, QuickActionCommandGroup, SourceLink } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -35,7 +35,7 @@ export class ChatPromptInput {
   private commandSelectorOpen: boolean = false;
   private selectedCommand: string = '';
   private inputDisabled: boolean;
-  private attachment?: Suggestion;
+  private attachment?: SourceLink;
   private filteredCommandsList: QuickActionCommandGroup[];
   constructor (props: ChatPromptInputProps) {
     this.props = props;

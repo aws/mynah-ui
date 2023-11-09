@@ -1,5 +1,5 @@
 @import "../votes-wrapper";
-@import "card-header";
+@import "../source-link-header";
 @import "card-body";
 
 .mynah-card {
@@ -43,7 +43,7 @@
         position: relative;
     }
 
-    @include card-header();
+    @include source-link-header();
     @include card-body();
     @include votes-wrapper();
 }

@@ -51,7 +51,7 @@ export interface MynahUIDataModel {
   */
   promptInputDisabledState?: boolean;
   /**
-  * List of Suggestion objects to be shown on the web suggestions search screen
+  * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
   // TODO
@@ -79,15 +79,13 @@ export enum MynahEventNames {
   RESET_STORE = 'resetStore',
   FEEDBACK_SET = 'feedbackSet',
   CARD_VOTE = 'cardVote',
-  LINK_OPEN = 'linkOpen',
-  SUGGESTION_OPEN = 'suggestionOpen',
-  SUGGESTION_LINK_COPY = 'suggestionLinkCopy',
-  SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
+  SOURCE_LINK_CLICK = 'sourceLinkClick',
+  LINK_CLICK = 'linkClick',
+  CHAT_ITEM_ENGAGEMENT = 'chatItemEngagement',
   COPY_CODE_TO_CLIPBOARD = 'copyCodeToClipboard',
   INSERT_CODE_TO_CURSOR_POSITION = 'insertCodeToCursorPosition',
   CHAT_PROMPT = 'chatPrompt',
   FOLLOW_UP_CLICKED = 'followUpClicked',
-  UPDATE_LAST_CHAT_ANSWER_STREAM = 'updateLastChatAnswerStream',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   OPEN_DIFF = 'openDiff',
@@ -102,7 +100,7 @@ export enum MynahPortalNames {
   FEEDBACK_FORM = 'feedbackForm',
 };
 
-export interface SuggestionMetaData {
+export interface SourceLinkMetaData {
   stars?: number; // repo stars
   forks?: number; // repo forks
   answerCount?: number; // total answers if it is a question
@@ -112,13 +110,13 @@ export interface SuggestionMetaData {
   lastActivityDate?: number; // creation or last update date for question or answer
 }
 
-export interface Suggestion {
+export interface SourceLink {
   title: string;
   id?: string;
-  url?: string;
+  url: string;
   body?: string;
   type?: string;
-  metadata?: Record<string, SuggestionMetaData>;
+  metadata?: Record<string, SourceLinkMetaData>;
 }
 export enum ChatItemType {
   PROMPT = 'prompt',
@@ -141,7 +139,7 @@ export interface ChatItem {
   };
   relatedContent?: {
     title?: string;
-    content: Suggestion[];
+    content: SourceLink[];
   };
   codeReference?: ReferenceTrackerInformation[];
 }
@@ -150,7 +148,7 @@ export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
-  attachment?: Suggestion;
+  attachment?: SourceLink;
 }
 
 export interface ChatItemFollowUp extends ChatPrompt {
@@ -198,11 +196,6 @@ export type CodeSelectionType = 'selection' | 'block';
 export type OnCopiedToClipboardFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
 export type OnInsertToCursorPositionFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
 
-export enum SuggestionEventName {
-  OPEN = 'openSuggestion',
-  COPY = 'copy',
-}
-
 export enum RelevancyVoteType {
   UP = 'upvote',
   DOWN = 'downvote',
@@ -220,12 +213,7 @@ export enum EngagementType {
   TIME = 'timespend',
 }
 
-export interface SuggestionEngagement {
-  /**
-     * Suggestion information
-     */
-  suggestion: Suggestion;
-
+export interface Engagement {
   /**
      * Engagement type
      */
@@ -234,11 +222,6 @@ export interface SuggestionEngagement {
      * Total duration in ms till the engagement triggered.
      */
   engagementDurationTillTrigger: number;
-  /**
-     * This is a little bit more than what you might expect on a normal scroll position of the suggestion card.
-     * This attribute gives the value for how much the users traveled their mouses and additionally how much they scrolled to focus on that suggestion
-     */
-  scrollDistanceToEngage: number;
   /**
      * Total mouse movement in x and y directions till the engagement triggered.
      * To avoid confusion: this is not the distance between start and end points, this is the total traveled distance.
@@ -267,7 +250,7 @@ export enum NotificationType {
 
 export interface ConfigModel {
   texts: {
-    awsqTitle: string;
+    mainTitle: string;
     feedbackFormTitle: string;
     feedbackFormOptionsLabel: string;
     feedbackFormCommentLabel: string;

@@ -6,10 +6,7 @@
 import { Notification } from './components/notification/notification';
 import { DomBuilder, ExtendedHTMLElement } from './helper/dom';
 import {
-  SuggestionEngagement,
   MynahPortalNames,
-  Suggestion,
-  SuggestionEventName,
   RelevancyVoteType,
   FeedbackPayload,
   MynahUIDataModel,
@@ -23,28 +20,28 @@ import {
   ConfigModel,
   ReferenceTrackerInformation,
   CodeSelectionType,
+  Engagement,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
 import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
-import './styles/styles.scss';
 import { Config } from './helper/config';
+import './styles/styles.scss';
 
 export {
   FeedbackPayload,
   RelevancyVoteType,
-  Suggestion,
   EngagementType,
-  SuggestionEngagement,
-  SuggestionEventName,
+  Engagement,
   MynahUIDataModel,
   NotificationType,
   ChatItem,
   ChatItemFollowUp,
   ChatItemType,
-  ChatPrompt
+  ChatPrompt,
+  SourceLink
 } from './static';
 export {
   ToggleOption
@@ -68,10 +65,11 @@ export interface MynahUIProps {
   onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
   onTabRemove?: (tabId: string) => void;
-  onSuggestionEngagement?: (tabId: string, engagement: SuggestionEngagement) => void;
+  onChatItemEngagement?: (tabId: string, messageId: string, engagement: Engagement) => void;
   onCopyCodeToClipboard?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
   onCodeInsertToCursorPosition?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
-  onSuggestionInteraction?: (tabId: string, messageId: string, eventName: SuggestionEventName, suggestion: Suggestion, mouseEvent?: MouseEvent) => void;
+  onSourceLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
+  onLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
   onOpenDiff?: (tabId: string, leftPath: string, rightPath: string, messageId?: string) => void;
 }
@@ -191,11 +189,14 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_ENGAGEMENT, (engagement: SuggestionEngagement) => {
-      if (this.props.onSuggestionEngagement !== undefined) {
-        this.props.onSuggestionEngagement(
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ENGAGEMENT, (data: {
+      engagement: Engagement; messageId: string;
+    }) => {
+      if (this.props.onChatItemEngagement !== undefined) {
+        this.props.onChatItemEngagement(
           MynahUITabsStore.getInstance().getSelectedTabId(),
-          engagement
+          data.messageId,
+          data.engagement
         );
       }
     });
@@ -224,23 +225,22 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_OPEN, (data) => {
-      if (this.props.onSuggestionInteraction !== undefined) {
-        this.props.onSuggestionInteraction(
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SOURCE_LINK_CLICK, (data) => {
+      if (this.props.onSourceLinkClick !== undefined) {
+        this.props.onSourceLinkClick(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
-          SuggestionEventName.OPEN,
-          data.suggestion,
+          data.link,
           data.event
         );
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.LINK_OPEN, (data) => {
-      if (this.props.onSuggestionInteraction !== undefined) {
-        this.props.onSuggestionInteraction(
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.LINK_CLICK, (data) => {
+      if (this.props.onLinkClick !== undefined) {
+        this.props.onLinkClick(
           MynahUITabsStore.getInstance().getSelectedTabId(),
-          SuggestionEventName.OPEN,
+          data.messageId,
           data.link,
           data.event
         );
@@ -253,17 +253,6 @@ export class MynahUI {
           data.tabId,
           data.messageId,
           data.vote
-        );
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SUGGESTION_LINK_COPY, (data) => {
-      if (this.props.onSuggestionInteraction !== undefined) {
-        this.props.onSuggestionInteraction(
-          MynahUITabsStore.getInstance().getSelectedTabId(),
-          data.messageId,
-          SuggestionEventName.COPY,
-          data.suggestion
         );
       }
     });

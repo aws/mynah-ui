@@ -6,31 +6,43 @@
 import { getTimeDiff } from '../../helper/date-time';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { getOrigin } from '../../helper/url';
-import { SuggestionMetaData } from '../../static';
+import { SourceLink, SourceLinkMetaData } from '../../static';
 import { Icon, MynahIcons } from '../icon';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
+import { SourceLinkCard } from './source-link';
 
-export interface SuggestionCardHeaderProps {
-  title: string;
-  url: string;
-  metadata?: Record<string, SuggestionMetaData>;
-  onSuggestionTitleClick?: (e?: MouseEvent) => void;
-  onSuggestionLinkCopy?: () => void;
+const PREVIEW_DELAY = 500;
+export interface SourceLinkHeaderProps {
+  sourceLink: SourceLink;
+  showCardOnHover?: boolean;
+  onClick?: (e?: MouseEvent) => void;
 }
-export class SuggestionCardHeader {
+export class SourceLinkHeader {
+  private sourceLinkPreview: Overlay | null;
+  private sourceLinkPreviewTimeout: ReturnType<typeof setTimeout>;
   render: ExtendedHTMLElement;
-  constructor (props: SuggestionCardHeaderProps) {
-    const splitUrl = props.url
+  constructor (props: SourceLinkHeaderProps) {
+    const splitUrl = props.sourceLink.url
       .replace(/^(http|https):\/\//, '')
       .split('/');
     if (splitUrl[splitUrl.length - 1].trim() === '') {
       splitUrl.pop();
     }
-    const thumbnail = getThumbnailClass(splitUrl[0], props.metadata);
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-card-header', ...((thumbnail != null) ? [ 'mynah-card-header-with-source-thumbnail' ] : []) ],
+      classNames: [ 'mynah-source-link-header' ],
+      ...(props.showCardOnHover === true
+        ? {
+            events: {
+              mouseenter: (e) => {
+                this.showLinkPreview(e, props.sourceLink);
+              },
+              mouseleave: this.hideLinkPreview,
+            }
+          }
+        : {}),
       attributes: {
-        origin: getOrigin(props.url)
+        origin: getOrigin(props.sourceLink.url)
       },
       children: [
         {
@@ -39,43 +51,42 @@ export class SuggestionCardHeader {
         },
         {
           type: 'div',
-          classNames: [ 'mynah-card-title-wrapper' ],
+          classNames: [ 'mynah-source-link-title-wrapper' ],
           children: [
             {
               type: 'a',
-              classNames: [ 'mynah-card-title' ],
+              classNames: [ 'mynah-source-link-title' ],
               events: {
-                ...(props.onSuggestionTitleClick !== undefined && {
-                  click: props.onSuggestionTitleClick,
+                ...(props.onClick !== undefined && {
+                  click: props.onClick,
                 }),
               },
-              attributes: { href: props.url, target: '_blank' },
-              children: [ props.title, {
+              attributes: { href: props.sourceLink.url, target: '_blank' },
+              children: [ props.sourceLink.title, {
                 type: 'div',
-                classNames: [ 'mynah-card-expand-icon' ],
+                classNames: [ 'mynah-source-link-expand-icon' ],
                 children: [ new Icon({ icon: MynahIcons.EXTERNAL }).render ],
               } ],
             },
             {
               type: 'a',
-              classNames: [ 'mynah-card-url' ],
+              classNames: [ 'mynah-source-link-url' ],
               events: {
-                ...(props.onSuggestionTitleClick !== undefined && {
-                  click: props.onSuggestionTitleClick,
+                ...(props.onClick !== undefined && {
+                  click: props.onClick,
                 }),
-                ...(props.onSuggestionLinkCopy !== undefined && { copy: props.onSuggestionLinkCopy }),
               },
-              attributes: { href: props.url, target: '_blank' },
-              innerHTML: splitUrl.map(urlPart => `<span><span>${urlPart}</span></span>`).join(''),
+              attributes: { href: props.sourceLink.url, target: '_blank' },
+              innerHTML: splitUrl.map(urlPart => `<span>${urlPart}</span>`).join(''),
             },
-            ...((props.metadata != null) ? [ this.getSourceMetaBlock(props.metadata) ] : []),
+            ...((props.sourceLink.metadata != null) ? [ this.getSourceMetaBlock(props.sourceLink.metadata) ] : []),
           ],
         },
       ],
     });
   }
 
-  private readonly getSourceMetaBlock = (metadataUnion?: Record<string, SuggestionMetaData>): DomBuilderObject => {
+  private readonly getSourceMetaBlock = (metadataUnion?: Record<string, SourceLinkMetaData>): DomBuilderObject => {
     const metaItems: any[] = [];
     if (metadataUnion !== null && metadataUnion !== undefined) {
       Object.keys(metadataUnion).forEach(metadataKey => {
@@ -173,22 +184,39 @@ export class SuggestionCardHeader {
       children: metaItems
     };
   };
-}
 
-function getThumbnailClass (domain: string, metadata?: Record<string, SuggestionMetaData>): string | undefined {
-  if (metadata !== null && metadata !== undefined) {
-    return Object.keys(metadata).join(' ');
-  }
-  switch (domain) {
-    case 'github.com':
-      return 'github';
-    case 'docs.aws.amazon.com':
-    case 'boto3.amazonaws.com':
-    case 'sdk.amazonaws.com':
-      return 'aws';
-    case 'stackoverflow.com':
-      return 'stackOverflow';
-    default:
-      return undefined;
-  }
+  private readonly showLinkPreview = (e: MouseEvent, sourceLink: SourceLink): void => {
+    if (sourceLink.body !== undefined) {
+      clearTimeout(this.sourceLinkPreviewTimeout);
+      this.sourceLinkPreviewTimeout = setTimeout(() => {
+        const elm: HTMLElement = e.target as HTMLElement;
+        this.sourceLinkPreview = new Overlay({
+          background: false,
+          closeOnOutsideClick: false,
+          referenceElement: elm,
+          dimOutside: false,
+          removeOtherOverlays: true,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+          children: [
+            {
+              type: 'div',
+              classNames: [ 'mynah-chat-related-content-preview-wrapper' ],
+              children: [
+                new SourceLinkCard({ sourceLink }).render
+              ]
+            }
+          ],
+        });
+      }, PREVIEW_DELAY);
+    }
+  };
+
+  private readonly hideLinkPreview = (): void => {
+    clearTimeout(this.sourceLinkPreviewTimeout);
+    if (this.sourceLinkPreview !== null) {
+      this.sourceLinkPreview?.close();
+      this.sourceLinkPreview = null;
+    }
+  };
 }

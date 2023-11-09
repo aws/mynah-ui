@@ -37,7 +37,7 @@ const configDefaults: ConfigModel = {
     }
   ],
   texts: {
-    awsqTitle: 'AWS Q',
+    mainTitle: 'AWS Q',
     copy: 'Copy',
     insertAtCursorLabel: 'Insert at cursor',
     feedbackFormTitle: 'Report an issue',
