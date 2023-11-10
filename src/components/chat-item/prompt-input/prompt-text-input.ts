@@ -62,6 +62,16 @@ export class PromptTextInput {
         this._promptTextInput,
       ]
     });
+
+    MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId).subscribe('promptInputDisabledState', (isDisabled: boolean) => {
+      if (isDisabled) {
+        this._promptTextInput.setAttribute('disabled', 'disabled');
+      } else {
+        // Enable the input field and focus on it
+        this._promptTextInput.removeAttribute('disabled');
+        this._promptTextInput.focus();
+      }
+    });
   }
 
   get render (): ExtendedHTMLElement {
