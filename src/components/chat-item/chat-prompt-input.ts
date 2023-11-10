@@ -4,8 +4,6 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { Button } from '../button';
-import { Icon, MynahIcons } from '../icon';
 import { KeyMap, MynahEventNames, QuickActionCommand, QuickActionCommandGroup, SourceLink } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
@@ -13,6 +11,8 @@ import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
 import { CodeSnippet } from './prompt-input/code-snippet';
+import { SendButton } from './prompt-input/send-button';
+import { PromptTextInput } from './prompt-input/prompt-text-input';
 
 export const MAX_USER_INPUT = 4000;
 export interface ChatPromptInputProps {
@@ -22,113 +22,46 @@ export class ChatPromptInput {
   render: ExtendedHTMLElement;
   private readonly props: ChatPromptInputProps;
   private readonly attachmentWrapper: ExtendedHTMLElement;
-  private readonly promptTextInputWrapper: ExtendedHTMLElement;
-  private readonly promptTextInput: ExtendedHTMLElement;
-  private readonly promptTextInputSizer: ExtendedHTMLElement;
+  private readonly promptTextInput: PromptTextInput;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly remainingCharsIndicator: ExtendedHTMLElement;
-  private readonly sendButton: ExtendedHTMLElement;
+  private readonly sendButton: SendButton;
   private readonly codeSnippet: CodeSnippet;
-  private currentAttachmentLength: number = 0;
   private quickActionCommands: QuickActionCommandGroup[];
   private commandSelector: Overlay;
   private commandSelectorOpen: boolean = false;
   private selectedCommand: string = '';
-  private inputDisabled: boolean;
   private attachment?: SourceLink;
   private filteredCommandsList: QuickActionCommandGroup[];
   constructor (props: ChatPromptInputProps) {
     this.props = props;
-    this.inputDisabled = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputDisabledState') as boolean;
     this.quickActionCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
-    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputDisabledState', (isDisabled: boolean) => {
-      this.inputDisabled = isDisabled;
-      if (isDisabled) {
-        this.promptTextInput.setAttribute('disabled', 'disabled');
-        this.sendButton.setAttribute('disabled', 'disabled');
-      } else {
-        this.promptTextInput.removeAttribute('disabled');
-        this.sendButton.removeAttribute('disabled');
-        this.promptTextInput.focus();
-      }
-    });
-    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputPlaceholder', (placeholderText: string) => {
-      this.promptTextInput.setAttribute('placeholder', placeholderText);
-    });
     this.promptTextInputCommand = new ChatPromptInputCommand({
       command: '',
       onRemoveClick: () => {
         this.selectedCommand = '';
         this.promptTextInputCommand.setCommand('');
-        this.promptTextInput.update({
-          attributes: {
-            placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder')
-          }
-        });
       }
     });
-    this.promptTextInputSizer = DomBuilder.getInstance().build({
-      type: 'span',
-      classNames: [ 'mynah-chat-prompt-input', 'mynah-chat-prompt-input-sizer' ],
-    });
-    this.promptTextInput = DomBuilder.getInstance().build({
-      type: 'textarea',
-      classNames: [ 'mynah-chat-prompt-input' ],
-      attributes: {
-        ...(this.inputDisabled ? { disabled: 'disabled' } : {}),
-        tabindex: '1',
-        rows: '1',
-        maxlength: MAX_USER_INPUT.toString(),
-        type: 'text',
-        placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
-        value: '',
-      },
-      events: {
-        keydown: this.handleInputKeydown,
-        input: this.calculateTextAreaHeight,
-        focus: () => {
-          this.render.addClass('input-has-focus');
-        },
-        blur: () => {
-          this.render.removeClass('input-has-focus');
-        }
-      },
-    });
-    this.promptTextInputWrapper = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-chat-prompt-input-inner-wrapper', 'no-text' ],
-      children: [
-        this.promptTextInputSizer,
-        this.promptTextInput,
-      ]
+    this.promptTextInput = new PromptTextInput({
+      tabId: this.props.tabId,
+      onKeydown: this.handleInputKeydown,
+      onInput: () => this.updateAvailableCharactersIndicator(),
     });
     this.remainingCharsIndicator = DomBuilder.getInstance().build({
       type: 'span',
       classNames: [ 'mynah-chat-prompt-chars-indicator' ],
-      innerHTML: `${MAX_USER_INPUT - this.promptTextInput.value.length}/${MAX_USER_INPUT}`
+      innerHTML: `${MAX_USER_INPUT - this.promptTextInput.getTextInputValue().length}/${MAX_USER_INPUT}`
     });
-    this.sendButton = new Button({
-      classNames: [ 'mynah-icon-button', 'mynah-chat-prompt-button' ],
-      attributes: {
-        ...(this.inputDisabled ? { disabled: 'disabled' } : {}),
-        tabindex: '5'
-      },
-      icon: new Icon({ icon: MynahIcons.ENVELOPE_SEND }).render,
+    this.sendButton = new SendButton({
+      tabId: this.props.tabId,
       onClick: () => {
         this.sendPrompt();
       },
-    }).render;
+    });
 
     this.codeSnippet = new CodeSnippet({
       tabId: this.props.tabId,
-      onCodeSnippetAdd: (codeSnippetString) => {
-        this.currentAttachmentLength = codeSnippetString.trim().length;
-        this.updateAvailableChars();
-      },
-      onCodeSnippetRemove: () => {
-        this.currentAttachmentLength = 0;
-        this.updateAvailableChars();
-      }
     });
 
     this.attachmentWrapper = DomBuilder.getInstance().build({
@@ -151,8 +84,8 @@ export class ChatPromptInput {
               classNames: [ 'mynah-chat-prompt-input-wrapper' ],
               children: [
                 this.promptTextInputCommand.render,
-                this.promptTextInputWrapper,
-                this.sendButton,
+                this.promptTextInput.render,
+                this.sendButton.render,
               ]
             },
             this.attachmentWrapper
@@ -162,40 +95,49 @@ export class ChatPromptInput {
       ],
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ADD_CODE_SNIPPET, (selectedCodeSnippet: string | undefined) => {
+      // Code snippet will have a limit of MAX_USER_INPUT - 100 - current prompt text length
+      // If exceeding that, we will crop it
+      const textInputLength = this.promptTextInput.getTextInputValue().trim().length;
+      const currentSelectedCodeMaxLength = MAX_USER_INPUT - 100 - textInputLength;
+      const croppedSelectedCodeSnippet = (selectedCodeSnippet ?? '')?.slice(0, currentSelectedCodeMaxLength);
+      this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
+      // Also update the limit on prompt text given the selected code
+      this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT - 100 - croppedSelectedCodeSnippet.length);
+      this.updateAvailableCharactersIndicator();
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REMOVE_CODE_SNIPPET, () => {
+      this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT - 100);
+      this.codeSnippet.clear();
+      // Update the limit on prompt text given the selected code
+      this.updateAvailableCharactersIndicator();
+    });
+
     setTimeout(() => {
       this.promptTextInput.focus();
     }, 500);
   }
 
-  private readonly updateAvailableChars = (): void => {
-    const totalCharsUsed = this.promptTextInput.value.trim().length + this.currentAttachmentLength;
-    this.codeSnippet.availableChars = MAX_USER_INPUT - totalCharsUsed - 100;
+  private readonly updateAvailableCharactersIndicator = (): void => {
+    const totalCharsUsed =
+      this.promptTextInput.getTextInputValue().trim().length +
+      (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('selectedCodeSnippet') as string ?? '').length;
     this.remainingCharsIndicator.update({
       innerHTML: `${MAX_USER_INPUT - totalCharsUsed}/${MAX_USER_INPUT}`
-    });
-    this.promptTextInput.update({
-      attributes: {
-        maxlength: (MAX_USER_INPUT - this.currentAttachmentLength).toString(),
-      }
     });
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (!this.commandSelectorOpen) {
       this.quickActionCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
-      if (e.key === KeyMap.BACKSPACE && this.selectedCommand !== '' && this.promptTextInput.value === '') {
+      if (e.key === KeyMap.BACKSPACE && this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
         cancelEvent(e);
         this.clearTextArea();
       } else if (e.key === KeyMap.ENTER && !e.shiftKey && !e.ctrlKey) {
         cancelEvent(e);
         this.sendPrompt();
-      } else if (e.key === KeyMap.ENTER && (e.shiftKey || e.ctrlKey)) {
-        // To insert a new line, press shift/ctrl + enter
-        // Calculate the height again so that input text area is displayed correctly
-        setTimeout(() => {
-          this.calculateTextAreaHeight(true);
-        }, 10);
-      } else if (this.selectedCommand === '' && this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.value === '') {
+      } else if (this.selectedCommand === '' && this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.getTextInputValue() === '') {
         // Show available quick actions
         if (this.commandSelector !== undefined) {
           this.commandSelector.close();
@@ -257,18 +199,20 @@ export class ChatPromptInput {
 
         commandElements[lastActiveElement]?.classList.remove('target-command');
         commandElements[nextElement].classList.add('target-command');
-        this.promptTextInput.value = commandElements[nextElement].getAttribute('prompt') ?? this.promptTextInput.value;
+        if (commandElements[nextElement].getAttribute('prompt') !== null) {
+          this.promptTextInput.updateTextInputValue(commandElements[nextElement].getAttribute('prompt') as string);
+        }
       } else {
         if (this.commandSelector !== undefined) {
           setTimeout(() => {
-            if (this.promptTextInput.value === '') {
+            if (this.promptTextInput.getTextInputValue() === '') {
               this.commandSelector.close();
             } else {
               this.filteredCommandsList = [];
               [ ...this.quickActionCommands ].forEach((quickActionGroup: QuickActionCommandGroup) => {
                 const newQuickActionCommandGroup = { ...quickActionGroup };
                 newQuickActionCommandGroup.commands = newQuickActionCommandGroup
-                  .commands.filter(command => command.command.match(new RegExp(`${this.promptTextInput.value.substring(1)}` ?? '', 'gi')));
+                  .commands.filter(command => command.command.match(new RegExp(`${this.promptTextInput.getTextInputValue().substring(1)}` ?? '', 'gi')));
                 if (newQuickActionCommandGroup.commands.length > 0) {
                   this.filteredCommandsList.push(newQuickActionCommandGroup);
                 }
@@ -333,68 +277,41 @@ export class ChatPromptInput {
 
   private readonly handleCommandSelection = (quickActionCommand: QuickActionCommand): void => {
     this.selectedCommand = quickActionCommand.command;
+    this.promptTextInput.updateTextInputValue('');
     if (quickActionCommand.placeholder !== undefined) {
-      this.promptTextInput.value = '';
       this.promptTextInputCommand.setCommand(this.selectedCommand);
-      this.promptTextInput.update({
-        attributes: {
-          placeholder: quickActionCommand.placeholder
-        }
-      });
+      this.promptTextInput.updateTextInputPlaceholder(quickActionCommand.placeholder);
     } else {
-      this.promptTextInput.value = '';
       this.sendPrompt();
     }
     this.commandSelector.close();
     this.promptTextInput.focus();
   };
 
-  private readonly calculateTextAreaHeight = (newLine?: boolean): void => {
-    this.updateAvailableChars();
-    if (this.promptTextInput.value.trim() !== '') {
-      this.promptTextInputWrapper.removeClass('no-text');
-    } else {
-      this.promptTextInputWrapper.addClass('no-text');
-    }
-    this.promptTextInputSizer.innerHTML = this.promptTextInput.value.replace(/\n/g, `</br>${newLine === true ? '&nbsp;' : ''}`);
-  };
-
-  private readonly resetTextAreaHeight = (): void => {
-    this.promptTextInputSizer.innerHTML = '';
-  };
-
   public readonly clearTextArea = (): void => {
-    this.resetTextAreaHeight();
     this.selectedCommand = '';
+    this.promptTextInput.clear();
+    this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT - 100);
     this.promptTextInputCommand.setCommand('');
-    this.promptTextInput.value = '';
-    this.promptTextInput.update({
-      attributes: {
-        placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
-      }
-    });
-    this.promptTextInputWrapper.addClass('no-text');
     this.attachmentWrapper.clear();
     this.codeSnippet.clear();
     this.attachment = undefined;
-    this.updateAvailableChars();
+    this.updateAvailableCharactersIndicator();
   };
 
   public readonly addText = (textToAdd: string): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, {
-      tabId: this.props.tabId,
-      selectedCodeSnippet: textToAdd,
-    });
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, textToAdd);
   };
 
   private readonly sendPrompt = (): void => {
-    if (this.promptTextInput.value.trim() !== '' || this.selectedCommand.trim() !== '') {
+    const currentInputValue = this.promptTextInput.getTextInputValue();
+    if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
       const selectedCodeSnippet: string | undefined = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('selectedCodeSnippet');
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, {
         tabId: this.props.tabId,
         prompt: {
-          prompt: this.promptTextInput.value + (selectedCodeSnippet ?? ''),
-          escapedPrompt: escapeHTML(this.promptTextInput.value + (selectedCodeSnippet ?? '')),
+          prompt: currentInputValue + (selectedCodeSnippet ?? ''),
+          escapedPrompt: escapeHTML(currentInputValue + (selectedCodeSnippet ?? '')),
           ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
           attachment: this.attachment
         }
