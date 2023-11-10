@@ -189,6 +189,7 @@ export class Toggle {
       if (elmToCheck !== undefined) {
         (elmToCheck as HTMLInputElement).click();
         (elmToCheck as HTMLInputElement).checked = true;
+        ((elmToCheck as HTMLInputElement).nextSibling as HTMLLabelElement).classList.remove('indication');
       }
     }
   };
@@ -220,6 +221,18 @@ export class Toggle {
     const elmToCheck = this.render.querySelector(`span[key="${this.props.name}-${value}"] .mynah-toggle-option-label-text`);
     if (elmToCheck !== undefined) {
       (elmToCheck as HTMLSpanElement).innerHTML = title;
+    }
+  };
+
+  updateOptionIndicator = (value: string, indication: boolean): void => {
+    this.props.options = this.props.options.filter(option => option.value !== value);
+    const elmToCheck: HTMLLabelElement | null = this.render.querySelector(`label[for="${this.props.name}-${value}"]`);
+    if (elmToCheck !== null) {
+      if (indication && value !== this.getValue()) {
+        elmToCheck.classList.add('indication');
+      } else {
+        elmToCheck.classList.remove('indication');
+      }
     }
   };
 

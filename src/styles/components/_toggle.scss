@@ -21,12 +21,27 @@
             &:not(:first-child) + .mynah-toggle-option-label {
                 margin-left: calc(-1 * var(--mynah-sizing-1));
             }
+            &:not(:checked) + .mynah-toggle-option-label {
+                &.indication:after {
+                    content: "";
+                    position: absolute;
+                    top: 50%;
+                    margin-top: calc(-1 * var(--mynah-sizing-half));
+                    left: var(--mynah-sizing-2);
+                    height: var(--mynah-sizing-1);
+                    width: var(--mynah-sizing-1);
+                    background-color: var(--mynah-color-status-success);
+                    border-radius: var(--mynah-sizing-1);
+                    border: 1px solid var(--mynah-color-text-weak);
+                    opacity: 0.75;
+                }
+            }
             & + .mynah-toggle-option-label {
                 cursor: pointer;
                 pointer-events: all;
                 position: relative;
                 z-index: 100;
-                padding: 0 var(--mynah-sizing-3);
+                padding: 0 var(--mynah-sizing-3) 0 var(--mynah-sizing-5);
                 height: 100%;
                 box-sizing: border-box;
                 display: inline-flex;

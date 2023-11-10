@@ -42,6 +42,9 @@ export class ChatItemCard {
     const generatedCard = DomBuilder.getInstance().build({
       type: 'div',
       classNames: this.getCardClasses(),
+      attributes: {
+        messageId: this.props.chatItem.messageId ?? 'unknown',
+      },
       children: [
         ...this.getCardContent(),
         DomBuilder.getInstance().build({

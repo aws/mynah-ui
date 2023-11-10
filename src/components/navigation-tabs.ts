@@ -16,13 +16,13 @@ export interface TabsProps {
 }
 export class Tabs {
   render: ExtendedHTMLElement;
-  private tabIdSubscriptions: Record<string, string> = {};
+  private tabIdTitleSubscriptions: Record<string, string> = {};
+  private tabIdChatItemsSubscriptions: Record<string, string> = {};
   private toggleGroup: Toggle;
   private readonly props: TabsProps;
 
   constructor (props: TabsProps) {
     this.props = props;
-
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       persistent: true,
@@ -37,9 +37,7 @@ export class Tabs {
     });
 
     MynahUITabsStore.getInstance().addListener('add', (tabId, tabData) => {
-      this.tabIdSubscriptions[tabId] = MynahUITabsStore.getInstance().addListenerToDataStore(tabId, 'tabTitle', (title) => {
-        this.toggleGroup.updateOptionTitle(tabId, title);
-      }) ?? '';
+      this.assignListener(tabId);
       this.toggleGroup.addOption({
         value: tabId,
         label: tabData?.store?.tabTitle,
@@ -48,7 +46,7 @@ export class Tabs {
       this.render.setAttribute('selected-tab', tabId);
     });
     MynahUITabsStore.getInstance().addListener('remove', (tabId, newSelectedTab?: MynahUITabStoreTab) => {
-      MynahUITabsStore.getInstance().removeListenerFromDataStore(tabId, this.tabIdSubscriptions[tabId], 'tabTitle');
+      this.removeListenerAssignments(tabId);
       this.toggleGroup.removeOption(tabId);
       if (newSelectedTab !== undefined) {
         this.toggleGroup.snapToOption(MynahUITabsStore.getInstance().getSelectedTabId());
@@ -76,9 +74,7 @@ export class Tabs {
   private readonly getTabsRender = (selectedTabId?: string): ExtendedHTMLElement[] => {
     const tabs = this.getTabOptionsFromTabStoreData();
     tabs.forEach(tab => {
-      this.tabIdSubscriptions[tab.value] = MynahUITabsStore.getInstance().addListenerToDataStore(tab.value, 'tabTitle', (title) => {
-        this.toggleGroup.updateOptionTitle(tab.value, title);
-      }) ?? '';
+      this.assignListener(tab.value);
     });
     this.toggleGroup = new Toggle({
       onChange: (selectedTabId: string) => {
@@ -106,5 +102,19 @@ export class Tabs {
         primary: false
       }).render
     ];
+  };
+
+  private readonly assignListener = (tabId: string): void => {
+    this.tabIdTitleSubscriptions[tabId] = MynahUITabsStore.getInstance().addListenerToDataStore(tabId, 'tabTitle', (title) => {
+      this.toggleGroup.updateOptionTitle(tabId, title);
+    }) ?? '';
+    this.tabIdChatItemsSubscriptions[tabId] = MynahUITabsStore.getInstance().addListenerToDataStore(tabId, 'chatItems', () => {
+      this.toggleGroup.updateOptionIndicator(tabId, true);
+    }) ?? '';
+  };
+
+  private readonly removeListenerAssignments = (tabId: string): void => {
+    MynahUITabsStore.getInstance().removeListenerFromDataStore(tabId, this.tabIdTitleSubscriptions[tabId], 'tabTitle');
+    MynahUITabsStore.getInstance().removeListenerFromDataStore(tabId, this.tabIdChatItemsSubscriptions[tabId], 'chatItems');
   };
 }
