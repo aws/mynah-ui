@@ -36,7 +36,13 @@ export class ChatWrapper {
           lastItem.innerHTML = new ChatItemCard({ tabId: this.props.tabId, chatItem: chatItemToInsert }).render.innerHTML;
         }
       } else if (chatItems.length > 0) {
-        this.insertChatItem(chatItemToInsert);
+        if (this.chatItemsContainer.children.length === 0) {
+          chatItems.forEach(chatItem => {
+            this.insertChatItem(chatItem);
+          });
+        } else {
+          this.insertChatItem(chatItemToInsert);
+        }
       } else {
         this.chatItemsContainer.clear(true);
       }
