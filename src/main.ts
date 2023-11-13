@@ -189,15 +189,9 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ENGAGEMENT, (data: {
-      engagement: Engagement; messageId: string;
-    }) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ENGAGEMENT, (data: { engagement: Engagement; messageId: string }) => {
       if (this.props.onChatItemEngagement !== undefined) {
-        this.props.onChatItemEngagement(
-          MynahUITabsStore.getInstance().getSelectedTabId(),
-          data.messageId,
-          data.engagement
-        );
+        this.props.onChatItemEngagement(MynahUITabsStore.getInstance().getSelectedTabId(), data.messageId, data.engagement);
       }
     });
 
