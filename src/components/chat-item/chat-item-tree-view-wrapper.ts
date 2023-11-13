@@ -12,6 +12,7 @@ export interface ChatItemTreeViewWrapperProps {
   tabId: string;
   messageId: string;
   files: string[];
+  deletedFiles: string[];
 }
 
 export class ChatItemTreeViewWrapper {
@@ -21,7 +22,7 @@ export class ChatItemTreeViewWrapper {
     const tree = new ChatItemTreeView({
       messageId: props.messageId,
       tabId: props.tabId,
-      node: fileListToTree(props.files),
+      node: fileListToTree(props.files, props.deletedFiles),
     }).render;
 
     this.render = DomBuilder.getInstance().build({

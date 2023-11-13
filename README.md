@@ -36,7 +36,7 @@ export const createMynahUI = () => {
         onSourceLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
         onLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
         onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
-        onOpenDiff?: (tabId: string, leftPath: string, rightPath: string, messageId?: string) => void;
+        onOpenDiff?: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => void;
     });
 }
 ```
