@@ -13,6 +13,7 @@ import { marked } from 'marked';
 import unescapeHTML from 'unescape-html';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
 import { SyntaxHighlighter } from '../syntax-highlighter';
+import { generateUID } from '../../helper/guid';
 
 const PREVIEW_DELAY = 500;
 export const highlightersWithTooltip = {
@@ -113,13 +114,49 @@ export class CardBody {
     return elementFromNode;
   };
 
-  private readonly getReferenceTrackerInformationFromElement = (element: ExtendedHTMLElement | HTMLElement | Element): ReferenceTrackerInformation[] => {
-    const markerElements = element.querySelectorAll('mark[reference-tracker]');
-    if (markerElements.length > 0) {
-      return Array.from(markerElements).map((mark) => {
-        return this.props.highlightRangeWithTooltip?.[parseInt(mark.getAttribute('marker-index') ?? '0')];
-      }) as ReferenceTrackerInformation[];
+  private readonly getReferenceTrackerInformationFromElement = (element: ExtendedHTMLElement | HTMLElement): ReferenceTrackerInformation[] => {
+    // cloning the element
+    // since we're gonna inject some unique items
+    // to get the start indexes
+    const codeElement = element.querySelector('code')?.cloneNode(true) as HTMLElement;
+
+    if (codeElement !== undefined) {
+      const markerElements = codeElement.querySelectorAll('mark[reference-tracker]');
+      if (markerElements.length > 0) {
+        return (Array.from(markerElements) as HTMLElement[]).map((mark: HTMLElement, index: number) => {
+          // Generating a unique identifier element
+          // to get the start index of it inside the code block
+          const startIndexText = `__MARK${index}_${generateUID()}_START__`;
+          const startIndexTextElement = DomBuilder.getInstance().build({
+            type: 'span',
+            innerHTML: startIndexText
+          });
+          // Injecting that unique identifier for the start index inside the current mark element
+          mark.insertAdjacentElement('afterbegin', startIndexTextElement);
+          // finding that text inside the code element's inner text
+          // to get the startIndex
+          const startIndex = codeElement.innerText.indexOf(startIndexText);
+
+          // when we get the start index, we need to remove the element
+          // to get the next one's start index properly
+          // we don't need to calculate the end index because it will be available
+          startIndexTextElement.remove();
+
+          // find the original reference tracker information
+          const originalRefTrackerInfo = this.props.highlightRangeWithTooltip?.[parseInt(mark.getAttribute('marker-index') ?? '0')];
+          return {
+            ...originalRefTrackerInfo,
+            recommendationContentSpan: {
+              start: startIndex,
+              end: startIndex + (
+                (originalRefTrackerInfo?.recommendationContentSpan.end ?? 0) -
+                (originalRefTrackerInfo?.recommendationContentSpan.start ?? 0))
+            }
+          };
+        }) as ReferenceTrackerInformation[];
+      }
     }
+
     return [];
   };
 
