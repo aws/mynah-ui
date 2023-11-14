@@ -1,7 +1,3 @@
-@import "../votes-wrapper";
-@import "../source-link-header";
-@import "card-body";
-
 .mynah-card {
     text-decoration: none;
     outline: none;
@@ -43,7 +39,7 @@
         position: relative;
     }
 
-    @include source-link-header();
-    @include card-body();
-    @include votes-wrapper();
+    @import '../source-link-header';
+    @import 'card-body';
+    @import '../votes-wrapper';
 }
