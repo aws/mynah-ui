@@ -38,6 +38,11 @@ export class CodeSnippet {
           markdownText: selectedCodeSnippet,
         }).render
       );
+      const isCodeOverflowVertically =
+        (this._render.getBoundingClientRect()?.height ?? 0) < (this._render.getElementsByTagName('code')?.[0]?.getBoundingClientRect()?.height ?? 0);
+      if (isCodeOverflowVertically) {
+        this._render.children[0].classList.add('vertical-overflow');
+      }
     }
     MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId).updateStore({
       selectedCodeSnippet,

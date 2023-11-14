@@ -5,6 +5,13 @@
   }
 }
 
+.snippet-card-container.vertical-overflow {
+  & pre {
+    // Show fading effect at the bottom when overflowing
+    @include list-fader-bottom(var(--mynah-sizing-16));
+  }
+}
+
 .snippet-card-container {
   max-width: calc(5 * var(--mynah-sizing-18));
   max-height: var(--mynah-sizing-10);
@@ -29,14 +36,14 @@
   }
   > .mynah-card-body > .mynah-syntax-highlighter {
     border: none;
-    > pre {
-      @include list-fader-bottom();
+    & pre {
+      text-overflow: ellipsis;
     }
   }
 }
 
 .snippet-card-container-preview {
-  max-width: 70vw;
+  max-width: 80vw;
   max-height: 70vh;
   > .mynah-card-body {
     > .mynah-syntax-highlighter {
@@ -62,5 +69,8 @@
         display: none;
       }
     }
+  }
+  & pre {
+    text-overflow: ellipsis;
   }
 }
