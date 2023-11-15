@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { MynahPortalNames } from '../static';
 import { cancelEvent } from './events';
 
 /* eslint-disable @typescript-eslint/method-signature-style */
@@ -137,7 +138,7 @@ export class DomBuilder {
   };
 
   clearChildren = function (this: ExtendedHTMLElement, removePersistent: boolean): ExtendedHTMLElement {
-    Array.from(this.children).forEach((child: ExtendedHTMLElement | Element) => {
+    Array.from(this.childNodes).forEach((child: ExtendedHTMLElement | ChildNode) => {
       if (
         removePersistent ||
                 // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -184,11 +185,11 @@ export class DomBuilder {
 
     if (typeof readyToBuildObject.innerHTML === 'string') {
       buildedDom.innerHTML = readyToBuildObject.innerHTML;
-    } else if (readyToBuildObject.children !== undefined && readyToBuildObject.children.length > 0) {
+    } else if (readyToBuildObject.children !== undefined && readyToBuildObject.children?.length > 0) {
       this.insertChild.apply(buildedDom as ExtendedHTMLElement, [
         'beforeend',
         [
-          ...(readyToBuildObject.children as any[]).map(
+          ...(readyToBuildObject.children).map(
             (child: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject) => {
               if (typeof child === 'string' || child instanceof HTMLElement) {
                 return child;
@@ -198,10 +199,10 @@ export class DomBuilder {
           ),
         ],
       ]);
-    }
+    };
 
-    ;(buildedDom as ExtendedHTMLElement).builderObject = readyToBuildObject
-    ;(buildedDom as ExtendedHTMLElement).update = (builderObject: DomBuilderObjectFilled): ExtendedHTMLElement => {
+    (buildedDom as ExtendedHTMLElement).builderObject = readyToBuildObject;
+    (buildedDom as ExtendedHTMLElement).update = (builderObject: DomBuilderObjectFilled): ExtendedHTMLElement => {
       return this.update(buildedDom as ExtendedHTMLElement, builderObject);
     };
     this.extendDomFunctionality(buildedDom);
@@ -264,5 +265,20 @@ export class DomBuilder {
   };
 
   getPortal = (portalName: string): ExtendedHTMLElement => this.portals[portalName];
-  removePortal = (portalName: string): void => this.portals[portalName].remove();
+  removePortal = (portalName: string): void => this.portals[portalName]?.remove();
+  removeAllPortals = (portalsWithName: MynahPortalNames): void => {
+    Object.keys(this.portals).forEach(portalName => {
+      if (portalName.match(portalsWithName) !== null) {
+        this.portals[portalName].remove();
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.portals[portalName];
+      }
+    });
+  };
 }
+
+export const htmlDecode = (input: string): string => {
+  const e = document.createElement('textarea');
+  e.innerHTML = input;
+  return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue ?? input;
+};

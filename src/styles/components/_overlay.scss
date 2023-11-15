@@ -1,5 +1,5 @@
 .mynah-overlay {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     width: 100%;
@@ -10,7 +10,7 @@
     z-index: 1000000;
     &.mynah-overlay-dim-outside {
         &:before {
-            content: '';
+            content: "";
             position: absolute;
             left: 0;
             top: 0;
@@ -31,37 +31,50 @@
         overflow: visible;
         border-radius: var(--mynah-card-radius);
 
-        &:before {
-            content: '';
-            background-color: transparent;
-            transition: var(--mynah-short-transition-rev);
-            position: absolute;
-            top: calc(var(--mynah-button-border-width) * -1);
-            left: calc(var(--mynah-button-border-width) * -1);
-            right: calc(var(--mynah-button-border-width) * -1);
-            bottom: calc(var(--mynah-button-border-width) * -1);
-            width: auto;
-            height: auto;
-            pointer-events: none;
-            box-sizing: border-box;
-            opacity: 0;
-            border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
-            box-shadow: var(--mynah-shadow-prioritization-menu);
+        .mynah-card,
+        .mynah-card * {
+            pointer-events: none !important;
+            .mynah-syntax-highlighter-copy-buttons {
+                display: none;
+                & ~ *:last-child {
+                    margin-bottom: 0 !important;
+                }
+            }
         }
 
-        &:after {
-            content: '';
-            position: absolute;
-            width: var(--mynah-sizing-8);
-            height: var(--mynah-sizing-8);
-            left: 0;
-            top: 0;
-            opacity: 0;
-            border: var(--mynah-sizing-4);
-            background-color: var(--mynah-card-bg);
-            border-radius: inherit;
-            transition: var(--mynah-short-transition-rev);
-            transition-delay: 20ms;
+        &.background {
+            &:before {
+                content: "";
+                background-color: transparent;
+                transition: var(--mynah-short-transition-rev);
+                position: absolute;
+                top: calc(var(--mynah-button-border-width) * -1);
+                left: calc(var(--mynah-button-border-width) * -1);
+                right: calc(var(--mynah-button-border-width) * -1);
+                bottom: calc(var(--mynah-button-border-width) * -1);
+                width: auto;
+                height: auto;
+                pointer-events: none;
+                box-sizing: border-box;
+                opacity: 0;
+                border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+                box-shadow: var(--mynah-shadow-prioritization-menu);
+            }
+
+            &:after {
+                content: "";
+                position: absolute;
+                width: var(--mynah-sizing-8);
+                height: var(--mynah-sizing-8);
+                left: 0;
+                top: 0;
+                opacity: 0;
+                border: var(--mynah-sizing-4);
+                background-color: var(--mynah-card-bg);
+                border-radius: inherit;
+                transition: var(--mynah-short-transition-rev);
+                transition-delay: 20ms;
+            }
         }
 
         &.horizontal-direction {
@@ -107,6 +120,7 @@
             transform: translate3d(0, 0, 0) scale(0.85);
             transform-origin: var(--overlayInnerHorizontalOrigin) var(--overlayInnerVerticalOrigin);
             transition: var(--mynah-short-transition-rev);
+            width: 100%;
         }
         &:before {
             transform: translate3d(0, 0, 0) scale(0.85);

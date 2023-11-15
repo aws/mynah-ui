@@ -1,4 +1,5 @@
 # Mynah UI
+
 This package is the whole UI of AWS Codewhisperer Chat extension UI for Web, VSCode and Intellij IDEs written in typescript without any framework or third-party UI library dependency. Purpose of the separated UI is to handle the interactions and look & feel of the UI from one single source. 
 
 ## How to install
@@ -15,71 +16,27 @@ import { MynahUI } from '@aws/mynah-ui';
 
 export const createMynahUI = () => {
     const mynahUI = new MynahUI({
-        // initial UI state data
-        // It doesn't have to be matched with backend data
-        // but to update the UI and rerender its desired parts, 
-        // it expects the data in type of MynahUIDataModel.
-        storeData?: MynahUIDataModel;
-        
-        // All below items trigger when;
-        // User hits search button or enter inside query input
-        onSearch?: (
-            searchPayload: SearchPayload,
-            isFromHistory?: boolean,
-            isFromAutocomplete?: boolean
-        ) => void;
-
-        // UI is ready
+        rootSelector?: string;
+        defaults?: MynahUITabStoreTab;
+        tabs?: MynahUITabStoreModel;
+        config?: ConfigModel;
+        onShowMoreWebResultsClick?: (tabId: string, messageId: string) => void;
         onReady?: () => void;
-
-        // User votes a suggestion
-        onClickSuggestionVote?: (suggestion: Suggestion, vote: RelevancyVoteType) => void;
-        // User opens the detail view of selected code block
-        onClickCodeDetails?: (
-            code: string,
-            fileName?: string,
-            range?: {
-            start: { row: string; column?: string };
-            end?: { row: string; column?: string };
-            }
-        ) => void;
-
-        // Data store is reset
-        onResetStore?: () => void;
-
-        // Matching policy is changed (context items)
-        onChangeContext?: (changeType: ContextChangeType, queryContext: ContextType) => void;
-
-        // When navigation tab is changed
-        onNavigationTabChange?: (selectedTab: string) => void;
-
-        // User engages with a suggestion
-        onSuggestionEngagement?: (engagement: SuggestionEngagement) => void;
-
-        // User copies text from suggestion
-        onSuggestionClipboardInteraction?: (suggestionId: string, type?: string, text?: string) => void;
-
-        // User clicks to the title, clicks or copies the link of the suggestion
-        onSuggestionInteraction?: (eventName: SuggestionEventName, suggestion: Suggestion) => void;
-
-        // User sends feedback
-        onSendFeedback?: (feedbackPayload: FeedbackPayload) => void;
-
-        // Search history panel view opens
-        onRequestHistoryRecords?: (filterPayload: SearchHistoryFilters) => void;
-
-        // Autocomplete items list block opens
-        onRequestAutocompleteList?: (input: string) => void;
-
-        // User changes live search state
-        onChangeLiveSearchState?: (liveSearchState: LiveSearchState) => void;
-
-        // User selects and autocomplete item
-        onClickAutocompleteItem?: (
-            text: string,
-            currSelected?: number,
-            suggestionCount?: number
-        ) => void;
+        onVote?: (tabId: string, messageId: string, vote: RelevancyVoteType) => void;
+        onStopChatResponse?: (tabId: string) => void;
+        onResetStore?: (tabId: string) => void;
+        onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
+        onFollowUpClicked?: (tabId: string, messageId: string, followUp: ChatItemFollowUp) => void;
+        onTabChange?: (tabId: string) => void;
+        onTabAdd?: (tabId: string) => void;
+        onTabRemove?: (tabId: string) => void;
+        onChatItemEngagement?: (tabId: string, messageId: string, engagement: Engagement) => void;
+        onCopyCodeToClipboard?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+        onCodeInsertToCursorPosition?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+        onSourceLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
+        onLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
+        onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
+        onOpenDiff?: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => void;
     });
 }
 ```
@@ -91,37 +48,7 @@ import { MynahUI } from '@aws/mynah-ui';
 
 export const createMynahUI = () => {
     let mynahUI:MynahUI;
-    const getSuggestions = (searchPayload) => {
-        mynahUI.updateStore({loading: true});
-        // get suggestions list
-        const suggestions = await getSuggestions(searchPayload);
-        if(suggestions){
-            mynahUI.updateStore({suggestions, loading: false});
-        } else {
-            mynahUI.updateStore({loading: false});
-            mynahUI.notify({
-                content: "Couldn't get suggestions!",
-                type: NotificationType.ERROR,
-            });
-        }
-        
-    }
-    const mynahUI = new MynahUI({
-        ...,
-        onSearch: getSuggestions
-    });
-
-    // to update the store fully or partially
-    mynahUI.updateStore(...);
-
-    // set default values for the UI data store fully or partially
-    mynahUI.setStoreDefaults(...);
-
-    // get current search payload
-    mynahUI.getSearchPayload();
-
-    // Show a notification balloon
-    mynahUI.notify(...);
+    ...
 }
 ```
 
@@ -129,24 +56,18 @@ In addition to MynahUI class, there are also some exported type definitions that
 
 ``` typescript
 import {
-  AutocompleteItem,
-  SearchPayloadCodeSelection,
   FeedbackPayload,
   RelevancyVoteType,
-  LiveSearchState,
-  SearchPayload,
-  Suggestion,
-  ContextType,
-  SearchHistoryItem,
   EngagementType,
-  SuggestionEngagement,
-  SuggestionEventName,
-  SearchHistoryFilters,
+  Engagement,
   MynahUIDataModel,
-  ContextChangeType,
-  ContextSource,
-  ContextTypes,
   NotificationType,
+  ChatItem,
+  ChatItemFollowUp,
+  ChatItemType,
+  ChatPrompt,
+  SourceLink,
+  MynahIcons
 } from '@aws/mynah-ui';
 ```
 
@@ -162,9 +83,10 @@ import './custom-style.css';
 You can provide any of the following css custom property values:
 ``` css
 :root {
-    font-size: 1rem;
+    --mynah-font-family: ...;
+    font-size: ...;
     font-family: ...;
-
+    --mynah-max-width: ...;
     --mynah-sizing-base: ...;
     --mynah-sizing-half: ...;
     --mynah-sizing-1: ...;
@@ -186,19 +108,22 @@ You can provide any of the following css custom property values:
     --mynah-sizing-17: ...;
     --mynah-sizing-18: ...;
     --mynah-button-border-width: ...;
+    --mynah-border-width: ...;
 
-    --mynah-color-text-...: ...;
+    --mynah-color-text-default: ...;
     --mynah-color-text-strong: ...;
     --mynah-color-text-weak: ...;
     --mynah-color-text-link: ...;
     --mynah-color-text-input: ...;
 
     --mynah-color-bg: ...;
+    --mynah-color-bg-alt: ...;
+    --mynah-color-tab-active: ...;
     --mynah-color-light: ...;
 
     --mynah-color-deep: ...;
     --mynah-color-deep-reverse: ...;
-    --mynah-color-border-...: ...;
+    --mynah-color-border-default: ...;
     --mynah-color-input-bg: ...;
 
     --mynah-color-highlight: ...;
@@ -209,6 +134,18 @@ You can provide any of the following css custom property values:
     --mynah-color-context-must-not-contain: ...;
     --mynah-color-context-reverse: ...;
     --mynah-color-context-filter: ...;
+
+    --mynah-color-syntax-bg: ...;
+    --mynah-color-syntax-variable: ...;
+    --mynah-color-syntax-function: ...;
+    --mynah-color-syntax-operator: ...;
+    --mynah-color-syntax-attr-value: ...;
+    --mynah-color-syntax-attr: ...;
+    --mynah-color-syntax-property: ...;
+    --mynah-color-syntax-comment: ...;
+    --mynah-color-syntax-code: ...;
+    --mynah-syntax-code-font-family: ...;
+    --mynah-syntax-code-font-size: ...;
 
     --mynah-color-status-info: ...;
     --mynah-color-status-success: ...;
@@ -236,6 +173,7 @@ You can provide any of the following css custom property values:
     --mynah-shadow-prioritization-menu: ...;
     --mynah-shadow-feedback-form: ...;
 
+    --mynah-font-size-xxsmall: ...;
     --mynah-font-size-xsmall: ...;
     --mynah-font-size-small: ...;
     --mynah-font-size-medium: ...;
@@ -245,6 +183,7 @@ You can provide any of the following css custom property values:
     --mynah-card-radius: ...;
     --mynah-button-radius: ...;
 
+    --mynah-bottom-panel-transition: ...;
     --mynah-very-short-transition: ...;
     --mynah-short-transition-transform: ...;
     --mynah-long-transition: ...;
@@ -258,12 +197,13 @@ You can provide any of the following css custom property values:
     --mynah-short-transition-turbo-bounce: ...;
     --mynah-short-transition-bounce: ...;
 
-    --mynah-mask-image: ...;
+    --mynah-mask-image:  ...;
     --mynah-mask-image-rev: ...;
     --mynah-mask-image-main: ...;
     --mynah-mask-image-main-rev: ...;
-
     --mynah-mask-image-skeleton: ...;
+
+    --mynah-policy-group-filter: ...;
 }
 ```
 

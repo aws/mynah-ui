@@ -4,93 +4,103 @@
  */
 
 import { MynahIcons } from './components/icon';
-import { ToggleOption } from './components/toggle';
 
+export interface QuickActionCommand {
+  command: string;
+  description?: string;
+  placeholder?: string;
+}
+export interface QuickActionCommandGroup {
+  groupName?: string;
+  commands: QuickActionCommand[];
+}
+/**
+ * data store model to update the mynah ui partially or fully
+ */
 export interface MynahUIDataModel {
-  loading?: boolean;
-  liveSearchState?: LiveSearchState;
-  liveSearchAnimation?: boolean;
-  query?: string;
-  code?: string;
-  codeSelection?: SearchPayloadCodeSelection;
-  codeQuery?: SearchPayloadCodeQuery;
-  matchPolicy?: SearchPayloadMatchPolicy;
-  invisibleContextItems?: string[];
-  navigationTabs?: ToggleOption[];
-  userAddedContext?: string[];
-  suggestions?: Suggestion[];
-  autoCompleteSuggestions?: AutocompleteItem[];
-  searchHistory?: SearchHistoryItem[];
-  showingHistoricalSearch?: boolean;
-  headerInfo?: {
-    content: string;
-    type?: NotificationType;
-  };
+  /**
+   * Tab title
+   * */
+  tabTitle?: string;
+  /**
+   * Chat screen loading animation state (mainly use during the stream or getting the initial answer)
+   */
+  loadingChat?: boolean;
+  /**
+   * Show chat avatars or not
+   * */
+  showChatAvatars?: boolean;
+  /**
+   * Show cancel button while loading the chat
+   * */
+  cancelButtonWhenLoading?: boolean;
+  /**
+  * Quick Action commands to show when user hits / to the input initially
+  */
+  quickActionCommands?: QuickActionCommandGroup[];
+  /**
+  * Placeholder to be shown on prompt input
+  */
+  promptInputPlaceholder?: string;
+  /**
+  * Info block to be shown under prompt input
+  */
+  promptInputInfo?: string;
+  /**
+  * Prompt input field disabled state, set to tru to disable it
+  */
+  promptInputDisabledState?: boolean;
+  /**
+  * List of chat item objects to be shown on the web suggestions search screen
+  */
+  chatItems?: ChatItem[];
+  // TODO
+  selectedCodeSnippet?: string;
+}
+
+export interface MynahUITabStoreTab {
+  /**
+   * Is tab selected
+   */
+  isSelected?: boolean;
+  /**
+  * Tab items data store
+  */
+  store?: MynahUIDataModel;
+}
+/**
+ * tabs store model to update the tabs partially or fully
+ */
+export interface MynahUITabStoreModel {
+  [tabId: string]: MynahUITabStoreTab;
 }
 
 export enum MynahEventNames {
   RESET_STORE = 'resetStore',
-  CONTEXT_VISIBILITY_CHANGE = 'contextVisibilityChange',
-  AUTOCOMPLETE_SUGGESTION_CLICK = 'autoCompleteSuggestionClick',
-  SEARCH = 'search',
-  INPUT_QUERY_CHANGE = 'inputQueryChange',
-  REQUEST_SEARCH_HISTORY = 'requestSearchHistory',
-  SEARCH_HISTORY_ITEM_CLICK = 'searchHistoryItemClick',
-  LIVE_SEARCH_STATE_CHANGED = 'liveSearchStateChanged',
   FEEDBACK_SET = 'feedbackSet',
-  CODE_DETAILS_CLICK = 'codeDetailsClick',
-  SUGGESTION_VOTE = 'suggestionVote',
-  SUGGESTION_OPEN = 'suggestionOpen',
-  SUGGESTION_LINK_COPY = 'suggestionLinkCopy',
-  SUGGESTION_ENGAGEMENT = 'suggestionEngagement',
-  SUGGESTION_COPY_TO_CLIPBOARD = 'suggestionCopyToClipboard',
+  CARD_VOTE = 'cardVote',
+  SOURCE_LINK_CLICK = 'sourceLinkClick',
+  LINK_CLICK = 'linkClick',
+  CHAT_ITEM_ENGAGEMENT = 'chatItemEngagement',
+  COPY_CODE_TO_CLIPBOARD = 'copyCodeToClipboard',
+  INSERT_CODE_TO_CURSOR_POSITION = 'insertCodeToCursorPosition',
+  CHAT_PROMPT = 'chatPrompt',
+  FOLLOW_UP_CLICKED = 'followUpClicked',
+  SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
+  SHOW_FEEDBACK_FORM = 'showFeedbackForm',
+  OPEN_DIFF = 'openDiff',
+  ADD_CODE_SNIPPET = 'addCodeSnippet',
+  REMOVE_CODE_SNIPPET = 'removeCodeSnippet',
 };
 
-export const MynahPortalNames = {
-  WRAPPER: 'wrapper',
-  OVERLAY: 'overlay',
-  FEEDBACK_FORM: 'feedbackForm',
+export enum MynahPortalNames {
+  WRAPPER = 'wrapper',
+  SIDE_NAV = 'sideNav',
+  OVERLAY = 'overlay',
+  FEEDBACK_FORM = 'feedbackForm',
 };
 
-export interface SearchPayloadMatchPolicy {
-  must: string[];
-  should: string[];
-  mustNot: string[];
-}
-
-export interface SearchPayloadCodeSelection {
-  selectedCode: string;
-  file?: {
-    range: {
-      start: { row: string; column: string };
-      end: { row: string; column: string };
-    };
-    name: string;
-  };
-}
-
-export interface FullyQualifiedName {
-  source: string[];
-  symbol: string[];
-}
-
-export interface SearchPayloadCodeQuery {
-  simpleNames: string[];
-  fullyQualifiedNames: {
-    used: FullyQualifiedName[];
-  };
-}
-
-export interface SearchPayload {
-  query: string;
-  matchPolicy: SearchPayloadMatchPolicy;
-  codeSelection: SearchPayloadCodeSelection;
-  codeQuery?: SearchPayloadCodeQuery;
-  code?: string;
-  selectedTab?: string;
-}
-
-export interface SuggestionMetaData {
+export interface SourceLinkMetaData {
   stars?: number; // repo stars
   forks?: number; // repo forks
   answerCount?: number; // total answers if it is a question
@@ -100,18 +110,52 @@ export interface SuggestionMetaData {
   lastActivityDate?: number; // creation or last update date for question or answer
 }
 
-export type SuggestionMetaDataUnion = Record<string, SuggestionMetaData>;
-
-export interface CanonicalExample {canonicalExample: {body: string; url: string}}
-
-export interface Suggestion {
-  id: string;
+export interface SourceLink {
   title: string;
+  id?: string;
   url: string;
-  body: string;
-  context: string[];
+  body?: string;
   type?: string;
-  metadata?: SuggestionMetaDataUnion | CanonicalExample;
+  metadata?: Record<string, SourceLinkMetaData>;
+}
+export enum ChatItemType {
+  PROMPT = 'prompt',
+  SYSTEM_PROMPT = 'system-prompt',
+  AI_PROMPT = 'ai-prompt',
+  ANSWER = 'answer',
+  ANSWER_STREAM = 'answer-stream',
+  ANSWER_PART = 'answer-part',
+  CODE_RESULT = 'code-result',
+}
+
+export interface ChatItem {
+  body?: string | string[];
+  type: ChatItemType;
+  messageId?: string;
+  canBeVoted?: boolean;
+  followUp?: {
+    text?: string;
+    options?: ChatItemFollowUp[];
+  };
+  relatedContent?: {
+    title?: string;
+    content: SourceLink[];
+  };
+  codeReference?: ReferenceTrackerInformation[];
+}
+
+export interface ChatPrompt {
+  prompt?: string;
+  escapedPrompt?: string;
+  command?: string;
+  attachment?: SourceLink;
+}
+
+export interface ChatItemFollowUp extends ChatPrompt {
+  type?: string;
+  pillText: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon?: MynahIcons;
 }
 
 export enum KeyMap {
@@ -133,85 +177,24 @@ export enum KeyMap {
   SHIFT = 'Shift',
   CONTROL = 'Control',
   ALT = 'Alt',
+  SLASH = '/',
+  BACK_SLASH = '\\'
 }
 
-export enum LiveSearchState {
-  PAUSE = 'pauseLiveSearch',
-  RESUME = 'resumeLiveSearch',
-  STOP = 'stopLiveSearch',
-}
-
-export const SupportedCodingLanguages = [ 'typescript', 'javascript', 'java', 'json', 'python' ];
-type ElementType<T extends readonly unknown[]> = T extends ReadonlyArray<infer ElementType> ? ElementType : never;
-
-export type SupportedCodingLanguagesType = ElementType<typeof SupportedCodingLanguages>;
-
-export const SupportedCodingLanguagesExtensionToTypeMap = {
-  ts: 'typescript',
-  js: 'javascript',
-  py: 'python',
-  java: 'java',
-  json: 'json',
-};
-
-export type OnCopiedToClipboardFunction = (type?: 'selection' | 'block', text?: string) => void;
-
-export interface SearchHistoryFilters {
-  /**
-     * Flag to define are we looking in global search-history or only in worplace
-     *
-     * @default - Search will be performed on workplace store
-     */
-  isGlobal: boolean;
-  /**
-     * Flag to define are we looking only for queries which were manually typed by the user,
-     * or only for quries whic were generated by plugin itself, or it's not important
-     *
-     * @default - We won't filter records bases on type of input
-     */
-  isManualSearch?: boolean;
-  /**
-     * Array of language filters. If user chose some, the results would be filtered
-     *
-     * @default - We won't filter records bases on languages
-     */
-  languages: string[];
-  /**
-     * User text from search bar in search-history part of UI
-     *
-     * @default - We won't filter records bases on user input in search-history search bar
-     */
-  text?: string;
-  /**
-     * Allow us to skip n-first results
-     *
-     * @default - The starting offset will be 0
-     */
-  resultOffset: number;
-  /**
-     * Limit of how many results we want to get from store
-     *
-     * @default - The records count won't be limited
-     */
-  resultLimit?: number;
-}
-
-export interface CodeQuery {
-  simpleNames: string[];
-  fullyQualifiedNames: {
-    used: FullyQualifiedName[];
+export interface ReferenceTrackerInformation {
+  licenseName?: string;
+  repository?: string;
+  url?: string;
+  recommendationContentSpan: {
+    start: number;
+    end: number;
   };
+  information: string;
 }
 
-export enum ContextChangeType {
-  'ADD' = 'add',
-  'REMOVE' = 'remove',
-}
-
-export enum SuggestionEventName {
-  OPEN = 'openSuggestion',
-  COPY = 'copy',
-}
+export type CodeSelectionType = 'selection' | 'block';
+export type OnCopiedToClipboardFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+export type OnInsertToCursorPositionFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
 
 export enum RelevancyVoteType {
   UP = 'upvote',
@@ -230,12 +213,7 @@ export enum EngagementType {
   TIME = 'timespend',
 }
 
-export interface SuggestionEngagement {
-  /**
-     * Suggestion information
-     */
-  suggestion: Suggestion;
-
+export interface Engagement {
   /**
      * Engagement type
      */
@@ -245,12 +223,7 @@ export interface SuggestionEngagement {
      */
   engagementDurationTillTrigger: number;
   /**
-     * This is a little bit more than what you might expect on a normal scroll position of the suggestion card.
-     * This attribute gives the value for how much the users traveled their mouses and additionally how much they scrolled to focus on that suggestion
-     */
-  scrollDistanceToEngage: number;
-  /**
-     * Total mouse movement in x and y directions till the engagament triggered.
+     * Total mouse movement in x and y directions till the engagement triggered.
      * To avoid confusion: this is not the distance between start and end points, this is the total traveled distance.
      */
   totalMouseDistanceTraveled: { x: number; y: number };
@@ -261,55 +234,11 @@ export interface SuggestionEngagement {
   selectionDistanceTraveled?: { x: number; y: number; selectedText?: string };
 }
 
-export interface SearchHistoryItem {
-  query: {
-    input: string;
-    queryContext: SearchPayloadMatchPolicy;
-    queryId?: string;
-    trigger: string;
-    codeQuery: CodeQuery;
-    codeSelection: SearchPayloadCodeSelection;
-    code?: string;
-    selectedTab?: string;
-  };
-  recordDate?: number;
-  suggestions: Suggestion[];
-}
-
-export enum ContextTypes {
-  MUST = 'must',
-  SHOULD = 'should',
-  MUST_NOT = 'mustNot',
-}
-
-export enum ContextSource {
-  AUTO = 'auto',
-  USER = 'user',
-  SUGGESTION = 'suggestion',
-}
-
-export enum ContextTypeClassNames {
-  should = 'mynah-should-contain',
-  must = 'mynah-must-contain',
-  mustNot = 'mynah-must-not-contain',
-}
-
-export interface ContextType {
-  context: string;
-  type?: ContextTypes;
-  source: ContextSource;
-}
-
-export type FeedbackStars = 1 | 2 | 3 | 4 | 5;
-
 export interface FeedbackPayload {
-  stars?: FeedbackStars;
+  messageId: string;
+  tabId: string;
+  selectedOption: string;
   comment?: string;
-}
-
-export interface AutocompleteItem {
-  suggestion: string;
-  highlight: string;
 }
 
 export enum NotificationType {
@@ -317,4 +246,32 @@ export enum NotificationType {
   SUCCESS = MynahIcons.OK_CIRCLED,
   WARNING = MynahIcons.WARNING,
   ERROR = MynahIcons.ERROR,
+}
+
+export interface ConfigModel {
+  texts: {
+    mainTitle: string;
+    feedbackFormTitle: string;
+    feedbackFormOptionsLabel: string;
+    feedbackFormCommentLabel: string;
+    feedbackThanks: string;
+    feedbackReportButtonLabel: string;
+    codeSuggestions: string;
+    clickFileToViewDiff: string;
+    files: string;
+    insertAtCursorLabel: string;
+    copy: string;
+    showMore: string;
+    save: string;
+    cancel: string;
+    submit: string;
+    stopGenerating: string;
+    copyToClipboard: string;
+    noMoreTabsTooltip: string;
+  };
+  feedbackOptions: Array<{
+    label: string;
+    value: string;
+  }>;
+  maxTabs: number;
 }

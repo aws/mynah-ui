@@ -1,0 +1,66 @@
+.mynah-chat-command-selector {
+    display: flex;
+    box-sizing: border-box;
+    background-color: var(--mynah-card-bg);
+    border-radius: var(--mynah-card-radius);
+    width: 100%;
+    pointer-events: all;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    > .mynah-chat-command-selector-group {
+        display: flex;
+        box-sizing: border-box;
+        width: 100%;
+        flex-flow: column nowrap;
+        align-items: stretch;
+        justify-content: flex-start;
+        padding: var(--mynah-sizing-2);
+        > .mynah-chat-command-selector-group-title {
+            margin: 0;
+            color: var(--mynah-color-text-weak);
+            opacity: 0.75;
+            padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
+        }
+
+        &:not(:last-child) {
+            border-bottom: 1px solid var(--mynah-color-border-default);
+        }
+
+        > .mynah-chat-command-selector-command {
+            display: flex;
+            box-sizing: border-box;
+            width: 100%;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+            cursor: pointer;
+            padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
+            color: var(--mynah-color-text-default);
+            border-radius: var(--mynah-card-radius);
+            transition: var(--mynah-short-transition-rev);
+            gap: var(--mynah-sizing-1);
+            &:hover,
+            &.target-command {
+                background-color: var(--mynah-color-button);
+                &,
+                & * {
+                    color: var(--mynah-color-button-reverse);
+                }
+            }
+            > .mynah-chat-command-selector-command-name {
+                font-family: var(--mynah-font-family);
+                font-size: var(--mynah-font-size-large);
+                font-weight: bold;
+                flex: 0 1 0%;
+            }
+            > .mynah-chat-command-selector-command-description {
+                font-size: var(--mynah-font-size-small);
+                opacity: 0.75;
+                flex: 1 0 100%;
+            }
+        }
+    }
+}

@@ -62,14 +62,17 @@ export enum OverlayVerticalDirection {
 }
 
 export interface OverlayProps {
-  referenceElement?: Element | ExtendedHTMLElement;
+  referenceElement?: HTMLElement | ExtendedHTMLElement;
   referencePoint?: { top: number; left: number };
   children: Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject>;
   horizontalDirection?: OverlayHorizontalDirection;
   verticalDirection?: OverlayVerticalDirection;
+  stretchWidth?: boolean;
   dimOutside?: boolean;
   closeOnOutsideClick?: boolean;
+  background?: boolean;
   onClose?: () => void;
+  removeOtherOverlays?: boolean;
 }
 export class Overlay {
   render: ExtendedHTMLElement;
@@ -87,6 +90,7 @@ export class Overlay {
 
     const calculatedTop = this.getCalculatedTop(verticalDirection, props.referenceElement, props.referencePoint);
     const calculatedLeft = this.getCalculatedLeft(horizontalDirection, props.referenceElement, props.referencePoint);
+    const calculatedWidth = props.stretchWidth === true ? this.getCalculatedWidth(props.referenceElement) : 0;
 
     this.innerContainer = DomBuilder.getInstance().build({
       type: 'div',
@@ -96,31 +100,35 @@ export class Overlay {
 
     this.container = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-overlay-container', horizontalDirection, verticalDirection ],
+      classNames: [ 'mynah-overlay-container', horizontalDirection, verticalDirection, props.background !== false ? 'background' : '' ],
       attributes: {
-        style: `top: ${calculatedTop}px; left: ${calculatedLeft}px;`,
+        style: `top: ${calculatedTop}px; left: ${calculatedLeft}px; ${calculatedWidth !== 0 ? `width: ${calculatedWidth}px;` : ''}`,
       },
       children: [ this.innerContainer ],
     });
 
+    if (props.removeOtherOverlays === true) {
+      DomBuilder.getInstance().removeAllPortals(MynahPortalNames.OVERLAY);
+    }
+
     // this is a portal that goes over all the other items
     // to make it as an overlay item
     this.render = DomBuilder.getInstance().createPortal(
-            `${MynahPortalNames.OVERLAY}-${this.guid}`,
-            {
-              type: 'div',
-              attributes: { id: `mynah-overlay-${this.guid}` },
-              classNames: [
-                'mynah-overlay',
-                ...(dimOutside ? [ 'mynah-overlay-dim-outside' ] : []),
-                ...(closeOnOutsideClick ? [ 'mynah-overlay-close-on-outside-click' ] : []),
-              ],
-              events: {
-                click: closeOnOutsideClick ? this.close : () => {},
-              },
-              children: [ this.container ],
-            },
-            'beforeend'
+      `${MynahPortalNames.OVERLAY}-${this.guid}`,
+      {
+        type: 'div',
+        attributes: { id: `mynah-overlay-${this.guid}` },
+        classNames: [
+          'mynah-overlay',
+          ...(dimOutside ? [ 'mynah-overlay-dim-outside' ] : []),
+          ...(closeOnOutsideClick ? [ 'mynah-overlay-close-on-outside-click' ] : []),
+        ],
+        events: {
+          click: closeOnOutsideClick ? this.close : () => {},
+        },
+        children: [ this.container ],
+      },
+      'beforeend'
     );
 
     const containerRectangle = this.container.getBoundingClientRect();
@@ -208,7 +216,7 @@ export class Overlay {
 
   private readonly getCalculatedLeft = (
     horizontalDirection: OverlayHorizontalDirection,
-    referenceElement?: Element | ExtendedHTMLElement,
+    referenceElement?: HTMLElement | ExtendedHTMLElement,
     referencePoint?: { top?: number; left: number }
   ): number => {
     const referenceRectangle =
@@ -234,9 +242,17 @@ export class Overlay {
     }
   };
 
+  private readonly getCalculatedWidth = (
+    referenceElement?: HTMLElement | ExtendedHTMLElement
+  ): number => {
+    return (referenceElement !== undefined
+      ? referenceElement.getBoundingClientRect()
+      : { width: 0 }).width;
+  };
+
   private readonly getCalculatedTop = (
     verticalDirection: OverlayVerticalDirection,
-    referenceElement?: Element | ExtendedHTMLElement,
+    referenceElement?: HTMLElement | ExtendedHTMLElement,
     referencePoint?: { top: number; left?: number }
   ): number => {
     const referenceRectangle =

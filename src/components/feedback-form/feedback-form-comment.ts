@@ -24,23 +24,11 @@ export class FeedbackFormComment {
       },
       classNames: [ 'mynah-feedback-form-comment' ],
       attributes: {
-        ...(props.initComment !== undefined && props.initComment.length > 0 ? {} : { disabled: 'disabled' }),
         value: props.initComment ?? '',
-        placeholder: 'How was your search?',
       },
     });
   }
 
-  setEnabled = (enabled: boolean): void => {
-    if (enabled) {
-      this.render.removeAttribute('disabled');
-      this.render.focus();
-    } else {
-      this.render.setAttribute('disabled', 'disabled');
-    }
-  };
-
-  setComment = (comment: string): void => {
-    this.render.value = comment;
-  };
+  getComment = (): string => this.render.value;
+  clear = (): void => { this.render.value = ''; };
 }

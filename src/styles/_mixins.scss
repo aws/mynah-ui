@@ -44,6 +44,33 @@
     mask-size: 100% 100%;
 }
 
+@mixin list-fader-bottom($height: var(--mynah-sizing-6)) {
+    position: relative;
+    $listFader: linear-gradient(
+        to bottom,
+        black 30%,
+        black calc(100% - $height),
+        transparent 100%
+    );
+    -webkit-mask-image: $listFader;
+    -webkit-mask-size: 100% 100%;
+    mask-image: $listFader;
+    mask-size: 100% 100%;
+}
+@mixin list-fader-right($height: var(--mynah-sizing-6)) {
+    position: relative;
+    $listFader: linear-gradient(
+        to right,
+        black 30%,
+        black calc(100% - $height),
+        transparent 100%
+    );
+    -webkit-mask-image: $listFader;
+    -webkit-mask-size: 100% 100%;
+    mask-image: $listFader;
+    mask-size: 100% 100%;
+}
+
 @mixin context-pill-group-background {
     &:after,
     &:before {
@@ -55,10 +82,16 @@
         right: 0;
         z-index: 2;
         border-radius: calc(var(--mynah-button-radius) * 3 / 2);
-        border: 1px solid transparent;
+        border: var(--mynah-border-width) solid transparent;
     }
     &:after {
         background-color: var(--mynah-card-bg);
         z-index: 1;
+    }
+}
+
+@mixin chatMode {
+    &[mode="chat"] {
+        @content;
     }
 }

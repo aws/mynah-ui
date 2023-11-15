@@ -3,8 +3,10 @@ node_modules/**
 **/*.md
 **/*.css
 **/*.scss
+**/*.svg
 **/*rc.js
-**/*config.js
+**/jest.config.js
+**/webpack.config.js
 dist/**
 out/**
 **/*.d.ts

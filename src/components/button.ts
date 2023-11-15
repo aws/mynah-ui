@@ -31,11 +31,17 @@ export class Button {
       },
       children: [
         ...(props.icon !== undefined ? [ props.icon ] : []),
-        ...(props.label !== undefined ? [ { type: 'span', children: [ props.label ] } ] : []),
+        ...(props.label !== undefined ? [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ props.label ] } ] : []),
         ...(props.children ?? []),
       ],
     });
   }
+
+  updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
+    (this.render.querySelector('.mynah-button-label') as ExtendedHTMLElement).replaceWith(
+      DomBuilder.getInstance().build({ type: 'span', classNames: [ 'mynah-button-label' ], children: [ label ] })
+    );
+  };
 
   setEnabled = (enabled: boolean): void => {
     if (enabled) {

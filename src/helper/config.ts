@@ -3,35 +3,73 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder } from './dom';
+import { ConfigModel } from '../static';
 
-const configProcessors: Record<string, (sourceString: string) => any> = {
-  language: (sourceString: string) => decodeURI(sourceString),
-};
-export class MynahConfig {
-  private config: Record<string, any> = {
-    'logo-url': '',
-    language: 'en',
-  };
-
-  constructor () {
-    const configElement = DomBuilder.getInstance().root.querySelector('mynah-config');
-    if (configElement !== null) {
-      Object.keys(this.config).forEach((configItem: string) => {
-        if (configElement.getAttribute(configItem) !== undefined) {
-          this.config[configItem] = configProcessors[configItem] !== undefined
-            ? configProcessors[configItem](
-              configElement.getAttribute(configItem) ?? this.config[configItem]
-            )
-            : configElement.getAttribute(configItem) ?? this.config[configItem];
-        }
-      });
+const configDefaults: ConfigModel = {
+  maxTabs: 1000,
+  feedbackOptions: [
+    {
+      value: 'inaccurate-response',
+      label: 'Inaccurate response',
+    },
+    {
+      value: 'harmful-content',
+      label: 'Harmful content'
+    },
+    {
+      value: 'overlap',
+      label: 'Overlaps with existing content'
+    },
+    {
+      value: 'incorrect-syntax',
+      label: 'Incorrect syntax'
+    },
+    {
+      value: 'buggy-code',
+      label: 'Buggy code'
+    },
+    {
+      value: 'low-quality',
+      label: 'Low quality'
+    },
+    {
+      value: 'other',
+      label: 'Other'
     }
+  ],
+  texts: {
+    mainTitle: 'AWS Q',
+    copy: 'Copy',
+    insertAtCursorLabel: 'Insert at cursor',
+    feedbackFormTitle: 'Report an issue',
+    feedbackFormOptionsLabel: 'What type of issue would you like to report?',
+    feedbackFormCommentLabel: 'Description of issue (optional):',
+    feedbackThanks: 'Thanks!',
+    feedbackReportButtonLabel: 'Report an issue',
+    codeSuggestions: 'Code Suggestions',
+    files: 'file(s)',
+    clickFileToViewDiff: 'Click on a file to view diff.',
+    showMore: 'Show more',
+    save: 'Save',
+    cancel: 'Cancel',
+    submit: 'Submit',
+    stopGenerating: 'Stop generating',
+    copyToClipboard: 'Copied to clipboard',
+    noMoreTabsTooltip: 'You\'ve reached maximum number of tabs you can simultaneously use.'
+  }
+};
+export class Config {
+  private static instance: Config;
+  public config: ConfigModel;
+  private constructor (config?: Partial<ConfigModel>) {
+    this.config = { ...configDefaults, ...config };
   }
 
-  getConfig = (configName: string): any => this.config[configName] ?? '';
+  public static getInstance (config?: Partial<ConfigModel>): Config {
+    if (Config.instance === undefined) {
+      Config.instance = new Config(config);
+    }
 
-  setConfig = (configName: string, configValue: string): void => {
-    this.config[configName] = configValue;
-  };
+    return Config.instance;
+  }
 }
