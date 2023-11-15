@@ -12,7 +12,7 @@ import { Button } from './button';
 import { Card } from './card/card';
 import { CardBody } from './card/card-body';
 import { Icon, MynahIcons } from './icon';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay/overlay';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Toggle, ToggleOption } from './toggle';
 
 export interface TabsProps {

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilderObject, DS, ExtendedHTMLElement } from '../../helper/dom';
-import { cancelEvent } from '../../helper/events';
-import { NotificationType } from '../../static';
-import { Icon, MynahIcons } from '../icon';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection, OVERLAY_MARGIN } from '../overlay/overlay';
+import { DomBuilderObject, DS, ExtendedHTMLElement } from '../helper/dom';
+import { cancelEvent } from '../helper/events';
+import { NotificationType } from '../static';
+import { Icon, MynahIcons } from './icon';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection, OVERLAY_MARGIN } from './overlay';
 
 type NotificationContentType = string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
 

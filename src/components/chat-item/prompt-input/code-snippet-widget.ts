@@ -1,5 +1,5 @@
 import { ExtendedHTMLElement } from '../../../helper/dom';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay/overlay';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay';
 import { Icon, MynahIcons } from '../../icon';
 import { Button } from '../../button';
 import { MynahUIGlobalEvents, cancelEvent } from '../../../helper/events';

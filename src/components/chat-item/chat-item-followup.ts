@@ -8,7 +8,7 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { ChatItem, MynahEventNames } from '../../static';
 import { Icon } from '../icon';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 
 const PREVIEW_DELAY = 250;
 const MAX_LENGTH = 40;

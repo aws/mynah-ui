@@ -11,7 +11,7 @@ import {
 } from '../../static';
 import { marked } from 'marked';
 import unescapeHTML from 'unescape-html';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { generateUID } from '../../helper/guid';
 

@@ -98,7 +98,7 @@ export class ChatItemCard {
   private readonly getCardContent = (): Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject> => {
     return [
       ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
-      ...(this.props.chatItem.body !== undefined
+      ...(this.props.chatItem.body !== undefined || this.props.chatItem.fileList !== undefined
         ? [
             new Card({
               onCardEngaged: engagement => {
@@ -109,59 +109,61 @@ export class ChatItemCard {
               },
               children: [
                 ((): ExtendedHTMLElement => {
-                  let treeWrapper;
-                  if (this.props.chatItem.type === ChatItemType.CODE_RESULT) {
-                    const { filePaths = [], deletedFiles = [] } = JSON.parse(this.props.chatItem.body as string) as {
-                      filePaths?: string[];
-                      deletedFiles?: string[];
-                    };
-                    treeWrapper = new ChatItemTreeViewWrapper({
-                      tabId: this.props.tabId,
-                      messageId: this.props.chatItem.messageId ?? '',
-                      files: filePaths,
-                      deletedFiles,
-                    });
-                  }
-                  this.contentBody = new CardBody({
-                    body: this.props.chatItem.body as string,
-                    highlightRangeWithTooltip: this.props.chatItem.codeReference,
-                    children:
-                      this.props.chatItem.relatedContent !== undefined
-                        ? [
-                            new ChatItemSourceLinksContainer({
-                              messageId: this.props.chatItem.messageId ?? 'unknown',
-                              tabId: this.props.tabId,
-                              relatedContent: this.props.chatItem.relatedContent?.content,
-                              title: this.props.chatItem.relatedContent?.title,
-                            }).render,
-                          ]
-                        : [],
-                    onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
-                      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
-                        messageId: this.props.chatItem.messageId,
-                        type,
-                        text,
-                        referenceTrackerInformation,
-                      });
-                    },
-                    onInsertToCursorPosition: (type, text, referenceTrackerInformation) => {
-                      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
-                        messageId: this.props.chatItem.messageId,
-                        type,
-                        text,
-                        referenceTrackerInformation,
-                      });
-                    },
-                    onLinkClick: (url, e) => {
+                  const commonBodyProps = {
+                    body: this.props.chatItem.body ?? '',
+                    onLinkClick: (url: string, e: MouseEvent) => {
                       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.LINK_CLICK, {
                         messageId: this.props.chatItem.messageId,
                         link: url,
                         event: e,
                       });
-                    },
-                  });
-                  if (treeWrapper !== undefined) {
-                    return this.contentBody.render.update({ children: [ treeWrapper.render ] });
+                    }
+                  };
+                  if (this.props.chatItem.type === ChatItemType.CODE_RESULT && this.props.chatItem.fileList !== undefined) {
+                    const { filePaths = [], deletedFiles = [] } = this.props.chatItem.fileList;
+                    this.contentBody = new CardBody({
+                      ...commonBodyProps,
+                      children: [
+                        new ChatItemTreeViewWrapper({
+                          tabId: this.props.tabId,
+                          messageId: this.props.chatItem.messageId ?? '',
+                          files: filePaths,
+                          deletedFiles,
+                        }).render
+                      ],
+                    });
+                  } else {
+                    this.contentBody = new CardBody({
+                      ...commonBodyProps,
+                      highlightRangeWithTooltip: this.props.chatItem.codeReference,
+                      children:
+                        this.props.chatItem.relatedContent !== undefined
+                          ? [
+                              new ChatItemSourceLinksContainer({
+                                messageId: this.props.chatItem.messageId ?? 'unknown',
+                                tabId: this.props.tabId,
+                                relatedContent: this.props.chatItem.relatedContent?.content,
+                                title: this.props.chatItem.relatedContent?.title,
+                              }).render,
+                            ]
+                          : [],
+                      onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
+                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
+                          messageId: this.props.chatItem.messageId,
+                          type,
+                          text,
+                          referenceTrackerInformation,
+                        });
+                      },
+                      onInsertToCursorPosition: (type, text, referenceTrackerInformation) => {
+                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
+                          messageId: this.props.chatItem.messageId,
+                          type,
+                          text,
+                          referenceTrackerInformation,
+                        });
+                      },
+                    });
                   }
                   return this.contentBody.render;
                 })(),

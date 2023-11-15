@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Notification } from './components/notification/notification';
+import { Notification } from './components/notification';
 import { DomBuilder, ExtendedHTMLElement } from './helper/dom';
 import {
   MynahPortalNames,

@@ -4,9 +4,9 @@
  */
 
 /* eslint-disable @typescript-eslint/brace-style */
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
-import { generateUID } from '../../helper/guid';
-import { MynahPortalNames } from '../../static';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
+import { generateUID } from '../helper/guid';
+import { MynahPortalNames } from '../static';
 
 export const OVERLAY_MARGIN = 8;
 /**

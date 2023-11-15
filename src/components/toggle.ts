@@ -8,7 +8,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { cancelEvent } from '../helper/events';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay/overlay';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;

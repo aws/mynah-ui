@@ -129,7 +129,7 @@ export enum ChatItemType {
 }
 
 export interface ChatItem {
-  body?: string | string[];
+  body?: string;
   type: ChatItemType;
   messageId?: string;
   canBeVoted?: boolean;
@@ -142,6 +142,10 @@ export interface ChatItem {
     content: SourceLink[];
   };
   codeReference?: ReferenceTrackerInformation[];
+  fileList?: {
+    filePaths?: string[];
+    deletedFiles?: string[];
+  };
 }
 
 export interface ChatPrompt {

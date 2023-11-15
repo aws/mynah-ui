@@ -37,7 +37,7 @@ import {
   OnInsertToCursorPositionFunction,
 } from '../static';
 import { Button } from './button';
-import { Notification } from './notification/notification';
+import { Notification } from './notification';
 import { Icon, MynahIcons } from './icon';
 import { cancelEvent } from '../helper/events';
 import { Config } from '../helper/config';

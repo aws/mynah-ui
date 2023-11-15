@@ -8,7 +8,7 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import { getOrigin } from '../../helper/url';
 import { SourceLink, SourceLinkMetaData } from '../../static';
 import { Icon, MynahIcons } from '../icon';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { SourceLinkCard } from './source-link';
 
 const PREVIEW_DELAY = 500;

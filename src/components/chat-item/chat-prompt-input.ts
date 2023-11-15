@@ -6,7 +6,7 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { KeyMap, MynahEventNames, QuickActionCommand, QuickActionCommandGroup, SourceLink } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
-import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay/overlay';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
