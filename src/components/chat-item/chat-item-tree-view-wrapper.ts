@@ -6,19 +6,28 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { fileListToTree } from '../../helper/file-tree';
+import { ReferenceTrackerInformation } from '../../static';
 import { ChatItemTreeView } from './chat-item-tree-view';
+import { ChatItemTreeViewLicense } from './chat-item-tree-view-license';
 
 export interface ChatItemTreeViewWrapperProps {
   tabId: string;
   messageId: string;
   files: string[];
   deletedFiles: string[];
+  referenceSuggestionLabel: string;
+  references: ReferenceTrackerInformation[];
 }
 
 export class ChatItemTreeViewWrapper {
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemTreeViewWrapperProps) {
+    const license = new ChatItemTreeViewLicense({
+      referenceSuggestionLabel: props.referenceSuggestionLabel,
+      references: props.references
+    }).render;
+
     const tree = new ChatItemTreeView({
       messageId: props.messageId,
       tabId: props.tabId,
@@ -47,6 +56,7 @@ export class ChatItemTreeViewWrapper {
                 },
               ]
             },
+            license,
             tree,
           ]
         },
