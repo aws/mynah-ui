@@ -144,8 +144,7 @@ export class ChatPromptInput {
         }
         this.filteredCommandsList = [ ...this.quickActionCommands ];
         this.commandSelector = new Overlay({
-          background: false,
-          closeOnOutsideClick: false,
+          closeOnOutsideClick: true,
           referenceElement: this.render,
           dimOutside: false,
           stretchWidth: true,
