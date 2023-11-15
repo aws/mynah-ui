@@ -85,6 +85,5 @@ export const fileListToTree = (modifiedFilePaths: string[], deletedFilePaths: st
 
 const splitFilePaths = (paths: string[], deleted: boolean): Array<{ filePath: string[]; deleted: boolean }> =>
   paths
-    .map(filePath => ({ filePath, deleted }))
     // split file path by folder. ignore dot folders
-    .map(({ filePath, deleted }) => ({ filePath: filePath.split('/').filter(item => item !== undefined && item !== '.'), deleted }));
+    .map(filePath => ({ filePath: filePath.split('/').filter(item => item !== undefined && item !== '.'), deleted }));
