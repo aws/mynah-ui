@@ -72,6 +72,16 @@ export class PromptTextInput {
         this._promptTextInput.focus();
       }
     });
+
+    MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId).subscribe('promptInputPlaceholder', (placeholderText: string) => {
+      if (placeholderText !== undefined) {
+        this._promptTextInput.update({
+          attributes: {
+            placeholder: placeholderText
+          }
+        });
+      }
+    });
   }
 
   get render (): ExtendedHTMLElement {
