@@ -53,6 +53,7 @@ export class ChatWrapper {
       } else {
         this.render.removeClass('loading');
       }
+      this.resetScrollToBottom();
     });
 
     MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('cancelButtonWhenLoading', (showCancelButton: boolean) => {
@@ -124,6 +125,13 @@ export class ChatWrapper {
     }
   }
 
+  private readonly resetScrollToBottom = (): void => {
+    const lastItem = this.chatItemsContainer.children.item(0);
+    if (lastItem !== null) {
+      lastItem.scrollIntoView({ block: 'end' });
+    }
+  };
+
   private readonly insertChatItem = (chatItem: ChatItem): void => {
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
@@ -142,14 +150,14 @@ export class ChatWrapper {
     }
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
     // Make sure we scroll the chat window to the bottom
-    chatItemCard.render.scrollIntoView({ block: 'end' });
+    this.resetScrollToBottom();
   };
 
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
       this.lastChatItemCard.updateCard(updateWith);
       // Make sure we scroll the chat window to the bottom
-      this.lastChatItemCard.render.scrollIntoView({ block: 'end' });
+      this.resetScrollToBottom();
     }
   };
 
