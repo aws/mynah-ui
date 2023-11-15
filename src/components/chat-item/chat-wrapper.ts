@@ -141,15 +141,16 @@ export class ChatWrapper {
       this.lastChatItemCard = null;
     }
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
-    // Make sure we scroll the chat window to the bottom
-    chatItemCard.render.scrollIntoView({ block: 'end' });
+    if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
+      // Make sure we scroll the chat window to the bottom
+      // Only if it is a PROMPT
+      this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight + 500;
+    }
   };
 
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
       this.lastChatItemCard.updateCard(updateWith);
-      // Make sure we scroll the chat window to the bottom
-      this.lastChatItemCard.render.scrollIntoView({ block: 'end' });
     }
   };
 

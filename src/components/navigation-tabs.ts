@@ -103,8 +103,6 @@ export class Tabs {
         classNames: [ 'mynah-toggle-close-button' ],
         additionalEvents: {
           mouseenter: (e) => {
-            console.log(MynahUITabsStore.getInstance().tabsLength());
-            console.log(Config.getInstance().config.maxTabs);
             if (MynahUITabsStore.getInstance().tabsLength() === Config.getInstance().config.maxTabs) {
               this.showPreviewOverLay(e.currentTarget, Config.getInstance().config.texts.noMoreTabsTooltip);
             }

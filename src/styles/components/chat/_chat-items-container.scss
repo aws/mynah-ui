@@ -11,10 +11,13 @@
         flex-flow: column nowrap;
         position: relative;
         max-width: 90%;
-        transition: var(--mynah-short-transition-bounce);
-        transform: translate3d(0, var(--mynah-sizing-10), 0) scale(1, 0.98);
+        transition: var(--mynah-text-flow-transition);
+        transform: translate3d(0, var(--mynah-sizing-12), 0) scale(1, 0.95);
         opacity: 0;
         transform-origin: center bottom;
+        &:not(:first-of-type) {
+            max-height: initial !important;
+        }
         &.mynah-chat-item-no-content {
             display: none !important;
         }
@@ -284,6 +287,8 @@
         &.mynah-chat-item-answer-stream {
             > .mynah-card {
                 border-bottom-left-radius: 0;
+                max-height: 100%;
+                flex: 1;
             }
         }
         &.mynah-chat-item-ai-prompt,

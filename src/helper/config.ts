@@ -62,7 +62,6 @@ export class Config {
   private static instance: Config;
   public config: ConfigModel;
   private constructor (config?: Partial<ConfigModel>) {
-    console.log(config);
     this.config = { ...configDefaults, ...config };
   }
 
