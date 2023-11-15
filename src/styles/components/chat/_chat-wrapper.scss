@@ -58,3 +58,7 @@
     @import "chat-overflowing-intermediate-block";
     @import "chat-prompt-wrapper";
 }
+
+@import 'chat-command-selector';
+@import "chat-item-tree-view";
+@import "chat-prompt-code-snippet";
