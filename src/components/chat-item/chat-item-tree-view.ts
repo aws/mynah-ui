@@ -29,21 +29,21 @@ export class ChatItemTreeView {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: this.getClassNames(),
-      children: [
-        ...this.node.type === 'folder' ? this.buildFolderNode() : this.buildFileNode()
-      ]
+      children: [ ...(this.node.type === 'folder' ? this.buildFolderNode() : this.buildFileNode()) ],
     });
   }
 
   getClassNames (): string[] {
-    return [ 'mynah-chat-item-tree-view', this.node.type === 'file' ? 'mynah-chat-tree-view-file' : `mynah-chat-tree-view-folder-${this.isOpen ? 'open' : 'closed'}` ];
+    return [
+      'mynah-chat-item-tree-view',
+      this.node.type === 'file' ? 'mynah-chat-tree-view-file' : `mynah-chat-tree-view-folder-${this.isOpen ? 'open' : 'closed'}`,
+    ];
   }
 
   updateTree (): void {
     this.render.update({
       classNames: this.getClassNames(),
-      children: [ ...this.node.type === 'folder' ? this.buildFolderNode() : this.buildFileNode()
-      ]
+      children: [ ...(this.node.type === 'folder' ? this.buildFolderNode() : this.buildFileNode()) ],
     });
   }
 
@@ -51,11 +51,13 @@ export class ChatItemTreeView {
     if (this.node.type !== 'folder') return [];
 
     const folderChildren = this.isOpen
-      ? this.node.children.map((childNode) => DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-chat-item-pull-request-item' ],
-        children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, messageId: this.messageId }).render ]
-      }))
+      ? this.node.children.map(childNode =>
+        DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-chat-item-pull-request-item' ],
+          children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, messageId: this.messageId }).render ],
+        })
+      )
       : [];
     return folderChildren;
   }
@@ -67,7 +69,7 @@ export class ChatItemTreeView {
       icon: new Icon({ icon: this.isOpen ? MynahIcons.DOWN_OPEN : MynahIcons.RIGHT_OPEN }).render,
       label: `${this.node.name} ${this.node.children.length} files`,
       primary: false,
-      onClick: (e) => {
+      onClick: e => {
         cancelEvent(e);
         this.isOpen = !this.isOpen;
         this.updateTree();
@@ -87,11 +89,18 @@ export class ChatItemTreeView {
       label: this.node.name,
       primary: false,
       onClick: () => {
-        // FIXME: revisit this. should we even send the leftPath?
-        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_DIFF, { tabId: this.tabId, messageId: this.messageId, leftPath: 'empty', rightPath: (this.node as FileNode).filePath });
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_DIFF, {
+          tabId: this.tabId,
+          messageId: this.messageId,
+          filePath: (this.node as FileNode).filePath,
+          deleted: (this.node as FileNode).deleted,
+        });
       },
     }).render;
     fileItem.style.paddingLeft = `${15 * this.depth}px`;
+    if (this.node.deleted) {
+      fileItem.style.textDecoration = 'line-through';
+    }
     return [ fileItem ];
   }
 }

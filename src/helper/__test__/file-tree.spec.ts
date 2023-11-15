@@ -2,7 +2,8 @@ import { TreeNode, fileListToTree } from '../file-tree';
 
 describe('file tree', () => {
   it('fileListToTree', () => {
-    const mockFilePaths = [ 'project/src/hello.js', 'project/src/goodbye.js' ];
+    const modifiedFilePaths = [ 'project/src/hello.js' ];
+    const deletedFilePaths = [ 'project/src/goodbye.js' ];
     const correctTreeNode: TreeNode = {
       name: 'Changes',
       type: 'folder',
@@ -15,8 +16,8 @@ describe('file tree', () => {
               name: 'src',
               type: 'folder',
               children: [
-                { name: 'hello.js', type: 'file', filePath: 'project/src/hello.js' },
-                { name: 'goodbye.js', type: 'file', filePath: 'project/src/goodbye.js' }
+                { name: 'hello.js', type: 'file', filePath: 'project/src/hello.js', deleted: false },
+                { name: 'goodbye.js', type: 'file', filePath: 'project/src/goodbye.js', deleted: true }
               ]
             }
           ]
@@ -24,6 +25,6 @@ describe('file tree', () => {
       ]
     };
 
-    expect(fileListToTree(mockFilePaths)).toEqual(correctTreeNode);
+    expect(fileListToTree(modifiedFilePaths, deletedFilePaths)).toEqual(correctTreeNode);
   });
 });
