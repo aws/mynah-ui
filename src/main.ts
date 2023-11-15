@@ -54,7 +54,7 @@ export interface MynahUIProps {
   rootSelector?: string;
   defaults?: MynahUITabStoreTab;
   tabs?: MynahUITabStoreModel;
-  config?: ConfigModel;
+  config?: Partial<ConfigModel>;
   onShowMoreWebResultsClick?: (tabId: string, messageId: string) => void;
   onReady?: () => void;
   onVote?: (tabId: string, messageId: string, vote: RelevancyVoteType) => void;
@@ -84,12 +84,10 @@ export class MynahUI {
 
   constructor (props: MynahUIProps) {
     this.props = props;
+    Config.getInstance(props.config);
+    DomBuilder.getInstance(props.rootSelector);
     MynahUITabsStore.getInstance(this.props.tabs, this.props.defaults);
     MynahUIGlobalEvents.getInstance();
-
-    DomBuilder.getInstance(props.rootSelector);
-
-    Config.getInstance(props.config);
 
     const initTabs = MynahUITabsStore.getInstance().getAllTabs();
     this.tabContentsWrapper = DomBuilder.getInstance().build({
@@ -299,9 +297,10 @@ export class MynahUI {
   /**
    * Updates only the UI with the given data for the given tab
    * Send tab id as an empty string to open a new tab!
+   * If max tabs reached, will not return tabId
    * @param data A full or partial set of data with values.
    */
-  public updateStore = (tabId: string | '', data: MynahUIDataModel): string => {
+  public updateStore = (tabId: string | '', data: MynahUIDataModel): string | undefined => {
     if (tabId === '') {
       return MynahUITabsStore.getInstance().addTab({ store: { ...data } });
     } else if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {

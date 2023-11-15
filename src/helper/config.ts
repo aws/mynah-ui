@@ -6,6 +6,7 @@
 import { ConfigModel } from '../static';
 
 const configDefaults: ConfigModel = {
+  maxTabs: 1000,
   feedbackOptions: [
     {
       value: 'inaccurate-response',
@@ -54,12 +55,14 @@ const configDefaults: ConfigModel = {
     submit: 'Submit',
     stopGenerating: 'Stop generating',
     copyToClipboard: 'Copied to clipboard',
+    noMoreTabsTooltip: 'You\'ve reached maximum number of tabs you can simultaneously use.'
   }
 };
 export class Config {
   private static instance: Config;
   public config: ConfigModel;
   private constructor (config?: Partial<ConfigModel>) {
+    console.log(config);
     this.config = { ...configDefaults, ...config };
   }
 

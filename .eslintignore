@@ -5,8 +5,6 @@ node_modules/**
 **/*.scss
 **/*.svg
 **/*rc.js
-**/*config.js
-**/*config.ts
 dist/**
 out/**
 **/*.d.ts

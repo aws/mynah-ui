@@ -3,12 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { cancelEvent } from '../helper/events';
 import { MynahUITabsStore } from '../helper/tabs-store';
 import { MynahUITabStoreTab } from '../static';
 import { Button } from './button';
+import { Card } from './card/card';
+import { CardBody } from './card/card-body';
 import { Icon, MynahIcons } from './icon';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay/overlay';
 import { Toggle, ToggleOption } from './toggle';
 
 export interface TabsProps {
@@ -19,6 +23,7 @@ export class Tabs {
   private tabIdTitleSubscriptions: Record<string, string> = {};
   private tabIdChatItemsSubscriptions: Record<string, string> = {};
   private toggleGroup: Toggle;
+  private previewOverlay: Overlay | undefined;
   private readonly props: TabsProps;
 
   constructor (props: TabsProps) {
@@ -30,7 +35,9 @@ export class Tabs {
       events: {
         dblclick: (e) => {
           cancelEvent(e);
-          MynahUITabsStore.getInstance().addTab();
+          if (MynahUITabsStore.getInstance().tabsLength() < Config.getInstance().config.maxTabs) {
+            MynahUITabsStore.getInstance().addTab();
+          }
         }
       },
       children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
@@ -94,14 +101,57 @@ export class Tabs {
       this.toggleGroup.render,
       new Button({
         classNames: [ 'mynah-toggle-close-button' ],
+        additionalEvents: {
+          mouseenter: (e) => {
+            console.log(MynahUITabsStore.getInstance().tabsLength());
+            console.log(Config.getInstance().config.maxTabs);
+            if (MynahUITabsStore.getInstance().tabsLength() === Config.getInstance().config.maxTabs) {
+              this.showPreviewOverLay(e.currentTarget, Config.getInstance().config.texts.noMoreTabsTooltip);
+            }
+          },
+          mouseleave: () => {
+            this.closePreviewOverLay();
+          },
+        },
         onClick: (e) => {
           cancelEvent(e);
-          MynahUITabsStore.getInstance().addTab();
+          if (MynahUITabsStore.getInstance().tabsLength() < Config.getInstance().config.maxTabs) {
+            MynahUITabsStore.getInstance().addTab();
+          }
         },
         icon: new Icon({ icon: MynahIcons.PLUS }).render,
         primary: false
       }).render
     ];
+  };
+
+  private readonly showPreviewOverLay = (elm: HTMLElement, markdownText: string): void => {
+    this.previewOverlay = new Overlay({
+      background: false,
+      closeOnOutsideClick: false,
+      referenceElement: elm,
+      dimOutside: false,
+      removeOtherOverlays: true,
+      verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
+      horizontalDirection: OverlayHorizontalDirection.CENTER,
+      children: [
+        new Card({
+          classNames: [ 'snippet-card-container-preview' ],
+          children: [
+            new CardBody({
+              body: markdownText,
+            }).render,
+          ]
+        }).render
+      ],
+    });
+  };
+
+  private readonly closePreviewOverLay = (): void => {
+    if (this.previewOverlay !== undefined) {
+      this.previewOverlay.close();
+      this.previewOverlay = undefined;
+    }
   };
 
   private readonly assignListener = (tabId: string): void => {
