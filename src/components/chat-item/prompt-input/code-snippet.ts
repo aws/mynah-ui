@@ -44,14 +44,14 @@ export class CodeSnippet {
         this._render.children[0].classList.add('vertical-overflow');
       }
     }
-    MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId).updateStore({
+    MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId)?.updateStore({
       selectedCodeSnippet,
     });
   };
 
   public readonly clear = (): void => {
     this._render.clear();
-    MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId).updateStore({
+    MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId)?.updateStore({
       selectedCodeSnippet: undefined,
     });
   };

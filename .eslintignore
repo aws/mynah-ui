@@ -5,8 +5,8 @@ node_modules/**
 **/*.scss
 **/*.svg
 **/*rc.js
-**/*config.js
-**/*config.ts
+**/jest.config.js
+**/webpack.config.js
 dist/**
 out/**
 **/*.d.ts

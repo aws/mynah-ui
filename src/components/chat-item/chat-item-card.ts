@@ -15,6 +15,7 @@ import { ChatItemSourceLinksContainer } from './chat-item-source-links';
 import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 
+const MAX_HEIGHT_TRESHOLD = 100;
 export interface ChatItemCardProps {
   tabId: string;
   chatItem: ChatItem;
@@ -24,6 +25,7 @@ export class ChatItemCard {
   render: ExtendedHTMLElement;
   contentBody: CardBody;
   chatAvatar: ExtendedHTMLElement;
+  private updateTimer: ReturnType<typeof setTimeout>;
   constructor (props: ChatItemCardProps) {
     this.props = props;
     this.chatAvatar = this.getChatAvatar();
@@ -69,7 +71,7 @@ export class ChatItemCard {
 
     setTimeout(() => {
       generatedCard.addClass('reveal');
-    }, 10);
+    }, 50);
 
     return generatedCard;
   };
@@ -186,9 +188,21 @@ export class ChatItemCard {
       ...this.props.chatItem,
       ...updateWith,
     };
+    if (this.updateTimer !== undefined) {
+      clearTimeout(this.updateTimer);
+    }
+    this.render.style.maxHeight = `${this.render.getBoundingClientRect().height + MAX_HEIGHT_TRESHOLD}px`;
     this.render.update({
       classNames: [ ...this.getCardClasses(), 'reveal' ],
       children: this.getCardContent(),
     });
+    setTimeout(() => {
+      this.render.style.maxHeight = `${
+        (this.render.querySelector('.mynah-card-body') as HTMLElement).scrollHeight + MAX_HEIGHT_TRESHOLD
+      }px`;
+      this.updateTimer = setTimeout(() => {
+        this.render.style.maxHeight = 'initial';
+      }, 1000);
+    }, 10);
   };
 }

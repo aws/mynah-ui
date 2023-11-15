@@ -267,9 +267,11 @@ export interface ConfigModel {
     submit: string;
     stopGenerating: string;
     copyToClipboard: string;
+    noMoreTabsTooltip: string;
   };
   feedbackOptions: Array<{
     label: string;
     value: string;
   }>;
+  maxTabs: number;
 }

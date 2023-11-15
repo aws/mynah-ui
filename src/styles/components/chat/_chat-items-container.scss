@@ -1,350 +1,353 @@
-@mixin chat-items-container() {
-    > .mynah-chat-items-container {
-        display: flex;
-        flex: 1 1 0%;
-        overflow-x: hidden;
-        overflow-y: auto;
-        flex-flow: column-reverse nowrap;
-        align-items: flex-start;
-        padding: var(--mynah-sizing-4);
+> .mynah-chat-items-container {
+    display: flex;
+    flex: 1 1 0%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    flex-flow: column-reverse nowrap;
+    align-items: flex-start;
+    padding: var(--mynah-sizing-4);
+    .mynah-chat-item-card {
+        display: inline-flex;
+        flex-flow: column nowrap;
+        position: relative;
+        max-width: 90%;
+        transition: var(--mynah-text-flow-transition);
+        transform: translate3d(0, var(--mynah-sizing-12), 0) scale(1, 0.95);
+        opacity: 0;
+        transform-origin: center bottom;
+        &:not(:first-of-type) {
+            max-height: initial !important;
+        }
+        &.mynah-chat-item-no-content {
+            display: none !important;
+        }
+        > .mynah-chat-item-spacer {
+            display: block;
+            width: 100%;
+            height: var(--mynah-sizing-6);
+            order: 10000;
+        }
+        & ~ .mynah-chat-item-temporary-element,
+        & ~ * .mynah-chat-item-temporary-element {
+            display: none !important;
+            visibility: hidden !important;
+            & ~ .mynah-chat-item-spacer {
+                display: none;
+                height: 0;
+            }
+        }
+
         .mynah-chat-item-card {
+            max-width: 100%;
+            width: 100%;
+            padding: var(--mynah-sizing-3) 0 var(--mynah-sizing-3) 0;
+            border-top: 1px solid var(--mynah-color-border-default);
+            margin-top: var(--mynah-sizing-3);
+            padding-bottom: 0;
+            .mynah-chat-item-card-related-content > .mynah-chat-item-card-related-content-title {
+                font-size: var(--mynah-font-size-large);
+            }
+        }
+
+        > span.invisible {
+            display: none;
+        }
+
+        > .mynah-chat-items-spinner {
+            display: none;
+            position: absolute;
+            bottom: var(--mynah-sizing-2);
+            left: 50%;
+            margin-left: -50px;
+            width: 100px;
+            top: 49%;
+            margin-top: calc(-1 * var(--mynah-sizing-2));
+            height: var(--mynah-sizing-4);
+            overflow: visible;
+            z-index: 10000;
+            gap: var(--mynah-sizing-2);
+            justify-content: center;
+            align-items: end;
+            transform: translate3d(0px, calc(-1 * var(--mynah-sizing-2)), 0px);
+            > span {
+                animation: bounce 500ms infinite cubic-bezier(0.5, 0, 0.15, 1) alternate;
+                display: inline-block;
+                width: var(--mynah-sizing-2);
+                height: var(--mynah-sizing-2);
+                border-radius: var(--mynah-sizing-2);
+                background-color: var(--mynah-color-text-weak);
+                opacity: 0.5;
+                &:nth-child(2) {
+                    animation-delay: 150ms;
+                }
+                &:nth-child(3) {
+                    animation-delay: 300ms;
+                }
+            }
+        }
+        &.mynah-chat-item-code-result {
+            min-width: 70%;
+        }
+        a {
+            pointer-events: bounding-box;
+            color: var(--mynah-color-text-link);
+        }
+        &.reveal {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1, 1);
+        }
+        > .mynah-chat-item-card-icon-wrapper {
+            background-color: var(--mynah-color-alternate);
+            color: var(--mynah-color-alternate-reverse);
+            padding: var(--mynah-sizing-2);
+            border-radius: 100%;
+        }
+        > .mynah-card {
+            > .mynah-card-body {
+                & > div {
+                    > .mynah-syntax-highlighter {
+                        filter: contrast(1.15) brightness(0.85);
+                    }
+                    > h1,
+                    > h2,
+                    > h3,
+                    > h4 {
+                        &:first-child {
+                            margin-top: 0;
+                        }
+                    }
+                }
+                > .mynah-chat-item-card-related-content {
+                    margin-top: var(--mynah-sizing-3);
+                    padding-top: var(--mynah-sizing-4);
+                    border-top: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+                    > .mynah-chat-item-card-related-content-title {
+                        color: var(--mynah-color-text-weak);
+                        font-size: var(--mynah-font-size-xsmall);
+                        margin: 0;
+                    }
+                    .mynah-source-link-title {
+                        font-size: var(--mynah-font-size-small);
+                        font-weight: 400;
+                    }
+                }
+                padding-left: 0;
+            }
+            :hover::before {
+                box-shadow: var(--mynah-shadow-card) !important;
+            }
+        }
+
+        > .mynah-chat-item-followup-question {
             display: inline-flex;
             flex-flow: column nowrap;
             position: relative;
-            max-width: 90%;
-            transition: var(--mynah-short-transition-bounce);
-            transform: translate3d(0, var(--mynah-sizing-10), 0) scale(1, 0.98);
-            opacity: 0;
-            transform-origin: center bottom;
-            &.mynah-chat-item-no-content {
-                display: none !important;
+            gap: var(--mynah-sizing-2);
+            > .mynah-chat-item-followup-question-text {
+                color: var(--mynah-color-text-weak);
+                font-size: var(--mynah-font-size-xsmall);
+                font-style: italic;
             }
-            > .mynah-chat-item-spacer {
-                display: block;
-                width: 100%;
-                height: var(--mynah-sizing-6);
-                order: 10000;
-            }
-            & ~ .mynah-chat-item-temporary-element,
-            & ~ * .mynah-chat-item-temporary-element {
-                display: none !important;
-                visibility: hidden !important;
-                & ~ .mynah-chat-item-spacer {
-                    display: none;
-                    height: 0;
-                }
-            }
-
-            .mynah-chat-item-card {
-                max-width: 100%;
-                width: 100%;
-                padding: var(--mynah-sizing-3) 0 var(--mynah-sizing-3) 0;
-                border-top: 1px solid var(--mynah-color-border-default);
-                margin-top: var(--mynah-sizing-3);
-                padding-bottom: 0;
-                .mynah-chat-item-card-related-content > .mynah-chat-item-card-related-content-title {
-                    font-size: var(--mynah-font-size-large);
-                }
-            }
-
-            > span.invisible {
-                display: none;
-            }
-
-            > .mynah-chat-items-spinner {
-                display: none;
-                position: absolute;
-                bottom: var(--mynah-sizing-2);
-                left: 50%;
-                margin-left: -50px;
-                width: 100px;
-                top: 49%;
-                margin-top: calc(-1 * var(--mynah-sizing-2));
-                height: var(--mynah-sizing-4);
-                overflow: visible;
-                z-index: 10000;
-                gap: var(--mynah-sizing-2);
-                justify-content: center;
-                align-items: end;
-                transform: translate3d(0px, calc(-1 * var(--mynah-sizing-2)), 0px);
-                > span {
-                    animation: bounce 500ms infinite cubic-bezier(0.5, 0, 0.15, 1) alternate;
-                    display: inline-block;
-                    width: var(--mynah-sizing-2);
-                    height: var(--mynah-sizing-2);
-                    border-radius: var(--mynah-sizing-2);
-                    background-color: var(--mynah-color-text-weak);
-                    opacity: 0.5;
-                    &:nth-child(2) {
-                        animation-delay: 150ms;
-                    }
-                    &:nth-child(3) {
-                        animation-delay: 300ms;
-                    }
-                }
-            }
-            &.mynah-chat-item-code-result {
-                min-width: 70%;
-            }
-            a {
-                pointer-events: bounding-box;
-                color: var(--mynah-color-text-link);
-            }
-            &.reveal {
-                opacity: 1;
-                transform: translate3d(0, 0, 0) scale(1, 1);
-            }
-            > .mynah-chat-item-card-icon-wrapper {
-                background-color: var(--mynah-color-alternate);
-                color: var(--mynah-color-alternate-reverse);
-                padding: var(--mynah-sizing-2);
-                border-radius: 100%;
-            }
-            > .mynah-card {
-                > .mynah-card-body {
-                    & > div {
-                        > .mynah-syntax-highlighter {
-                            filter: contrast(1.15) brightness(0.85);
-                        }
-                        > h1,
-                        > h2,
-                        > h3,
-                        > h4 {
-                            &:first-child {
-                                margin-top: 0;
-                            }
-                        }
-                    }
-                    > .mynah-chat-item-card-related-content {
-                        margin-top: var(--mynah-sizing-3);
-                        padding-top: var(--mynah-sizing-4);
-                        border-top: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
-                        > .mynah-chat-item-card-related-content-title {
-                            color: var(--mynah-color-text-weak);
-                            font-size: var(--mynah-font-size-xsmall);
-                            margin: 0;
-                        }
-                        .mynah-source-link-title {
-                            font-size: var(--mynah-font-size-small);
-                            font-weight: 400;
-                        }
-                    }
-                    padding-left: 0;
-                }
-                :hover::before {
-                    box-shadow: var(--mynah-shadow-card) !important;
-                }
-            }
-
-            > .mynah-chat-item-followup-question {
+            > .mynah-chat-item-followup-question-options-wrapper {
                 display: inline-flex;
-                flex-flow: column nowrap;
-                position: relative;
+                flex-flow: row wrap;
+                max-width: 100%;
                 gap: var(--mynah-sizing-2);
-                > .mynah-chat-item-followup-question-text {
-                    color: var(--mynah-color-text-weak);
+                > .mynah-chat-item-followup-question-option {
+                    padding: var(--mynah-sizing-2);
+                    color: var(--mynah-color-text-default);
+                    border: var(--mynah-border-width) solid currentColor;
+                    border-radius: var(--mynah-card-radius);
+                    cursor: pointer;
                     font-size: var(--mynah-font-size-xsmall);
-                    font-style: italic;
-                }
-                > .mynah-chat-item-followup-question-options-wrapper {
+                    max-width: 100%;
+                    overflow: hidden;
                     display: inline-flex;
-                    flex-flow: row wrap;
-                    max-width: 100%;
                     gap: var(--mynah-sizing-2);
-                    > .mynah-chat-item-followup-question-option {
-                        padding: var(--mynah-sizing-2);
-                        color: var(--mynah-color-text-default);
-                        border: var(--mynah-border-width) solid currentColor;
-                        border-radius: var(--mynah-card-radius);
-                        cursor: pointer;
-                        font-size: var(--mynah-font-size-xsmall);
-                        max-width: 100%;
-                        overflow: hidden;
-                        display: inline-flex;
-                        gap: var(--mynah-sizing-2);
-                        align-items: center;
-                        &:not(:hover) {
-                            opacity: 0.75;
+                    align-items: center;
+                    &:not(:hover) {
+                        opacity: 0.75;
+                    }
+                    &-status {
+                        &-success {
+                            color: var(--mynah-color-status-success);
                         }
-                        &-status {
-                            &-success {
-                                color: var(--mynah-color-status-success);
-                            }
-                            &-error {
-                                color: var(--mynah-color-status-error);
-                            }
-                            &-warning {
-                                color: var(--mynah-color-status-warning);
-                            }
-                            &-info {
-                                color: var(--mynah-color-status-info);
-                            }
+                        &-error {
+                            color: var(--mynah-color-status-error);
                         }
-                    }
-                }
-            }
-
-            .mynah-chat-item-card-related-content {
-                display: flex;
-                flex-flow: column nowrap;
-                gap: var(--mynah-sizing-2);
-                overflow: hidden;
-                position: relative;
-                > .mynah-chat-item-card-related-content-item {
-                    max-width: 100%;
-                    > .mynah-card {
-                        padding: 0;
-                    }
-                    .amzn-mynah-search-result-highlight {
-                        background-color: inherit;
-                        color: inherit;
-                    }
-                }
-                &:not(.expanded) {
-                    > .mynah-chat-item-card-related-content-item {
-                        $maxItems: 1;
-                        $selector: "&";
-                        @for $i from 1 through $maxItems {
-                            $selector: #{$selector} + ":not(:nth-of-type(" + #{$i} + "))";
+                        &-warning {
+                            color: var(--mynah-color-status-warning);
                         }
-                        #{$selector} {
-                            display: none;
-                        }
-                        &:nth-of-type(#{$maxItems}) {
-                            margin-bottom: calc(-1 * var(--mynah-sizing-4));
-                            pointer-events: none;
-                            @include list-fader-bottom(var(--mynah-sizing-12));
-                            -webkit-mask-image: linear-gradient(to top, transparent var(--mynah-sizing-1), black 70%);
-                        }
-                        &:nth-of-type(#{$maxItems + 1}) {
-                            & ~ .mynah-chat-item-card-related-content-show-more {
-                                display: flex;
-                            }
-                        }
-                    }
-                }
-
-                > .mynah-chat-item-card-related-content-show-more {
-                    display: none;
-                    max-width: 80%;
-                    z-index: 10000;
-                    margin-block-start: 0;
-                    margin-block-end: 0;
-                    align-self: center;
-                    height: var(--mynah-sizing-8);
-                    filter: none;
-                    > span,
-                    > i {
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        font-size: var(--mynah-font-size-xsmall);
-                    }
-                }
-            }
-            &.mynah-chat-item-system-prompt,
-            &.mynah-chat-item-prompt {
-                align-self: flex-end;
-                > .mynah-chat-item-card-icon-wrapper {
-                    align-self: flex-end;
-                }
-                .mynah-chat-item-followup-question,
-                .mynah-chat-item-card-related-content {
-                    align-items: flex-end;
-                }
-
-                .mynah-syntax-highlighter {
-                    > .mynah-syntax-highlighter-copy-buttons {
-                        display: none;
-                    }
-                }
-
-                .mynah-chat-item-card-related-content > .mynah-card,
-                > .mynah-card {
-                    box-shadow: 0px 0px 5px -5px var(--mynah-color-button);
-                    padding: var(--mynah-sizing-4);
-                    background-color: var(--mynah-color-button);
-                    border-bottom-right-radius: 0;
-                    border: none;
-                    &,
-                    > .mynah-card-body {
-                        color: var(--mynah-color-button-reverse);
-                    }
-                }
-            }
-            &.mynah-chat-item-system-prompt {
-                > .mynah-card {
-                    background-color: var(--mynah-color-status-warning);
-                }
-            }
-
-            &.mynah-chat-item-answer-stream.mynah-chat-item-empty.stream-ended {
-                display: none;
-            }
-            &.mynah-chat-item-answer,
-            &.mynah-chat-item-answer-stream {
-                > .mynah-card {
-                    border-bottom-left-radius: 0;
-                }
-            }
-            &.mynah-chat-item-ai-prompt,
-            &.mynah-chat-item-answer,
-            &.mynah-chat-item-answer-stream {
-                > .mynah-chat-item-card-icon-wrapper {
-                    align-self: flex-start;
-                }
-                > .mynah-chat-item-card-related-content {
-                    > .mynah-chat-item-card-related-content-item > .mynah-card-compact {
-                        opacity: 1;
-                        > .mynah-source-link-header {
-                            opacity: 1;
+                        &-info {
+                            color: var(--mynah-color-status-info);
                         }
                     }
                 }
             }
         }
-    }
 
-    &.loading {
-        > .mynah-chat-items-container {
-            padding-bottom: var(--mynah-sizing-14);
-            > .mynah-chat-item-card.mynah-chat-item-answer-stream {
-                &:first-child {
-                    > .mynah-card {
-                        min-width: 100px;
-                        min-height: var(--mynah-sizing-13);
-                        > .mynah-card-votes-wrapper {
-                            display: none;
+        .mynah-chat-item-card-related-content {
+            display: flex;
+            flex-flow: column nowrap;
+            gap: var(--mynah-sizing-2);
+            overflow: hidden;
+            position: relative;
+            > .mynah-chat-item-card-related-content-item {
+                max-width: 100%;
+                > .mynah-card {
+                    padding: 0;
+                }
+                .amzn-mynah-search-result-highlight {
+                    background-color: inherit;
+                    color: inherit;
+                }
+            }
+            &:not(.expanded) {
+                > .mynah-chat-item-card-related-content-item {
+                    $maxItems: 1;
+                    $selector: "&";
+                    @for $i from 1 through $maxItems {
+                        $selector: #{$selector} + ":not(:nth-of-type(" + #{$i} + "))";
+                    }
+                    #{$selector} {
+                        display: none;
+                    }
+                    &:nth-of-type(#{$maxItems}) {
+                        margin-bottom: calc(-1 * var(--mynah-sizing-4));
+                        pointer-events: none;
+                        @include list-fader-bottom(var(--mynah-sizing-12));
+                        -webkit-mask-image: linear-gradient(to top, transparent var(--mynah-sizing-1), black 70%);
+                    }
+                    &:nth-of-type(#{$maxItems + 1}) {
+                        & ~ .mynah-chat-item-card-related-content-show-more {
+                            display: flex;
                         }
                     }
-                    &.mynah-chat-item-empty > .mynah-chat-items-spinner {
-                        display: inline-flex;
+                }
+            }
+
+            > .mynah-chat-item-card-related-content-show-more {
+                display: none;
+                max-width: 80%;
+                z-index: 10000;
+                margin-block-start: 0;
+                margin-block-end: 0;
+                align-self: center;
+                height: var(--mynah-sizing-8);
+                filter: none;
+                > span,
+                > i {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    font-size: var(--mynah-font-size-xsmall);
+                }
+            }
+        }
+        &.mynah-chat-item-system-prompt,
+        &.mynah-chat-item-prompt {
+            align-self: flex-end;
+            > .mynah-chat-item-card-icon-wrapper {
+                align-self: flex-end;
+            }
+            .mynah-chat-item-followup-question,
+            .mynah-chat-item-card-related-content {
+                align-items: flex-end;
+            }
+
+            .mynah-syntax-highlighter {
+                > .mynah-syntax-highlighter-copy-buttons {
+                    display: none;
+                }
+            }
+
+            .mynah-chat-item-card-related-content > .mynah-card,
+            > .mynah-card {
+                box-shadow: 0px 0px 5px -5px var(--mynah-color-button);
+                padding: var(--mynah-sizing-4);
+                background-color: var(--mynah-color-button);
+                border-bottom-right-radius: 0;
+                border: none;
+                &,
+                > .mynah-card-body {
+                    color: var(--mynah-color-button-reverse);
+                }
+            }
+        }
+        &.mynah-chat-item-system-prompt {
+            > .mynah-card {
+                background-color: var(--mynah-color-status-warning);
+            }
+        }
+
+        &.mynah-chat-item-answer-stream.mynah-chat-item-empty.stream-ended {
+            display: none;
+        }
+        &.mynah-chat-item-answer,
+        &.mynah-chat-item-answer-stream {
+            > .mynah-card {
+                border-bottom-left-radius: 0;
+                max-height: 100%;
+                flex: 1;
+            }
+        }
+        &.mynah-chat-item-ai-prompt,
+        &.mynah-chat-item-answer,
+        &.mynah-chat-item-answer-stream {
+            > .mynah-chat-item-card-icon-wrapper {
+                align-self: flex-start;
+            }
+            > .mynah-chat-item-card-related-content {
+                > .mynah-chat-item-card-related-content-item > .mynah-card-compact {
+                    opacity: 1;
+                    > .mynah-source-link-header {
+                        opacity: 1;
                     }
-                    &:not(.mynah-chat-item-empty):before {
-                        content: "";
-                        pointer-events: none;
-                        position: absolute;
-                        overflow: hidden;
-                        border-bottom-right-radius: var(--mynah-card-radius);
-                        bottom: calc(var(--mynah-sizing-6) + var(--mynah-border-width));
-                        left: var(--mynah-border-width);
-                        right: var(--mynah-border-width);
-                        width: auto;
-                        height: var(--mynah-sizing-2);
-                        box-sizing: border-box;
-                        z-index: 10;
-                        background-image: linear-gradient(
-                            90deg,
-                            var(--mynah-color-button) 0%,
-                            rgba(255, 255, 255, 0) 25%,
-                            rgba(255, 255, 255, 0) 50%,
-                            var(--mynah-color-button) 100%
-                        );
-                        background-position: 0% bottom;
-                        background-size: 200% var(--mynah-sizing-half);
-                        background-repeat: repeat-x;
-                        animation: horizontal-roll 1250ms linear infinite both;
+                }
+            }
+        }
+    }
+}
+
+&.loading {
+    > .mynah-chat-items-container {
+        padding-bottom: var(--mynah-sizing-14);
+        > .mynah-chat-item-card.mynah-chat-item-answer-stream {
+            &:first-child {
+                > .mynah-card {
+                    min-width: 100px;
+                    min-height: var(--mynah-sizing-13);
+                    > .mynah-card-votes-wrapper {
+                        display: none;
                     }
+                }
+                &.mynah-chat-item-empty > .mynah-chat-items-spinner {
+                    display: inline-flex;
+                }
+                &:not(.mynah-chat-item-empty):before {
+                    content: "";
+                    pointer-events: none;
+                    position: absolute;
+                    overflow: hidden;
+                    border-bottom-right-radius: var(--mynah-card-radius);
+                    bottom: calc(var(--mynah-sizing-6) + var(--mynah-border-width));
+                    left: var(--mynah-border-width);
+                    right: var(--mynah-border-width);
+                    width: auto;
+                    height: var(--mynah-sizing-2);
+                    box-sizing: border-box;
+                    z-index: 10;
+                    background-image: linear-gradient(
+                        90deg,
+                        var(--mynah-color-button) 0%,
+                        rgba(255, 255, 255, 0) 25%,
+                        rgba(255, 255, 255, 0) 50%,
+                        var(--mynah-color-button) 100%
+                    );
+                    background-position: 0% bottom;
+                    background-size: 200% var(--mynah-sizing-half);
+                    background-repeat: repeat-x;
+                    animation: horizontal-roll 1250ms linear infinite both;
                 }
             }
         }

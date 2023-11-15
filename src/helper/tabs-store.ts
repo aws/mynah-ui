@@ -4,6 +4,7 @@
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { MynahUIDataModel, MynahUITabStoreModel, MynahUITabStoreTab } from '../static';
+import { Config } from './config';
 import { generateUID } from './guid';
 import { MynahUIDataStore } from './store';
 
@@ -56,14 +57,16 @@ export class MynahUITabsStore {
     });
   };
 
-  public readonly addTab = (tabData?: MynahUITabStoreTab): string => {
-    const tabId = generateUID();
-    this.deselectAllTabs();
-    this.tabsStore[tabId] = { ...this.tabDefaults, ...tabData, isSelected: true };
-    this.tabsDataStore[tabId] = new MynahUIDataStore(tabId, this.tabsStore[tabId].store ?? {});
-    this.informSubscribers('add', tabId, this.tabsStore[tabId]);
-    this.informSubscribers('selectedTabChange', tabId, this.tabsStore[tabId]);
-    return tabId;
+  public readonly addTab = (tabData?: MynahUITabStoreTab): string | undefined => {
+    if (Object.keys(this.tabsStore).length < Config.getInstance().config.maxTabs) {
+      const tabId = generateUID();
+      this.deselectAllTabs();
+      this.tabsStore[tabId] = { ...this.tabDefaults, ...tabData, isSelected: true };
+      this.tabsDataStore[tabId] = new MynahUIDataStore(tabId, this.tabsStore[tabId].store ?? {});
+      this.informSubscribers('add', tabId, this.tabsStore[tabId]);
+      this.informSubscribers('selectedTabChange', tabId, this.tabsStore[tabId]);
+      return tabId;
+    }
   };
 
   public readonly removeTab = (tabId: string): string => {
@@ -211,4 +214,10 @@ export class MynahUITabsStore {
       this.removeTab(tabId);
     });
   };
+
+  /**
+   * Get all tabs length
+   * @returns tabs length
+   */
+  public tabsLength = (): number => Object.keys(this.tabsStore).length;
 }
