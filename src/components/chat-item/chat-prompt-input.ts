@@ -222,7 +222,13 @@ export class ChatPromptInput {
                   // In case the prompt is an incomplete regex
                 }
               });
-              this.commandSelector.updateContent([ this.getQuickCommandActions(this.filteredCommandsList) ]);
+              if (this.filteredCommandsList.length > 0) {
+                this.commandSelector.toggleHidden(false);
+                this.commandSelector.updateContent([ this.getQuickCommandActions(this.filteredCommandsList) ]);
+              } else {
+                // If there's no matching action, hide the command selector overlay
+                this.commandSelector.toggleHidden(true);
+              }
             }
           }, 1);
         }
