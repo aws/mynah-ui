@@ -210,10 +210,16 @@ export class ChatPromptInput {
               this.filteredCommandsList = [];
               [ ...this.quickActionCommands ].forEach((quickActionGroup: QuickActionCommandGroup) => {
                 const newQuickActionCommandGroup = { ...quickActionGroup };
-                newQuickActionCommandGroup.commands = newQuickActionCommandGroup
-                  .commands.filter(command => command.command.match(new RegExp(`${this.promptTextInput.getTextInputValue().substring(1)}` ?? '', 'gi')));
-                if (newQuickActionCommandGroup.commands.length > 0) {
-                  this.filteredCommandsList.push(newQuickActionCommandGroup);
+                try {
+                  const promptRegex = new RegExp(`${this.promptTextInput.getTextInputValue().substring(1)}` ?? '', 'gi');
+                  newQuickActionCommandGroup.commands = newQuickActionCommandGroup.commands.filter(command =>
+                    command.command.match(promptRegex)
+                  );
+                  if (newQuickActionCommandGroup.commands.length > 0) {
+                    this.filteredCommandsList.push(newQuickActionCommandGroup);
+                  }
+                } catch (e) {
+                  // In case the prompt is an incomplete regex
                 }
               });
               this.commandSelector.updateContent([ this.getQuickCommandActions(this.filteredCommandsList) ]);
