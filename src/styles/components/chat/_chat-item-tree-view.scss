@@ -64,3 +64,15 @@
         margin-right: var(--mynah-sizing-2);
     }
 }
+
+.mynah-chat-item-tree-view-license-container {
+    background-color: var(--mynah-color-button);
+
+    ul {
+        margin: 0;
+    }
+
+    .mynah-chat-item-tree-view-license-dropdown-button > span {
+        max-width: unset;
+    }
+}
