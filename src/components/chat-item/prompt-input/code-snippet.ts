@@ -14,6 +14,8 @@ export interface ISelectCodeSnippetEvent {
 export class CodeSnippet {
   private readonly _props: ICodeSnippetProps;
   private readonly _render: ExtendedHTMLElement;
+  private snippetWidget: CodeSnippetWidget | undefined;
+  public lastCodeSnippet: string = '';
   constructor (props: ICodeSnippetProps) {
     this._props = props;
 
@@ -29,15 +31,17 @@ export class CodeSnippet {
   }
 
   public readonly updateSelectedCodeSnippet = (selectedCodeSnippet: string | undefined): void => {
+    if (this.snippetWidget !== undefined) {
+      this.snippetWidget.clear();
+    }
     this._render.clear();
+    this.lastCodeSnippet = selectedCodeSnippet ?? '';
     if (selectedCodeSnippet !== undefined && selectedCodeSnippet !== '') {
-      this._render.insertChild(
-        'afterbegin',
-        new CodeSnippetWidget({
-          tabId: this._props.tabId,
-          markdownText: selectedCodeSnippet,
-        }).render
-      );
+      this.snippetWidget = new CodeSnippetWidget({
+        tabId: this._props.tabId,
+        markdownText: selectedCodeSnippet,
+      });
+      this._render.insertChild('afterbegin', this.snippetWidget.render);
       const isCodeOverflowVertically =
         (this._render.getBoundingClientRect()?.height ?? 0) < (this._render.getElementsByTagName('code')?.[0]?.getBoundingClientRect()?.height ?? 0);
       if (isCodeOverflowVertically) {
@@ -50,6 +54,11 @@ export class CodeSnippet {
   };
 
   public readonly clear = (): void => {
+    this.lastCodeSnippet = '';
+    if (this.snippetWidget !== undefined) {
+      this.snippetWidget.clear();
+    }
+    this.snippetWidget = undefined;
     this._render.clear();
     MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId)?.updateStore({
       selectedCodeSnippet: undefined,

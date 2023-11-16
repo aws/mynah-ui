@@ -79,4 +79,8 @@ export class CodeSnippetWidget {
       ],
     }).render;
   };
+
+  public readonly clear = (): void => {
+    this.closePreviewOverLay();
+  };
 }
