@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { cancelEvent } from '../../helper/events';
 import { ReferenceTrackerInformation } from '../../static';
-import { Button } from '../button';
-import { Icon, MynahIcons } from '../icon';
+import { CardBody } from '../card/card-body';
+import { CollapsibleContent } from '../collapsible-content';
 
 export interface ChatItemTreeViewLicenseProps {
   referenceSuggestionLabel: string;
@@ -15,80 +15,35 @@ export interface ChatItemTreeViewLicenseProps {
 }
 
 export class ChatItemTreeViewLicense {
-  private isOpen: boolean;
-  private readonly referenceListWrapper: ExtendedHTMLElement;
-  private readonly dropdownButtonWrapper: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemTreeViewLicenseProps) {
     // If no references are found then just return an empty div
     if (props.references.length === 0) {
       this.render = DomBuilder.getInstance().build({
-        type: 'div',
+        type: 'span',
+        classNames: [ 'empty' ]
       });
       return;
     }
 
-    this.isOpen = true;
-
-    this.referenceListWrapper = DomBuilder.getInstance().build({
-      type: 'div',
-      children: this.buildDropdownChildren(props.references)
-    });
-
-    const dropdownButton = this.buildDropdownButton(props.referenceSuggestionLabel, props.references);
-
-    this.dropdownButtonWrapper = DomBuilder.getInstance().build({
-      type: 'div',
-      children: [ dropdownButton ]
-    });
-
-    this.render = DomBuilder.getInstance().build({
-      type: 'div',
+    this.render = new CollapsibleContent({
+      title: Config.getInstance().config.texts.codeSuggestionWithReferenceTitle,
       classNames: [ 'mynah-chat-item-tree-view-license' ],
-      children: [
-        {
-          type: 'div',
-          classNames: [ 'mynah-chat-item-tree-view-license-container' ],
-          children: [
-            this.dropdownButtonWrapper,
-            this.referenceListWrapper
-          ]
-        }
-      ]
-    });
-  }
-
-  private buildDropdownChildren (references: ReferenceTrackerInformation[]): ExtendedHTMLElement[] | string[] {
-    return this.isOpen
-      ? [
-          DomBuilder.getInstance().build({
-            type: 'ul',
-            children: references.map(ref => ({
-              type: 'li',
-              innerHTML: ref.information
-            })),
-          })
-        ]
-      : [ '' ];
-  }
-
-  private buildDropdownButton (label: string, references: ReferenceTrackerInformation[]): ExtendedHTMLElement {
-    return new Button({
-      icon: new Icon({ icon: this.isOpen ? MynahIcons.DOWN_OPEN : MynahIcons.RIGHT_OPEN }).render,
-      classNames: [ 'mynah-chat-item-tree-view-license-dropdown-button' ],
-      label,
-      primary: false,
-      onClick: (e) => {
-        cancelEvent(e);
-        this.isOpen = !this.isOpen;
-        this.referenceListWrapper.update({
-          children: this.buildDropdownChildren(references)
-        });
-        this.dropdownButtonWrapper.update({
-          children: [ this.buildDropdownButton(label, references) ]
-        });
-      },
+      children: [ this.buildDropdownChildren(props.references) ]
     }).render;
   }
+
+  private readonly buildDropdownChildren = (references: ReferenceTrackerInformation[]): ExtendedHTMLElement => DomBuilder.getInstance().build({
+    type: 'ul',
+    classNames: [ 'mynah-chat-item-tree-view-license-container' ],
+    children: references.map(ref => ({
+      type: 'li',
+      children: [
+        new CardBody({
+          body: ref.information
+        }).render
+      ]
+    })),
+  });
 }

@@ -272,6 +272,7 @@ export interface ConfigModel {
     stopGenerating: string;
     copyToClipboard: string;
     noMoreTabsTooltip: string;
+    codeSuggestionWithReferenceTitle: string;
   };
   feedbackOptions: Array<{
     label: string;

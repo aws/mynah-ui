@@ -55,7 +55,8 @@ const configDefaults: ConfigModel = {
     submit: 'Submit',
     stopGenerating: 'Stop generating',
     copyToClipboard: 'Copied to clipboard',
-    noMoreTabsTooltip: 'You\'ve reached maximum number of tabs you can simultaneously use.'
+    noMoreTabsTooltip: 'You\'ve reached maximum number of tabs you can simultaneously use.',
+    codeSuggestionWithReferenceTitle: 'Some suggestions contain code with references.'
   }
 };
 export class Config {
