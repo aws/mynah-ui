@@ -122,8 +122,7 @@ export class ChatPromptInput {
 
   private readonly updateAvailableCharactersIndicator = (): void => {
     const totalCharsUsed =
-      this.promptTextInput.getTextInputValue().trim().length +
-      this.codeSnippet.lastCodeSnippet.length;
+      this.promptTextInput.getTextInputValue().trim().length + this.codeSnippet.lastCodeSnippet.length;
     this.remainingCharsIndicator.update({
       innerHTML: `${Math.max(0, (MAX_USER_INPUT - totalCharsUsed))}/${MAX_USER_INPUT}`
     });
@@ -146,7 +145,7 @@ export class ChatPromptInput {
         this.filteredCommandsList = [ ...this.quickActionCommands ];
         this.commandSelector = new Overlay({
           closeOnOutsideClick: true,
-          referenceElement: this.render,
+          referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
           dimOutside: false,
           stretchWidth: true,
           verticalDirection: OverlayVerticalDirection.TO_TOP,

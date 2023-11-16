@@ -8,7 +8,6 @@
     flex-flow: column nowrap;
     align-items: stretch;
     justify-content: flex-start;
-    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     > .mynah-chat-command-selector-group {
         display: flex;
         box-sizing: border-box;

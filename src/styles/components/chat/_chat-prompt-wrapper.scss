@@ -180,7 +180,8 @@
     flex-flow: row nowrap;
     box-sizing: border-box;
     overflow: hidden;
-    padding: 0 var(--mynah-sizing-4) var(--mynah-sizing-4) var(--mynah-sizing-4);
+    padding: 0 var(--mynah-sizing-4) var(--mynah-sizing-2) var(--mynah-sizing-4);
+    font-size: var(--mynah-font-size-xsmall);
     &:empty {
         display: none;
     }
