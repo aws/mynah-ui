@@ -281,4 +281,8 @@ export class Overlay {
   public updateContent = (children: Array<string | DomBuilderObject | HTMLElement | ExtendedHTMLElement>): void => {
     this.innerContainer.update({ children });
   };
+
+  public toggleHidden = (hidden: boolean): void => {
+    this.render.hidden = hidden;
+  };
 }
