@@ -12,9 +12,13 @@
         position: relative;
         max-width: 90%;
         transition: var(--mynah-text-flow-transition);
-        transform: translate3d(0, var(--mynah-sizing-12), 0) scale(1, 0.95);
+        transform: translate3d(0, min(50%, 25vh), 0) scale(0.95, 1.25);
         opacity: 0;
         transform-origin: center bottom;
+        &.reveal {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1, 1);
+        }
         &:not(:first-of-type) {
             max-height: initial !important;
         }
@@ -55,34 +59,43 @@
 
         > .mynah-chat-items-spinner {
             display: none;
-            position: absolute;
-            bottom: var(--mynah-sizing-2);
-            left: 50%;
-            margin-left: -50px;
-            width: 100px;
-            top: 49%;
-            margin-top: calc(-1 * var(--mynah-sizing-2));
-            height: var(--mynah-sizing-4);
+            margin-top: calc(-1 * var(--mynah-sizing-10));
             overflow: visible;
             z-index: 10000;
             gap: var(--mynah-sizing-2);
-            justify-content: center;
-            align-items: end;
-            transform: translate3d(0px, calc(-1 * var(--mynah-sizing-2)), 0px);
+            margin-right: var(--mynah-sizing-5);
+            margin-left: var(--mynah-sizing-3);
+            justify-content: flex-start;
+            align-items: center;
+            transition: var(--mynah-very-short-transition);
             > span {
-                animation: bounce 500ms infinite cubic-bezier(0.5, 0, 0.15, 1) alternate;
+                position: relative;
                 display: inline-block;
-                width: var(--mynah-sizing-2);
-                height: var(--mynah-sizing-2);
-                border-radius: var(--mynah-sizing-2);
-                background-color: var(--mynah-color-text-weak);
-                opacity: 0.5;
-                &:nth-child(2) {
-                    animation-delay: 150ms;
+                width: var(--mynah-sizing-5);
+                height: var(--mynah-sizing-5);
+                border: var(--mynah-sizing-half) solid rgba(0, 0, 0, 0);
+                border-radius: 50%;
+                border-top-color: var(--mynah-color-button);
+                animation: spinner-spin 1s ease-in-out infinite;
+                transform-origin: center center;
+                overflow: visible;
+                &:before {
+                    position: absolute;
+                    content: "";
+                    top: calc(-1 * var(--mynah-sizing-half));
+                    left: calc(-1 * var(--mynah-sizing-half));
+                    right: calc(-1 * var(--mynah-sizing-half));
+                    bottom: calc(-1 * var(--mynah-sizing-half));
+                    width: auto;
+                    height: auto;
+                    border: var(--mynah-sizing-half) solid var(--mynah-color-button);
+                    border-radius: 50%;
+                    opacity: 0.15;
+                    box-sizing: border-box;
                 }
-                &:nth-child(3) {
-                    animation-delay: 300ms;
-                }
+            }
+            > div {
+                opacity: 1;
             }
         }
         &.mynah-chat-item-code-result {
@@ -91,10 +104,6 @@
         a {
             pointer-events: bounding-box;
             color: var(--mynah-color-text-link);
-        }
-        &.reveal {
-            opacity: 1;
-            transform: translate3d(0, 0, 0) scale(1, 1);
         }
         > .mynah-chat-item-card-icon-wrapper {
             background-color: var(--mynah-color-alternate);
@@ -316,7 +325,7 @@
             &:first-child {
                 > .mynah-card {
                     min-width: 100px;
-                    min-height: var(--mynah-sizing-13);
+                    min-height: var(--mynah-sizing-14);
                     > .mynah-card-votes-wrapper {
                         display: none;
                     }

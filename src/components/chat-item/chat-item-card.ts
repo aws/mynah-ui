@@ -14,6 +14,7 @@ import { ChatItemFollowUpContainer } from './chat-item-followup';
 import { ChatItemSourceLinksContainer } from './chat-item-source-links';
 import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
+import { Config } from '../../helper/config';
 
 const MAX_HEIGHT_TRESHOLD = 100;
 export interface ChatItemCardProps {
@@ -62,7 +63,7 @@ export class ChatItemCard {
                 type: 'div',
                 persistent: true,
                 classNames: [ 'mynah-chat-items-spinner' ],
-                children: [ { type: 'span' }, { type: 'span' }, { type: 'span' } ],
+                children: [ { type: 'span' }, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
               }),
             ]
           : []),
@@ -71,7 +72,7 @@ export class ChatItemCard {
 
     setTimeout(() => {
       generatedCard.addClass('reveal');
-    }, 50);
+    }, 10);
 
     return generatedCard;
   };

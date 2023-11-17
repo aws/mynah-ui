@@ -100,24 +100,24 @@
     --mynah-card-radius: var(--mynah-sizing-2);
     --mynah-button-radius: var(--mynah-sizing-1);
 
-    --mynah-bottom-panel-transition: all 550ms cubic-bezier(0.25, 0, 0, 1);
-    --mynah-very-short-transition: all 400ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-short-transition-transform: transform 350ms cubic-bezier(0.85, 0.15, 0, 1);
-    --mynah-long-transition: all 520ms cubic-bezier(0.35, 1, 0.15, 1);
-    --mynah-pretty-long-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-very-long-transition: all 1400ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-short-transition: all 400ms cubic-bezier(0.85, 0.15, 0, 1);
-    --mynah-short-transition-rev: all 420ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-short-transition-rev-opacity: opacity 550ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-short-transition-reflection: all 800ms cubic-bezier(0.25, 1, 0, 1),
-        opacity 650ms 300ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-short-transition-turbo: all 400ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-short-transition-turbo-bounce: all 500ms cubic-bezier(0.25, 1, 0, 1),
-        transform 600ms cubic-bezier(0.25, 4, 0, 1);
-    --mynah-short-transition-bounce: all 650ms cubic-bezier(0.25, 1, 0, 1),
-        transform 900ms cubic-bezier(0.15, 1.25, 0, 1);
-    --mynah-text-flow-transition: all 650ms cubic-bezier(0.25, 1, 0, 1),
-        transform 900ms cubic-bezier(0.15, 1.25, 0, 1), max-height 1100ms cubic-bezier(0.35, 1, 0, 1);
+    --mynah-bottom-panel-transition: all 750ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-very-short-transition: all 500ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-short-transition-transform: transform 500ms cubic-bezier(0.85, 0.15, 0, 1);
+    --mynah-long-transition: all 620ms cubic-bezier(0.35, 1, 0.15, 1);
+    --mynah-pretty-long-transition: all 700ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-very-long-transition: all 1500ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-short-transition: all 450ms cubic-bezier(0.85, 0.15, 0, 1);
+    --mynah-short-transition-rev: all 480ms cubic-bezier(0.35, 1, 0, 1);
+    --mynah-short-transition-rev-opacity: opacity 650ms cubic-bezier(0.35, 1, 0, 1);
+    --mynah-short-transition-reflection: all 900ms cubic-bezier(0.25, 1, 0, 1),
+        opacity 750ms 400ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-short-transition-turbo: all 500ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-short-transition-turbo-bounce: all 600ms cubic-bezier(0.25, 1, 0, 1),
+        transform 700ms cubic-bezier(0.25, 4, 0, 1);
+    --mynah-short-transition-bounce: all 750ms cubic-bezier(0.25, 1, 0, 1),
+        transform 1000ms cubic-bezier(0.15, 1.25, 0, 1);
+    --mynah-text-flow-transition: all 550ms cubic-bezier(0.35, 1.2, 0, 1),
+        transform 550ms cubic-bezier(0.2, 1.05, 0, 1), max-height 1200ms cubic-bezier(0.25, 1, 0, 1);
 
     --mynah-mask-image: linear-gradient(
         to bottom,

@@ -218,7 +218,7 @@ export class CardBody {
       ...(Array.from(
         DomBuilder.getInstance().build({
           type: 'div',
-          innerHTML: `${marked((incomingBody), { breaks: true })}`,
+          innerHTML: `${marked.parse(incomingBody, { breaks: true })}`,
         }).childNodes
       ).map(node => {
         const processedNode = this.processNode(node as HTMLElement, props.body);

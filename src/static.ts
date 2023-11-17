@@ -273,6 +273,7 @@ export interface ConfigModel {
     copyToClipboard: string;
     noMoreTabsTooltip: string;
     codeSuggestionWithReferenceTitle: string;
+    spinnerText: string;
   };
   feedbackOptions: Array<{
     label: string;

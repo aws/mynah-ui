@@ -15,3 +15,7 @@
         transform: translate3d(0, calc(-1 * var(--mynah-sizing-2)), 0);
     }
 }
+
+@keyframes spinner-spin {
+    to { transform: rotate(360deg); }
+}

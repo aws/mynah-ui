@@ -56,7 +56,8 @@ const configDefaults: ConfigModel = {
     stopGenerating: 'Stop generating',
     copyToClipboard: 'Copied to clipboard',
     noMoreTabsTooltip: 'You\'ve reached maximum number of tabs you can simultaneously use.',
-    codeSuggestionWithReferenceTitle: 'Some suggestions contain code with references.'
+    codeSuggestionWithReferenceTitle: 'Some suggestions contain code with references.',
+    spinnerText: 'Amazon Q is generating your answer...'
   }
 };
 export class Config {

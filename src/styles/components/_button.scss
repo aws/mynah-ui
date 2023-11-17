@@ -71,16 +71,6 @@ button.mynah-button {
         align-items: center;
         > i {
             font-size: var(--mynah-font-size-xlarge);
-            &.mynah-loading-spinner {
-                min-width: var(--mynah-sizing-5);
-                min-height: var(--mynah-sizing-5);
-                border: 3px solid currentColor;
-                opacity: 0.5;
-                box-sizing: border-box;
-                border-top-color: rgba(0, 0, 0, 0);
-                border-radius: var(--mynah-sizing-5);
-                animation: spin 1s infinite linear;
-            }
             &:nth-child(2) {
                 display: none;
             }
@@ -100,16 +90,6 @@ button.mynah-button {
         align-items: center;
         > i {
             font-size: 2rem;
-            &.mynah-history-icon {
-                min-width: var(--mynah-sizing-5);
-                min-height: var(--mynah-sizing-5);
-                border: 3px solid currentColor;
-                opacity: 0.5;
-                box-sizing: border-box;
-                border-top-color: rgba(0, 0, 0, 0);
-                border-radius: var(--mynah-button-radius);
-                animation: spin 1s infinite linear;
-            }
             &:nth-child(2) {
                 display: none;
             }
