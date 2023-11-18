@@ -57,47 +57,6 @@
             display: none;
         }
 
-        > .mynah-chat-items-spinner {
-            display: none;
-            margin-top: calc(-1 * var(--mynah-sizing-10));
-            overflow: visible;
-            z-index: 10000;
-            gap: var(--mynah-sizing-2);
-            margin-right: var(--mynah-sizing-5);
-            margin-left: var(--mynah-sizing-3);
-            justify-content: flex-start;
-            align-items: center;
-            transition: var(--mynah-very-short-transition);
-            > span {
-                position: relative;
-                display: inline-block;
-                width: var(--mynah-sizing-5);
-                height: var(--mynah-sizing-5);
-                border: var(--mynah-sizing-half) solid rgba(0, 0, 0, 0);
-                border-radius: 50%;
-                border-top-color: var(--mynah-color-button);
-                animation: spinner-spin 1s ease-in-out infinite;
-                transform-origin: center center;
-                overflow: visible;
-                &:before {
-                    position: absolute;
-                    content: "";
-                    top: calc(-1 * var(--mynah-sizing-half));
-                    left: calc(-1 * var(--mynah-sizing-half));
-                    right: calc(-1 * var(--mynah-sizing-half));
-                    bottom: calc(-1 * var(--mynah-sizing-half));
-                    width: auto;
-                    height: auto;
-                    border: var(--mynah-sizing-half) solid var(--mynah-color-button);
-                    border-radius: 50%;
-                    opacity: 0.15;
-                    box-sizing: border-box;
-                }
-            }
-            > div {
-                opacity: 1;
-            }
-        }
         &.mynah-chat-item-code-result {
             min-width: 70%;
         }
@@ -112,6 +71,44 @@
             border-radius: 100%;
         }
         > .mynah-card {
+            > .mynah-chat-items-spinner {
+                overflow: visible;
+                z-index: 10000;
+                gap: var(--mynah-sizing-2);
+                justify-content: flex-start;
+                align-items: center;
+                transition: var(--mynah-very-short-transition);
+                > span {
+                    position: relative;
+                    display: inline-block;
+                    width: var(--mynah-sizing-5);
+                    height: var(--mynah-sizing-5);
+                    border: var(--mynah-sizing-half) solid rgba(0, 0, 0, 0);
+                    border-radius: 50%;
+                    border-top-color: var(--mynah-color-button);
+                    animation: spinner-spin 1s ease-in-out infinite;
+                    transform-origin: center center;
+                    overflow: visible;
+                    &:before {
+                        position: absolute;
+                        content: "";
+                        top: calc(-1 * var(--mynah-sizing-half));
+                        left: calc(-1 * var(--mynah-sizing-half));
+                        right: calc(-1 * var(--mynah-sizing-half));
+                        bottom: calc(-1 * var(--mynah-sizing-half));
+                        width: auto;
+                        height: auto;
+                        aspect-ratio: 1; // Just to make sure that the spinner is a circle
+                        border: var(--mynah-sizing-half) solid var(--mynah-color-button);
+                        border-radius: 50%;
+                        opacity: 0.15;
+                        box-sizing: border-box;
+                    }
+                }
+                > div {
+                    opacity: 1;
+                }
+            }
             > .mynah-card-body {
                 & > div {
                     > .mynah-syntax-highlighter {
@@ -330,8 +327,14 @@
                         display: none;
                     }
                 }
-                &.mynah-chat-item-empty > .mynah-chat-items-spinner {
-                    display: inline-flex;
+                &.mynah-chat-item-empty {
+                    .mynah-chat-items-spinner {
+                        display: inline-flex;
+                        > span {
+                            // Spinner's size should remain the same
+                            flex: 0 0 auto;
+                        }
+                    }
                 }
                 &:not(.mynah-chat-item-empty):before {
                     content: "";

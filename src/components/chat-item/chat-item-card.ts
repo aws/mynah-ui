@@ -51,22 +51,26 @@ export class ChatItemCard {
         messageId: this.props.chatItem.messageId ?? 'unknown',
       },
       children: [
-        ...this.getCardContent(),
+        ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM
+          ? [
+              // Create an empty card with its child set to the loading spinner
+              new Card({
+                children: [
+                  DomBuilder.getInstance().build({
+                    type: 'div',
+                    persistent: true,
+                    classNames: [ 'mynah-chat-items-spinner' ],
+                    children: [ { type: 'span' }, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
+                  }),
+                ]
+              }).render,
+            ]
+          : [ ...this.getCardContent() ]),
         DomBuilder.getInstance().build({
           type: 'span',
           persistent: true,
           classNames: [ 'mynah-chat-item-spacer' ],
         }),
-        ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM
-          ? [
-              DomBuilder.getInstance().build({
-                type: 'div',
-                persistent: true,
-                classNames: [ 'mynah-chat-items-spinner' ],
-                children: [ { type: 'span' }, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
-              }),
-            ]
-          : []),
       ],
     });
 
