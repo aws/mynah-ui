@@ -13,6 +13,15 @@ export interface ChatPromptInputInfoProps{
 export class ChatPromptInputInfo {
   render: ExtendedHTMLElement;
   constructor (props: ChatPromptInputInfoProps) {
+    // revert back if the extension is set before (because it only works globally)
+    marked.use({
+      extensions: [ {
+        name: 'text',
+        renderer: (token) => {
+          return token.text;
+        }
+      } ]
+    });
     MynahUITabsStore.getInstance().addListenerToDataStore(props.tabId, 'promptInputInfo', (newInfo) => {
       this.render.update({
         innerHTML: marked.parse(newInfo, { breaks: true })

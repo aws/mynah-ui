@@ -16,7 +16,6 @@ import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { Config } from '../../helper/config';
 
-const MAX_HEIGHT_TRESHOLD = 100;
 export interface ChatItemCardProps {
   tabId: string;
   chatItem: ChatItem;
@@ -26,7 +25,9 @@ export class ChatItemCard {
   render: ExtendedHTMLElement;
   contentBody: CardBody;
   chatAvatar: ExtendedHTMLElement;
-  private updateTimer: ReturnType<typeof setTimeout>;
+  updateStack: Array<Partial<ChatItem>> = [];
+  typewriterItemIndex: number = 0;
+  private updateTimer: ReturnType<typeof setInterval> | undefined;
   constructor (props: ChatItemCardProps) {
     this.props = props;
     this.chatAvatar = this.getChatAvatar();
@@ -66,17 +67,12 @@ export class ChatItemCard {
               }).render,
             ]
           : [ ...this.getCardContent() ]),
-        DomBuilder.getInstance().build({
-          type: 'span',
-          persistent: true,
-          classNames: [ 'mynah-chat-item-spacer' ],
-        }),
       ],
     });
 
     setTimeout(() => {
       generatedCard.addClass('reveal');
-    }, 10);
+    }, this.props.chatItem.type === ChatItemType.PROMPT ? 10 : 200);
 
     return generatedCard;
   };
@@ -101,6 +97,9 @@ export class ChatItemCard {
   };
 
   private readonly getCardContent = (): Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject> => {
+    if (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId) === undefined) {
+      return [];
+    }
     return [
       ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
       ...(this.props.chatItem.body !== undefined || this.props.chatItem.fileList !== undefined
@@ -146,18 +145,18 @@ export class ChatItemCard {
                   } else {
                     this.contentBody = new CardBody({
                       ...commonBodyProps,
+                      useParts: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
                       highlightRangeWithTooltip: this.props.chatItem.codeReference,
-                      children:
-                        this.props.chatItem.relatedContent !== undefined
-                          ? [
-                              new ChatItemSourceLinksContainer({
-                                messageId: this.props.chatItem.messageId ?? 'unknown',
-                                tabId: this.props.tabId,
-                                relatedContent: this.props.chatItem.relatedContent?.content,
-                                title: this.props.chatItem.relatedContent?.title,
-                              }).render,
-                            ]
-                          : [],
+                      children: this.props.chatItem.relatedContent !== undefined
+                        ? [
+                            new ChatItemSourceLinksContainer({
+                              messageId: this.props.chatItem.messageId ?? 'unknown',
+                              tabId: this.props.tabId,
+                              relatedContent: this.props.chatItem.relatedContent?.content,
+                              title: this.props.chatItem.relatedContent?.title,
+                            }).render,
+                          ]
+                        : [],
                       onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
                         MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
                           messageId: this.props.chatItem.messageId,
@@ -196,26 +195,48 @@ export class ChatItemCard {
       children: [ new Icon({ icon: this.props.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render ],
     });
 
-  public readonly updateCard = (updateWith: Partial<ChatItem>): void => {
-    this.props.chatItem = {
-      ...this.props.chatItem,
-      ...updateWith,
-    };
-    if (this.updateTimer !== undefined) {
-      clearTimeout(this.updateTimer);
+  public readonly updateCard = (): void => {
+    if (this.updateTimer === undefined) {
+      const updateWith: Partial<ChatItem> | undefined = this.updateStack.shift();
+      if (updateWith !== undefined) {
+        this.props.chatItem = {
+          ...this.props.chatItem,
+          ...updateWith,
+        };
+
+        this.render.update({
+          classNames: [ ...this.getCardClasses(), 'reveal' ],
+          children: this.getCardContent(),
+        });
+        const newVisibleItems = Array.from(this.contentBody.render.querySelectorAll('.typewriter-part'));
+        for (let i = 0; i < this.typewriterItemIndex; i++) {
+          newVisibleItems[i].classList.add('typewriter');
+          newVisibleItems[i].classList.remove('typewriter-part');
+        }
+
+        this.updateTimer = setInterval(() => {
+          if (this.typewriterItemIndex < newVisibleItems.length) {
+            newVisibleItems[this.typewriterItemIndex].classList.add('typewriter');
+            newVisibleItems[this.typewriterItemIndex].classList.remove('typewriter-part');
+            this.typewriterItemIndex++;
+          } else {
+            if (this.updateTimer !== undefined) {
+              clearInterval(this.updateTimer);
+            }
+            this.render.removeClass('typewriter-animating');
+            this.updateTimer = undefined;
+            this.updateCard();
+          }
+        }, 150 / (newVisibleItems.length - this.typewriterItemIndex));
+        this.render.addClass('typewriter-animating');
+      }
+    } else {
+      this.render.removeClass('typewriter-animating');
     }
-    this.render.style.maxHeight = `${this.render.getBoundingClientRect().height + MAX_HEIGHT_TRESHOLD}px`;
-    this.render.update({
-      classNames: [ ...this.getCardClasses(), 'reveal' ],
-      children: this.getCardContent(),
-    });
-    setTimeout(() => {
-      this.render.style.maxHeight = `${
-        (this.render.querySelector('.mynah-card-body') as HTMLElement).scrollHeight + MAX_HEIGHT_TRESHOLD
-      }px`;
-      this.updateTimer = setTimeout(() => {
-        this.render.style.maxHeight = 'initial';
-      }, 1000);
-    }, 10);
+  };
+
+  public readonly updateCardStack = (updateWith: Partial<ChatItem>): void => {
+    this.updateStack.push(updateWith);
+    this.updateCard();
   };
 }

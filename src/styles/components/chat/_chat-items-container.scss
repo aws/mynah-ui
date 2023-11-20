@@ -6,6 +6,7 @@
     flex-flow: column-reverse nowrap;
     align-items: flex-start;
     padding: var(--mynah-sizing-4);
+    gap: var(--mynah-sizing-4);
     .mynah-chat-item-card {
         display: inline-flex;
         flex-flow: column nowrap;
@@ -19,25 +20,21 @@
             opacity: 1;
             transform: translate3d(0, 0, 0) scale(1, 1);
         }
-        &:not(:first-of-type) {
-            max-height: initial !important;
-        }
         &.mynah-chat-item-no-content {
             display: none !important;
-        }
-        > .mynah-chat-item-spacer {
-            display: block;
-            width: 100%;
-            height: var(--mynah-sizing-6);
-            order: 10000;
         }
         & ~ .mynah-chat-item-temporary-element,
         & ~ * .mynah-chat-item-temporary-element {
             display: none !important;
             visibility: hidden !important;
-            & ~ .mynah-chat-item-spacer {
+        }
+
+        &.mynah-chat-item-answer-stream {
+            &.typewriter-animating {
+                @import "chat-items-bottom-animator";
+            }
+            .typewriter-part {
                 display: none;
-                height: 0;
             }
         }
 
@@ -336,30 +333,8 @@
                         }
                     }
                 }
-                &:not(.mynah-chat-item-empty):before {
-                    content: "";
-                    pointer-events: none;
-                    position: absolute;
-                    overflow: hidden;
-                    border-bottom-right-radius: var(--mynah-card-radius);
-                    bottom: calc(var(--mynah-sizing-6) + var(--mynah-border-width));
-                    left: var(--mynah-border-width);
-                    right: var(--mynah-border-width);
-                    width: auto;
-                    height: var(--mynah-sizing-2);
-                    box-sizing: border-box;
-                    z-index: 10;
-                    background-image: linear-gradient(
-                        90deg,
-                        var(--mynah-color-button) 0%,
-                        rgba(255, 255, 255, 0) 25%,
-                        rgba(255, 255, 255, 0) 50%,
-                        var(--mynah-color-button) 100%
-                    );
-                    background-position: 0% bottom;
-                    background-size: 200% var(--mynah-sizing-half);
-                    background-repeat: repeat-x;
-                    animation: horizontal-roll 1250ms linear infinite both;
+                &:not(.mynah-chat-item-empty) {
+                    @import "chat-items-bottom-animator";
                 }
             }
         }

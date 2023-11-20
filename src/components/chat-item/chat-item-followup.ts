@@ -68,6 +68,16 @@ export class ChatItemFollowUpContainer {
       ]
     });
 
+    // revert back if the extension is set before (because it only works globally)
+    marked.use({
+      extensions: [ {
+        name: 'text',
+        renderer: (token) => {
+          return token.text;
+        }
+      } ]
+    });
+
     Array.from(this.render.getElementsByClassName('mynah-chat-item-followup-question-option')).forEach(option => {
       option.innerHTML = marked(option.innerHTML, { breaks: true }).replace('<p>', '').replace('</p>', '');
     });

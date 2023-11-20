@@ -27,10 +27,14 @@ export const highlightersWithTooltip = {
   },
 };
 
+export const PARTS_CLASS_NAME = 'typewriter-part';
+export const PARTS_CLASS_NAME_VISIBLE = 'typewriter';
+
 export interface CardBodyProps {
   body: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   highlightRangeWithTooltip?: ReferenceTrackerInformation[];
+  useParts?: boolean;
   onLinkClick?: (url: string, e: MouseEvent) => void;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
   onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
@@ -105,6 +109,9 @@ export class CardBody {
           }
         }
       }).render;
+      if (this.props.useParts === true) {
+        highlighter.classList.add(PARTS_CLASS_NAME);
+      }
       return highlighter;
     }
 
@@ -214,6 +221,29 @@ export class CardBody {
       });
     }
 
+    // Define marked extension (and revert it back since it is global)
+    if (this.props.useParts === true) {
+      marked.use({
+        extensions: [ {
+          name: 'text',
+          renderer: (token) => {
+            if (this.props.useParts !== true) {
+              return false;
+            }
+            return token.text.split(' ').map((textPart: string) => `<span class="${PARTS_CLASS_NAME}">${textPart}</span>`).join(' ');
+          }
+        } ]
+      });
+    } else {
+      marked.use({
+        extensions: [ {
+          name: 'text',
+          renderer: (token) => {
+            return token.text;
+          }
+        } ]
+      });
+    }
     return [
       ...(Array.from(
         DomBuilder.getInstance().build({

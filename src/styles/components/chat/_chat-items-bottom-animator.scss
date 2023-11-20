@@ -1,0 +1,25 @@
+&:before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    overflow: hidden;
+    border-bottom-right-radius: var(--mynah-card-radius);
+    bottom: 0; // calc(var(--mynah-sizing-6) + var(--mynah-border-width));
+    left: var(--mynah-border-width);
+    right: var(--mynah-border-width);
+    width: auto;
+    height: var(--mynah-sizing-2);
+    box-sizing: border-box;
+    z-index: 10;
+    background-image: linear-gradient(
+        90deg,
+        var(--mynah-color-button) 0%,
+        rgba(255, 255, 255, 0) 25%,
+        rgba(255, 255, 255, 0) 50%,
+        var(--mynah-color-button) 100%
+    );
+    background-position: 0% bottom;
+    background-size: 200% var(--mynah-sizing-half);
+    background-repeat: repeat-x;
+    animation: horizontal-roll 1250ms linear infinite both;
+}

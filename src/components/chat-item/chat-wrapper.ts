@@ -150,7 +150,7 @@ export class ChatWrapper {
 
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
-      this.lastChatItemCard.updateCard(updateWith);
+      this.lastChatItemCard.updateCardStack(updateWith);
     }
   };
 
