@@ -15,7 +15,7 @@ import { SendButton } from './prompt-input/send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 
 export const MAX_USER_INPUT = 4000;
-export const MAX_USER_INPUT_TRESHOLD = 96;
+export const MAX_USER_INPUT_THRESHOLD = 96;
 export interface ChatPromptInputProps {
   tabId: string;
 }
@@ -101,14 +101,14 @@ export class ChatPromptInput {
       tabId?: string;
     }) => {
       if (this.props.tabId === data.tabId) {
-        // Code snippet will have a limit of MAX_USER_INPUT - MAX_USER_INPUT_TRESHOLD - current prompt text length
+        // Code snippet will have a limit of MAX_USER_INPUT - MAX_USER_INPUT_THRESHOLD - current prompt text length
         // If exceeding that, we will crop it
         const textInputLength = this.promptTextInput.getTextInputValue().trim().length;
-        const currentSelectedCodeMaxLength = (MAX_USER_INPUT + MAX_USER_INPUT_TRESHOLD) - textInputLength;
+        const currentSelectedCodeMaxLength = (MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD) - textInputLength;
         const croppedSelectedCodeSnippet = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
         this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
         // Also update the limit on prompt text given the selected code
-        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, (MAX_USER_INPUT + MAX_USER_INPUT_TRESHOLD) - croppedSelectedCodeSnippet.length));
+        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, (MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length));
         this.updateAvailableCharactersIndicator();
       }
     });
