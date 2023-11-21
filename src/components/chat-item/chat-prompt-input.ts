@@ -96,16 +96,21 @@ export class ChatPromptInput {
       ],
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ADD_CODE_SNIPPET, (selectedCodeSnippet: string | undefined) => {
-      // Code snippet will have a limit of MAX_USER_INPUT - MAX_USER_INPUT_TRESHOLD - current prompt text length
-      // If exceeding that, we will crop it
-      const textInputLength = this.promptTextInput.getTextInputValue().trim().length;
-      const currentSelectedCodeMaxLength = (MAX_USER_INPUT + MAX_USER_INPUT_TRESHOLD) - textInputLength;
-      const croppedSelectedCodeSnippet = (selectedCodeSnippet ?? '')?.slice(0, currentSelectedCodeMaxLength);
-      this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
-      // Also update the limit on prompt text given the selected code
-      this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, (MAX_USER_INPUT + MAX_USER_INPUT_TRESHOLD) - croppedSelectedCodeSnippet.length));
-      this.updateAvailableCharactersIndicator();
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ADD_CODE_SNIPPET, (data: {
+      textToAdd?: string;
+      tabId?: string;
+    }) => {
+      if (this.props.tabId === data.tabId) {
+        // Code snippet will have a limit of MAX_USER_INPUT - MAX_USER_INPUT_TRESHOLD - current prompt text length
+        // If exceeding that, we will crop it
+        const textInputLength = this.promptTextInput.getTextInputValue().trim().length;
+        const currentSelectedCodeMaxLength = (MAX_USER_INPUT + MAX_USER_INPUT_TRESHOLD) - textInputLength;
+        const croppedSelectedCodeSnippet = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
+        this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
+        // Also update the limit on prompt text given the selected code
+        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, (MAX_USER_INPUT + MAX_USER_INPUT_TRESHOLD) - croppedSelectedCodeSnippet.length));
+        this.updateAvailableCharactersIndicator();
+      }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REMOVE_CODE_SNIPPET, () => {
@@ -310,8 +315,12 @@ export class ChatPromptInput {
     this.updateAvailableCharactersIndicator();
   };
 
-  public readonly addText = (textToAdd: string): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, textToAdd);
+  public readonly addText = (textToAdd: string, tabId?: string): void => {
+    const tabIdToUse = tabId ?? MynahUITabsStore.getInstance().getSelectedTabId();
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, {
+      textToAdd,
+      tabId: tabIdToUse
+    });
   };
 
   private readonly sendPrompt = (): void => {

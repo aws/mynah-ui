@@ -13,8 +13,9 @@
 }
 
 .snippet-card-container {
-  max-width: calc(5 * var(--mynah-sizing-18));
-  max-height: var(--mynah-sizing-10);
+  box-sizing: border-box;
+  max-width: 100%;
+  max-height: calc(2 * var(--mynah-sizing-12));
   > .mynah-button {
     position: absolute;
     background-color: var(--mynah-card-bg) !important;
@@ -43,7 +44,7 @@
 }
 
 .snippet-card-container-preview {
-  max-width: 80vw;
+  max-width: 90vw;
   max-height: 70vh;
   > .mynah-card-body {
     > .mynah-syntax-highlighter {

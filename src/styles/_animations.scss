@@ -21,3 +21,21 @@
         transform: rotate(360deg);
     }
 }
+
+@keyframes typewriter {
+    0% {
+        visibility: hidden;
+        transform: translate3d(0, 2px, 0);
+        opacity: 0;
+    }
+    1% {
+        visibility: visible;
+        transform: translate3d(0, 2px, 0);
+        opacity: 0;
+    }
+    100% {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+        visibility: visible;
+    }
+}

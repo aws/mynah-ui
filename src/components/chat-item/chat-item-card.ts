@@ -15,7 +15,9 @@ import { ChatItemSourceLinksContainer } from './chat-item-source-links';
 import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { Config } from '../../helper/config';
+import { generateUID } from '../../helper/guid';
 
+const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardProps {
   tabId: string;
   chatItem: ChatItem;
@@ -27,7 +29,7 @@ export class ChatItemCard {
   chatAvatar: ExtendedHTMLElement;
   updateStack: Array<Partial<ChatItem>> = [];
   typewriterItemIndex: number = 0;
-  private updateTimer: ReturnType<typeof setInterval> | undefined;
+  private updateTimer: ReturnType<typeof setTimeout> | undefined;
   constructor (props: ChatItemCardProps) {
     this.props = props;
     this.chatAvatar = this.getChatAvatar();
@@ -195,6 +197,63 @@ export class ChatItemCard {
       children: [ new Icon({ icon: this.props.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render ],
     });
 
+  private readonly getInsertedTypewriterPartsCss = (typewriterId: string): ExtendedHTMLElement => DomBuilder.getInstance().build({
+    type: 'style',
+    attributes: {
+      type: 'text/css'
+    },
+    innerHTML: `
+    ${
+      (new Array(this.typewriterItemIndex).fill(null)).map((n, i) => {
+        return `
+        .${typewriterId} .typewriter-part[index="${i}"] {
+          visibility: visible !important;
+        }
+
+        `;
+      }).join('')
+    }
+    `
+  });
+
+  private readonly getInsertingTypewriterPartsCss = (
+    typewriterId: string,
+    newWordsCount: number,
+    timeForEach: number): ExtendedHTMLElement => DomBuilder.getInstance().build({
+    type: 'style',
+    attributes: {
+      type: 'text/css'
+    },
+    innerHTML: `
+    ${
+      (new Array(newWordsCount).fill(null)).map((n, i) => {
+        return `
+        .${typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
+          animation-delay: ${i * timeForEach}ms !important;
+          animation: typewriter 100ms ease-out forwards;
+        }
+
+        `;
+      }).join('')
+    }
+    `
+  });
+
+  private readonly getCompletedTypewriterPartsCss = (typewriterId: string): ExtendedHTMLElement => DomBuilder.getInstance().build({
+    type: 'style',
+    attributes: {
+      type: 'text/css'
+    },
+    innerHTML: `
+    .${typewriterId} .typewriter-part {
+      animation: none;
+      visibility: visible !important;
+      opacity: 1!important;
+      transform: translate3d(0,0,0);
+    }
+    `
+  });
+
   public readonly updateCard = (): void => {
     if (this.updateTimer === undefined) {
       const updateWith: Partial<ChatItem> | undefined = this.updateStack.shift();
@@ -204,34 +263,46 @@ export class ChatItemCard {
           ...updateWith,
         };
 
-        this.render.update({
-          classNames: [ ...this.getCardClasses(), 'reveal' ],
-          children: this.getCardContent(),
-        });
-        const newVisibleItems = Array.from(this.contentBody.render.querySelectorAll('.typewriter-part'));
-        for (let i = 0; i < this.typewriterItemIndex; i++) {
-          newVisibleItems[i].classList.add('typewriter');
-          newVisibleItems[i].classList.remove('typewriter-part');
+        const newCardContent = this.getCardContent();
+        const upcomingWords = Array.from(this.contentBody.render.querySelectorAll('.typewriter-part'));
+        for (let i = 0; i < upcomingWords.length; i++) {
+          upcomingWords[i].setAttribute('index', i.toString());
         }
+        const typewriterId = `typewriter-card-${generateUID()}`;
+        this.render.update({
+          classNames: [ ...this.getCardClasses(), 'reveal', typewriterId, 'typewriter-animating' ],
+          children: [
+            ...newCardContent,
+            this.getInsertedTypewriterPartsCss(typewriterId)
+          ],
+        });
 
-        this.updateTimer = setInterval(() => {
-          if (this.typewriterItemIndex < newVisibleItems.length) {
-            newVisibleItems[this.typewriterItemIndex].classList.add('typewriter');
-            newVisibleItems[this.typewriterItemIndex].classList.remove('typewriter-part');
-            this.typewriterItemIndex++;
-          } else {
-            if (this.updateTimer !== undefined) {
-              clearInterval(this.updateTimer);
-            }
-            this.render.removeClass('typewriter-animating');
-            this.updateTimer = undefined;
-            this.updateCard();
-          }
-        }, 150 / (newVisibleItems.length - this.typewriterItemIndex));
-        this.render.addClass('typewriter-animating');
+        // How many new words will be added
+        const newWordsCount = upcomingWords.length - this.typewriterItemIndex;
+
+        // For each stack, without exceeding 500ms in total
+        // we're setting each words delay time according to the count of them.
+        // Word appearence time cannot exceed 50ms
+        // Stack's total appearence time cannot exceed 500ms
+        const timeForEach = Math.min(50, Math.floor(TYPEWRITER_STACK_TIME / newWordsCount));
+
+        // Generate animator style and inject into render
+        // CSS animations ~100 times faster then js timeouts/intervals
+        this.render.insertChild('beforeend', this.getInsertingTypewriterPartsCss(typewriterId, newWordsCount, timeForEach));
+
+        // All the animator selectors injected
+        // update the words count for a potential upcoming set
+        this.typewriterItemIndex = upcomingWords.length;
+
+        // If there is another set
+        // call the same function to check after current stack totally shown
+        this.updateTimer = setTimeout(() => {
+          this.render.removeClass('typewriter-animating');
+          this.render.insertChild('beforeend', this.getCompletedTypewriterPartsCss(typewriterId));
+          this.updateTimer = undefined;
+          this.updateCard();
+        }, timeForEach * newWordsCount);
       }
-    } else {
-      this.render.removeClass('typewriter-animating');
     }
   };
 

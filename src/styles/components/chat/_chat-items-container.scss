@@ -34,7 +34,8 @@
                 @import "chat-items-bottom-animator";
             }
             .typewriter-part {
-                display: none;
+                visibility: hidden;
+                transform-origin: left center;
             }
         }
 
