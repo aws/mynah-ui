@@ -315,11 +315,10 @@ export class ChatPromptInput {
     this.updateAvailableCharactersIndicator();
   };
 
-  public readonly addText = (textToAdd: string, tabId?: string): void => {
-    const tabIdToUse = tabId ?? MynahUITabsStore.getInstance().getSelectedTabId();
+  public readonly addText = (textToAdd: string): void => {
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, {
       textToAdd,
-      tabId: tabIdToUse
+      tabId: this.props.tabId
     });
   };
 

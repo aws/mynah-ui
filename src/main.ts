@@ -151,11 +151,9 @@ export class MynahUI {
     });
 
     this.addGlobalListeners();
-    setTimeout(() => {
-      if (this.props.onReady !== undefined) {
-        this.props.onReady();
-      }
-    }, 100);
+    if (this.props.onReady !== undefined) {
+      this.props.onReady();
+    }
   }
 
   private readonly addGlobalListeners = (): void => {
