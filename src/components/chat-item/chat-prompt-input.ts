@@ -171,8 +171,11 @@ export class ChatPromptInput {
       if (blockedKeys.includes(e.key)) {
         e.preventDefault();
         if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
-          // let quickAction: QuickActionCommand;
-          const targetElement = this.commandSelector.render.querySelector('.target-command') ?? this.commandSelector.render.querySelector('.mynah-chat-command-selector-command');
+          let targetElement;
+          if (this.filteredCommandsList.length > 0) {
+            // If list is empty, it means there's no match, so we need to clear the selection
+            targetElement = this.commandSelector.render.querySelector('.target-command') ?? this.commandSelector.render.querySelector('.mynah-chat-command-selector-command');
+          }
           this.handleCommandSelection({
             command: targetElement?.getAttribute('command') ?? '',
             placeholder: targetElement?.getAttribute('placeholder') ?? undefined,
