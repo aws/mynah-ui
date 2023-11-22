@@ -80,6 +80,7 @@ export enum MynahEventNames {
   FEEDBACK_SET = 'feedbackSet',
   CARD_VOTE = 'cardVote',
   SOURCE_LINK_CLICK = 'sourceLinkClick',
+  INFO_LINK_CLICK = 'infoLinkClick',
   LINK_CLICK = 'linkClick',
   CHAT_ITEM_ENGAGEMENT = 'chatItemEngagement',
   COPY_CODE_TO_CLIPBOARD = 'copyCodeToClipboard',

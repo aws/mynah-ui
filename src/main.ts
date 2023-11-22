@@ -70,6 +70,7 @@ export interface MynahUIProps {
   onCodeInsertToCursorPosition?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
   onSourceLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
   onLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
+  onInfoLinkClick?: (tabId: string, link: string, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
   onOpenDiff?: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => void;
 }
@@ -231,6 +232,15 @@ export class MynahUI {
         this.props.onLinkClick(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
+          data.link,
+          data.event
+        );
+      }
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INFO_LINK_CLICK, (data) => {
+      if (this.props.onInfoLinkClick !== undefined) {
+        this.props.onInfoLinkClick(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
           data.link,
           data.event
         );

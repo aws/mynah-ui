@@ -6,6 +6,9 @@
 import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUITabsStore } from '../../helper/tabs-store';
+import { CardBody } from '../card/card-body';
+import { MynahUIGlobalEvents } from '../../helper/events';
+import { MynahEventNames } from '../../static';
 
 export interface ChatPromptInputInfoProps{
   tabId: string;
@@ -24,15 +27,31 @@ export class ChatPromptInputInfo {
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(props.tabId, 'promptInputInfo', (newInfo) => {
       this.render.update({
-        innerHTML: marked.parse(newInfo, { breaks: true })
+        children: [
+          new CardBody({
+            onLinkClick: this.linkClick,
+            body: MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo') ?? ''
+          }).render
+        ]
       });
     });
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      persistent: true,
       classNames: [ 'mynah-chat-prompt-input-info' ],
-      innerHTML: marked.parse(MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo') ?? '', { breaks: true })
+      children: [
+        new CardBody({
+          onLinkClick: this.linkClick,
+          body: MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo') ?? ''
+        }).render
+      ]
     });
   }
+
+  private readonly linkClick = (url: string, e: MouseEvent): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INFO_LINK_CLICK, {
+      link: url,
+      event: e,
+    });
+  };
 }
