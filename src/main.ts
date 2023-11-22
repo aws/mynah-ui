@@ -283,6 +283,7 @@ export class MynahUI {
    */
   public addChatItem = (tabId: string, chatItem: ChatItem): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ADD, { tabId, chatItem });
       MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
         chatItems: [
           ...MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems'),

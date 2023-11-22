@@ -16,11 +16,16 @@ export interface ChatItemFollowUpProps {tabId: string; chatItem: ChatItem}
 export class ChatItemFollowUpContainer {
   private readonly props: ChatItemFollowUpProps;
   render: ExtendedHTMLElement;
+  private readonly itemAddListenerId: string;
   private followupTooltip: Overlay | null;
   private followupTooltipTimeout: ReturnType<typeof setTimeout>;
   constructor (props: ChatItemFollowUpProps) {
     this.props = props;
     this.props.chatItem = props.chatItem;
+    this.itemAddListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ADD, () => {
+      this.render.remove();
+      MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
+    });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-followup-question' ],
@@ -48,6 +53,7 @@ export class ChatItemFollowUpContainer {
               events: {
                 click: (e) => {
                   this.hideCroppedFollowupText();
+                  MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, messageId: this.props.chatItem.messageId, followUpOption });
                   if ((this.render.parentElement as ExtendedHTMLElement)?.hasClass('mynah-chat-item-empty')) {
                     this.render.parentElement?.remove();

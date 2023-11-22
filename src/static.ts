@@ -86,6 +86,7 @@ export enum MynahEventNames {
   COPY_CODE_TO_CLIPBOARD = 'copyCodeToClipboard',
   INSERT_CODE_TO_CURSOR_POSITION = 'insertCodeToCursorPosition',
   CHAT_PROMPT = 'chatPrompt',
+  CHAT_ITEM_ADD = 'chatItemAdd',
   FOLLOW_UP_CLICKED = 'followUpClicked',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
