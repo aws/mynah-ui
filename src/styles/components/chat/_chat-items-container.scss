@@ -24,11 +24,6 @@
         &.mynah-chat-item-no-content {
             display: none !important;
         }
-        & ~ .mynah-chat-item-temporary-element,
-        & ~ * .mynah-chat-item-temporary-element {
-            display: none !important;
-            visibility: hidden !important;
-        }
 
         &.mynah-chat-item-answer-stream {
             &.typewriter-animating {
@@ -284,6 +279,9 @@
             }
         }
 
+        &.mynah-chat-item-empty:empty {
+            display: none;
+        }
         &.mynah-chat-item-answer-stream.mynah-chat-item-empty.stream-ended {
             display: none;
         }

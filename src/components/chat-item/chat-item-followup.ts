@@ -23,7 +23,7 @@ export class ChatItemFollowUpContainer {
     this.props.chatItem = props.chatItem;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-followup-question', 'mynah-chat-item-temporary-element' ],
+      classNames: [ 'mynah-chat-item-followup-question' ],
       children: [
         {
           type: 'div',
@@ -51,6 +51,8 @@ export class ChatItemFollowUpContainer {
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, messageId: this.props.chatItem.messageId, followUpOption });
                   if ((this.render.parentElement as ExtendedHTMLElement)?.hasClass('mynah-chat-item-empty')) {
                     this.render.parentElement?.remove();
+                  } else {
+                    this.render.remove();
                   };
                 },
                 ...(followUpOption.pillText.length > MAX_LENGTH

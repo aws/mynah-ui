@@ -232,16 +232,10 @@ export class ChatItemCard {
     ${
       (new Array(newWordsCount).fill(null)).map((n, i) => {
         return `
-        .${this.typewriterId} span.typewriter-part[index="${i + this.typewriterItemIndex}"] {
-          animation: typewriter 100ms ease-out forwards;
-        }
-        .${this.typewriterId} .mynah-syntax-highlighter.typewriter-part[index="${i + this.typewriterItemIndex}"] {
-          animation: typewriter-visibility-only 0ms linear forwards;
-        }
         .${this.typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
+          animation: typewriter 100ms ease-out forwards;
           animation-delay: ${i * timeForEach}ms !important;
         }
-
         `;
       }).join('')
     }
