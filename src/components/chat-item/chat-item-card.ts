@@ -29,6 +29,8 @@ export class ChatItemCard {
   chatAvatar: ExtendedHTMLElement;
   updateStack: Array<Partial<ChatItem>> = [];
   typewriterItemIndex: number = 0;
+  previousTypewriterItemIndex: number = 0;
+  typewriterId: string;
   private updateTimer: ReturnType<typeof setTimeout> | undefined;
   constructor (props: ChatItemCardProps) {
     this.props = props;
@@ -197,16 +199,19 @@ export class ChatItemCard {
       children: [ new Icon({ icon: this.props.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render ],
     });
 
-  private readonly getInsertedTypewriterPartsCss = (typewriterId: string): ExtendedHTMLElement => DomBuilder.getInstance().build({
+  private readonly getInsertedTypewriterPartsCss = (): ExtendedHTMLElement => DomBuilder.getInstance().build({
     type: 'style',
     attributes: {
       type: 'text/css'
     },
+    persistent: true,
     innerHTML: `
     ${
-      (new Array(this.typewriterItemIndex).fill(null)).map((n, i) => {
+      (new Array(this.typewriterItemIndex - this.previousTypewriterItemIndex).fill(null)).map((n, i) => {
         return `
-        .${typewriterId} .typewriter-part[index="${i}"] {
+        .${this.typewriterId} .typewriter-part[index="${i + this.previousTypewriterItemIndex}"] {
+          animation: none !important;
+          opacity: 1 !important;
           visibility: visible !important;
         }
 
@@ -217,7 +222,6 @@ export class ChatItemCard {
   });
 
   private readonly getInsertingTypewriterPartsCss = (
-    typewriterId: string,
     newWordsCount: number,
     timeForEach: number): ExtendedHTMLElement => DomBuilder.getInstance().build({
     type: 'style',
@@ -228,9 +232,14 @@ export class ChatItemCard {
     ${
       (new Array(newWordsCount).fill(null)).map((n, i) => {
         return `
-        .${typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
-          animation-delay: ${i * timeForEach}ms !important;
+        .${this.typewriterId} span.typewriter-part[index="${i + this.typewriterItemIndex}"] {
           animation: typewriter 100ms ease-out forwards;
+        }
+        .${this.typewriterId} .mynah-syntax-highlighter.typewriter-part[index="${i + this.typewriterItemIndex}"] {
+          animation: typewriter-visibility-only 0ms linear forwards;
+        }
+        .${this.typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
+          animation-delay: ${i * timeForEach}ms !important;
         }
 
         `;
@@ -239,23 +248,8 @@ export class ChatItemCard {
     `
   });
 
-  private readonly getCompletedTypewriterPartsCss = (typewriterId: string): ExtendedHTMLElement => DomBuilder.getInstance().build({
-    type: 'style',
-    attributes: {
-      type: 'text/css'
-    },
-    innerHTML: `
-    .${typewriterId} .typewriter-part {
-      animation: none;
-      visibility: visible !important;
-      opacity: 1!important;
-      transform: translate3d(0,0,0);
-    }
-    `
-  });
-
   public readonly updateCard = (): void => {
-    if (this.updateTimer === undefined) {
+    if (this.updateTimer === undefined && this.updateCardStack.length > 0) {
       const updateWith: Partial<ChatItem> | undefined = this.updateStack.shift();
       if (updateWith !== undefined) {
         this.props.chatItem = {
@@ -268,12 +262,14 @@ export class ChatItemCard {
         for (let i = 0; i < upcomingWords.length; i++) {
           upcomingWords[i].setAttribute('index', i.toString());
         }
-        const typewriterId = `typewriter-card-${generateUID()}`;
+        if (this.typewriterId === undefined) {
+          this.typewriterId = `typewriter-card-${generateUID()}`;
+        }
         this.render.update({
-          classNames: [ ...this.getCardClasses(), 'reveal', typewriterId, 'typewriter-animating' ],
+          classNames: [ ...this.getCardClasses(), 'reveal', this.typewriterId, 'typewriter-animating' ],
           children: [
             ...newCardContent,
-            this.getInsertedTypewriterPartsCss(typewriterId)
+            this.getInsertedTypewriterPartsCss(),
           ],
         });
 
@@ -288,17 +284,18 @@ export class ChatItemCard {
 
         // Generate animator style and inject into render
         // CSS animations ~100 times faster then js timeouts/intervals
-        this.render.insertChild('beforeend', this.getInsertingTypewriterPartsCss(typewriterId, newWordsCount, timeForEach));
+        this.render.insertChild('beforeend', this.getInsertingTypewriterPartsCss(newWordsCount, timeForEach));
 
         // All the animator selectors injected
         // update the words count for a potential upcoming set
+        this.previousTypewriterItemIndex = this.typewriterItemIndex;
         this.typewriterItemIndex = upcomingWords.length;
 
         // If there is another set
         // call the same function to check after current stack totally shown
         this.updateTimer = setTimeout(() => {
           this.render.removeClass('typewriter-animating');
-          this.render.insertChild('beforeend', this.getCompletedTypewriterPartsCss(typewriterId));
+          this.render.insertChild('beforeend', this.getInsertedTypewriterPartsCss());
           this.updateTimer = undefined;
           this.updateCard();
         }, timeForEach * newWordsCount);

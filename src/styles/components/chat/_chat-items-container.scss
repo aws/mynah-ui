@@ -16,6 +16,7 @@
         transform: translate3d(0, min(50%, 25vh), 0) scale(0.95, 1.25);
         opacity: 0;
         transform-origin: center bottom;
+        gap: var(--mynah-sizing-4);
         &.reveal {
             opacity: 1;
             transform: translate3d(0, 0, 0) scale(1, 1);
@@ -35,7 +36,6 @@
             }
             .typewriter-part {
                 visibility: hidden;
-                transform-origin: left center;
             }
         }
 
@@ -147,7 +147,6 @@
             flex-flow: column nowrap;
             position: relative;
             gap: var(--mynah-sizing-2);
-            padding-top: var(--mynah-sizing-2);
             > .mynah-chat-item-followup-question-text {
                 color: var(--mynah-color-text-weak);
                 font-size: var(--mynah-font-size-xsmall);
