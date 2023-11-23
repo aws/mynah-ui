@@ -153,9 +153,17 @@ export class Overlay {
             horizontalDirection !== OverlayHorizontalDirection.END_TO_LEFT &&
             comparingWidth + OVERLAY_MARGIN + calculatedLeft > winWidth
     ) {
-      this.container.style.left =
-                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                calculatedLeft - (comparingWidth + OVERLAY_MARGIN + calculatedLeft - winWidth) + 'px';
+      if (horizontalDirection === OverlayHorizontalDirection.CENTER) {
+        // Exceed right edge of the window, shift left by the width of exceeding part * 0.5
+        // to correctly handle the 50% horizontal transform
+        this.container.style.left =
+                  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                  (calculatedLeft - (containerRectangle.width + OVERLAY_MARGIN + calculatedLeft - winWidth) * 0.5) + 'px';
+      } else {
+        this.container.style.left =
+                  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                  calculatedLeft - (containerRectangle.width + OVERLAY_MARGIN + calculatedLeft - winWidth) + 'px';
+      }
     }
     // else if the direction is selected as a one that goes to the left,
     // we need to check if it is exceeding from the left edge of the window
@@ -245,9 +253,9 @@ export class Overlay {
   private readonly getCalculatedWidth = (
     referenceElement?: HTMLElement | ExtendedHTMLElement
   ): number => {
-    return (referenceElement !== undefined
-      ? referenceElement.getBoundingClientRect()
-      : { width: 0 }).width;
+    return referenceElement !== undefined
+      ? referenceElement.getBoundingClientRect().width
+      : 0;
   };
 
   private readonly getCalculatedTop = (
