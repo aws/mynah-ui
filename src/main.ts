@@ -88,10 +88,7 @@ export class MynahUI {
     // Fixes for marked
     marked.use({
       renderer: {
-        listitem: (src) => {
-          console.log(src.replace(/\[\[([^[]+)\]\](\(([^)]*))\)/gim, 'AAAAAAA $1 AAAAAAA'));
-          return `<li> ${src.replace(/\[\[([^[]+)\]\](\(([^)]*))\)/gim, '<a href="$3">[$1]</a>')}</li>`;
-        }
+        listitem: (src) => `<li> ${src.replace(/\[\[([^[]+)\]\](\(([^)]*))\)/gim, '<a href="$3">[$1]</a>')}</li>`
       },
     });
 

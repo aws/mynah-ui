@@ -41,7 +41,11 @@ export class ChatItemFollowUpContainer {
           children: this.props.chatItem.followUp?.options?.map(followUpOption => (
             {
               type: 'div',
-              classNames: [ 'mynah-chat-item-followup-question-option', `mynah-chat-item-followup-question-option-status-${followUpOption.status ?? 'default'}` ],
+              classNames: [
+                'mynah-chat-item-followup-question-option',
+                `mynah-chat-item-followup-question-option-status-${followUpOption.status ?? 'default'}`,
+                followUpOption.disabled === true ? 'mynah-chat-item-followup-question-option-disabled' : ''
+              ],
               children: [
                 ...(followUpOption.icon !== undefined
                   ? [
@@ -51,20 +55,31 @@ export class ChatItemFollowUpContainer {
                 followUpOption.pillText.length > MAX_LENGTH ? `${followUpOption.pillText.substring(0, MAX_LENGTH - 3)}...` : followUpOption.pillText
               ],
               events: {
-                click: (e) => {
-                  this.hideCroppedFollowupText();
-                  MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
-                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, messageId: this.props.chatItem.messageId, followUpOption });
-                  if ((this.render.parentElement as ExtendedHTMLElement)?.hasClass('mynah-chat-item-empty')) {
-                    this.render.parentElement?.remove();
-                  } else {
-                    this.render.remove();
-                  };
-                },
-                ...(followUpOption.pillText.length > MAX_LENGTH
+                ...(followUpOption.disabled !== true
+                  ? {
+                      click: (e) => {
+                        this.hideCroppedFollowupText();
+                        MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
+                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, messageId: this.props.chatItem.messageId, followUpOption });
+                        if ((this.render.parentElement as ExtendedHTMLElement)?.hasClass('mynah-chat-item-empty')) {
+                          this.render.parentElement?.remove();
+                        } else {
+                          this.render.remove();
+                        };
+                      }
+                    }
+                  : {}),
+                ...(followUpOption.pillText.length > MAX_LENGTH || followUpOption.description !== undefined
                   ? {
                       mouseover: (e) => {
-                        this.showCroppedFollowupText(e, followUpOption.pillText);
+                        let tooltipText = followUpOption.pillText.length > MAX_LENGTH ? followUpOption.pillText : '';
+                        if (followUpOption.description !== undefined) {
+                          if (tooltipText !== '') {
+                            tooltipText += '\n\n';
+                          }
+                          tooltipText += followUpOption.description;
+                        }
+                        this.showCroppedFollowupText(e, tooltipText);
                       },
                       mouseleave: this.hideCroppedFollowupText
                     }

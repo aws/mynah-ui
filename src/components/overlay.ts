@@ -158,7 +158,7 @@ export class Overlay {
         // to correctly handle the 50% horizontal transform
         this.container.style.left =
                   // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                  (calculatedLeft - (containerRectangle.width + OVERLAY_MARGIN + calculatedLeft - winWidth) * 0.5) + 'px';
+                  (calculatedLeft - (containerRectangle.width + (OVERLAY_MARGIN * 2) + calculatedLeft - winWidth) * 0.5) + 'px';
       } else {
         this.container.style.left =
                   // eslint-disable-next-line @typescript-eslint/restrict-plus-operands

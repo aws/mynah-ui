@@ -160,6 +160,14 @@
                     display: inline-flex;
                     gap: var(--mynah-sizing-2);
                     align-items: center;
+                    user-select: none;
+                    * {
+                        pointer-events: none;
+                    }
+                    &-disabled {
+                        opacity: 0.5 !important;
+                        cursor: default !important;
+                    }
                     &:not(:hover) {
                         opacity: 0.75;
                     }

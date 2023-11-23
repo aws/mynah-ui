@@ -160,6 +160,8 @@ export interface ChatPrompt {
 export interface ChatItemFollowUp extends ChatPrompt {
   type?: string;
   pillText: string;
+  disabled?: boolean;
+  description?: string;
   status?: 'info' | 'success' | 'warning' | 'error';
   icon?: MynahIcons;
 }
