@@ -1,8 +1,13 @@
-> .mynah-card-body {
+.mynah-card-body {
     flex: 1;
     overflow: hidden;
     position: relative;
     display: block;
+
+    a {
+        pointer-events: bounding-box;
+        color: var(--mynah-color-text-link);
+    }
 
     > *:not(pre) {
         font-size: var(--mynah-font-size-medium);

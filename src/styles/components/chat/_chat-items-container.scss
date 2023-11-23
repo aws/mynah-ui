@@ -53,10 +53,6 @@
         &.mynah-chat-item-code-result {
             min-width: 70%;
         }
-        a {
-            pointer-events: bounding-box;
-            color: var(--mynah-color-text-link);
-        }
         > .mynah-chat-item-card-icon-wrapper {
             background-color: var(--mynah-color-alternate);
             color: var(--mynah-color-alternate-reverse);

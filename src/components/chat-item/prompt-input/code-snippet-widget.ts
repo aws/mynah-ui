@@ -32,7 +32,7 @@ export class CodeSnippetWidget {
       horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
       children: [
         new Card({
-          classNames: [ 'snippet-card-container-preview' ],
+          classNames: [ 'mynah-prompt-input-snippet-attachment-overlay' ],
           children: [
             new CardBody({
               body: markdownText,

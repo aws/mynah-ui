@@ -40,6 +40,7 @@
     }
 
     @import '../source-link-header';
-    @import 'card-body';
     @import '../votes-wrapper';
 }
+
+@import 'card-body';

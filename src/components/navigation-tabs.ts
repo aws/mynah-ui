@@ -23,7 +23,7 @@ export class Tabs {
   private tabIdTitleSubscriptions: Record<string, string> = {};
   private tabIdChatItemsSubscriptions: Record<string, string> = {};
   private toggleGroup: Toggle;
-  private previewOverlay: Overlay | undefined;
+  private maxReachedOverlay: Overlay | undefined;
   private readonly props: TabsProps;
 
   constructor (props: TabsProps) {
@@ -104,11 +104,11 @@ export class Tabs {
         additionalEvents: {
           mouseenter: (e) => {
             if (MynahUITabsStore.getInstance().tabsLength() === Config.getInstance().config.maxTabs) {
-              this.showPreviewOverLay(e.currentTarget, Config.getInstance().config.texts.noMoreTabsTooltip);
+              this.showMaxReachedOverLay(e.currentTarget, Config.getInstance().config.texts.noMoreTabsTooltip);
             }
           },
           mouseleave: () => {
-            this.closePreviewOverLay();
+            this.hideMaxReachedOverLay();
           },
         },
         onClick: (e) => {
@@ -123,8 +123,8 @@ export class Tabs {
     ];
   };
 
-  private readonly showPreviewOverLay = (elm: HTMLElement, markdownText: string): void => {
-    this.previewOverlay = new Overlay({
+  private readonly showMaxReachedOverLay = (elm: HTMLElement, markdownText: string): void => {
+    this.maxReachedOverlay = new Overlay({
       background: false,
       closeOnOutsideClick: false,
       referenceElement: elm,
@@ -134,7 +134,7 @@ export class Tabs {
       horizontalDirection: OverlayHorizontalDirection.CENTER,
       children: [
         new Card({
-          classNames: [ 'snippet-card-container-preview' ],
+          classNames: [ 'mynah-nav-tabs-max-reached-overlay' ],
           children: [
             new CardBody({
               body: markdownText,
@@ -145,10 +145,10 @@ export class Tabs {
     });
   };
 
-  private readonly closePreviewOverLay = (): void => {
-    if (this.previewOverlay !== undefined) {
-      this.previewOverlay.close();
-      this.previewOverlay = undefined;
+  private readonly hideMaxReachedOverLay = (): void => {
+    if (this.maxReachedOverlay !== undefined) {
+      this.maxReachedOverlay.close();
+      this.maxReachedOverlay = undefined;
     }
   };
 
