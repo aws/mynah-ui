@@ -22,9 +22,11 @@ export class ChatItemFollowUpContainer {
   constructor (props: ChatItemFollowUpProps) {
     this.props = props;
     this.props.chatItem = props.chatItem;
-    this.itemAddListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ADD, () => {
-      this.render.remove();
-      MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
+    this.itemAddListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ADD, (data) => {
+      if (data.tabId === this.props.tabId) {
+        this.render.remove();
+        MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
+      }
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
