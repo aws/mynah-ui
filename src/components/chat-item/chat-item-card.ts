@@ -230,7 +230,7 @@ export class ChatItemCard {
     },
     innerHTML: `
     ${
-      (new Array(newWordsCount).fill(null)).map((n, i) => {
+      (new Array(newWordsCount !== undefined && newWordsCount >= 0 ? newWordsCount : 0).fill(null)).map((n, i) => {
         return `
         .${this.typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
           animation: typewriter 100ms ease-out forwards;
