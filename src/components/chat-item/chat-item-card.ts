@@ -207,7 +207,7 @@ export class ChatItemCard {
     persistent: true,
     innerHTML: `
     ${
-      (new Array(this.typewriterItemIndex - this.previousTypewriterItemIndex).fill(null)).map((n, i) => {
+      (new Array(Math.max(0, (this.typewriterItemIndex ?? 0) - (this.previousTypewriterItemIndex ?? 0))).fill(null)).map((n, i) => {
         return `
         .${this.typewriterId} .typewriter-part[index="${i + this.previousTypewriterItemIndex}"] {
           animation: none !important;
@@ -223,24 +223,24 @@ export class ChatItemCard {
 
   private readonly getInsertingTypewriterPartsCss = (
     newWordsCount: number,
-    timeForEach: number): ExtendedHTMLElement => DomBuilder.getInstance().build({
+    timeForEach: number): ExtendedHTMLElement => (DomBuilder.getInstance().build({
     type: 'style',
     attributes: {
       type: 'text/css'
     },
     innerHTML: `
-    ${
-      (new Array(newWordsCount !== undefined && newWordsCount >= 0 ? newWordsCount : 0).fill(null)).map((n, i) => {
-        return `
-        .${this.typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
-          animation: typewriter 100ms ease-out forwards;
-          animation-delay: ${i * timeForEach}ms !important;
+        ${
+          (new Array(Math.max(0, newWordsCount ?? 0)).fill(null)).map((n, i) => {
+            return `
+            .${this.typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
+              animation: typewriter 100ms ease-out forwards;
+              animation-delay: ${i * timeForEach}ms !important;
+            }
+            `;
+          }).join('')
         }
-        `;
-      }).join('')
-    }
-    `
-  });
+        `
+  }));
 
   public readonly updateCard = (): void => {
     if (this.updateTimer === undefined && this.updateCardStack.length > 0) {
