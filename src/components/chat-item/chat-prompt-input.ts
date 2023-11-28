@@ -45,6 +45,7 @@ export class ChatPromptInput {
       }
     });
     this.promptTextInput = new PromptTextInput({
+      initMaxLength: MAX_USER_INPUT,
       tabId: this.props.tabId,
       onKeydown: this.handleInputKeydown,
       onInput: () => this.updateAvailableCharactersIndicator(),
@@ -126,10 +127,10 @@ export class ChatPromptInput {
   }
 
   private readonly updateAvailableCharactersIndicator = (): void => {
-    const totalCharsUsed =
-      this.promptTextInput.getTextInputValue().trim().length + this.codeSnippet.lastCodeSnippet.length;
+    const remainingChars =
+      this.promptTextInput.promptTextInputMaxLength - this.promptTextInput.getTextInputValue().trim().length;
     this.remainingCharsIndicator.update({
-      innerHTML: `${Math.max(0, (MAX_USER_INPUT - totalCharsUsed))}/${MAX_USER_INPUT}`
+      innerHTML: `${Math.max(0, remainingChars)}/${MAX_USER_INPUT}`
     });
   };
 
