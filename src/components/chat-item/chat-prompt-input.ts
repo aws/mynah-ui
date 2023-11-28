@@ -139,7 +139,7 @@ export class ChatPromptInput {
       this.quickActionCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
       if (e.key === KeyMap.BACKSPACE && this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
         cancelEvent(e);
-        this.clearTextArea();
+        this.clearTextArea(true);
       } else if (e.key === KeyMap.ENTER && !e.shiftKey && !e.ctrlKey) {
         cancelEvent(e);
         this.sendPrompt();
@@ -183,6 +183,9 @@ export class ChatPromptInput {
           });
         }
         if (this.commandSelector !== undefined) {
+          if (e.key === KeyMap.ESCAPE) {
+            this.clearTextArea(true);
+          }
           this.commandSelector.close();
         }
       } else if (navigationalKeys.includes(e.key)) {
@@ -308,14 +311,16 @@ export class ChatPromptInput {
     this.promptTextInput.focus();
   };
 
-  public readonly clearTextArea = (): void => {
+  public readonly clearTextArea = (keepAttachment?: boolean): void => {
     this.selectedCommand = '';
     this.promptTextInput.clear();
     this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT);
     this.promptTextInputCommand.setCommand('');
-    this.attachmentWrapper.clear();
-    this.codeSnippet.clear();
-    this.attachment = undefined;
+    if (keepAttachment !== true) {
+      this.attachmentWrapper.clear();
+      this.codeSnippet.clear();
+      this.attachment = undefined;
+    }
     this.updateAvailableCharactersIndicator();
   };
 
