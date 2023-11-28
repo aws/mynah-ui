@@ -45,6 +45,7 @@ export class ChatPromptInput {
       }
     });
     this.promptTextInput = new PromptTextInput({
+      initMaxLength: MAX_USER_INPUT,
       tabId: this.props.tabId,
       onKeydown: this.handleInputKeydown,
       onInput: () => this.updateAvailableCharactersIndicator(),
@@ -108,7 +109,7 @@ export class ChatPromptInput {
         const croppedSelectedCodeSnippet = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
         this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
         // Also update the limit on prompt text given the selected code
-        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, (MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length));
+        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length)));
         this.updateAvailableCharactersIndicator();
       }
     });
@@ -126,10 +127,10 @@ export class ChatPromptInput {
   }
 
   private readonly updateAvailableCharactersIndicator = (): void => {
-    const totalCharsUsed =
-      this.promptTextInput.getTextInputValue().trim().length + this.codeSnippet.lastCodeSnippet.length;
+    const remainingChars =
+      this.promptTextInput.promptTextInputMaxLength - this.promptTextInput.getTextInputValue().trim().length;
     this.remainingCharsIndicator.update({
-      innerHTML: `${Math.max(0, (MAX_USER_INPUT - totalCharsUsed))}/${MAX_USER_INPUT}`
+      innerHTML: `${Math.max(0, remainingChars)}/${MAX_USER_INPUT}`
     });
   };
 
@@ -138,7 +139,7 @@ export class ChatPromptInput {
       this.quickActionCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
       if (e.key === KeyMap.BACKSPACE && this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
         cancelEvent(e);
-        this.clearTextArea();
+        this.clearTextArea(true);
       } else if (e.key === KeyMap.ENTER && !e.shiftKey && !e.ctrlKey) {
         cancelEvent(e);
         this.sendPrompt();
@@ -182,6 +183,9 @@ export class ChatPromptInput {
           });
         }
         if (this.commandSelector !== undefined) {
+          if (e.key === KeyMap.ESCAPE) {
+            this.clearTextArea(true);
+          }
           this.commandSelector.close();
         }
       } else if (navigationalKeys.includes(e.key)) {
@@ -307,14 +311,16 @@ export class ChatPromptInput {
     this.promptTextInput.focus();
   };
 
-  public readonly clearTextArea = (): void => {
+  public readonly clearTextArea = (keepAttachment?: boolean): void => {
     this.selectedCommand = '';
     this.promptTextInput.clear();
     this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT);
     this.promptTextInputCommand.setCommand('');
-    this.attachmentWrapper.clear();
-    this.codeSnippet.clear();
-    this.attachment = undefined;
+    if (keepAttachment !== true) {
+      this.attachmentWrapper.clear();
+      this.codeSnippet.clear();
+      this.attachment = undefined;
+    }
     this.updateAvailableCharactersIndicator();
   };
 

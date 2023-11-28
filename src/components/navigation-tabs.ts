@@ -125,7 +125,7 @@ export class Tabs {
 
   private readonly showMaxReachedOverLay = (elm: HTMLElement, markdownText: string): void => {
     this.maxReachedOverlay = new Overlay({
-      background: false,
+      background: true,
       closeOnOutsideClick: false,
       referenceElement: elm,
       dimOutside: false,
@@ -134,6 +134,7 @@ export class Tabs {
       horizontalDirection: OverlayHorizontalDirection.CENTER,
       children: [
         new Card({
+          border: false,
           classNames: [ 'mynah-nav-tabs-max-reached-overlay' ],
           children: [
             new CardBody({

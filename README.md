@@ -170,7 +170,7 @@ You can provide any of the following css custom property values:
     --mynah-shadow-card: ...;
     --mynah-shadow-card-more: ...;
     --mynah-shadow-card-active: ...;
-    --mynah-shadow-prioritization-menu: ...;
+    --mynah-shadow-overlay: ...;
     --mynah-shadow-feedback-form: ...;
 
     --mynah-font-size-xxsmall: ...;

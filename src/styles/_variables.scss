@@ -87,8 +87,8 @@
     --mynah-shadow-card: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);
     --mynah-shadow-card-more: none; //0 10px 20px -10px rgba(0, 0, 0, 0.5);
     --mynah-shadow-card-active: none; //0 10px 20px -10px rgba(0, 0, 0, 0.5);
-    --mynah-shadow-prioritization-menu: none; //0 10px 20px -10px #e7e7e7;
     --mynah-shadow-feedback-form: none; //0 0px 40px 0px var(--mynah-color-bg);
+    --mynah-shadow-overlay: 0 0 25px 20px var(--mynah-color-bg);
 
     --mynah-font-size-xxsmall: 0.75rem;
     --mynah-font-size-xsmall: 0.85rem;
@@ -117,8 +117,8 @@
         transform 700ms cubic-bezier(0.25, 4, 0, 1);
     --mynah-short-transition-bounce: all 750ms cubic-bezier(0.25, 1, 0, 1),
         transform 1000ms cubic-bezier(0.15, 1.25, 0, 1);
-    --mynah-text-flow-transition: all 550ms cubic-bezier(0.35, 1.2, 0, 1),
-        transform 550ms cubic-bezier(0.2, 1.05, 0, 1);
+    --mynah-text-flow-transition: all 700ms cubic-bezier(0.35, 1.2, 0, 1),
+        transform 700ms cubic-bezier(0.2, 1.05, 0, 1);
 
     --mynah-mask-image: linear-gradient(
         to bottom,
