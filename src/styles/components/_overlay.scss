@@ -60,7 +60,8 @@
                 border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
                 z-index: 100;
                 box-shadow: var(--mynah-shadow-overlay);
-                transform-origin: left center;
+                transform-origin: left bottom;
+                border-radius: inherit;
             }
 
             &:after {

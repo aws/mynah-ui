@@ -16,6 +16,8 @@ export class SourceLinkCard {
   constructor (props: SourceLinkCardProps) {
     this.sourceLink = props.sourceLink;
     this.render = new Card({
+      border: false,
+      background: false,
       children: [
         new SourceLinkHeader({
           sourceLink: this.sourceLink

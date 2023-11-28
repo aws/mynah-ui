@@ -1,13 +1,3 @@
-.mynah-chat-related-content-preview-wrapper {
-    max-width: 80vw;
-    max-height: 80vh;
-    > .mynah-chat-related-content-preview-content {
-        padding: var(--mynah-sizing-3);
-        background-color: var(--mynah-card-bg);
-        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-        border-radius: var(--mynah-card-radius);
-    }
-}
 .mynah-chat-prompt-overlay-buttons-container {
     display: inline-flex;
     flex-flow: column nowrap;

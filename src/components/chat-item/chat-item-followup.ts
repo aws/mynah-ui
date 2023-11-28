@@ -9,6 +9,8 @@ import { MynahUIGlobalEvents } from '../../helper/events';
 import { ChatItem, MynahEventNames } from '../../static';
 import { Icon } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
+import { Card } from '../card/card';
+import { CardBody } from '../card/card-body';
 
 const PREVIEW_DELAY = 250;
 const MAX_LENGTH = 40;
@@ -129,7 +131,7 @@ export class ChatItemFollowUpContainer {
       this.followupTooltipTimeout = setTimeout(() => {
         const elm: HTMLElement = e.target as HTMLElement;
         this.followupTooltip = new Overlay({
-          background: false,
+          background: true,
           closeOnOutsideClick: false,
           referenceElement: elm,
           dimOutside: false,
@@ -137,17 +139,14 @@ export class ChatItemFollowUpContainer {
           verticalDirection: OverlayVerticalDirection.TO_TOP,
           horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
           children: [
-            {
-              type: 'div',
-              classNames: [ 'mynah-chat-related-content-preview-wrapper' ],
+            new Card({
+              border: false,
               children: [
-                {
-                  type: 'div',
-                  classNames: [ 'mynah-chat-related-content-preview-content' ],
-                  innerHTML: marked(content, { breaks: true }).replace('<p>', '').replace('</p>', '')
-                }
+                new CardBody({
+                  body: content
+                }).render
               ]
-            }
+            }).render
           ],
         });
       }, PREVIEW_DELAY);

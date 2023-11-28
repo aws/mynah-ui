@@ -191,7 +191,7 @@ export class SourceLinkHeader {
       this.sourceLinkPreviewTimeout = setTimeout(() => {
         const elm: HTMLElement = e.target as HTMLElement;
         this.sourceLinkPreview = new Overlay({
-          background: false,
+          background: true,
           closeOnOutsideClick: false,
           referenceElement: elm,
           dimOutside: false,
@@ -199,13 +199,7 @@ export class SourceLinkHeader {
           verticalDirection: OverlayVerticalDirection.TO_TOP,
           horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
           children: [
-            {
-              type: 'div',
-              classNames: [ 'mynah-chat-related-content-preview-wrapper' ],
-              children: [
-                new SourceLinkCard({ sourceLink }).render
-              ]
-            }
+            new SourceLinkCard({ sourceLink }).render
           ],
         });
       }, PREVIEW_DELAY);
