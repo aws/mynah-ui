@@ -25,6 +25,7 @@ export class ChatItemFollowUpContainer {
     this.itemAddListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ADD, (data) => {
       if (data.tabId === this.props.tabId) {
         this.render.remove();
+        this.hideCroppedFollowupText();
         MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
       }
     });
