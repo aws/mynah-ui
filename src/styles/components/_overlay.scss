@@ -48,17 +48,19 @@
                 background-color: transparent;
                 transition: var(--mynah-short-transition-rev);
                 position: absolute;
-                top: calc(var(--mynah-button-border-width) * -1);
-                left: calc(var(--mynah-button-border-width) * -1);
-                right: calc(var(--mynah-button-border-width) * -1);
-                bottom: calc(var(--mynah-button-border-width) * -1);
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
                 width: auto;
                 height: auto;
                 pointer-events: none;
                 box-sizing: border-box;
                 opacity: 0;
                 border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
-                box-shadow: var(--mynah-shadow-prioritization-menu);
+                z-index: 100;
+                box-shadow: var(--mynah-shadow-overlay);
+                transform-origin: left center;
             }
 
             &:after {
@@ -82,6 +84,9 @@
             &-from-end-to-left {
                 --overlayLeftPos: -100%;
                 --overlayInnerHorizontalOrigin: right;
+                &:before{
+                    transform-origin: right center;
+                }
                 &:after {
                     left: calc(100% - var(--mynah-sizing-4));
                 }
@@ -121,6 +126,7 @@
             transform-origin: var(--overlayInnerHorizontalOrigin) var(--overlayInnerVerticalOrigin);
             transition: var(--mynah-short-transition-rev);
             width: 100%;
+            // box-shadow: var(--mynah-shadow-overlay);
         }
         &:before {
             transform: translate3d(0, 0, 0) scale(0.85);

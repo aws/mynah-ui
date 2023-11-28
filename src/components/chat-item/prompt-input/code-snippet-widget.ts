@@ -23,7 +23,7 @@ export class CodeSnippetWidget {
 
   private readonly showPreviewOverLay = (markdownText: string): void => {
     this.previewOverlay = new Overlay({
-      background: false,
+      background: true,
       closeOnOutsideClick: false,
       referenceElement: this.render,
       dimOutside: false,
@@ -32,6 +32,7 @@ export class CodeSnippetWidget {
       horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
       children: [
         new Card({
+          border: false,
           classNames: [ 'mynah-prompt-input-snippet-attachment-overlay' ],
           children: [
             new CardBody({
