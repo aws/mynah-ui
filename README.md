@@ -1,4 +1,4 @@
-<image width="100px" src="https://github.com/aws/mynah-ui/blob/main/src/components/icon/icons/chat.svg?raw=true" />
+<image width="100px" src="./src/components/icon/icons/chat.svg?raw=true" />
 
 # Mynah UI
 
