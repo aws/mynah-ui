@@ -17,7 +17,7 @@
             flex-flow: row nowrap;
             overflow: hidden;
             box-sizing: border-box;
-            gap: var(--mynah-sizing-1);
+            gap: var(--mynah-sizing-2);
             align-items: flex-start;
             position: relative;
             color: var(--mynah-color-text-weak);
@@ -56,13 +56,22 @@
                     width: 100%;
                     max-height: 20vh;
                     min-height: 1.5rem;
+                    &:placeholder-shown {
+                        text-overflow: ellipsis;
+                    }
                     &::placeholder {
                         color: var(--mynah-color-text-weak);
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
                     }
                     &:not(.mynah-chat-prompt-input-sizer) {
                         position: absolute;
-                        height: 100%;
+                        height: auto;
+                        width: auto;
                         top: 0;
+                        right: 0;
+                        bottom: 0;
                         left: 0;
                         padding: 0;
                     }
