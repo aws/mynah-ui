@@ -1,4 +1,5 @@
 <image width="100px" src="https://github.com/aws/mynah-ui/blob/main/src/components/icon/icons/chat.svg?raw=true" />
+
 # Mynah UI
 
 This package is the whole UI of AWS Codewhisperer Chat extension UI for Web, VSCode and Intellij IDEs written in typescript without any framework or third-party UI library dependency. Purpose of the separated UI is to handle the interactions and look & feel of the UI from one single source. 
