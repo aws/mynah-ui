@@ -11,6 +11,9 @@ import { MynahUI } from '@aws/mynah-ui';
 
 // Assign it to a variable to be able call functions.
 const mynahUI = new MynahUI({
+    // All props are optional
+    // so even without providing anything
+    // it will create the UI
     rootSelector: ...,
     defaults: ...,
     tabs: ...,
