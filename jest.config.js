@@ -4,6 +4,7 @@ const jestConfig = {
   moduleNameMapper: {
     '\\.svg$': 'jest-svg-transformer',
   },
+  setupFiles: ['core-js'], // Polyfill things like structuredClone
 };
 
 module.exports = jestConfig;

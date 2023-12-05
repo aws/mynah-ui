@@ -109,7 +109,7 @@ export class ChatPromptInput {
         const croppedSelectedCodeSnippet = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
         this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
         // Also update the limit on prompt text given the selected code
-        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length)));
+        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, Math.max(MAX_USER_INPUT_THRESHOLD, MAX_USER_INPUT - croppedSelectedCodeSnippet.length)));
         this.updateAvailableCharactersIndicator();
       }
     });
