@@ -86,7 +86,8 @@ export class ChatItemCard {
       type: 'span',
       innerHTML: typeof this.props.chatItem.body === 'string' ? this.props.chatItem.body : '',
     });
-    const isChatItemEmpty = emptyCheckDom.innerText.trim() === '';
+
+    const isChatItemEmpty = emptyCheckDom.textContent === null || emptyCheckDom.textContent.trim() === '';
     const isNoContent =
       isChatItemEmpty &&
       this.props.chatItem.followUp === undefined &&
@@ -272,8 +273,8 @@ export class ChatItemCard {
 
         // For each stack, without exceeding 500ms in total
         // we're setting each words delay time according to the count of them.
-        // Word appearence time cannot exceed 50ms
-        // Stack's total appearence time cannot exceed 500ms
+        // Word appearance time cannot exceed 50ms
+        // Stack's total appearance time cannot exceed 500ms
         const timeForEach = Math.min(50, Math.floor(TYPEWRITER_STACK_TIME / newWordsCount));
 
         // Generate animator style and inject into render

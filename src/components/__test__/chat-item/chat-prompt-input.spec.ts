@@ -1,7 +1,7 @@
-import { MynahUIGlobalEvents } from '../../helper/events';
-import { MynahUITabsStore } from '../../helper/tabs-store';
-import { MynahEventNames } from '../../static';
-import { ChatPromptInput } from '../chat-item/chat-prompt-input';
+import { MynahUIGlobalEvents } from '../../../helper/events';
+import { MynahUITabsStore } from '../../../helper/tabs-store';
+import { MynahEventNames } from '../../../static';
+import { ChatPromptInput } from '../../chat-item/chat-prompt-input';
 
 describe('chat-prompt-input', () => {
   it('render', () => {

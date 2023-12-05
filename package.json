@@ -20,6 +20,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@babel/core": "^7.23.5",
+    "babel-jest": "^29.7.0",
     "core-js": "^3.33.3",
     "escape-html": "^1.0.3",
     "marked": "^7.0.3",
