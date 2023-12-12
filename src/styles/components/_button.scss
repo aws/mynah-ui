@@ -24,7 +24,6 @@ button.mynah-button {
         transform: translate3d(var(--mynah-sizing-2), calc(-100% - var(--mynah-sizing-6)), 0px);
         background-color: var(--mynah-card-bg);
         color: var(--mynah-color-text-default);
-        box-shadow: var(--mynah-shadow-feedback-form);
     }
     &[disabled="disabled"] {
         opacity: 0.25 !important;
@@ -57,57 +56,11 @@ button.mynah-button {
         width: var(--mynah-sizing-10);
         height: var(--mynah-sizing-10);
     }
-    > .mynah-mutating-next-icon {
-        width: var(--mynah-sizing-6);
-        height: var(--mynah-sizing-6);
-        transform: translate3d(0, 0, 0) rotateZ(0deg);
-        transition: var(--mynah-short-transition-turbo);
-        transform-origin: center center;
-        display: inline-flex;
-        flex-flow: row nowrap;
-        box-sizing: border-box;
-        overflow: hidden;
-        justify-content: center;
-        align-items: center;
-        > i {
-            font-size: var(--mynah-font-size-xlarge);
-            &:nth-child(2) {
-                display: none;
-            }
-        }
-    }
-    > .mynah-search-history-icon {
-        width: var(--mynah-sizing-6);
-        height: var(--mynah-sizing-6);
-        transform: translate3d(0, 0, 0) rotateZ(0deg);
-        transition: var(--mynah-short-transition-turbo);
-        transform-origin: center center;
-        display: inline-flex;
-        flex-flow: row nowrap;
-        box-sizing: border-box;
-        overflow: hidden;
-        justify-content: center;
-        align-items: center;
-        > i {
-            font-size: 2rem;
-            &:nth-child(2) {
-                display: none;
-            }
-        }
-    }
     &.mynah-button-wait {
         background-color: var(--mynah-color-light);
         color: var(--mynah-color-text-default);
         box-shadow: 0 5px 10px -10px var(--mynah-color-light);
         pointer-events: none;
-        > .mynah-mutating-next-icon > i {
-            &:first-child {
-                display: none;
-            }
-            &:nth-child(2) {
-                display: block;
-            }
-        }
     }
     > span {
         white-space: nowrap;

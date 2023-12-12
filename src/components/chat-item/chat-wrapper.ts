@@ -47,7 +47,7 @@ export class ChatWrapper {
         this.chatItemsContainer.clear(true);
       }
     });
-    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('loadingChat', (loadingChat: boolean) => {
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'loadingChat', (loadingChat: boolean) => {
       if (loadingChat) {
         this.render.addClass('loading');
       } else {
@@ -55,7 +55,7 @@ export class ChatWrapper {
       }
     });
 
-    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('cancelButtonWhenLoading', (showCancelButton: boolean) => {
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'cancelButtonWhenLoading', (showCancelButton: boolean) => {
       if (showCancelButton) {
         this.intermediateBlockContainer.removeClass('hidden');
       } else {

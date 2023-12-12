@@ -327,6 +327,15 @@ export class MynahUI {
   };
 
   /**
+   * This function returns the selected tab id if there is any, otherwise returns undefined
+   * @returns string selectedTabId or undefined
+   */
+  public getSelectedTabId = (): string | undefined => {
+    const selectedTabId = MynahUITabsStore.getInstance().getSelectedTabId();
+    return selectedTabId === '' ? undefined : selectedTabId;
+  };
+
+  /**
    * Simply creates and shows a notification
    * @param props NotificationProps
    */

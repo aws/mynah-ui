@@ -1,4 +1,4 @@
-## How to install and start to use Mynah UI
+# How to install and start using Mynah UI
 Simply install it from npm with your favorite package manager.
 ```console
 npm install @aws/mynah-ui
@@ -41,6 +41,10 @@ const mynahUI = new MynahUI({
 
 You're ready to go, now you have a Chat UI generated and rendered into place you set.
 
-## What is Next?
-- Take a look to the [constructor properties](./PROPERTIES.md)
+# What's Next?
+- Take a look to the **[Constructor Properties](./PROPERTIES.md)**
+- Take a look to the **[Configuration](./CONFIG.md)**
+- Take a look to the **[How to use MynahUI](./USAGE.md)**
+- Take a look to the **[Data Model](./DATAMODEL.md)**
+- Take a look to the **[Styling Configuration](./STYLING.md)**
 

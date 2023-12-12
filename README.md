@@ -7,14 +7,18 @@ Since it is not depending on any framework or a UI library, you can use it insid
 
 Please continue with one of the following guides:
 
-## How to use Mynah UI
-#### [Startup Guide](./docs/STARTUP.md)
-#### [Data Model](./docs/DATAMODEL.md)
+## How to setup, configure and use Mynah UI
+### [Startup Guide](./docs/STARTUP.md)
+### [Constructor Properties](./docs/PROPERTIES.md)
+### [Configuration](./docs/CONFIG.md)
+### [How to use MynahUI](./docs/USAGE.md)
+### [Data Model](./docs/DATAMODEL.md)
+### [Styling Configuration](./docs/STYLING.md)
 
 
 
 ## Supported browsers
-**Mynah UI** <em>-because of it's extensive css structure-</em> only supports ever-green browsers including webkit-base WebUI renderers.
+**Mynah UI** <em>-because of it's extensive css structure-</em> only supports ever-green browsers including webkit based WebUI renderers.
 
 
 ## Security

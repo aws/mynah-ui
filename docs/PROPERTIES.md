@@ -1,4 +1,4 @@
-## Mynah UI Constructor Properties
+# Mynah UI Constructor Properties
 You can configure your Chat UI's initial render and defaults through these properties as well as connecting the events which will trigger after user interactions. Since all of the props are optional, feel free to assign only the ones you need.
 ```typescript
 export interface MynahUIProps {
@@ -72,7 +72,7 @@ _Let's deep dive into each property you can set._
 ### `rootSelector`
 _(default: `"body"`)_
 
-rootSelector simply allows you to set which dom element you want to render the whole chat interface including the tabs and the chat prompt block and also the chat items. It will also create temporary or portal elements inside the same element such as notifications, custom dropdown blocks and also tooltips with rich content however they'll exceed the views boundaries, please refer to each components view in the documents.
+rootSelector simply allows you to set which dom element you want to render the whole chat interface including the tabs and the chat prompt block and also the chat items. It will also create temporary or portal elements inside the same element such as notifications, custom dropdown blocks and also tooltips with rich content. However, they'll exceed the views boundaries.
 
 ```typescript
 ...
@@ -104,7 +104,7 @@ _(default: `undefined`)_
 
 tabs is here for you to set the initial tabs with their initial content while initializing and rendering the UI for the first time. You can set anything related with the tab and or any parameter on a tab's [data model](./DATAMODEL.md).
 
-It is pretty handy to keep the state of the whole UI and and send it back while reinitializing after a refresh for example.
+It is pretty handy to keep the state of the whole UI and send it back while reinitializing after a refresh for example.
 
 _Note: You cannot set it on the runtime, it is just for initialization._
 
@@ -128,9 +128,7 @@ tabs: {
 ### `config`
 _(default: `undefined`)_
 
-You can set the config is here for you to set the initial tabs with their initial content while initializing and rendering the UI for the first time. You can set anything related with the tab and or any parameter on a tab's [data model](./DATAMODEL.md).
-
-It is pretty handy to keep the state of the whole UI and and send it back while reinitializing after a refresh for example.
+You can set the config here.
 
 _Note: You cannot set it on the runtime, it is just for initialization._
 
@@ -172,12 +170,13 @@ config: {
 }, // default: undefined
 ...
 ```
-**Refer to the [Text Configuration](./TEXTS.md) to see which item is belong to which field on UI**
+**Refer to the [configuration](./CONFIG.md) for more details**
 
 ---
+<p><br/></p>
 
-## Events
-_Now let's deep dive into the events you can catch from the UI_
+# Events
+_Now let's dive deep into the events you can catch from the UI_
 
 ---
 
@@ -253,9 +252,364 @@ _Please refer to the [data model](./DATAMODEL.md) to learn how to enable/disable
 
 ```typescript
 ...
-onStopChatResponse: (tabId: string) => {
+onStopChatResponse: (tabId: string):void => {
       console.log(`Sent from tab: ${tabId}`);
     };
 ...
 ```
 
+---
+
+### `onResetStore`
+
+This event will be fired when the store is reset for that specific tab. It will pass only the `tabId` argument.
+
+```typescript
+...
+onResetStore: (tabId: string):void => {
+      console.log(`Store reset for tab: ${tabId}`);
+    };
+...
+```
+
+---
+
+### `onChatPrompt`
+
+This event will be fired when user hits enter or clicks to send button on the prompt input field. It will pass `tabId` and the `prompt` object as arguments. 
+
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatPrompt` object type._
+
+<p align="center">
+  <img src="./img/onChatPrompt.png" alt="onChatPrompt" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onChatPrompt?: (
+    tabId: string,
+    prompt: ChatPrompt):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Prompt text (as written): ${prompt.prompt}`);
+      console.log(`Prompt text (HTML escaped): ${prompt.escapedPrompt}`);
+      console.log(`Command (if selected from quick actions): ${prompt.command}`);
+      console.log(`Attachment (feature not available yet): ${prompt.attachment}`);
+    };
+...
+```
+
+### Very important note
+You have to manually add the chat item for the prompt with the given ways on the **[How to use](./USAGE.md)** document.
+
+---
+
+### `onFollowUpClicked`
+
+This event will be fired when user selects one of the available followups. It will pass `tabId`, `messageId` and the clicked `followUp` object as arguments.
+
+**Important note:** If the clicked followup item contains `prompt` attribute, MynahUI will automatically add the `ChatItem` to the chat stack and will render it as a user prompt chat bubble with the `prompt` attributes text (on the right side). If you want to avoid this and manually control what will be added as a chat item or not adding anything at all after the selection of the followup, leave the `prompt` attribute undefined.
+
+**Important note:** Followup texts show up at most 40 chars in the followup pill. If the length is more than 40 chars it will pop up a tooltip to show the rest of the text. However, it will not break the `description` to show up as a tooltip, instead if there is also the `description` attribute, it will append that to a new line in the tooltip.
+
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatItemFollowUp` object type._
+
+<p align="center">
+  <img src="./img/onFollowupClicked.png" alt="onFollowUpClicked" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onFollowUpClicked?: (
+    tabId: string,
+    messageId: string,
+    followUp: ChatItemFollowUp):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`For the message: ${messageId}`);
+      console.log(`Followup type (free text): ${followUp.type}`);
+      console.log(`Followup text (visible on screen): ${followUp.pillText}`);
+    };
+...
+```
+
+---
+
+### `onTabChange`
+
+This event will be fired when user changes the tab. It will only pass `tabId` for the new selected tab as argument.
+
+<p align="center">
+  <img src="./img/onTabChange.png" alt="onTabChange" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onTabChange?: (tabId: string):void => {
+      console.log(`New selected tabId: ${tabId}`);
+    };
+...
+```
+
+---
+
+### `onTabAdd`
+
+This event will be fired when user clicks the add tab button or double clicks to an empty space on the tab bar to open a new tab. It will only pass `tabId` for the new tab as argument.
+
+<p align="center">
+  <img src="./img/onTabAdd.png" alt="onTabAdd" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onTabAdd?: (tabId: string):void => {
+      console.log(`New tabId: ${tabId}`);
+    };
+...
+```
+
+---
+
+### `onTabRemove`
+
+This event will be fired when user clicks the close button on a tab or middle clicks to the tab to close it. It will only pass `tabId` for the closed tab as argument.
+
+<p align="center">
+  <img src="./img/onTabRemove.png" alt="onTabAdd" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onTabRemove?: (tabId: string):void => {
+      console.log(`Closed tabId: ${tabId}`);
+    };
+...
+```
+---
+
+### `onChatItemEngagement`
+
+This event will be fired when user engages with a system generated chat bubble in various ways like moving/holding the mouse over it more than 3 seconds or selects some text inside the chat message bubble or clicks anywhere inside it. It will pass `tabId`, `messageId` for the engaged chat message bubble and also the `engagement` for the engagement details as arguments.
+
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `Engagement` object type._
+
+**Note:** This event will be only activated if you bind a function to it. It means that if you leave it undefined it will not listen/track any mouse movement at all for the chat message bubbles. 
+
+<p align="center">
+  <img src="./img/onChatItemEngagement.png" alt="onChatItemEngagement" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onChatItemEngagement?: (
+    tabId: string,
+    messageId: string,
+    engagement: Engagement):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Engaged message: ${messageId}`);
+      console.log(`Engagement type: ${engagement.engagementType}`); // interaction | timespend
+      console.log(`Engagement duration: ${engagement.engagementDurationTillTrigger}`);
+      console.log(`Engagement total mouse distance travelled: ${engagement.totalMouseDistanceTraveled}`);
+      console.log(`Engagement selection:
+      x movement: ${engagement.selectionDistanceTraveled?.x}
+      y movement: ${engagement.selectionDistanceTraveled?.y}
+      selected text: ${engagement.selectionDistanceTraveled?.selectedText}
+      `);
+    };
+...
+```
+---
+
+### `onCopyCodeToClipboard`
+
+This event will be fired when user clicks the copy button on the footer of a code block or selects some text inside a code block and triggers keyboard shortcuts for copying. It will pass `tabId`, `messageId`, `code` for the copied code to theclipboard as a text, `type` for the type of the code copied (block or selection) and the `referenceTrackerInformation` if the copied code block contains some code reference as the arguments.
+
+**Note:** even though the `referenceTrackerInformation` comes to the message with `codeReference` attribute with the index position depending on the whole content of the body of the message, the return of it as an attribute from this event gives the indexes according to position inside that code block.
+
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ReferenceTrackerInformation` object type._
+
+
+<p align="center">
+  <img src="./img/onCopyCodeToClipboard.png" alt="onCopyCodeToClipboard" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onCopyCodeToClipboard?: (
+    tabId: string,
+    messageId: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[]):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Code inside message: ${messageId}`);
+      console.log(`Copied code: ${code}`);
+      console.log(`Copy type: ${type}`); // selection | block
+      console.log(`Reference tracker info: ${referenceTrackerInformation?.map(rti=>`${rti.licenseName} ${rti.repository}`).join(', ')}`);
+    };
+...
+```
+---
+
+### `onCodeInsertToCursorPosition`
+
+This event will be fired when user clicks the copy button on the footer of a code block or selects some text inside a code block and triggers keyboard shortcuts for copying. It will pass `tabId`, `messageId`, `code` for the copied code to theclipboard as a text, `type` for the type of the code copied (block or selection) and the `referenceTrackerInformation` if the copied code block contains some code reference as the arguments.
+
+**Note:** even though the `referenceTrackerInformation` comes to the message with `codeReference` attribute with the index position depending on the whole content of the body of the message, the return of it as an attribute from this event gives the indexes according to position inside that code block.
+
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ReferenceTrackerInformation` object type._
+
+
+<p align="center">
+  <img src="./img/onCodeInsertToCursorPosition.png" alt="onCodeInsertToCursorPosition" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onCodeInsertToCursorPosition?: (
+    tabId: string,
+    messageId: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[]):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Code inside message: ${messageId}`);
+      console.log(`Copied code: ${code}`);
+      console.log(`Copy type: ${type}`); // selection | block
+      console.log(`Reference tracker info: ${referenceTrackerInformation?.map(rti=>`${rti.licenseName} ${rti.repository}`).join(', ')}`);
+    };
+...
+```
+---
+
+### `onSourceLinkClick`
+
+This event will be fired when user clicks one the the sources links after the body of a chat message body. It will pass `tabId`, `messageId`, `link` for the clicked link and the `mouseEvent` for the event object in case if it needs to be prevented as the arguments.
+
+**Note:** For example, JetBrains JCEF WebView opens the links in a new browser view of its own. However to prevent this action and navigate to user's own preferred browser to open the links, you may want to cancel the default behaviour and run your own function to open the OS default browser.
+
+
+<p align="center">
+  <img src="./img/onSourceLinkClick.png" alt="onSourceLinkClick" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onSourceLinkClick?: (
+    tabId: string,
+    messageId: string,
+    link: string,
+    mouseEvent?: MouseEvent):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Source link of message: ${messageId}`);
+      console.log(`link: ${link}`);
+      // mouseEvent.preventDefault();
+    };
+...
+```
+---
+
+### `onLinkClick`
+
+This event will be fired when user clicks a link inside the body of a chat message. It will pass `tabId`, `messageId`, `link` for the clicked link and the `mouseEvent` for the event object in case if it needs to be prevented as the arguments.
+
+**Note:** For example, JetBrains JCEF WebView opens the links in a new browser view of its own. However to prevent this action and navigate to user's own preferred browser to open the links, you may want to cancel the default behaviour and run your own function to open the OS default browser.
+
+
+<p align="center">
+  <img src="./img/onLinkClick.png" alt="onLinkClick" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onLinkClick?: (
+    tabId: string,
+    messageId: string,
+    link: string,
+    mouseEvent?: MouseEvent):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Source link of message: ${messageId}`);
+      console.log(`link: ${link}`);
+      // mouseEvent.preventDefault();
+    };
+...
+```
+---
+
+### `onInfoLinkClick`
+
+This event will be fired when user clicks a link inside the footer information message below the prompt input field for that tab. It will pass `tabId`, `link` for the clicked link and the `mouseEvent` for the event object in case if it needs to be prevented as the arguments.
+
+**Note:** For example, JetBrains JCEF WebView opens the links in a new browser view of its own. However to prevent this action and navigate to user's own preferred browser to open the links, you may want to cancel the default behaviour and run your own function to open the OS default browser.
+
+
+<p align="center">
+  <img src="./img/onInfoLinkClick.png" alt="onInfoLinkClick" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onInfoLinkClick?: (
+    tabId: string,
+    link: string,
+    mouseEvent?: MouseEvent):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`link: ${link}`);
+      // mouseEvent.preventDefault();
+    };
+...
+```
+---
+
+### `onSendFeedback`
+
+This event will be fired when user sends a feedback from the feedback panel which opens after giving a negative vote to a message and follow it with a send feedback button click. It will pass `tabId` and `feedbackPayload` for the feedback details as the arguments.
+
+**Note:** The options for the feedback type are coming from the configuration.
+
+_Please refer to the [configuration](./CONFIG.md) to learn more about the feedback type options._
+
+
+<p align="center">
+  <img src="./img/onSendFeedback-1.png" alt="onSendFeedbackStep1" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/onSendFeedback-2.png" alt="onSendFeedbackStep2" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/onSendFeedback-3.png" alt="onSendFeedbackStep3" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onSendFeedback?: (
+    tabId: string,
+    feedbackPayload: FeedbackPayload):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Feedback for message: ${feedbackPayload.messageId}`);
+      console.log(`Feedback type: ${feedbackPayload.selectedOption}`);
+      console.log(`Feedback comment: ${feedbackPayload.comment}`);
+      // mouseEvent.preventDefault();
+    };
+...
+```
+---
+
+### `onOpenDiff`
+
+This event will be fired when user clicks to a file name on the file list inside a chat message body. It will pass `tabId`, `filePath` for the clicked file, `deleted` to identify if the file is deleted and `messageId` as the arguments.
+
+
+<p align="center">
+  <img src="./img/onOpenDiff.png" alt="onOpenDiff" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onOpenDiff?: (
+    tabId: string,
+    filePath: string,
+    deleted: boolean,
+    messageId?: string):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`For message: ${messageId}`);
+      console.log(`File to open diff view: ${filePath}`);
+      console.log(`Is file deleted: ${deleted}`);
+    };
+...
+```
