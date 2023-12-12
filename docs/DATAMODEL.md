@@ -301,10 +301,6 @@ mynahUI.updateStore('tab-1', {
 })
 ```
 
-<p align="center">
-  <img src="./img/data-model/tabStore/promptInputDisabledState.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
-</p>
-
 <p><br/></p>
 
 ---
