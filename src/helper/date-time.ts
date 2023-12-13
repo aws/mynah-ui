@@ -40,26 +40,26 @@ export const getTimeDiff = (differenceInMs: number, show?: {
 
   const combined = [];
   if (years !== 0 && (show === undefined || typeof show !== 'object' || show.years !== false)) {
-    combined.push(`${years > 1 ? years : 'a'} year${years > 1 ? 's' : ''}`);
+    combined.push(`${years}yr`);
   }
   if (months !== 0 && (show === undefined || typeof show !== 'object' || show.months !== false)) {
-    combined.push(`${months > 1 ? months : 'a'} month${months > 1 ? 's' : ''}`);
+    combined.push(`${months}mo`);
   }
   if (weeks !== 0 && (show === undefined || typeof show !== 'object' || show.weeks !== false)) {
-    combined.push(`${weeks > 1 ? weeks : 'a'} week${weeks > 1 ? 's' : ''}`);
+    combined.push(`${weeks}we`);
   }
   if (days !== 0 && (show === undefined || typeof show !== 'object' || show.days !== false)) {
-    combined.push(`${days > 1 ? days : 'a'} day${days > 1 ? 's' : ''}`);
+    combined.push(`${days}da`);
   }
   if (hours !== 0 && (show === undefined || typeof show !== 'object' || show.hours !== false)) {
-    combined.push(`${hours > 1 ? hours : 'an'} hour${hours > 1 ? 's' : ''}`);
+    combined.push(`${hours}hr`);
   }
   if (minutes !== 0 && (show === undefined || typeof show !== 'object' || show.minutes !== false)) {
-    combined.push(`${minutes > 1 ? minutes : 'a'} minute${minutes > 1 ? 's' : ''}`);
+    combined.push(`${minutes}min`);
   }
 
   if (years + months + weeks + days + hours + minutes === 0) {
-    return 'a minute';
+    return '1min';
   }
 
   if (show !== undefined && typeof show === 'number') {

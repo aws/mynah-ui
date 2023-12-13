@@ -1,27 +1,27 @@
-@import 'mixins';
-@import 'variables';
-@import 'animations';
-@import 'dark';
+@import "mixins";
+@import "variables";
+@import "animations";
+@import "dark";
+@import "favicons";
 
 // Components
-@import './components/main-container';
-@import './components/search-block';
-@import './components/search-history';
-@import './components/context-pill';
-@import './components/prioritization-menu';
-@import './components/button';
-@import './components/toggle';
-@import './components/nav-tabs';
-@import './components/card';
-@import './components/feedback-form';
-@import './components/overlay';
-@import './components/notification';
-@import './components/autocomplete';
-@import './components/syntax-highlighter';
+@import "./components/main-container";
+@import "./components/button";
+@import "./components/toggle";
+@import "./components/icon";
+@import "./components/nav-tabs";
+@import "./components/card/card";
+@import "./components/feedback-form";
+@import "./components/overlay";
+@import "./components/notification";
+@import "./components/syntax-highlighter";
+@import "./components/chat/chat-wrapper";
+@import "./components/collapsible-content";
 
 body,
 html {
     background-color: var(--mynah-color-bg);
+    color: var(--mynah-color-text-default);
     height: 100%;
     width: 100%;
     overflow: hidden;
@@ -36,13 +36,16 @@ h4,
 h5,
 h6 {
     font-weight: 600;
-    color: var(--mynah-color-text-strong);
 }
 
 ::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
-    opacity: 0.5;
+    width: 2px;
+    height: 2px;
+    opacity: 0.25;
+    &:horizontal {
+        width: 0px;
+        height: 0px;
+    }
 }
 
 *:focus {

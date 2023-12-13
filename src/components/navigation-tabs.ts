@@ -3,55 +3,167 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
-import { MynahUIDataStore } from '../helper/store';
+import { cancelEvent } from '../helper/events';
+import { MynahUITabsStore } from '../helper/tabs-store';
+import { MynahUITabStoreTab } from '../static';
+import { Button } from './button';
+import { Card } from './card/card';
+import { CardBody } from './card/card-body';
+import { Icon, MynahIcons } from './icon';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Toggle, ToggleOption } from './toggle';
 
-export const getSelectedTabValueFromStore = (): string => MynahUIDataStore.getInstance().getValue('navigationTabs').find((navTab: ToggleOption) => navTab.selected).value;
-
-export interface NavivationTabsProps {
-  onChange?: (selectedValue: string) => void;
+export interface TabsProps {
+  onChange?: (selectedTabId: string) => void;
 }
-export class NavivationTabs {
+export class Tabs {
   render: ExtendedHTMLElement;
-  private readonly props: NavivationTabsProps;
+  private tabIdTitleSubscriptions: Record<string, string> = {};
+  private tabIdChatItemsSubscriptions: Record<string, string> = {};
+  private toggleGroup: Toggle;
+  private maxReachedOverlay: Overlay | undefined;
+  private readonly props: TabsProps;
 
-  constructor (props: NavivationTabsProps) {
+  constructor (props: TabsProps) {
     this.props = props;
-    const tabs = MynahUIDataStore.getInstance().getValue('navigationTabs');
-    MynahUIDataStore.getInstance().subscribe('loading', this.setLoading);
-
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       persistent: true,
-      classNames: [ 'mynah-nav-tabs-wrapper', ...(MynahUIDataStore.getInstance().getValue('loading') === true ? [ 'mynah-nav-tabs-loading' ] : []) ],
-      children: this.getTabsRender(tabs),
+      classNames: [ 'mynah-nav-tabs-wrapper' ],
+      events: {
+        dblclick: (e) => {
+          cancelEvent(e);
+          if (MynahUITabsStore.getInstance().tabsLength() < Config.getInstance().config.maxTabs) {
+            MynahUITabsStore.getInstance().addTab();
+          }
+        }
+      },
+      children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
     });
 
-    MynahUIDataStore.getInstance().subscribe('navigationTabs', (newTabs: ToggleOption[]) => {
-      this.render.update({
-        children: this.getTabsRender(newTabs)
+    MynahUITabsStore.getInstance().addListener('add', (tabId, tabData) => {
+      this.assignListener(tabId);
+      this.toggleGroup.addOption({
+        value: tabId,
+        label: tabData?.store?.tabTitle,
+        selected: tabData?.isSelected
       });
+      this.render.setAttribute('selected-tab', tabId);
+    });
+    MynahUITabsStore.getInstance().addListener('remove', (tabId, newSelectedTab?: MynahUITabStoreTab) => {
+      this.removeListenerAssignments(tabId);
+      this.toggleGroup.removeOption(tabId);
+      if (newSelectedTab !== undefined) {
+        this.toggleGroup.snapToOption(MynahUITabsStore.getInstance().getSelectedTabId());
+      }
+      this.render.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
+    });
+    MynahUITabsStore.getInstance().addListener('selectedTabChange', (selectedTabId) => {
+      this.render.setAttribute('selected-tab', selectedTabId);
+      this.toggleGroup.setValue(selectedTabId);
     });
   }
 
-  private readonly setLoading = (isLoading: boolean): void => {
-    if (isLoading) {
-      this.render.addClass('mynah-nav-tabs-loading');
-    } else {
-      this.render.removeClass('mynah-nav-tabs-loading');
+  private readonly getTabOptionsFromTabStoreData = (): ToggleOption[] => {
+    const tabs = MynahUITabsStore.getInstance().getAllTabs();
+    return Object.keys(tabs).map((tabId: string) => {
+      const tabOption = {
+        value: tabId,
+        label: tabs[tabId].store?.tabTitle,
+        selected: tabs[tabId].isSelected
+      };
+      return tabOption;
+    });
+  };
+
+  private readonly getTabsRender = (selectedTabId?: string): ExtendedHTMLElement[] => {
+    const tabs = this.getTabOptionsFromTabStoreData();
+    tabs.forEach(tab => {
+      this.assignListener(tab.value);
+    });
+    this.toggleGroup = new Toggle({
+      onChange: (selectedTabId: string) => {
+        MynahUITabsStore.getInstance().selectTab(selectedTabId);
+        if (this.props.onChange !== undefined) {
+          this.props.onChange(selectedTabId);
+        }
+      },
+      onRemove: (selectedTabId) => {
+        MynahUITabsStore.getInstance().removeTab(selectedTabId);
+      },
+      name: 'mynah-main-tabs',
+      options: tabs,
+      value: selectedTabId
+    });
+    return [
+      this.toggleGroup.render,
+      new Button({
+        classNames: [ 'mynah-toggle-close-button' ],
+        additionalEvents: {
+          mouseenter: (e) => {
+            if (MynahUITabsStore.getInstance().tabsLength() === Config.getInstance().config.maxTabs) {
+              this.showMaxReachedOverLay(e.currentTarget, Config.getInstance().config.texts.noMoreTabsTooltip);
+            }
+          },
+          mouseleave: () => {
+            this.hideMaxReachedOverLay();
+          },
+        },
+        onClick: (e) => {
+          cancelEvent(e);
+          if (MynahUITabsStore.getInstance().tabsLength() < Config.getInstance().config.maxTabs) {
+            MynahUITabsStore.getInstance().addTab();
+          }
+        },
+        icon: new Icon({ icon: MynahIcons.PLUS }).render,
+        primary: false
+      }).render
+    ];
+  };
+
+  private readonly showMaxReachedOverLay = (elm: HTMLElement, markdownText: string): void => {
+    this.maxReachedOverlay = new Overlay({
+      background: true,
+      closeOnOutsideClick: false,
+      referenceElement: elm,
+      dimOutside: false,
+      removeOtherOverlays: true,
+      verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
+      horizontalDirection: OverlayHorizontalDirection.CENTER,
+      children: [
+        new Card({
+          border: false,
+          classNames: [ 'mynah-nav-tabs-max-reached-overlay' ],
+          children: [
+            new CardBody({
+              body: markdownText,
+            }).render,
+          ]
+        }).render
+      ],
+    });
+  };
+
+  private readonly hideMaxReachedOverLay = (): void => {
+    if (this.maxReachedOverlay !== undefined) {
+      this.maxReachedOverlay.close();
+      this.maxReachedOverlay = undefined;
     }
   };
 
-  private readonly getTabsRender = (tabs: ToggleOption[]): ExtendedHTMLElement[] => tabs.length > 0
-    ? [
-        new Toggle({
-          onChange: this.props.onChange,
-          type: 'tabs',
-          name: 'mynah-nav-tabs',
-          options: tabs,
-          value: tabs.find(tab => tab.selected)?.value
-        }).render
-      ]
-    : [];
+  private readonly assignListener = (tabId: string): void => {
+    this.tabIdTitleSubscriptions[tabId] = MynahUITabsStore.getInstance().addListenerToDataStore(tabId, 'tabTitle', (title) => {
+      this.toggleGroup.updateOptionTitle(tabId, title);
+    }) ?? '';
+    this.tabIdChatItemsSubscriptions[tabId] = MynahUITabsStore.getInstance().addListenerToDataStore(tabId, 'chatItems', () => {
+      this.toggleGroup.updateOptionIndicator(tabId, true);
+    }) ?? '';
+  };
+
+  private readonly removeListenerAssignments = (tabId: string): void => {
+    MynahUITabsStore.getInstance().removeListenerFromDataStore(tabId, this.tabIdTitleSubscriptions[tabId], 'tabTitle');
+    MynahUITabsStore.getInstance().removeListenerFromDataStore(tabId, this.tabIdChatItemsSubscriptions[tabId], 'chatItems');
+  };
 }

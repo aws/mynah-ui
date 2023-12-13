@@ -1,0 +1,46 @@
+.mynah-card {
+    text-decoration: none;
+    outline: none;
+    position: relative;
+    transition: var(--mynah-short-transition-rev);
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-3);
+    transform: translate3d(0, 0, 0);
+    flex: auto 0 0;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--mynah-card-radius);
+
+    &.padding {
+        &-none {
+            padding: 0;
+        }
+        &-small {
+            padding: var(--mynah-sizing-1);
+        }
+        &-medium {
+            padding: var(--mynah-sizing-3);
+        }
+        &-large {
+            padding: var(--mynah-sizing-5);
+        }
+    }
+    &.background {
+        background-color: var(--mynah-card-bg);
+    }
+    &.border {
+        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    }
+
+    > * {
+        z-index: 10;
+        position: relative;
+    }
+
+    @import '../source-link-header';
+    @import '../votes-wrapper';
+}
+
+@import 'card-body';

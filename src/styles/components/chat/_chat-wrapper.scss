@@ -1,0 +1,54 @@
+.mynah-chat-prompt-overlay-buttons-container {
+    display: inline-flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-2);
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.mynah-chat-wrapper {
+    transition: var(--mynah-bottom-panel-transition);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    flex-flow: column nowrap;
+    overflow: hidden;
+    justify-content: space-around;
+    align-items: stretch;
+    display: none;
+    > div[class^="mynah-chat"] {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding-left: var(--mynah-sizing-4);
+        padding-right: var(--mynah-sizing-4);
+    }
+    &:after {
+        transition: all $smoothduration $smoothbezier;
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: auto;
+        height: auto;
+        background-color: black;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transform: translate3d(0, 0, 0) scale(2);
+        transform-origin: center center;
+    }
+
+    @import "chat-items-container";
+    @import "chat-overflowing-intermediate-block";
+    @import "chat-prompt-wrapper";
+}
+
+@import 'chat-command-selector';
+@import "chat-item-tree-view";
+@import "chat-prompt-code-snippet";

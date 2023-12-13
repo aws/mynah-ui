@@ -1,0 +1,163 @@
+/*!
+ * Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { marked } from 'marked';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { MynahUIGlobalEvents } from '../../helper/events';
+import { ChatItem, MynahEventNames } from '../../static';
+import { Icon } from '../icon';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
+import { Card } from '../card/card';
+import { CardBody } from '../card/card-body';
+
+const PREVIEW_DELAY = 250;
+const MAX_LENGTH = 40;
+export interface ChatItemFollowUpProps {tabId: string; chatItem: ChatItem}
+export class ChatItemFollowUpContainer {
+  private readonly props: ChatItemFollowUpProps;
+  render: ExtendedHTMLElement;
+  private readonly itemAddListenerId: string;
+  private followupTooltip: Overlay | null;
+  private followupTooltipTimeout: ReturnType<typeof setTimeout>;
+  constructor (props: ChatItemFollowUpProps) {
+    this.props = props;
+    this.props.chatItem = props.chatItem;
+    this.itemAddListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ADD, (data) => {
+      if (data.tabId === this.props.tabId) {
+        this.render.remove();
+        this.hideCroppedFollowupText();
+        MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
+      }
+    });
+    this.render = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-item-followup-question' ],
+      children: [
+        {
+          type: 'div',
+          classNames: [ 'mynah-chat-item-followup-question-text' ],
+          children: [ this.props.chatItem.followUp?.text ?? '' ]
+        },
+        {
+          type: 'div',
+          classNames: [ 'mynah-chat-item-followup-question-options-wrapper' ],
+          children: this.props.chatItem.followUp?.options?.map(followUpOption => (
+            {
+              type: 'div',
+              classNames: [
+                'mynah-chat-item-followup-question-option',
+                `mynah-chat-item-followup-question-option-status-${followUpOption.status ?? 'default'}`,
+                followUpOption.disabled === true ? 'mynah-chat-item-followup-question-option-disabled' : ''
+              ],
+              children: [
+                ...(followUpOption.icon !== undefined
+                  ? [
+                      new Icon({ icon: followUpOption.icon }).render
+                    ]
+                  : []),
+                followUpOption.pillText.length > MAX_LENGTH ? `${followUpOption.pillText.substring(0, MAX_LENGTH - 3)}...` : followUpOption.pillText
+              ],
+              events: {
+                ...(followUpOption.disabled !== true
+                  ? {
+                      click: (e) => {
+                        this.hideCroppedFollowupText();
+                        MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
+                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, { tabId: this.props.tabId, messageId: this.props.chatItem.messageId, followUpOption });
+                        if ((this.render.parentElement as ExtendedHTMLElement)?.hasClass('mynah-chat-item-empty')) {
+                          this.render.parentElement?.remove();
+                        } else {
+                          this.render.remove();
+                        };
+                      }
+                    }
+                  : {}),
+                ...(followUpOption.pillText.length > MAX_LENGTH || followUpOption.description !== undefined
+                  ? {
+                      mouseover: (e) => {
+                        let tooltipText = followUpOption.pillText.length > MAX_LENGTH ? followUpOption.pillText : '';
+                        if (followUpOption.description !== undefined) {
+                          if (tooltipText !== '') {
+                            tooltipText += '\n\n';
+                          }
+                          tooltipText += followUpOption.description;
+                        }
+                        this.showCroppedFollowupText(e, tooltipText);
+                      },
+                      mouseleave: this.hideCroppedFollowupText
+                    }
+                  : {})
+              }
+            }
+          )) as DomBuilderObject[]
+        },
+      ]
+    });
+
+    // revert back if the extension is set before (because it only works globally)
+    marked.use({
+      extensions: [ {
+        name: 'text',
+        renderer: (token) => {
+          return token.text;
+        }
+      } ]
+    });
+
+    Array.from(this.render.getElementsByClassName('mynah-chat-item-followup-question-option')).forEach(option => {
+      option.innerHTML = marked(option.innerHTML, { breaks: true }).replace('<p>', '').replace('</p>', '');
+    });
+    Array.from(this.render.getElementsByTagName('a')).forEach(a => {
+      const url = a.href;
+
+      a.onclick = (event?: MouseEvent) => {
+        MynahUIGlobalEvents
+          .getInstance()
+          .dispatch(MynahEventNames.LINK_CLICK, {
+            tabId: this.props.tabId,
+            messageId: this.props.chatItem.messageId,
+            link: url,
+            event,
+          });
+      };
+    });
+  }
+
+  private readonly showCroppedFollowupText = (e: MouseEvent, content: string): void => {
+    if (content.trim() !== undefined) {
+      clearTimeout(this.followupTooltipTimeout);
+      this.followupTooltipTimeout = setTimeout(() => {
+        const elm: HTMLElement = e.target as HTMLElement;
+        this.followupTooltip = new Overlay({
+          background: true,
+          closeOnOutsideClick: false,
+          referenceElement: elm,
+          dimOutside: false,
+          removeOtherOverlays: true,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+          children: [
+            new Card({
+              border: false,
+              children: [
+                new CardBody({
+                  body: content
+                }).render
+              ]
+            }).render
+          ],
+        });
+      }, PREVIEW_DELAY);
+    }
+  };
+
+  private readonly hideCroppedFollowupText = (): void => {
+    clearTimeout(this.followupTooltipTimeout);
+    if (this.followupTooltip !== null) {
+      this.followupTooltip?.close();
+      this.followupTooltip = null;
+    }
+  };
+}

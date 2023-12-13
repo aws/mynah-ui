@@ -4,21 +4,25 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { MynahUIIconImporter } from './icon/icon-importer';
 
 export enum MynahIcons {
+  MYNAH = 'mynah',
   MENU = 'menu',
   MINUS = 'minus',
   SEARCH = 'search',
   PLUS = 'plus',
   CHAT = 'chat',
   LINK = 'link',
+  DOC = 'doc',
   EXTERNAL = 'external',
   CANCEL = 'cancel',
   CALENDAR = 'calendar',
   MEGAPHONE = 'megaphone',
+  NOTIFICATION = 'notification',
   EYE = 'eye',
+  ELLIPSIS = 'ellipsis',
   OK = 'ok',
-  UP_CIRCLED = 'up-circled',
   UP_OPEN = 'up-open',
   DOWN_OPEN = 'down-open',
   RIGHT_OPEN = 'right-open',
@@ -35,13 +39,15 @@ export enum MynahIcons {
   STAR = 'star',
   LIGHT_BULB = 'light-bulb',
   ENVELOPE_SEND = 'envelope-send',
-  SEARCH_HISTORY = 'search-history',
+  REFRESH = 'refresh',
   USER = 'user',
   PLAY = 'play',
   PAUSE = 'pause',
   CODE_BLOCK = 'code-block',
   COPY = 'copy',
+  CURSOR_INSERT = 'cursor-insert',
   TEXT_SELECT = 'text-select',
+  REVERT = 'revert',
 }
 
 export interface IconProps {
@@ -51,13 +57,21 @@ export interface IconProps {
 export class Icon {
   render: ExtendedHTMLElement;
   constructor (props: IconProps) {
+    MynahUIIconImporter.getInstance();
     this.render = DomBuilder.getInstance().build({
       type: 'i',
       classNames: [
-        'mynah-icon',
-                `mynah-icon-${props.icon}`,
+        'mynah-ui-icon',
+                `mynah-ui-icon-${props.icon}`,
                 ...(props.classNames !== undefined ? props.classNames : []),
       ],
+      children: [ {
+        type: 'span',
+        attributes: {
+          'aria-hidden': 'true'
+        },
+        children: [ props.icon ]
+      } ]
     });
   }
 }

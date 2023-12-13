@@ -1,0 +1,100 @@
+.mynah-chat-item-tree-view-wrapper {
+    margin: 0;
+    margin-block-end: 0 !important;
+    margin-block-start: 0 !important;
+    > .mynah-chat-item-tree-view-wrapper-container {
+        background-color: var(--mynah-card-bg);
+        color: var(--mynah-color-text-default);
+        margin-block-start: 0 !important;
+        margin-block-end: 0 !important;
+        position: relative;
+        border-radius: var(--mynah-card-radius);
+        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+        > .mynah-chat-item-tree-view-wrapper-title {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+            padding: var(--mynah-sizing-3);
+            gap: var(--mynah-sizing-3);
+            border-bottom: var(--mynah-border-width) solid var(--mynah-color-border-default);
+            > h4 {
+                margin: 0;
+            }
+
+            &:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: var(--mynah-color-border-default);
+                opacity: 0.25;
+                pointer-events: none;
+            }
+        }
+        > .mynah-chat-item-tree-view {
+            padding: var(--mynah-sizing-3);
+            overflow: hidden;
+            box-sizing: border-box;
+            width: 100%;
+            overflow-y: hidden;
+            overflow-x: auto;
+        }
+    }
+}
+
+.mynah-chat-item-tree-view-wrapper-label {
+    border-top-left-radius: var(--mynah-card-radius);
+    border-top-right-radius: var(--mynah-card-radius);
+    background-color: var(--mynah-color-alternate);
+    margin-bottom: 0px;
+    padding: var(--mynah-sizing-4);
+}
+
+.mynah-chat-item-tree-view-wrapper-feedback-label {
+    padding-left: var(--mynah-sizing-4);
+}
+
+.mynah-chat-item-tree-view-wrapper-feedback-div {
+    float: right;
+
+    button:first-child {
+        margin-right: var(--mynah-sizing-2);
+    }
+}
+
+.mynah-chat-item-tree-view-license {
+    &:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: var(--mynah-color-button);
+        opacity: 0.07;
+        pointer-events: none;
+    }
+
+    color: var(--mynah-color-text-weak);
+
+    ul {
+        margin: 0;
+        padding-left: var(--mynah-sizing-8);
+        > li {
+            &:not(:first-child) {
+                margin-top: var(--mynah-sizing-2);
+            }
+            .mynah-card-body p {
+                margin: 0;
+            }
+        }
+    }
+
+    .mynah-chat-item-tree-view-license-dropdown-button > span {
+        max-width: unset;
+    }
+}
