@@ -8,6 +8,7 @@ node_modules/**
 **/jest.config.js
 **/webpack.config.js
 dist/**
+docs/**
 out/**
 **/*.d.ts
 LICENSE
