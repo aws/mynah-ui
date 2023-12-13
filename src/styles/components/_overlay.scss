@@ -22,7 +22,7 @@
         }
     }
     > .mynah-overlay-container {
-        --overlayLeftPos: 0;
+        --overlayLeftPos: calc(-1 * var(--mynah-sizing-1));
         --overlayTopPos: 0;
         --overlayInnerHorizontalOrigin: left;
         --overlayInnerVerticalOrigin: top;
@@ -30,6 +30,7 @@
         display: block;
         overflow: visible;
         border-radius: var(--mynah-card-radius);
+        max-width: calc(100vw - var(--mynah-sizing-8))!important;
 
         .mynah-card,
         .mynah-card * {
@@ -127,7 +128,6 @@
             transform-origin: var(--overlayInnerHorizontalOrigin) var(--overlayInnerVerticalOrigin);
             transition: var(--mynah-short-transition-rev);
             width: 100%;
-            // box-shadow: var(--mynah-shadow-overlay);
         }
         &:before {
             transform: translate3d(0, 0, 0) scale(0.85);

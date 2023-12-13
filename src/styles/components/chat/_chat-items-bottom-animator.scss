@@ -4,9 +4,9 @@
     position: absolute;
     overflow: hidden;
     border-bottom-right-radius: var(--mynah-card-radius);
-    bottom: 0; // calc(var(--mynah-sizing-6) + var(--mynah-border-width));
+    bottom: 0;
     left: var(--mynah-border-width);
-    right: var(--mynah-border-width);
+    right: calc(var(--mynah-border-width) + (var(--mynah-card-radius) / 2));
     width: auto;
     height: var(--mynah-sizing-2);
     box-sizing: border-box;

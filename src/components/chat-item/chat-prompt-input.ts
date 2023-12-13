@@ -335,7 +335,7 @@ export class ChatPromptInput {
     const currentInputValue = this.promptTextInput.getTextInputValue();
     if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
       const selectedCodeSnippet: string | undefined = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('selectedCodeSnippet');
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, {
+      const promptData = {
         tabId: this.props.tabId,
         prompt: {
           prompt: currentInputValue + (selectedCodeSnippet ?? ''),
@@ -343,8 +343,9 @@ export class ChatPromptInput {
           ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
           attachment: this.attachment
         }
-      });
+      };
       this.clearTextArea();
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, promptData);
     }
   };
 }

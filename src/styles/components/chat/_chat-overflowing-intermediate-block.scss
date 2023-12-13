@@ -5,7 +5,7 @@
         max-height: 0;
         overflow: visible;
         justify-content: flex-end;
-        > .mynah-chat-stop-chat-response-button {
+        &:not(.hidden) > .mynah-chat-stop-chat-response-button {
             display: inline-flex;
         }
     }
@@ -18,8 +18,8 @@
     justify-content: flex-end;
     align-items: center;
     border-bottom: 1px solid var(--mynah-color-border-default);
-    &.hidden * {
-        display: none;
+    &.hidden > * {
+        display: none !important;
     }
     > .mynah-chat-stop-chat-response-button {
         margin-bottom: var(--mynah-sizing-2);

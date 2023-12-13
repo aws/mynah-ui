@@ -47,7 +47,7 @@ export class ChatWrapper {
         this.chatItemsContainer.clear(true);
       }
     });
-    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('loadingChat', (loadingChat: boolean) => {
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'loadingChat', (loadingChat: boolean) => {
       if (loadingChat) {
         this.render.addClass('loading');
       } else {
@@ -55,7 +55,7 @@ export class ChatWrapper {
       }
     });
 
-    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('cancelButtonWhenLoading', (showCancelButton: boolean) => {
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'cancelButtonWhenLoading', (showCancelButton: boolean) => {
       if (showCancelButton) {
         this.intermediateBlockContainer.removeClass('hidden');
       } else {
@@ -63,9 +63,6 @@ export class ChatWrapper {
       }
     });
 
-    this.promptInput = new ChatPromptInput({ tabId: this.props.tabId });
-    this.promptInputElement = this.promptInput.render;
-    this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-items-container' ],
@@ -73,6 +70,7 @@ export class ChatWrapper {
       children: [],
     });
 
+    this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
     this.intermediateBlockContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-overflowing-intermediate-block',
@@ -92,6 +90,10 @@ export class ChatWrapper {
           : [])
       ]
     });
+    if (Config.getInstance().config.showPromptField) {
+      this.promptInput = new ChatPromptInput({ tabId: this.props.tabId });
+      this.promptInputElement = this.promptInput.render;
+    }
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',

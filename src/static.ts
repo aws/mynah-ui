@@ -54,7 +54,9 @@ export interface MynahUIDataModel {
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
-  // TODO
+  /**
+   * Attached code under the prompt input field
+   */
   selectedCodeSnippet?: string;
 }
 
@@ -284,4 +286,5 @@ export interface ConfigModel {
     value: string;
   }>;
   maxTabs: number;
+  showPromptField: boolean;
 }
