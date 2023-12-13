@@ -287,7 +287,7 @@ export class MynahUI {
   };
 
   /**
-   * Adds a new answer on the chat window
+   * Adds a new item to the chat window
    * @param tabId Corresponding tab ID.
    * @param answer An ChatItem object.
    */
