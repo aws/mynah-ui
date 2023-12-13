@@ -102,7 +102,7 @@ export class MynahUI {
     this.tabContentsWrapper = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-ui-tab-contents-wrapper' ],
-      children: Object.keys(initTabs).map((tabId: string) => {
+      children: Object.keys(initTabs).slice(0, Config.getInstance().config.maxTabs).map((tabId: string) => {
         this.chatWrappers[tabId] = new ChatWrapper({
           tabId,
           onStopChatResponse: props.onStopChatResponse,
@@ -115,15 +115,17 @@ export class MynahUI {
       this.feedbackForm = new FeedbackForm();
     }
 
-    this.tabsWrapper = new Tabs({
-      onChange: (selectedTabId: string) => {
-        if (this.props.onTabChange !== undefined) {
-          this.props.onTabChange(selectedTabId);
+    if (Config.getInstance().config.maxTabs > 1) {
+      this.tabsWrapper = new Tabs({
+        onChange: (selectedTabId: string) => {
+          if (this.props.onTabChange !== undefined) {
+            this.props.onTabChange(selectedTabId);
+          }
         }
-      }
-    }).render;
+      }).render;
 
-    this.tabsWrapper.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
+      this.tabsWrapper.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
+    }
 
     this.wrapper = DomBuilder.getInstance().createPortal(
       MynahPortalNames.WRAPPER,
@@ -133,7 +135,7 @@ export class MynahUI {
           id: 'mynah-wrapper'
         },
         children: [
-          this.tabsWrapper,
+          this.tabsWrapper ?? '',
           this.tabContentsWrapper,
         ]
       },
@@ -279,7 +281,7 @@ export class MynahUI {
   };
 
   public addToUserPrompt = (tabId: string, prompt: string): void => {
-    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+    if (Config.getInstance().config.showPromptField && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].addToPrompt(prompt);
     }
   };

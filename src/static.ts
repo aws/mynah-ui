@@ -286,4 +286,5 @@ export interface ConfigModel {
     value: string;
   }>;
   maxTabs: number;
+  showPromptField: boolean;
 }

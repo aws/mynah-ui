@@ -16,5 +16,10 @@ $smoothduration: 400ms;
     > .mynah-ui-tab-contents-wrapper {
         flex: 1;
         position: relative;
+        &:first-child {
+            > .mynah-chat-wrapper {
+                display: flex;
+            }
+        }
     }
 }

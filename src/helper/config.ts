@@ -7,6 +7,7 @@ import { ConfigModel } from '../static';
 
 const configDefaults: ConfigModel = {
   maxTabs: 1000,
+  showPromptField: true,
   feedbackOptions: [
     {
       value: 'inaccurate-response',

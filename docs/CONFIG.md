@@ -38,7 +38,8 @@ interface ConfigModel {
         label: string;
         value: string;
     }>;
-    maxTabs: number;
+    maxTabs: number; // set 1 to hide tabs panel
+    showPromptField: boolean; // shows prompt field (default: true)
 }
 ...
 ```
@@ -161,3 +162,29 @@ feedbackOptions: [
 Maximum number of tabs user/system can open in a single instance of `mynah-ui`.
 
 default: `1000`
+
+An important note here is that if you provide **`1`** to maxTabs, it will not show the tab bar at all. However you still need to add a tab then initially to show a content.
+
+And finally, if you try to add tabs more than given `maxTabs` amount while initializing the MynahUI with [Constructor Properties](./PROPERTIES.md), it will only generate the tabs till it reaches the `maxTabs` limit.
+
+_Assume that you've provided `1` for `maxTabs`._
+
+
+<p align="center">
+  <img src="./img/maxTabs1.png" alt="maxTabs1" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+<p><br/></p>
+
+# `showPromptField`
+Show or hide the prompt input field completely. You may want to hide the prompt field by setting `showPromptField` to `false` to make the chat work one way only. Just to provide answers or information.
+
+default: `true`
+
+_If you set `showPromptField` to `false`_
+
+<p align="center">
+  <img src="./img/noPrompt.png" alt="noPrompt" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
