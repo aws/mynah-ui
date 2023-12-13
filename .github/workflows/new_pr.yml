@@ -1,4 +1,4 @@
-name: Publish package to NPM
+name: Check Lint, Tests and Build
 on:
   pull_request:
     branches: [main, feature/*, fix/*]
