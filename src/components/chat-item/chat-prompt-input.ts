@@ -109,7 +109,7 @@ export class ChatPromptInput {
         const croppedSelectedCodeSnippet = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
         this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
         // Also update the limit on prompt text given the selected code
-        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, Math.max(MAX_USER_INPUT_THRESHOLD, MAX_USER_INPUT - croppedSelectedCodeSnippet.length)));
+        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length)));
         this.updateAvailableCharactersIndicator();
       }
     });
@@ -335,7 +335,7 @@ export class ChatPromptInput {
     const currentInputValue = this.promptTextInput.getTextInputValue();
     if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
       const selectedCodeSnippet: string | undefined = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('selectedCodeSnippet');
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, {
+      const promptData = {
         tabId: this.props.tabId,
         prompt: {
           prompt: currentInputValue + (selectedCodeSnippet ?? ''),
@@ -343,8 +343,9 @@ export class ChatPromptInput {
           ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
           attachment: this.attachment
         }
-      });
+      };
       this.clearTextArea();
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, promptData);
     }
   };
 }

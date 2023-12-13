@@ -12,7 +12,7 @@ import { Icon, MynahIcons } from '../icon';
 import { Config } from '../../helper/config';
 
 export interface FeedbackFormProps {
-  initPayload?: Partial<FeedbackPayload>;
+  initPayload?: FeedbackPayload;
 }
 export class FeedbackForm {
   private feedbackFormWrapper: ExtendedHTMLElement;
@@ -60,8 +60,8 @@ export class FeedbackForm {
       attributes: { value: Config.getInstance().config.feedbackOptions[0].value },
       classNames: [ 'mynah-feedback-form-select' ],
       events: {
-        change: (e: Event) => {
-          this.feedbackPayload.selectedOption = (e.target as HTMLSelectElement).selectedOptions[0].value;
+        change: () => {
+          this.feedbackPayload.selectedOption = this.feedbackSelect.value;
         }
       },
       children:
