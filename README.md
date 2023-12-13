@@ -15,7 +15,9 @@ Please continue with one of the following guides:
 ### [Data Model](./docs/DATAMODEL.md)
 ### [Styling Configuration](./docs/STYLING.md)
 
-
+<p align="center">
+  <img src="./docs/img/splash.gif" alt="MynahUI" style="max-width:1024px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ## Supported browsers
 **Mynah UI** <em>-because of it's extensive css structure-</em> only supports ever-green browsers including webkit based WebUI renderers.
