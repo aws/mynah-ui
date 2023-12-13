@@ -1,7 +1,7 @@
 import { MynahUIGlobalEvents } from '../../../helper/events';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
 import { MynahEventNames } from '../../../static';
-import { ChatPromptInput } from '../../chat-item/chat-prompt-input';
+import { ChatPromptInput, MAX_USER_INPUT, MAX_USER_INPUT_THRESHOLD } from '../../chat-item/chat-prompt-input';
 
 describe('chat-prompt-input', () => {
   it('render', () => {
@@ -80,10 +80,14 @@ describe('chat-prompt-input', () => {
     expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe('3999/4000');
 
     // Code snippet should change the remaining character count
+    const textToAdd = "console.log('hello')";
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, {
       tabId: testTabId,
-      textToAdd: "console.log('hello')",
+      textToAdd
     });
-    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe('3979/4000');
+
+    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${
+      Math.min(MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD - textToAdd.length, MAX_USER_INPUT) - textareaElement.value.length
+    }/4000`);
   });
 });

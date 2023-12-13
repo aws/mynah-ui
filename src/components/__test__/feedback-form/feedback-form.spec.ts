@@ -12,6 +12,8 @@ describe('feedback form', () => {
       initPayload: {
         selectedOption: 'buggy-code',
         comment: 'test comment',
+        messageId: 'test-message-id',
+        tabId: 'test-tab-id',
       }
     });
 
@@ -44,6 +46,8 @@ describe('feedback form', () => {
       initPayload: {
         selectedOption: 'buggy-code',
         comment: 'test comment',
+        messageId: 'test-message-id',
+        tabId: 'test-tab-id',
       }
     });
 
