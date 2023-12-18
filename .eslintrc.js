@@ -18,6 +18,8 @@ module.exports = {
     "prettier"
   ],
   "rules": {
+    "no-case-declarations": "off",
+    "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/semi": [
       2,
       "always"

@@ -156,8 +156,8 @@ export class CardBody {
             recommendationContentSpan: {
               start: startIndex,
               end: startIndex + (
-                (originalRefTrackerInfo?.recommendationContentSpan.end ?? 0) -
-                (originalRefTrackerInfo?.recommendationContentSpan.start ?? 0))
+                (originalRefTrackerInfo?.recommendationContentSpan?.end ?? 0) -
+                (originalRefTrackerInfo?.recommendationContentSpan?.start ?? 0))
             }
           };
         }) as ReferenceTrackerInformation[];
@@ -205,7 +205,7 @@ export class CardBody {
     let incomingBody = props.body;
     if (props.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
       props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
-        if (incomingBody !== undefined) {
+        if (incomingBody !== undefined && highlightRangeWithTooltip.recommendationContentSpan !== undefined) {
           const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttributes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
           let calculatedStartIndex = (highlightRangeWithTooltip.recommendationContentSpan.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
           let calculatedEndIndex = (calculatedStartIndex + generatedStartMarkup.length - highlightRangeWithTooltip.recommendationContentSpan.start) + highlightRangeWithTooltip.recommendationContentSpan.end;

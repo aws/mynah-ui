@@ -156,7 +156,6 @@ export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
-  attachment?: SourceLink;
 }
 
 export interface ChatItemFollowUp extends ChatPrompt {
@@ -195,7 +194,7 @@ export interface ReferenceTrackerInformation {
   licenseName?: string;
   repository?: string;
   url?: string;
-  recommendationContentSpan: {
+  recommendationContentSpan?: {
     start: number;
     end: number;
   };
