@@ -351,7 +351,7 @@ export class MynahUI {
   }): void => {
     new Notification({
       ...props,
-      onNotificationClick: () => {},
+      onNotificationClick: props.onNotificationClick ?? (() => {}),
     }).notify();
   };
 }
