@@ -10,7 +10,7 @@ export class Connector {
     onStreamUpdate: (chatItem: Partial<ChatItem>) => void,
     onStreamEnd: (chatItem: ChatItem) => void
   ): Promise<ChatItem> => await new Promise((resolve, reject) => {
-    Log(`Simulating server answer for prompt "${(prompt.prompt ?? '').substring(0, 100)}"`);
+    Log(`Simulating server response for prompt "${(prompt.prompt ?? '').substring(0, 100)}"`);
     setTimeout(() => {
       resolve({
         type: ChatItemType.ANSWER_STREAM,
