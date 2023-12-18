@@ -8,8 +8,11 @@ node_modules/**
 **/jest.config.js
 **/webpack.config.js
 dist/**
+example/dist/**
+example/src/index.html
 docs/**
 out/**
+*.config.js
 **/*.d.ts
 LICENSE
 THIRD-PARTY-LICENSES
