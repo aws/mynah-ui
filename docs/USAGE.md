@@ -19,6 +19,7 @@ mynahUI.getSelectedTabId();
 mynahUI.notify(...);
 mynahUI.updateLastChatAnswer(...);
 mynahUI.updateStore(...);
+mynahUI.getAllTabs(...);
 ```
 
 <p><br/></p>
@@ -323,3 +324,13 @@ mynahUI.notify({
 
 To see the different notification types and how they look **please refer to the [Data Model](./DATAMODEL.md) documentation for details of the `NotificationProps`**
 
+---
+
+## Getting all tabs with their store data (`getAllTabs`)
+
+You can get all tabs and their latest updated store data. Do not use this function to handle the data. This function aims to help you wit your test scenarios which you can grab the data and do your comparisons.
+
+```typescript
+mynahUI.getAllTabs();
+// returns an object map of tabIds and their store data.
+```
