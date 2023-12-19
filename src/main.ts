@@ -338,6 +338,12 @@ export class MynahUI {
   };
 
   /**
+   * Returns all tabs with their store information
+   * @returns string selectedTabId or undefined
+   */
+  public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
+
+  /**
    * Simply creates and shows a notification
    * @param props NotificationProps
    */

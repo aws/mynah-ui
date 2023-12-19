@@ -187,7 +187,13 @@ export class MynahUITabsStore {
    * @param tabId Tab Id
    * @returns info of the tab
    */
-  public getAllTabs = (): MynahUITabStoreModel => structuredClone(this.tabsStore);
+  public getAllTabs = (): MynahUITabStoreModel => {
+    const clonedTabs = structuredClone(this.tabsStore) as MynahUITabStoreModel;
+    Object.keys(clonedTabs).forEach(tabId => {
+      clonedTabs[tabId].store = structuredClone(this.getTabDataStore(tabId).getStore()) ?? {};
+    });
+    return clonedTabs;
+  };
 
   /**
    * Returns the data store of the tab

@@ -21,9 +21,10 @@
 		],
 		"strictPropertyInitialization": false,
 	},
-	// "include": ["src/**/*.d.ts", "./.eslintrc.js"],
 	"exclude": [
 		"dist",
-		"node_modules"
+		"node_modules",
+		"docs",
+		"example"
 	]
 }

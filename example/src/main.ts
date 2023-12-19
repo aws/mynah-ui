@@ -120,13 +120,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               type: ChatItemType.PROMPT,
               messageId: new Date().getTime().toString(),
               body: `**${prompt.command.replace('/', '')}**\n${prompt.escapedPrompt as string}`,
-              ...(prompt.attachment !== undefined
-                ? {
-                    relatedContent: {
-                      content: [ prompt.attachment ]
-                    }
-                  }
-                : {})
             });
             getGenerativeAIAnswer(tabId, prompt);
             break;
