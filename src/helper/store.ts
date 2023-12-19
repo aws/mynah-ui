@@ -56,6 +56,11 @@ export class MynahUIDataStore {
   public getDefaults = (): MynahUIDataModel | null => this.defaults;
 
   /**
+   * Get the current store data
+   */
+  public getStore = (): MynahUIDataModel | null => this.store;
+
+  /**
    * Subscribe to value changes of a specific item in data store
    * @param storeKey One of the keys in MynahUIDataModel
    * @param handler function will be called when value of the given key is updated in store with new and old values

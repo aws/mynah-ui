@@ -252,6 +252,19 @@ export class ChatItemCard {
           ...updateWith,
         };
 
+        // Update item inside the store
+        if (this.props.chatItem.messageId !== undefined) {
+          const currentTabChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId)?.getStore()?.chatItems;
+          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+            chatItems: currentTabChatItems?.map((chatItem: ChatItem) => {
+              if (chatItem.messageId === this.props.chatItem.messageId) {
+                return this.props.chatItem;
+              }
+              return chatItem;
+            })
+          }, true);
+        }
+
         const newCardContent = this.getCardContent();
         const upcomingWords = Array.from(this.contentBody.render.querySelectorAll('.typewriter-part'));
         for (let i = 0; i < upcomingWords.length; i++) {
