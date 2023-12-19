@@ -27,7 +27,7 @@ const config = {
       { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
       {
         test: /\.ts$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/, /.\/example/],
         use: [
           {
             loader: 'ts-loader',

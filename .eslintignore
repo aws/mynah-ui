@@ -8,8 +8,7 @@ node_modules/**
 **/jest.config.js
 **/webpack.config.js
 dist/**
-example/dist/**
-example/src/index.html
+example/**
 docs/**
 out/**
 *.config.js
