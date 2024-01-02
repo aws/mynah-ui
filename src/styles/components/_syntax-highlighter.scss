@@ -118,10 +118,11 @@
             font-size: var(--mynah-syntax-code-font-size) !important;
             font-family: var(--mynah-syntax-code-font-family) !important;
         }
-        > code {
+        code {
             color: var(--mynah-color-syntax-code);
             filter: brightness(0.95);
             white-space: pre;
+            background-color: inherit;
         }
 
         > code,
