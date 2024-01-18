@@ -198,14 +198,6 @@ export class ChatItemCard {
                         followUpOption: chatBodyAction,
                         onClick: (clickedAction: ChatItemAction) => {
                           this.render.remove();
-                          /* const filteredChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId)
-                            .getValue('chatItems')
-                            .filter((chatItem: ChatItem) => chatItem.messageId !== this.props.chatItem.messageId);
-
-                          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-                            chatItems: [ ...filteredChatItems ]
-                          }, true); */
-
                           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                             tabId: this.props.tabId,
                             messageId: this.props.chatItem.messageId,
