@@ -6,6 +6,7 @@ export const WelcomeMessage = 'Hi, this is `MynahUI`. It is a data and event dri
 export enum Commands {
   INSERT_CODE = '/insert-dummy-code',
   COMMAND_WITH_PROMPT = '/with-prompt',
+  EXTENDED_CARDS = '/extended-cards',
   NOTIFY = '/show-notification',
   CLEAR = '/clear',
   CLEAR_LOGS = '/clear-logs',
@@ -27,6 +28,10 @@ export const QuickActionCommands = [
         command: Commands.COMMAND_WITH_PROMPT,
         placeholder: 'Enter your prompt',
         description: 'You can write a prompt after selecting this command.',
+      },
+      {
+        command: Commands.EXTENDED_CARDS,
+        description: 'See a different example with more features!',
       },
       {
         command: Commands.NOTIFY,

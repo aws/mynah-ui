@@ -22,7 +22,11 @@ export interface MynahUIProps {
   onFollowUpClicked?: (
     tabId: string,
     messageId: string,
-    followUp: ChatItemFollowUp) => void;
+    followUp: ChatItemAction) => void;
+  onBodyActionClicked?: (
+    tabId: string,
+    messageId: string,
+    followUp: ChatItemAction) => void;
   onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
   onTabRemove?: (tabId: string) => void;
@@ -311,7 +315,7 @@ This event will be fired when user selects one of the available followups. It wi
 
 **Important note:** Followup texts show up at most 40 chars in the followup pill. If the length is more than 40 chars it will pop up a tooltip to show the rest of the text. However, it will not break the `description` to show up as a tooltip, instead if there is also the `description` attribute, it will append that to a new line in the tooltip.
 
-_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatItemFollowUp` object type._
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatItemAction` object type._
 
 <p align="center">
   <img src="./img/onFollowupClicked.png" alt="onFollowUpClicked" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
@@ -322,11 +326,41 @@ _Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatI
 onFollowUpClicked?: (
     tabId: string,
     messageId: string,
-    followUp: ChatItemFollowUp):void => {
+    followUp: ChatItemAction):void => {
       console.log(`Sent from tab: ${tabId}`);
       console.log(`For the message: ${messageId}`);
       console.log(`Followup type (free text): ${followUp.type}`);
       console.log(`Followup text (visible on screen): ${followUp.pillText}`);
+    };
+...
+```
+
+---
+
+### `onBodyActionClicked`
+
+This event will be fired when user selects one of the available followups. It will pass `tabId`, `messageId` and the clicked `followUp` object as arguments.
+
+**Important note:** If the clicked followup item contains `prompt` attribute, MynahUI will automatically add the `ChatItem` to the chat stack and will render it as a user prompt chat bubble with the `prompt` attributes text (on the right side). If you want to avoid this and manually control what will be added as a chat item or not adding anything at all after the selection of the followup, leave the `prompt` attribute undefined.
+
+**Important note:** Followup texts show up at most 40 chars in the followup pill. If the length is more than 40 chars it will pop up a tooltip to show the rest of the text. However, it will not break the `description` to show up as a tooltip, instead if there is also the `description` attribute, it will append that to a new line in the tooltip.
+
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatItemAction` object type._
+
+<p align="center">
+  <img src="./img/onBodyActionClicked.png" alt="onBodyActionClicked" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onBodyActionClicked?: (
+    tabId: string,
+    messageId: string,
+    action: ChatItemAction):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`For the message: ${messageId}`);
+      console.log(`Action type (free text): ${action.type}`);
+      console.log(`Action text (visible on screen): ${action.pillText}`);
     };
 ...
 ```

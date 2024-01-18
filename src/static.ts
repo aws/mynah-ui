@@ -90,6 +90,7 @@ export enum MynahEventNames {
   CHAT_PROMPT = 'chatPrompt',
   CHAT_ITEM_ADD = 'chatItemAdd',
   FOLLOW_UP_CLICKED = 'followUpClicked',
+  BODY_ACTION_CLICKED = 'bodyActionClicked',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   OPEN_DIFF = 'openDiff',
@@ -139,7 +140,7 @@ export interface ChatItem {
   canBeVoted?: boolean;
   followUp?: {
     text?: string;
-    options?: ChatItemFollowUp[];
+    options?: ChatItemAction[];
   };
   relatedContent?: {
     title?: string;
@@ -150,6 +151,9 @@ export interface ChatItem {
     filePaths?: string[];
     deletedFiles?: string[];
   };
+  icon?: MynahIcons;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  actions?: ChatItemAction[];
 }
 
 export interface ChatPrompt {
@@ -158,7 +162,7 @@ export interface ChatPrompt {
   command?: string;
 }
 
-export interface ChatItemFollowUp extends ChatPrompt {
+export interface ChatItemAction extends ChatPrompt {
   type?: string;
   pillText: string;
   disabled?: boolean;

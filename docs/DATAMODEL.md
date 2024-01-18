@@ -339,8 +339,11 @@ interface ChatItem {
   };
   followUp?: {
     text?: string;
-    options?: ChatItemFollowUp[];
+    options?: ChatItemAction[];
   };
+  actions?: ChatItemAction[];
+  status?: 'error' | 'success' | 'warning' | 'info';
+  icon?: MynahIcons;
   codeReference?: ReferenceTrackerInformation[];
 }
 ```
@@ -596,7 +599,7 @@ mynahUI.addChatItem('tab-1', {
 ---
 
 ## `relatedContent`
-It allow you to show some related links under the body of the chat item. It shows one item and if you provided more user can expand the list with the show more button. 
+It allows you to show some related links under the body of the chat item. It shows one item and if you provided more user can expand the list with the show more button. 
 
 If you also provide a markdown body for the source link, it will generate a tooltip to show more details for it.
 
@@ -648,13 +651,121 @@ mynahUI.addChatItem('tab-1', {
 
 ---
 
+## `actions`
+It allows you to add actions inside the card. **BUT, beware that when those actions are clicked, they will remove the card they are in.**. 
+
+See the example below.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: `This is an extended card with icon, a different border color and some buttons.`,
+    status: 'info',
+    icon: MynahIcons.INFO,
+    actions: [
+    {
+        pillText: 'Acknowledge',
+        status: 'info',
+        icon: MynahIcons.OK
+    },
+    ],
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/actions-icon-status.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `status`
+It allows you to set the border color of the card. 
+
+See the example below.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: `This is an extended card with icon, a different border color and some buttons.`,
+    status: 'info',
+    icon: MynahIcons.INFO,
+    actions: [
+    {
+        pillText: 'Acknowledge',
+        status: 'info',
+        icon: MynahIcons.OK
+    },
+    ],
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/actions-icon-status.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `icon`
+It allows you to set an icon on the left top corner of the card. You should use one from `MynahIcons`. 
+
+See the example below.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: `This is an extended card with icon, a different border color and some buttons.`,
+    status: 'info',
+    icon: MynahIcons.INFO,
+    actions: [
+    {
+        pillText: 'Acknowledge',
+        status: 'info',
+        icon: MynahIcons.OK
+    },
+    ],
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/actions-icon-status.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
 ## `followUp`
 Followups allows you to add predefined direct triggers for the user for ease of use. Instead of typing a followup question, they can select from the provided ones. But you can also use them to get user input some from multiple choice options before going further for example. 
 
 Here's the model for the `options` attribute for the `followUp`.
 
 ```typescript
-interface ChatItemFollowUp {
+interface ChatItemAction {
   type?: string;
   pillText: string;
   prompt?: string;

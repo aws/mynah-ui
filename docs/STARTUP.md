@@ -25,6 +25,7 @@ const mynahUI = new MynahUI({
     onResetStore: ...,
     onChatPrompt: ...,
     onFollowUpClicked: ...,
+    onBodyActionClicked: ...,
     onTabChange: ...,
     onTabAdd: ...,
     onTabRemove: ...,

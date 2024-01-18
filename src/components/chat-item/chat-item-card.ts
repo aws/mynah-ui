@@ -6,7 +6,7 @@
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
+import { ChatItem, ChatItemAction, ChatItemType, MynahEventNames } from '../../static';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
@@ -16,6 +16,7 @@ import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { Config } from '../../helper/config';
 import { generateUID } from '../../helper/guid';
+import { ChatItemFollowUpOption } from './chat-item-followup-option';
 
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardProps {
@@ -94,6 +95,8 @@ export class ChatItemCard {
       this.props.chatItem.relatedContent === undefined &&
       this.props.chatItem.type === ChatItemType.ANSWER;
     return [
+      ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
+      `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
       'mynah-chat-item-card',
       `mynah-chat-item-${this.props.chatItem.type ?? ChatItemType.ANSWER}`,
       ...(isChatItemEmpty ? [ 'mynah-chat-item-empty' ] : []),
@@ -117,6 +120,11 @@ export class ChatItemCard {
                 });
               },
               children: [
+                ...(this.props.chatItem.icon !== undefined
+                  ? [
+                      new Icon({ icon: this.props.chatItem.icon, classNames: [ 'mynah-chat-item-card-icon' ] }).render
+                    ]
+                  : []),
                 ((): ExtendedHTMLElement => {
                   const commonBodyProps = {
                     body: this.props.chatItem.body ?? '',
@@ -182,6 +190,31 @@ export class ChatItemCard {
                   }
                   return this.contentBody.render;
                 })(),
+                ...(this.props.chatItem.actions !== undefined
+                  ? [ DomBuilder.getInstance().build({
+                      type: 'div',
+                      classNames: [ 'mynah-chat-item-actions-container' ],
+                      children: this.props.chatItem.actions.map(chatBodyAction => new ChatItemFollowUpOption({
+                        followUpOption: chatBodyAction,
+                        onClick: (clickedAction: ChatItemAction) => {
+                          this.render.remove();
+                          /* const filteredChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId)
+                            .getValue('chatItems')
+                            .filter((chatItem: ChatItem) => chatItem.messageId !== this.props.chatItem.messageId);
+
+                          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+                            chatItems: [ ...filteredChatItems ]
+                          }, true); */
+
+                          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                            tabId: this.props.tabId,
+                            messageId: this.props.chatItem.messageId,
+                            followUpOption: clickedAction
+                          });
+                        }
+                      }).render)
+                    }) ]
+                  : []),
                 ...(this.props.chatItem.canBeVoted === true && this.props.chatItem.messageId !== undefined
                   ? [ new ChatItemRelevanceVote({ tabId: this.props.tabId, messageId: this.props.chatItem.messageId }).render ]
                   : []),

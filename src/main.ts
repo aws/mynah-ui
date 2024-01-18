@@ -13,7 +13,7 @@ import {
   MynahEventNames,
   NotificationType,
   ChatItem,
-  ChatItemFollowUp,
+  ChatItemAction,
   ChatPrompt,
   MynahUITabStoreModel,
   MynahUITabStoreTab,
@@ -39,7 +39,7 @@ export {
   MynahUIDataModel,
   NotificationType,
   ChatItem,
-  ChatItemFollowUp,
+  ChatItemAction,
   ChatItemType,
   ChatPrompt,
   SourceLink
@@ -62,7 +62,8 @@ export interface MynahUIProps {
   onStopChatResponse?: (tabId: string) => void;
   onResetStore?: (tabId: string) => void;
   onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
-  onFollowUpClicked?: (tabId: string, messageId: string, followUp: ChatItemFollowUp) => void;
+  onFollowUpClicked?: (tabId: string, messageId: string, followUp: ChatItemAction) => void;
+  onBodyActionClicked?: (tabId: string, messageId: string, action: ChatItemAction) => void;
   onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
   onTabRemove?: (tabId: string) => void;
@@ -177,10 +178,20 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: {
       tabId: string;
       messageId: string;
-      followUpOption: ChatItemFollowUp;
+      followUpOption: ChatItemAction;
     }) => {
       if (this.props.onFollowUpClicked !== undefined) {
         this.props.onFollowUpClicked(data.tabId, data.messageId, data.followUpOption);
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.BODY_ACTION_CLICKED, (data: {
+      tabId: string;
+      messageId: string;
+      followUpOption: ChatItemAction;
+    }) => {
+      if (this.props.onBodyActionClicked !== undefined) {
+        this.props.onBodyActionClicked(data.tabId, data.messageId, data.followUpOption);
       }
     });
 

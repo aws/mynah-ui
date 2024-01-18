@@ -7,9 +7,10 @@ import {
   RelevancyVoteType,
   ChatItemType,
   FeedbackPayload,
-  ChatItemFollowUp,
+  ChatItemAction,
   NotificationType,
   ChatItem,
+  MynahIcons,
 } from '@aws/mynah-ui';
 import './styles/styles.scss';
 import { Commands, mynahUIDefaults } from './config';
@@ -104,6 +105,57 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               }
             });
             break;
+          case Commands.EXTENDED_CARDS:
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `This is an extended card with an icon and a different border color. It also includes some action buttons.
+              But beware that these action buttons will remove the card itself when they are clicked!`,
+              status: 'error',
+              icon: MynahIcons.ERROR,
+              actions: [
+                {
+                  pillText: 'I Understand',
+                  status: 'error',
+                  icon: MynahIcons.OK
+                },
+              ],
+            });
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `This is an extended card with an icon and a different border color. Including some action buttons.`,
+              status: 'info',
+              icon: MynahIcons.INFO,
+              actions: [
+                {
+                  pillText: 'Acknowledge',
+                  status: 'info',
+                  icon: MynahIcons.OK
+                },
+              ],
+            });
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `This is an extended card with an icon and a different border color. Including some action buttons.`,
+              status: 'warning',
+              icon: MynahIcons.WARNING,
+            });
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `You're doing very good. Awesome work mate!`,
+              status: 'success',
+              icon: MynahIcons.THUMBS_UP,
+              actions: [
+                {
+                  pillText: 'Yay!',
+                  status: 'success'
+                },
+              ],
+            });
+            break;
           case Commands.COMMAND_WITH_PROMPT:
             const realPromptText = prompt.escapedPrompt?.trim() ?? '';
             mynahUI.addChatItem(tabId, {
@@ -136,7 +188,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onStopChatResponse: (tabId: string) => {
       Log(`Stop generating clicked: <b>${tabId}</b>`);
     },
-    onFollowUpClicked: (tabId: string, messageId: string, followUp: ChatItemFollowUp) => {
+    onFollowUpClicked: (tabId: string, messageId: string, followUp: ChatItemAction) => {
       Log(`Followup click: <b>${followUp.pillText}</b>`);
       if (followUp.prompt !== undefined) {
         mynahUI.addChatItem(tabId, {
@@ -157,6 +209,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             break;
         }
       }
+    },
+    onBodyActionClicked: (tabId: string, messageId: string, action: ChatItemAction) => {
+      Log(`Body action click: <b>${action.pillText}</b>`);
     },
     onVote: (tabId: string, messageId: string, vote: RelevancyVoteType) => {
       Log(`Message <b>${messageId}</b> is <b>${vote}d</b>.`);
@@ -199,8 +254,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
         mynahUI.addChatItem(tabId, chatItem);
       }).then(chatItem => {
-      mynahUI.addChatItem(tabId, chatItem);
-    });
+        mynahUI.addChatItem(tabId, chatItem);
+      });
   };
 
   /**
