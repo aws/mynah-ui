@@ -368,9 +368,9 @@ onInBodyButtonClicked?: (
     action):void => {
       console.log(`Sent from tab: ${tabId}`);
       console.log(`For the message: ${messageId}`);
-      console.log(`Action type (free text): ${action.id}`);
-      console.log(`Action text (visible on screen): ${action.text}`);
-      console.log(`Action text (visible on screen): ${JSON.stringify(action.formItemValues)}`);
+      console.log(`Action id: ${action.id}`);
+      console.log(`Action text: ${action.text ?? ''}`);
+      console.log(`Form item values: ${JSON.stringify(action.formItemValues ?? {})}`);
     };
 ...
 ```
