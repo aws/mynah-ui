@@ -23,10 +23,11 @@ export interface MynahUIProps {
     tabId: string,
     messageId: string,
     followUp: ChatItemAction) => void;
-  onBodyActionClicked?: (
-    tabId: string,
-    messageId: string,
-    followUp: ChatItemAction) => void;
+  onInBodyButtonClicked?: (tabId: string, messageId: string, action: {
+    id: string;
+    text?: string;
+    formItemValues?: Record<string, string>;
+  }) => void;
   onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
   onTabRemove?: (tabId: string) => void;
@@ -337,15 +338,23 @@ onFollowUpClicked?: (
 
 ---
 
-### `onBodyActionClicked`
+### `onInBodyButtonClicked`
 
-This event will be fired when user selects one of the available followups. It will pass `tabId`, `messageId` and the clicked `followUp` object as arguments.
+This event will be fired when user clicks one of the available followups.
 
-**Important note:** If the clicked followup item contains `prompt` attribute, MynahUI will automatically add the `ChatItem` to the chat stack and will render it as a user prompt chat bubble with the `prompt` attributes text (on the right side). If you want to avoid this and manually control what will be added as a chat item or not adding anything at all after the selection of the followup, leave the `prompt` attribute undefined.
+It will pass you the `tabId`, `messageId` and information about the clicked `action`.
 
-**Important note:** Followup texts show up at most 40 chars in the followup pill. If the length is more than 40 chars it will pop up a tooltip to show the rest of the text. However, it will not break the `description` to show up as a tooltip, instead if there is also the `description` attribute, it will append that to a new line in the tooltip.
+And the last argument `action` will contain:
+```
+id: string; // Id of the action clicked
+text?: string; // Label text of the action
+formItemValues?: Record<string, string>; // Form item values if you add any using the formItems
+```
+Please refer to [formItems](./DATAMODEL.md#formItems) for combining actions and form items in a card.
 
-_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatItemAction` object type._
+**Important note:** If you clicked an action item which doesn't have the value `true` for `keepCardAfterClick` attribute, that click will remove the whole card. Otherwise it will disable all the actions and the form items inside that card.
+
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatItemButton` object type._
 
 <p align="center">
   <img src="./img/onBodyActionClicked.png" alt="onBodyActionClicked" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
@@ -353,14 +362,15 @@ _Please refer to the [data model](./DATAMODEL.md) to learn more about the `ChatI
 
 ```typescript
 ...
-onBodyActionClicked?: (
+onInBodyButtonClicked?: (
     tabId: string,
     messageId: string,
-    action: ChatItemAction):void => {
+    action):void => {
       console.log(`Sent from tab: ${tabId}`);
       console.log(`For the message: ${messageId}`);
-      console.log(`Action type (free text): ${action.type}`);
-      console.log(`Action text (visible on screen): ${action.pillText}`);
+      console.log(`Action type (free text): ${action.id}`);
+      console.log(`Action text (visible on screen): ${action.text}`);
+      console.log(`Action text (visible on screen): ${JSON.stringify(action.formItemValues)}`);
     };
 ...
 ```

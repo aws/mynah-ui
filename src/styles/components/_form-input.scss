@@ -1,0 +1,37 @@
+.mynah-form-input-wrapper {
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    gap: var(--mynah-sizing-3);
+    flex-flow: column nowrap;
+    .mynah-form-input-container {
+        position: relative;
+        display: flex;
+        box-sizing: border-box;
+        justify-content: flex-end;
+        align-items: center;
+        > .mynah-form-input {
+            width: 100%;
+            left: 0;
+            color: var(--mynah-color-text-default);
+            border-radius: var(--mynah-card-radius);
+            padding: var(--mynah-sizing-3);
+            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+            background-color: var(--mynah-card-bg);
+            -webkit-appearance: none;
+            appearance: none;
+            text-indent: 1px;
+            text-overflow: clip;
+            outline: none;
+            &:disabled{
+                opacity: 0.5;
+            }
+        }
+        > .mynah-select-handle {
+            position: absolute;
+            color: var(--mynah-color-text-weak);
+            pointer-events: none;
+            transform: translateX(-100%);
+        }
+    }
+}

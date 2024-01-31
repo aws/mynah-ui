@@ -178,11 +178,19 @@
                 box-shadow: var(--mynah-shadow-card) !important;
             }
 
-            > .mynah-chat-item-actions-container {
+            > .mynah-chat-item-form-items-container {
+                display: flex;
+                flex-flow: column nowrap;
+                gap: var(--mynah-sizing-3);
+                overflow: hidden;
+                padding-bottom: var(--mynah-sizing-1);
+            }
+            > .mynah-chat-item-buttons-container {
                 display: flex;
                 flex-flow: row wrap;
                 gap: var(--mynah-sizing-2);
                 overflow: hidden;
+                padding-bottom: var(--mynah-sizing-1);
             }
         }
 

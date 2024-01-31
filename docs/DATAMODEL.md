@@ -341,7 +341,8 @@ interface ChatItem {
     text?: string;
     options?: ChatItemAction[];
   };
-  actions?: ChatItemAction[];
+  buttons?: ChatItemButton[];
+  formItems?: ChatItemFormItem[];
   status?: 'error' | 'success' | 'warning' | 'info';
   icon?: MynahIcons;
   codeReference?: ReferenceTrackerInformation[];
@@ -651,8 +652,8 @@ mynahUI.addChatItem('tab-1', {
 
 ---
 
-## `actions`
-It allows you to add actions inside the card. **BUT, beware that when those actions are clicked, they will remove the card they are in.**. 
+## `buttons`
+It allows you to add actions inside a chat item card. **BUT, beware that when those actions are clicked if you don't set the `keepCardAfterClick` to true, they will remove the card they are in.**. And when you set the `keepCardAfterClick` to true, any of those action clicks will disable all the [`formItems`](#formItems) form elements and the actions (including the clicked one).
 
 See the example below.
 
@@ -668,27 +669,119 @@ const mynahUI = new MynahUI({
 mynahUI.addChatItem(tabId, {
     type: ChatItemType.ANSWER,
     messageId: new Date().getTime().toString(),
-    body: `This is an extended card with icon, a different border color and some buttons.`,
-    status: 'info',
-    icon: MynahIcons.INFO,
-    actions: [
+    body: `This is a card with actions inside!`,
+    buttons: [
     {
-        pillText: 'Acknowledge',
+        text: 'Action 1',
+        id: 'action-1',
         status: 'info',
-        icon: MynahIcons.OK
+        icon: MynahIcons.CHAT
+    },
+    {
+        text: 'Action 2',
+        description: 'This action will not remove the card!',
+        id: 'action-2',
+        keepCardAfterClick: true,
+    },
+    {
+        text: 'Action 3',
+        description: 'This is disabled for some reason!',
+        id: 'action-3',
+        disabled: true,
     },
     ],
 });
 ```
 
 <p align="center">
-  <img src="./img/data-model/actions-icon-status.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/chatItems/actions.png" alt="buttons" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `formItems`
+It allows you to add some form elements inside a chat item card. Currently it only supports `textarea` and `select` components. You need to use [`buttons`](#buttons) to get the values set by the user for those options.
+
+Since you can give unlimited form items with two different types, you need to set specific parameters to select each type.
+
+To add a `textarea`, you need to set `input` attribute to any string (leave it `''` if you don't want to give an initial value).
+
+To add a `select`, you need to set `options` with an array  of `{label:string, value:string}` pair.
+
+**NOTE**: If you set both the `options` and the `input` attributes, it will only use the `options` and generate a `select` component. If you need both, please add them separately to the `formItems` of the `ChatItem`.
+
+See a more detailed example below.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: `Hi! I have identified your project to be in **Java8**. Your project is _eligible for upgrade_. Please specify the following information to trigger the transformation job!`,
+    formItems: [
+        {
+            id: 'module',
+            title: `Please select the module you're currently using`,
+            options: [{
+            label: 'Module 1',
+            value: 'module-1'
+            },
+            {
+            label: 'Module 2',
+            value: 'module-2'
+            }]
+        },
+        {
+            id: 'version',
+            title: `Please select the target version`,
+            options: [{
+                label: 'JDK17',
+                value: 'jdk17'
+            },
+            {
+                label: 'JDK18',
+                value: 'jdk18'
+            }]
+        },
+        {
+            id: 'instructions',
+            title: `Any other instructions (optional)`,
+            input: ''
+        }
+        ],
+        buttons: [
+        {
+            id: 'accept-transform',
+            keepCardAfterClick: true,
+            text: 'Transform',
+            status: 'info',
+        },
+        {
+            id: 'cancel-transform',
+            text: 'Cancel',
+            keepCardAfterClick: true,
+        }
+    ],
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/options.png" alt="formItems" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
 
 ## `status`
-It allows you to set the border color of the card. 
+It allows you to set the border color of the card. Currently you can select one of the below status types: 
+
+`success`, `info`, `error`, `warning`
 
 See the example below.
 
@@ -704,21 +797,13 @@ const mynahUI = new MynahUI({
 mynahUI.addChatItem(tabId, {
     type: ChatItemType.ANSWER,
     messageId: new Date().getTime().toString(),
-    body: `This is an extended card with icon, a different border color and some buttons.`,
-    status: 'info',
-    icon: MynahIcons.INFO,
-    actions: [
-    {
-        pillText: 'Acknowledge',
-        status: 'info',
-        icon: MynahIcons.OK
-    },
-    ],
+    body: `This is a card with status indication border!`,
+    status: 'success',
 });
 ```
 
 <p align="center">
-  <img src="./img/data-model/actions-icon-status.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/chatItems/status.png" alt="status" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -737,24 +822,26 @@ const mynahUI = new MynahUI({
     }
 });
 
+// Just the icon
 mynahUI.addChatItem(tabId, {
     type: ChatItemType.ANSWER,
     messageId: new Date().getTime().toString(),
-    body: `This is an extended card with icon, a different border color and some buttons.`,
+    body: `This is a card with an icon!`,
+    icon: MynahIcons.CHAT,
+});
+
+// Icon with status
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: `This is a card with an icon and a status!`,
     status: 'info',
-    icon: MynahIcons.INFO,
-    actions: [
-    {
-        pillText: 'Acknowledge',
-        status: 'info',
-        icon: MynahIcons.OK
-    },
-    ],
+    icon: MynahIcons.CHAT,
 });
 ```
 
 <p align="center">
-  <img src="./img/data-model/actions-icon-status.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/chatItems/icon.png" alt="icon" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

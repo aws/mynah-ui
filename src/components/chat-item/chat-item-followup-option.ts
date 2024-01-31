@@ -113,4 +113,12 @@ export class ChatItemFollowUpOption {
       this.followupTooltip = null;
     }
   };
+
+  public readonly setEnabled = (enabled: boolean): void => {
+    if (enabled) {
+      this.render.removeClass('mynah-chat-item-followup-question-option-disabled');
+    } else {
+      this.render.addClass('mynah-chat-item-followup-question-option-disabled');
+    }
+  };
 }

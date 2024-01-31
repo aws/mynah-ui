@@ -7,6 +7,7 @@ export enum Commands {
   INSERT_CODE = '/insert-dummy-code',
   COMMAND_WITH_PROMPT = '/with-prompt',
   EXTENDED_CARDS = '/extended-cards',
+  CARD_WITH_OPTIONS = '/card-with-options',
   NOTIFY = '/show-notification',
   CLEAR = '/clear',
   CLEAR_LOGS = '/clear-logs',
@@ -32,6 +33,10 @@ export const QuickActionCommands = [
       {
         command: Commands.EXTENDED_CARDS,
         description: 'See a different example with more features!',
+      },
+      {
+        command: Commands.CARD_WITH_OPTIONS,
+        description: 'See a different card example with options and actions inside!',
       },
       {
         command: Commands.NOTIFY,

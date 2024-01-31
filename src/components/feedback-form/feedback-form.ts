@@ -4,20 +4,20 @@
  */
 
 import { FeedbackPayload, MynahEventNames, MynahPortalNames } from '../../static';
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { FeedbackFormComment } from './feedback-form-comment';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { Icon, MynahIcons } from '../icon';
 import { Config } from '../../helper/config';
+import { Select } from '../select';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;
 }
 export class FeedbackForm {
   private feedbackFormWrapper: ExtendedHTMLElement;
-  private readonly feedbackSelect: ExtendedHTMLElement;
-  private readonly feedbackOptionsWrapper: ExtendedHTMLElement;
+  private readonly feedbackOptionsWrapper: Select;
   private readonly feedbackComment: FeedbackFormComment;
   private readonly feedbackSubmitButton: Button;
   private feedbackPayload: FeedbackPayload = { messageId: '', selectedOption: '', tabId: '', comment: '' };
@@ -55,28 +55,12 @@ export class FeedbackForm {
       }, 5);
     });
 
-    this.feedbackSelect = DomBuilder.getInstance().build({
-      type: 'select',
-      attributes: { value: Config.getInstance().config.feedbackOptions[0].value },
-      classNames: [ 'mynah-feedback-form-select' ],
-      events: {
-        change: () => {
-          this.feedbackPayload.selectedOption = this.feedbackSelect.value;
-        }
+    this.feedbackOptionsWrapper = new Select({
+      options: Config.getInstance().config.feedbackOptions,
+      onChange: (val) => {
+        this.feedbackPayload.selectedOption = val;
       },
-      children:
-        Config.getInstance().config.feedbackOptions.map(option => ({
-          type: 'option',
-          attributes: { value: option.value },
-          children: [ option.label ]
-        })) as DomBuilderObject[]
-    });
-    this.feedbackOptionsWrapper = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-feedback-form-select-wrapper' ],
-      children: [
-        this.feedbackSelect,
-        new Icon({ icon: MynahIcons.DOWN_OPEN, classNames: [ 'mynah-feedback-form-select-handle' ] }).render ]
+      label: Config.getInstance().config.texts.feedbackFormOptionsLabel,
     });
 
     this.feedbackComment = new FeedbackFormComment({
@@ -116,11 +100,7 @@ export class FeedbackForm {
             }).render
           ]
         },
-        {
-          type: 'span',
-          children: [ Config.getInstance().config.texts.feedbackFormOptionsLabel ],
-        },
-        this.feedbackOptionsWrapper,
+        this.feedbackOptionsWrapper.render,
         {
           type: 'span',
           children: [ Config.getInstance().config.texts.feedbackFormCommentLabel ],
@@ -150,7 +130,7 @@ export class FeedbackForm {
 
   close = (): void => {
     this.feedbackComment.clear();
-    this.feedbackSelect.value = Config.getInstance().config.feedbackOptions[0].value;
+    this.feedbackOptionsWrapper.setValue(Config.getInstance().config.feedbackOptions[0].value);
     this.feedbackPayload = {
       messageId: '',
       selectedOption: Config.getInstance().config.feedbackOptions[0].value,

@@ -153,7 +153,18 @@ export interface ChatItem {
   };
   icon?: MynahIcons;
   status?: 'info' | 'success' | 'warning' | 'error';
-  actions?: ChatItemAction[];
+  buttons?: ChatItemButton[];
+  formItems?: ChatItemFormItem[];
+}
+
+export interface ChatItemFormItem {
+  id: string;
+  title?: string;
+  input?: string;
+  options?: Array<{
+    value: string;
+    label: string;
+  }>;
 }
 
 export interface ChatPrompt {
@@ -165,6 +176,15 @@ export interface ChatPrompt {
 export interface ChatItemAction extends ChatPrompt {
   type?: string;
   pillText: string;
+  disabled?: boolean;
+  description?: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon?: MynahIcons;
+}
+export interface ChatItemButton {
+  keepCardAfterClick?: boolean;
+  text: string;
+  id: string;
   disabled?: boolean;
   description?: string;
   status?: 'info' | 'success' | 'warning' | 'error';

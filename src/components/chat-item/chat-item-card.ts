@@ -6,7 +6,7 @@
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { ChatItem, ChatItemAction, ChatItemType, MynahEventNames } from '../../static';
+import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
@@ -16,7 +16,8 @@ import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { Config } from '../../helper/config';
 import { generateUID } from '../../helper/guid';
-import { ChatItemFollowUpOption } from './chat-item-followup-option';
+import { ChatItemFormItemsWrapper } from './chat-item-form-items';
+import { ChatItemButtonsWrapper } from './chat-item-buttons';
 
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardProps {
@@ -29,6 +30,8 @@ export class ChatItemCard {
   contentBody: CardBody;
   chatAvatar: ExtendedHTMLElement;
   updateStack: Array<Partial<ChatItem>> = [];
+  chatFormItems: ChatItemFormItemsWrapper | null = null;
+  chatButtons: ChatItemButtonsWrapper | null = null;
   typewriterItemIndex: number = 0;
   previousTypewriterItemIndex: number = 0;
   typewriterId: string;
@@ -107,6 +110,41 @@ export class ChatItemCard {
   private readonly getCardContent = (): Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject> => {
     if (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId) === undefined) {
       return [];
+    }
+    if (this.chatFormItems !== null) {
+      this.chatFormItems.render.remove();
+      this.chatFormItems = null;
+    }
+    if (this.props.chatItem.formItems !== undefined) {
+      this.chatFormItems = new ChatItemFormItemsWrapper({ tabId: this.props.tabId, chatItem: this.props.chatItem });
+    }
+
+    if (this.chatButtons !== null) {
+      this.chatButtons.render.remove();
+      this.chatButtons = null;
+    }
+    if (this.props.chatItem.buttons !== undefined) {
+      this.chatButtons = new ChatItemButtonsWrapper({
+        tabId: this.props.tabId,
+        chatItem: this.props.chatItem,
+        onActionClick: (action) => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+            tabId: this.props.tabId,
+            messageId: this.props.chatItem.messageId,
+            actionId: action.id,
+            actionText: action.text,
+            ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {})
+          });
+
+          if (action.keepCardAfterClick === true) {
+            if (this.chatFormItems !== null) {
+              this.chatFormItems.disableAll();
+            }
+          } else {
+            this.render.remove();
+          }
+        }
+      });
     }
     return [
       ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
@@ -190,22 +228,11 @@ export class ChatItemCard {
                   }
                   return this.contentBody.render;
                 })(),
-                ...(this.props.chatItem.actions !== undefined
-                  ? [ DomBuilder.getInstance().build({
-                      type: 'div',
-                      classNames: [ 'mynah-chat-item-actions-container' ],
-                      children: this.props.chatItem.actions.map(chatBodyAction => new ChatItemFollowUpOption({
-                        followUpOption: chatBodyAction,
-                        onClick: (clickedAction: ChatItemAction) => {
-                          this.render.remove();
-                          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-                            tabId: this.props.tabId,
-                            messageId: this.props.chatItem.messageId,
-                            followUpOption: clickedAction
-                          });
-                        }
-                      }).render)
-                    }) ]
+                ...(this.chatFormItems !== null
+                  ? [ (this.chatFormItems).render ]
+                  : []),
+                ...(this.chatButtons !== null
+                  ? [ (this.chatButtons).render ]
                   : []),
                 ...(this.props.chatItem.canBeVoted === true && this.props.chatItem.messageId !== undefined
                   ? [ new ChatItemRelevanceVote({ tabId: this.props.tabId, messageId: this.props.chatItem.messageId }).render ]

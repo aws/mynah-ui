@@ -63,7 +63,11 @@ export interface MynahUIProps {
   onResetStore?: (tabId: string) => void;
   onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
   onFollowUpClicked?: (tabId: string, messageId: string, followUp: ChatItemAction) => void;
-  onBodyActionClicked?: (tabId: string, messageId: string, action: ChatItemAction) => void;
+  onInBodyButtonClicked?: (tabId: string, messageId: string, action: {
+    id: string;
+    text?: string;
+    formItemValues?: Record<string, string>;
+  }) => void;
   onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
   onTabRemove?: (tabId: string) => void;
@@ -188,10 +192,16 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.BODY_ACTION_CLICKED, (data: {
       tabId: string;
       messageId: string;
-      followUpOption: ChatItemAction;
+      actionId: string;
+      actionText?: string;
+      formItemValues?: Record<string, string>;
     }) => {
-      if (this.props.onBodyActionClicked !== undefined) {
-        this.props.onBodyActionClicked(data.tabId, data.messageId, data.followUpOption);
+      if (this.props.onInBodyButtonClicked !== undefined) {
+        this.props.onInBodyButtonClicked(data.tabId, data.messageId, {
+          id: data.actionId,
+          text: data.actionText,
+          formItemValues: data.formItemValues
+        });
       }
     });
 

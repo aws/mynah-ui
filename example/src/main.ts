@@ -105,6 +105,57 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               }
             });
             break;
+          case Commands.CARD_WITH_OPTIONS:
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `Hi! I have identified your project to be in **Java8**. Your project is _eligible for upgrade_. Please specify the following information to trigger the transformation job!`,
+              formItems: [
+                {
+                  id: 'module',
+                  title: `Please select the module you're currently using`,
+                  options: [{
+                    label: 'Module 1',
+                    value: 'module-1'
+                  },
+                  {
+                    label: 'Module 2',
+                    value: 'module-2'
+                  }]
+                },
+                {
+                  id: 'version',
+                  title: `Please select the target version`,
+                  options: [{
+                    label: 'JDK17',
+                    value: 'jdk17'
+                  },
+                  {
+                    label: 'JDK18',
+                    value: 'jdk18'
+                  }]
+                },
+                {
+                  id: 'instructions',
+                  title: `Any other instructions (optional)`,
+                  input: ''
+                }
+              ],
+              buttons: [
+                {
+                  id: 'accept-transform',
+                  keepCardAfterClick: true,
+                  text: 'Transform',
+                  status: 'info',
+                },
+                {
+                  id: 'cancel-transform',
+                  text: 'Cancel',
+                  keepCardAfterClick: true,
+                }
+              ],
+            });
+            break;
           case Commands.EXTENDED_CARDS:
             mynahUI.addChatItem(tabId, {
               type: ChatItemType.ANSWER,
@@ -113,9 +164,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               But beware that these action buttons will remove the card itself when they are clicked!`,
               status: 'error',
               icon: MynahIcons.ERROR,
-              actions: [
+              buttons: [
                 {
-                  pillText: 'I Understand',
+                  text: 'I Understand',
+                  id: 'understood',
                   status: 'error',
                   icon: MynahIcons.OK
                 },
@@ -127,9 +179,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               body: `This is an extended card with an icon and a different border color. Including some action buttons.`,
               status: 'info',
               icon: MynahIcons.INFO,
-              actions: [
+              buttons: [
                 {
-                  pillText: 'Acknowledge',
+                  text: 'Acknowledge',
+                  id: 'ack',
                   status: 'info',
                   icon: MynahIcons.OK
                 },
@@ -148,9 +201,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               body: `You're doing very good. Awesome work mate!`,
               status: 'success',
               icon: MynahIcons.THUMBS_UP,
-              actions: [
+              buttons: [
                 {
-                  pillText: 'Yay!',
+                  text: 'Yay!',
+                  id: 'yay',
                   status: 'success'
                 },
               ],
@@ -210,8 +264,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }
       }
     },
-    onBodyActionClicked: (tabId: string, messageId: string, action: ChatItemAction) => {
-      Log(`Body action click: <b>${action.pillText}</b>`);
+    onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
+      Log(`Body action clicked in message <b>${messageId}</b>:<br/>
+      Action Id: <b>${action.id}</b><br/>
+      Action Text: <b>${action.text}</b><br/>
+      ${action.formItemValues ? `<br/>Options:<br/>${
+        Object.keys(action.formItemValues).map(optionId=>{
+          return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+        }).join('<br/>')}` : ''}
+      `);
     },
     onVote: (tabId: string, messageId: string, vote: RelevancyVoteType) => {
       Log(`Message <b>${messageId}</b> is <b>${vote}d</b>.`);
