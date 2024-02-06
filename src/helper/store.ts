@@ -20,6 +20,7 @@ export class EmptyMynahUIDataModel {
       quickActionCommands: [],
       promptInputPlaceholder: '',
       promptInputInfo: '',
+      promptInputStickyCard: null,
       promptInputDisabledState: false,
       chatItems: [],
       selectedCodeSnippet: '',

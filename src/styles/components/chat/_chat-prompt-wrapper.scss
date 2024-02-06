@@ -189,6 +189,17 @@
     }
 }
 
+> .mynah-chat-prompt-input-sticky-card {
+    &:not(:empty) {
+        padding-top: var(--mynah-sizing-4);
+    }
+    > .mynah-chat-item-card {
+        max-width: 100%;
+        > .mynah-card {
+            border-bottom-left-radius: var(--mynah-card-radius) !important;
+        }
+    }
+}
 > .mynah-chat-prompt-input-info {
     display: flex;
     flex-flow: row nowrap;

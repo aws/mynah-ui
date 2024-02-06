@@ -12,6 +12,7 @@ import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
+import { ChatPromptInputStickyCard } from './chat-prompt-input-sticky-card';
 
 export interface ChatWrapperProps {
   onStopChatResponse?: (tabId: string) => void;
@@ -24,6 +25,7 @@ export class ChatWrapper {
   private readonly promptInputElement: ExtendedHTMLElement;
   private readonly promptInput: ChatPromptInput;
   private readonly promptInfo: ExtendedHTMLElement;
+  private readonly promptStickyCard: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
@@ -71,6 +73,7 @@ export class ChatWrapper {
     });
 
     this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
+    this.promptStickyCard = new ChatPromptInputStickyCard({ tabId: this.props.tabId }).render;
     this.intermediateBlockContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-overflowing-intermediate-block',
@@ -115,6 +118,7 @@ export class ChatWrapper {
         },
         this.chatItemsContainer,
         this.intermediateBlockContainer,
+        this.promptStickyCard,
         this.promptInputElement,
         this.promptInfo
       ]

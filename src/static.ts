@@ -47,6 +47,10 @@ export interface MynahUIDataModel {
   */
   promptInputInfo?: string;
   /**
+  * A sticky chat item card on top of the prompt input
+  */
+  promptInputStickyCard?: Partial<ChatItem> | null;
+  /**
   * Prompt input field disabled state, set to tru to disable it
   */
   promptInputDisabledState?: boolean;
@@ -134,8 +138,8 @@ export enum ChatItemType {
 }
 
 export interface ChatItem {
-  body?: string;
   type: ChatItemType;
+  body?: string;
   messageId?: string;
   canBeVoted?: boolean;
   followUp?: {
@@ -159,8 +163,11 @@ export interface ChatItem {
 
 export interface ChatItemFormItem {
   id: string;
+  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup';
+  mandatory?: boolean;
   title?: string;
-  input?: string;
+  placeholder?: string;
+  value?: string;
   options?: Array<{
     value: string;
     label: string;
@@ -183,6 +190,7 @@ export interface ChatItemAction extends ChatPrompt {
 }
 export interface ChatItemButton {
   keepCardAfterClick?: boolean;
+  waitMandatoryFormItems?: boolean;
   text: string;
   id: string;
   disabled?: boolean;
@@ -298,6 +306,7 @@ export interface ConfigModel {
     save: string;
     cancel: string;
     submit: string;
+    pleaseSelect: string;
     stopGenerating: string;
     copyToClipboard: string;
     noMoreTabsTooltip: string;

@@ -49,6 +49,11 @@
     @import "chat-prompt-wrapper";
 }
 
-@import 'chat-command-selector';
+.mynah-chat-items-container,
+.mynah-chat-prompt-input-sticky-card {
+    @import "chat-item-card";
+}
+
+@import "chat-command-selector";
 @import "chat-item-tree-view";
 @import "chat-prompt-code-snippet";
