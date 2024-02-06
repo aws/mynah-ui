@@ -792,6 +792,8 @@ interface ChatItemFormItem {
 
 Since you can give unlimited form items with several different types, it might be good to know that some attributes are only applicable to some types. Like `options` attribute is only getting used by `select` and `radiogroup` items. Or `placeholder` is only getting used by `textarea`, `textinput` and `numericinput`.
 
+**Another thing which might be interesting** is to know that if you set the `select` or the `radiogroup` mandatory, they'll be rendered as the first item's of them selected if you don't provide an initial value. And you cannot deselet a radio item in any case. For select, if it is mandatory there won't be the option `Please select...`
+
 
 _**NOTE**: If you set `options` for `textinput` for example, it won't affect the textinput to be rendered and work properly._
 
