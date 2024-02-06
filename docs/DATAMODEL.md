@@ -34,6 +34,10 @@ interface MynahUIDataModel {
   */
   promptInputInfo?: string; // supports MARKDOWN string
   /**
+  * A sticky chat item card on top of the prompt input
+  */
+  promptInputStickyCard?: Partial<ChatItem> | null;
+  /**
   * Prompt input field disabled state, set to tru to disable it
   */
   promptInputDisabledState?: boolean;
@@ -253,6 +257,55 @@ mynahUI.updateStore('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/tabStore/promptInputPlaceholder.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `promptInputStickyCard` (default: `null`)
+
+This is a chat item card which will be shown on top of the prompt input field. Main usage scneario for this is to inform the user with a card view, which means that it can also have some actions etc.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    },
+    ...
+    onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
+      if(messageId === 'sticky-card'){
+        // clear the card
+        mynahUI.updateStore(tabId, {promptInputStickyCard: null});
+      }
+      ...
+    },
+    ...
+});
+
+mynahUI.updateStore(tabId, {
+    promptInputStickyCard: {
+        messageId: 'sticky-card',
+        body: `Please read the [terms and conditions change](#) and after that click the **Acknowledge** button below!`,
+        status: 'info',
+        icon: MynahIcons.INFO,
+        buttons: [
+            {
+                // you can also simply set this to false to remove the card automatically
+                keepCardAfterClick: true,
+                text: 'Acknowledge',
+                id: 'acknowledge',
+                status: 'info',
+                icon: MynahIcons.OK
+            },
+        ],
+    }
+});
+
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptInputStickyCard.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -653,7 +706,24 @@ mynahUI.addChatItem('tab-1', {
 ---
 
 ## `buttons`
-It allows you to add actions inside a chat item card. **BUT, beware that when those actions are clicked if you don't set the `keepCardAfterClick` to true, they will remove the card they are in.**. And when you set the `keepCardAfterClick` to true, any of those action clicks will disable all the [`formItems`](#formItems) form elements and the actions (including the clicked one).
+It allows you to add actions inside a chat item card. **BUT, beware that when those actions are clicked if you set the `keepCardAfterClick` to false, they will remove the card they are in.**. 
+
+**Another important point** for the buttons are related with the [`formItems`](#formItems), when a button is clicked and it keeps the card instead of removing it, **it will disable** all the form items and also the buttons inside that card.
+
+Let's see the data type for buttons:
+```typescript
+interface ChatItemButton {
+  keepCardAfterClick?: boolean; // default true, if you want the button to remove the card, set it to false
+  waitMandatoryFormItems?: boolean; // Wait till the mandatory form items inside the same card to be filled to enable the button if there is any
+  // Please see formItems section for a detailed usage
+  text: string; // Text inside the button
+  id: string; // id of the button, since when they are clicked they all call the same property onInBodyButtonClicked
+  disabled?: boolean; // in any case if you want to make the button disabled (mandatory check will discard this)
+  description?: string; // A text to be shown inside a tooltip and it can be markdown
+  status?: 'info' | 'success' | 'warning' | 'error'; // 4 color status for the buttons
+  icon?: MynahIcons; // in case if you want to put an icon to the button.
+}
+```
 
 See the example below.
 
@@ -681,7 +751,7 @@ mynahUI.addChatItem(tabId, {
         text: 'Action 2',
         description: 'This action will not remove the card!',
         id: 'action-2',
-        keepCardAfterClick: true,
+        keepCardAfterClick: false, // So when this button is clicked, it will remove the whole card.
     },
     {
         text: 'Action 3',
@@ -700,17 +770,32 @@ mynahUI.addChatItem(tabId, {
 ---
 
 ## `formItems`
-It allows you to add some form elements inside a chat item card. Currently it only supports `textarea` and `select` components. You need to use [`buttons`](#buttons) to get the values set by the user for those options.
+It allows you to add some form elements inside a chat item card. Currently it supports `textarea`, `textinput`, `numericinput`, `stars`, `radiogroup` and `select` components. 
 
-Since you can give unlimited form items with two different types, you need to set specific parameters to select each type.
+**Important notice:** You need to use [`buttons`](#buttons) to get the values set by the user for those options.
 
-To add a `textarea`, you need to set `input` attribute to any string (leave it `''` if you don't want to give an initial value).
+Let's take a look to the data type of a form item:
+```typescript
+interface ChatItemFormItem {
+  id: string; // id is mandatory to understand to get the specific values for each form item when a button is clicked
+  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup'; // type (see below for each of them)
+  mandatory?: boolean; // If it is set to true, buttons in the same card with waitMandatoryFormItems set to true will wait them to be filled
+  title?: string; // Label of the input
+  placeholder?: string; // Placeholder for input, but only applicable to textarea, textinput and numericinput
+  value?: string; // Initial value of the item. All types of form items will get and return string values, conversion of the value type is up to you
+  options?: Array<{ // Only applicable to select and radiogroup types
+    value: string;
+    label: string;
+  }>;
+}
+```
 
-To add a `select`, you need to set `options` with an array  of `{label:string, value:string}` pair.
+Since you can give unlimited form items with several different types, it might be good to know that some attributes are only applicable to some types. Like `options` attribute is only getting used by `select` and `radiogroup` items. Or `placeholder` is only getting used by `textarea`, `textinput` and `numericinput`.
 
-**NOTE**: If you set both the `options` and the `input` attributes, it will only use the `options` and generate a `select` component. If you need both, please add them separately to the `formItems` of the `ChatItem`.
 
-See a more detailed example below.
+_**NOTE**: If you set `options` for `textinput` for example, it won't affect the textinput to be rendered and work properly._
+
+##### Let's see a very detailed example below.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -724,49 +809,107 @@ const mynahUI = new MynahUI({
 mynahUI.addChatItem(tabId, {
     type: ChatItemType.ANSWER,
     messageId: new Date().getTime().toString(),
-    body: `Hi! I have identified your project to be in **Java8**. Your project is _eligible for upgrade_. Please specify the following information to trigger the transformation job!`,
+    body: 
+    `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.
+    _To send the form, mandatory items should be filled._`,
     formItems: [
         {
-            id: 'module',
-            title: `Please select the module you're currently using`,
-            options: [{
-            label: 'Module 1',
-            value: 'module-1'
-            },
-            {
-            label: 'Module 2',
-            value: 'module-2'
-            }]
+            id: 'expertise-area',
+            type: 'select',
+            title: `Area of expertise`,
+            options: [
+                {
+                    label: 'Frontend',
+                    value: 'frontend'
+                },
+                {
+                    label: 'Backend',
+                    value: 'backend'
+                },
+                {
+                    label: 'Data Science',
+                    value: 'datascience'
+                },
+                {
+                    label: 'Other',
+                    value: 'other'
+                }
+            ]
         },
         {
-            id: 'version',
-            title: `Please select the target version`,
-            options: [{
-                label: 'JDK17',
-                value: 'jdk17'
-            },
-            {
-                label: 'JDK18',
-                value: 'jdk18'
-            }]
+            id: 'preferred-ide',
+            type: 'radiogroup',
+            title: `Preferred IDE`,
+            options: [
+                {
+                    label: 'VSCode',
+                    value: 'vscode'
+                },
+                {
+                    label: 'JetBrains IntelliJ',
+                    value: 'intellij'
+                },
+                {
+                    label: 'Visual Studio',
+                    value: 'intellij'
+                }
+            ]
         },
         {
-            id: 'instructions',
-            title: `Any other instructions (optional)`,
-            input: ''
+            id: 'working-hours',
+            type: 'numericinput',
+            title: `How many hours are you using an IDE weekly?`,
+            placeholder: 'IDE working hours',
+        },
+        {
+            id: 'email',
+            type: 'textinput',
+            mandatory: true,
+            title: `Email`,
+            placeholder: 'email',
+        },
+        {
+            id: 'name',
+            type: 'textinput',
+            mandatory: true,
+            title: `Name`,
+            placeholder: 'Name and Surname',
+        },
+        {
+            id: 'ease-of-usage-rating',
+            type: 'stars',
+            mandatory: true,
+            title: `How easy is it to use our AI assistant?`,
+        },
+        {
+            id: 'accuracy-rating',
+            type: 'stars',
+            mandatory: true,
+            title: `How accurate are the answers you get from our AI assistant?`,
+        },
+        {
+            id: 'general-rating',
+            type: 'stars',
+            title: `How do feel about our AI assistant in general?`,
+        },
+        {
+            id: 'description',
+            type: 'textarea',
+            title: `Any other things you would like to share?`,
+            placeholder: 'Write your feelings about our tool',
         }
-        ],
-        buttons: [
+    ],
+    buttons: [
         {
-            id: 'accept-transform',
-            keepCardAfterClick: true,
-            text: 'Transform',
+            id: 'submit',
+            text: 'Submit',
             status: 'info',
         },
         {
-            id: 'cancel-transform',
+            id: 'cancel-feedback',
             text: 'Cancel',
-            keepCardAfterClick: true,
+            keepCardAfterClick: false,
+            waitMandatoryFormItems: false,
         }
     ],
 });
@@ -776,7 +919,50 @@ mynahUI.addChatItem(tabId, {
   <img src="./img/data-model/chatItems/options.png" alt="formItems" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
+In it's current state, you'll see some asterisk icons on the left of the label fields if the items are mandatory. And as you can see according to the configuration we've prepared above, `Submit` button is currently disabled. Because it waits the `email`, `name`, `ease of use stars` and `accuracy stars` to be filled/selected.
+
+Let's see what happens when we fill them:
+
+<p align="center">
+  <img src="./img/data-model/chatItems/options-mandatory-filled.png" alt="formItems" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+**Now our `Submit` button is activated**. But before submitting it, let's fill all the fields.
+
+<p align="center">
+  <img src="./img/data-model/chatItems/options-all-filled.png" alt="formItems" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+Ok, finally, when we click the `Submit` button, as it is configured that way, it will keep the card, but all the form fields and the buttons will be disabled. 
+
+<p align="center">
+  <img src="./img/data-model/chatItems/options-submitted.png" alt="formItems" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+**Note:** As you can see. `Cancel` button has the value for `keepCardAfterClick` and `waitMandatoryItems` as `false` which means that `Cancel` button won't be disabled even if the form is not valid _(mandatory fields not filled)_ and when clicked it will remove the whole card.
+
+A sample return to the [onInBodyButtonClicked](./PROPERTIES.md#oninbodybuttonclicked) function
+```console
+Body action clicked in message 1707218619540:
+Action Id: submit
+Action Text: Submit
+
+Options:
+expertise-area: frontend
+preferred-ide: vscode
+working-hours: 30
+email: dogusata@amazon.com
+name: Dogus Atasoy
+ease-of-usage-rating: 5
+accuracy-rating: 4
+general-rating: 5
+description: It is lovely!
+```
+
 ---
+
 
 ## `status`
 It allows you to set the border color of the card. Currently you can select one of the below status types: 

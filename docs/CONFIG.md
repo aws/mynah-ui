@@ -24,7 +24,8 @@ interface ConfigModel {
         showMore: string; 
         save: string; // not used or deprecated
         cancel: string; 
-        submit: string; 
+        submit: string;
+        pleaseSelect: string;
         stopGenerating: string; 
         copyToClipboard: string; // not used or deprecated
         noMoreTabsTooltip: string; 
@@ -63,6 +64,14 @@ Default tab title text if it is not set through store data for that tab.
 ## feedbackFormTitle, feedbackFormOptionsLabel, feedbackFormCommentLabel, submit, cancel
 <p align="center">
   <img src="./img/texts/feedbackForm.png" alt="feedbackForm" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+---
+
+## pleaseSelect
+<p align="center">
+  <img src="./img/texts/pleaseSelect.png" alt="feedbackForm" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

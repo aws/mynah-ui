@@ -12,11 +12,11 @@ import {
   ChatItem,
   MynahIcons,
 } from '@aws/mynah-ui';
-import './styles/styles.scss';
 import { Commands, mynahUIDefaults } from './config';
 import { Log, LogClear } from './logger';
 import { exampleCodeBlockToInsert, exampleFileListChatItem, exampleRichFollowups, followupTypes } from './samples/sample-data';
 import escapeHTML from 'escape-html';
+import './styles/styles.scss';
 
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   const connector = new Connector();
@@ -109,49 +109,108 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             mynahUI.addChatItem(tabId, {
               type: ChatItemType.ANSWER,
               messageId: new Date().getTime().toString(),
-              body: `Hi! I have identified your project to be in **Java8**. Your project is _eligible for upgrade_. Please specify the following information to trigger the transformation job!`,
+              body: 
+              `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.  
+
+_To send the form, mandatory items should be filled._`,
               formItems: [
                 {
-                  id: 'module',
-                  title: `Please select the module you're currently using`,
-                  options: [{
-                    label: 'Module 1',
-                    value: 'module-1'
-                  },
-                  {
-                    label: 'Module 2',
-                    value: 'module-2'
-                  }]
+                  id: 'expertise-area',
+                  type: 'select',
+                  title: `Area of expertise`,
+                  options: [
+                    {
+                      label: 'Frontend',
+                      value: 'frontend'
+                    },
+                    {
+                      label: 'Backend',
+                      value: 'backend'
+                    },
+                    {
+                      label: 'Data Science',
+                      value: 'datascience'
+                    },
+                    {
+                      label: 'Other',
+                      value: 'other'
+                    }
+                  ]
                 },
                 {
-                  id: 'version',
-                  title: `Please select the target version`,
-                  options: [{
-                    label: 'JDK17',
-                    value: 'jdk17'
-                  },
-                  {
-                    label: 'JDK18',
-                    value: 'jdk18'
-                  }]
+                  id: 'preferred-ide',
+                  type: 'radiogroup',
+                  title: `Preferred IDE`,
+                  options: [
+                    {
+                      label: 'VSCode',
+                      value: 'vscode'
+                    },
+                    {
+                      label: 'JetBrains IntelliJ',
+                      value: 'intellij'
+                    },
+                    {
+                      label: 'Visual Studio',
+                      value: 'intellij'
+                    }
+                  ]
                 },
                 {
-                  id: 'instructions',
-                  title: `Any other instructions (optional)`,
-                  input: ''
+                  id: 'working-hours',
+                  type: 'numericinput',
+                  title: `How many hours are you using an IDE weekly?`,
+                  placeholder: 'IDE working hours',
+                },
+                {
+                  id: 'email',
+                  type: 'textinput',
+                  mandatory: true,
+                  title: `Email`,
+                  placeholder: 'email',
+                },
+                {
+                  id: 'name',
+                  type: 'textinput',
+                  mandatory: true,
+                  title: `Name`,
+                  placeholder: 'Name and Surname',
+                },
+                {
+                  id: 'ease-of-usage-rating',
+                  type: 'stars',
+                  mandatory: true,
+                  title: `How easy is it to use our AI assistant?`,
+                },
+                {
+                  id: 'accuracy-rating',
+                  type: 'stars',
+                  mandatory: true,
+                  title: `How accurate are the answers you get from our AI assistant?`,
+                },
+                {
+                  id: 'general-rating',
+                  type: 'stars',
+                  title: `How do feel about our AI assistant in general?`,
+                },
+                {
+                  id: 'description',
+                  type: 'textarea',
+                  title: `Any other things you would like to share?`,
+                  placeholder: 'Write your feelings about our tool',
                 }
               ],
               buttons: [
                 {
-                  id: 'accept-transform',
-                  keepCardAfterClick: true,
-                  text: 'Transform',
+                  id: 'submit',
+                  text: 'Submit',
                   status: 'info',
                 },
                 {
-                  id: 'cancel-transform',
+                  id: 'cancel-feedback',
                   text: 'Cancel',
-                  keepCardAfterClick: true,
+                  keepCardAfterClick: false,
+                  waitMandatoryFormItems: false,
                 }
               ],
             });
@@ -210,6 +269,25 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               ],
             });
             break;
+          case Commands.ADD_STICKY_CARD:
+            mynahUI.updateStore(tabId, {
+              promptInputStickyCard: {
+                messageId: 'sticky-card',
+                body: `Please read the [terms and conditions change](#) and after that click the **Acknowledge** button below!`,
+                status: 'info',
+                icon: MynahIcons.INFO,
+                buttons: [
+                  {
+                    keepCardAfterClick: true,
+                    text: 'Acknowledge',
+                    id: 'acknowledge',
+                    status: 'info',
+                    icon: MynahIcons.OK
+                  },
+                ],
+              }
+            });
+            break;
           case Commands.COMMAND_WITH_PROMPT:
             const realPromptText = prompt.escapedPrompt?.trim() ?? '';
             mynahUI.addChatItem(tabId, {
@@ -265,6 +343,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       }
     },
     onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
+      if(messageId === 'sticky-card'){
+        mynahUI.updateStore(tabId, {promptInputStickyCard: null});
+      }
       Log(`Body action clicked in message <b>${messageId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>

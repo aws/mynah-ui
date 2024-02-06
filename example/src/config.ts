@@ -11,6 +11,7 @@ export enum Commands {
   NOTIFY = '/show-notification',
   CLEAR = '/clear',
   CLEAR_LOGS = '/clear-logs',
+  ADD_STICKY_CARD = '/add-sticky-card',
 }
 export const QuickActionCommands = [
   {
@@ -37,6 +38,10 @@ export const QuickActionCommands = [
       {
         command: Commands.CARD_WITH_OPTIONS,
         description: 'See a different card example with options and actions inside!',
+      },
+      {
+        command: Commands.ADD_STICKY_CARD,
+        description: 'Adds a sticky card on top of the input field.',
       },
       {
         command: Commands.NOTIFY,
