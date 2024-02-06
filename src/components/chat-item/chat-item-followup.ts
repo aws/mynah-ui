@@ -21,7 +21,6 @@ export class ChatItemFollowUpContainer {
       new ChatItemFollowUpOption({
         followUpOption,
         onClick: (clickedFollowUpOption) => {
-          console.log(clickedFollowUpOption);
           MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, {
             tabId: this.props.tabId,

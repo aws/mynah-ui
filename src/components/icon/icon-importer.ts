@@ -48,6 +48,7 @@ import COPY from './icons/copy.svg';
 import CURSOR_INSERT from './icons/cursor-insert.svg';
 import TEXT_SELECT from './icons/text-select.svg';
 import REVERT from './icons/revert.svg';
+import ASTERISK from './icons/asterisk.svg';
 
 export class MynahUIIconImporter {
   private static instance: MynahUIIconImporter;
@@ -93,7 +94,8 @@ export class MynahUIIconImporter {
       COPY,
       CURSOR_INSERT,
       TEXT_SELECT,
-      REVERT
+      REVERT,
+      ASTERISK
     };
     DomBuilder.getInstance().createPortal('mynah-ui-icons', {
       type: 'style',

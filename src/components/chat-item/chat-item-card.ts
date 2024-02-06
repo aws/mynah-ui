@@ -126,7 +126,8 @@ export class ChatItemCard {
     if (this.props.chatItem.buttons !== undefined) {
       this.chatButtons = new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
-        chatItem: this.props.chatItem,
+        formItems: this.chatFormItems,
+        buttons: this.props.chatItem.buttons,
         onActionClick: (action) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
@@ -136,11 +137,7 @@ export class ChatItemCard {
             ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {})
           });
 
-          if (action.keepCardAfterClick === true) {
-            if (this.chatFormItems !== null) {
-              this.chatFormItems.disableAll();
-            }
-          } else {
+          if (action.keepCardAfterClick === false) {
             this.render.remove();
           }
         }

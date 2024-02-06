@@ -10,7 +10,7 @@ import { FeedbackFormComment } from './feedback-form-comment';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { Icon, MynahIcons } from '../icon';
 import { Config } from '../../helper/config';
-import { Select } from '../select';
+import { Select } from '../form-items/select';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;

@@ -54,6 +54,7 @@ const configDefaults: ConfigModel = {
     save: 'Save',
     cancel: 'Cancel',
     submit: 'Submit',
+    pleaseSelect: 'Please select...',
     stopGenerating: 'Stop generating',
     copyToClipboard: 'Copied to clipboard',
     noMoreTabsTooltip: 'You\'ve reached maximum number of tabs you can simultaneously use.',

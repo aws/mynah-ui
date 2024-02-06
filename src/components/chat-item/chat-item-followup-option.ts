@@ -22,8 +22,10 @@ export class ChatItemFollowUpOption {
   render: ExtendedHTMLElement;
   private followupTooltip: Overlay | null;
   private followupTooltipTimeout: ReturnType<typeof setTimeout>;
+  private disabled: boolean = false;
   constructor (props: ChatItemFollowUpOptionProps) {
     this.props = props;
+    this.disabled = this.props.followUpOption.disabled === true;
 
     // revert back if the extension is set before (because it only works globally)
     marked.use({
@@ -51,14 +53,12 @@ export class ChatItemFollowUpOption {
         marked(croppedPillText, { breaks: true }).replace('<p>', '').replace('</p>', '')
       ],
       events: {
-        ...(props.followUpOption.disabled !== true
-          ? {
-              click: (e) => {
-                this.hideCroppedFollowupText();
-                this.props.onClick(props.followUpOption);
-              }
-            }
-          : {}),
+        click: (e) => {
+          if (!this.disabled) {
+            this.hideCroppedFollowupText();
+            this.props.onClick(props.followUpOption);
+          }
+        },
         ...(props.followUpOption.pillText.length > MAX_LENGTH || props.followUpOption.description !== undefined
           ? {
               mouseover: (e) => {
@@ -115,6 +115,7 @@ export class ChatItemFollowUpOption {
   };
 
   public readonly setEnabled = (enabled: boolean): void => {
+    this.disabled = !enabled;
     if (enabled) {
       this.render.removeClass('mynah-chat-item-followup-question-option-disabled');
     } else {

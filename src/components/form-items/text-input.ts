@@ -3,31 +3,41 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 
-export interface TextAreaProps {
+export interface TextInputProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  placeholder?: string;
+  numeric?: boolean;
   value?: string;
   onChange?: (value: string) => void;
 }
-export class TextArea {
+export class TextInput {
   private readonly inputElement: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
-  constructor (props: TextAreaProps) {
+  constructor (props: TextInputProps) {
     this.inputElement = DomBuilder.getInstance().build({
-      type: 'textarea',
+      type: 'input',
       classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
+      attributes: {
+        type: props.numeric === true ? 'number' : 'text',
+        ...(props.placeholder !== undefined
+          ? {
+              placeholder: props.placeholder
+            }
+          : {})
+      },
       events: {
-        change: (e) => {
+        keyup: (e) => {
           if (props.onChange !== undefined) {
             props.onChange((e.currentTarget as HTMLSelectElement).value);
           }
         }
       },
     });
-    this.inputElement.value = props.value ?? '';
+    this.inputElement.value = props.value?.toString() ?? '';
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-form-input-wrapper' ],
