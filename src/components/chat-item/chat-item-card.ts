@@ -139,6 +139,12 @@ export class ChatItemCard {
 
           if (action.keepCardAfterClick === false) {
             this.render.remove();
+            if (this.props.chatItem.messageId !== undefined) {
+              const currentChatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
+              MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+                chatItems: currentChatItems.filter(chatItem => this.props.chatItem.messageId !== chatItem.messageId)
+              }, true);
+            }
           }
         }
       });
