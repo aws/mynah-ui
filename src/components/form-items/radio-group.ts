@@ -5,6 +5,7 @@
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
+import { Icon, MynahIcons } from '../icon';
 
 interface SelectOption {
   value: string;
@@ -32,35 +33,43 @@ export class RadioGroup {
         props.options?.map((option, index) => ({
           type: 'div',
           classNames: [ 'mynah-form-input-radio-wrapper' ],
-          children: [
-            {
-              type: 'input',
-              attributes: {
-                type: 'radio',
-                id: `${this.groupName}_${option.value}`,
-                name: this.groupName,
-                value: option.value,
-                ...(
-                  (props.value !== undefined && props.value === option.value) || (props.optional !== true && props.value === undefined && index === 0) ? { checked: 'checked' } : {}
-                )
-              },
-              events: {
-                change: (e) => {
-                  this.setValue(e.currentTarget.value);
-                  if (props.onChange !== undefined) {
-                    props.onChange(e.currentTarget.value);
+          children: [ {
+            type: 'label',
+            classNames: [ 'mynah-form-input-radio-label' ],
+            children: [
+              {
+                type: 'input',
+                attributes: {
+                  type: 'radio',
+                  id: `${this.groupName}_${option.value}`,
+                  name: this.groupName,
+                  value: option.value,
+                  ...(
+                    (props.value !== undefined && props.value === option.value) || (props.optional !== true && props.value === undefined && index === 0) ? { checked: 'checked' } : {}
+                  )
+                },
+                events: {
+                  change: (e) => {
+                    this.setValue(e.currentTarget.value);
+                    if (props.onChange !== undefined) {
+                      props.onChange(e.currentTarget.value);
+                    }
                   }
-                }
+                },
               },
-            },
-            {
-              type: 'label',
-              attributes: {
-                for: `${this.groupName}_${option.value}`
+              {
+                type: 'span',
+                classNames: [ 'mynah-form-input-radio-check' ],
+                children: [
+                  new Icon({ icon: MynahIcons.OK }).render
+                ]
               },
-              children: [ option.label ]
-            }
-          ]
+              {
+                type: 'span',
+                children: [ option.label ]
+              }
+            ]
+          } ]
         })) as DomBuilderObject[]
     });
     this.render = DomBuilder.getInstance().build({
