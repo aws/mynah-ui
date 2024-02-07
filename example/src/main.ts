@@ -152,7 +152,7 @@ _To send the form, mandatory items should be filled._`,
                     },
                     {
                       label: 'Visual Studio',
-                      value: 'intellij'
+                      value: 'visualstudio'
                     }
                   ]
                 },
