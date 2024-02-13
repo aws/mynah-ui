@@ -4,7 +4,6 @@
  */
 
 import { MynahPortalNames } from '../static';
-import { cancelEvent } from './events';
 
 /* eslint-disable @typescript-eslint/method-signature-style */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
@@ -12,11 +11,16 @@ import { cancelEvent } from './events';
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 export const DS: typeof document.querySelectorAll = document.querySelectorAll.bind(document);
 
+type DomBuilderEventHandler = (event?: any) => any;
+interface DomBuilderEventHandlerWithOptions {
+  handler: DomBuilderEventHandler;
+  options?: AddEventListenerOptions;
+};
 export interface DomBuilderObject {
   type: string;
   attributes?: Record<string, string> | undefined;
   classNames?: string[] | undefined;
-  events?: Record<string, (event?: any) => any> | undefined;
+  events?: Record<string, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions> | undefined;
   children?: Array<string | DomBuilderObject | HTMLElement | ExtendedHTMLElement> | undefined;
   innerHTML?: string | undefined;
   persistent?: boolean | undefined;
@@ -169,12 +173,22 @@ export class DomBuilder {
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     buildedDom.classList.add(...(readyToBuildObject.classNames?.filter(className => className !== '') || []));
 
-    Object.keys(readyToBuildObject.events ?? {}).forEach((eventName: string) =>
-      buildedDom.addEventListener(
-        eventName,
-        readyToBuildObject.events ? readyToBuildObject.events[eventName] : cancelEvent
-      )
-    );
+    Object.keys(readyToBuildObject.events ?? {}).forEach((eventName: string) => {
+      if (readyToBuildObject?.events !== undefined) {
+        if (typeof readyToBuildObject?.events[eventName] === 'function') {
+          buildedDom.addEventListener(
+            eventName,
+            readyToBuildObject.events[eventName] as (event?: any) => any
+          );
+        } else if (typeof readyToBuildObject?.events[eventName] === 'object') {
+          buildedDom.addEventListener(
+            eventName,
+            (readyToBuildObject.events[eventName] as DomBuilderEventHandlerWithOptions).handler,
+            (readyToBuildObject.events[eventName] as DomBuilderEventHandlerWithOptions).options ?? undefined
+          );
+        }
+      }
+    });
 
     Object.keys(readyToBuildObject.attributes ?? {}).forEach(attributeName =>
       buildedDom.setAttribute(
@@ -221,7 +235,7 @@ export class DomBuilder {
 
       Object.keys(domBuilderObject.events ?? {}).forEach(eventName => {
         if (domToUpdate.builderObject.events !== undefined && domToUpdate.builderObject.events[eventName]) {
-          domToUpdate.removeEventListener(eventName, domToUpdate.builderObject.events[eventName]);
+          domToUpdate.removeEventListener(eventName, (domToUpdate.builderObject.events[eventName] as DomBuilderEventHandlerWithOptions).handler ?? domToUpdate.builderObject.events[eventName]);
         }
         if (domBuilderObject.events !== undefined && domBuilderObject.events[eventName] !== undefined) {
           domToUpdate.addEventListener(eventName, domBuilderObject.events[eventName]);

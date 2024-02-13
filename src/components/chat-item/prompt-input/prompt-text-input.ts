@@ -1,3 +1,4 @@
+import { Config } from '../../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
 import { MAX_USER_INPUT } from '../chat-prompt-input';
@@ -72,7 +73,9 @@ export class PromptTextInput {
       } else {
         // Enable the input field and focus on it
         this.promptTextInput.removeAttribute('disabled');
-        this.promptTextInput.focus();
+        if (Config.getInstance().config.autoFocus) {
+          this.promptTextInput.focus();
+        }
       }
     });
 
@@ -105,7 +108,9 @@ export class PromptTextInput {
   };
 
   public readonly focus = (): void => {
-    this.promptTextInput.focus();
+    if (Config.getInstance().config.autoFocus) {
+      this.promptTextInput.focus();
+    }
     this.updateTextInputValue('');
   };
 

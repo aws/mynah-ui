@@ -13,6 +13,7 @@ import { ChatPromptInputCommand } from './chat-prompt-input-command';
 import { CodeSnippet } from './prompt-input/code-snippet';
 import { SendButton } from './prompt-input/send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
+import { Config } from '../../helper/config';
 
 export const MAX_USER_INPUT = 4000;
 export const MAX_USER_INPUT_THRESHOLD = 96;
@@ -121,9 +122,11 @@ export class ChatPromptInput {
       this.updateAvailableCharactersIndicator();
     });
 
-    setTimeout(() => {
-      this.promptTextInput.focus();
-    }, 500);
+    if (Config.getInstance().config.autoFocus) {
+      setTimeout(() => {
+        this.promptTextInput.focus();
+      }, 500);
+    }
   }
 
   private readonly updateAvailableCharactersIndicator = (): void => {
@@ -308,7 +311,9 @@ export class ChatPromptInput {
       this.sendPrompt();
     }
     this.commandSelector.close();
-    this.promptTextInput.focus();
+    if (Config.getInstance().config.autoFocus) {
+      this.promptTextInput.focus();
+    }
   };
 
   public readonly clearTextArea = (keepAttachment?: boolean): void => {

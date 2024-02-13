@@ -26,6 +26,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     defaults: mynahUIDefaults,
     config: {
       maxTabs: 5,
+      autoFocus: false,
     },
     tabs: {
       'tab-1': {

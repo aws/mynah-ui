@@ -151,7 +151,10 @@ export class Toggle {
       attributes: { disabled: props.disabled === true ? 'disabled' : '' },
       children: this.getChildren(props.value),
       events: {
-        wheel: this.transformScroll
+        wheel: {
+          handler: this.transformScroll,
+          options: { passive: true }
+        }
       }
     });
   }
@@ -161,7 +164,6 @@ export class Toggle {
       return;
     }
     this.render.scrollLeft += e.deltaY;
-    cancelEvent(e);
   };
 
   private readonly getChildren = (value?: string | null): any[] => [

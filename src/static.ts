@@ -319,4 +319,5 @@ export interface ConfigModel {
   }>;
   maxTabs: number;
   showPromptField: boolean;
+  autoFocus: boolean;
 }
