@@ -38,6 +38,10 @@ export class ChatItemFormItemsWrapper {
               chatItemOption.title ?? '',
             ]
           });
+          // Since the field is mandatory, default the selected value to the first option
+          if (chatItemOption.value === undefined) {
+            chatItemOption.value = chatItemOption.options?.[0]?.value;
+          }
         }
         const value = chatItemOption.value?.toString();
         switch (chatItemOption.type) {
@@ -108,6 +112,7 @@ export class ChatItemFormItemsWrapper {
   private readonly getValidationHandler = (chatItemOption: ChatItemFormItem): Object => {
     if (chatItemOption.mandatory === true) {
       this.validationItems[chatItemOption.id] = chatItemOption.value !== undefined && chatItemOption.value !== '';
+      console.log(JSON.stringify(this.validationItems));
       return {
         onChange: (value: string | number) => {
           this.validationItems[chatItemOption.id] = value !== undefined && value !== '';
@@ -122,6 +127,8 @@ export class ChatItemFormItemsWrapper {
     const currentValidationStatus = Object.keys(this.validationItems).reduce((prev, curr) => {
       return prev && this.validationItems[curr];
     }, true);
+    console.log('currentValidationStatus ', currentValidationStatus);
+    console.log('isValid ', this.isValid);
 
     if (this.isValid !== currentValidationStatus && this.onValidationChange !== undefined) {
       this.onValidationChange(currentValidationStatus);

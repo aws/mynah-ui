@@ -51,8 +51,6 @@ export class Select {
     });
     if (props.value !== undefined) {
       this.selectElement.value = props.value;
-    } else if (props.optional === false && props.options !== undefined && props.options.length > 0) {
-      this.selectElement.value = props.options[0].value;
     }
     this.render = DomBuilder.getInstance().build({
       type: 'div',
