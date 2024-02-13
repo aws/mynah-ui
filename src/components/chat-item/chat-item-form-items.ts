@@ -38,6 +38,10 @@ export class ChatItemFormItemsWrapper {
               chatItemOption.title ?? '',
             ]
           });
+          // Since the field is mandatory, default the selected value to the first option
+          if (chatItemOption.value === undefined) {
+            chatItemOption.value = chatItemOption.options?.[0]?.value;
+          }
         }
         const value = chatItemOption.value?.toString();
         switch (chatItemOption.type) {
