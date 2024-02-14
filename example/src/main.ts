@@ -26,7 +26,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     defaults: mynahUIDefaults,
     config: {
       maxTabs: 5,
-      autoFocus: false,
     },
     tabs: {
       'tab-1': {
@@ -39,6 +38,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     },
     onTabAdd: (tabId: string) => {
       Log(`New tab added: <b>${tabId}</b>`);
+    },
+    onBeforeTabRemove: (tabId: string):boolean => {
+      const isTabLoading = mynahUI.getAllTabs()[tabId].store?.loadingChat;
+      if(isTabLoading){
+        Log(`Confirmation Popup appeared on tab remove: <b>${tabId}</b>`);
+      }
+      return !isTabLoading;
     },
     onTabRemove: (tabId: string) => {
       Log(`Tab removed: <b>${tabId}</b>`);

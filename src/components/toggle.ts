@@ -21,7 +21,7 @@ export interface ToggleOption {
 interface ToggleOptionRenderProps extends ToggleOption {
   name: string;
   onChange?: (selectedValue: string) => void;
-  onRemove?: (selectedValue: string) => void;
+  onRemove?: (selectedValue: string, domElement: ExtendedHTMLElement) => void;
 }
 class ToggleOptionItem {
   render: ExtendedHTMLElement;
@@ -99,7 +99,7 @@ class ToggleOptionItem {
             },
             auxclick: () => {
               if (this.props.onRemove !== undefined) {
-                this.props.onRemove(this.props.value);
+                this.props.onRemove(this.props.value, this.render);
               }
             }
           },
@@ -115,7 +115,7 @@ class ToggleOptionItem {
                 classNames: [ 'mynah-toggle-close-button' ],
                 onClick: () => {
                   if (this.props.onRemove !== undefined) {
-                    this.props.onRemove(this.props.value);
+                    this.props.onRemove(this.props.value, this.render);
                   }
                 },
                 icon: new Icon({ icon: MynahIcons.CANCEL }).render,
@@ -135,7 +135,7 @@ export interface ToggleProps {
   name: string;
   disabled?: boolean;
   onChange?: (selectedValue: string) => void;
-  onRemove?: (selectedValue: string) => void;
+  onRemove?: (selectedValue: string, domElement: ExtendedHTMLElement) => void;
 }
 export class Toggle {
   render: ExtendedHTMLElement;

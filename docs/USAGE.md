@@ -273,7 +273,7 @@ As you can update the body of a streaming card, you can also update the other in
 
 ## Adding code attachments to prompt field (`addToUserPrompt`)
 
-You can add code attachments under the prompt field of the desired tab. When user fills the prompt field and sends it, the attached code block will be appended at the end of the prompt text. It accepts max 4000 chars however you don't need to worry about it. MynahUI will automatically crop it depending on the available chars left from the prompt field itself.
+You can add code attachments under the prompt field of the desired tab. When user fills the prompt field and sends it, the attached code block will be appended at the end of the prompt text. It accepts max chars set through **[CONFIG](./CONFIG.md#maxUserInput)** however you don't need to worry about it. MynahUI will automatically crop it depending on the available chars left from the prompt field itself by using a `96` chars of threshold. **So beware that for example if you want 4000 chars exact, you need to give 4096 to the config.**
 
 ```typescript
 mynahUI.addToUserPrompt('tab-1', `

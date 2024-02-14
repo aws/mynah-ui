@@ -58,6 +58,6 @@ describe('toggle (tabs)', () => {
     const secondItemElement = document.querySelector('span[key="testToggle-value2"]') as HTMLInputElement;
     (secondItemElement.querySelector('button') as HTMLButtonElement).click();
     expect(mockOnRemoveHandler).toHaveBeenCalledTimes(1);
-    expect(mockOnRemoveHandler).toHaveBeenCalledWith('value2');
+    expect(mockOnRemoveHandler).toHaveBeenCalledWith('value2', expect.anything());
   });
 });

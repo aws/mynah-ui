@@ -3,10 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ConfigModel } from '../static';
+import { ConfigModel, ConfigOptions, ConfigTexts } from '../static';
 
-const configDefaults: ConfigModel = {
+interface ConfigFullModel extends ConfigOptions {
+  texts: ConfigTexts;
+};
+
+const configDefaults: ConfigFullModel = {
   maxTabs: 1000,
+  maxUserInput: 4096,
   showPromptField: true,
   autoFocus: true,
   feedbackOptions: [
@@ -60,14 +65,24 @@ const configDefaults: ConfigModel = {
     copyToClipboard: 'Copied to clipboard',
     noMoreTabsTooltip: 'You\'ve reached maximum number of tabs you can simultaneously use.',
     codeSuggestionWithReferenceTitle: 'Some suggestions contain code with references.',
-    spinnerText: 'Amazon Q is generating your answer...'
+    spinnerText: 'Amazon Q is generating your answer...',
+    tabCloseConfirmationMessage: 'Are you sure want to close the tab? Closing the tab would mean that your running job will stop.',
+    tabCloseConfirmationCloseButton: 'Close tab',
+    tabCloseConfirmationKeepButton: 'Keep tab'
   }
 };
 export class Config {
   private static instance: Config;
-  public config: ConfigModel;
+  public config: ConfigFullModel;
   private constructor (config?: Partial<ConfigModel>) {
-    this.config = { ...configDefaults, ...config };
+    this.config = {
+      ...configDefaults,
+      ...config,
+      texts: {
+        ...configDefaults.texts,
+        ...config?.texts
+      }
+    };
   }
 
   public static getInstance (config?: Partial<ConfigModel>): Config {

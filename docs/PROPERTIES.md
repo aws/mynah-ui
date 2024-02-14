@@ -30,6 +30,7 @@ export interface MynahUIProps {
   }) => void;
   onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
+  onBeforeTabRemove?: (tabId: string) => boolean;
   onTabRemove?: (tabId: string) => void;
   onChatItemEngagement?: (
     tabId: string,
@@ -413,12 +414,36 @@ onTabAdd?: (tabId: string):void => {
 
 ---
 
-### `onTabRemove`
+### `onBeforeTabRemove`
 
-This event will be fired when user clicks the close button on a tab or middle clicks to the tab to close it. It will only pass `tabId` for the closed tab as argument.
+This event will be fired when user clicks the close button but before actually closing the tab. You have **partial control over the tab close**. If you return false to this function, it will not immediately close the tab and will ask an approval from the user. Otherwise it will close the tab. You can set the texts which will be appeared on the confirmation overlay on **[Config/TEXTS](./CONFIG.md#texts)**. It will only pass `tabId` for the closed tab as argument.
 
 <p align="center">
-  <img src="./img/onTabRemove.png" alt="onTabAdd" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/onTabRemove.png" alt="onTabRemove" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onBeforeTabRemove: (tabId: string):boolean => {
+  // For example you can check if the tab is in loading state or not.
+  const isTabLoading = mynahUI.getAllTabs()[tabId].store?.loadingChat;
+  return !isTabLoading;
+}
+...
+```
+
+<p align="center">
+  <img src="./img/onBeforeTabRemove.png" alt="onTabRemoveConfirmation" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `onTabRemove`
+
+This event will be fired when user clicks the close button on a tab or middle clicks to the tab to close it but if `onBeforeTabRemove` is not attached or attached but returned `true`. It will only pass `tabId` for the closed tab as argument.
+
+<p align="center">
+  <img src="./img/onTabRemove.png" alt="onTabRemove" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ```typescript

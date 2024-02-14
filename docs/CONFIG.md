@@ -8,29 +8,32 @@ _**Note:** You cannot set it on runtime. It is getting used just once during the
 ...
 interface ConfigModel {
     // Do not forget that you have to provide all of them
-    // Config doesn't allow partial set of texts
+    // Config allows partial set of texts
     texts: {
-        mainTitle: string;
-        feedbackFormTitle: string;
-        feedbackFormOptionsLabel: string;
-        feedbackFormCommentLabel: string;
-        feedbackThanks: string;
-        feedbackReportButtonLabel: string;
-        codeSuggestions: string;
-        clickFileToViewDiff: string;
-        files: string;
-        insertAtCursorLabel: string; 
-        copy: string; 
-        showMore: string; 
-        save: string; // not used or deprecated
-        cancel: string; 
-        submit: string;
-        pleaseSelect: string;
-        stopGenerating: string; 
-        copyToClipboard: string; // not used or deprecated
-        noMoreTabsTooltip: string; 
-        codeSuggestionWithReferenceTitle: string; 
-        spinnerText: string; 
+        mainTitle?: string;
+        feedbackFormTitle?: string;
+        feedbackFormOptionsLabel?: string;
+        feedbackFormCommentLabel?: string;
+        feedbackThanks?: string;
+        feedbackReportButtonLabel?: string;
+        codeSuggestions?: string;
+        clickFileToViewDiff?: string;
+        files?: string;
+        insertAtCursorLabel?: string;
+        copy?: string;
+        showMore?: string;
+        save?: string;
+        cancel?: string;
+        submit?: string;
+        pleaseSelect?: string;
+        stopGenerating?: string;
+        copyToClipboard?: string;
+        noMoreTabsTooltip?: string;
+        codeSuggestionWithReferenceTitle?: string;
+        spinnerText?: string;
+        tabCloseConfirmationMessage?: string;
+        tabCloseConfirmationKeepButton?: string;
+        tabCloseConfirmationCloseButton?: string;
     };
     // Options to show up on the overlay feedback form
     // after user clicks to downvote on a chat item
@@ -39,6 +42,8 @@ interface ConfigModel {
         label: string;
         value: string;
     }>;
+    maxUserInput: number; // max number of chars for the input field
+    autoFocus: boolean; // auto focuses to input panel after every action
     maxTabs: number; // set 1 to hide tabs panel
     showPromptField: boolean; // shows prompt field (default: true)
 }
@@ -107,6 +112,13 @@ Default tab title text if it is not set through store data for that tab.
 ## spinnerText
 <p align="center">
   <img src="./img/texts/spinnerText.png" alt="spinnerText" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## tabCloseConfirmationMessage, tabCloseConfirmationKeepButton, tabCloseConfirmationCloseButton
+<p align="center">
+  <img src="./img/texts/tabCloseConfirmation.png" alt="tabCloseConfirmation" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -182,6 +194,26 @@ _Assume that you've provided `1` for `maxTabs`._
 <p align="center">
   <img src="./img/maxTabs1.png" alt="maxTabs1" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+---
+
+<p><br/></p>
+
+# `autoFocus`
+Just auto focus to prompt input field after every response arrival or initialization.
+
+default: `true`
+
+---
+
+<p><br/></p>
+
+# `maxUserInput`
+Max number of chars user can insert into the prompt field. But, as might know you can also add code attachments under the prompt field. A treshold of `96` chars will be automatically reduced from the `maxUserInput`.
+
+**So beware that if you want 4000 chars exact, you need to give 4096 to the config.**
+
+default: `4096`
 
 ---
 

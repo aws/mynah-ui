@@ -42,3 +42,23 @@
     min-width: max(20vw, 100px);
     max-width: 90vw;
 }
+
+.mynah-overlay > .mynah-overlay-container .mynah-card.mynah-nav-tabs-close-confirmation-overlay {
+    > .mynah-nav-tabs-close-confirmation-buttons-wrapper {
+        display: flex;
+        flex-flow: row nowrap;
+        max-width: 15vw;
+        gap: var(--mynah-sizing-3);
+        > .mynah-button {
+            pointer-events: all !important;
+            &.mynah-nav-tabs-close-confirmation-close-button {
+                border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+                color: var(--mynah-color-text-default);
+                background-color: transparent;
+                &:hover{
+                    border-color: var(--mynah-color-text-default);
+                }
+            }
+        }
+    }
+}

@@ -71,6 +71,7 @@ export interface MynahUIProps {
   onTabChange?: (tabId: string) => void;
   onTabAdd?: (tabId: string) => void;
   onTabRemove?: (tabId: string) => void;
+  onBeforeTabRemove?: (tabId: string) => boolean;
   onChatItemEngagement?: (tabId: string, messageId: string, engagement: Engagement) => void;
   onCopyCodeToClipboard?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
   onCodeInsertToCursorPosition?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
@@ -126,7 +127,8 @@ export class MynahUI {
           if (this.props.onTabChange !== undefined) {
             this.props.onTabChange(selectedTabId);
           }
-        }
+        },
+        onBeforeTabRemove: props.onBeforeTabRemove
       }).render;
 
       this.tabsWrapper.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());

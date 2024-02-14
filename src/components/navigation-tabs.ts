@@ -17,6 +17,7 @@ import { Toggle, ToggleOption } from './toggle';
 
 export interface TabsProps {
   onChange?: (selectedTabId: string) => void;
+  onBeforeTabRemove?: (tabId: string) => boolean;
 }
 export class Tabs {
   render: ExtendedHTMLElement;
@@ -24,6 +25,7 @@ export class Tabs {
   private tabIdChatItemsSubscriptions: Record<string, string> = {};
   private toggleGroup: Toggle;
   private maxReachedOverlay: Overlay | undefined;
+  private closeConfirmationOverlay: Overlay | undefined;
   private readonly props: TabsProps;
 
   constructor (props: TabsProps) {
@@ -90,8 +92,13 @@ export class Tabs {
           this.props.onChange(selectedTabId);
         }
       },
-      onRemove: (selectedTabId) => {
-        MynahUITabsStore.getInstance().removeTab(selectedTabId);
+      onRemove: (selectedTabId, domElement: ExtendedHTMLElement) => {
+        if (this.props.onBeforeTabRemove !== undefined && !this.props.onBeforeTabRemove(selectedTabId)) {
+          console.log('Popup cikar!');
+          this.showCloseTabConfirmationOverLay(domElement, selectedTabId);
+        } else {
+          MynahUITabsStore.getInstance().removeTab(selectedTabId);
+        }
       },
       name: 'mynah-main-tabs',
       options: tabs,
@@ -150,6 +157,56 @@ export class Tabs {
     if (this.maxReachedOverlay !== undefined) {
       this.maxReachedOverlay.close();
       this.maxReachedOverlay = undefined;
+    }
+  };
+
+  private readonly showCloseTabConfirmationOverLay = (elm: HTMLElement, selectedTabId: string): void => {
+    this.closeConfirmationOverlay = new Overlay({
+      background: true,
+      closeOnOutsideClick: false,
+      referenceElement: elm,
+      dimOutside: false,
+      removeOtherOverlays: true,
+      verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
+      horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+      children: [
+        new Card({
+          border: false,
+          classNames: [ 'mynah-nav-tabs-close-confirmation-overlay' ],
+          children: [
+            new CardBody({
+              body: Config.getInstance().config.texts.tabCloseConfirmationMessage,
+            }).render,
+            DomBuilder.getInstance().build({
+              type: 'div',
+              classNames: [ 'mynah-nav-tabs-close-confirmation-buttons-wrapper' ],
+              children: [
+                new Button({
+                  onClick: () => {
+                    this.hideshowCloseTabConfirmationOverLay();
+                  },
+                  label: Config.getInstance().config.texts.tabCloseConfirmationKeepButton
+                }).render,
+                new Button({
+                  onClick: () => {
+                    MynahUITabsStore.getInstance().removeTab(selectedTabId);
+                    this.hideshowCloseTabConfirmationOverLay();
+                  },
+                  classNames: [ 'mynah-nav-tabs-close-confirmation-close-button' ],
+                  label: Config.getInstance().config.texts.tabCloseConfirmationCloseButton
+                }).render,
+              ]
+            })
+          ]
+        }).render
+      ],
+    });
+  };
+
+  private readonly hideshowCloseTabConfirmationOverLay = (): void => {
+    if (this.closeConfirmationOverlay !== undefined) {
+      this.closeConfirmationOverlay.close();
+      this.closeConfirmationOverlay = undefined;
     }
   };
 

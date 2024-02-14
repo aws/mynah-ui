@@ -15,8 +15,10 @@ import { SendButton } from './prompt-input/send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
 
-export const MAX_USER_INPUT = 4000;
 export const MAX_USER_INPUT_THRESHOLD = 96;
+export const MAX_USER_INPUT = (): number => {
+  return Config.getInstance().config.maxUserInput - MAX_USER_INPUT_THRESHOLD;
+};
 export interface ChatPromptInputProps {
   tabId: string;
 }
@@ -46,7 +48,7 @@ export class ChatPromptInput {
       }
     });
     this.promptTextInput = new PromptTextInput({
-      initMaxLength: MAX_USER_INPUT,
+      initMaxLength: MAX_USER_INPUT(),
       tabId: this.props.tabId,
       onKeydown: this.handleInputKeydown,
       onInput: () => this.updateAvailableCharactersIndicator(),
@@ -54,7 +56,7 @@ export class ChatPromptInput {
     this.remainingCharsIndicator = DomBuilder.getInstance().build({
       type: 'span',
       classNames: [ 'mynah-chat-prompt-chars-indicator' ],
-      innerHTML: `${MAX_USER_INPUT - this.promptTextInput.getTextInputValue().length}/${MAX_USER_INPUT}`
+      innerHTML: `${MAX_USER_INPUT() - this.promptTextInput.getTextInputValue().length}/${MAX_USER_INPUT()}`
     });
     this.sendButton = new SendButton({
       tabId: this.props.tabId,
@@ -106,17 +108,17 @@ export class ChatPromptInput {
         // Code snippet will have a limit of MAX_USER_INPUT - MAX_USER_INPUT_THRESHOLD - current prompt text length
         // If exceeding that, we will crop it
         const textInputLength = this.promptTextInput.getTextInputValue().trim().length;
-        const currentSelectedCodeMaxLength = (MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD) - textInputLength;
+        const currentSelectedCodeMaxLength = (MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD) - textInputLength;
         const croppedSelectedCodeSnippet = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
         this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
         // Also update the limit on prompt text given the selected code
-        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT, Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length)));
+        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT(), Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length)));
         this.updateAvailableCharactersIndicator();
       }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REMOVE_CODE_SNIPPET, () => {
-      this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT);
+      this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT());
       this.codeSnippet.clear();
       // Update the limit on prompt text given the selected code
       this.updateAvailableCharactersIndicator();
@@ -133,7 +135,7 @@ export class ChatPromptInput {
     const remainingChars =
       this.promptTextInput.promptTextInputMaxLength - this.promptTextInput.getTextInputValue().trim().length;
     this.remainingCharsIndicator.update({
-      innerHTML: `${Math.max(0, remainingChars)}/${MAX_USER_INPUT}`
+      innerHTML: `${Math.max(0, remainingChars)}/${MAX_USER_INPUT()}`
     });
   };
 
@@ -319,7 +321,7 @@ export class ChatPromptInput {
   public readonly clearTextArea = (keepAttachment?: boolean): void => {
     this.selectedCommand = '';
     this.promptTextInput.clear();
-    this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT);
+    this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT());
     this.promptTextInputCommand.setCommand('');
     if (keepAttachment !== true) {
       this.attachmentWrapper.clear();

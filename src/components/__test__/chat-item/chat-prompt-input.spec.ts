@@ -18,7 +18,7 @@ describe('chat-prompt-input', () => {
     });
 
     // Remaining character indicator
-    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe('4000/4000');
+    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${MAX_USER_INPUT()}/${MAX_USER_INPUT()}`);
     // Send icon
     expect(testChatInput.render.querySelector('i .mynah-ui-icon .mynah-ui-icon-envelope-send')).toBeDefined();
     // Text area
@@ -77,7 +77,7 @@ describe('chat-prompt-input', () => {
     textareaElement.value = 'z';
     textareaElement?.dispatchEvent(new KeyboardEvent('input', { key: 'z' }));
 
-    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe('3999/4000');
+    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${MAX_USER_INPUT() - 1}/${MAX_USER_INPUT()}`);
 
     // Code snippet should change the remaining character count
     const textToAdd = "console.log('hello')";
@@ -87,7 +87,7 @@ describe('chat-prompt-input', () => {
     });
 
     expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${
-      Math.min(MAX_USER_INPUT + MAX_USER_INPUT_THRESHOLD - textToAdd.length, MAX_USER_INPUT) - textareaElement.value.length
-    }/4000`);
+      Math.min(MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD - textToAdd.length, MAX_USER_INPUT()) - textareaElement.value.length
+    }/${MAX_USER_INPUT()}`);
   });
 });

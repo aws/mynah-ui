@@ -289,30 +289,34 @@ export enum NotificationType {
   ERROR = MynahIcons.ERROR,
 }
 
-export interface ConfigModel {
-  texts: {
-    mainTitle: string;
-    feedbackFormTitle: string;
-    feedbackFormOptionsLabel: string;
-    feedbackFormCommentLabel: string;
-    feedbackThanks: string;
-    feedbackReportButtonLabel: string;
-    codeSuggestions: string;
-    clickFileToViewDiff: string;
-    files: string;
-    insertAtCursorLabel: string;
-    copy: string;
-    showMore: string;
-    save: string;
-    cancel: string;
-    submit: string;
-    pleaseSelect: string;
-    stopGenerating: string;
-    copyToClipboard: string;
-    noMoreTabsTooltip: string;
-    codeSuggestionWithReferenceTitle: string;
-    spinnerText: string;
-  };
+export interface ConfigTexts {
+  mainTitle: string;
+  feedbackFormTitle: string;
+  feedbackFormOptionsLabel: string;
+  feedbackFormCommentLabel: string;
+  feedbackThanks: string;
+  feedbackReportButtonLabel: string;
+  codeSuggestions: string;
+  clickFileToViewDiff: string;
+  files: string;
+  insertAtCursorLabel: string;
+  copy: string;
+  showMore: string;
+  save: string;
+  cancel: string;
+  submit: string;
+  pleaseSelect: string;
+  stopGenerating: string;
+  copyToClipboard: string;
+  noMoreTabsTooltip: string;
+  codeSuggestionWithReferenceTitle: string;
+  spinnerText: string;
+  tabCloseConfirmationMessage: string;
+  tabCloseConfirmationKeepButton: string;
+  tabCloseConfirmationCloseButton: string;
+};
+
+export interface ConfigOptions {
   feedbackOptions: Array<{
     label: string;
     value: string;
@@ -320,4 +324,9 @@ export interface ConfigModel {
   maxTabs: number;
   showPromptField: boolean;
   autoFocus: boolean;
+  maxUserInput: number;
+}
+
+export interface ConfigModel extends ConfigOptions {
+  texts: Partial<ConfigTexts>;
 }
