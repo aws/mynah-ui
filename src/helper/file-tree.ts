@@ -3,16 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { FileNodeAction, TreeNodeDetails } from '../static';
+import { Config } from './config';
+
 export type TreeNode = FolderNode | FileNode;
 export interface FileNode {
   name: string;
   type: 'file';
   filePath: string;
   deleted: boolean;
+  actions?: FileNodeAction[];
+  details?: TreeNodeDetails;
 }
 export interface FolderNode {
   name: string;
   type: 'folder';
+  details?: TreeNodeDetails;
   children: Array<FolderNode | FileNode>;
 }
 
@@ -46,7 +52,11 @@ export interface FolderNode {
  *  }]
  * }
  */
-export const fileListToTree = (modifiedFilePaths: string[], deletedFilePaths: string[] = []): TreeNode => {
+export const fileListToTree = (
+  modifiedFilePaths: string[],
+  deletedFilePaths: string[] = [],
+  actions?: Record<string, FileNodeAction[]>,
+  details?: Record<string, TreeNodeDetails>): TreeNode => {
   return [ ...splitFilePaths(modifiedFilePaths, false), ...splitFilePaths(deletedFilePaths, true) ].reduce<TreeNode>(
     (acc, { filePath, deleted }) => {
       // pointer to keep track of the current tree node
@@ -56,12 +66,15 @@ export const fileListToTree = (modifiedFilePaths: string[], deletedFilePaths: st
         // we can assume the leaf of each branch is a file. the LLM doesn't generate
         // empty folder changes
         if (i === filePath.length - 1) {
+          const filePathJoined = filePath.join('/');
           // the parent of a file is always a folder
           (currentNode as FolderNode).children.push({
             type: 'file',
             name: fileOrFolder,
-            filePath: filePath.join('/'),
+            filePath: filePathJoined,
             deleted,
+            actions: actions !== undefined ? actions[filePathJoined] : undefined,
+            details: details !== undefined ? details[filePathJoined] : undefined,
           });
           break;
         } else {
@@ -79,7 +92,7 @@ export const fileListToTree = (modifiedFilePaths: string[], deletedFilePaths: st
       return acc;
     },
     // Start off with a root folder called Changes
-    { name: 'Changes', type: 'folder', children: [] }
+    { name: Config.getInstance().config.texts.changes, type: 'folder', children: [] }
   );
 };
 

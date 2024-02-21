@@ -77,12 +77,14 @@
     box-shadow: 0px -25px 20px -25px rgba(0, 0, 0, 0.15);
     background-color: var(--mynah-color-bg);
     padding: var(--mynah-sizing-4);
-
+    min-height: 20vh;
+    > .mynah-card-body {
+        flex: initial;
+    }
     > .mynah-feedback-form-header {
         display: flex;
         box-sizing: border-box;
         align-items: center;
-        margin-bottom: var(--mynah-sizing-4);
         > h4 {
             flex: 1;
             margin: 0;

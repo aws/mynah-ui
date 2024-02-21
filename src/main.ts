@@ -21,6 +21,8 @@ import {
   ReferenceTrackerInformation,
   CodeSelectionType,
   Engagement,
+  ChatItemFormItem,
+  ChatItemButton,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -79,7 +81,13 @@ export interface MynahUIProps {
   onLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
   onInfoLinkClick?: (tabId: string, link: string, mouseEvent?: MouseEvent) => void;
   onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
+  onCustomFormAction?: (tabId: string, action: {
+    id: string;
+    text?: string;
+    formItemValues?: Record<string, string>;
+  }) => void;
   onOpenDiff?: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => void;
+  onFileActionClick?: (tabId: string, messageId: string, filePath: string, actionName: string) => void;
 }
 
 export class MynahUI {
@@ -301,6 +309,18 @@ export class MynahUI {
         this.props.onOpenDiff(data.tabId, data.filePath, data.deleted, data.messageId);
       }
     });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_ACTION_CLICK, (data) => {
+      if (this.props.onFileActionClick !== undefined) {
+        this.props.onFileActionClick(data.tabId, data.messageId, data.filePath, data.actionName);
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CUSTOM_FORM_ACTION_CLICK, (data) => {
+      if (this.props.onCustomFormAction !== undefined) {
+        this.props.onCustomFormAction(data.tabId, data);
+      }
+    });
   };
 
   public addToUserPrompt = (tabId: string, prompt: string): void => {
@@ -333,6 +353,16 @@ export class MynahUI {
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
+    }
+  };
+
+  /**
+   * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
+   * @param body new body stream as string.
+   */
+  public updateChatAnswerWithMessageId = (tabId: string, messageId: string, updateWith: Partial<ChatItem>): void => {
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, updateWith);
     }
   };
 
@@ -382,5 +412,26 @@ export class MynahUI {
       ...props,
       onNotificationClick: props.onNotificationClick ?? (() => {}),
     }).notify();
+  };
+
+  /**
+   * Simply creates and shows a notification
+   * @param props NotificationProps
+   */
+  public showCustomForm = (
+    tabId: string,
+    formItems?: ChatItemFormItem[],
+    buttons?: ChatItemButton[],
+    title?: string,
+    description?: string): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.SHOW_FEEDBACK_FORM, {
+      tabId,
+      customFormData: {
+        title,
+        description,
+        buttons,
+        formItems
+      }
+    });
   };
 }

@@ -170,3 +170,24 @@
         }
     }
 }
+
+.mynah-chat-item-form-items-container {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-5);
+    overflow: hidden;
+    padding-bottom: var(--mynah-sizing-1);
+}
+.mynah-chat-item-buttons-container {
+    display: flex;
+    flex-flow: row-reverse wrap;
+    gap: var(--mynah-sizing-2);
+    overflow: hidden;
+    padding-top: var(--mynah-sizing-1);
+    padding-bottom: var(--mynah-sizing-1);
+    justify-content: flex-end;
+    align-items: center;
+    &.mynah-chat-item-buttons-container-use-real-buttons {
+        justify-content: flex-start;
+    }
+}

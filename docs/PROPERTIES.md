@@ -65,11 +65,21 @@ export interface MynahUIProps {
   onSendFeedback?: (
     tabId: string,
     feedbackPayload: FeedbackPayload) => void;
+  onCustomFormAction?: (tabId: string, action: {
+    id: string;
+    text?: string;
+    formItemValues?: Record<string, string>;
+  }) => void;
   onOpenDiff?: (
     tabId: string,
     filePath: string,
     deleted: boolean,
     messageId?: string) => void;
+  onFileActionClick?: (
+    tabId: string,
+    messageId: string,
+    filePath: string,
+    actionName: string) => void;
 }
 ```
 _Let's deep dive into each property you can set._
@@ -659,6 +669,30 @@ onSendFeedback?: (
 ```
 ---
 
+### `onCustomFormAction`
+
+This event will be fired when user clicks one of the buttons inside a custom popup form. It will pass `tabId` and `action`. But `action` argument contains the `id` and `text` of the action clicked and the values for each form item with string values. 
+
+
+<p align="center">
+  <img src="./img/onCustomFormAction.png" alt="onOpenDiff" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onCustomFormAction?: (
+    tabId: string,
+    action):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Action id: ${action.id}`);
+      console.log(`Action text: ${action.text ?? ''}`);
+      console.log(`Form item values: ${JSON.stringify(action.formItemValues ?? {})}`);
+    };
+...
+```
+---
+
+
 ### `onOpenDiff`
 
 This event will be fired when user clicks to a file name on the file list inside a chat message body. It will pass `tabId`, `filePath` for the clicked file, `deleted` to identify if the file is deleted and `messageId` as the arguments.
@@ -679,6 +713,33 @@ onOpenDiff?: (
       console.log(`For message: ${messageId}`);
       console.log(`File to open diff view: ${filePath}`);
       console.log(`Is file deleted: ${deleted}`);
+    };
+...
+```
+---
+
+### `onFileActionClick`
+
+This event will be fired when user clicks to an action button for a specific file in a file node tree. It will pass `tabId`, `messageId`, `filePath` and the `actionName`. 
+
+**TIP:** To do further updates on the file tree card, hold the `messageId` then you can use the [updateChatAnswerWithMessageId](./USAGE.md#updateChatAnswerWithMessageId) function to update that specific card.
+
+
+<p align="center">
+  <img src="./img/onFileActionClick.png" alt="onOpenDiff" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onFileActionClick?: (
+    tabId: string,
+    messageId?: string,
+    filePath: string,
+    actionName: string):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`For message: ${messageId}`);
+      console.log(`File name which the action clicked: ${filePath}`);
+      console.log(`The action id/name clicked: ${actionName}`);
     };
 ...
 ```

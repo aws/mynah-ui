@@ -178,7 +178,7 @@ export class ChatItemCard {
                     }
                   };
                   if (this.props.chatItem.type === ChatItemType.CODE_RESULT && this.props.chatItem.fileList !== undefined) {
-                    const { filePaths = [], deletedFiles = [] } = this.props.chatItem.fileList;
+                    const { filePaths = [], deletedFiles = [], actions, details } = this.props.chatItem.fileList;
                     const referenceSuggestionLabel = this.props.chatItem.body ?? '';
                     this.contentBody = new CardBody({
                       ...commonBodyProps,
@@ -191,6 +191,8 @@ export class ChatItemCard {
                           messageId: this.props.chatItem.messageId ?? '',
                           files: filePaths,
                           deletedFiles,
+                          actions,
+                          details,
                           references: this.props.chatItem.codeReference ?? [],
                           referenceSuggestionLabel
                         }).render

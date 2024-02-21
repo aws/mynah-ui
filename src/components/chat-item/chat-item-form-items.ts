@@ -12,7 +12,7 @@ import { TextArea } from '../form-items/text-area';
 import { TextInput } from '../form-items/text-input';
 import { Icon, MynahIcons } from '../icon';
 
-export interface ChatItemFormItemsWrapperProps {tabId: string; chatItem: ChatItem}
+export interface ChatItemFormItemsWrapperProps {tabId: string; chatItem: Partial<ChatItem>}
 export class ChatItemFormItemsWrapper {
   private readonly props: ChatItemFormItemsWrapperProps;
   private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars> = {};

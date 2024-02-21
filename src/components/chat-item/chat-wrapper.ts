@@ -27,6 +27,7 @@ export class ChatWrapper {
   private readonly promptInfo: ExtendedHTMLElement;
   private readonly promptStickyCard: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
+  private allRenderedChatItems: Record<string, ChatItemCard> = {};
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
     this.props = props;
@@ -35,7 +36,11 @@ export class ChatWrapper {
       if (this.chatItemsContainer.children.length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(0);
         if (lastItem !== null) {
-          lastItem.innerHTML = new ChatItemCard({ tabId: this.props.tabId, chatItem: chatItemToInsert }).render.innerHTML;
+          const newChatItemCard = new ChatItemCard({ tabId: this.props.tabId, chatItem: chatItemToInsert });
+          if (chatItemToInsert.messageId !== undefined) {
+            this.allRenderedChatItems[chatItemToInsert.messageId] = newChatItemCard;
+          }
+          lastItem.innerHTML = newChatItemCard.render.innerHTML;
         }
       } else if (chatItems.length > 0) {
         if (this.chatItemsContainer.children.length === 0) {
@@ -47,6 +52,7 @@ export class ChatWrapper {
         }
       } else {
         this.chatItemsContainer.clear(true);
+        this.allRenderedChatItems = {};
       }
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'loadingChat', (loadingChat: boolean) => {
@@ -147,6 +153,9 @@ export class ChatWrapper {
       this.lastChatItemCard = null;
     }
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
+    if (chatItem.messageId !== undefined) {
+      this.allRenderedChatItems[chatItem.messageId] = chatItemCard;
+    }
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
       // Make sure we scroll the chat window to the bottom
       // Only if it is a PROMPT
@@ -157,6 +166,12 @@ export class ChatWrapper {
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
       this.lastChatItemCard.updateCardStack(updateWith);
+    }
+  };
+
+  public updateChatAnswerWithMessageId = (messageId: string, updateWith: Partial<ChatItem>): void => {
+    if (this.allRenderedChatItems[messageId]?.render !== undefined) {
+      this.allRenderedChatItems[messageId].updateCardStack(updateWith);
     }
   };
 
