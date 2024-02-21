@@ -6,7 +6,7 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { fileListToTree } from '../../helper/file-tree';
-import { ReferenceTrackerInformation } from '../../static';
+import { FileNodeAction, ReferenceTrackerInformation, TreeNodeDetails } from '../../static';
 import { ChatItemTreeView } from './chat-item-tree-view';
 import { ChatItemTreeViewLicense } from './chat-item-tree-view-license';
 
@@ -15,6 +15,8 @@ export interface ChatItemTreeViewWrapperProps {
   messageId: string;
   files: string[];
   deletedFiles: string[];
+  actions?: Record<string, FileNodeAction[]>;
+  details?: Record<string, TreeNodeDetails>;
   referenceSuggestionLabel: string;
   references: ReferenceTrackerInformation[];
 }
@@ -31,7 +33,7 @@ export class ChatItemTreeViewWrapper {
     const tree = new ChatItemTreeView({
       messageId: props.messageId,
       tabId: props.tabId,
-      node: fileListToTree(props.files, props.deletedFiles),
+      node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details),
     }).render;
 
     this.render = DomBuilder.getInstance().build({
@@ -52,7 +54,7 @@ export class ChatItemTreeViewWrapper {
                 },
                 {
                   type: 'span',
-                  children: [ `${props.files.length} ${Config.getInstance().config.texts.files}` ]
+                  children: [ `${(props.files?.length ?? 0) + (props.deletedFiles?.length ?? 0)} ${Config.getInstance().config.texts.files}` ]
                 },
               ]
             },

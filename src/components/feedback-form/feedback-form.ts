@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FeedbackPayload, MynahEventNames, MynahPortalNames } from '../../static';
+import { ChatItemButton, ChatItemFormItem, FeedbackPayload, MynahEventNames, MynahPortalNames } from '../../static';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { FeedbackFormComment } from './feedback-form-comment';
@@ -11,6 +11,7 @@ import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { Icon, MynahIcons } from '../icon';
 import { Config } from '../../helper/config';
 import { Select } from '../form-items/select';
+import { CustomFormWrapper } from './custom-form';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;
@@ -32,7 +33,12 @@ export class FeedbackForm {
       ...props?.initPayload
     };
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM, (data: {messageId: string; tabId: string}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM, (data: {messageId?: string; tabId: string; customFormData?: {
+      title?: string;
+      description?: string;
+      buttons?: ChatItemButton[];
+      formItems?: ChatItemFormItem[];
+    };}) => {
       if (this.feedbackFormWrapper === undefined) {
         this.feedbackFormWrapper = DomBuilder.getInstance().createPortal(
           MynahPortalNames.FEEDBACK_FORM,
@@ -41,14 +47,36 @@ export class FeedbackForm {
             attributes: {
               id: 'mynah-feedback-form-wrapper'
             },
-            children: [
-              this.feedbackFormContainer
-            ]
           },
           'afterbegin'
         );
       }
-      this.feedbackPayload.messageId = data.messageId;
+
+      this.feedbackFormWrapper.clear();
+      this.feedbackFormWrapper.update({
+        children: [
+          data.messageId !== undefined
+            ? this.feedbackFormContainer
+            : data.customFormData !== undefined
+              ? new CustomFormWrapper({
+                tabId: data.tabId,
+                chatItem: data.customFormData,
+                title: data.customFormData.title,
+                description: data.customFormData.description,
+                onFormAction: () => {
+                  this.close();
+                },
+                onCloseButtonClick: (e) => {
+                  cancelEvent(e);
+                  this.close();
+                }
+              }).render
+              : ''
+        ]
+      });
+      if (data.messageId !== undefined) {
+        this.feedbackPayload.messageId = data.messageId;
+      }
       this.feedbackPayload.tabId = data.tabId;
       setTimeout(() => {
         this.show();

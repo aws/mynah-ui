@@ -14,7 +14,12 @@ import {
 } from '@aws/mynah-ui';
 import { Commands, mynahUIDefaults } from './config';
 import { Log, LogClear } from './logger';
-import { exampleCodeBlockToInsert, exampleFileListChatItem, exampleRichFollowups, followupTypes } from './samples/sample-data';
+import { exampleCodeBlockToInsert, 
+  exampleFileListChatItem, 
+  exampleFileListChatItemForUpdate, 
+  exampleFormChatItem, 
+  exampleRichFollowups, 
+  followupTypes } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
 
@@ -113,114 +118,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             });
             break;
           case Commands.CARD_WITH_OPTIONS:
-            mynahUI.addChatItem(tabId, {
-              type: ChatItemType.ANSWER,
-              messageId: new Date().getTime().toString(),
-              body: 
-              `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.  
-
-_To send the form, mandatory items should be filled._`,
-              formItems: [
-                {
-                  id: 'expertise-area',
-                  type: 'select',
-                  title: `Area of expertise`,
-                  options: [
-                    {
-                      label: 'Frontend',
-                      value: 'frontend'
-                    },
-                    {
-                      label: 'Backend',
-                      value: 'backend'
-                    },
-                    {
-                      label: 'Data Science',
-                      value: 'datascience'
-                    },
-                    {
-                      label: 'Other',
-                      value: 'other'
-                    }
-                  ]
-                },
-                {
-                  id: 'preferred-ide',
-                  type: 'radiogroup',
-                  title: `Preferred IDE`,
-                  options: [
-                    {
-                      label: 'VSCode',
-                      value: 'vscode'
-                    },
-                    {
-                      label: 'JetBrains IntelliJ',
-                      value: 'intellij'
-                    },
-                    {
-                      label: 'Visual Studio',
-                      value: 'visualstudio'
-                    }
-                  ]
-                },
-                {
-                  id: 'working-hours',
-                  type: 'numericinput',
-                  title: `How many hours are you using an IDE weekly?`,
-                  placeholder: 'IDE working hours',
-                },
-                {
-                  id: 'email',
-                  type: 'textinput',
-                  mandatory: true,
-                  title: `Email`,
-                  placeholder: 'email',
-                },
-                {
-                  id: 'name',
-                  type: 'textinput',
-                  mandatory: true,
-                  title: `Name`,
-                  placeholder: 'Name and Surname',
-                },
-                {
-                  id: 'ease-of-usage-rating',
-                  type: 'stars',
-                  mandatory: true,
-                  title: `How easy is it to use our AI assistant?`,
-                },
-                {
-                  id: 'accuracy-rating',
-                  type: 'stars',
-                  mandatory: true,
-                  title: `How accurate are the answers you get from our AI assistant?`,
-                },
-                {
-                  id: 'general-rating',
-                  type: 'stars',
-                  title: `How do feel about our AI assistant in general?`,
-                },
-                {
-                  id: 'description',
-                  type: 'textarea',
-                  title: `Any other things you would like to share?`,
-                  placeholder: 'Write your feelings about our tool',
-                }
-              ],
-              buttons: [
-                {
-                  id: 'submit',
-                  text: 'Submit',
-                  status: 'info',
-                },
-                {
-                  id: 'cancel-feedback',
-                  text: 'Cancel',
-                  keepCardAfterClick: false,
-                  waitMandatoryFormItems: false,
-                }
-              ],
-            });
+            mynahUI.addChatItem(tabId, exampleFormChatItem);
             break;
           case Commands.EXTENDED_CARDS:
             mynahUI.addChatItem(tabId, {
@@ -281,19 +179,22 @@ _To send the form, mandatory items should be filled._`,
               promptInputStickyCard: {
                 messageId: 'sticky-card',
                 body: `Please read the [terms and conditions change](#) and after that click the **Acknowledge** button below!`,
-                status: 'info',
-                icon: MynahIcons.INFO,
                 buttons: [
                   {
                     keepCardAfterClick: true,
-                    text: 'Acknowledge',
+                    text: 'Open transofmration hub',
                     id: 'acknowledge',
                     status: 'info',
-                    icon: MynahIcons.OK
                   },
                 ],
               }
             });
+            break;
+          case Commands.ADD_FILE_LIST_CARD:
+            mynahUI.addChatItem(tabId, exampleFileListChatItem);
+            break;
+          case Commands.SHOW_CUSTOM_FORM:
+            showCustomForm(tabId);
             break;
           case Commands.COMMAND_WITH_PROMPT:
             const realPromptText = prompt.escapedPrompt?.trim() ?? '';
@@ -368,6 +269,31 @@ _To send the form, mandatory items should be filled._`,
     onOpenDiff: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => {
       Log(`File clicked: <b>${filePath}</b>`);
     },
+    onFileActionClick: (tabId, messageId, filePath, actionName) => {
+      Log(`File clicked: <b>${filePath}</b> -> ${actionName}`);
+      switch(actionName){
+        case 'update-comment':
+        case 'comment-to-change':
+          showCustomForm(tabId);
+          break;
+        case 'reject-change':
+          mynahUI.updateChatAnswerWithMessageId(tabId, 'file-list-message', exampleFileListChatItemForUpdate);
+          break;
+        default:
+          break;
+      }
+      mynahUI.updateChatAnswerWithMessageId(tabId, 'file-list-message', exampleFileListChatItemForUpdate);
+    },
+    onCustomFormAction: (tabId, action) => {
+      Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
+      Action Id: <b>${action.id}</b><br/>
+      Action Text: <b>${action.text}</b><br/>
+      ${action.formItemValues ? `<br/>Options:<br/>${
+        Object.keys(action.formItemValues).map(optionId=>{
+          return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+        }).join('<br/>')}` : ''}
+      `);
+    },
     onChatItemEngagement: (tabId, messageId, engagement) => {
       Log(`<b>${engagement.engagementType}</b> in message <b>${messageId}</b><br/>
       Engagement duration: <b>${engagement.engagementDurationTillTrigger}</b>ms <br/>
@@ -386,6 +312,34 @@ _To send the form, mandatory items should be filled._`,
       Log(`Link inside prompt info field clicked: <b>${link}</b>`);
     },
   });
+
+  const showCustomForm = (tabId:string) => {
+    mynahUI.showCustomForm(tabId, 
+      [
+        {
+          type: 'textarea',
+          id: 'comment',
+          mandatory: true,
+          title: 'What should be improved about this file?'
+        }
+      ],
+      [
+        {
+          id: 'save-comment',
+          text: 'Comment',
+          status: 'info',
+          waitMandatoryFormItems: true
+        },
+        {
+          id: 'cancel-comment',
+          text: 'Cancel',
+          waitMandatoryFormItems: false
+        }
+      ],
+      'Comment on file',
+      'Q will use comments as feedback when regenerating code.'
+    );
+  }
 
   const getGenerativeAIAnswer = (tabId: string, prompt: ChatPrompt): void => {
     mynahUI.updateStore(tabId, {

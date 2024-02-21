@@ -55,6 +55,7 @@ const configDefaults: ConfigFullModel = {
     feedbackReportButtonLabel: 'Report an issue',
     codeSuggestions: 'Code Suggestions',
     files: 'file(s)',
+    changes: 'Changes',
     clickFileToViewDiff: 'Click on a file to view diff.',
     showMore: 'Show more',
     save: 'Save',

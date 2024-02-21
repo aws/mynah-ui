@@ -12,11 +12,14 @@ import MENU from './icons/menu.svg';
 import MINUS from './icons/minus.svg';
 import SEARCH from './icons/search.svg';
 import PLUS from './icons/plus.svg';
+import PENCIL from './icons/pencil.svg';
 import CHAT from './icons/chat.svg';
+import COMMENT from './icons/comment.svg';
 import LINK from './icons/link.svg';
 import DOC from './icons/doc.svg';
 import EXTERNAL from './icons/external.svg';
 import CANCEL from './icons/cancel.svg';
+import CANCEL_CIRCLE from './icons/cancel-circle.svg';
 import CALENDAR from './icons/calendar.svg';
 import MEGAPHONE from './icons/megaphone.svg';
 import NOTIFICATION from './icons/notification.svg';
@@ -59,12 +62,15 @@ export class MynahUIIconImporter {
       MINUS,
       SEARCH,
       PLUS,
+      PENCIL,
       CHAT,
       LINK,
       DOC,
       EXTERNAL,
       CANCEL,
+      CANCEL_CIRCLE,
       CALENDAR,
+      COMMENT,
       MEGAPHONE,
       NOTIFICATION,
       EYE,

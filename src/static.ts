@@ -98,6 +98,8 @@ export enum MynahEventNames {
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   OPEN_DIFF = 'openDiff',
+  FILE_ACTION_CLICK = 'fileActionClick',
+  CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
   ADD_CODE_SNIPPET = 'addCodeSnippet',
   REMOVE_CODE_SNIPPET = 'removeCodeSnippet',
 };
@@ -137,6 +139,12 @@ export enum ChatItemType {
   CODE_RESULT = 'code-result',
 }
 
+export interface TreeNodeDetails {
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon?: MynahIcons;
+  label?: string;
+}
+
 export interface ChatItem {
   type: ChatItemType;
   body?: string;
@@ -154,6 +162,8 @@ export interface ChatItem {
   fileList?: {
     filePaths?: string[];
     deletedFiles?: string[];
+    actions?: Record<string, FileNodeAction[]>;
+    details?: Record<string, TreeNodeDetails>;
   };
   icon?: MynahIcons;
   status?: 'info' | 'success' | 'warning' | 'error';
@@ -197,6 +207,15 @@ export interface ChatItemButton {
   description?: string;
   status?: 'info' | 'success' | 'warning' | 'error';
   icon?: MynahIcons;
+}
+
+export interface FileNodeAction {
+  name: string;
+  label?: string;
+  disabled?: boolean;
+  description?: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon: MynahIcons;
 }
 
 export enum KeyMap {
@@ -299,6 +318,7 @@ export interface ConfigTexts {
   codeSuggestions: string;
   clickFileToViewDiff: string;
   files: string;
+  changes: string;
   insertAtCursorLabel: string;
   copy: string;
   showMore: string;

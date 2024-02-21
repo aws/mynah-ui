@@ -124,6 +124,29 @@ export const exampleFileListChatItem: ChatItem = {
   type: ChatItemType.CODE_RESULT,
   fileList: {
     filePaths: [ 'src/App.tsx', 'devfile.yaml', 'src/App.test.tsx' ],
+    deletedFiles: ['src/devfile.yaml'],
+    actions:{
+      'src/App.tsx': [
+        {
+          icon: MynahIcons.CANCEL_CIRCLE,
+          status: 'error',
+          name: 'reject-change',
+          description: 'Reject change'
+        },
+        {
+          icon: MynahIcons.COMMENT,
+          name: 'comment-to-change',
+          description: 'Comment'
+        }
+      ]
+    },
+    details:{
+      'src/devfile.yaml': {
+        status: 'error',
+        label: "Change rejected",
+        icon: MynahIcons.REVERT
+      }
+    }
   },
   codeReference: [
     {
@@ -134,5 +157,149 @@ export const exampleFileListChatItem: ChatItem = {
     }
   ],
   canBeVoted: true,
-  messageId: new Date().getTime().toString()
+  messageId: 'file-list-message'
+};
+
+export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
+  fileList: {
+    filePaths: [ 'src/App.tsx', 'src/App.test.tsx' ],
+    details: {
+      'src/App.tsx': {
+        status: 'error',
+        label: "File rejected",
+        icon: MynahIcons.CANCEL_CIRCLE
+      },
+      'src/App.test.tsx': {
+        status: 'warning',
+        label: "Comment added",
+        icon: MynahIcons.COMMENT
+      }
+    },
+    actions:{
+      'src/App.tsx': [
+        {
+          icon: MynahIcons.REVERT,
+          name: 'revert-rejection',
+          description: 'Revert rejection'
+        }
+      ],
+      'src/App.test.tsx': [
+        {
+          icon: MynahIcons.PENCIL,
+          name: 'update-comment',
+          description: 'Update comment'
+        }
+      ]
+    }
+  },
+};
+
+
+export const exampleFormChatItem: ChatItem = {
+  type: ChatItemType.ANSWER,
+  messageId: new Date().getTime().toString(),
+  body: 
+  `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.  
+
+_To send the form, mandatory items should be filled._`,
+  formItems: [
+    {
+      id: 'expertise-area',
+      type: 'select',
+      title: `Area of expertise`,
+      options: [
+        {
+          label: 'Frontend',
+          value: 'frontend'
+        },
+        {
+          label: 'Backend',
+          value: 'backend'
+        },
+        {
+          label: 'Data Science',
+          value: 'datascience'
+        },
+        {
+          label: 'Other',
+          value: 'other'
+        }
+      ]
+    },
+    {
+      id: 'preferred-ide',
+      type: 'radiogroup',
+      title: `Preferred IDE`,
+      options: [
+        {
+          label: 'VSCode',
+          value: 'vscode'
+        },
+        {
+          label: 'JetBrains IntelliJ',
+          value: 'intellij'
+        },
+        {
+          label: 'Visual Studio',
+          value: 'visualstudio'
+        }
+      ]
+    },
+    {
+      id: 'working-hours',
+      type: 'numericinput',
+      title: `How many hours are you using an IDE weekly?`,
+      placeholder: 'IDE working hours',
+    },
+    {
+      id: 'email',
+      type: 'textinput',
+      mandatory: true,
+      title: `Email`,
+      placeholder: 'email',
+    },
+    {
+      id: 'name',
+      type: 'textinput',
+      mandatory: true,
+      title: `Name`,
+      placeholder: 'Name and Surname',
+    },
+    {
+      id: 'ease-of-usage-rating',
+      type: 'stars',
+      mandatory: true,
+      title: `How easy is it to use our AI assistant?`,
+    },
+    {
+      id: 'accuracy-rating',
+      type: 'stars',
+      mandatory: true,
+      title: `How accurate are the answers you get from our AI assistant?`,
+    },
+    {
+      id: 'general-rating',
+      type: 'stars',
+      title: `How do feel about our AI assistant in general?`,
+    },
+    {
+      id: 'description',
+      type: 'textarea',
+      title: `Any other things you would like to share?`,
+      placeholder: 'Write your feelings about our tool',
+    }
+  ],
+  buttons: [
+    {
+      id: 'submit',
+      text: 'Submit',
+      status: 'info',
+    },
+    {
+      id: 'cancel-feedback',
+      text: 'Cancel',
+      keepCardAfterClick: false,
+      waitMandatoryFormItems: false,
+    }
+  ],
 };

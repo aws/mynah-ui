@@ -15,11 +15,13 @@ Lastly before you start reading here, you can find more details on the **[Data M
 ```typescript
 mynahUI.addChatItem(...);
 mynahUI.addToUserPrompt(...);
-mynahUI.getSelectedTabId();
-mynahUI.notify(...);
 mynahUI.updateLastChatAnswer(...);
+mynahUI.updateChatAnswerWithMessageId(...);
 mynahUI.updateStore(...);
+mynahUI.getSelectedTabId(...);
 mynahUI.getAllTabs(...);
+mynahUI.notify(...);
+mynahUI.showCustomForm(...);
 ```
 
 <p><br/></p>
@@ -185,7 +187,7 @@ mynahUI.updateStore('tab-1', {
 
 ## Creating and updating streaming chat items (`updateLastChatAnswer`)
 
-You can only update the streaming chat items on the runtime and you can only have one streaming chat item at once. First let's create a streaming chat item. We'll also set the tab in loading state to be sure that we have streaming animations before and during the stream.
+You can update the streaming chat items on the runtime and you can only have one streaming chat item at once. First let's create a streaming chat item. We'll also set the tab in loading state to be sure that we have streaming animations before and during the stream.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -271,6 +273,49 @@ As you can update the body of a streaming card, you can also update the other in
 
 ---
 
+## updating chat items with messageId (`updateChatAnswerWithMessageId`)
+
+You can update any kind of chat item on the runtime by specifying its `messageId`. First let's create a chat item.
+
+```typescript
+const mynahUI = new MynahUI({
+  tabs: {
+    'tab-1': {
+      isSelected: true,
+      store: {}
+    }
+  }
+});
+
+mynahUI.addChatItem('tab-1', {
+  type: ChatItemType.ANSWER,
+  body: '',
+  messageId: 'my-chat-item'
+  ...
+});
+```
+
+Now on UI, we have a new chat item with a `messageId -> "my-chat-item"` . Before we update the card, please beware that those `messageId`s have to be unique.
+
+And as an additional notice, you don't need to send the whole `ChatItem` object each time you need to udpate. Only sending the desired attributes is enough. But it is **not** checking the object deeply. Just using the main level attributes from the previous data of the card if you leave them unset.
+
+```typescript
+mynahUI.updateChatAnswerWithMessageId(
+  'tab-1', 
+  'my-chat-item', //Message ID
+  {
+    body: 'Hello there', // We just need to update the body here
+  }
+);
+```
+
+After the `updateChatAnswerWithMessageId` call, you'll see that the body of the card will be updated with its new value.
+
+As you can update the body of a card, you can also update the other information related with the card. Like adding the related sources etc. 
+**Please refer to the [Data Model](./DATAMODEL.md) documentation for types of chat items and how they appear differently on screen.**
+
+---
+
 ## Adding code attachments to prompt field (`addToUserPrompt`)
 
 You can add code attachments under the prompt field of the desired tab. When user fills the prompt field and sends it, the attached code block will be appended at the end of the prompt text. It accepts max chars set through **[CONFIG](./CONFIG.md#maxUserInput)** however you don't need to worry about it. MynahUI will automatically crop it depending on the available chars left from the prompt field itself by using a `96` chars of threshold. **So beware that for example if you want 4000 chars exact, you need to give 4096 to the config.**
@@ -295,6 +340,16 @@ And when user sends the prompt attached code will be appended to the bottom.
 
 <p><br/></p>
 
+---
+
+## Getting all tabs with their store data (`getAllTabs`)
+
+You can get all tabs and their latest updated store data. Do not use this function to handle the data. This function aims to help you wit your test scenarios which you can grab the data and do your comparisons.
+
+```typescript
+mynahUI.getAllTabs();
+// returns an object map of tabIds and their store data.
+```
 ---
 
 <p><br/></p>
@@ -326,11 +381,42 @@ To see the different notification types and how they look **please refer to the 
 
 ---
 
-## Getting all tabs with their store data (`getAllTabs`)
+<p><br/></p>
 
-You can get all tabs and their latest updated store data. Do not use this function to handle the data. This function aims to help you wit your test scenarios which you can grab the data and do your comparisons.
+# Custom popup forms (`showCustomForm`)
+
+You can create custom forms which will pop up from the bottom of the screen. Let's see our example below.
 
 ```typescript
-mynahUI.getAllTabs();
-// returns an object map of tabIds and their store data.
+mynahUI.showCustomForm(
+  'tab-1', 
+  [
+    {
+      type: 'textarea',
+      id: 'comment',
+      mandatory: true,
+      title: 'What should be improved about this file?'
+    }
+  ], // This is the set of the form items
+  [
+    {
+      id: 'save-comment',
+      text: 'Comment',
+      status: 'info', // Doesn't matter which status you'll give here, if you set status it will show this button as a primary one
+      waitMandatoryFormItems: true
+    },
+    {
+      id: 'cancel-comment',
+      text: 'Cancel',
+      waitMandatoryFormItems: false
+    }
+  ], // This is the set of buttons
+  'Comment on file', // Title of the form popup
+  'Q will use comments as feedback when regenerating code.' // Additional content body block which accepts MARKDOWN
+);
 ```
+<p align="center">
+  <img src="./img/customForm.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+To see the form item objects structure and the buttons structure, please go take a look to [DATAMODEL / formItems](./DATAMODEL.md#formItems) and [DATAMODEL / buttons](./DATAMODEL.md#buttons) ** because the structure of the items are identical. **

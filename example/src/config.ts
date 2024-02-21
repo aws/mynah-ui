@@ -12,6 +12,8 @@ export enum Commands {
   CLEAR = '/clear',
   CLEAR_LOGS = '/clear-logs',
   ADD_STICKY_CARD = '/add-sticky-card',
+  ADD_FILE_LIST_CARD = '/add-file-list-card',
+  SHOW_CUSTOM_FORM = '/show-custom-form',
 }
 export const QuickActionCommands = [
   {
@@ -42,6 +44,14 @@ export const QuickActionCommands = [
       {
         command: Commands.ADD_STICKY_CARD,
         description: 'Adds a sticky card on top of the input field.',
+      },
+      {
+        command: Commands.ADD_FILE_LIST_CARD,
+        description: 'Adds a file list card.',
+      },
+      {
+        command: Commands.SHOW_CUSTOM_FORM,
+        description: 'It will show you custom form which will appear from the bottom of the screen',
       },
       {
         command: Commands.NOTIFY,

@@ -377,11 +377,82 @@ enum ChatItemType {
   SYSTEM_PROMPT = 'system-prompt'
 }
 
+export interface ChatItemAction extends ChatPrompt {
+  type?: string;
+  pillText: string;
+  disabled?: boolean;
+  description?: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon?: MynahIcons;
+}
+
+export interface ChatItemButton {
+  keepCardAfterClick?: boolean;
+  waitMandatoryFormItems?: boolean;
+  text: string;
+  id: string;
+  disabled?: boolean;
+  description?: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon?: MynahIcons;
+}
+
+export interface ChatItemFormItem {
+  id: string;
+  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup';
+  mandatory?: boolean;
+  title?: string;
+  placeholder?: string;
+  value?: string;
+  options?: Array<{
+    value: string;
+    label: string;
+  }>;
+}
+
+export interface FileNodeAction {
+  name: string;
+  label?: string;
+  disabled?: boolean;
+  description?: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon: MynahIcons;
+}
+
+export interface TreeNodeDetails {
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon?: MynahIcons;
+  label?: string;
+}
+
+export interface SourceLink {
+  title: string;
+  id?: string;
+  url: string;
+  body?: string;
+  type?: string;
+  metadata?: Record<string, SourceLinkMetaData>;
+}
+
+export interface ReferenceTrackerInformation {
+  licenseName?: string;
+  repository?: string;
+  url?: string;
+  recommendationContentSpan?: {
+    start: number;
+    end: number;
+  };
+  information: string;
+}
+
+// ################################# 
 interface ChatItem {
   type: ChatItemType;
   fileList?: {
     filePaths?: string[];
     deletedFiles?: string[];
+    actions?: Record<string, FileNodeAction[]>;
+    details?: Record<string, TreeNodeDetails>;
   };
   body?: string; // supports MARKDOWN string
   messageId?: string;
@@ -400,6 +471,7 @@ interface ChatItem {
   icon?: MynahIcons;
   codeReference?: ReferenceTrackerInformation[];
 }
+// ################################# 
 ```
 
 Let's see all kind of examples and what parameter reflects to what.
@@ -420,22 +492,49 @@ const mynahUI = new MynahUI({
 });
 
 mynahUI.addChatItem(tabId, {
-    type: ChatItemType.CODE_RESULT,
-    fileList: {
-        filePaths: [ 'src/App.tsx', 'devfile.yaml', 'src/App.test.tsx' ],
+  type: ChatItemType.CODE_RESULT,
+  fileList: {
+    filePaths: [ 'src/App.tsx', 'devfile.yaml', 'src/App.test.tsx' ],
+    deletedFiles: ['src/devfile.yaml'],
+    actions:{
+      'src/App.tsx': [
+        {
+          icon: MynahIcons.CANCEL_CIRCLE,
+          status: 'error',
+          name: 'reject-change',
+          description: 'Reject change'
+        },
+        {
+          icon: MynahIcons.COMMENT,
+          name: 'comment-to-change',
+          description: 'Comment'
+        }
+      ]
     },
-    codeReference: [
-        {
-            information: 'Reference code *under the MIT license* from repository `amazon`.'
-        },
-        {
-            information: 'Reference code *under the MIT license* from repository `aws`.'
-        },
-    ],
-    canBeVoted: true,
-    messageId: new Date().getTime().toString()
+    details:{
+      'src/devfile.yaml': {
+        status: 'error',
+        label: "Change rejected",
+        icon: MynahIcons.REVERT
+      }
+    }
+  },
+  codeReference: [
+    {
+      information: 'Reference code *under the MIT license* from repository `amazon`.'
+    },
+    {
+      information: 'Reference code *under the MIT license* from repository `aws`.'
+    }
+  ],
+  canBeVoted: true,
+  messageId: 'file-list-message'
 });
 ```
+
+**NOTE 1:** Actions will be shown only when you hover to the file.
+
+**NOTE 2:** You can add actions and details for each file (**but not for folders**). Beware that you need to add those actions for each specific file as a map which the key needs to be the path of the file.
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
