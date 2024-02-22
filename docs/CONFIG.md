@@ -17,7 +17,6 @@ interface ConfigModel {
         feedbackThanks?: string;
         feedbackReportButtonLabel?: string;
         codeSuggestions?: string;
-        clickFileToViewDiff?: string;
         files?: string;
         insertAtCursorLabel?: string;
         copy?: string;
@@ -102,7 +101,7 @@ Default tab title text if it is not set through store data for that tab.
 
 ---
 
-## codeSuggestions, clickFileToViewDiff, files, codeSuggestionWithReferenceTitle
+## codeSuggestions, files, codeSuggestionWithReferenceTitle
 <p align="center">
   <img src="./img/texts/codeFileSuggestions.png" alt="codeFileSuggestions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>

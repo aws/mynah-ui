@@ -303,6 +303,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Selection Y distance: <b>${engagement.selectionDistanceTraveled?.y ?? '0'}px</b>`);
     },
     onLinkClick: (tabId, messageId, link, mouseEvent) => {
+      if(link === '#open-diff-viewer'){
+        mouseEvent?.preventDefault();
+        Log(`Open diff viewer clicked`);
+      }
       Log(`Link inside body clicked: <b>${link}</b>`);
     },
     onSourceLinkClick: (tabId, messageId, link, mouseEvent) => {

@@ -62,7 +62,7 @@ export class ChatItemCard {
       children: [
         ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM
           ? [
-              // Create an empty card with its child set to the loading spinner
+            // Create an empty card with its child set to the loading spinner
               new Card({
                 children: [
                   DomBuilder.getInstance().build({
@@ -182,9 +182,7 @@ export class ChatItemCard {
                     const referenceSuggestionLabel = this.props.chatItem.body ?? '';
                     this.contentBody = new CardBody({
                       ...commonBodyProps,
-                      ...{
-                        body: '' // Reset the body, since the tree view has the fully rendered element
-                      },
+                      childLocation: 'above-body',
                       children: [
                         new ChatItemTreeViewWrapper({
                           tabId: this.props.tabId,
@@ -196,7 +194,7 @@ export class ChatItemCard {
                           references: this.props.chatItem.codeReference ?? [],
                           referenceSuggestionLabel
                         }).render
-                      ],
+                      ]
                     });
                   } else {
                     this.contentBody = new CardBody({
@@ -264,9 +262,8 @@ export class ChatItemCard {
     },
     persistent: true,
     innerHTML: `
-    ${
-      (new Array(Math.max(0, (this.typewriterItemIndex ?? 0) - (this.previousTypewriterItemIndex ?? 0))).fill(null)).map((n, i) => {
-        return `
+    ${(new Array(Math.max(0, (this.typewriterItemIndex ?? 0) - (this.previousTypewriterItemIndex ?? 0))).fill(null)).map((n, i) => {
+      return `
         .${this.typewriterId} .typewriter-part[index="${i + this.previousTypewriterItemIndex}"] {
           animation: none !important;
           opacity: 1 !important;
@@ -274,8 +271,8 @@ export class ChatItemCard {
         }
 
         `;
-      }).join('')
-    }
+    }).join('')
+      }
     `
   });
 
@@ -287,15 +284,14 @@ export class ChatItemCard {
       type: 'text/css'
     },
     innerHTML: `
-        ${
-          (new Array(Math.max(0, newWordsCount ?? 0)).fill(null)).map((n, i) => {
-            return `
+        ${(new Array(Math.max(0, newWordsCount ?? 0)).fill(null)).map((n, i) => {
+        return `
             .${this.typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
               animation: typewriter 100ms ease-out forwards;
               animation-delay: ${i * timeForEach}ms !important;
             }
             `;
-          }).join('')
+      }).join('')
         }
         `
   }));

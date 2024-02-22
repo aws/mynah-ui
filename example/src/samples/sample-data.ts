@@ -13,7 +13,7 @@ import md10 from './sample-10.md';
 import SampleCode from './sample-code.md';
 
 // react stateless function component example
-export const exampleSources = [ {
+export const exampleSources = [{
   url: 'https://github.com/aws/mynah-ui',
   title: 'MynahUI',
   body: '### *A Data & Event Drivent Chat Interface Library for Browsers and Webviews*'
@@ -45,20 +45,20 @@ export const exampleSources = [ {
   mynahUI.updateStore(...);
   \`\`\`
 `
-} ] as SourceLink[];
+}] as SourceLink[];
 
 export const exampleStreamParts = [
-    `${md0 as string}`,
-    `${md1 as string}`,
-    `${md2 as string}`,
-    `${md3 as string}`,
-    `${md4 as string}`,
-    `${md5 as string}`,
-    `${md6 as string}`,
-    `${md7 as string}`,
-    `${md8 as string}`,
-    `${md9 as string}`,
-    `${md10 as string}`
+  `${md0 as string}`,
+  `${md1 as string}`,
+  `${md2 as string}`,
+  `${md3 as string}`,
+  `${md4 as string}`,
+  `${md5 as string}`,
+  `${md6 as string}`,
+  `${md7 as string}`,
+  `${md8 as string}`,
+  `${md9 as string}`,
+  `${md10 as string}`
 ];
 
 export const exampleCodeBlockToInsert = SampleCode;
@@ -122,14 +122,25 @@ export const exampleFollowUps = {
 
 export const exampleFileListChatItem: ChatItem = {
   type: ChatItemType.CODE_RESULT,
+  body: '[Open Diff Viewer](#open-diff-viewer)',
+  buttons: [
+    {
+      id:'open-diff-viewer',
+      text: 'Open Diff Viewer',
+      icon: MynahIcons.EXTERNAL,
+      status: 'info',
+      keepCardAfterClick: true,
+      disabled: false
+    }
+  ],
   fileList: {
-    filePaths: [ 'src/App.tsx', 'devfile.yaml', 'src/App.test.tsx' ],
+    filePaths: ['src/App.tsx', 'devfile.yaml', 'src/App.test.tsx'],
     deletedFiles: ['src/devfile.yaml'],
-    actions:{
+    actions: {
       'src/App.tsx': [
         {
           icon: MynahIcons.CANCEL_CIRCLE,
-          status: 'error',
+          status: 'info',
           name: 'reject-change',
           description: 'Reject change'
         },
@@ -140,7 +151,7 @@ export const exampleFileListChatItem: ChatItem = {
         }
       ]
     },
-    details:{
+    details: {
       'src/devfile.yaml': {
         status: 'error',
         label: "Change rejected",
@@ -162,7 +173,7 @@ export const exampleFileListChatItem: ChatItem = {
 
 export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
   fileList: {
-    filePaths: [ 'src/App.tsx', 'src/App.test.tsx' ],
+    filePaths: ['src/App.tsx', 'src/App.test.tsx'],
     details: {
       'src/App.tsx': {
         status: 'error',
@@ -175,7 +186,7 @@ export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
         icon: MynahIcons.COMMENT
       }
     },
-    actions:{
+    actions: {
       'src/App.tsx': [
         {
           icon: MynahIcons.REVERT,
@@ -198,8 +209,8 @@ export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
 export const exampleFormChatItem: ChatItem = {
   type: ChatItemType.ANSWER,
   messageId: new Date().getTime().toString(),
-  body: 
-  `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.  
+  body:
+    `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.  
 
 _To send the form, mandatory items should be filled._`,
   formItems: [

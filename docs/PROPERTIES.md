@@ -161,7 +161,6 @@ config: {
         feedbackThanks: string;
         feedbackReportButtonLabel: string;
         codeSuggestions: string;
-        clickFileToViewDiff: string;
         files: string;
         insertAtCursorLabel: string;
         copy: string;

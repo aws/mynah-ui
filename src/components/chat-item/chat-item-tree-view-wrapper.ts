@@ -61,10 +61,6 @@ export class ChatItemTreeViewWrapper {
             license,
             tree,
           ]
-        },
-        {
-          type: 'p',
-          children: [ Config.getInstance().config.texts.clickFileToViewDiff ]
         }
       ]
     });
