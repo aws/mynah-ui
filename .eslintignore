@@ -1,4 +1,5 @@
 node_modules/**
+postinstall.js
 **/*.json
 **/*.md
 **/*.css
