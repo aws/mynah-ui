@@ -16,6 +16,12 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm test
+      - run: npm packdemo
+      - uses: actions/upload-artifact@v4
+        with:
+            name: artifacts
+            path: './example/*.zip'
+            retention-days: 10
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

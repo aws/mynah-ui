@@ -14,6 +14,7 @@
   "scripts": {
     "clean": "rm -rf dist node_modules",
     "build": "rm -rf dist && webpack --config webpack.config.js --mode production",
+    "packdemo": "cd ./example && npm run pack",
     "watch": "webpack --config webpack.config.js --mode development --watch",
     "lint-fix": "npx eslint \"./**\" --fix",
     "lint": "npx eslint \"./**\"",
