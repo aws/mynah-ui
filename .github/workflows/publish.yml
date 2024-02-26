@@ -17,18 +17,18 @@ jobs:
       - run: npm run build
       - run: npm test
       - run: npm run packdemo
-      - name: Create Release
-        id: latest_release_info
-        uses: jossef/action-latest-release-info@v1.2.2
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.latest_release_info.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./example/mynah-ui-demo.zip
           asset_name: mynah-ui-demo.zip
           asset_content_type: application/zip
