@@ -160,6 +160,8 @@ export interface ChatItem {
   };
   codeReference?: ReferenceTrackerInformation[];
   fileList?: {
+    fileTreeTitle?: string;
+    rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
     actions?: Record<string, FileNodeAction[]>;

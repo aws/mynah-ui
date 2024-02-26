@@ -56,7 +56,8 @@ export const fileListToTree = (
   modifiedFilePaths: string[],
   deletedFilePaths: string[] = [],
   actions?: Record<string, FileNodeAction[]>,
-  details?: Record<string, TreeNodeDetails>): TreeNode => {
+  details?: Record<string, TreeNodeDetails>,
+  rootTitle?: string): TreeNode => {
   return [ ...splitFilePaths(modifiedFilePaths, false), ...splitFilePaths(deletedFilePaths, true) ].reduce<TreeNode>(
     (acc, { filePath, deleted }) => {
       // pointer to keep track of the current tree node
@@ -92,7 +93,7 @@ export const fileListToTree = (
       return acc;
     },
     // Start off with a root folder called Changes
-    { name: Config.getInstance().config.texts.changes, type: 'folder', children: [] }
+    { name: rootTitle ?? Config.getInstance().config.texts.changes, type: 'folder', children: [] }
   );
 };
 

@@ -14,6 +14,8 @@ export enum Commands {
   ADD_STICKY_CARD = '/add-sticky-card',
   ADD_FILE_LIST_CARD = '/add-file-list-card',
   SHOW_CUSTOM_FORM = '/show-custom-form',
+  SHOW_PROGRESS_CARD = '/show-progress-card',
+  SHOW_IMAGE_IN_CARD = '/show-image-in-card',
 }
 export const QuickActionCommands = [
   {
@@ -48,6 +50,14 @@ export const QuickActionCommands = [
       {
         command: Commands.ADD_FILE_LIST_CARD,
         description: 'Adds a file list card.',
+      },
+      {
+        command: Commands.SHOW_PROGRESS_CARD,
+        description: 'Shows a progressing card.',
+      },
+      {
+        command: Commands.SHOW_IMAGE_IN_CARD,
+        description: 'Shows images in card.',
       },
       {
         command: Commands.SHOW_CUSTOM_FORM,

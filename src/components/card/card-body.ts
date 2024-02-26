@@ -255,7 +255,7 @@ export class CardBody {
       ).map(node => {
         const processedNode = this.processNode(node as HTMLElement, props.body);
         if (processedNode.querySelectorAll !== undefined) {
-          Array.from(processedNode.querySelectorAll('*:empty')).forEach(emptyElement => { emptyElement.remove(); });
+          Array.from(processedNode.querySelectorAll('*:empty:not(img)')).forEach(emptyElement => { emptyElement.remove(); });
         }
         return processedNode;
       }))

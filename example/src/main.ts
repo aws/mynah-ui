@@ -17,8 +17,12 @@ import { Log, LogClear } from './logger';
 import { exampleCodeBlockToInsert, 
   exampleFileListChatItem, 
   exampleFileListChatItemForUpdate, 
+  exampleFollowUps, 
   exampleFormChatItem, 
+  exampleImageCard, 
+  exampleProgressCards, 
   exampleRichFollowups, 
+  exampleStreamParts, 
   followupTypes } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -120,6 +124,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           case Commands.CARD_WITH_OPTIONS:
             mynahUI.addChatItem(tabId, exampleFormChatItem);
             break;
+          case Commands.SHOW_PROGRESS_CARD:
+            getProgressingCard(tabId);
+            break;
           case Commands.EXTENDED_CARDS:
             mynahUI.addChatItem(tabId, {
               type: ChatItemType.ANSWER,
@@ -196,6 +203,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           case Commands.SHOW_CUSTOM_FORM:
             showCustomForm(tabId);
             break;
+          case Commands.SHOW_IMAGE_IN_CARD:
+            mynahUI.addChatItem(tabId, exampleImageCard());
+            break;
           case Commands.COMMAND_WITH_PROMPT:
             const realPromptText = prompt.escapedPrompt?.trim() ?? '';
             mynahUI.addChatItem(tabId, {
@@ -270,7 +280,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`File clicked: <b>${filePath}</b>`);
     },
     onFileActionClick: (tabId, messageId, filePath, actionName) => {
-      Log(`File clicked: <b>${filePath}</b> -> ${actionName}`);
+      Log(`File action clicked: <b>${filePath}</b> -> ${actionName}`);
       switch(actionName){
         case 'update-comment':
         case 'comment-to-change':
@@ -351,17 +361,49 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       promptInputDisabledState: true
     });
     connector.requestGenerativeAIAnswer(
-      prompt,
+      exampleStreamParts,
       (chatItem: Partial<ChatItem>) => {
         mynahUI.updateLastChatAnswer(tabId, chatItem);
-      }, (chatItem: ChatItem) => {
+      }, () => {
         mynahUI.updateStore(tabId, {
           loadingChat: false,
           promptInputDisabledState: false
         });
-        mynahUI.addChatItem(tabId, chatItem);
+        mynahUI.addChatItem(tabId, exampleFollowUps);
       }).then(chatItem => {
-        mynahUI.addChatItem(tabId, chatItem);
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.ANSWER_STREAM,
+          body: '',
+          canBeVoted: true,
+          messageId: (new Date()).getTime().toString()
+        });
+      });
+  };
+
+  const getProgressingCard = (tabId: string): void => {
+    const messageId = (new Date().getTime()).toString();
+    mynahUI.updateStore(tabId, {
+      loadingChat: true,
+      promptInputDisabledState: true
+    });
+    connector.requestGenerativeAIAnswer(
+      exampleProgressCards,
+      (chatItem: Partial<ChatItem>) => {
+        mynahUI.updateChatAnswerWithMessageId(tabId, messageId, chatItem);
+      }, () => {
+        mynahUI.updateStore(tabId, {
+          loadingChat: false,
+          promptInputDisabledState: false
+        });
+        mynahUI.notify({
+          content: 'Your refactor request is finished',
+        });
+      }).then(() => {
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.ANSWER_STREAM,
+          body: '',
+          messageId,
+        });
       });
   };
 
