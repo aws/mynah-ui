@@ -2,7 +2,7 @@ var file_system = require('fs');
 var mynahUIPackageJson = require('../package.json');
 var archiver = require('archiver');
 
-var output = file_system.createWriteStream(`mynah-ui-${mynahUIPackageJson?.version ?? '??' }.zip`);
+var output = file_system.createWriteStream('mynah-ui-demo.zip');
 var archive = archiver('zip');
 
 output.on('close', function () {
