@@ -13,6 +13,18 @@ interface MynahUIDataModel {
    * */
   tabTitle?: string;
   /**
+   * If tab is running an action (loadingChat = true) this markdown will be shown before close in a popup
+   */
+  tabCloseConfirmationMessage?: string | null;
+  /**
+   * Keep tab open button text
+   */
+  tabCloseConfirmationKeepButton?: string | null;
+  /**
+   * Close tab button text
+   */
+  tabCloseConfirmationCloseButton?: string | null;
+  /**
    * Chat screen loading animation state (mainly use during the stream or getting the initial answer)
    */
   loadingChat?: boolean;
@@ -69,8 +81,21 @@ mynahUI.updateStore('tab-1', {
 })
 ```
 
+
+### 
+
 <p align="center">
   <img src="./img/data-model/tabStore/tabTitle.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `tabCloseConfirmationMessage`, `tabCloseConfirmationKeepButton` and `tabCloseConfirmationCloseButton`
+
+Custom texts for each tab for the message and the buttons of the popup to confirm the tab close. Check **[Config/TEXTS](./CONFIG.md#texts)** for defaults. 
+
+<p align="center">
+  <img src="./img/onBeforeTabRemove.png" alt="onTabRemove" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
