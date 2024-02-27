@@ -18,6 +18,7 @@ mynahUI.addToUserPrompt(...);
 mynahUI.updateLastChatAnswer(...);
 mynahUI.updateChatAnswerWithMessageId(...);
 mynahUI.updateStore(...);
+mynahUI.selectTab(...);
 mynahUI.getSelectedTabId(...);
 mynahUI.getAllTabs(...);
 mynahUI.notify(...);
@@ -65,6 +66,25 @@ if(typeof newTabId !== string){
 }
 ```
 **Please refer to the [Data Model](./DATAMODEL.md) documentation for details on which object on tab data store refers to what and how they are working**
+
+---
+
+## Selecting a tab programmatically (!)
+You can switch to a tab with `tabId` and the `eventId`. 
+
+### IMPORTANT NOTICE!
+**`eventId` is a proof that the tab switch trigger is following an intended user action such as a new prompt of a button action**
+
+```typescript
+const mynahUI = new MynahUI({
+  onChatPrompt: (tabId, prompt, eventId)=>{
+    if(prompt?.command === 'fixed-tab'){
+      // Assume that you have another tab already open and you know it's id.
+      mynahUI.selectTab('fixed-tab-id', eventId);
+    }
+  }
+});
+```
 
 ---
 

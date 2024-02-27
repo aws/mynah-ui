@@ -478,70 +478,6 @@ Let's see all kind of examples and what parameter reflects to what.
 
 ## `type`
 
-### ChatItemType.`CODE_RESULT` and `fileList` _(position: left)_
-
-Use for showing a file list. You have to provide the `fileList` if your chat item type is `CODE_RESULT`. See the example below.
-
-```typescript
-const mynahUI = new MynahUI({
-    tabs: {
-        'tab-1': {
-            ...
-        }
-    }
-});
-
-mynahUI.addChatItem(tabId, {
-  type: ChatItemType.CODE_RESULT,
-  fileList: {
-    filePaths: [ 'src/App.tsx', 'devfile.yaml', 'src/App.test.tsx' ],
-    deletedFiles: ['src/devfile.yaml'],
-    actions:{
-      'src/App.tsx': [
-        {
-          icon: MynahIcons.CANCEL_CIRCLE,
-          status: 'error',
-          name: 'reject-change',
-          description: 'Reject change'
-        },
-        {
-          icon: MynahIcons.COMMENT,
-          name: 'comment-to-change',
-          description: 'Comment'
-        }
-      ]
-    },
-    details:{
-      'src/devfile.yaml': {
-        status: 'error',
-        label: "Change rejected",
-        icon: MynahIcons.REVERT
-      }
-    }
-  },
-  codeReference: [
-    {
-      information: 'Reference code *under the MIT license* from repository `amazon`.'
-    },
-    {
-      information: 'Reference code *under the MIT license* from repository `aws`.'
-    }
-  ],
-  canBeVoted: true,
-  messageId: 'file-list-message'
-});
-```
-
-**NOTE 1:** Actions will be shown only when you hover to the file.
-
-**NOTE 2:** You can add actions and details for each file (**but not for folders**). Beware that you need to add those actions for each specific file as a map which the key needs to be the path of the file.
-
-<p align="center">
-  <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
-</p>
-
----
-
 ### ChatItemType.`ANSWER_STREAM` _(position: left)_
 Use for streaming cards. It is better to start with an empty string to let the initial spinner rotate. As far as the `loadingState` is true for the tab which holds this chat item, it will show the spinner (rotating circle for empty state and bottom border for with a body). 
 
@@ -576,7 +512,7 @@ mynahUI.updateLastChatAnswer('tab-1', {
 
 ---
 
-### ChatItemType.`ANSWER` _(position: left)_
+### ChatItemType.`ANSWER` or ChatItemType.`CODE_RESULT` _(position: left)_
 Use for all kind of answers. Including the followups etc.
 
 And yes, except the `fileList` you can combine followups and markdown string content chat items at once. Which means that a single chat item can also contain the `followUp` at the same time with `body`.
@@ -800,6 +736,76 @@ mynahUI.addChatItem('tab-1', {
 </p>
 <p align="center">
   <img src="./img/data-model/chatItems/relatedContent-3.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `fileList`
+
+Use for showing a file list. You have to set the `fileList` attribute. See the example below.
+
+**IMPORTANT NOTICE**: Do not forget that file lists will always be shown at the bottom of the card in case if you combine it body or form items. (Buttons will be at the most bottom, don't worry!)
+
+You can also provide custom titles for the file list card and the root folder has to be used to wrap the files and folders. If you don't set anything, they'll use the defaults from `config.texts`. See [Config Documentation](./CONFIG.md#texts)
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANWER,
+  fileList: {
+    filePaths: [ 'src/App.tsx', 'devfile.yaml', 'src/App.test.tsx' ],
+    deletedFiles: ['src/devfile.yaml'],
+    // fileTreeTitle: "Custom file tree card title";
+    // rootFolderTitle: "Custom root folder title";
+    actions: {
+      'src/App.tsx': [
+        {
+          icon: MynahIcons.CANCEL_CIRCLE,
+          status: 'error',
+          name: 'reject-change',
+          description: 'Reject change'
+        },
+        {
+          icon: MynahIcons.COMMENT,
+          name: 'comment-to-change',
+          description: 'Comment'
+        }
+      ]
+    },
+    details:{
+      'src/devfile.yaml': {
+        status: 'error',
+        label: "Change rejected",
+        icon: MynahIcons.REVERT
+      }
+    }
+  },
+  codeReference: [
+    {
+      information: 'Reference code *under the MIT license* from repository `amazon`.'
+    },
+    {
+      information: 'Reference code *under the MIT license* from repository `aws`.'
+    }
+  ],
+  canBeVoted: true,
+  messageId: 'file-list-message'
+});
+```
+
+**NOTE 1:** Actions will be shown only when you hover to the file.
+
+**NOTE 2:** You can add actions and details for each file (**but not for folders**). Beware that you need to add those actions for each specific file as a map which **the key needs to be the path of the file**.
+
+<p align="center">
+  <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
