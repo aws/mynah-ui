@@ -15,6 +15,9 @@ export class EmptyMynahUIDataModel {
     this.data = {
       tabTitle: Config.getInstance().config.texts.mainTitle,
       loadingChat: false,
+      tabCloseConfirmationCloseButton: null,
+      tabCloseConfirmationKeepButton: null,
+      tabCloseConfirmationMessage: null,
       cancelButtonWhenLoading: true,
       showChatAvatars: false,
       quickActionCommands: [],

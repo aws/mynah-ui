@@ -32,6 +32,7 @@ import { MynahUITabsStore } from './helper/tabs-store';
 import { Config } from './helper/config';
 import { marked } from 'marked';
 import './styles/styles.scss';
+import { generateUID } from './helper/guid';
 
 export {
   FeedbackPayload,
@@ -58,39 +59,117 @@ export interface MynahUIProps {
   defaults?: MynahUITabStoreTab;
   tabs?: MynahUITabStoreModel;
   config?: Partial<ConfigModel>;
-  onShowMoreWebResultsClick?: (tabId: string, messageId: string) => void;
+  onShowMoreWebResultsClick?: (
+    tabId: string,
+    messageId: string,
+    eventId?: string) => void;
   onReady?: () => void;
-  onVote?: (tabId: string, messageId: string, vote: RelevancyVoteType) => void;
-  onStopChatResponse?: (tabId: string) => void;
+  onVote?: (
+    tabId: string,
+    messageId: string,
+    vote: RelevancyVoteType,
+    eventId?: string) => void;
+  onStopChatResponse?: (
+    tabId: string,
+    eventId?: string) => void;
   onResetStore?: (tabId: string) => void;
-  onChatPrompt?: (tabId: string, prompt: ChatPrompt) => void;
-  onFollowUpClicked?: (tabId: string, messageId: string, followUp: ChatItemAction) => void;
-  onInBodyButtonClicked?: (tabId: string, messageId: string, action: {
-    id: string;
-    text?: string;
-    formItemValues?: Record<string, string>;
-  }) => void;
-  onTabChange?: (tabId: string) => void;
-  onTabAdd?: (tabId: string) => void;
-  onTabRemove?: (tabId: string) => void;
-  onBeforeTabRemove?: (tabId: string) => boolean;
-  onChatItemEngagement?: (tabId: string, messageId: string, engagement: Engagement) => void;
-  onCopyCodeToClipboard?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
-  onCodeInsertToCursorPosition?: (tabId: string, messageId: string, code?: string, type?: CodeSelectionType, referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
-  onSourceLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
-  onLinkClick?: (tabId: string, messageId: string, link: string, mouseEvent?: MouseEvent) => void;
-  onInfoLinkClick?: (tabId: string, link: string, mouseEvent?: MouseEvent) => void;
-  onSendFeedback?: (tabId: string, feedbackPayload: FeedbackPayload) => void;
-  onCustomFormAction?: (tabId: string, action: {
-    id: string;
-    text?: string;
-    formItemValues?: Record<string, string>;
-  }) => void;
-  onOpenDiff?: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => void;
-  onFileActionClick?: (tabId: string, messageId: string, filePath: string, actionName: string) => void;
+  onChatPrompt?: (
+    tabId: string,
+    prompt: ChatPrompt,
+    eventId?: string) => void;
+  onFollowUpClicked?: (
+    tabId: string,
+    messageId: string,
+    followUp: ChatItemAction,
+    eventId?: string) => void;
+  onInBodyButtonClicked?: (
+    tabId: string,
+    messageId: string,
+    action: {
+      id: string;
+      text?: string;
+      formItemValues?: Record<string, string>;
+    },
+    eventId?: string) => void;
+  onTabChange?: (
+    tabId: string,
+    eventId?: string) => void;
+  onTabAdd?: (
+    tabId: string,
+    eventId?: string) => void;
+  onTabRemove?: (
+    tabId: string,
+    eventId?: string) => void;
+  /**
+   * @param tabId tabId which the close button triggered
+   * @returns boolean -> If you want to close the tab immediately send true
+   */
+  onBeforeTabRemove?: (
+    tabId: string,
+    eventId?: string) => boolean;
+  onChatItemEngagement?: (
+    tabId: string,
+    messageId: string,
+    engagement: Engagement) => void;
+  onCopyCodeToClipboard?: (
+    tabId: string,
+    messageId: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId?: string) => void;
+  onCodeInsertToCursorPosition?: (
+    tabId: string,
+    messageId: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId?: string) => void;
+  onSourceLinkClick?: (
+    tabId: string,
+    messageId: string,
+    link: string,
+    mouseEvent?: MouseEvent,
+    eventId?: string) => void;
+  onLinkClick?: (
+    tabId: string,
+    messageId: string,
+    link: string,
+    mouseEvent?: MouseEvent,
+    eventId?: string) => void;
+  onInfoLinkClick?: (
+    tabId: string,
+    link: string,
+    mouseEvent?: MouseEvent,
+    eventId?: string) => void;
+  onSendFeedback?: (
+    tabId: string,
+    feedbackPayload: FeedbackPayload,
+    eventId?: string) => void;
+  onCustomFormAction?: (
+    tabId: string,
+    action: {
+      id: string;
+      text?: string;
+      formItemValues?: Record<string, string>;
+    },
+    eventId?: string) => void;
+  onOpenDiff?: (
+    tabId: string,
+    filePath: string,
+    deleted: boolean,
+    messageId?: string,
+    eventId?: string) => void;
+  onFileActionClick?: (
+    tabId: string,
+    messageId: string,
+    filePath: string,
+    actionName: string,
+    eventId?: string) => void;
 }
 
 export class MynahUI {
+  private lastEventId: string = '';
   private readonly props: MynahUIProps;
   private readonly wrapper: ExtendedHTMLElement;
   private readonly tabsWrapper: ExtendedHTMLElement;
@@ -119,7 +198,11 @@ export class MynahUI {
       children: Object.keys(initTabs).slice(0, Config.getInstance().config.maxTabs).map((tabId: string) => {
         this.chatWrappers[tabId] = new ChatWrapper({
           tabId,
-          onStopChatResponse: props.onStopChatResponse,
+          onStopChatResponse: (tabId) => {
+            if (props.onStopChatResponse != null) {
+              props.onStopChatResponse(tabId, this.getUserEventId());
+            }
+          },
         });
         return this.chatWrappers[tabId].render;
       })
@@ -133,10 +216,15 @@ export class MynahUI {
       this.tabsWrapper = new Tabs({
         onChange: (selectedTabId: string) => {
           if (this.props.onTabChange !== undefined) {
-            this.props.onTabChange(selectedTabId);
+            this.props.onTabChange(selectedTabId, this.getUserEventId());
           }
         },
-        onBeforeTabRemove: props.onBeforeTabRemove
+        onBeforeTabRemove: (tabId): boolean => {
+          if (props.onBeforeTabRemove !== undefined) {
+            return props.onBeforeTabRemove(tabId, this.getUserEventId());
+          }
+          return true;
+        }
       }).render;
 
       this.tabsWrapper.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
@@ -164,7 +252,7 @@ export class MynahUI {
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
       if (this.props.onTabAdd !== undefined) {
-        this.props.onTabAdd(tabId);
+        this.props.onTabAdd(tabId, this.getUserEventId());
       }
     });
     MynahUITabsStore.getInstance().addListener('remove', (tabId: string) => {
@@ -172,7 +260,7 @@ export class MynahUI {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.chatWrappers[tabId];
       if (this.props.onTabRemove !== undefined) {
-        this.props.onTabRemove(tabId);
+        this.props.onTabRemove(tabId, this.getUserEventId());
       }
     });
 
@@ -182,10 +270,15 @@ export class MynahUI {
     }
   }
 
+  private readonly getUserEventId = (): string => {
+    this.lastEventId = generateUID();
+    return this.lastEventId;
+  };
+
   private readonly addGlobalListeners = (): void => {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: {tabId: string; prompt: ChatPrompt}) => {
       if (this.props.onChatPrompt !== undefined) {
-        this.props.onChatPrompt(data.tabId, data.prompt);
+        this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
       }
     });
 
@@ -195,7 +288,11 @@ export class MynahUI {
       followUpOption: ChatItemAction;
     }) => {
       if (this.props.onFollowUpClicked !== undefined) {
-        this.props.onFollowUpClicked(data.tabId, data.messageId, data.followUpOption);
+        this.props.onFollowUpClicked(
+          data.tabId,
+          data.messageId,
+          data.followUpOption,
+          this.getUserEventId());
       }
     });
 
@@ -211,19 +308,25 @@ export class MynahUI {
           id: data.actionId,
           text: data.actionText,
           formItemValues: data.formItemValues
-        });
+        }, this.getUserEventId());
       }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, (data: {messageId: string}) => {
       if (this.props.onShowMoreWebResultsClick !== undefined) {
-        this.props.onShowMoreWebResultsClick(MynahUITabsStore.getInstance().getSelectedTabId(), data.messageId);
+        this.props.onShowMoreWebResultsClick(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
+          data.messageId,
+          this.getUserEventId());
       }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FEEDBACK_SET, (feedbackData) => {
       if (this.props.onSendFeedback !== undefined) {
-        this.props.onSendFeedback(MynahUITabsStore.getInstance().getSelectedTabId(), feedbackData);
+        this.props.onSendFeedback(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
+          feedbackData,
+          this.getUserEventId());
       }
     });
 
@@ -240,7 +343,8 @@ export class MynahUI {
           data.messageId,
           data.text,
           data.type,
-          data.referenceTrackerInformation
+          data.referenceTrackerInformation,
+          this.getUserEventId()
         );
       }
     });
@@ -252,7 +356,8 @@ export class MynahUI {
           data.messageId,
           data.text,
           data.type,
-          data.referenceTrackerInformation
+          data.referenceTrackerInformation,
+          this.getUserEventId()
         );
       }
     });
@@ -263,7 +368,8 @@ export class MynahUI {
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
           data.link,
-          data.event
+          data.event,
+          this.getUserEventId()
         );
       }
     });
@@ -274,7 +380,8 @@ export class MynahUI {
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
           data.link,
-          data.event
+          data.event,
+          this.getUserEventId()
         );
       }
     });
@@ -283,7 +390,8 @@ export class MynahUI {
         this.props.onInfoLinkClick(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.link,
-          data.event
+          data.event,
+          this.getUserEventId()
         );
       }
     });
@@ -293,7 +401,8 @@ export class MynahUI {
         this.props.onVote(
           data.tabId,
           data.messageId,
-          data.vote
+          data.vote,
+          this.getUserEventId()
         );
       }
     });
@@ -306,19 +415,29 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_DIFF, (data) => {
       if (this.props.onOpenDiff !== undefined) {
-        this.props.onOpenDiff(data.tabId, data.filePath, data.deleted, data.messageId);
+        this.props.onOpenDiff(
+          data.tabId,
+          data.filePath,
+          data.deleted,
+          data.messageId,
+          this.getUserEventId());
       }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_ACTION_CLICK, (data) => {
       if (this.props.onFileActionClick !== undefined) {
-        this.props.onFileActionClick(data.tabId, data.messageId, data.filePath, data.actionName);
+        this.props.onFileActionClick(
+          data.tabId,
+          data.messageId,
+          data.filePath,
+          data.actionName,
+          this.getUserEventId());
       }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CUSTOM_FORM_ACTION_CLICK, (data) => {
       if (this.props.onCustomFormAction !== undefined) {
-        this.props.onCustomFormAction(data.tabId, data);
+        this.props.onCustomFormAction(data.tabId, data, this.getUserEventId());
       }
     });
   };
@@ -347,8 +466,9 @@ export class MynahUI {
   };
 
   /**
-   * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
-   * @param body new body stream as string.
+   * Updates the last ChatItemType.ANSWER_STREAM chat item
+   * @param tabId Corresponding tab ID.
+   * @param updateWith ChatItem object to update with.
    */
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
@@ -357,12 +477,26 @@ export class MynahUI {
   };
 
   /**
-   * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
-   * @param body new body stream as string.
+   * Updates the chat item with the given messageId
+   * @param tabId Corresponding tab ID.
+   * @param messageId Corresponding tab ID.
+   * @param updateWith ChatItem object to update with.
    */
   public updateChatAnswerWithMessageId = (tabId: string, messageId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, updateWith);
+    }
+  };
+
+  /**
+   * If exists, switch to a different tab
+   * @param tabId Tab ID to switch to
+   * @param eventId last action's user event ID passed from an event binded to mynahUI.
+   * Without user intent you cannot switch to a different tab
+   */
+  public selectTab = (tabId: string, eventId: string): void => {
+    if (eventId === this.lastEventId && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      MynahUITabsStore.getInstance().selectTab(tabId);
     }
   };
 
