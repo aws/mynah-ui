@@ -62,6 +62,9 @@ export class ChatItemFollowUpOption {
         ...(props.followUpOption.pillText.length > MAX_LENGTH || props.followUpOption.description !== undefined
           ? {
               mouseover: (e) => {
+                if (this.disabled) {
+                  return;
+                }
                 let tooltipText = marked(props.followUpOption.pillText.length > MAX_LENGTH ? props.followUpOption.pillText : '', { breaks: true });
                 if (props.followUpOption.description !== undefined) {
                   if (tooltipText !== '') {
@@ -84,7 +87,7 @@ export class ChatItemFollowUpOption {
       this.followupTooltipTimeout = setTimeout(() => {
         const elm: HTMLElement = e.target as HTMLElement;
         this.followupTooltip = new Overlay({
-          background: true,
+          background: false,
           closeOnOutsideClick: false,
           referenceElement: elm,
           dimOutside: false,
