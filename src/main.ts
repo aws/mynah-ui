@@ -466,9 +466,8 @@ export class MynahUI {
   };
 
   /**
-   * Updates the last ChatItemType.ANSWER_STREAM chat item
-   * @param tabId Corresponding tab ID.
-   * @param updateWith ChatItem object to update with.
+   * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
+   * @param body new body stream as string.
    */
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
@@ -529,16 +528,6 @@ export class MynahUI {
    * @returns string selectedTabId or undefined
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
-
-  /**
-   * If exists, switch to a different tab
-   * @param tabId Tab ID to switch to
-   */
-  public changeSelectedTab = (tabId: string): void => {
-    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      MynahUITabsStore.getInstance().selectTab(tabId);
-    }
-  };
 
   /**
    * Simply creates and shows a notification
