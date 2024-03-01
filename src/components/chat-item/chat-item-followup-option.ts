@@ -62,9 +62,6 @@ export class ChatItemFollowUpOption {
         ...(props.followUpOption.pillText.length > MAX_LENGTH || props.followUpOption.description !== undefined
           ? {
               mouseover: (e) => {
-                if (this.disabled) {
-                  return;
-                }
                 let tooltipText = marked(props.followUpOption.pillText.length > MAX_LENGTH ? props.followUpOption.pillText : '', { breaks: true });
                 if (props.followUpOption.description !== undefined) {
                   if (tooltipText !== '') {
