@@ -466,8 +466,9 @@ export class MynahUI {
   };
 
   /**
-   * Updates the body of the last ChatItemType.ANSWER_STREAM chat item
-   * @param body new body stream as string.
+   * Updates the last ChatItemType.ANSWER_STREAM chat item
+   * @param tabId Corresponding tab ID.
+   * @param updateWith ChatItem object to update with.
    */
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
