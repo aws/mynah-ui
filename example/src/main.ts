@@ -17,8 +17,12 @@ import { Log, LogClear } from './logger';
 import { exampleCodeBlockToInsert, 
   exampleFileListChatItem, 
   exampleFileListChatItemForUpdate, 
+  exampleFollowUps, 
   exampleFormChatItem, 
+  exampleImageCard, 
+  exampleProgressCards, 
   exampleRichFollowups, 
+  exampleStreamParts, 
   followupTypes } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -36,6 +40,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       'tab-1': {
         isSelected: true,
         store: {
+          tabCloseConfirmationMessage: 'Only this tab has a different message than others!',
           ...mynahUIDefaults.store,
           ...initialData,
         }
@@ -120,6 +125,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           case Commands.CARD_WITH_OPTIONS:
             mynahUI.addChatItem(tabId, exampleFormChatItem);
             break;
+          case Commands.SHOW_PROGRESS_CARD:
+            getProgressingCard(tabId);
+            break;
           case Commands.EXTENDED_CARDS:
             mynahUI.addChatItem(tabId, {
               type: ChatItemType.ANSWER,
@@ -196,6 +204,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           case Commands.SHOW_CUSTOM_FORM:
             showCustomForm(tabId);
             break;
+          case Commands.SHOW_IMAGE_IN_CARD:
+            mynahUI.addChatItem(tabId, exampleImageCard());
+            break;
           case Commands.COMMAND_WITH_PROMPT:
             const realPromptText = prompt.escapedPrompt?.trim() ?? '';
             mynahUI.addChatItem(tabId, {
@@ -270,7 +281,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`File clicked: <b>${filePath}</b>`);
     },
     onFileActionClick: (tabId, messageId, filePath, actionName) => {
-      Log(`File clicked: <b>${filePath}</b> -> ${actionName}`);
+      Log(`File action clicked: <b>${filePath}</b> -> ${actionName}`);
       switch(actionName){
         case 'update-comment':
         case 'comment-to-change':
@@ -303,6 +314,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Selection Y distance: <b>${engagement.selectionDistanceTraveled?.y ?? '0'}px</b>`);
     },
     onLinkClick: (tabId, messageId, link, mouseEvent) => {
+      if(link === '#open-diff-viewer'){
+        mouseEvent?.preventDefault();
+        Log(`Open diff viewer clicked`);
+      }
       Log(`Link inside body clicked: <b>${link}</b>`);
     },
     onSourceLinkClick: (tabId, messageId, link, mouseEvent) => {
@@ -347,17 +362,49 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       promptInputDisabledState: true
     });
     connector.requestGenerativeAIAnswer(
-      prompt,
+      exampleStreamParts,
       (chatItem: Partial<ChatItem>) => {
         mynahUI.updateLastChatAnswer(tabId, chatItem);
-      }, (chatItem: ChatItem) => {
+      }, () => {
         mynahUI.updateStore(tabId, {
           loadingChat: false,
           promptInputDisabledState: false
         });
-        mynahUI.addChatItem(tabId, chatItem);
+        mynahUI.addChatItem(tabId, exampleFollowUps);
       }).then(chatItem => {
-        mynahUI.addChatItem(tabId, chatItem);
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.ANSWER_STREAM,
+          body: '',
+          canBeVoted: true,
+          messageId: (new Date()).getTime().toString()
+        });
+      });
+  };
+
+  const getProgressingCard = (tabId: string): void => {
+    const messageId = (new Date().getTime()).toString();
+    mynahUI.updateStore(tabId, {
+      loadingChat: true,
+      promptInputDisabledState: true
+    });
+    connector.requestGenerativeAIAnswer(
+      exampleProgressCards,
+      (chatItem: Partial<ChatItem>) => {
+        mynahUI.updateChatAnswerWithMessageId(tabId, messageId, chatItem);
+      }, () => {
+        mynahUI.updateStore(tabId, {
+          loadingChat: false,
+          promptInputDisabledState: false
+        });
+        mynahUI.notify({
+          content: 'Your refactor request is finished',
+        });
+      }).then(() => {
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.ANSWER_STREAM,
+          body: '',
+          messageId,
+        });
       });
   };
 
@@ -365,22 +412,22 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
    * Below field is to simulate this example feels like an extension inside an IDE
    */
 
-  const resizeHandler = document.querySelector('.size-handler') as HTMLSpanElement;
+  const extensionResizeHandler = document.querySelector('#extension > .size-handler') as HTMLSpanElement;
   let initPos = 0;
   let initWidth = 0;
   const handleResize = (e: MouseEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
-    (resizeHandler.parentNode as HTMLElement).style.minWidth = `${initWidth + (initPos - e.pageX)}px`;
-    (resizeHandler.parentNode as HTMLElement).style.maxWidth = `${initWidth + (initPos - e.pageX)}px`;
+    (extensionResizeHandler.parentNode as HTMLElement).style.minWidth = `${initWidth + (initPos - e.pageX)}px`;
+    (extensionResizeHandler.parentNode as HTMLElement).style.maxWidth = `${initWidth + (initPos - e.pageX)}px`;
   };
   const handleResizeMouseUp = (): void => {
     window.removeEventListener('mousemove', handleResize);
     window.removeEventListener('mouseup', handleResizeMouseUp);
   };
-  if (resizeHandler !== undefined) {
-    resizeHandler.addEventListener('mousedown', (e) => {
+  if (extensionResizeHandler !== undefined) {
+    extensionResizeHandler.addEventListener('mousedown', (e) => {
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
@@ -388,6 +435,36 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       initWidth = ((e.currentTarget as HTMLElement).parentNode as HTMLElement).getBoundingClientRect().width;
       window.addEventListener('mousemove', handleResize, false);
       window.addEventListener('mouseup', handleResizeMouseUp);
+    });
+  }
+  
+  /**
+   * Below field is to simulate this example feels like an extension inside an IDE
+   */
+
+  const consoleResizeHandler = document.querySelector('#console > .size-handler') as HTMLSpanElement;
+  let consoleInitPos = 0;
+  let consoleInitHeight = 80;
+  const consoleHandleResize = (e: MouseEvent): void => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    (consoleResizeHandler.parentNode as HTMLElement).style.minHeight = `${consoleInitHeight + (consoleInitPos - e.pageY)}px`;
+    (consoleResizeHandler.parentNode as HTMLElement).style.maxHeight = `${consoleInitHeight + (consoleInitPos - e.pageY)}px`;
+  };
+  const consoleHandleResizeMouseUp = (): void => {
+    window.removeEventListener('mousemove', consoleHandleResize);
+    window.removeEventListener('mouseup', consoleHandleResizeMouseUp);
+  };
+  if (consoleResizeHandler !== undefined) {
+    consoleResizeHandler.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      consoleInitPos = e.pageY;
+      consoleInitHeight = ((e.currentTarget as HTMLElement).parentNode as HTMLElement).getBoundingClientRect().height;
+      window.addEventListener('mousemove', consoleHandleResize, false);
+      window.addEventListener('mouseup', consoleHandleResizeMouseUp);
     });
   }
 

@@ -94,7 +94,6 @@ export class Tabs {
       },
       onRemove: (selectedTabId, domElement: ExtendedHTMLElement) => {
         if (this.props.onBeforeTabRemove !== undefined && !this.props.onBeforeTabRemove(selectedTabId)) {
-          console.log('Popup cikar!');
           this.showCloseTabConfirmationOverLay(domElement, selectedTabId);
         } else {
           MynahUITabsStore.getInstance().removeTab(selectedTabId);
@@ -175,7 +174,8 @@ export class Tabs {
           classNames: [ 'mynah-nav-tabs-close-confirmation-overlay' ],
           children: [
             new CardBody({
-              body: Config.getInstance().config.texts.tabCloseConfirmationMessage,
+              body: MynahUITabsStore.getInstance().getTabDataStore(selectedTabId).getValue('tabCloseConfirmationMessage') ??
+              Config.getInstance().config.texts.tabCloseConfirmationMessage,
             }).render,
             DomBuilder.getInstance().build({
               type: 'div',
@@ -185,7 +185,8 @@ export class Tabs {
                   onClick: () => {
                     this.hideshowCloseTabConfirmationOverLay();
                   },
-                  label: Config.getInstance().config.texts.tabCloseConfirmationKeepButton
+                  label: MynahUITabsStore.getInstance().getTabDataStore(selectedTabId).getValue('tabCloseConfirmationKeepButton') ??
+                  Config.getInstance().config.texts.tabCloseConfirmationKeepButton
                 }).render,
                 new Button({
                   onClick: () => {
@@ -193,7 +194,8 @@ export class Tabs {
                     this.hideshowCloseTabConfirmationOverLay();
                   },
                   classNames: [ 'mynah-nav-tabs-close-confirmation-close-button' ],
-                  label: Config.getInstance().config.texts.tabCloseConfirmationCloseButton
+                  label: MynahUITabsStore.getInstance().getTabDataStore(selectedTabId).getValue('tabCloseConfirmationCloseButton') ??
+                  Config.getInstance().config.texts.tabCloseConfirmationCloseButton
                 }).render,
               ]
             })

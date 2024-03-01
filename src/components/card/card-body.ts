@@ -33,6 +33,7 @@ export const PARTS_CLASS_NAME_VISIBLE = 'typewriter';
 export interface CardBodyProps {
   body: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
+  childLocation?: 'above-body' | 'below-body';
   highlightRangeWithTooltip?: ReferenceTrackerInformation[];
   useParts?: boolean;
   onLinkClick?: (url: string, e: MouseEvent) => void;
@@ -46,13 +47,14 @@ export class CardBody {
   private highlightRangeTooltipTimeout: ReturnType<typeof setTimeout>;
   constructor (props: CardBodyProps) {
     this.props = props;
+    const childList = [
+      ...this.getContentBodyChildren(this.props),
+      ...(this.props.children ?? [])
+    ];
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-body' ],
-      children: [
-        ...this.getContentBodyChildren(this.props),
-        ...(this.props.children ?? [])
-      ],
+      children: this.props.childLocation === 'above-body' ? childList.reverse() : childList,
     });
 
     Array.from(this.render.querySelectorAll('mark[reference-tracker]')).forEach((highlightRangeElement) => {
@@ -253,7 +255,7 @@ export class CardBody {
       ).map(node => {
         const processedNode = this.processNode(node as HTMLElement, props.body);
         if (processedNode.querySelectorAll !== undefined) {
-          Array.from(processedNode.querySelectorAll('*:empty')).forEach(emptyElement => { emptyElement.remove(); });
+          Array.from(processedNode.querySelectorAll('*:empty:not(img)')).forEach(emptyElement => { emptyElement.remove(); });
         }
         return processedNode;
       }))

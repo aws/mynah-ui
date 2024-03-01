@@ -14,6 +14,8 @@ export interface ChatItemTreeViewWrapperProps {
   tabId: string;
   messageId: string;
   files: string[];
+  cardTitle?: string;
+  rootTitle?: string;
   deletedFiles: string[];
   actions?: Record<string, FileNodeAction[]>;
   details?: Record<string, TreeNodeDetails>;
@@ -33,7 +35,7 @@ export class ChatItemTreeViewWrapper {
     const tree = new ChatItemTreeView({
       messageId: props.messageId,
       tabId: props.tabId,
-      node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details),
+      node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle),
     }).render;
 
     this.render = DomBuilder.getInstance().build({
@@ -50,7 +52,7 @@ export class ChatItemTreeViewWrapper {
               children: [
                 {
                   type: 'h4',
-                  children: [ `${Config.getInstance().config.texts.codeSuggestions}` ]
+                  children: [ `${props.cardTitle ?? Config.getInstance().config.texts.codeSuggestions}` ]
                 },
                 {
                   type: 'span',
@@ -61,10 +63,6 @@ export class ChatItemTreeViewWrapper {
             license,
             tree,
           ]
-        },
-        {
-          type: 'p',
-          children: [ Config.getInstance().config.texts.clickFileToViewDiff ]
         }
       ]
     });

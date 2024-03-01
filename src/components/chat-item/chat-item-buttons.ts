@@ -51,13 +51,6 @@ export class ChatItemButtonsWrapper {
           });
         } else {
           actionItem = new Button({
-            /* followUpOption: {
-              pillText: chatActionAction.text,
-              disabled: chatActionAction.disabled,
-              description: chatActionAction.description,
-              status: chatActionAction.status,
-              icon: chatActionAction.icon,
-            }, */
             label: chatActionAction.text,
             icon: chatActionAction.icon,
             primary: chatActionAction.status !== undefined,
@@ -97,6 +90,10 @@ export class ChatItemButtonsWrapper {
   };
 
   private readonly disableAll = (): void => {
-    Object.keys(this.actions).forEach(chatActionId => this.actions[chatActionId].element.setEnabled(false));
+    Object.keys(this.actions).forEach(chatActionId => {
+      if (this.actions[chatActionId].data.disabled !== false) {
+        this.actions[chatActionId].element.setEnabled(false);
+      }
+    });
   };
 }

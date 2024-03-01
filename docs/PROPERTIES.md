@@ -8,30 +8,52 @@ export interface MynahUIProps {
   config?: Partial<ConfigModel>;
   onShowMoreWebResultsClick?: (
     tabId: string,
-    messageId: string) => void;
+    messageId: string,
+    eventId?: string) => void;
   onReady?: () => void;
   onVote?: (
     tabId: string,
     messageId: string,
-    vote: RelevancyVoteType) => void;
-  onStopChatResponse?: (tabId: string) => void;
+    vote: RelevancyVoteType,
+    eventId?: string) => void;
+  onStopChatResponse?: (
+    tabId: string,
+    eventId?: string) => void;
   onResetStore?: (tabId: string) => void;
   onChatPrompt?: (
     tabId: string,
-    prompt: ChatPrompt) => void;
+    prompt: ChatPrompt,
+    eventId?: string) => void;
   onFollowUpClicked?: (
     tabId: string,
     messageId: string,
-    followUp: ChatItemAction) => void;
-  onInBodyButtonClicked?: (tabId: string, messageId: string, action: {
-    id: string;
-    text?: string;
-    formItemValues?: Record<string, string>;
-  }) => void;
-  onTabChange?: (tabId: string) => void;
-  onTabAdd?: (tabId: string) => void;
-  onBeforeTabRemove?: (tabId: string) => boolean;
-  onTabRemove?: (tabId: string) => void;
+    followUp: ChatItemAction,
+    eventId?: string) => void;
+  onInBodyButtonClicked?: (
+    tabId: string,
+    messageId: string,
+    action: {
+      id: string;
+      text?: string;
+      formItemValues?: Record<string, string>;
+    },
+    eventId?: string) => void;
+  onTabChange?: (
+    tabId: string,
+    eventId?: string) => void;
+  onTabAdd?: (
+    tabId: string,
+    eventId?: string) => void;
+  onTabRemove?: (
+    tabId: string,
+    eventId?: string) => void;
+  /**
+   * @param tabId tabId which the close button triggered
+   * @returns boolean -> If you want to close the tab immediately send true
+   */
+  onBeforeTabRemove?: (
+    tabId: string,
+    eventId?: string) => boolean;
   onChatItemEngagement?: (
     tabId: string,
     messageId: string,
@@ -41,48 +63,65 @@ export interface MynahUIProps {
     messageId: string,
     code?: string,
     type?: CodeSelectionType,
-    referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId?: string) => void;
   onCodeInsertToCursorPosition?: (
     tabId: string,
     messageId: string,
     code?: string,
     type?: CodeSelectionType,
-    referenceTrackerInformation?: ReferenceTrackerInformation[]) => void;
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId?: string) => void;
   onSourceLinkClick?: (
     tabId: string,
     messageId: string,
     link: string,
-    mouseEvent?: MouseEvent) => void;
+    mouseEvent?: MouseEvent,
+    eventId?: string) => void;
   onLinkClick?: (
     tabId: string,
     messageId: string,
     link: string,
-    mouseEvent?: MouseEvent) => void;
+    mouseEvent?: MouseEvent,
+    eventId?: string) => void;
   onInfoLinkClick?: (
     tabId: string,
     link: string,
-    mouseEvent?: MouseEvent) => void;
+    mouseEvent?: MouseEvent,
+    eventId?: string) => void;
   onSendFeedback?: (
     tabId: string,
-    feedbackPayload: FeedbackPayload) => void;
-  onCustomFormAction?: (tabId: string, action: {
-    id: string;
-    text?: string;
-    formItemValues?: Record<string, string>;
-  }) => void;
+    feedbackPayload: FeedbackPayload,
+    eventId?: string) => void;
+  onCustomFormAction?: (
+    tabId: string,
+    action: {
+      id: string;
+      text?: string;
+      formItemValues?: Record<string, string>;
+    },
+    eventId?: string) => void;
   onOpenDiff?: (
     tabId: string,
     filePath: string,
     deleted: boolean,
-    messageId?: string) => void;
+    messageId?: string,
+    eventId?: string) => void;
   onFileActionClick?: (
     tabId: string,
     messageId: string,
     filePath: string,
-    actionName: string) => void;
+    actionName: string,
+    eventId?: string) => void;
 }
 ```
 _Let's deep dive into each property you can set._
+
+### But before that, what is `eventId`?
+You may notice that a wast majority of the event functions have `eventId` property. We're sending a unique `eventId` **for all real intended user actions** like clicks, prompts or tab related actions. 
+It is mandatory to send it as an argument for some functions like `mynahUI.selectTab`.You need to send the incoming `eventId` from the connected event function to change a tab programmatically. Because without a user intent, you cannot change a tab. 
+
+And those kind of functions **will only work** with the last `eventId`. So you cannot store an id and send it after several different user actions. 
 
 ---------
 ### `rootSelector`
@@ -161,7 +200,6 @@ config: {
         feedbackThanks: string;
         feedbackReportButtonLabel: string;
         codeSuggestions: string;
-        clickFileToViewDiff: string;
         files: string;
         insertAtCursorLabel: string;
         copy: string;

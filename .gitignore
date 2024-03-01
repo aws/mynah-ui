@@ -2,6 +2,7 @@ out
 dist
 node_modules
 *.bk
+*.zip
 **/.DS_Store
 .idea
 package-lock.json

@@ -23,6 +23,18 @@ export interface MynahUIDataModel {
    * */
   tabTitle?: string;
   /**
+   * If tab is running an action (loadingChat = true) this markdown will be shown before close in a popup
+   */
+  tabCloseConfirmationMessage?: string | null;
+  /**
+   * Keep tab open button text
+   */
+  tabCloseConfirmationKeepButton?: string | null;
+  /**
+   * Close tab button text
+   */
+  tabCloseConfirmationCloseButton?: string | null;
+  /**
    * Chat screen loading animation state (mainly use during the stream or getting the initial answer)
    */
   loadingChat?: boolean;
@@ -160,6 +172,8 @@ export interface ChatItem {
   };
   codeReference?: ReferenceTrackerInformation[];
   fileList?: {
+    fileTreeTitle?: string;
+    rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
     actions?: Record<string, FileNodeAction[]>;

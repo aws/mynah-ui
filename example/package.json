@@ -5,6 +5,7 @@
     "main": "webpack.media.config.js",
     "scripts": {
         "clean": "rm -rf build out dist node_modules",
+        "pack": "npm install && webpack --config webpack.config.js --mode development && node pack.js",
         "build": "webpack --config webpack.config.js --mode development",
         "watch": "webpack --config webpack.config.js --mode development --watch"
     },
@@ -13,11 +14,12 @@
         "escape-html": "^1.0.3"
     },
     "devDependencies": {
-        "@types/uuid": "9.0.0",
-        "@typescript-eslint/eslint-plugin": "5.34.0",
         "@types/eslint": "7.2.13",
         "@types/eslint-scope": "3.7.0",
+        "@types/uuid": "9.0.0",
+        "@typescript-eslint/eslint-plugin": "5.34.0",
         "@typescript-eslint/parser": "^5.38.0",
+        "archiver": "^6.0.1",
         "css-loader": "^6.6.0",
         "eslint": "^8.26.0",
         "eslint-config-prettier": "^8.5.0",

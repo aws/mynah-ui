@@ -132,7 +132,13 @@ export class ChatItemTreeView {
               classNames: [ 'mynah-chat-item-tree-view-file-item-details' ],
               children: [
                 ...(this.node.details.icon !== undefined ? [ new Icon({ icon: this.node.details.icon }).render ] : []),
-                ...(this.node.details.label !== undefined ? [ this.node.details.label ] : []),
+                ...(this.node.details.label !== undefined
+                  ? [ {
+                      type: 'span',
+                      classNames: [ 'mynah-chat-item-tree-view-file-item-details-text' ],
+                      children: [ this.node.details.label ]
+                    } ]
+                  : []),
               ]
             } ]
           : []),
