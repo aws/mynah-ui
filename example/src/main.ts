@@ -26,6 +26,7 @@ import { exampleCodeBlockToInsert,
   followupTypes } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
+import { ThemeBuilder } from './theme-builder/theme-builder';
 
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   const connector = new Connector();
@@ -441,6 +442,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   /**
    * Below field is to simulate this example feels like an extension inside an IDE
    */
+
+  const themeBuilder = new ThemeBuilder("#editor");
 
   const consoleResizeHandler = document.querySelector('#console > .size-handler') as HTMLSpanElement;
   let consoleInitPos = 0;

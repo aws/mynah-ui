@@ -1,299 +1,473 @@
-@import "variables";
+@import 'variables';
 
 // Since mynah-ui css custom properties are mapped to VSCode theme ones by default
 // here are some sample VSCode themes applied.
-@import "themes/light+.scss";
-@import "themes/light-orange.scss";
-@import "themes/light-quiet.scss";
-@import "themes/light-solarized.scss";
-@import "themes/dark+.scss";
-@import "themes/dark-abyss.scss";
-@import "themes/dark-ayu-mirage.scss";
-@import "themes/dark-dracula.scss";
-@import "themes/dark-solarized.scss";
+@import 'themes/light+.scss';
+@import 'themes/base.scss';
+@import 'themes/light-orange.scss';
+@import 'themes/light-quiet.scss';
+@import 'themes/light-solarized.scss';
+@import 'themes/dark+.scss';
+@import 'themes/dark-abyss.scss';
+@import 'themes/dark-ayu-mirage.scss';
+@import 'themes/dark-dracula.scss';
+@import 'themes/dark-solarized.scss';
 
 .mynah-extension-showcase-grid {
-    display: grid;
-    grid-template-rows: auto 1fr auto auto;
-    grid-template-columns: auto 1fr 4fr auto auto auto;
-    height: 100vh;
-    width: 100vw;
-    box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-columns: auto 1fr 4fr auto auto auto;
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  > * {
+    border: 0.5px solid var(--mynah-color-border-default);
+  }
+
+  select {
+    background-color: var(--mynah-color-bg);
+    color: var(--mynah-color-text-default);
+  }
+
+  #navbar {
+    background-color: var(--mynah-color-bg);
+    grid-row-start: 1;
+    grid-column-start: 1;
+
+    grid-row-end: 4;
+    grid-column-end: 2;
+
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--mynah-sizing-2);
+    padding: var(--mynah-sizing-2);
+  }
+
+  #file-tree {
+    background-color: var(--mynah-color-bg);
+    grid-row-start: 1;
+    grid-column-start: 2;
+
+    grid-row-end: 4;
+    grid-column-end: 3;
+    padding: var(--mynah-sizing-2) var(--mynah-sizing-4) var(--mynah-sizing-2) var(--mynah-sizing-4);
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    ul {
+      padding: 0;
+      margin: 0;
+      padding-left: var(--mynah-sizing-4);
+
+      li {
+        list-style-type: disclosure-open;
+        color: var(--skeleton-selected);
+
+        &.line {
+          list-style-type: disclosure-closed;
+        }
+      }
+    }
+  }
+
+  #file-tabs {
+    background-color: var(--mynah-color-bg);
+    grid-row-start: 1;
+    grid-column-start: 3;
+
+    grid-row-end: 2;
+    grid-column-end: 6;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--mynah-sizing-2);
+    padding: var(--mynah-sizing-2) var(--mynah-sizing-4) 0 var(--mynah-sizing-4);
+  }
+
+  #editor {
+    background-color: var(--mynah-card-bg);
+    grid-row-start: 2;
+    grid-column-start: 3;
+
+    grid-row-end: 3;
+    grid-column-end: 6;
     overflow: hidden;
 
-    >* {
-        border: 0.5px solid var(--mynah-color-border-default);
-    }
+    display: flex;
+    flex-flow: column nowrap;
+  }
 
-    select {
-        background-color: var(--mynah-color-bg);
-        color: var(--mynah-color-text-default);
-    }
+  #console {
+    display: flex;
+    flex-flow: column nowrap;
+    box-sizing: border-box;
+    min-height: 80px;
+    max-height: 80px;
+    overflow: hidden;
+    max-height: 50vh;
+    grid-row-start: 3;
+    grid-column-start: 3;
+    grid-row-end: 4;
+    grid-column-end: 6;
 
-    #navbar {
-        background-color: var(--mynah-color-bg);
-        grid-row-start: 1;
-        grid-column-start: 1;
+    #console-content {
+      flex: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+      font-family: monospace;
+      display: flex;
+      font-size: 80%;
+      flex-flow: column-reverse nowrap;
+      gap: var(--mynah-sizing-3);
+      color: var(--mynah-color-syntax-code);
+      background-color: var(--mynah-card-bg);
+      padding: var(--mynah-sizing-4);
 
-        grid-row-end: 4;
-        grid-column-end: 2;
-
-        display: flex;
-        flex-flow: column nowrap;
-        align-items: center;
-        justify-content: flex-start;
-        gap: var(--mynah-sizing-2);
-        padding: var(--mynah-sizing-2);
-    }
-
-    #file-tree {
-        background-color: var(--mynah-color-bg);
-        grid-row-start: 1;
-        grid-column-start: 2;
-
-        grid-row-end: 4;
-        grid-column-end: 3;
-        padding: var(--mynah-sizing-2) var(--mynah-sizing-4) var(--mynah-sizing-2) var(--mynah-sizing-4);
-        overflow-x: hidden;
-        overflow-y: auto;
-
-        ul {
-            padding: 0;
-            margin: 0;
-            padding-left: var(--mynah-sizing-4);
-
-            li {
-                list-style-type: disclosure-open;
-                color: var(--skeleton-selected);
-
-                &.line {
-                    list-style-type: disclosure-closed;
-                }
-            }
-        }
-    }
-
-    #file-tabs {
-        background-color: var(--mynah-color-bg);
-        grid-row-start: 1;
-        grid-column-start: 3;
-
-        grid-row-end: 2;
-        grid-column-end: 6;
-
-        display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
-        justify-content: flex-start;
-        gap: var(--mynah-sizing-2);
-        padding: var(--mynah-sizing-2) var(--mynah-sizing-4) 0 var(--mynah-sizing-4);
-    }
-
-    #editor {
-        background-color: var(--mynah-card-bg);
-        grid-row-start: 2;
-        grid-column-start: 3;
-
-        grid-row-end: 3;
-        grid-column-end: 6;
-        padding: var(--mynah-sizing-4);
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    #console {
-        display: flex;
-        flex-flow: column nowrap;
-        box-sizing: border-box;
-        min-height: 80px;
-        max-height: 80px;
-        overflow: hidden;
-        max-height: 50vh;
-        grid-row-start: 3;
-        grid-column-start: 3;
-        grid-row-end: 4;
-        grid-column-end: 6;
-
-        #console-content {
-            flex: 1;
-            overflow-x: hidden;
-            overflow-y: auto;
-            position: relative;
-            font-family: monospace;
-            display: flex;
-            font-size: 80%;
-            flex-flow: column-reverse nowrap;
-            gap: var(--mynah-sizing-3);
-            color: var(--mynah-color-syntax-code);
-            background-color: var(--mynah-card-bg);
-            padding: var(--mynah-sizing-4);
-
-            >p {
-                margin-block-start: 0;
-                margin-block-end: 0;
-                position: relative;
-                padding-left: var(--mynah-sizing-6);
-
-                &::first-letter {
-                    text-transform: capitalize;
-                }
-
-                &:before {
-                    content: ">>";
-                    color: var(--mynah-color-syntax-attr);
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                }
-
-                b {
-                    color: var(--mynah-color-syntax-property);
-                    font-weight: 500;
-                }
-            }
-        }
-    }
-
-    #status-bar {
-        background-color: var(--vscode-sideBar-background);
-        grid-row-start: 4;
-        grid-column-start: 1;
-        z-index: 100;
-
-        grid-row-end: 5;
-        grid-column-end: 7;
-
-        display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
-        justify-content: flex-start;
-        gap: var(--mynah-sizing-2);
-        padding: var(--mynah-sizing-2);
-    }
-
-    #extension {
-        background-color: var(--mynah-color-bg);
-        grid-row-start: 1;
-        grid-column-start: 6;
-
-        grid-row-end: 4;
-        grid-column-end: 7;
+      > p {
+        margin-block-start: 0;
+        margin-block-end: 0;
         position: relative;
-        min-width: min(40vw, 550px);
-        max-width: min(40vw, 550px);
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: flex-start;
-        align-items: stretch;
+        padding-left: var(--mynah-sizing-6);
 
-        >#amzn-mynah-website-wrapper {
-            border-left: 1px solid var(--mynah-card-bg);
-            position: relative;
-            display: flex;
-            flex-flow: row nowrap;
-            z-index: 100;
-            flex: 1;
-            height: 100%;
-            box-sizing: border-box;
-            overflow: hidden;
+        &::first-letter {
+          text-transform: capitalize;
         }
+
+        &:before {
+          content: '>>';
+          color: var(--mynah-color-syntax-attr);
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+
+        b {
+          color: var(--mynah-color-syntax-property);
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  #status-bar {
+    background-color: var(--mynah-color-bg);
+    grid-row-start: 4;
+    grid-column-start: 1;
+    z-index: 100;
+
+    grid-row-end: 5;
+    grid-column-end: 7;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--mynah-sizing-2);
+    padding: var(--mynah-sizing-2);
+  }
+
+  #extension {
+    background-color: var(--mynah-color-bg);
+    grid-row-start: 1;
+    grid-column-start: 6;
+
+    grid-row-end: 4;
+    grid-column-end: 7;
+    position: relative;
+    min-width: min(40vw, 650px);
+    max-width: min(40vw, 650px);
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    > #amzn-mynah-website-wrapper {
+      border-left: 1px solid var(--mynah-card-bg);
+      position: relative;
+      display: flex;
+      flex-flow: row nowrap;
+      z-index: 100;
+      flex: 1;
+      height: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+  }
+
+  .size-handler {
+    &:not(.horizontal) {
+      min-width: 3px;
+      border-left: 1px solid var(--mynah-card-bg);
+      border-right: 1px solid var(--mynah-color-border-default);
+      cursor: col-resize;
     }
 
-    .size-handler {
-        &:not(.horizontal) {
-            min-width: 3px;
-            border-left: 1px solid var(--mynah-card-bg);
-            border-right: 1px solid var(--mynah-color-border-default);
-            cursor: col-resize;
-        }
-
-        &.horizontal {
-            min-height: 3px;
-            border-top: 1px solid var(--mynah-card-bg);
-            border-bottom: 1px solid var(--mynah-color-border-default);
-            cursor: row-resize;
-        }
-
-        background-color: var(--mynah-color-bg);
-        pointer-events: all;
-        background-image: radial-gradient(var(--vscode-tab-border) 1px, transparent 0);
-        background-size: 10px 10px;
-        background-position: -4px -4px;
+    &.horizontal {
+      min-height: 3px;
+      border-top: 1px solid var(--mynah-card-bg);
+      border-bottom: 1px solid var(--mynah-color-border-default);
+      cursor: row-resize;
     }
 
-    .skeleton {
-        display: block;
-        opacity: 0.2;
+    background-color: var(--mynah-color-bg);
+    pointer-events: all;
+    background-image: radial-gradient(var(--mynah-color-border-default) 1px, transparent 0);
+    background-size: 10px 10px;
+    background-position: -4px -4px;
+  }
 
-        &,
-        &:after {
-            background-color: var(--skeleton-default);
-        }
+  .skeleton {
+    display: block;
+    opacity: 0.2;
 
-        &-selected {
-
-            &,
-            &:after {
-                opacity: 0.5;
-                background-color: var(--skeleton-selected);
-            }
-        }
-
-        &-rectangle {
-            width: calc(var(--mynah-sizing-8) * 3);
-            height: var(--mynah-sizing-8);
-        }
-
-        &-line {
-            background-color: rgba(0, 0, 0, 0);
-
-            &:after {
-                content: "Lorem ipsum dolor sit amet.";
-                display: inline-block;
-                white-space: nowrap;
-                text-overflow: clip;
-                overflow: hidden;
-                color: rgba(0, 0, 0, 0);
-                font-size: 0.75rem;
-            }
-
-            max-width: 70%;
-
-            &.alt:after {
-                content: "adasdsaldh k;ljasd asjd;asd  sdpifj;sdlf;lskfl;sdkf sdpiweujwpejwlkfwhdguhdgf ekhdgaushdkjs";
-            }
-        }
-
-        &-paragraph {
-            background-color: rgba(0, 0, 0, 0);
-
-            &:after {
-                content: "Lorem ipsum dolor sit amet. \A sdjhaskfhsgkafkf \A sfgkjhasldkfjksdlajfasdogjdfkgjhsadjklasdf \A sfgkjdshfakldjkasdjajowghdfjksghdsalkfaskdlgkjdfbkdfag \A slfgjhasdjkladskfjalskdf";
-                display: inline;
-                white-space: pre;
-                overflow: hidden;
-                color: rgba(0, 0, 0, 0);
-                line-height: 1.5rem;
-                font-size: 0.75rem;
-            }
-
-            max-width: 70%;
-
-            &.alt:after {
-                content: "Lorem ipsum dolor \A sit amet. \A sit amet \A sit amet \A sit amet \A sdjhaskfhsgkafkf \A sfgkjhasldkfjksdl \A sfgkjdshfakldjkasdjaj \A owghdfjksghdsalk \A sfgkjdshfakldjkasd \A jajowghdfjksghdsalkfaskd \A lgkjdfbkdfag";
-            }
-        }
-
-        &-rounded {
-            width: var(--mynah-sizing-8);
-            height: var(--mynah-sizing-8);
-            border-radius: var(--mynah-sizing-4);
-        }
-
-        &-rounded-tiny {
-            width: var(--mynah-sizing-4);
-            height: var(--mynah-sizing-4);
-            border-radius: var(--mynah-sizing-2);
-        }
+    &,
+    &:after {
+      background-color: var(--skeleton-default);
     }
+
+    &-selected {
+      &,
+      &:after {
+        opacity: 0.5;
+        background-color: var(--skeleton-selected);
+      }
+    }
+
+    &-rectangle {
+      width: calc(var(--mynah-sizing-8) * 3);
+      height: var(--mynah-sizing-8);
+    }
+
+    &-line {
+      background-color: rgba(0, 0, 0, 0);
+
+      &:after {
+        content: 'Lorem ipsum dolor sit amet.';
+        display: inline-block;
+        white-space: nowrap;
+        text-overflow: clip;
+        overflow: hidden;
+        color: rgba(0, 0, 0, 0);
+        font-size: 0.75rem;
+      }
+
+      max-width: 70%;
+
+      &.alt:after {
+        content: 'adasdsaldh k;ljasd asjd;asd  sdpifj;sdlf;lskfl;sdkf sdpiweujwpejwlkfwhdguhdgf ekhdgaushdkjs';
+      }
+    }
+
+    &-paragraph {
+      background-color: rgba(0, 0, 0, 0);
+
+      &:after {
+        content: 'Lorem ipsum dolor sit amet. \A sdjhaskfhsgkafkf \A sfgkjhasldkfjksdlajfasdogjdfkgjhsadjklasdf \A sfgkjdshfakldjkasdjajowghdfjksghdsalkfaskdlgkjdfbkdfag \A slfgjhasdjkladskfjalskdf';
+        display: inline;
+        white-space: pre;
+        overflow: hidden;
+        color: rgba(0, 0, 0, 0);
+        line-height: 1.5rem;
+        font-size: 0.75rem;
+      }
+
+      max-width: 70%;
+
+      &.alt:after {
+        content: 'Lorem ipsum dolor \A sit amet. \A sit amet \A sit amet \A sit amet \A sdjhaskfhsgkafkf \A sfgkjhasldkfjksdl \A sfgkjdshfakldjkasdjaj \A owghdfjksghdsalk \A sfgkjdshfakldjkasd \A jajowghdfjksghdsalkfaskd \A lgkjdfbkdfag';
+      }
+    }
+
+    &-rounded {
+      width: var(--mynah-sizing-8);
+      height: var(--mynah-sizing-8);
+      border-radius: var(--mynah-sizing-4);
+    }
+
+    &-rounded-tiny {
+      width: var(--mynah-sizing-4);
+      height: var(--mynah-sizing-4);
+      border-radius: var(--mynah-sizing-2);
+    }
+  }
+}
+
+.mynah-ui-example-input-main-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--mynah-sizing-5);
+  overflow: hidden;
+  padding: var(--mynah-sizing-10);
+  padding-top: 0;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: var(--mynah-color-text-default);
+  > .mynah-ui-example-input-items-wrapper {
+    order: 100;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-5);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  > h1 {
+    margin: 0;
+  }
+  > p {
+    order: 10;
+  }
+}
+
+.mynah-ui-example-input-buttons-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: var(--mynah-sizing-2);
+  overflow: hidden;
+  padding: var(--mynah-sizing-4);
+  background-color: var(--mynah-card-bg);
+  border-bottom: var(--mynah-border-width) solid var(--mynah-color-border-default);
+  flex-shrink: 0;
+  > .config-operation {
+    &.hidden {
+      opacity: 0;
+      visibility: hidden;
+      display: none;
+    }
+  }
+}
+
+.mynah-ui-example-input {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--mynah-sizing-3);
+  &-category {
+    &-sizing {
+      order: 10;
+    }
+    &-border-style {
+      order: 20;
+    }
+    &-font-size {
+      order: 30;
+    }
+    &-font-family {
+      order: 40;
+    }
+    &-text-color {
+      order: 50;
+    }
+    &-syntax-color {
+      order: 60;
+    }
+    &-status-color {
+      order: 70;
+    }
+    &-background-color {
+      order: 80;
+    }
+    &-shadow {
+      order: 90;
+    }
+    &-radius {
+      order: 100;
+    }
+    &-transition {
+      order: 110;
+    }
+    &-other {
+      order: 1000;
+    }
+  }
+  > h1 {
+    padding-top: var(--mynah-sizing-6);
+    margin: 0;
+    text-transform: capitalize;
+  }
+  & > &-title-wrapper {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-1);
+    h4 {
+      margin: 0;
+      text-transform: capitalize;
+    }
+    span {
+      font-style: italic;
+      font-size: 90%;
+      color: var(--mynah-color-text-weak);
+    }
+  }
+  & > &-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: var(--mynah-sizing-2);
+    > input[type='text'],
+    > input[type='number'] {
+      flex: 1;
+    }
+    > select {
+      appearance: none;
+    }
+
+    > small,
+    > input,
+    > select {
+      &[type='color'],
+      &[type='range'] {
+        padding: var(--mynah-sizing-1);
+        width: 100px;
+        min-width: 100px;
+        max-width: 100px;
+        outline: none;
+      }
+
+      background-color: var(--mynah-card-bg);
+      color: var(--mynah-color-text-input);
+      border-radius: var(--mynah-input-radius);
+      padding: var(--mynah-sizing-3);
+      border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    }
+
+    > small {
+      border: none;
+      padding: 0 !important;
+    }
+
+    > input[type='range'] {
+      border: none;
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+      }
+
+      &::-webkit-slider-runnable-track {
+        background-color: var(--mynah-color-border-default);
+        border-radius: 0.5rem;
+        height: var(--mynah-sizing-2);
+      }
+
+      &::-webkit-slider-thumb {
+        outline: none;
+        -webkit-appearance: none;
+        appearance: none;
+        margin-top: calc(-1 * var(--mynah-sizing-2));
+        background-color: var(--mynah-color-button);
+        height: var(--mynah-sizing-6);
+        width: var(--mynah-sizing-6);
+        border-radius: var(--mynah-sizing-3);
+      }
+    }
+  }
 }

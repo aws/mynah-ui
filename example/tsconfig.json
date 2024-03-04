@@ -12,6 +12,7 @@
         "outDir": "out",
         "sourceMap": true,
         "strict": true,
+        "resolveJsonModule": true,
         "typeRoots": [
             "./node_modules/@types"
         ],

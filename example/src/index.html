@@ -1,4 +1,4 @@
-<html theme="light+">
+<html theme="base">
 
 <head>
 </head>
@@ -39,10 +39,7 @@
             <div class="skeleton skeleton-rectangle"></div>
         </div>
         <div id="editor">
-            <div class="skeleton skeleton-paragraph"></div>
-            <div class="skeleton skeleton-paragraph"></div>
-            <div class="skeleton skeleton-paragraph alt"></div>
-            <div class="skeleton skeleton-paragraph alt"></div>
+            
         </div>
         <div id="console">
             <div class="size-handler horizontal"></div>
@@ -62,11 +59,13 @@
                 }
                 document.querySelector('html').setAttribute('theme',this.value)
                 })()">
-                <option selected value="light+">Light +</option>
+                <option selected value="base">Custom Theme</option>
+                <option disabled>---------- VSCODE Light Themes -----------</option>
+                <option value="light+">Light +</option>
                 <option value="light-orange">Light Orange</option>
                 <option value="light-quiet">Light Quiet</option>
                 <option value="light-solarized">Light Solarized</option>
-                <option disabled>-------------------------</option>
+                <option disabled>---------- VSCODE Dark Themes -----------</option>
                 <option value="dark+">Dark +</option>
                 <option value="dark-abyss">Dark Abyss</option>
                 <option value="dark-ayu-mirage">Dark Ayu Mirage</option>
@@ -82,6 +81,8 @@
         </div>
     </div>
     </div>
+
+    <style id="custom-style"></style>
 </body>
 
 </html>
