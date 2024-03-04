@@ -41,7 +41,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Update Channels
-        uses: alikamal1/Form_Data_HTTP_POST_Action@main
+        uses: fjogeleit/http-request-action@v1
         with:
           url: '${{ secrets.SLACK_ENDPOINT }}'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
           data: '{"version": "${{ steps.get_release.outputs.tag_name }}", "url": "${{ steps.get_release.outputs.html_url }}"}'
