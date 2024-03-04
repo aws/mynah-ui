@@ -54,6 +54,7 @@ export class CodeSnippetWidget {
   private readonly renderCodeSnippetWidget = (markdownText: string): ExtendedHTMLElement => {
     return new Card({
       padding: 'none',
+      border: false,
       events: {
         mouseenter: () => {
           this.showPreviewOverLay(markdownText);
