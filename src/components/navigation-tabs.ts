@@ -162,7 +162,7 @@ export class Tabs {
   private readonly showCloseTabConfirmationOverLay = (elm: HTMLElement, selectedTabId: string): void => {
     this.closeConfirmationOverlay = new Overlay({
       background: true,
-      closeOnOutsideClick: false,
+      closeOnOutsideClick: true,
       referenceElement: elm,
       dimOutside: false,
       removeOtherOverlays: true,
