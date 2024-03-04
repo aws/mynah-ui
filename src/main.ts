@@ -501,6 +501,18 @@ export class MynahUI {
   };
 
   /**
+   * If exists, close the given tab
+   * @param tabId Tab ID to switch to
+   * @param eventId last action's user event ID passed from an event binded to mynahUI.
+   * Without user intent you cannot switch to a different tab
+   */
+  public removeTab = (tabId: string, eventId: string): void => {
+    if (eventId === this.lastEventId && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      MynahUITabsStore.getInstance().removeTab(tabId);
+    }
+  };
+
+  /**
    * Updates only the UI with the given data for the given tab
    * Send tab id as an empty string to open a new tab!
    * If max tabs reached, will not return tabId
