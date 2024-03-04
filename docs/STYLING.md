@@ -10,13 +10,30 @@ Let's see what kind of custom properties you can set and how to set them?
 :root {
     --mynah-font-family: var(--vscode-font-family), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         "Amazon Ember", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    /* Global font size */
     font-size: var(--vscode-font-size, 13px);
     font-family: var(--mynah-font-family, "system-ui");
     --mynah-max-width: 2560px;
-     
-     /* This will allow you to adjust the overall spacings */
     --mynah-sizing-base: 0.25rem;
+    --mynah-sizing-half: calc(var(--mynah-sizing-base) / 2);
+    --mynah-sizing-1: var(--mynah-sizing-base);
+    --mynah-sizing-2: calc(var(--mynah-sizing-base) * 2);
+    --mynah-sizing-3: calc(var(--mynah-sizing-base) * 3);
+    --mynah-sizing-4: calc(var(--mynah-sizing-base) * 4);
+    --mynah-sizing-5: calc(var(--mynah-sizing-base) * 5);
+    --mynah-sizing-6: calc(var(--mynah-sizing-base) * 6);
+    --mynah-sizing-7: calc(var(--mynah-sizing-base) * 7);
+    --mynah-sizing-8: calc(var(--mynah-sizing-base) * 8);
+    --mynah-sizing-9: calc(var(--mynah-sizing-base) * 9);
+    --mynah-sizing-10: calc(var(--mynah-sizing-base) * 10);
+    --mynah-sizing-11: calc(var(--mynah-sizing-base) * 11);
+    --mynah-sizing-12: calc(var(--mynah-sizing-base) * 12);
+    --mynah-sizing-13: calc(var(--mynah-sizing-base) * 13);
+    --mynah-sizing-14: calc(var(--mynah-sizing-base) * 14);
+    --mynah-sizing-15: calc(var(--mynah-sizing-base) * 15);
+    --mynah-sizing-16: calc(var(--mynah-sizing-base) * 16);
+    --mynah-sizing-17: calc(var(--mynah-sizing-base) * 17);
+    --mynah-sizing-18: calc(var(--mynah-sizing-base) * 18);
+    --mynah-chat-wrapper-spacing: var(--mynah-sizing-4);
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
 
@@ -63,30 +80,33 @@ Let's see what kind of custom properties you can set and how to set them?
 
     --mynah-card-bg: var(--vscode-editor-background);
 
-    --mynah-shadow-generic: none; //0 5px 10px -10px rgba(0, 0, 0, 0.25);
+    --mynah-shadow-button: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);
     --mynah-shadow-card: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);
-    --mynah-shadow-overlay: 0 -5px 25px 20px var(--mynah-color-bg);
+    --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
 
-    /* These will allow you to adjust the overall font sizes */
-    /* But you can also use the root font-sizing, since they are using rem values */
     --mynah-font-size-xxsmall: 0.75rem;
     --mynah-font-size-xsmall: 0.85rem;
     --mynah-font-size-small: 0.95rem;
     --mynah-font-size-medium: 1rem;
     --mynah-font-size-large: 1.125rem;
+    --mynah-line-height: 1.25rem;
+    --mynah-syntax-code-line-height: 1.25rem;
 
     --mynah-card-radius: var(--mynah-sizing-2);
+    --mynah-input-radius: var(--mynah-sizing-1);
+    --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
 
-    --mynah-bottom-panel-transition: all 750ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-very-short-transition: all 500ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-very-long-transition: all 1500ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-short-transition: all 450ms cubic-bezier(0.85, 0.15, 0, 1);
-    --mynah-short-transition-rev: all 480ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-short-transition-rev-opacity: opacity 650ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-text-flow-transition: all 700ms cubic-bezier(0.35, 1.2, 0, 1),
-        transform 700ms cubic-bezier(0.2, 1.05, 0, 1);
+    --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-very-long-transition: all 1650ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-short-transition: all 550ms cubic-bezier(0.85, 0.15, 0, 1);
+    --mynah-short-transition-rev: all 580ms cubic-bezier(0.35, 1, 0, 1);
+    --mynah-short-transition-rev-opacity: opacity 750ms cubic-bezier(0.35, 1, 0, 1);
+    --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1.2, 0, 1),
+        transform 800ms cubic-bezier(0.2, 1.05, 0, 1);
 }
+
 ```
 ---
 

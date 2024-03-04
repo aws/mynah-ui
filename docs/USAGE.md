@@ -19,6 +19,7 @@ mynahUI.updateLastChatAnswer(...);
 mynahUI.updateChatAnswerWithMessageId(...);
 mynahUI.updateStore(...);
 mynahUI.selectTab(...);
+mynahUI.removeTab(...);
 mynahUI.getSelectedTabId(...);
 mynahUI.getAllTabs(...);
 mynahUI.notify(...);
@@ -81,6 +82,25 @@ const mynahUI = new MynahUI({
     if(prompt?.command === 'fixed-tab'){
       // Assume that you have another tab already open and you know it's id.
       mynahUI.selectTab('fixed-tab-id', eventId);
+    }
+  }
+});
+```
+
+---
+
+## Removing a tab programmatically (!)
+You can remove a tab with `tabId` and the `eventId`. 
+
+### IMPORTANT NOTICE!
+**`eventId` is a proof that the tab switch trigger is following an intended user action such as a new prompt of a button action**
+
+```typescript
+const mynahUI = new MynahUI({
+  // Assume that you want to close the this tab through a action button inside the body of a card in the tab
+  onInBodyButtonClicked: (tabId, messageId, action, eventId)=>{
+    if(action?.id === 'close-tab'){
+      mynahUI.removeTab('fixed-tab-id', eventId);
     }
   }
 });
