@@ -37,7 +37,13 @@
             width: 100%;
             left: 0;
             color: var(--mynah-color-text-default);
-            border-radius: var(--mynah-card-radius);
+            border-radius: var(--mynah-input-radius);
+            &::placeholder {
+                color: var(--mynah-color-text-weak);
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
             option.empty-option {
                 font-style: italic;
                 opacity: 0.5;

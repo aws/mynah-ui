@@ -3,6 +3,7 @@
     overflow: hidden;
     position: relative;
     display: block;
+    line-height: var(--mynah-line-height);
 
     img {
         max-width: 100%;

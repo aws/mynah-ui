@@ -24,6 +24,7 @@
     --mynah-sizing-16: calc(var(--mynah-sizing-base) * 16);
     --mynah-sizing-17: calc(var(--mynah-sizing-base) * 17);
     --mynah-sizing-18: calc(var(--mynah-sizing-base) * 18);
+    --mynah-chat-wrapper-spacing: var(--mynah-sizing-4);
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
 
@@ -71,17 +72,21 @@
 
     --mynah-card-bg: var(--vscode-editor-background);
 
-    --mynah-shadow-generic: none; //0 5px 10px -10px rgba(0, 0, 0, 0.25);
+    --mynah-shadow-button: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);
     --mynah-shadow-card: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);
-    --mynah-shadow-overlay: 0 -5px 25px 20px var(--mynah-color-bg);
+    --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
 
     --mynah-font-size-xxsmall: 0.75rem;
     --mynah-font-size-xsmall: 0.85rem;
     --mynah-font-size-small: 0.95rem;
     --mynah-font-size-medium: 1rem;
     --mynah-font-size-large: 1.125rem;
+    --mynah-line-height: 1.25rem;
+    --mynah-syntax-code-line-height: 1.25rem;
 
     --mynah-card-radius: var(--mynah-sizing-2);
+    --mynah-input-radius: var(--mynah-sizing-1);
+    --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
 
     --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);

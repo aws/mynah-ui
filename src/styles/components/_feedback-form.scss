@@ -99,7 +99,7 @@
         width: 100%;
         height: 100px;
         max-height: 25vh;
-        border-radius: var(--mynah-card-radius);
+        border-radius: var(--mynah-input-radius);
         font-size: var(--mynah-font-size-small);
         outline: none;
         color: var(--mynah-color-text-input);
@@ -120,7 +120,7 @@
             width: 100%;
             left: 0;
             color: var(--mynah-color-text-default);
-            border-radius: var(--mynah-card-radius);
+            border-radius: var(--mynah-input-radius);
             padding: var(--mynah-sizing-3);
             border: var(--mynah-border-width) solid var(--mynah-color-border-default);
             background-color: var(--mynah-card-bg);

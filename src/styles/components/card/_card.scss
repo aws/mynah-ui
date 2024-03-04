@@ -12,10 +12,12 @@
     width: 100%;
     overflow: hidden;
     border-radius: var(--mynah-card-radius);
+    box-shadow: var(--mynah-shadow-card);
 
     &.padding {
         &-none {
             padding: 0;
+            border-radius: 0;
         }
         &-small {
             padding: var(--mynah-sizing-1);

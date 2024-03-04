@@ -5,7 +5,7 @@ button.mynah-button {
     border-radius: var(--mynah-button-radius);
     background-color: var(--mynah-color-button);
     color: var(--mynah-color-button-reverse);
-    box-shadow: var(--mynah-shadow-generic);
+    box-shadow: var(--mynah-shadow-button);
     cursor: pointer;
     transition: var(--mynah-very-short-transition);
     display: inline-flex;
@@ -55,12 +55,7 @@ button.mynah-button {
     &.mynah-icon-button {
         width: var(--mynah-sizing-10);
         height: var(--mynah-sizing-10);
-    }
-    &.mynah-button-wait {
-        background-color: var(--mynah-color-light);
-        color: var(--mynah-color-text-default);
-        box-shadow: 0 5px 10px -10px var(--mynah-color-light);
-        pointer-events: none;
+        border-radius: 0;
     }
     > span {
         white-space: nowrap;

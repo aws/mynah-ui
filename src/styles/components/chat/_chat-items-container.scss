@@ -5,8 +5,8 @@
     overflow-y: auto;
     flex-flow: column-reverse nowrap;
     align-items: flex-start;
-    padding: var(--mynah-sizing-4);
-    gap: var(--mynah-sizing-4);
+    padding: var(--mynah-chat-wrapper-spacing);
+    gap: var(--mynah-chat-wrapper-spacing);
 }
 
 &.loading {
