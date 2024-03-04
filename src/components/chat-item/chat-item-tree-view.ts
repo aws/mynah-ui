@@ -152,7 +152,7 @@ export class ChatItemTreeView {
                 attributes: {
                   title: action.description ?? ''
                 },
-                classNames: [ action.status ?? '' ],
+                classNames: [ 'mynah-icon-button', action.status ?? '' ],
                 primary: false,
                 onClick: (e) => {
                   cancelEvent(e);
