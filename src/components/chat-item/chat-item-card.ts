@@ -51,6 +51,11 @@ export class ChatItemCard {
         }
       });
     this.render = this.generateCard();
+
+    if (this.props.chatItem.type === ChatItemType.ANSWER_STREAM &&
+      (this.props.chatItem.body ?? '').trim() !== '') {
+      this.updateCardStack({});
+    }
   }
 
   private readonly generateCard = (): ExtendedHTMLElement => {
@@ -61,9 +66,9 @@ export class ChatItemCard {
         messageId: this.props.chatItem.messageId ?? 'unknown',
       },
       children: [
-        ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM
+        ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM && (this.props.chatItem.body ?? '').trim() === ''
           ? [
-            // Create an empty card with its child set to the loading spinner
+              // Create an empty card with its child set to the loading spinner
               new Card({
                 children: [
                   DomBuilder.getInstance().build({
@@ -72,16 +77,19 @@ export class ChatItemCard {
                     classNames: [ 'mynah-chat-items-spinner' ],
                     children: [ { type: 'span' }, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
                   }),
-                ]
+                ],
               }).render,
             ]
           : [ ...this.getCardContent() ]),
       ],
     });
 
-    setTimeout(() => {
-      generatedCard.addClass('reveal');
-    }, this.props.chatItem.type === ChatItemType.PROMPT ? 10 : 200);
+    setTimeout(
+      () => {
+        generatedCard.addClass('reveal');
+      },
+      this.props.chatItem.type === ChatItemType.PROMPT ? 10 : 200
+    );
 
     return generatedCard;
   };
@@ -112,6 +120,10 @@ export class ChatItemCard {
     if (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId) === undefined) {
       return [];
     }
+
+    /**
+     * Generate form items if available
+     */
     if (this.chatFormItems !== null) {
       this.chatFormItems.render.remove();
       this.chatFormItems = null;
@@ -120,6 +132,9 @@ export class ChatItemCard {
       this.chatFormItems = new ChatItemFormItemsWrapper({ tabId: this.props.tabId, chatItem: this.props.chatItem });
     }
 
+    /**
+     * Generate buttons if available
+     */
     if (this.chatButtons !== null) {
       this.chatButtons.render.remove();
       this.chatButtons = null;
@@ -129,28 +144,36 @@ export class ChatItemCard {
         tabId: this.props.tabId,
         formItems: this.chatFormItems,
         buttons: this.props.chatItem.buttons,
-        onActionClick: (action) => {
+        onActionClick: action => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
             messageId: this.props.chatItem.messageId,
             actionId: action.id,
             actionText: action.text,
-            ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {})
+            ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {}),
           });
 
           if (action.keepCardAfterClick === false) {
             this.render.remove();
             if (this.props.chatItem.messageId !== undefined) {
               const currentChatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
-              MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-                chatItems: currentChatItems.filter(chatItem => this.props.chatItem.messageId !== chatItem.messageId)
-              }, true);
+              MynahUITabsStore.getInstance()
+                .getTabDataStore(this.props.tabId)
+                .updateStore(
+                  {
+                    chatItems: currentChatItems.filter(chatItem => this.props.chatItem.messageId !== chatItem.messageId),
+                  },
+                  true
+                );
             }
           }
-        }
+        },
       });
     }
 
+    /**
+     * Generate file tree if available
+     */
     if (this.fileTreeWrapper !== null) {
       this.fileTreeWrapper.render.remove();
       this.fileTreeWrapper = null;
@@ -168,12 +191,16 @@ export class ChatItemCard {
         actions,
         details,
         references: this.props.chatItem.codeReference ?? [],
-        referenceSuggestionLabel
+        referenceSuggestionLabel,
       });
     }
+
     return [
       ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
-      ...(this.props.chatItem.body !== undefined || this.props.chatItem.fileList !== undefined
+      ...(this.props.chatItem.body !== undefined ||
+      this.props.chatItem.fileList !== undefined ||
+      this.props.chatItem.formItems !== undefined ||
+      this.props.chatItem.buttons !== undefined
         ? [
             new Card({
               onCardEngaged: engagement => {
@@ -184,9 +211,7 @@ export class ChatItemCard {
               },
               children: [
                 ...(this.props.chatItem.icon !== undefined
-                  ? [
-                      new Icon({ icon: this.props.chatItem.icon, classNames: [ 'mynah-chat-item-card-icon' ] }).render
-                    ]
+                  ? [ new Icon({ icon: this.props.chatItem.icon, classNames: [ 'mynah-chat-item-card-icon' ] }).render ]
                   : []),
                 ((): ExtendedHTMLElement => {
                   const commonBodyProps = {
@@ -197,23 +222,24 @@ export class ChatItemCard {
                         link: url,
                         event: e,
                       });
-                    }
+                    },
                   };
 
                   this.contentBody = new CardBody({
                     ...commonBodyProps,
                     useParts: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
                     highlightRangeWithTooltip: this.props.chatItem.codeReference,
-                    children: this.props.chatItem.relatedContent !== undefined
-                      ? [
-                          new ChatItemSourceLinksContainer({
-                            messageId: this.props.chatItem.messageId ?? 'unknown',
-                            tabId: this.props.tabId,
-                            relatedContent: this.props.chatItem.relatedContent?.content,
-                            title: this.props.chatItem.relatedContent?.title,
-                          }).render,
-                        ]
-                      : [],
+                    children:
+                      this.props.chatItem.relatedContent !== undefined
+                        ? [
+                            new ChatItemSourceLinksContainer({
+                              messageId: this.props.chatItem.messageId ?? 'unknown',
+                              tabId: this.props.tabId,
+                              relatedContent: this.props.chatItem.relatedContent?.content,
+                              title: this.props.chatItem.relatedContent?.title,
+                            }).render,
+                          ]
+                        : [],
                     onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
                       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
                         messageId: this.props.chatItem.messageId,
@@ -233,15 +259,9 @@ export class ChatItemCard {
                   });
                   return this.contentBody.render;
                 })(),
-                ...(this.chatFormItems !== null
-                  ? [ (this.chatFormItems).render ]
-                  : []),
-                ...(this.fileTreeWrapper !== null
-                  ? [ (this.fileTreeWrapper).render ]
-                  : []),
-                ...(this.chatButtons !== null
-                  ? [ (this.chatButtons).render ]
-                  : []),
+                ...(this.chatFormItems !== null ? [ this.chatFormItems.render ] : []),
+                ...(this.fileTreeWrapper !== null ? [ this.fileTreeWrapper.render ] : []),
+                ...(this.chatButtons !== null ? [ this.chatButtons.render ] : []),
                 ...(this.props.chatItem.canBeVoted === true && this.props.chatItem.messageId !== undefined
                   ? [ new ChatItemRelevanceVote({ tabId: this.props.tabId, messageId: this.props.chatItem.messageId }).render ]
                   : []),
@@ -260,15 +280,18 @@ export class ChatItemCard {
       children: [ new Icon({ icon: this.props.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render ],
     });
 
-  private readonly getInsertedTypewriterPartsCss = (): ExtendedHTMLElement => DomBuilder.getInstance().build({
-    type: 'style',
-    attributes: {
-      type: 'text/css'
-    },
-    persistent: true,
-    innerHTML: `
-    ${(new Array(Math.max(0, (this.typewriterItemIndex ?? 0) - (this.previousTypewriterItemIndex ?? 0))).fill(null)).map((n, i) => {
-      return `
+  private readonly getInsertedTypewriterPartsCss = (): ExtendedHTMLElement =>
+    DomBuilder.getInstance().build({
+      type: 'style',
+      attributes: {
+        type: 'text/css',
+      },
+      persistent: true,
+      innerHTML: `
+    ${new Array(Math.max(0, (this.typewriterItemIndex ?? 0) - (this.previousTypewriterItemIndex ?? 0)))
+      .fill(null)
+      .map((n, i) => {
+        return `
         .${this.typewriterId} .typewriter-part[index="${i + this.previousTypewriterItemIndex}"] {
           animation: none !important;
           opacity: 1 !important;
@@ -276,30 +299,31 @@ export class ChatItemCard {
         }
 
         `;
-    }).join('')
-      }
-    `
-  });
+      })
+      .join('')}
+    `,
+    });
 
-  private readonly getInsertingTypewriterPartsCss = (
-    newWordsCount: number,
-    timeForEach: number): ExtendedHTMLElement => (DomBuilder.getInstance().build({
-    type: 'style',
-    attributes: {
-      type: 'text/css'
-    },
-    innerHTML: `
-        ${(new Array(Math.max(0, newWordsCount ?? 0)).fill(null)).map((n, i) => {
-        return `
+  private readonly getInsertingTypewriterPartsCss = (newWordsCount: number, timeForEach: number): ExtendedHTMLElement =>
+    DomBuilder.getInstance().build({
+      type: 'style',
+      attributes: {
+        type: 'text/css',
+      },
+      innerHTML: `
+        ${new Array(Math.max(0, newWordsCount ?? 0))
+          .fill(null)
+          .map((n, i) => {
+            return `
             .${this.typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
               animation: typewriter 100ms ease-out forwards;
               animation-delay: ${i * timeForEach}ms !important;
             }
             `;
-      }).join('')
-        }
-        `
-  }));
+          })
+          .join('')}
+        `,
+    });
 
   public readonly updateCard = (): void => {
     if (this.updateTimer === undefined && this.updateCardStack.length > 0) {
@@ -313,14 +337,19 @@ export class ChatItemCard {
         // Update item inside the store
         if (this.props.chatItem.messageId !== undefined) {
           const currentTabChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId)?.getStore()?.chatItems;
-          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-            chatItems: currentTabChatItems?.map((chatItem: ChatItem) => {
-              if (chatItem.messageId === this.props.chatItem.messageId) {
-                return this.props.chatItem;
-              }
-              return chatItem;
-            })
-          }, true);
+          MynahUITabsStore.getInstance()
+            .getTabDataStore(this.props.tabId)
+            .updateStore(
+              {
+                chatItems: currentTabChatItems?.map((chatItem: ChatItem) => {
+                  if (chatItem.messageId === this.props.chatItem.messageId) {
+                    return this.props.chatItem;
+                  }
+                  return chatItem;
+                }),
+              },
+              true
+            );
         }
 
         const newCardContent = this.getCardContent();
@@ -331,12 +360,9 @@ export class ChatItemCard {
         if (this.typewriterId === undefined) {
           this.typewriterId = `typewriter-card-${generateUID()}`;
         }
-        this.render.update({
+        this.render?.update({
           classNames: [ ...this.getCardClasses(), 'reveal', this.typewriterId, 'typewriter-animating' ],
-          children: [
-            ...newCardContent,
-            this.getInsertedTypewriterPartsCss(),
-          ],
+          children: [ ...newCardContent, this.getInsertedTypewriterPartsCss() ],
         });
 
         // How many new words will be added
