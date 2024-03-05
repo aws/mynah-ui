@@ -100,10 +100,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: preparedemo
     steps:
+      - name: Get release info
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Update Channels
         uses: fjogeleit/http-request-action@v1
         with:
           url: '${{ secrets.SLACK_ENDPOINT }}'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"version": "${{ needs.preparedemo.steps.get_release.outputs.tag_name }}", "url": "${{ needs.preparedemo.steps.get_release.outputs.html_url }}"}'
+          data: '{"version": "${{ steps.get_release.outputs.tag_name }}", "url": "${{ steps.get_release.outputs.html_url }}"}'
