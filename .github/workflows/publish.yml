@@ -36,10 +36,6 @@ jobs:
           asset_path: ./example/mynah-ui-demo.zip
           asset_name: mynah-ui-demo.zip
           asset_content_type: application/zip
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: ./example/dist
       - name: Publish to npm
         run: npm publish --access public
         env:
