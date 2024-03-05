@@ -1,4 +1,4 @@
-name: Publish package to NPM
+name: Publish BETA package to NPM
 on:
   push:
     tags: ['beta*.*']

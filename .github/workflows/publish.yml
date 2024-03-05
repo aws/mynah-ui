@@ -1,8 +1,11 @@
-name: Publish package to NPM
+name: Publish Release
 on:
   push:
     tags: ['v*.*']
+
+  workflow_dispatch:
 jobs:
+  # Build, Test and Check linting
   build:
     runs-on: ubuntu-latest
     steps:
@@ -19,6 +22,12 @@ jobs:
         run: npm run build
       - name: Run tests
         run: npm test
+  
+  # Build and upload the demo app assets
+  preparedemo:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Build demo app
         run: npm run packdemo
       - name: Get release info
@@ -36,10 +45,43 @@ jobs:
           asset_path: ./example/mynah-ui-demo.zip
           asset_name: mynah-ui-demo.zip
           asset_content_type: application/zip
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+            source: ./example/dist
+            destination: ./_site
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+      
+  # Publish version to npm
+  npmpublish:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Publish to npm
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # Deploy to github pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: preparedemo
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # Upload communication channels
+  updatechannels:
+    runs-on: ubuntu-latest
+    needs: preparedemo
+    steps:
       - name: Update Channels
         uses: fjogeleit/http-request-action@v1
         with:
