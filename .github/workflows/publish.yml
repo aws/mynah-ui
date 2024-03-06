@@ -54,7 +54,7 @@ jobs:
           asset_path: ./example/mynah-ui-demo.zip
           asset_name: mynah-ui-demo.zip
           asset_content_type: application/zip
-      - name: Setup Pages
+      - name: Setup Github Pages
         uses: actions/configure-pages@v4
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
@@ -63,8 +63,11 @@ jobs:
             destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+    outputs:
+      version: ${{ steps.get_release.outputs.tag_name }}
+      url: ${{ steps.get_release.outputs.html_url }}
       
-  # Publish version to npm
+  # Publish to npm
   npmpublish:
     runs-on: ubuntu-latest
     needs: build
@@ -100,15 +103,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: preparedemo
     steps:
-      - name: Get release info
-        id: get_release
-        uses: bruceadams/get-release@v1.3.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
       - name: Update Channels
         uses: fjogeleit/http-request-action@v1
         with:
           url: '${{ secrets.SLACK_ENDPOINT }}'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"version": "${{ steps.get_release.outputs.tag_name }}", "url": "${{ steps.get_release.outputs.html_url }}"}'
+          data: '{"version": "${{ needs.preparedemo.outputs.version }}", "url": "${{ needs.preparedemo.outputs.url }}"}'
