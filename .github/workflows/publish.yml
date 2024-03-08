@@ -29,23 +29,17 @@ jobs:
         run: npm run build
       - name: Run tests
         run: npm test
-
-
-  uploaddemozip:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@aws'
-      - run: npm ci
-      - name: Build mynah-ui
-        run: npm run build
       - name: Build demo app
         run: npm run packdemo
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./example/dist
+          destination: ./_site
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
       - name: Get release info
         id: get_release
         uses: bruceadams/get-release@v1.3.2
@@ -61,32 +55,6 @@ jobs:
           asset_path: ./example/mynah-ui-demo.zip
           asset_name: mynah-ui-demo.zip
           asset_content_type: application/zip
-  
-  # Build and upload the demo app assets
-  preparegithubpages:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@aws'
-      - run: npm ci
-      - name: Build mynah-ui
-        run: npm run build
-      - name: Build demo app
-        run: npm run packdemo
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./example/dist
-          destination: ./_site
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
       
   # Publish to npm
   npmpublish:
@@ -113,7 +81,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: preparegithubpages
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
