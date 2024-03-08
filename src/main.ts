@@ -198,11 +198,13 @@ export class MynahUI {
       children: Object.keys(initTabs).slice(0, Config.getInstance().config.maxTabs).map((tabId: string) => {
         this.chatWrappers[tabId] = new ChatWrapper({
           tabId,
-          onStopChatResponse: (tabId) => {
-            if (props.onStopChatResponse != null) {
-              props.onStopChatResponse(tabId, this.getUserEventId());
-            }
-          },
+          onStopChatResponse: props.onStopChatResponse != null
+            ? (tabId) => {
+                if (props.onStopChatResponse != null) {
+                  props.onStopChatResponse(tabId, this.getUserEventId());
+                }
+              }
+            : undefined,
         });
         return this.chatWrappers[tabId].render;
       })
@@ -248,7 +250,13 @@ export class MynahUI {
     MynahUITabsStore.getInstance().addListener('add', (tabId: string) => {
       this.chatWrappers[tabId] = new ChatWrapper({
         tabId,
-        onStopChatResponse: props.onStopChatResponse,
+        onStopChatResponse: props.onStopChatResponse != null
+          ? (tabId) => {
+              if (props.onStopChatResponse != null) {
+                props.onStopChatResponse(tabId, this.getUserEventId());
+              }
+            }
+          : undefined,
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
       if (this.props.onTabAdd !== undefined) {
