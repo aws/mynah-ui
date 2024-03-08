@@ -31,8 +31,6 @@ jobs:
         run: npm test
       - name: Build demo app
         run: npm run packdemo
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
       - name: Get release info
         id: get_release
         uses: bruceadams/get-release@v1.3.2
