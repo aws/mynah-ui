@@ -145,7 +145,9 @@ export class ChatPromptInput {
       if (e.key === KeyMap.BACKSPACE && this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
         cancelEvent(e);
         this.clearTextArea(true);
-      } else if (e.key === KeyMap.ENTER && !e.shiftKey && !e.ctrlKey) {
+      } else if (e.key === KeyMap.ENTER &&
+        ((!e.isComposing && !e.shiftKey && !e.ctrlKey) ||
+        (e.isComposing && (e.shiftKey)))) {
         cancelEvent(e);
         this.sendPrompt();
       } else if (this.selectedCommand === '' && this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.getTextInputValue() === '') {
