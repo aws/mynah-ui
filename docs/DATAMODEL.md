@@ -1041,6 +1041,9 @@ For `img` items it is a bit different. First of all, `img` items doesn't have `w
 **But** in case you want to make an image `100%` width and don't want to change its original aspect ratio, just give the `aspect-ratio` attribute without a value. Any of these media and embed items has the `aspect-ratio` without value, they'll get 100% width.
 If you want to specify a custom aspect ratio within the available options above, you can also do that for the `img` items too.
 
+### Tip 5
+Even though we don't want you to write styles for the components, you might have some real edge cases you have to provide styles for some of the elements. In this case you can use `id` or `class` attributes to link them to your proper style files. You know what they are.
+
 
 That's all!, please also see the **[samples data](https://github.com/aws/mynah-ui/blob/main/example/src/samples/sample-data.ts)** of both options we've used in the example app
 
