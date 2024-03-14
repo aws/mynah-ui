@@ -470,6 +470,12 @@ export interface ReferenceTrackerInformation {
   information: string;
 }
 
+export interface ChatItemBodyRenderer extends GenericDomBuilderAttributes {
+  type: AllowedTagsInCustomRenderer;
+  children?: Array<string | ChatItemBodyRenderer> | undefined;
+  attributes?: Partial<Record<AllowedAttributesInCustomRenderer, string>> | undefined;
+}
+
 // ################################# 
 interface ChatItem {
   type: ChatItemType;
@@ -480,6 +486,7 @@ interface ChatItem {
     details?: Record<string, TreeNodeDetails>;
   };
   body?: string; // supports MARKDOWN string
+  customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
   messageId?: string;
   canBeVoted?: boolean; // requires messageId to be filled to show vote thumbs
   relatedContent?: {
@@ -676,6 +683,366 @@ mynahUI.addChatItem('tab-1', {
 <p align="center">
   <img src="./img/data-model/chatItems/body.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+---
+
+## `customRenderer`
+Custom renderers can be provided in 3 different types *(string, dom builder json or dom builder json array)* and they are here to help you in case you need to create some static content on the client side rather than a data arrives from the backend or if it is not possible or hard to do with markdown.
+
+##### Note: It can be combined with `body`, so you don't need to choose between them.
+
+
+### Using with `string` type
+If you give a string to the `customRenderer` mynah-ui will take it as an html markup string and renders it according to that.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    messageId: (new Date().getTime()).toString(),
+    type: ChatItemType.ANSWER,
+    canBeVoted: true,
+    customRenderer: `
+        <h3>Custom renderer's with HTML markup string</h3>
+        <p>
+            Here you will find some custom html rendering examples which may not be available with markdown or pretty hard to generate.
+        </p>
+        <br />
+
+        <h3>Table (inside a blockqote)</h3>
+        <blockquote>
+            Most popular JS frameworks
+            
+            <!-- Divider -->
+            <hr />
+
+            <table>
+            <tbody>
+                <tr>
+                    <th align="left">Name</td>
+                    <th align="right">Weekly Downloads</td>
+                </tr>
+                <tr>
+                    <td align="left">Vanilla</td>
+                    <td align="right"><strong>inf.</strong></td>
+                </tr>
+                <tr>
+                    <td align="left">React</td>
+                    <td align="right">24 <small>million</small></td>
+                </tr>
+                <tr>
+                    <td align="left">JQuery</td>
+                    <td align="right">10.6 <small>million</small></td>
+                </tr>
+                <tr>
+                    <td align="left">VUE</td>
+                    <td align="right">4.75 <small>million</small></td>
+                </tr>
+            </tbody>
+            </table>
+        </blockquote>
+        <br />
+
+        <!-- Divider -->
+        <hr />
+        <br />
+
+        <h3>Code block and Links</h3>
+
+        <pre class="language-typescript">
+            <code>import { MynahUI } from '@aws/mynah-ui';
+
+            const mynahUI = new MynahUI({});</code>
+        </pre>
+        <p>
+            You can find more information and references
+            <strong>
+                <a href="https://github.com/aws/mynah-ui">HERE!</a>
+            </strong>.
+        </p>
+
+        <br />
+
+        <!-- Divider -->
+        <hr />
+        <br />
+
+        <h3>Embeds and Media elements</h3>
+
+        <h4>Iframe embed (Youtube example)</h4>
+        <iframe aspect-ratio="16:9" 
+            src="https://www.youtube.com/embed/bZsIPinetV4?si=k2Awd9in_wKgQC09&amp;start=65"
+            title="YouTube video player" allow="picture-in-picture;" allowfullscreen>
+        </iframe>
+        <br />
+        
+        <h4>Video element</h4>
+        <video aspect-ratio="21:9" controls
+            poster="https://assets.aboutamazon.com/88/05/0feec6ff47bab443d2c82944bb09/amazon-logo.png">
+            <source src="https://www.w3schools.com/tags/movie.mp4" type="video/mp4">
+            <source src="https://www.w3schools.com/tags/movie.ogg" type="video/ogg">
+            Your browser does not support the video tag.
+        </video>
+        <br />
+
+        <h4>Audio element</h4>
+        <audio controls>
+            <source src="https://www.w3schools.com/tags/horse.ogg" type="audio/ogg">
+            <source src="https://www.w3schools.com/tags/horse.mp3" type="audio/mpeg">
+            Your browser does not support the audio tag.
+        </audio>
+        <br />
+
+        <h4>Image</h4>
+        <img aspect-ratio 
+            src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_REV_SQ.8c88ac215fe4e441dc42865dd6962ed4f444a90d.png" 
+            alt="Powered by AWS">
+        <br />
+
+        <!-- Divider -->
+        <hr />
+        <br />
+
+        <p>
+            There might be infinite number of possible examples with all supported tags and their attributes.
+            It doesn't make so much sense to demonstrate all of them here.
+            You should go take a look to the 
+            <strong>
+                <a href="https://github.com/aws/mynah-ui/blob/main/docs/DATAMODEL.md">documentation</a>
+            </strong>
+            for details and limitations.
+        </p>`
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/customRenderer_html.png" alt="customRendererHTML" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+### Using with `ChatItemBodyRenderer` or `ChatItemBodyRenderer[]` type
+Even though you can build exactly the same html elements and node tree, this option will give you more flexibility especially on repeating items. We all know that it is not easy to read code which loops inside a string. **But more importantly, you can bind events with this option**.
+
+With a json structure which is properly typed, your IDE should give you the available options list during the code completion. So you don't need to guess which tags you can use in the `type` attribute, which attributes are supported for the `attributes` or which events are available for the `events`.
+
+Let's take a look how we write with `ChatItemBodyRenderer` interface:
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+const topFrameworks: Record<string, string> = {'Vanilla': 'inf.', 'React': '24', 'JQuery': '10.6', 'VUE': '4.75'};
+mynahUI.addChatItem('tab-1', {
+    messageId: (new Date().getTime()).toString(),
+    type: ChatItemType.ANSWER,
+    canBeVoted: true,
+    customRenderer: [
+      {
+        type: 'h3',
+        children: ['Custom renderer\'s with JSON dom builder objects']
+      },
+      {
+        type: 'p',
+        children: ['Here you will find some custom html rendering examples which may not be available with markdown or pretty hard to generate. But in this examples they are rendered from JSON definitions.']
+      },
+      {
+        type: 'p',
+        children: ['There is no difference between using a markup string or a JSON dom. You can create same accepted tags with same accepted attributes.']
+      },
+      {
+        type: 'p',
+        children: [
+          'Except 1 thing: ', 
+          {type: 'strong', children: ['attaching events! Like click or mousemove etc.']}
+        ]
+      },
+      { type: 'br' },
+      {
+        type: 'h3',
+        events: {
+          click: (event) => { alert('Why you click to title?'); }
+        },
+        children: ['Table (inside a blockqote)']
+      },
+      {
+        type: 'p',
+        children: ['This is basically the same table one card above with markup strings, but in this one ', {type: 'b', children: ['you can click to the table titles!']}]
+      },
+      { type: 'br' },
+      {
+        type: 'blockquote',
+        children: [
+          'Most popular JS frameworks',
+          // Divider
+          { type: 'hr' },
+          {
+            type: 'table',
+            children: [
+              {
+                type: 'tr',
+                children: [
+                  {
+                    type: 'th',
+                    events: {
+                      click: () => { alert('Why you click this title?'); }
+                    },
+                    attributes: { align: 'left' },
+                    children: ['Name']
+                  },
+                  {
+                    type: 'th',
+                    events: {
+                      click: () => { alert('Why you click to this title?'); }
+                    },
+                    attributes: { align: 'right' },
+                    children: ['Weekly Downloads']
+                  }
+                ]
+              },
+              ...Object.keys(topFrameworks).map(fw => ({
+                  type: 'tr',
+                  children: [
+                    { type: 'td', children: [fw]},
+                    { type: 'td',
+                      attributes: { align: 'right' },
+                      children: [
+                        topFrameworks[fw], 
+                        ...(!isNaN(parseFloat(topFrameworks[fw])) ? [{type: 'small', children: [' million']}] : [])
+                      ] 
+                    }
+                  ]
+                } as ChatItemBodyRenderer
+              )),
+            ]
+          }
+        ]
+      },
+      { type: 'br' }, // Add more space
+      {
+        type: 'p',
+        children: ['Or you can click below image to remove it!']
+      },
+      { type: 'br' },
+      {
+        type: 'img',
+        events: {
+          click: (event: MouseEvent)=>{
+            (event.target as HTMLElement).remove();
+          }
+        },
+        attributes: {
+          src: 'https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_stacked_REV_SQ.91cd4af40773cbfbd15577a3c2b8a346fe3e8fa2.png',
+          alt: 'Powered by AWS!'
+        }
+      }
+    ]
+  });
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/customRenderer_json.png" alt="customRendererJson" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+### We have some LIMITATIONS!
+
+#### We know that you're extremely careful while building custom html blocks and so experienced on CSS too, however we still need to assure the UI looks and works as expected without breaking anything. Also for safety reasons, we have to **`sanitize`** the HTML contents you provide.
+
+And it is not limited with these. We're automatically highlighting the code syntaxes, automatically adding the event controls for links, refining the look depends on each html element. You can check how the code block looks like (and has the copy buttons automatically) in the above `string` example.
+
+**NOTE:** Below limitations are applicable for both of the `string` and `ChatItemBodyRenderer` type use cases.
+
+### List of available tags:
+
+```
+[
+  'a', 'audio', 'b', 'blockquote',
+  'br', 'hr', 'canvas',
+  'code', 'col', 'colgroup',
+  'data', 'div', 'em',
+  'embed', 'figcaption', 'figure',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
+  'i', 'iframe',
+  'img', 'li', 'map',
+  'mark', 'object', 'ol',
+  'p', 'pre', 'q',
+  's', 'small', 'source',
+  'span', 'strong', 'sub',
+  'sup', 'table', 'tbody',
+  'td', 'tfoot', 'th',
+  'thead', 'tr', 'track',
+  'u', 'ul', 'video',
+]
+```
+
+### List of available attributes:
+
+```
+[
+    'accept','accept-charset','accesskey',
+    'align','allow','alt',
+    'as','async','autocapitalize',
+    'autoplay','charset','class',
+    'cols','colspan','controls',
+    'crossorigin','data','data-*',
+    'datetime','decoding','default',
+    'dir','download','headers',
+    'hidden','high','href',
+    'hreflang','id','ismap','
+    itemprop','kind','lang',
+    'language','loop','low',
+    'media','muted','optimum',
+    'ping','playsinline','poster',
+    'preload','referrerpolicy',
+    'rel','reversed','role',
+    'rowspan','sandbox','scope',
+    'shape','size','sizes','slot',
+    'span','spellcheck','src',
+    'srcdoc','srclang','srcset',
+    'start','target','title',
+    'translate','usemap',
+    'wrap','aspect-ratio'
+]
+```
+
+### Important Tips for html elements and attributes in `customRenderer`
+
+### Tip 1
+As you might see there is no `style`, `width` and `height` attributes are available. 
+As we've told you above, we know you're so good at styling components but our concern is the HTML itself. Since `mynah-ui` has a responsive design nature, we cannot let you to write a static width for an `img` item for example.
+It applies the same way to `iframe`, `video` and other similar elements too.
+
+### Tip 2
+In general, those items *(except `img`)* will automatically stretched to 100% width and will stay that way as the max width is 100%. You cannot define specific width and heights. **But** you can define their aspect ratios. Here's an example:
+
+```
+<iframe aspect-ratio="16:9" 
+    src="https://www.youtube.com/embed/bZsIPinetV4?si=k2Awd9in_wKgQC09&amp;start=65"
+    title="YouTube video player" allow="picture-in-picture;" allowfullscreen>
+</iframe>
+```
+When you provide a value to the `aspect-ratio` attribyte, it will automatically set the `width` of the element to `100%` and apply the aspect ratio for the height.
+
+### Tip 3
+Looking for the available aspect-ratio values?
+Here they are: `16:9`, `9:16`, `21:9`, `9:21`, `4:3`, `3:4`, `3:2`, `2:3`, `1:1`
+
+### Tip 4
+For `img` items it is a bit different. First of all, `img` items doesn't have `width: 100%` directly. They will be rendered in their original size. However up to **`100%` width max**. 
+**But** in case you want to make an image `100%` width and don't want to change its original aspect ratio, just give the `aspect-ratio` attribute without a value. Any of these media and embed items has the `aspect-ratio` without value, they'll get 100% width.
+If you want to specify a custom aspect ratio within the available options above, you can also do that for the `img` items too.
+
+
+That's all!, please also see the **[samples data](https://github.com/aws/mynah-ui/blob/main/example/src/samples/sample-data.ts)** of both options we've used in the example app
 
 ---
 

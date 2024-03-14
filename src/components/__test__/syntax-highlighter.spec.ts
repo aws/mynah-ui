@@ -14,17 +14,33 @@ describe('syntax-highlighter', () => {
     );
   });
 
-  it('buttons', () => {
+  it('should show buttons if showCopyButtons true and related events are connected', () => {
     const testSyntaxHighlighter = new SyntaxHighlighter({
       codeStringWithMarkup: 'alert("hello");\n',
       language: 'js',
       keepHighlights: true,
       showCopyOptions: true,
+      onCopiedToClipboard: () => {},
+      onInsertToCursorPosition: () => {},
       block: true,
     });
 
     expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(2);
     expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Insert at cursor');
     expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.title).toBe('Copy');
+  });
+
+  it('should NOT show related button if its event is not connected even when showCopyButtons true', () => {
+    const testSyntaxHighlighter = new SyntaxHighlighter({
+      codeStringWithMarkup: 'alert("hello");\n',
+      language: 'js',
+      keepHighlights: true,
+      showCopyOptions: true,
+      onCopiedToClipboard: () => {},
+      block: true,
+    });
+
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(1);
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Copy');
   });
 });

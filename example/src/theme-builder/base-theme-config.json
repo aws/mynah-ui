@@ -2,7 +2,12 @@
     "--mynah-max-width": {
         "type": "measurement",
         "description": "Max width for mynah-ui container",
-        "units": ["px", "rem", "vw", ""],
+        "units": [
+            "px",
+            "rem",
+            "vw",
+            ""
+        ],
         "unit": "px",
         "category": "sizing",
         "value": "2560"
@@ -10,7 +15,11 @@
     "--mynah-sizing-base": {
         "type": "measurement",
         "description": "Base spacing value used on paddings, margins etc.",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "rem",
         "category": "sizing",
         "value": "0.25"
@@ -19,9 +28,8 @@
         "type": "text",
         "description": "Chat wrapper spacing value used on paddings and the distance between cards",
         "category": "sizing",
-        "value": "var(--mynah-sizing-4)"
+        "value": "var(--mynah-sizing-6)"
     },
-
     "--mynah-font-family": {
         "type": "text",
         "description": "Base font-family",
@@ -34,27 +42,26 @@
         "category": "font-family",
         "value": "monospace"
     },
-
     "--mynah-color-text-default": {
         "type": "color",
         "description": "Default text color used in various places",
         "category": "text-color",
         "alpha": "100",
-        "value": "#606060"
+        "value": "#517185"
     },
     "--mynah-color-text-strong": {
         "type": "color",
         "description": "Strong text color used in various places",
         "category": "text-color",
         "alpha": "100",
-        "value": "#444444"
+        "value": "#153d56"
     },
     "--mynah-color-text-weak": {
         "type": "color",
         "description": "Light text color used in various places",
         "category": "text-color",
         "alpha": "100",
-        "value": "#999999"
+        "value": "#a9bed0"
     },
     "--mynah-color-text-link": {
         "type": "color",
@@ -68,7 +75,7 @@
         "description": "Input text color used in input fields",
         "category": "text-color",
         "alpha": "100",
-        "value": "#616161"
+        "value": "#517185"
     },
     "--mynah-color-light": {
         "type": "color",
@@ -91,18 +98,21 @@
         "alpha": "100",
         "value": "#886411"
     },
-    
     "--mynah-color-border-default": {
         "type": "color",
         "description": "Default border color used in several places",
         "category": "border-style",
-        "alpha": "35",
-        "value": "#808080"
+        "alpha": "15",
+        "value": "#779db6"
     },
     "--mynah-button-border-width": {
         "type": "measurement",
         "description": "Button border width",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "px",
         "category": "border-style",
         "value": "1"
@@ -110,12 +120,15 @@
     "--mynah-border-width": {
         "type": "measurement",
         "description": "Default border width used in several places",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "px",
         "category": "border-style",
         "value": "1"
     },
-
     "--mynah-color-syntax-variable": {
         "type": "color",
         "description": "Variable color inside code blocks",
@@ -179,36 +192,34 @@
         "alpha": "20",
         "value": "#2878C8"
     },
-
     "--mynah-color-status-info": {
         "type": "color",
         "description": "Info color",
         "category": "status-color",
         "alpha": "100",
-        "value": "#1a85ff"
+        "value": "#28a7e6"
     },
     "--mynah-color-status-success": {
         "type": "color",
         "description": "Success color",
         "category": "status-color",
         "alpha": "100",
-        "value": "#00bc00"
+        "value": "#36e281"
     },
     "--mynah-color-status-warning": {
         "type": "color",
         "description": "Warning color",
         "category": "status-color",
         "alpha": "100",
-        "value": "#bf8803"
+        "value": "#eca14b"
     },
     "--mynah-color-status-error": {
         "type": "color",
         "description": "Error color",
         "category": "status-color",
         "alpha": "100",
-        "value": "#e51400"
+        "value": "#e60063"
     },
-
     "--mynah-color-bg": {
         "type": "color",
         "description": "Main background color ",
@@ -237,15 +248,13 @@
         "alpha": "50",
         "value": "#000000"
     },
-
     "--mynah-color-button": {
         "type": "color",
         "description": "Button background color",
         "category": "background-color",
         "alpha": "100",
-        "value": "#007acc"
+        "value": "#1e9ddc"
     },
-
     "--mynah-color-button-reverse": {
         "type": "color",
         "description": "Button foreground/text color",
@@ -253,7 +262,6 @@
         "alpha": "100",
         "value": "#ffffff"
     },
-    
     "--mynah-color-alternate": {
         "type": "color",
         "description": "Alternative background color",
@@ -261,7 +269,6 @@
         "alpha": "100",
         "value": "#5f6a79"
     },
-
     "--mynah-color-alternate-reverse": {
         "type": "color",
         "description": "Alternative foreground/text color",
@@ -269,7 +276,6 @@
         "alpha": "100",
         "value": "#ffffff"
     },
-
     "--mynah-card-bg": {
         "type": "color",
         "description": "Card background color",
@@ -277,7 +283,6 @@
         "alpha": "100",
         "value": "#ffffff"
     },
-
     "--mynah-shadow-button": {
         "type": "text",
         "description": "Button shadows",
@@ -294,14 +299,17 @@
         "type": "text",
         "description": "Overlay shadows (notification, bottom popup etc.)",
         "category": "shadow",
-        "value": "0 0px 15px -5px rgba(0, 0, 0, 0.4)"
+        "value": "0 7px 27px -12px rgba(0, 0, 0, 0.35)"
     },
-
     "--mynah-syntax-code-font-size": {
         "type": "measurement",
         "description": "Code block font size used code blocks (not the inline codes!)",
         "category": "font-size",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "rem",
         "value": "1"
     },
@@ -309,7 +317,12 @@
         "type": "measurement",
         "description": "Line height for texts inside cards",
         "category": "font-size",
-        "units": ["px", "rem", "em", ""],
+        "units": [
+            "px",
+            "rem",
+            "em",
+            ""
+        ],
         "unit": "rem",
         "value": "1.25"
     },
@@ -317,7 +330,11 @@
         "type": "measurement",
         "description": "The smallest font size used on several places",
         "category": "font-size",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "rem",
         "value": "0.75"
     },
@@ -325,7 +342,11 @@
         "type": "measurement",
         "description": "Extra small font size used on several places",
         "category": "font-size",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "rem",
         "value": "0.85"
     },
@@ -333,7 +354,11 @@
         "type": "measurement",
         "description": "Small font size used on several places",
         "category": "font-size",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "rem",
         "value": "0.95"
     },
@@ -341,7 +366,11 @@
         "type": "measurement",
         "description": "Medium font size used on several places and the default font size in general which will follow the :root font size",
         "category": "font-size",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "rem",
         "value": "1"
     },
@@ -349,7 +378,11 @@
         "type": "measurement",
         "description": "Large font size used on several places",
         "category": "font-size",
-        "units": ["px", "rem", ""],
+        "units": [
+            "px",
+            "rem",
+            ""
+        ],
         "unit": "rem",
         "value": "1.125"
     },
@@ -357,16 +390,25 @@
         "type": "measurement",
         "description": "Line height for texts inside cards",
         "category": "font-size",
-        "units": ["px", "rem", "em", ""],
+        "units": [
+            "px",
+            "rem",
+            "em",
+            ""
+        ],
         "unit": "rem",
         "value": "1.25"
     },
-
     "--mynah-card-radius": {
         "type": "measurement",
         "description": "Border radius used on all Cards",
         "category": "radius",
-        "units": ["px", "rem", "em", ""],
+        "units": [
+            "px",
+            "rem",
+            "em",
+            ""
+        ],
         "unit": "",
         "value": "var(--mynah-sizing-5)"
     },
@@ -374,7 +416,12 @@
         "type": "measurement",
         "description": "Border radius used on all Chat card edge bottom corner",
         "category": "radius",
-        "units": ["px", "rem", "em", ""],
+        "units": [
+            "px",
+            "rem",
+            "em",
+            ""
+        ],
         "unit": "",
         "value": "var(--mynah-sizing-1)"
     },
@@ -382,7 +429,12 @@
         "type": "measurement",
         "description": "Border radius used on buttons and follow up pills",
         "category": "radius",
-        "units": ["px", "rem", "em", ""],
+        "units": [
+            "px",
+            "rem",
+            "em",
+            ""
+        ],
         "unit": "",
         "value": "var(--mynah-sizing-5)"
     },
@@ -390,40 +442,44 @@
         "type": "measurement",
         "description": "Border radius used on inputs",
         "category": "radius",
-        "units": ["px", "rem", "em", ""],
+        "units": [
+            "px",
+            "rem",
+            "em",
+            ""
+        ],
         "unit": "",
-        "value": "var(--mynah-sizing-2)"
+        "value": "var(--mynah-sizing-3)"
     },
-
     "--mynah-bottom-panel-transition": {
-        "type":"text",
+        "type": "text",
         "category": "transition",
-        "description":"This is a transition animation used in several places",
+        "description": "This is a transition animation used in several places",
         "value": "all 850ms cubic-bezier(0.25, 1, 0, 1)"
     },
     "--mynah-very-short-transition": {
-        "type":"text",
+        "type": "text",
         "category": "transition",
-        "description":"This is a transition animation used in several places",
+        "description": "This is a transition animation used in several places",
         "value": "all 600ms cubic-bezier(0.25, 1, 0, 1)"
     },
     "--mynah-very-long-transition": {
-        "type":"text",
+        "type": "text",
         "category": "transition",
-        "description":"This is a transition animation used in several places",
+        "description": "This is a transition animation used in several places",
         "value": "all 1650ms cubic-bezier(0.25, 1, 0, 1)"
     },
     "--mynah-short-transition": {
-        "type":"text",
+        "type": "text",
         "category": "transition",
-        "description":"This is a transition animation used in several places",
+        "description": "This is a transition animation used in several places",
         "value": "all 550ms cubic-bezier(0.85, 0.15, 0, 1)"
     },
     "--mynah-short-transition-rev": {
-        "type":"text",
+        "type": "text",
         "category": "transition",
-        "description":"This is a transition animation used in several places",
-        "value":"all 580ms cubic-bezier(0.35, 1, 0, 1)"
+        "description": "This is a transition animation used in several places",
+        "value": "all 580ms cubic-bezier(0.35, 1, 0, 1)"
     },
     "--mynah-short-transition-rev-opacity": {
         "type": "text",

@@ -8,7 +8,7 @@ import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { Card } from '../card/card';
-import { CardBody } from '../card/card-body';
+import { CardBody, CardBodyProps } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemFollowUpContainer } from './chat-item-followup';
 import { ChatItemSourceLinksContainer } from './chat-item-source-links';
@@ -18,6 +18,7 @@ import { Config } from '../../helper/config';
 import { generateUID } from '../../helper/guid';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper } from './chat-item-buttons';
+import { cleanHtml } from '../../helper/sanitize';
 
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardProps {
@@ -31,6 +32,7 @@ export class ChatItemCard {
   chatAvatar: ExtendedHTMLElement;
   updateStack: Array<Partial<ChatItem>> = [];
   chatFormItems: ChatItemFormItemsWrapper | null = null;
+  customRendererWrapper: CardBody | null = null;
   chatButtons: ChatItemButtonsWrapper | null = null;
   fileTreeWrapper: ChatItemTreeViewWrapper | null = null;
   typewriterItemIndex: number = 0;
@@ -105,6 +107,7 @@ export class ChatItemCard {
       isChatItemEmpty &&
       this.props.chatItem.followUp === undefined &&
       this.props.chatItem.relatedContent === undefined &&
+      this.props.chatItem.customRenderer === undefined &&
       this.props.chatItem.type === ChatItemType.ANSWER;
     return [
       ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
@@ -119,6 +122,57 @@ export class ChatItemCard {
   private readonly getCardContent = (): Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject> => {
     if (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId) === undefined) {
       return [];
+    }
+
+    const bodyEvents: Partial<CardBodyProps> = {
+      onLinkClick: (url: string, e: MouseEvent) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.LINK_CLICK, {
+          messageId: this.props.chatItem.messageId,
+          link: url,
+          event: e,
+        });
+      },
+      onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
+          messageId: this.props.chatItem.messageId,
+          type,
+          text,
+          referenceTrackerInformation,
+        });
+      },
+      onInsertToCursorPosition: (type, text, referenceTrackerInformation) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
+          messageId: this.props.chatItem.messageId,
+          type,
+          text,
+          referenceTrackerInformation,
+        });
+      }
+    };
+
+    /**
+     * Generate customRenderer if available
+     */
+    if (this.customRendererWrapper !== null) {
+      this.customRendererWrapper.render.remove();
+      this.customRendererWrapper = null;
+    }
+    if (this.props.chatItem.customRenderer !== undefined) {
+      const customRendererContent: Partial<DomBuilderObject> = {};
+
+      if (typeof this.props.chatItem.customRenderer === 'object') {
+        customRendererContent.children = Array.isArray(this.props.chatItem.customRenderer) ? this.props.chatItem.customRenderer : [ this.props.chatItem.customRenderer ];
+      } else if (typeof this.props.chatItem.customRenderer === 'string') {
+        customRendererContent.innerHTML = cleanHtml(this.props.chatItem.customRenderer);
+      }
+
+      this.customRendererWrapper = new CardBody({
+        body: customRendererContent.innerHTML,
+        children: customRendererContent.children,
+        processChildren: true,
+        useParts: true,
+        ...bodyEvents,
+      });
     }
 
     /**
@@ -200,6 +254,7 @@ export class ChatItemCard {
       ...(this.props.chatItem.body !== undefined ||
       this.props.chatItem.fileList !== undefined ||
       this.props.chatItem.formItems !== undefined ||
+      this.props.chatItem.customRenderer !== undefined ||
       this.props.chatItem.buttons !== undefined
         ? [
             new Card({
@@ -214,19 +269,8 @@ export class ChatItemCard {
                   ? [ new Icon({ icon: this.props.chatItem.icon, classNames: [ 'mynah-chat-item-card-icon' ] }).render ]
                   : []),
                 ((): ExtendedHTMLElement => {
-                  const commonBodyProps = {
-                    body: this.props.chatItem.body ?? '',
-                    onLinkClick: (url: string, e: MouseEvent) => {
-                      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.LINK_CLICK, {
-                        messageId: this.props.chatItem.messageId,
-                        link: url,
-                        event: e,
-                      });
-                    },
-                  };
-
                   this.contentBody = new CardBody({
-                    ...commonBodyProps,
+                    body: this.props.chatItem.body ?? '',
                     useParts: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
                     highlightRangeWithTooltip: this.props.chatItem.codeReference,
                     children:
@@ -240,25 +284,11 @@ export class ChatItemCard {
                             }).render,
                           ]
                         : [],
-                    onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
-                      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
-                        messageId: this.props.chatItem.messageId,
-                        type,
-                        text,
-                        referenceTrackerInformation,
-                      });
-                    },
-                    onInsertToCursorPosition: (type, text, referenceTrackerInformation) => {
-                      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
-                        messageId: this.props.chatItem.messageId,
-                        type,
-                        text,
-                        referenceTrackerInformation,
-                      });
-                    },
+                    ...bodyEvents,
                   });
                   return this.contentBody.render;
                 })(),
+                ...(this.customRendererWrapper !== null ? [ this.customRendererWrapper.render ] : []),
                 ...(this.chatFormItems !== null ? [ this.chatFormItems.render ] : []),
                 ...(this.fileTreeWrapper !== null ? [ this.fileTreeWrapper.render ] : []),
                 ...(this.chatButtons !== null ? [ this.chatButtons.render ] : []),

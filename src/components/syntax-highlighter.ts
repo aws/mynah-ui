@@ -182,35 +182,41 @@ export class SyntaxHighlighter {
                         children: [ props.language ]
                       } ]
                     : []),
-                  new Button({
-                    icon: new Icon({ icon: MynahIcons.CURSOR_INSERT }).render,
-                    label: Config.getInstance().config.texts.insertAtCursorLabel,
-                    attributes: { title: Config.getInstance().config.texts.insertAtCursorLabel },
-                    primary: false,
-                    onClick: e => {
-                      cancelEvent(e);
-                      const selectedCode = this.getSelectedCode();
-                      if (this.onInsertToCursorPosition !== undefined) {
-                        this.onInsertToCursorPosition(
-                          selectedCode.type,
-                          selectedCode.code,
-                        );
-                      }
-                    },
-                    additionalEvents: { mousedown: cancelEvent },
-                  }).render,
-                  new Button({
-                    icon: new Icon({ icon: MynahIcons.COPY }).render,
-                    label: Config.getInstance().config.texts.copy,
-                    attributes: { title: Config.getInstance().config.texts.copy },
-                    primary: false,
-                    onClick: e => {
-                      cancelEvent(e);
-                      const selectedCode = this.getSelectedCode();
-                      this.copyToClipboard(selectedCode.code, selectedCode.type);
-                    },
-                    additionalEvents: { mousedown: cancelEvent },
-                  }).render,
+                  ...(this.onInsertToCursorPosition != null
+                    ? [
+                        new Button({
+                          icon: new Icon({ icon: MynahIcons.CURSOR_INSERT }).render,
+                          label: Config.getInstance().config.texts.insertAtCursorLabel,
+                          attributes: { title: Config.getInstance().config.texts.insertAtCursorLabel },
+                          primary: false,
+                          onClick: e => {
+                            cancelEvent(e);
+                            const selectedCode = this.getSelectedCode();
+                            if (this.onInsertToCursorPosition !== undefined) {
+                              this.onInsertToCursorPosition(
+                                selectedCode.type,
+                                selectedCode.code,
+                              );
+                            }
+                          },
+                          additionalEvents: { mousedown: cancelEvent },
+                        }).render
+                      ]
+                    : []),
+                  ...(this.onCopiedToClipboard != null
+                    ? [ new Button({
+                        icon: new Icon({ icon: MynahIcons.COPY }).render,
+                        label: Config.getInstance().config.texts.copy,
+                        attributes: { title: Config.getInstance().config.texts.copy },
+                        primary: false,
+                        onClick: e => {
+                          cancelEvent(e);
+                          const selectedCode = this.getSelectedCode();
+                          this.copyToClipboard(selectedCode.code, selectedCode.type);
+                        },
+                        additionalEvents: { mousedown: cancelEvent },
+                      }).render ]
+                    : []),
                 ],
               },
             ]

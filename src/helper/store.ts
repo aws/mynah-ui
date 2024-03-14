@@ -7,6 +7,7 @@ import { MynahEventNames, MynahUIDataModel } from '../static';
 import { Config } from './config';
 import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
+import clone from 'just-clone';
 
 const PrimitiveObjectTypes = [ 'string', 'number', 'boolean' ];
 export class EmptyMynahUIDataModel {
@@ -92,7 +93,7 @@ export class MynahUIDataStore {
    * @param storeKey One of the keys in MynahUIDataModel
    * @returns value of the given key in data store
    */
-  public getValue = (storeKey: keyof MynahUIDataModel): any => structuredClone(this.store[storeKey]);
+  public getValue = (storeKey: keyof MynahUIDataModel): any => clone(this.store[storeKey] as object);
 
   /**
    * Returns current value of an item in data store
@@ -115,14 +116,14 @@ export class MynahUIDataStore {
         });
       });
     }
-    this.store = Object.assign(structuredClone(this.store), data);
+    this.store = Object.assign(clone(this.store), data);
   };
 
   /**
    * Clears store data and informs all the subscribers
    */
   public resetStore = (): void => {
-    this.updateStore((new EmptyMynahUIDataModel(structuredClone(this.defaults))).data);
+    this.updateStore((new EmptyMynahUIDataModel(clone(this.defaults as object))).data);
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_STORE, { tabId: this.tabId });
   };
 }

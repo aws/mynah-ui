@@ -4,6 +4,7 @@
  */
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { cancelEvent } from '../../helper/events';
 import { generateUID } from '../../helper/guid';
 import { Icon, MynahIcons } from '../icon';
 
@@ -36,6 +37,16 @@ export class RadioGroup {
           children: [ {
             type: 'label',
             classNames: [ 'mynah-form-input-radio-label' ],
+            events: {
+              click: (e) => {
+                cancelEvent(e);
+                e.currentTarget.querySelector('input').checked = true;
+                this.setValue(option.value);
+                if (props.onChange !== undefined) {
+                  props.onChange(option.value);
+                }
+              }
+            },
             children: [
               {
                 type: 'input',
@@ -47,14 +58,6 @@ export class RadioGroup {
                   ...(
                     (props.value !== undefined && props.value === option.value) || (props.optional !== true && props.value === undefined && index === 0) ? { checked: 'checked' } : {}
                   )
-                },
-                events: {
-                  change: (e) => {
-                    this.setValue(e.currentTarget.value);
-                    if (props.onChange !== undefined) {
-                      props.onChange(e.currentTarget.value);
-                    }
-                  }
                 },
               },
               {

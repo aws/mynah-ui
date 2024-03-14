@@ -4,6 +4,7 @@
  */
 
 import { MynahPortalNames } from '../static';
+import { AllowedTagsInCustomRenderer, AllowedAttributesInCustomRenderer } from './sanitize';
 
 /* eslint-disable @typescript-eslint/method-signature-style */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
@@ -11,16 +12,26 @@ import { MynahPortalNames } from '../static';
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 export const DS: typeof document.querySelectorAll = document.querySelectorAll.bind(document);
 
-type DomBuilderEventHandler = (event?: any) => any;
-interface DomBuilderEventHandlerWithOptions {
+type GenericEvents = Extract<keyof GlobalEventHandlersEventMap, string>;
+export type DomBuilderEventHandler = (event?: any) => any;
+export interface DomBuilderEventHandlerWithOptions {
   handler: DomBuilderEventHandler;
   options?: AddEventListenerOptions;
-};
-export interface DomBuilderObject {
-  type: string;
+}
+interface GenericDomBuilderAttributes {
   attributes?: Record<string, string> | undefined;
   classNames?: string[] | undefined;
-  events?: Record<string, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions> | undefined;
+  events?: Partial<Record<GenericEvents, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions>> | undefined;
+}
+
+export interface ChatItemBodyRenderer extends GenericDomBuilderAttributes {
+  type: AllowedTagsInCustomRenderer;
+  children?: Array<string | ChatItemBodyRenderer> | undefined;
+  attributes?: Partial<Record<AllowedAttributesInCustomRenderer, string>> | undefined;
+}
+
+export interface DomBuilderObject extends GenericDomBuilderAttributes{
+  type: string;
   children?: Array<string | DomBuilderObject | HTMLElement | ExtendedHTMLElement> | undefined;
   innerHTML?: string | undefined;
   persistent?: boolean | undefined;
@@ -52,12 +63,7 @@ export interface ExtendedHTMLElement extends HTMLInputElement {
   hasClass(className: string): boolean;
   insertChild(
     position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
-    child:
-    | string
-    | DomBuilderObject
-    | HTMLElement
-    | ExtendedHTMLElement
-    | Array<string | DomBuilderObject | HTMLElement | ExtendedHTMLElement>
+    child: string | DomBuilderObject | HTMLElement | ExtendedHTMLElement | Array<string | DomBuilderObject | HTMLElement | ExtendedHTMLElement>
   ): ExtendedHTMLElement;
   clear(removePersistent?: boolean): ExtendedHTMLElement;
   builderObject: DomBuilderObject;
@@ -145,9 +151,9 @@ export class DomBuilder {
     Array.from(this.childNodes).forEach((child: ExtendedHTMLElement | ChildNode) => {
       if (
         removePersistent ||
-                // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-                !(child as ExtendedHTMLElement).builderObject ||
-                (child as ExtendedHTMLElement).builderObject.persistent !== true
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        !(child as ExtendedHTMLElement).builderObject ||
+        (child as ExtendedHTMLElement).builderObject.persistent !== true
       ) {
         child.remove();
       }
@@ -173,13 +179,10 @@ export class DomBuilder {
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     buildedDom.classList.add(...(readyToBuildObject.classNames?.filter(className => className !== '') || []));
 
-    Object.keys(readyToBuildObject.events ?? {}).forEach((eventName: string) => {
+    (Object.keys(readyToBuildObject.events ?? {}) as Array<Partial<GenericEvents>>).forEach((eventName: GenericEvents) => {
       if (readyToBuildObject?.events !== undefined) {
         if (typeof readyToBuildObject?.events[eventName] === 'function') {
-          buildedDom.addEventListener(
-            eventName,
-            readyToBuildObject.events[eventName] as (event?: any) => any
-          );
+          buildedDom.addEventListener(eventName, readyToBuildObject.events[eventName] as (event?: any) => any);
         } else if (typeof readyToBuildObject?.events[eventName] === 'object') {
           buildedDom.addEventListener(
             eventName,
@@ -191,10 +194,7 @@ export class DomBuilder {
     });
 
     Object.keys(readyToBuildObject.attributes ?? {}).forEach(attributeName =>
-      buildedDom.setAttribute(
-        attributeName,
-        readyToBuildObject.attributes !== undefined ? readyToBuildObject.attributes[attributeName] : ''
-      )
+      buildedDom.setAttribute(attributeName, readyToBuildObject.attributes !== undefined ? readyToBuildObject.attributes[attributeName] : '')
     );
 
     if (typeof readyToBuildObject.innerHTML === 'string') {
@@ -203,17 +203,15 @@ export class DomBuilder {
       this.insertChild.apply(buildedDom as ExtendedHTMLElement, [
         'beforeend',
         [
-          ...(readyToBuildObject.children).map(
-            (child: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject) => {
-              if (typeof child === 'string' || child instanceof HTMLElement) {
-                return child;
-              }
-              return this.build(child);
+          ...readyToBuildObject.children.map((child: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject) => {
+            if (typeof child === 'string' || child instanceof HTMLElement) {
+              return child;
             }
-          ),
+            return this.build(child);
+          }),
         ],
       ]);
-    };
+    }
 
     (buildedDom as ExtendedHTMLElement).builderObject = readyToBuildObject;
     (buildedDom as ExtendedHTMLElement).update = (builderObject: DomBuilderObjectFilled): ExtendedHTMLElement => {
@@ -223,19 +221,19 @@ export class DomBuilder {
     return buildedDom as ExtendedHTMLElement;
   };
 
-  update = function (
-    domToUpdate: ExtendedHTMLElement,
-    domBuilderObject: DomBuilderObjectFilled
-  ): ExtendedHTMLElement {
+  update = function (domToUpdate: ExtendedHTMLElement, domBuilderObject: DomBuilderObjectFilled): ExtendedHTMLElement {
     if (domToUpdate.builderObject) {
       if (domBuilderObject.classNames !== undefined) {
         domToUpdate.classList.remove(...(domToUpdate.builderObject.classNames as string[]));
         domToUpdate.classList.add(...domBuilderObject.classNames.filter(className => className !== ''));
       }
 
-      Object.keys(domBuilderObject.events ?? {}).forEach(eventName => {
+      (Object.keys(domBuilderObject.events ?? {}) as Array<Partial<GenericEvents>>).forEach(eventName => {
         if (domToUpdate.builderObject.events !== undefined && domToUpdate.builderObject.events[eventName]) {
-          domToUpdate.removeEventListener(eventName, (domToUpdate.builderObject.events[eventName] as DomBuilderEventHandlerWithOptions).handler ?? domToUpdate.builderObject.events[eventName]);
+          domToUpdate.removeEventListener(
+            eventName,
+            (domToUpdate.builderObject.events[eventName] as DomBuilderEventHandlerWithOptions).handler ?? domToUpdate.builderObject.events[eventName]
+          );
         }
         if (domBuilderObject.events !== undefined && domBuilderObject.events[eventName] !== undefined) {
           domToUpdate.addEventListener(eventName, domBuilderObject.events[eventName]);
@@ -243,10 +241,7 @@ export class DomBuilder {
       });
 
       Object.keys(domBuilderObject.attributes ?? {}).forEach(attributeName => {
-        if (
-          domBuilderObject.attributes !== undefined &&
-                    domBuilderObject.attributes[attributeName] === undefined
-        ) {
+        if (domBuilderObject.attributes !== undefined && domBuilderObject.attributes[attributeName] === undefined) {
           domToUpdate.removeAttribute(attributeName);
         } else if (domBuilderObject.attributes !== undefined) {
           domToUpdate.setAttribute(attributeName, domBuilderObject.attributes[attributeName] as string);

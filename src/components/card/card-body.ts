@@ -31,11 +31,12 @@ export const PARTS_CLASS_NAME = 'typewriter-part';
 export const PARTS_CLASS_NAME_VISIBLE = 'typewriter';
 
 export interface CardBodyProps {
-  body: string;
+  body?: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   childLocation?: 'above-body' | 'below-body';
   highlightRangeWithTooltip?: ReferenceTrackerInformation[];
   useParts?: boolean;
+  processChildren?: boolean;
   onLinkClick?: (url: string, e: MouseEvent) => void;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
   onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
@@ -49,7 +50,17 @@ export class CardBody {
     this.props = props;
     const childList = [
       ...this.getContentBodyChildren(this.props),
-      ...(this.props.children ?? [])
+      ...(this.props.children != null
+        ? this.props.processChildren === true
+          ? this.props.children.map(node => {
+            const processedNode = this.processNode(node as HTMLElement);
+            if (processedNode.querySelectorAll !== undefined) {
+              Array.from(processedNode.querySelectorAll('*:empty:not(img):not(br):not(hr)')).forEach(emptyElement => { emptyElement.remove(); });
+            }
+            return processedNode;
+          })
+          : this.props.children
+        : [])
     ];
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -68,7 +79,7 @@ export class CardBody {
     });
   }
 
-  private readonly processNode = (node: HTMLElement, contentString: string, matchingLanguage?: string): HTMLElement => {
+  private readonly processNode = (node: HTMLElement): HTMLElement => {
     const elementFromNode: HTMLElement = node;
     if (elementFromNode.tagName?.toLowerCase() === 'a') {
       const url = elementFromNode.getAttribute('href') ?? '';
@@ -96,20 +107,24 @@ export class CardBody {
 
       const highlighter = new SyntaxHighlighter({
         codeStringWithMarkup: unescapeHTML(codeString),
-        language: snippetLanguage?.trim() !== '' ? snippetLanguage : matchingLanguage,
+        language: snippetLanguage?.trim() !== '' ? snippetLanguage : '',
         keepHighlights: true,
         showCopyOptions: isBlockCode,
         block: isBlockCode,
-        onCopiedToClipboard: (type, text) => {
-          if (this.props.onCopiedToClipboard != null) {
-            this.props.onCopiedToClipboard(type, text, this.getReferenceTrackerInformationFromElement(highlighter));
-          }
-        },
-        onInsertToCursorPosition: (type, text) => {
-          if (this.props.onInsertToCursorPosition != null) {
-            this.props.onInsertToCursorPosition(type, text, this.getReferenceTrackerInformationFromElement(highlighter));
-          }
-        }
+        onCopiedToClipboard: this.props.onCopiedToClipboard != null
+          ? (type, text) => {
+              if (this.props.onCopiedToClipboard != null) {
+                this.props.onCopiedToClipboard(type, text, this.getReferenceTrackerInformationFromElement(highlighter));
+              }
+            }
+          : undefined,
+        onInsertToCursorPosition: this.props.onInsertToCursorPosition != null
+          ? (type, text) => {
+              if (this.props.onInsertToCursorPosition != null) {
+                this.props.onInsertToCursorPosition(type, text, this.getReferenceTrackerInformationFromElement(highlighter));
+              }
+            }
+          : undefined
       }).render;
       if (this.props.useParts === true) {
         highlighter.classList.add(PARTS_CLASS_NAME);
@@ -117,8 +132,8 @@ export class CardBody {
       return highlighter;
     }
 
-    elementFromNode.childNodes.forEach((child) => {
-      elementFromNode.replaceChild(this.processNode(child as HTMLElement, contentString), child);
+    elementFromNode.childNodes?.forEach((child) => {
+      elementFromNode.replaceChild(this.processNode(child as HTMLElement), child);
     });
     return elementFromNode;
   };
@@ -173,7 +188,7 @@ export class CardBody {
     clearTimeout(this.highlightRangeTooltipTimeout);
     this.highlightRangeTooltipTimeout = setTimeout(() => {
       this.highlightRangeTooltip = new Overlay({
-        background: false,
+        background: true,
         closeOnOutsideClick: false,
         referenceElement: (e.currentTarget ?? e.target) as HTMLElement,
         removeOtherOverlays: true,
@@ -204,61 +219,65 @@ export class CardBody {
   };
 
   private readonly getContentBodyChildren = (props: CardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
-    let incomingBody = props.body;
-    if (props.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
-      props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
-        if (incomingBody !== undefined && highlightRangeWithTooltip.recommendationContentSpan !== undefined) {
-          const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttributes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
-          let calculatedStartIndex = (highlightRangeWithTooltip.recommendationContentSpan.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
-          let calculatedEndIndex = (calculatedStartIndex + generatedStartMarkup.length - highlightRangeWithTooltip.recommendationContentSpan.start) + highlightRangeWithTooltip.recommendationContentSpan.end;
-          if (calculatedEndIndex > incomingBody.length) {
-            calculatedStartIndex = incomingBody.length - 1;
+    if (props.body != null && props.body.trim() !== '') {
+      let incomingBody = props.body;
+      if (props.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
+        props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
+          if (incomingBody !== undefined && highlightRangeWithTooltip.recommendationContentSpan !== undefined) {
+            const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttributes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
+            let calculatedStartIndex = (highlightRangeWithTooltip.recommendationContentSpan.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));
+            let calculatedEndIndex = (calculatedStartIndex + generatedStartMarkup.length - highlightRangeWithTooltip.recommendationContentSpan.start) + highlightRangeWithTooltip.recommendationContentSpan.end;
+            if (calculatedEndIndex > incomingBody.length) {
+              calculatedStartIndex = incomingBody.length - 1;
+            }
+            if (calculatedEndIndex > incomingBody.length) {
+              calculatedEndIndex = incomingBody.length - 1;
+            }
+            incomingBody = incomingBody.slice(0, calculatedStartIndex) + generatedStartMarkup + incomingBody.slice(calculatedStartIndex);
+            incomingBody = incomingBody.slice(0, calculatedEndIndex) + highlightersWithTooltip.end.markup + incomingBody.slice(calculatedEndIndex);
           }
-          if (calculatedEndIndex > incomingBody.length) {
-            calculatedEndIndex = incomingBody.length - 1;
+        });
+      }
+
+      // Define marked extension (and revert it back since it is global)
+      if (this.props.useParts === true) {
+        marked.use({
+          extensions: [ {
+            name: 'text',
+            renderer: (token) => {
+              if (this.props.useParts !== true) {
+                return false;
+              }
+              return token.text.split(' ').map((textPart: string) => `<span class="${PARTS_CLASS_NAME}">${textPart}</span>`).join(' ');
+            }
+          } ]
+        });
+      } else {
+        marked.use({
+          extensions: [ {
+            name: 'text',
+            renderer: (token) => {
+              return token.text;
+            }
+          } ]
+        });
+      }
+      return [
+        ...(Array.from(
+          DomBuilder.getInstance().build({
+            type: 'div',
+            innerHTML: `${marked.parse(incomingBody, { breaks: true })}`,
+          }).childNodes
+        ).map(node => {
+          const processedNode = this.processNode(node as HTMLElement);
+          if (processedNode.querySelectorAll !== undefined) {
+            Array.from(processedNode.querySelectorAll('*:empty:not(img):not(br):not(hr)')).forEach(emptyElement => { emptyElement.remove(); });
           }
-          incomingBody = incomingBody.slice(0, calculatedStartIndex) + generatedStartMarkup + incomingBody.slice(calculatedStartIndex);
-          incomingBody = incomingBody.slice(0, calculatedEndIndex) + highlightersWithTooltip.end.markup + incomingBody.slice(calculatedEndIndex);
-        }
-      });
+          return processedNode;
+        }))
+      ];
     }
 
-    // Define marked extension (and revert it back since it is global)
-    if (this.props.useParts === true) {
-      marked.use({
-        extensions: [ {
-          name: 'text',
-          renderer: (token) => {
-            if (this.props.useParts !== true) {
-              return false;
-            }
-            return token.text.split(' ').map((textPart: string) => `<span class="${PARTS_CLASS_NAME}">${textPart}</span>`).join(' ');
-          }
-        } ]
-      });
-    } else {
-      marked.use({
-        extensions: [ {
-          name: 'text',
-          renderer: (token) => {
-            return token.text;
-          }
-        } ]
-      });
-    }
-    return [
-      ...(Array.from(
-        DomBuilder.getInstance().build({
-          type: 'div',
-          innerHTML: `${marked.parse(incomingBody, { breaks: true })}`,
-        }).childNodes
-      ).map(node => {
-        const processedNode = this.processNode(node as HTMLElement, props.body);
-        if (processedNode.querySelectorAll !== undefined) {
-          Array.from(processedNode.querySelectorAll('*:empty:not(img)')).forEach(emptyElement => { emptyElement.remove(); });
-        }
-        return processedNode;
-      }))
-    ];
+    return [];
   };
 }

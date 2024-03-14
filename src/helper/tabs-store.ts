@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
+import clone from 'just-clone';
 import { MynahUIDataModel, MynahUITabStoreModel, MynahUITabStoreTab } from '../static';
 import { Config } from './config';
 import { generateUID } from './guid';
@@ -188,9 +189,9 @@ export class MynahUITabsStore {
    * @returns info of the tab
    */
   public getAllTabs = (): MynahUITabStoreModel => {
-    const clonedTabs = structuredClone(this.tabsStore) as MynahUITabStoreModel;
+    const clonedTabs = clone(this.tabsStore) as MynahUITabStoreModel;
     Object.keys(clonedTabs).forEach(tabId => {
-      clonedTabs[tabId].store = structuredClone(this.getTabDataStore(tabId).getStore()) ?? {};
+      clonedTabs[tabId].store = clone(this.getTabDataStore(tabId).getStore() as object) ?? {};
     });
     return clonedTabs;
   };

@@ -15,6 +15,8 @@ import {
 import { Commands, mynahUIDefaults } from './config';
 import { Log, LogClear } from './logger';
 import { exampleCodeBlockToInsert, 
+  exampleCustomRendererWithHTMLMarkup, 
+  exampleCustomRendererWithDomBuilderJson, 
   exampleFileListChatItem, 
   exampleFileListChatItemForUpdate, 
   exampleFollowUps, 
@@ -123,18 +125,17 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               }
             });
             break;
-          case Commands.CARD_WITH_OPTIONS:
+          case Commands.FORM_CARD:
             mynahUI.addChatItem(tabId, exampleFormChatItem);
             break;
-          case Commands.SHOW_PROGRESS_CARD:
+          case Commands.PROGRESSIVE_CARD:
             getProgressingCard(tabId);
             break;
-          case Commands.EXTENDED_CARDS:
+          case Commands.STATUS_CARDS:
             mynahUI.addChatItem(tabId, {
               type: ChatItemType.ANSWER,
               messageId: new Date().getTime().toString(),
-              body: `This is an extended card with an icon and a different border color. It also includes some action buttons.
-              But beware that these action buttons will remove the card itself when they are clicked!`,
+              body: `This is an extended card with an icon and a different border color. It also includes some action buttons.`,
               status: 'error',
               icon: MynahIcons.ERROR,
               buttons: [
@@ -183,7 +184,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               ],
             });
             break;
-          case Commands.ADD_STICKY_CARD:
+          case Commands.SHOW_STICKY_CARD:
             mynahUI.updateStore(tabId, {
               promptInputStickyCard: {
                 messageId: 'sticky-card',
@@ -199,14 +200,18 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               }
             });
             break;
-          case Commands.ADD_FILE_LIST_CARD:
+          case Commands.FILE_LIST_CARD:
             mynahUI.addChatItem(tabId, exampleFileListChatItem);
             break;
           case Commands.SHOW_CUSTOM_FORM:
             showCustomForm(tabId);
             break;
-          case Commands.SHOW_IMAGE_IN_CARD:
+          case Commands.IMAGE_IN_CARD:
             mynahUI.addChatItem(tabId, exampleImageCard());
+            break;
+          case Commands.CUSTOM_RENDERER_CARDS:
+            mynahUI.addChatItem(tabId, exampleCustomRendererWithHTMLMarkup());
+            mynahUI.addChatItem(tabId, exampleCustomRendererWithDomBuilderJson());
             break;
           case Commands.COMMAND_WITH_PROMPT:
             const realPromptText = prompt.escapedPrompt?.trim() ?? '';
@@ -333,16 +338,35 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     mynahUI.showCustomForm(tabId, 
       [
         {
+          type: 'radiogroup',
+          id: 'like',
+          mandatory: true,
+          options: [
+            {
+              label: 'Yes',
+              value: 'yes'
+            },
+            {
+              label: 'No',
+              value: 'no'
+            },
+            {
+              label: 'Don\'t know',
+              value: 'dunno'
+            },
+          ],
+          title: 'Do you like it so far?'
+        },
+        {
           type: 'textarea',
           id: 'comment',
-          mandatory: true,
-          title: 'What should be improved about this file?'
+          title: 'Any comments?'
         }
       ],
       [
         {
           id: 'save-comment',
-          text: 'Comment',
+          text: 'Send',
           status: 'info',
           waitMandatoryFormItems: true
         },
@@ -352,8 +376,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           waitMandatoryFormItems: false
         }
       ],
-      'Comment on file',
-      'Q will use comments as feedback when regenerating code.'
+      'You opinions are so valuable!',
+      'Please give us your 2 mins to help us out. This form is not real by the way, it is just for demonstration.'
     );
   }
 

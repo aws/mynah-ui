@@ -4,6 +4,7 @@
  */
 
 import { MynahIcons } from './components/icon';
+import { ChatItemBodyRenderer } from './helper/dom';
 
 export interface QuickActionCommand {
   command: string;
@@ -160,6 +161,7 @@ export interface TreeNodeDetails {
 export interface ChatItem {
   type: ChatItemType;
   body?: string;
+  customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
   messageId?: string;
   canBeVoted?: boolean;
   followUp?: {

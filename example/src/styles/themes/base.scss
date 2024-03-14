@@ -1,31 +1,21 @@
-html[theme="base"]:root {
+html[theme='base']:root {
   font-size: 14px;
-  --mynah-font-family: system-ui, -apple-system, sans-serif;
-  --mynah-max-width: 1920px;
+  --mynah-max-width: 2560px;
   --mynah-sizing-base: 0.25rem;
   --mynah-chat-wrapper-spacing: var(--mynah-sizing-6);
+  --mynah-font-family: system-ui, -apple-system, sans-serif;
+  --mynah-syntax-code-font-family: monospace;
+  --mynah-color-text-default: #517185;
+  --mynah-color-text-strong: #153d56;
+  --mynah-color-text-weak: #a9bed0;
+  --mynah-color-text-link: #006ab1;
+  --mynah-color-text-input: #517185;
+  --mynah-color-light: rgba(0, 0, 0, 0.05);
+  --mynah-color-highlight: rgba(255, 180, 0, 0.25);
+  --mynah-color-highlight-text: #886411;
+  --mynah-color-border-default: rgba(119, 157, 182, 0.15);
   --mynah-button-border-width: 1px;
   --mynah-border-width: 1px;
-
-  --mynah-color-text-default: #616161;
-  --mynah-color-text-strong: #616161;
-  --mynah-color-text-weak: #a0a0a0;
-  --mynah-color-text-link: #006ab1;
-  --mynah-color-text-input: #616161;
-
-  --mynah-color-bg: #fafbfc;
-  --mynah-color-tab-active: #ffffff;
-  --mynah-color-light: rgba(0, 0, 0, 0.05);
-
-  --mynah-color-border-default: rgba(128, 128, 128, 0.25);
-
-  --mynah-color-highlight: rgba(255, 179, 0, 0.25);
-  --mynah-color-highlight-text: #886411;
-
-  --mynah-color-toggle: #fafbfc;
-  --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
-
-  --mynah-color-syntax-bg: rgba(38, 119, 203, 0.18);
   --mynah-color-syntax-variable: #9b46b0;
   --mynah-color-syntax-function: #0073c0;
   --mynah-color-syntax-operator: #9b46b0;
@@ -34,37 +24,35 @@ html[theme="base"]:root {
   --mynah-color-syntax-property: #0598bc;
   --mynah-color-syntax-comment: #616161;
   --mynah-color-syntax-code: #0451a5;
-  --mynah-syntax-code-font-family: monospace;
-  --mynah-syntax-code-font-size: 1rem;
-
-  --mynah-color-status-info: #1a85ff;
-  --mynah-color-status-success: #00bc00;
-  --mynah-color-status-warning: #bf8803;
-  --mynah-color-status-error: #e51400;
-
-  --mynah-color-button: #007acc;
+  --mynah-color-syntax-bg: rgba(40, 120, 200, 0.2);
+  --mynah-color-status-info: #28a7e6;
+  --mynah-color-status-success: #36e281;
+  --mynah-color-status-warning: #eca14b;
+  --mynah-color-status-error: #e60063;
+  --mynah-color-bg: #fafbfc;
+  --mynah-color-tab-active: #ffffff;
+  --mynah-color-toggle: #fafbfc;
+  --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
+  --mynah-color-button: #1e9ddc;
   --mynah-color-button-reverse: #ffffff;
-
   --mynah-color-alternate: #5f6a79;
   --mynah-color-alternate-reverse: #ffffff;
-
   --mynah-card-bg: #ffffff;
-
   --mynah-shadow-button: 0 5px 10px -10px rgba(0, 0, 0, 0.25);
-  --mynah-shadow-card: 0 15px 25px -10px rgba(0, 0, 0, 0.1);
-  --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
-
+  --mynah-shadow-card: 0 10px 20px -15px rgba(0, 0, 0, 0.25);
+  --mynah-shadow-overlay: 0 7px 27px -12px rgba(0, 0, 0, 0.35);
+  --mynah-syntax-code-font-size: 1rem;
+  --mynah-syntax-code-line-height: 1.25rem;
   --mynah-font-size-xxsmall: 0.75rem;
   --mynah-font-size-xsmall: 0.85rem;
   --mynah-font-size-small: 0.95rem;
   --mynah-font-size-medium: 1rem;
   --mynah-font-size-large: 1.125rem;
-
+  --mynah-line-height: 1.25rem;
   --mynah-card-radius: var(--mynah-sizing-5);
-  --mynah-input-radius: var(--mynah-sizing-2);
   --mynah-card-radius-corner: var(--mynah-sizing-1);
   --mynah-button-radius: var(--mynah-sizing-5);
-
+  --mynah-input-radius: var(--mynah-sizing-3);
   --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
   --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
   --mynah-very-long-transition: all 1650ms cubic-bezier(0.25, 1, 0, 1);

@@ -35,6 +35,13 @@ import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 
 export {
+  ChatItemBodyRenderer,
+} from './helper/dom';
+export {
+  AllowedAttributesInCustomRenderer,
+  AllowedTagsInCustomRenderer
+} from './helper/sanitize';
+export {
   FeedbackPayload,
   RelevancyVoteType,
   EngagementType,
@@ -45,7 +52,7 @@ export {
   ChatItemAction,
   ChatItemType,
   ChatPrompt,
-  SourceLink
+  SourceLink,
 } from './static';
 export {
   ToggleOption
