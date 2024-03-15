@@ -687,13 +687,13 @@ mynahUI.addChatItem('tab-1', {
 ---
 
 ## `customRenderer`
-Custom renderers can be provided in 3 different types *(string, dom builder json or dom builder json array)* and they are here to help you in case you need to create some static content on the client side rather than a data arrives from the backend or if it is not possible or hard to do with markdown.
+Custom renderers can be provided in 3 different types *(string, ChatItemBodyRenderer object or ChatItemBodyRenderer object array)* and they are here to help you in case you need to create some static content on the client side rather than a data arrived from the backend. Or, maybe it is not possible or so hard to do it just with markdown.
 
-##### Note: It can be combined with `body`, so you don't need to choose between them.
+##### Note: It can be combined with `body`, so you don't need to choose one of them.
 
 
 ### Using with `string` type
-If you give a string to the `customRenderer` mynah-ui will take it as an html markup string and renders it according to that.
+If you give a string to the `customRenderer` mynah-ui will consider that it as an html markup string and will render it that way.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -826,11 +826,11 @@ mynahUI.addChatItem('tab-1', {
 </p>
 
 ### Using with `ChatItemBodyRenderer` or `ChatItemBodyRenderer[]` type
-Even though you can build exactly the same html elements and node tree, this option will give you more flexibility especially on repeating items. We all know that it is not easy to read code which loops inside a string. **But more importantly, you can bind events with this option**.
+Even though you can build exactly the same html elements and node tree with the `string` type, this option will give you more flexibility especially on repeating items. We all know that it is not easy to read code which loops inside a string. **But more importantly, you can also bind events with this option**.
 
-With a json structure which is properly typed, your IDE should give you the available options list during the code completion. So you don't need to guess which tags you can use in the `type` attribute, which attributes are supported for the `attributes` or which events are available for the `events`.
+Another `+1` for this option is related with its interface declaration. With an object structure which is properly typed, your IDE should give you the available values list during the code completion. Which means that you don't need to guess or go back and forth between the documentation and your project to see which tags you can use in the `type` attribute (html tag), which attributes are supported for the `attributes` or which events are available for the `events`.
 
-Let's take a look how we write with `ChatItemBodyRenderer` interface:
+Let's take a look how we write with `ChatItemBodyRenderer[]` interface:
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -841,7 +841,9 @@ const mynahUI = new MynahUI({
     }
 });
 
+// Lets' use a super dumb array instead of copy pasting the items inside the customRenderer.
 const topFrameworks: Record<string, string> = {'Vanilla': 'inf.', 'React': '24', 'JQuery': '10.6', 'VUE': '4.75'};
+
 mynahUI.addChatItem('tab-1', {
     messageId: (new Date().getTime()).toString(),
     type: ChatItemType.ANSWER,
@@ -883,8 +885,7 @@ mynahUI.addChatItem('tab-1', {
         type: 'blockquote',
         children: [
           'Most popular JS frameworks',
-          // Divider
-          { type: 'hr' },
+          { type: 'hr' }, // Divider
           {
             type: 'table',
             children: [
@@ -909,6 +910,7 @@ mynahUI.addChatItem('tab-1', {
                   }
                 ]
               },
+              // Mapping our dumb array to create the rows
               ...Object.keys(topFrameworks).map(fw => ({
                   type: 'tr',
                   children: [
@@ -953,13 +955,14 @@ mynahUI.addChatItem('tab-1', {
   <img src="./img/data-model/chatItems/customRenderer_json.png" alt="customRendererJson" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
-### We have some LIMITATIONS!
+## BUT: There are some `LIMITATIONS!`
 
-#### We know that you're extremely careful while building custom html blocks and so experienced on CSS too, however we still need to assure the UI looks and works as expected without breaking anything. Also for safety reasons, we have to **`sanitize`** the HTML contents you provide.
+### We know that you're extremely careful while building custom html blocks and you're an expert on CSS. However, we still need to assure that the look & feel of the UI is not broken and it works as expected with all the functionalities. Because of these reasons with the addition of the safety concerns <u>we have to **`sanitize`** the HTML contents you provide</u>.
 
-And it is not limited with these. We're automatically highlighting the code syntaxes, automatically adding the event controls for links, refining the look depends on each html element. You can check how the code block looks like (and has the copy buttons automatically) in the above `string` example.
+**And,** the sanitization requirement it is not just limited with the above. We're also automatically applying the functionalities we have on the original chat item body like *highlighting the code syntaxes, adding copy to clipboard and insert at cursor position buttons or adding the event controls for links etc.*. 
+For example, you can check how the code blocks provided inside `customRenderer` look like (and do they have the copy buttons?) in the above examples.
 
-**NOTE:** Below limitations are applicable for both of the `string` and `ChatItemBodyRenderer` type use cases.
+**NOTE:** Below limitations are applicable for all of the `string`, `ChatItemBodyRenderer` and `ChatItemBodyRenderer[]` type usages.
 
 ### List of available tags:
 
@@ -984,13 +987,15 @@ And it is not limited with these. We're automatically highlighting the code synt
 ]
 ```
 
+**NOTE:** As you can see in the above list, **form items are also not available**. Since this is a chat interface we should keep it as conversational as possible instead of using select/input/click structures to interact if they are not helping the end user. But in case you need some small forms and inputs from the user other than the prompts, you can use the **[`formIems`](#formitems)**.
+
 ### List of available attributes:
 
 ```
 [
     'accept','accept-charset','accesskey',
-    'align','allow','alt',
-    'as','async','autocapitalize',
+    'align','allow','allowfullscreen',
+    'alt', 'as','async','autocapitalize',
     'autoplay','charset','class',
     'cols','colspan','controls',
     'crossorigin','data','data-*',
@@ -1014,38 +1019,59 @@ And it is not limited with these. We're automatically highlighting the code synt
 ]
 ```
 
-### Important Tips for html elements and attributes in `customRenderer`
+## Important Tips for `customRenderer`
 
 ### Tip 1
-As you might see there is no `style`, `width` and `height` attributes are available. 
-As we've told you above, we know you're so good at styling components but our concern is the HTML itself. Since `mynah-ui` has a responsive design nature, we cannot let you to write a static width for an `img` item for example.
-It applies the same way to `iframe`, `video` and other similar elements too.
+As you might see there is also no `style`, `width` and `height` attributes are available. 
+As we've told you above, we know you're so good at styling components but our concern is the HTML itself. Since `mynah-ui` has a responsive design nature, we cannot let you write a static width or height to an `img` for example.
+It applies to `iframe`s, `video`s and other similar media elements too. 
+So, **avoid writing static sizes** and learn **what is the aspect ratio of your media content**.
 
 ### Tip 2
-In general, those items *(except `img`)* will automatically stretched to 100% width and will stay that way as the max width is 100%. You cannot define specific width and heights. **But** you can define their aspect ratios. Here's an example:
+In general, those items *(except `img`)* will automatically stretched to 100% width and will stay that way as the max width is 100%. Yes, you cannot use static width and heights, **but** you can define their aspect ratios. Here's an example:
 
 ```
 <iframe aspect-ratio="16:9" 
-    src="https://www.youtube.com/embed/bZsIPinetV4?si=k2Awd9in_wKgQC09&amp;start=65"
-    title="YouTube video player" allow="picture-in-picture;" allowfullscreen>
+    src="https://..." ...>
 </iframe>
 ```
 When you provide a value to the `aspect-ratio` attribyte, it will automatically set the `width` of the element to `100%` and apply the aspect ratio for the height.
 
 ### Tip 3
-Looking for the available aspect-ratio values?
+So, are you looking for the available `aspect-ratio` values?
 Here they are: `16:9`, `9:16`, `21:9`, `9:21`, `4:3`, `3:4`, `3:2`, `2:3`, `1:1`
 
+If you need more aspect-ratios, please raise a feature request.
+
 ### Tip 4
-For `img` items it is a bit different. First of all, `img` items doesn't have `width: 100%` directly. They will be rendered in their original size. However up to **`100%` width max**. 
+**But,** of course we cannot control your imagination and lower down your expertise on html element structures.
+
+For example; you can say that oldies are goldies and still have some emotional connection to the `table`s. How we can understand that you used a `table` and used some `colspan`s for the `td`s to adjust the width as the half of the wrapper card for the element you put inside which will not break the responsive structure... 
+
+```
+<table>
+  <tr>
+    <td colspan="1">
+      <iframe ...>
+    </td>
+    <td colspan="1">
+      <video ...>
+    </td>
+  </tr>
+</table>
+```
+**Or,** since we know that you're expert on css, you can define some `flex-box` structure which have 100% width and also proper item arrangement inside. See the [Tip 6](#tip-6) below.
+
+### Tip 5
+For `img` items, it is a bit different. First of all, `img` items doesn't have `width` set to `100%` directly. They will be rendered in their original size (both width and height). However up to **`100%` width max**. 
 **But** in case you want to make an image `100%` width and don't want to change its original aspect ratio, just give the `aspect-ratio` attribute without a value. Any of these media and embed items has the `aspect-ratio` without value, they'll get 100% width.
 If you want to specify a custom aspect ratio within the available options above, you can also do that for the `img` items too.
 
-### Tip 5
-Even though we don't want you to write styles for the components, you might have some real edge cases you have to provide styles for some of the elements. In this case you can use `id` or `class` attributes to link them to your proper style files. You know what they are.
+### Tip 6
+Even though we don't want you to write styles for the components, you might have some real edge cases you have to adjust the styles of your renderer(s). In this case you can use `id` or `class` attributes and define your styles in your style files properly.
 
 
-That's all!, please also see the **[samples data](https://github.com/aws/mynah-ui/blob/main/example/src/samples/sample-data.ts)** of both options we've used in the example app
+That's all!, please also see the **[samples data](https://github.com/aws/mynah-ui/blob/6dd5cfbbb9e9d67fec19c40a2f9fbd7dba4c027c/example/src/samples/sample-data.ts#L544)** of both options we've used in the example app.
 
 ---
 

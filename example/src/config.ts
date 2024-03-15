@@ -1,28 +1,13 @@
 import {
   ChatItemType,
 } from '@aws/mynah-ui';
+import { defaultFollowUps } from './samples/sample-data';
+import { Commands } from './commands';
 export const WelcomeMessage = `Hi, this is \`MynahUI\` and it is a **data and event driven** web based chat interface library and it is independent from any framework like react or vue etc. 
 In this example web app which uses mynah-ui as its renderer, we're simulating its capabilities with some static content with an IDE look&feel. 
 
 *To see more examples about the possible content types, interactions or various component types, you can type \`/\` to open the quick actions list panel.*`;
 
-export enum Commands {
-  INSERT_CODE = '/insert-dummy-code',
-  COMMAND_WITH_PROMPT = '/with-prompt',
-  SHOW_STICKY_CARD = '/show-sticky-card',
-  
-  STATUS_CARDS = '/cards-with-status-colors',
-  FORM_CARD = '/card-with-a-form',
-  FILE_LIST_CARD = '/card-with-a-file-list',
-  PROGRESSIVE_CARD = '/card-with-progressing-content',
-  IMAGE_IN_CARD = '/card-with-image-inside',
-  CUSTOM_RENDERER_CARDS = '/cards-with-custom-renderers',
-  
-  NOTIFY = '/show-notification',
-  CLEAR = '/clear',
-  CLEAR_LOGS = '/clear-logs',
-  SHOW_CUSTOM_FORM = '/show-custom-form',
-}
 export const QuickActionCommands = [
   {
     groupName: 'Prompt field examples',
@@ -70,6 +55,14 @@ export const QuickActionCommands = [
         command: Commands.CUSTOM_RENDERER_CARDS,
         description: 'Struggling with markdown texts to produce a rich but static content which has to be done on the frontend client? Thinking about how to write html markups directly or even more better way? Custom renderers got your back!',
       },
+      {
+        command: Commands.CUSTOM_RENDERER_CARDS,
+        description: 'Struggling with markdown texts to produce a rich but static content which has to be done on the frontend client? Thinking about how to write html markups directly or even more better way? Custom renderers got your back!',
+      },
+      {
+        command: Commands.FOLLOWUPS_AT_RIGHT,
+        description: 'You can set the position of the followups too. By simply setting the type of the ChatItem.',
+      },
     ],
   },
   {
@@ -111,6 +104,7 @@ export const mynahUIDefaults = {
         body: WelcomeMessage,
         messageId: 'welcome-message'
       },
+      defaultFollowUps
     ],
     quickActionCommands: QuickActionCommands,
     promptInputPlaceholder: 'Type something or "/" for quick action commands',

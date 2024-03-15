@@ -50,7 +50,10 @@ export class ChatItemFollowUpOption {
               new Icon({ icon: props.followUpOption.icon }).render
             ]
           : []),
-        marked(croppedPillText, { breaks: true }).replace('<p>', '').replace('</p>', '')
+        {
+          type: 'span',
+          innerHTML: marked(croppedPillText, { breaks: true }).replace('<p>', '').replace('</p>', '')
+        }
       ],
       events: {
         click: (e) => {

@@ -12,23 +12,23 @@ import {
   ChatItem,
   MynahIcons,
 } from '@aws/mynah-ui';
-import { Commands, mynahUIDefaults } from './config';
+import { mynahUIDefaults } from './config';
 import { Log, LogClear } from './logger';
 import { exampleCodeBlockToInsert, 
   exampleCustomRendererWithHTMLMarkup, 
   exampleCustomRendererWithDomBuilderJson, 
   exampleFileListChatItem, 
   exampleFileListChatItemForUpdate, 
-  exampleFollowUps, 
+  defaultFollowUps, 
   exampleFormChatItem, 
   exampleImageCard, 
   exampleProgressCards, 
   exampleRichFollowups, 
-  exampleStreamParts, 
-  followupTypes } from './samples/sample-data';
+  exampleStreamParts } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
 import { ThemeBuilder } from './theme-builder/theme-builder';
+import { Commands } from './commands';
 
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   const connector = new Connector();
@@ -98,173 +98,19 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b>`);
-      if (prompt.command !== undefined && prompt.command.trim() !== '') {
-        switch (prompt.command) {
-          case Commands.INSERT_CODE:
-            mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert);
-            break;
-          case Commands.CLEAR:
-            mynahUI.updateStore(tabId, {
-              chatItems: []
-            });
-            break;
-          case Commands.CLEAR_LOGS:
-            LogClear();
-            break;
-          case Commands.NOTIFY:
-            mynahUI.notify({
-              content: 'Click this notification to remove it. It does not have a duration.',
-              duration: -1,
-              type: NotificationType.INFO,
-              title: 'Notification!!',
-              onNotificationClick: () => {
-                Log('Sample notification clicked.');
-              },
-              onNotificationHide: () => {
-                Log('Sample notification removed.');
-              }
-            });
-            break;
-          case Commands.FORM_CARD:
-            mynahUI.addChatItem(tabId, exampleFormChatItem);
-            break;
-          case Commands.PROGRESSIVE_CARD:
-            getProgressingCard(tabId);
-            break;
-          case Commands.STATUS_CARDS:
-            mynahUI.addChatItem(tabId, {
-              type: ChatItemType.ANSWER,
-              messageId: new Date().getTime().toString(),
-              body: `This is an extended card with an icon and a different border color. It also includes some action buttons.`,
-              status: 'error',
-              icon: MynahIcons.ERROR,
-              buttons: [
-                {
-                  text: 'I Understand',
-                  id: 'understood',
-                  status: 'error',
-                  icon: MynahIcons.OK
-                },
-              ],
-            });
-            mynahUI.addChatItem(tabId, {
-              type: ChatItemType.ANSWER,
-              messageId: new Date().getTime().toString(),
-              body: `This is an extended card with an icon and a different border color. Including some action buttons.`,
-              status: 'info',
-              icon: MynahIcons.INFO,
-              buttons: [
-                {
-                  text: 'Acknowledge',
-                  id: 'ack',
-                  status: 'info',
-                  icon: MynahIcons.OK
-                },
-              ],
-            });
-            mynahUI.addChatItem(tabId, {
-              type: ChatItemType.ANSWER,
-              messageId: new Date().getTime().toString(),
-              body: `This is an extended card with an icon and a different border color. Including some action buttons.`,
-              status: 'warning',
-              icon: MynahIcons.WARNING,
-            });
-            mynahUI.addChatItem(tabId, {
-              type: ChatItemType.ANSWER,
-              messageId: new Date().getTime().toString(),
-              body: `You're doing very good. Awesome work mate!`,
-              status: 'success',
-              icon: MynahIcons.THUMBS_UP,
-              buttons: [
-                {
-                  text: 'Yay!',
-                  id: 'yay',
-                  status: 'success'
-                },
-              ],
-            });
-            break;
-          case Commands.SHOW_STICKY_CARD:
-            mynahUI.updateStore(tabId, {
-              promptInputStickyCard: {
-                messageId: 'sticky-card',
-                body: `Please read the [terms and conditions change](#) and after that click the **Acknowledge** button below!`,
-                buttons: [
-                  {
-                    keepCardAfterClick: true,
-                    text: 'Open transofmration hub',
-                    id: 'acknowledge',
-                    status: 'info',
-                  },
-                ],
-              }
-            });
-            break;
-          case Commands.FILE_LIST_CARD:
-            mynahUI.addChatItem(tabId, exampleFileListChatItem);
-            break;
-          case Commands.SHOW_CUSTOM_FORM:
-            showCustomForm(tabId);
-            break;
-          case Commands.IMAGE_IN_CARD:
-            mynahUI.addChatItem(tabId, exampleImageCard());
-            break;
-          case Commands.CUSTOM_RENDERER_CARDS:
-            mynahUI.addChatItem(tabId, exampleCustomRendererWithHTMLMarkup());
-            mynahUI.addChatItem(tabId, exampleCustomRendererWithDomBuilderJson());
-            break;
-          case Commands.COMMAND_WITH_PROMPT:
-            const realPromptText = prompt.escapedPrompt?.trim() ?? '';
-            mynahUI.addChatItem(tabId, {
-              type: ChatItemType.PROMPT,
-              messageId: new Date().getTime().toString(),
-              body: `${Commands.COMMAND_WITH_PROMPT} => ${realPromptText}`
-            });
-            getGenerativeAIAnswer(tabId, {
-              prompt: realPromptText
-            });
-            break;
-          default:
-            mynahUI.addChatItem(tabId, {
-              type: ChatItemType.PROMPT,
-              messageId: new Date().getTime().toString(),
-              body: `**${prompt.command.replace('/', '')}**\n${prompt.escapedPrompt as string}`,
-            });
-            getGenerativeAIAnswer(tabId, prompt);
-            break;
-        }
-      } else {
-        mynahUI.addChatItem(tabId, {
-          type: ChatItemType.PROMPT,
-          messageId: new Date().getTime().toString(),
-          body: `${prompt.escapedPrompt as string}`
-        });
-        getGenerativeAIAnswer(tabId, prompt);
-      }
+      onChatPrompt(tabId, prompt);
     },
     onStopChatResponse: (tabId: string) => {
       Log(`Stop generating clicked: <b>${tabId}</b>`);
     },
     onFollowUpClicked: (tabId: string, messageId: string, followUp: ChatItemAction) => {
       Log(`Followup click: <b>${followUp.pillText}</b>`);
-      if (followUp.prompt !== undefined) {
-        mynahUI.addChatItem(tabId, {
-          type: ChatItemType.PROMPT,
-          messageId: new Date().getTime().toString(),
-          body: followUp.prompt,
+      if (followUp.prompt != null || followUp.command != null) {
+        onChatPrompt(tabId, {
+          command: followUp.command,
+          prompt: followUp.prompt,
+          escapedPrompt: followUp.escapedPrompt ?? followUp.prompt
         });
-        getGenerativeAIAnswer(tabId, {
-          prompt: followUp.prompt
-        });
-      } else {
-        switch (followUp.type) {
-          case followupTypes.FOLLOWUPS_ON_RIGHT:
-            mynahUI.addChatItem(tabId, exampleRichFollowups);
-            break;
-          case followupTypes.FILE_LIST:
-            mynahUI.addChatItem(tabId, exampleFileListChatItem);
-            break;
-        }
       }
     },
     onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
@@ -334,6 +180,160 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     },
   });
 
+  const onChatPrompt = (tabId:string, prompt: ChatPrompt) => {
+      if (prompt.command !== undefined && prompt.command.trim() !== '') {
+        switch (prompt.command) {
+          case Commands.INSERT_CODE:
+            mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert);
+            break;
+          case Commands.CLEAR:
+            mynahUI.updateStore(tabId, {
+              chatItems: []
+            });
+            break;
+          case Commands.CLEAR_LOGS:
+            LogClear();
+            break;
+          case Commands.NOTIFY:
+            mynahUI.notify({
+              content: 'Click this notification to remove it. It does not have a duration.',
+              duration: -1,
+              type: NotificationType.INFO,
+              title: 'Notification!!',
+              onNotificationClick: () => {
+                Log('Sample notification clicked.');
+              },
+              onNotificationHide: () => {
+                Log('Sample notification removed.');
+              }
+            });
+            break;
+          case Commands.FORM_CARD:
+            mynahUI.addChatItem(tabId, exampleFormChatItem);
+            mynahUI.addChatItem(tabId, defaultFollowUps);
+            break;
+          case Commands.PROGRESSIVE_CARD:
+            getProgressingCard(tabId);
+            break;
+          case Commands.STATUS_CARDS:
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `This is an extended card with an icon and a different border color. It also includes some action buttons.`,
+              status: 'error',
+              icon: MynahIcons.ERROR,
+              buttons: [
+                {
+                  text: 'I Understand',
+                  id: 'understood',
+                  status: 'error',
+                  icon: MynahIcons.OK
+                },
+              ],
+            });
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `This is an extended card with an icon and a different border color. Including some action buttons.`,
+              status: 'info',
+              icon: MynahIcons.INFO,
+              buttons: [
+                {
+                  text: 'Acknowledge',
+                  id: 'ack',
+                  status: 'info',
+                  icon: MynahIcons.OK
+                },
+              ],
+            });
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `This is an extended card with an icon and a different border color. Including some action buttons.`,
+              status: 'warning',
+              icon: MynahIcons.WARNING,
+            });
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.ANSWER,
+              messageId: new Date().getTime().toString(),
+              body: `You're doing very good. Awesome work mate!`,
+              status: 'success',
+              icon: MynahIcons.THUMBS_UP,
+              buttons: [
+                {
+                  text: 'Yay!',
+                  id: 'yay',
+                  status: 'success'
+                },
+              ],
+            });
+            mynahUI.addChatItem(tabId, defaultFollowUps);
+            break;
+          case Commands.SHOW_STICKY_CARD:
+            mynahUI.updateStore(tabId, {
+              promptInputStickyCard: {
+                messageId: 'sticky-card',
+                body: `Please read the [terms and conditions change](#) and after that click the **Acknowledge** button below!`,
+                buttons: [
+                  {
+                    keepCardAfterClick: true,
+                    text: 'Open transofmration hub',
+                    id: 'acknowledge',
+                    status: 'info',
+                  },
+                ],
+              }
+            });
+            break;
+          case Commands.FILE_LIST_CARD:
+            mynahUI.addChatItem(tabId, exampleFileListChatItem);
+            mynahUI.addChatItem(tabId, defaultFollowUps);
+            break;
+          case Commands.FOLLOWUPS_AT_RIGHT:
+            mynahUI.addChatItem(tabId, exampleRichFollowups);
+            break;
+          case Commands.SHOW_CUSTOM_FORM:
+            showCustomForm(tabId);
+            break;
+          case Commands.IMAGE_IN_CARD:
+            mynahUI.addChatItem(tabId, exampleImageCard());
+            mynahUI.addChatItem(tabId, defaultFollowUps);
+            break;
+          case Commands.CUSTOM_RENDERER_CARDS:
+            mynahUI.addChatItem(tabId, exampleCustomRendererWithHTMLMarkup());
+            mynahUI.addChatItem(tabId, exampleCustomRendererWithDomBuilderJson());
+            mynahUI.addChatItem(tabId, defaultFollowUps);
+            break;
+          case Commands.COMMAND_WITH_PROMPT:
+            const realPromptText = prompt.escapedPrompt?.trim() ?? '';
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.PROMPT,
+              messageId: new Date().getTime().toString(),
+              body: `${Commands.COMMAND_WITH_PROMPT} => ${realPromptText}`
+            });
+            getGenerativeAIAnswer(tabId, {
+              prompt: realPromptText
+            });
+            break;
+          default:
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.PROMPT,
+              messageId: new Date().getTime().toString(),
+              body: `**${prompt.command.replace('/', '')}**\n${prompt.escapedPrompt as string}`,
+            });
+            getGenerativeAIAnswer(tabId, prompt);
+            break;
+        }
+      } else {
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.PROMPT,
+          messageId: new Date().getTime().toString(),
+          body: `${prompt.escapedPrompt as string}`
+        });
+        getGenerativeAIAnswer(tabId, prompt);
+      }
+  }
+
   const showCustomForm = (tabId:string) => {
     mynahUI.showCustomForm(tabId, 
       [
@@ -395,7 +395,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           loadingChat: false,
           promptInputDisabledState: false
         });
-        mynahUI.addChatItem(tabId, exampleFollowUps);
+        mynahUI.addChatItem(tabId, defaultFollowUps);
+        
       }).then(chatItem => {
         mynahUI.addChatItem(tabId, {
           type: ChatItemType.ANSWER_STREAM,
@@ -424,6 +425,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         mynahUI.notify({
           content: 'Your refactor request is finished',
         });
+        mynahUI.addChatItem(tabId, defaultFollowUps);
       }).then(() => {
         mynahUI.addChatItem(tabId, {
           type: ChatItemType.ANSWER_STREAM,

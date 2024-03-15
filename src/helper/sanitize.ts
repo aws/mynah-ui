@@ -65,6 +65,7 @@ export const AllowedAttributes = [
   'accesskey',
   'align',
   'allow',
+  'allowfullscreen',
   'alt',
   'as',
   'async',
