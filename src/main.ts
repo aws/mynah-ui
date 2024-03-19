@@ -562,16 +562,32 @@ export class MynahUI {
    * @param props NotificationProps
    */
   public notify = (props: {
+    /**
+     * -1 for infinite
+     */
     duration?: number;
     type?: NotificationType;
     title?: string;
     content: string;
-    onNotificationClick?: () => void;
-    onNotificationHide?: () => void;
+    onNotificationClick?: (eventId: string) => void;
+    onNotificationHide?: (eventId: string) => void;
   }): void => {
     new Notification({
       ...props,
-      onNotificationClick: props.onNotificationClick ?? (() => {}),
+      onNotificationClick: (props.onNotificationClick != null)
+        ? () => {
+            if (props.onNotificationClick != null) {
+              props.onNotificationClick(this.getUserEventId());
+            }
+          }
+        : undefined,
+      onNotificationHide: (props.onNotificationHide != null)
+        ? () => {
+            if (props.onNotificationHide != null) {
+              props.onNotificationHide(this.getUserEventId());
+            }
+          }
+        : undefined,
     }).notify();
   };
 
