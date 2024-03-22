@@ -55,7 +55,7 @@
     --mynah-color-syntax-attr: var(--vscode-debugTokenExpression-string);
     --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan);
     --mynah-color-syntax-comment: var(--vscode-debugConsole-sourceForeground);
-    --mynah-color-syntax-code: var(--vscode-terminal-ansiBlue);
+    --mynah-color-syntax-code: var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit));
     --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
     --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
 
