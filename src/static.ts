@@ -75,6 +75,10 @@ export interface MynahUIDataModel {
    * Attached code under the prompt input field
    */
   selectedCodeSnippet?: string;
+  /**
+   * Tab bar buttons next to the tab items
+   */
+  tabBarButtons?: TabBarMainAction[];
 }
 
 export interface MynahUITabStoreTab {
@@ -115,6 +119,7 @@ export enum MynahEventNames {
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
   ADD_CODE_SNIPPET = 'addCodeSnippet',
   REMOVE_CODE_SNIPPET = 'removeCodeSnippet',
+  TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
 };
 
 export enum MynahPortalNames {
@@ -223,6 +228,19 @@ export interface ChatItemButton {
   description?: string;
   status?: 'info' | 'success' | 'warning' | 'error';
   icon?: MynahIcons;
+}
+
+export interface TabBarAction {
+  text?: string;
+  id: string;
+  disabled?: boolean;
+  description?: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  icon?: MynahIcons;
+}
+
+export interface TabBarMainAction extends TabBarAction {
+  items?: TabBarAction[];
 }
 
 export interface FileNodeAction {
@@ -357,6 +375,7 @@ export interface ConfigOptions {
     label: string;
     value: string;
   }>;
+  tabBarButtons?: TabBarMainAction[];
   maxTabs: number;
   showPromptField: boolean;
   autoFocus: boolean;

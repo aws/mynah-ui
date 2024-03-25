@@ -56,10 +56,6 @@ export const QuickActionCommands = [
         description: 'Struggling with markdown texts to produce a rich but static content which has to be done on the frontend client? Thinking about how to write html markups directly or even more better way? Custom renderers got your back!',
       },
       {
-        command: Commands.CUSTOM_RENDERER_CARDS,
-        description: 'Struggling with markdown texts to produce a rich but static content which has to be done on the frontend client? Thinking about how to write html markups directly or even more better way? Custom renderers got your back!',
-      },
-      {
         command: Commands.FOLLOWUPS_AT_RIGHT,
         description: 'You can set the position of the followups too. By simply setting the type of the ChatItem.',
       },

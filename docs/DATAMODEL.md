@@ -57,6 +57,14 @@ interface MynahUIDataModel {
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
+  /**
+   * Attached code under the prompt input field
+   */
+  selectedCodeSnippet?: string;
+  /**
+   * Tab bar buttons next to the tab items
+   */
+  tabBarButtons?: TabBarMainAction[];
 }
 ```
 
@@ -355,6 +363,86 @@ mynahUI.updateStore('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/tabStore/promptInputDisabledState.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `selectedCodeSnippet`
+
+This is the attached code block text right under the prompt input field..
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    selectedCodeSnippet: `const mynahUI = new MynahUI({
+        tabs: {
+            'tab-1': {
+                isSelected: true,
+                .....`,
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/selectedCodeSnippet.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `tabBarButtons`
+
+You can put buttons on the right of the tab bar also with some inner buttons inside a menu. You can do it in two different ways. If you want the buttons belong to specific tab, you can use the `tabBarButtons` for tab store. If you want them globally available for every tab, check the **[Config Documentation](./CONFIG.md#tabbarbuttons)**.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabBarButtons: [
+        {
+          id: 'clear',
+          description: 'Clear messages in this tab',
+          icon: MynahIcons.REFRESH,
+        },
+        {
+          id: 'multi',
+          icon: MynahIcons.ELLIPSIS,
+          items: [
+            {
+              id: 'menu-action-1',
+              text: 'Menu action 1!',
+              icon: MynahIcons.CHAT,
+            },
+            {
+              id: 'menu-action-2',
+              text: 'Menu action 2!',
+              icon: MynahIcons.CODE_BLOCK,
+            },
+            {
+              id: 'menu-action-3',
+              text: 'Menu action 3!'
+            }
+          ]
+        }
+      ],
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/tabBarButtons1.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <br/>
+  <img src="./img/data-model/tabStore/tabBarButtons2.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

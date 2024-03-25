@@ -96,25 +96,24 @@ export class ChatItemCard {
     return generatedCard;
   };
 
-  private readonly getCardClasses = (): string[] => {
-    const emptyCheckDom = DomBuilder.getInstance().build({
-      type: 'span',
-      innerHTML: typeof this.props.chatItem.body === 'string' ? this.props.chatItem.body : '',
-    });
+  private readonly cardHasContent = (): boolean => (this.props.chatItem.body != null ||
+    this.props.chatItem.fileList != null ||
+    this.props.chatItem.formItems != null ||
+    this.props.chatItem.customRenderer != null ||
+    this.props.chatItem.buttons != null);
 
-    const isChatItemEmpty = emptyCheckDom.textContent === null || emptyCheckDom.textContent.trim() === '';
+  private readonly getCardClasses = (): string[] => {
     const isNoContent =
-      isChatItemEmpty &&
-      this.props.chatItem.followUp === undefined &&
-      this.props.chatItem.relatedContent === undefined &&
-      this.props.chatItem.customRenderer === undefined &&
+      !this.cardHasContent() &&
+      this.props.chatItem.followUp == null &&
+      this.props.chatItem.relatedContent == null &&
       this.props.chatItem.type === ChatItemType.ANSWER;
     return [
       ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
       'mynah-chat-item-card',
       `mynah-chat-item-${this.props.chatItem.type ?? ChatItemType.ANSWER}`,
-      ...(isChatItemEmpty ? [ 'mynah-chat-item-empty' ] : []),
+      ...(!this.cardHasContent() ? [ 'mynah-chat-item-empty' ] : []),
       ...(isNoContent ? [ 'mynah-chat-item-no-content' ] : []),
     ];
   };
@@ -215,7 +214,7 @@ export class ChatItemCard {
                 .getTabDataStore(this.props.tabId)
                 .updateStore(
                   {
-                    chatItems: currentChatItems.filter(chatItem => this.props.chatItem.messageId !== chatItem.messageId),
+                    chatItems: [ ...currentChatItems.map(chatItem => this.props.chatItem.messageId !== chatItem.messageId ? chatItem : { type: ChatItemType.ANSWER, messageId: chatItem.messageId }) ],
                   },
                   true
                 );
@@ -251,11 +250,8 @@ export class ChatItemCard {
 
     return [
       ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
-      ...(this.props.chatItem.body !== undefined ||
-      this.props.chatItem.fileList !== undefined ||
-      this.props.chatItem.formItems !== undefined ||
-      this.props.chatItem.customRenderer !== undefined ||
-      this.props.chatItem.buttons !== undefined
+
+      ...(this.cardHasContent()
         ? [
             new Card({
               onCardEngaged: engagement => {

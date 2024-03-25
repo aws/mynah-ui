@@ -81,7 +81,7 @@ export class ThemeBuilder {
 
 
         const downloadThemeConfigButton = document.createElement('button');
-        downloadThemeConfigButton.innerHTML = "<span>Download Theme Config (.mynahuitc)</span>";
+        downloadThemeConfigButton.innerHTML = "<span>Download Config</span>";
         downloadThemeConfigButton.classList.add("mynah-button");
         downloadThemeConfigButton.classList.add("config-operation");
         downloadThemeConfigButton.addEventListener('click', () => {
@@ -100,7 +100,7 @@ export class ThemeBuilder {
         });
 
         const uploadThemeConfigButton = document.createElement('button');
-        uploadThemeConfigButton.innerHTML = "<span>Upload Theme Config (.mynahuitc)</span>";
+        uploadThemeConfigButton.innerHTML = "<span>Upload Config</span>";
         uploadThemeConfigButton.classList.add("mynah-button");
         uploadThemeConfigButton.classList.add("config-operation");
         uploadThemeConfigButton.addEventListener('click', () => {
@@ -108,7 +108,7 @@ export class ThemeBuilder {
         });
 
         const downloadThemeButton = document.createElement('button');
-        downloadThemeButton.innerHTML = "<span>Download Theme (.css)</span>";
+        downloadThemeButton.innerHTML = "<span>Download Theme (CSS)</span>";
         downloadThemeButton.classList.add("mynah-button");
         downloadThemeButton.classList.add("config-operation");
         downloadThemeButton.addEventListener('click', () => {

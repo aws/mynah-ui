@@ -43,7 +43,6 @@
     --mynah-color-highlight: rgba(255, 179, 0, 0.25);
     --mynah-color-highlight-text: #886411;
 
-    /* previously it was context */
     --mynah-color-toggle: var(--vscode-sideBar-background);
     --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
 
@@ -59,10 +58,10 @@
     --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
     --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
 
-    --mynah-color-status-info: var(--vscode-editorInfo-foreground);
-    --mynah-color-status-success: var(--vscode-terminal-ansiGreen);
-    --mynah-color-status-warning: var(--vscode-editorWarning-foreground);
-    --mynah-color-status-error: var(--vscode-editorError-foreground);
+    --mynah-color-status-info: #0971d3;
+    --mynah-color-status-success: #037f03;
+    --mynah-color-status-warning: #b2911c;
+    --mynah-color-status-error: #d91515;
 
     --mynah-color-button: var(--vscode-button-background);
     --mynah-color-button-reverse: var(--vscode-button-foreground);
@@ -81,8 +80,8 @@
     --mynah-font-size-small: 0.95rem;
     --mynah-font-size-medium: 1rem;
     --mynah-font-size-large: 1.125rem;
-    --mynah-line-height: 1.25rem;
-    --mynah-syntax-code-line-height: 1.25rem;
+    --mynah-line-height: 1.5rem;
+    --mynah-syntax-code-line-height: 1.5rem;
 
     --mynah-card-radius: var(--mynah-sizing-2);
     --mynah-input-radius: var(--mynah-sizing-1);

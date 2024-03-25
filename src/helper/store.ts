@@ -28,6 +28,7 @@ export class EmptyMynahUIDataModel {
       promptInputDisabledState: false,
       chatItems: [],
       selectedCodeSnippet: '',
+      tabBarButtons: [],
       ...defaults
     };
   }

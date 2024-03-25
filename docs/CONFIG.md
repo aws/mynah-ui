@@ -41,6 +41,7 @@ interface ConfigModel {
         label: string;
         value: string;
     }>;
+    tabBarButtons?: TabBarMainAction[]; // Tab bar buttons will be shown on the right of the tab
     maxUserInput: number; // max number of chars for the input field
     autoFocus: boolean; // auto focuses to input panel after every action
     maxTabs: number; // set 1 to hide tabs panel
@@ -51,6 +52,58 @@ interface ConfigModel {
 ---
 
 <p><br/></p>
+
+
+# `tabBarButtons`
+
+You can put buttons on the right of the tab bar also with some inner buttons inside a menu. You can do it in two different ways. If you want the buttons globally available for every tab you can use the `tabBarButtons` in the config. If you want them set individually for different tabs check the **[DATAMODEL Documentation](./DATAMODEL.md#tabbarbuttons)**.
+
+```typescript
+const mynahUI = new MynahUI({
+    ...
+    config: {
+      ...
+      tabBarButtons: [
+        {
+          id: 'clear',
+          description: 'Clear messages in this tab',
+          icon: MynahIcons.REFRESH,
+        },
+        {
+          id: 'multi',
+          icon: MynahIcons.ELLIPSIS,
+          items: [
+            {
+              id: 'menu-action-1',
+              text: 'Menu action 1!',
+              icon: MynahIcons.CHAT,
+            },
+            {
+              id: 'menu-action-2',
+              text: 'Menu action 2!',
+              icon: MynahIcons.CODE_BLOCK,
+            },
+            {
+              id: 'menu-action-3',
+              text: 'Menu action 3!'
+            }
+          ]
+        }
+      ]
+    }
+    ...
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/tabBarButtons1.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <br/>
+  <img src="./img/data-model/tabStore/tabBarButtons2.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+
 
 # `texts`
 All static texts will be shown on UI. 

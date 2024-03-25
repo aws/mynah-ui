@@ -25,7 +25,7 @@
         display: inline-flex;
         align-items: center;
         box-sizing: border-box;
-        gap: var(--mynah-sizing-3);
+        gap: var(--mynah-sizing-1);
         > .mynah-vote-radio {
             display: none;
         }
@@ -33,7 +33,7 @@
             z-index: 10;
             cursor: pointer;
             font-size: var(--mynah-font-size-small);
-            transition: var(--mynah-short-transition);
+            transition: var(--mynah-very-short-transition);
             width: var(--mynah-sizing-5);
             height: var(--mynah-sizing-5);
             display: inline-flex;
@@ -41,6 +41,13 @@
             align-items: center;
             color: var(--mynah-color-text-weak);
             opacity: 0.5;
+            padding: var(--mynah-sizing-1);
+            border: var(--mynah-border-width) solid transparent;
+            border-radius: var(--mynah-button-radius);
+            &:hover{
+                opacity: 1;
+                border-color: currentColor;
+            }
             > * {
                 pointer-events: none;
             }

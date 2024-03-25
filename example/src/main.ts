@@ -38,6 +38,33 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     defaults: mynahUIDefaults,
     config: {
       maxTabs: 5,
+      tabBarButtons: [
+        {
+          id: 'clear',
+          description: 'Clear messages in this tab',
+          icon: MynahIcons.REFRESH,
+        },
+        {
+          id: 'multi',
+          icon: MynahIcons.ELLIPSIS,
+          items: [
+            {
+              id: 'menu-action-1',
+              text: 'Menu action 1!',
+              icon: MynahIcons.CHAT,
+            },
+            {
+              id: 'menu-action-2',
+              text: 'Menu action 2!',
+              icon: MynahIcons.CODE_BLOCK,
+            },
+            {
+              id: 'menu-action-3',
+              text: 'Menu action 3!'
+            }
+          ]
+        }
+      ]
     },
     tabs: {
       'tab-1': {
@@ -48,6 +75,14 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           ...initialData,
         }
       }
+    },
+    onTabBarButtonClick: (tabId: string, buttonId: string) => {
+      if(buttonId === 'clear'){
+        mynahUI.updateStore(tabId, {
+          chatItems: []
+        });
+      }
+      Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
     onTabAdd: (tabId: string) => {
       Log(`New tab added: <b>${tabId}</b>`);
@@ -98,6 +133,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b>`);
+      if(tabId === 'tab-1'){
+        mynahUI.updateStore(tabId, {
+          tabCloseConfirmationMessage: `Working on "${prompt.prompt}"`
+        });
+      }
       onChatPrompt(tabId, prompt);
     },
     onStopChatResponse: (tabId: string) => {
@@ -276,7 +316,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 body: `Please read the [terms and conditions change](#) and after that click the **Acknowledge** button below!`,
                 buttons: [
                   {
-                    keepCardAfterClick: true,
                     text: 'Open transofmration hub',
                     id: 'acknowledge',
                     status: 'info',
@@ -434,68 +473,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       });
   };
-
-  /**
-   * Below field is to simulate this example feels like an extension inside an IDE
-   */
-
-  const extensionResizeHandler = document.querySelector('#extension > .size-handler') as HTMLSpanElement;
-  let initPos = 0;
-  let initWidth = 0;
-  const handleResize = (e: MouseEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    (extensionResizeHandler.parentNode as HTMLElement).style.minWidth = `${initWidth + (initPos - e.pageX)}px`;
-    (extensionResizeHandler.parentNode as HTMLElement).style.maxWidth = `${initWidth + (initPos - e.pageX)}px`;
-  };
-  const handleResizeMouseUp = (): void => {
-    window.removeEventListener('mousemove', handleResize);
-    window.removeEventListener('mouseup', handleResizeMouseUp);
-  };
-  if (extensionResizeHandler !== undefined) {
-    extensionResizeHandler.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      initPos = e.pageX;
-      initWidth = ((e.currentTarget as HTMLElement).parentNode as HTMLElement).getBoundingClientRect().width;
-      window.addEventListener('mousemove', handleResize, false);
-      window.addEventListener('mouseup', handleResizeMouseUp);
-    });
-  }
   
-  /**
-   * Below field is to simulate this example feels like an extension inside an IDE
-   */
-
-  const themeBuilder = new ThemeBuilder("#editor");
-
-  const consoleResizeHandler = document.querySelector('#console > .size-handler') as HTMLSpanElement;
-  let consoleInitPos = 0;
-  let consoleInitHeight = 80;
-  const consoleHandleResize = (e: MouseEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    (consoleResizeHandler.parentNode as HTMLElement).style.minHeight = `${consoleInitHeight + (consoleInitPos - e.pageY)}px`;
-    (consoleResizeHandler.parentNode as HTMLElement).style.maxHeight = `${consoleInitHeight + (consoleInitPos - e.pageY)}px`;
-  };
-  const consoleHandleResizeMouseUp = (): void => {
-    window.removeEventListener('mousemove', consoleHandleResize);
-    window.removeEventListener('mouseup', consoleHandleResizeMouseUp);
-  };
-  if (consoleResizeHandler !== undefined) {
-    consoleResizeHandler.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      consoleInitPos = e.pageY;
-      consoleInitHeight = ((e.currentTarget as HTMLElement).parentNode as HTMLElement).getBoundingClientRect().height;
-      window.addEventListener('mousemove', consoleHandleResize, false);
-      window.addEventListener('mouseup', consoleHandleResizeMouseUp);
-    });
-  }
+  new ThemeBuilder("#theme-editor");
 
   return mynahUI;
 };

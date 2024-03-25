@@ -113,6 +113,10 @@ export interface MynahUIProps {
     filePath: string,
     actionName: string,
     eventId?: string) => void;
+  onTabBarButtonClick?: (
+    tabId: string,
+    buttonId: string,
+    eventId?: string) => void;
 }
 ```
 _Let's deep dive into each property you can set._
@@ -778,6 +782,32 @@ onFileActionClick?: (
       console.log(`For message: ${messageId}`);
       console.log(`File name which the action clicked: ${filePath}`);
       console.log(`The action id/name clicked: ${actionName}`);
+    };
+...
+```
+
+---
+
+### `onTabBarButtonClick`
+
+This event will be fired when user clicks to a button inside the tab tab or a button under a menu item inside the tab bar. 
+
+**TIP:** To configure tab buttons according to a tab please see [DATAMODEL Documentation](./DATAMODEL.md#tabbarbuttons). Or for global tab bar button settings please see [Config Documentation](./CONFIG.md#tabbarbuttons).
+
+
+<p align="center">
+  <img src="./img/data-model/tabStore/tabBarButtons1.png" alt="tabBarButtons" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/tabStore/tabBarButtons2.png" alt="tabBarButtons" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onTabBarButtonClick?: (
+    tabId: string,
+    buttonId: string,
+    eventId?: string):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Button ID: ${buttonId}`);
     };
 ...
 ```

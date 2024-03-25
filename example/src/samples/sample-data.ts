@@ -172,7 +172,6 @@ export const exampleFileListChatItem: ChatItem = {
       text: 'Open Diff Viewer',
       icon: MynahIcons.EXTERNAL,
       status: 'info',
-      keepCardAfterClick: true,
       disabled: false
     }
   ],

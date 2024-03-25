@@ -12,6 +12,7 @@ import { Button } from './button';
 import { Card } from './card/card';
 import { CardBody } from './card/card-body';
 import { Icon, MynahIcons } from './icon';
+import { TabBarButtonsWrapper } from './navigation-tab-bar-buttons';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Toggle, ToggleOption } from './toggle';
 
@@ -42,7 +43,10 @@ export class Tabs {
           }
         }
       },
-      children: this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
+      children: [
+        ...this.getTabsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
+        new TabBarButtonsWrapper().render
+      ],
     });
 
     MynahUITabsStore.getInstance().addListener('add', (tabId, tabData) => {

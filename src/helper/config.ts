@@ -14,6 +14,7 @@ const configDefaults: ConfigFullModel = {
   maxUserInput: 4096,
   showPromptField: true,
   autoFocus: true,
+  tabBarButtons: [],
   feedbackOptions: [
     {
       value: 'inaccurate-response',

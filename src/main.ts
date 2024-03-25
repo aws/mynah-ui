@@ -173,6 +173,10 @@ export interface MynahUIProps {
     filePath: string,
     actionName: string,
     eventId?: string) => void;
+  onTabBarButtonClick?: (
+    tabId: string,
+    buttonId: string,
+    eventId?: string) => void;
 }
 
 export class MynahUI {
@@ -453,6 +457,12 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CUSTOM_FORM_ACTION_CLICK, (data) => {
       if (this.props.onCustomFormAction !== undefined) {
         this.props.onCustomFormAction(data.tabId, data, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TAB_BAR_BUTTON_CLICK, (data) => {
+      if (this.props.onTabBarButtonClick !== undefined) {
+        this.props.onTabBarButtonClick(data.tabId, data.buttonId, this.getUserEventId());
       }
     });
   };

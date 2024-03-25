@@ -197,6 +197,8 @@ export class ChatPromptInput {
         }
       } else if (navigationalKeys.includes(e.key)) {
         e.preventDefault();
+        const commandsWrapper = this.commandSelector.render.querySelector('.mynah-chat-command-selector');
+        (commandsWrapper as ExtendedHTMLElement).addClass('has-target-item');
         const commandElements = Array.from(this.commandSelector.render.querySelectorAll('.mynah-chat-command-selector-command'));
         let lastActiveElement = commandElements.findIndex(commandElement => commandElement.classList.contains('target-command'));
         lastActiveElement = lastActiveElement === -1 ? commandElements.length : lastActiveElement;

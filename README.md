@@ -18,7 +18,7 @@ Please continue with one of the following guides:
 ### [Styling Configuration](./docs/STYLING.md)
 
 <p align="center">
-  <img src="./docs/img/splash.gif" alt="MynahUI" style="max-width:1024px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./docs/img/splash.gif" alt="MynahUI" style="max-width:1280px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ## Supported browsers

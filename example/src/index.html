@@ -1,83 +1,56 @@
 <html theme="base">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 
 <body>
+    <input class="hidden" id="theme-editor-enabled" type="checkbox" checked>
+    <input class="hidden" id="console-enabled" type="checkbox" checked>
     <div class="mynah-extension-showcase-grid">
-        <div id="navbar">
-            <div class="skeleton skeleton-rounded skeleton-selected"></div>
-            <div class="skeleton skeleton-rounded"></div>
-            <div class="skeleton skeleton-rounded"></div>
-            <div class="skeleton skeleton-rounded"></div>
-            <div class="skeleton skeleton-rounded"></div>
+        <div id="header-bar">
+            <div class="mynah-ui-example-input">
+                <div class="mynah-ui-example-input-wrapper">
+                    <select class="theme-selector" onchange="(()=>{
+                    if(this.value.match('dark')){
+                        document.querySelector('body').classList.add('vscode-dark');
+                    } else {
+                        document.querySelector('body').classList.remove('vscode-dark');
+                    }
+                    document.querySelector('html').setAttribute('theme',this.value)
+                    })()">
+                        <option selected value="base">Custom Theme</option>
+                        <option disabled>---------- VSCODE Light Themes -----------</option>
+                        <option value="light+">Light +</option>
+                        <option value="light-orange">Light Orange</option>
+                        <option value="light-quiet">Light Quiet</option>
+                        <option value="light-solarized">Light Solarized</option>
+                        <option disabled>---------- VSCODE Dark Themes -----------</option>
+                        <option value="dark+">Dark +</option>
+                        <option value="dark-abyss">Dark Abyss</option>
+                        <option value="dark-ayu-mirage">Dark Ayu Mirage</option>
+                        <option value="dark-dracula">Dark Dracula</option>
+                        <option value="dark-solarized">Dark Solarized</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mynah-ui-example-input">
+                <div class="mynah-ui-example-input-wrapper">
+                    <label for="theme-editor-enabled">Theme editor</label>
+                </div>
+            </div>
+            <div class="mynah-ui-example-input">
+                <div class="mynah-ui-example-input-wrapper">
+                    <label for="console-enabled">Console</label>
+                </div>
+            </div>
         </div>
-        <div id="file-tree">
-            <ul>
-                <li>
-                    <div class="skeleton skeleton-paragraph alt"></div>
-                    <br/>
-                    <ul>
-                        <li class="line">
-                            <div class="skeleton skeleton-line"></div>
-                            <br/>
-                        </li>
-                        <li>
-                            <div class="skeleton skeleton-paragraph alt"></div>
-                            <div class="skeleton skeleton-line skeleton-selected"></div>
-                            <br/>
-                        </li>
-                        <li class="line">
-                            <div class="skeleton skeleton-line"></div>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <div id="file-tabs">
-            <div class="skeleton skeleton-rectangle skeleton-selected"></div>
-            <div class="skeleton skeleton-rectangle"></div>
-        </div>
-        <div id="editor">
-            
-        </div>
-        <div id="console">
-            <div class="size-handler horizontal"></div>
-            <div id="console-content"></div>
-        </div>
-        <div id="extension">
-            <div class="size-handler"></div>
+        <div id="theme-editor"></div>
+        <div id="mynah-ui-panel">
             <div id="amzn-mynah-website-wrapper"></div>
         </div>
-        <div id="status-bar">
-            <div class="skeleton skeleton-rounded-tiny"></div>
-            <select onchange="(()=>{
-                if(this.value.match('dark')){
-                    document.querySelector('body').classList.add('vscode-dark');
-                } else {
-                    document.querySelector('body').classList.remove('vscode-dark');
-                }
-                document.querySelector('html').setAttribute('theme',this.value)
-                })()">
-                <option selected value="base">Custom Theme</option>
-                <option disabled>---------- VSCODE Light Themes -----------</option>
-                <option value="light+">Light +</option>
-                <option value="light-orange">Light Orange</option>
-                <option value="light-quiet">Light Quiet</option>
-                <option value="light-solarized">Light Solarized</option>
-                <option disabled>---------- VSCODE Dark Themes -----------</option>
-                <option value="dark+">Dark +</option>
-                <option value="dark-abyss">Dark Abyss</option>
-                <option value="dark-ayu-mirage">Dark Ayu Mirage</option>
-                <option value="dark-dracula">Dark Dracula</option>
-                <option value="dark-solarized">Dark Solarized</option>
-            </select>
-            <div class="skeleton skeleton-line alt"></div>
-            <span style="flex:1"></span>
-            <div class="skeleton skeleton-rounded-tiny"></div>
-            <div class="skeleton skeleton-line"></div>
-            <div class="skeleton skeleton-rounded-tiny"></div>
-            <div class="skeleton skeleton-rounded-tiny skeleton-selected"></div>
+        <div id="console">
+            <div id="console-content"></div>
         </div>
     </div>
     </div>
