@@ -44,8 +44,7 @@ export class ThemeBuilder {
         parentWrapper.insertAdjacentElement('beforeend', this.buttonsWrapper);
         parentWrapper.insertAdjacentElement('beforeend', this.mainWrapper);
 
-        this.mainWrapper.insertAdjacentHTML('beforeend', `</br>
-            <h1>Theme Editor</h1>
+        this.mainWrapper.insertAdjacentHTML('beforeend', `
             <p>
                 First, please select the <b>Custom Theme</b> from the themes list on the footer bar.
                 After that you'll see the changes whenever you adjust one of the options below.</br>

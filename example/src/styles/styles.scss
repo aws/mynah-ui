@@ -13,11 +13,19 @@
 @import 'themes/dark-dracula.scss';
 @import 'themes/dark-solarized.scss';
 
-body {
-  background-color: var(--mynah-card-bg);
-}
-
 .mynah-extension-showcase-grid {
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--mynah-color-syntax-bg);
+    z-index: 0;
+    opacity: 0.25;
+  }
+  transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
   display: grid;
   grid-template-rows: auto 1fr;
   grid-template-columns: 2fr 3fr 2fr;
@@ -26,11 +34,24 @@ body {
   max-width: 100vw;
   box-sizing: border-box;
   overflow: hidden;
-  gap: var(--mynah-sizing-3);
-  padding: var(--mynah-sizing-3);
+  gap: var(--mynah-sizing-5);
+  padding: var(--mynah-sizing-5);
+  position: relative;
 
   > * {
     overflow: hidden;
+    padding: var(--mynah-sizing-5);
+    box-shadow: 0 5px 20px -5px rgba(0, 0, 0, 0.15);
+    border-radius: var(--mynah-card-radius);
+    background-color: var(--mynah-card-bg) !important;
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    z-index: 10;
+    &:not(#header-var):before {
+      padding-bottom: var(--mynah-sizing-5);
+      font-size: 130%;
+      font-weight: 800;
+      opacity: 0.75;
+    }
   }
 
   #header-bar {
@@ -45,21 +66,51 @@ body {
     align-items: center;
     justify-content: flex-start;
     gap: var(--mynah-sizing-2);
-    border: none;
+    padding: var(--mynah-sizing-2);
+    
     label {
       cursor: pointer;
       padding: var(--mynah-sizing-3) var(--mynah-sizing-2);
-      background-color: var(--mynah-color-status-success);
-      color: var(--mynah-color-button-reverse);
       border-radius: var(--mynah-input-radius);
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--mynah-sizing-2);
+      &:before {
+        transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
+        color: var(--mynah-color-button-reverse);
+        content: '';
+        display: block;
+        position: absolute;
+        right: var(--mynah-sizing-1);
+        width: var(--mynah-sizing-6);
+        height: var(--mynah-sizing-6);
+        border-radius: var(--mynah-sizing-3);
+        background-color: var(--mynah-color-status-success);
+      }
       &:after {
-        content: ': ENABLED';
+        transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
+        background-color: var(--mynah-color-button-reverse);
+        content: '';
+        display: block;
+        -webkit-mask-image: var(--mynah-ui-icon-ok);
+        mask-image: var(--mynah-ui-icon-ok);
+        -webkit-mask-size: 100%;
+        mask-size: 100%;
+        -webkit-mask-position: center center;
+        mask-position: center center;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        width: var(--mynah-sizing-4);
+        height: var(--mynah-sizing-4);
       }
     }
   }
 
   #theme-editor {
-    background-color: var(--mynah-card-bg);
+    &:before {
+      content: 'Theme Builder';
+    }
     grid-row-start: 2;
     grid-column-start: 1;
 
@@ -69,26 +120,28 @@ body {
 
     display: flex;
     flex-flow: column nowrap;
-
-    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
   }
 
   #mynah-ui-panel {
+    &:before {
+      content: 'Mynah UI (Example)';
+    }
     grid-row-start: 2;
     grid-column-start: 2;
     grid-row-end: 2;
     grid-column-end: 3;
     position: relative;
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
     justify-content: center;
     align-items: stretch;
 
     > #amzn-mynah-website-wrapper {
+      max-width: 1280px;
+      box-shadow: 0 5px 20px -15px rgba(0, 0, 0, 0.5);
+      border-radius: var(--mynah-input-radius);
       background-color: var(--mynah-color-bg);
-      max-width: var(--mynah-max-width);
       border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-      border-top-width: 0;
       position: relative;
       display: flex;
       flex-flow: row nowrap;
@@ -97,10 +150,22 @@ body {
       height: 100%;
       box-sizing: border-box;
       overflow: hidden;
+      margin: 0 auto;
+      width: 100%;
+
+      .mynah-nav-tabs-wrapper {
+        border-top: 0;
+        > .mynah-toggle-container > span:first-child > label {
+          border-top-left-radius: var(--mynah-input-radius);
+        }
+      }
     }
   }
 
   #console {
+    &:before {
+      content: 'Console';
+    }
     border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     display: flex;
     flex-flow: column nowrap;
@@ -160,8 +225,6 @@ body {
   flex-flow: column nowrap;
   gap: var(--mynah-sizing-5);
   overflow: hidden;
-  padding: var(--mynah-sizing-6);
-  padding-top: 0;
   flex: 1;
   overflow-x: hidden;
   overflow-y: auto;
@@ -184,13 +247,14 @@ body {
 
 .mynah-ui-example-input-buttons-wrapper {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   gap: var(--mynah-sizing-2);
   overflow: hidden;
-  padding: var(--mynah-sizing-4);
-  background-color: var(--mynah-card-bg);
-  border-bottom: var(--mynah-border-width) solid var(--mynah-color-border-default);
+  padding-bottom: var(--mynah-sizing-5);
   flex-shrink: 0;
+  > button > span {
+    white-space: nowrap;
+  }
   > .config-operation {
     &.hidden {
       opacity: 0;
@@ -265,14 +329,40 @@ body {
     display: flex;
     flex-flow: row nowrap;
     gap: var(--mynah-sizing-2);
+    position: relative;
+    &:has(select) {
+      > select {
+        padding-right: var(--mynah-sizing-5);
+      }
+      &:after {
+        content: '';
+        -webkit-mask-image: var(--mynah-ui-icon-down-open);
+        mask-image: var(--mynah-ui-icon-down-open);
+        background-color: currentColor;
+        opacity: 0.5;
+        -webkit-mask-size: 100%;
+        mask-size: 100%;
+        -webkit-mask-position: center center;
+        mask-position: center center;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        position: absolute;
+        right: var(--mynah-sizing-3);
+        top: 50%;
+        margin-top: calc(-1 * var(--mynah-sizing-2));
+        width: var(--mynah-sizing-4);
+        height: var(--mynah-sizing-4);
+      }
+    }
     > input[type='text'],
     > input[type='number'] {
       flex: 1;
     }
     > select {
       appearance: none;
+      cursor: pointer;
       &.theme-selector {
-        max-width: 120px;
+        max-width: 140px;
       }
     }
 
@@ -370,17 +460,17 @@ input.hidden {
 @media only screen and (max-width: 860px) {
   #console-enabled,
   label[for='console-enabled'] {
-    display: none;
+    display: none !important;
   }
   .mynah-extension-showcase-grid {
     grid-template-columns: 100% !important;
-    padding-left: 0;
-    padding-right: 0;
-    padding-bottom: 0;
+    padding: 0;
+    gap: var(--mynah-sizing-2);
 
     #header-bar {
-      padding-left: var(--mynah-sizing-3);
-      padding-right: var(--mynah-sizing-3);
+      padding: var(--mynah-sizing-2);
+      box-shadow: none;
+      border-radius: 0;
     }
 
     #theme-editor {
@@ -388,13 +478,24 @@ input.hidden {
     }
 
     #mynah-ui-panel {
-      border-radius: 0;
       #amzn-mynah-website-wrapper {
-        border: none;
         border-radius: 0;
+        .mynah-nav-tabs-wrapper {
+          > .mynah-toggle-container > span:first-child > label {
+            border-top-left-radius: initial;
+          }
+        }
       }
       grid-column-start: 1;
       grid-column-end: 1;
+      border-radius: 0;
+      padding: 0;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      &:before {
+        display: none;
+      }
     }
 
     #console {
@@ -405,7 +506,7 @@ input.hidden {
 
 html:not([theme='base']) {
   label[for='theme-editor-enabled'] {
-    display: none;
+    display: none !important;
   }
 }
 html:not([theme='base']) .mynah-extension-showcase-grid,
@@ -422,10 +523,12 @@ html:not([theme='base']) .mynah-extension-showcase-grid,
 
   #header-bar {
     label[for='theme-editor-enabled'] {
-      background-color: var(--mynah-color-status-warning);
-      border-color: var(--mynah-color-status-warning);
+      &:before {
+        background-color: var(--mynah-color-text-weak);
+      }
       &:after {
-        content: ': DISABLED';
+        -webkit-mask-image: var(--mynah-ui-icon-minus);
+        mask-image: var(--mynah-ui-icon-minus);
       }
     }
   }
@@ -444,10 +547,12 @@ html:not([theme='base']) .mynah-extension-showcase-grid,
 
     #header-bar {
       label[for='console-enabled'] {
-        background-color: var(--mynah-color-status-warning);
-        border-color: var(--mynah-color-status-warning);
+        &:before {
+          background-color: var(--mynah-color-text-weak);
+        }
         &:after {
-          content: ': DISABLED';
+          -webkit-mask-image: var(--mynah-ui-icon-minus);
+          mask-image: var(--mynah-ui-icon-minus);
         }
       }
     }
@@ -463,8 +568,5 @@ html:not([theme='base']) #console-enabled:not(:checked) ~ .mynah-extension-showc
 
   #mynah-ui-panel {
     grid-column-end: -1;
-    > #amzn-mynah-website-wrapper {
-      max-width: 1080px;
-    }
   }
 }
