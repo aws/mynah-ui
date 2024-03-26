@@ -112,8 +112,10 @@ export class MynahUIIconImporter {
       ${Object.keys(MynahIcons).map(iconKey => {
         const iconName = MynahIcons[iconKey as keyof typeof MynahIcons];
         return `
-        .mynah-ui-icon-${iconName} {
+        :root{
           --mynah-ui-icon-${iconName}: url(${mynahIconMappings[iconKey as keyof typeof mynahIconMappings]});
+        }
+        .mynah-ui-icon-${iconName} {
           -webkit-mask-image: var(--mynah-ui-icon-${iconName});
           mask-image: var(--mynah-ui-icon-${iconName});
         }`;
