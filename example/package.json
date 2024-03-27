@@ -20,7 +20,6 @@
         "@typescript-eslint/eslint-plugin": "5.34.0",
         "@typescript-eslint/parser": "^5.38.0",
         "archiver": "^6.0.1",
-        "copy-webpack-plugin": "^12.0.2",
         "css-loader": "^6.6.0",
         "eslint": "^8.26.0",
         "eslint-config-prettier": "^8.5.0",

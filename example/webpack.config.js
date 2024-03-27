@@ -2,7 +2,6 @@
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
 
 
 /**@type {import('webpack').Configuration}*/
@@ -19,12 +18,6 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/index.html'
-        }),
-        new CopyPlugin({
-            patterns: [
-                { from: "src/LIGHT.mynahuitc", to: "themes/LIGHT.mynahuitc" },
-                { from: "src/DARK.mynahuitc", to: "themes/DARK.mynahuitc" },
-            ],
         })
     ],
     devtool: 'source-map',
