@@ -16,6 +16,7 @@ export class PromptTextInput {
   private readonly props: PromptTextInputProps;
   private readonly promptTextInputSizer: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
+  private keydownSupport: boolean = true;
   constructor (props: PromptTextInputProps) {
     this.props = props;
     this.promptTextInputMaxLength = props.initMaxLength;
@@ -40,7 +41,19 @@ export class PromptTextInput {
         value: '',
       },
       events: {
-        keydown: this.props.onKeydown,
+        keypress: (e: KeyboardEvent) => {
+          if (!this.keydownSupport) {
+            this.props.onKeydown(e);
+          }
+        },
+        keydown: (e: KeyboardEvent) => {
+          if (e.key !== '') {
+            this.keydownSupport = true;
+            this.props.onKeydown(e);
+          } else {
+            this.keydownSupport = false;
+          }
+        },
         input: (e: KeyboardEvent) => {
           // Set the appropriate prompt input height
           this.updatePromptTextInputSizer();

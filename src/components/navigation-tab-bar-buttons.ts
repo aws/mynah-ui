@@ -100,6 +100,7 @@ class TabBarButtonWithMultipleOptions {
             icon: item.icon != null ? new Icon({ icon: item.icon }).render : undefined,
             primary: false,
             onClick: () => {
+              this.hideButtonOptionsOverlay();
               this.props.onButtonClick(item.id);
             }
           }).render)

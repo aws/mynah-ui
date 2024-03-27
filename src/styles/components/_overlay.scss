@@ -31,6 +31,7 @@
         overflow: visible;
         border-radius: var(--mynah-card-radius);
         max-width: calc(100vw - var(--mynah-sizing-8))!important;
+        width: max-content;
 
         .mynah-card,
         .mynah-card * {
