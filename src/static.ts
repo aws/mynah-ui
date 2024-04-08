@@ -368,6 +368,8 @@ export interface ConfigTexts {
   tabCloseConfirmationMessage: string;
   tabCloseConfirmationKeepButton: string;
   tabCloseConfirmationCloseButton: string;
+  noTabsOpen: string;
+  openNewTab: string;
 };
 
 export interface ConfigOptions {

@@ -33,6 +33,7 @@ import { Config } from './helper/config';
 import { marked } from 'marked';
 import './styles/styles.scss';
 import { generateUID } from './helper/guid';
+import { NoTabs } from './components/no-tabs';
 
 export {
   ChatItemBodyRenderer,
@@ -252,7 +253,8 @@ export class MynahUI {
         },
         children: [
           this.tabsWrapper ?? '',
-          this.tabContentsWrapper,
+          new NoTabs().render,
+          this.tabContentsWrapper
         ]
       },
       'afterbegin'

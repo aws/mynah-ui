@@ -33,6 +33,8 @@ interface ConfigModel {
         tabCloseConfirmationMessage?: string;
         tabCloseConfirmationKeepButton?: string;
         tabCloseConfirmationCloseButton?: string;
+        noTabsOpen: string; // Supports markdown
+        openNewTab: string;
     };
     // Options to show up on the overlay feedback form
     // after user clicks to downvote on a chat item
@@ -186,6 +188,13 @@ Default tab title text if it is not set through store data for that tab.
 ## noMoreTabsTooltip
 <p align="center">
   <img src="./img/texts/noMoreTabs.png" alt="noMoreTabsTooltip" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## noTabsOpen, openNewTab
+<p align="center">
+  <img src="./img/texts/noTabsOpen.png" alt="noTabsOpen" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

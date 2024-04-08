@@ -70,7 +70,9 @@ const configDefaults: ConfigFullModel = {
     spinnerText: 'Amazon Q is generating your answer...',
     tabCloseConfirmationMessage: 'Are you sure want to close the tab? Closing the tab would mean that your running job will stop.',
     tabCloseConfirmationCloseButton: 'Close tab',
-    tabCloseConfirmationKeepButton: 'Keep tab'
+    tabCloseConfirmationKeepButton: 'Keep tab',
+    noTabsOpen: '### Open a tab to chat with Q',
+    openNewTab: 'New tab'
   }
 };
 export class Config {

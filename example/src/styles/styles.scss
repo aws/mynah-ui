@@ -145,7 +145,7 @@ body {
     align-items: stretch;
 
     > #amzn-mynah-website-wrapper {
-      max-width: 1280px;
+      max-width: var(--mynah-max-width);
       box-shadow: 0 5px 20px -15px rgba(0, 0, 0, 0.5);
       border-radius: var(--mynah-input-radius);
       background-color: var(--mynah-color-bg);
