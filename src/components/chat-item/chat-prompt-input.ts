@@ -114,6 +114,12 @@ export class ChatPromptInput {
         // Also update the limit on prompt text given the selected code
         this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT(), Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length)));
         this.updateAvailableCharactersIndicator();
+
+        // When code is attached, focus to the input with a delay
+        // Delay is necessary for the render updates
+        setTimeout(() => {
+          this.promptTextInput.focus();
+        }, 100);
       }
     });
 
@@ -124,11 +130,7 @@ export class ChatPromptInput {
       this.updateAvailableCharactersIndicator();
     });
 
-    if (Config.getInstance().config.autoFocus) {
-      setTimeout(() => {
-        this.promptTextInput.focus();
-      }, 500);
-    }
+    this.promptTextInput.focus();
   }
 
   private readonly updateAvailableCharactersIndicator = (): void => {
@@ -182,7 +184,11 @@ export class ChatPromptInput {
           let targetElement;
           if (this.filteredCommandsList.length > 0) {
             // If list is empty, it means there's no match, so we need to clear the selection
-            targetElement = this.commandSelector.render.querySelector('.target-command') ?? this.commandSelector.render.querySelector('.mynah-chat-command-selector-command');
+            if (this.commandSelector.render.querySelector('.target-command') != null) {
+              targetElement = this.commandSelector.render.querySelector('.target-command');
+            } else if (this.commandSelector.render.querySelector('.mynah-chat-command-selector-command')?.getAttribute('disabled') !== 'true') {
+              targetElement = this.commandSelector.render.querySelector('.mynah-chat-command-selector-command');
+            }
           }
           this.handleCommandSelection({
             command: targetElement?.getAttribute('command') ?? '',
@@ -202,25 +208,38 @@ export class ChatPromptInput {
         const commandElements = Array.from(this.commandSelector.render.querySelectorAll('.mynah-chat-command-selector-command'));
         let lastActiveElement = commandElements.findIndex(commandElement => commandElement.classList.contains('target-command'));
         lastActiveElement = lastActiveElement === -1 ? commandElements.length : lastActiveElement;
-        let nextElement: number;
-        if (e.key === KeyMap.ARROW_UP) {
-          if (lastActiveElement > 0) {
-            nextElement = lastActiveElement - 1;
-          } else {
-            nextElement = commandElements.length - 1;
-          }
+        let nextElementIndex: number = lastActiveElement;
+
+        if (commandElements.length === commandElements.filter(commandElement => commandElement.getAttribute('disabled') === 'true')?.length) {
+          nextElementIndex = -1;
         } else {
-          if (lastActiveElement < commandElements.length - 1) {
-            nextElement = lastActiveElement + 1;
-          } else {
-            nextElement = 0;
+          let nextElementFound = false;
+          while (!nextElementFound) {
+            if (e.key === KeyMap.ARROW_UP) {
+              if (nextElementIndex > 0) {
+                nextElementIndex = nextElementIndex - 1;
+              } else {
+                nextElementIndex = commandElements.length - 1;
+              }
+            } else {
+              if (nextElementIndex < commandElements.length - 1) {
+                nextElementIndex = nextElementIndex + 1;
+              } else {
+                nextElementIndex = 0;
+              }
+            }
+            if (commandElements[nextElementIndex].getAttribute('disabled') !== 'true') {
+              nextElementFound = true;
+            }
           }
         }
 
-        commandElements[lastActiveElement]?.classList.remove('target-command');
-        commandElements[nextElement].classList.add('target-command');
-        if (commandElements[nextElement].getAttribute('prompt') !== null) {
-          this.promptTextInput.updateTextInputValue(commandElements[nextElement].getAttribute('prompt') as string);
+        if (nextElementIndex !== -1) {
+          commandElements[lastActiveElement]?.classList.remove('target-command');
+          commandElements[nextElementIndex].classList.add('target-command');
+          if (commandElements[nextElementIndex].getAttribute('prompt') !== null) {
+            this.promptTextInput.updateTextInputValue(commandElements[nextElementIndex].getAttribute('prompt') as string);
+          }
         }
       } else {
         if (this.commandSelector !== undefined) {
@@ -282,7 +301,9 @@ export class ChatPromptInput {
                 },
                 events: {
                   click: () => {
-                    this.handleCommandSelection(quickActionCommand);
+                    if (quickActionCommand.disabled !== true) {
+                      this.handleCommandSelection(quickActionCommand);
+                    }
                   }
                 },
                 children: [

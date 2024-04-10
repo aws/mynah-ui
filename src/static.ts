@@ -8,6 +8,7 @@ import { ChatItemBodyRenderer } from './helper/dom';
 
 export interface QuickActionCommand {
   command: string;
+  disabled?: boolean;
   description?: string;
   placeholder?: string;
 }

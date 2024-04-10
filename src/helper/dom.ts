@@ -19,7 +19,7 @@ export interface DomBuilderEventHandlerWithOptions {
   options?: AddEventListenerOptions;
 }
 interface GenericDomBuilderAttributes {
-  attributes?: Record<string, string> | undefined;
+  attributes?: Record<string, string | boolean> | undefined;
   classNames?: string[] | undefined;
   events?: Partial<Record<GenericEvents, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions>> | undefined;
 }
@@ -194,7 +194,7 @@ export class DomBuilder {
     });
 
     Object.keys(readyToBuildObject.attributes ?? {}).forEach(attributeName =>
-      buildedDom.setAttribute(attributeName, readyToBuildObject.attributes !== undefined ? readyToBuildObject.attributes[attributeName] : '')
+      buildedDom.setAttribute(attributeName, readyToBuildObject.attributes !== undefined ? readyToBuildObject.attributes[attributeName].toString() : '')
     );
 
     if (typeof readyToBuildObject.innerHTML === 'string') {

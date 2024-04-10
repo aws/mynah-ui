@@ -58,8 +58,18 @@
       border-radius: var(--mynah-input-radius);
       transition: var(--mynah-short-transition-rev);
       gap: var(--mynah-sizing-1);
-      &:hover,
-      &.target-command {
+      &[disabled='true'] {
+        &::before {
+          border-color: transparent !important;
+        }
+        opacity: 0.5;
+        &,
+        & * {
+          pointer-events: none;
+        }
+      }
+      &:hover:not([disabled="true"]),
+      &.target-command:not([disabled="true"]) {
         background-color: var(--mynah-color-button);
         &,
         & * {
