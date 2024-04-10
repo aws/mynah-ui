@@ -3,12 +3,13 @@ import {
 } from '@aws/mynah-ui';
 import { defaultFollowUps } from './samples/sample-data';
 import { Commands } from './commands';
+import { QuickActionCommandGroup } from '../../dist/static';
 export const WelcomeMessage = `Hi, this is \`MynahUI\` and it is a **data and event driven** web based chat interface library and it is independent from any framework like react or vue etc. 
 In this example web app which uses mynah-ui as its renderer, we're simulating its capabilities with some static content with an IDE look&feel. 
 
 *To see more examples about the possible content types, interactions or various component types, you can type \`/\` to open the quick actions list panel.*`;
 
-export const QuickActionCommands = [
+export const QuickActionCommands:QuickActionCommandGroup[] = [
   {
     groupName: 'Prompt field examples',
     commands: [
@@ -20,6 +21,11 @@ export const QuickActionCommands = [
         command: Commands.COMMAND_WITH_PROMPT,
         placeholder: 'Enter your prompt',
         description: 'A quick action command which is not running immediately after it is selected which allows you to write an additional prompt text if you want.',
+      },
+      {
+        command: '/disabled',
+        disabled: true,
+        description: 'This item is disabled for some reason',
       },
       {
         command: Commands.SHOW_STICKY_CARD,
