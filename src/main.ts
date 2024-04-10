@@ -469,9 +469,9 @@ export class MynahUI {
     });
   };
 
-  public addToUserPrompt = (tabId: string, prompt: string): void => {
+  public addToUserPrompt = (tabId: string, codeStringToAdd: string): void => {
     if (Config.getInstance().config.showPromptField && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      this.chatWrappers[tabId].addToPrompt(prompt);
+      this.chatWrappers[tabId].addToPrompt(codeStringToAdd);
     }
   };
 
