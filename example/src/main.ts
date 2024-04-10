@@ -56,11 +56,12 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             {
               id: 'menu-action-2',
               text: 'Menu action 2!',
-              icon: MynahIcons.CODE_BLOCK,
+              icon: MynahIcons.COMMENT,
             },
             {
-              id: 'menu-action-3',
-              text: 'Menu action 3!'
+              id: 'insert-code',
+              icon: MynahIcons.CODE_BLOCK,
+              text: 'Insert code!'
             }
           ]
         }
@@ -81,6 +82,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         mynahUI.updateStore(tabId, {
           chatItems: []
         });
+      } else if(buttonId === 'insert-code') {
+        mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert);
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
