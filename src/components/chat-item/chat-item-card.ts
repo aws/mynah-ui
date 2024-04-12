@@ -96,7 +96,7 @@ export class ChatItemCard {
     return generatedCard;
   };
 
-  private readonly cardHasContent = (): boolean => (this.props.chatItem.body != null ||
+  private readonly cardHasContent = (): boolean => ((this.props.chatItem.body != null && this.props.chatItem.body !== '') ||
     this.props.chatItem.fileList != null ||
     this.props.chatItem.formItems != null ||
     this.props.chatItem.customRenderer != null ||
