@@ -46,7 +46,9 @@ export class CardBody {
   props: CardBodyProps;
   private highlightRangeTooltip: Overlay | null;
   private highlightRangeTooltipTimeout: ReturnType<typeof setTimeout>;
+  private nextCodeBlockIndex: number = 0;
   constructor (props: CardBodyProps) {
+    this.nextCodeBlockIndex = 0;
     this.props = props;
     const childList = [
       ...this.getContentBodyChildren(this.props),
@@ -111,23 +113,27 @@ export class CardBody {
         keepHighlights: true,
         showCopyOptions: isBlockCode,
         block: isBlockCode,
+        index: isBlockCode ? this.nextCodeBlockIndex : undefined,
         onCopiedToClipboard: this.props.onCopiedToClipboard != null
-          ? (type, text) => {
+          ? (type, text, codeBlockIndex) => {
               if (this.props.onCopiedToClipboard != null) {
-                this.props.onCopiedToClipboard(type, text, this.getReferenceTrackerInformationFromElement(highlighter));
+                this.props.onCopiedToClipboard(type, text, this.getReferenceTrackerInformationFromElement(highlighter), codeBlockIndex, this.nextCodeBlockIndex);
               }
             }
           : undefined,
         onInsertToCursorPosition: this.props.onInsertToCursorPosition != null
-          ? (type, text) => {
+          ? (type, text, codeBlockIndex) => {
               if (this.props.onInsertToCursorPosition != null) {
-                this.props.onInsertToCursorPosition(type, text, this.getReferenceTrackerInformationFromElement(highlighter));
+                this.props.onInsertToCursorPosition(type, text, this.getReferenceTrackerInformationFromElement(highlighter), codeBlockIndex, this.nextCodeBlockIndex);
               }
             }
           : undefined
       }).render;
       if (this.props.useParts === true) {
         highlighter.classList.add(PARTS_CLASS_NAME);
+      }
+      if (elementFromNode.tagName?.toLowerCase() === 'pre' && (elementFromNode.querySelector('code') != null)) {
+        this.nextCodeBlockIndex++;
       }
       return highlighter;
     }

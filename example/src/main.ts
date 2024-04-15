@@ -118,18 +118,20 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onShowMoreWebResultsClick: (tabId, messageId) => {
       Log(`Show more sources clicked for tab <b>${tabId}/${messageId}</b> in message <b>${messageId}</b>`);
     },
-    onCopyCodeToClipboard: (tabId, messageId, code, type, referenceTrackerInformation) => {
+    onCopyCodeToClipboard: (tabId, messageId, code, type, referenceTrackerInformation, eventId, codeBlockIndex, totalCodeBlocks) => {
       Log(`Code copied to clipboard from tab <b>${tabId}</b> inside message <b>${messageId}</b><br/>
         type: <b>${type ?? 'unknown'}</b><br/>
         code: <b>${escapeHTML(code ?? '')}</b><br/>
-        referenceTracker: <b>${referenceTrackerInformation?.map(rt => rt.information).join('<br/>') ?? ''}</b>
+        referenceTracker: <b>${referenceTrackerInformation?.map(rt => rt.information).join('<br/>') ?? ''}</b><br/>
+        codeBlockIndex: <b>${(codeBlockIndex ?? 0) + 1}</b> of ${totalCodeBlocks}
       `);
     },
-    onCodeInsertToCursorPosition: (tabId, messageId, code, type, referenceTrackerInformation) => {
+    onCodeInsertToCursorPosition: (tabId, messageId, code, type, referenceTrackerInformation, eventId, codeBlockIndex, totalCodeBlocks) => {
       Log(`Code insert to position clicked on tab <b>${tabId}</b> inside message <b>${messageId}</b><br/>
         type: <b>${type ?? 'unknown'}</b><br/>
         code: <b>${escapeHTML(code ?? '')}</b><br/>
-        referenceTracker: <b>${referenceTrackerInformation?.map(rt => rt.information).join('<br/>') ?? ''}</b>
+        referenceTracker: <b>${referenceTrackerInformation?.map(rt => rt.information).join('<br/>') ?? ''}</b><br/>
+        codeBlockIndex: <b>${(codeBlockIndex ?? 0) + 1}</b> of ${totalCodeBlocks}
       `);
     },
     onChatPrompt: (tabId: string, prompt: ChatPrompt) => {

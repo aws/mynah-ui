@@ -125,14 +125,18 @@ export interface MynahUIProps {
     code?: string,
     type?: CodeSelectionType,
     referenceTrackerInformation?: ReferenceTrackerInformation[],
-    eventId?: string) => void;
+    eventId?: string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number) => void;
   onCodeInsertToCursorPosition?: (
     tabId: string,
     messageId: string,
     code?: string,
     type?: CodeSelectionType,
     referenceTrackerInformation?: ReferenceTrackerInformation[],
-    eventId?: string) => void;
+    eventId?: string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number) => void;
   onSourceLinkClick?: (
     tabId: string,
     messageId: string,
@@ -365,7 +369,9 @@ export class MynahUI {
           data.text,
           data.type,
           data.referenceTrackerInformation,
-          this.getUserEventId()
+          this.getUserEventId(),
+          data.codeBlockIndex,
+          data.totalCodeBlocks,
         );
       }
     });
@@ -378,7 +384,9 @@ export class MynahUI {
           data.text,
           data.type,
           data.referenceTrackerInformation,
-          this.getUserEventId()
+          this.getUserEventId(),
+          data.codeBlockIndex,
+          data.totalCodeBlocks,
         );
       }
     });

@@ -131,20 +131,24 @@ export class ChatItemCard {
           event: e,
         });
       },
-      onCopiedToClipboard: (type, text, referenceTrackerInformation) => {
+      onCopiedToClipboard: (type, text, referenceTrackerInformation, codeBlockIndex, totalCodeBlocks) => {
         MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
           messageId: this.props.chatItem.messageId,
           type,
           text,
           referenceTrackerInformation,
+          codeBlockIndex,
+          totalCodeBlocks,
         });
       },
-      onInsertToCursorPosition: (type, text, referenceTrackerInformation) => {
+      onInsertToCursorPosition: (type, text, referenceTrackerInformation, codeBlockIndex, totalCodeBlocks) => {
         MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
           messageId: this.props.chatItem.messageId,
           type,
           text,
           referenceTrackerInformation,
+          codeBlockIndex,
+          totalCodeBlocks,
         });
       }
     };

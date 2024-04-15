@@ -64,14 +64,18 @@ export interface MynahUIProps {
     code?: string,
     type?: CodeSelectionType,
     referenceTrackerInformation?: ReferenceTrackerInformation[],
-    eventId?: string) => void;
+    eventId?: string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number) => void;
   onCodeInsertToCursorPosition?: (
     tabId: string,
     messageId: string,
     code?: string,
     type?: CodeSelectionType,
     referenceTrackerInformation?: ReferenceTrackerInformation[],
-    eventId?: string) => void;
+    eventId?: string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number) => void;
   onSourceLinkClick?: (
     tabId: string,
     messageId: string,
@@ -542,7 +546,7 @@ onChatItemEngagement?: (
 
 ### `onCopyCodeToClipboard`
 
-This event will be fired when user clicks the copy button on the footer of a code block or selects some text inside a code block and triggers keyboard shortcuts for copying. It will pass `tabId`, `messageId`, `code` for the copied code to theclipboard as a text, `type` for the type of the code copied (block or selection) and the `referenceTrackerInformation` if the copied code block contains some code reference as the arguments.
+This event will be fired when user clicks the copy button on the footer of a code block or selects some text inside a code block and triggers keyboard shortcuts for copying. It will pass `tabId`, `messageId`, `code` for the copied code to theclipboard as a text, `type` for the type of the code copied (block or selection) and the `referenceTrackerInformation` if the copied code block contains some code reference as the arguments. Finally after the `eventId` attribute, you can get the index of the code block inside that message with `codeBlockIndex` together with total number of code blocks again inside that message with `totalCodeBlocks`.
 
 **Note:** even though the `referenceTrackerInformation` comes to the message with `codeReference` attribute with the index position depending on the whole content of the body of the message, the return of it as an attribute from this event gives the indexes according to position inside that code block.
 
@@ -560,12 +564,16 @@ onCopyCodeToClipboard?: (
     messageId: string,
     code?: string,
     type?: CodeSelectionType,
-    referenceTrackerInformation?: ReferenceTrackerInformation[]):void => {
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId:string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number):void => {
       console.log(`Sent from tab: ${tabId}`);
       console.log(`Code inside message: ${messageId}`);
       console.log(`Copied code: ${code}`);
       console.log(`Copy type: ${type}`); // selection | block
       console.log(`Reference tracker info: ${referenceTrackerInformation?.map(rti=>`${rti.licenseName} ${rti.repository}`).join(', ')}`);
+      console.log(`Code block index: ${codeBlockIndex + 1} of ${totalCodeBlocks}`);
     };
 ...
 ```
@@ -573,7 +581,7 @@ onCopyCodeToClipboard?: (
 
 ### `onCodeInsertToCursorPosition`
 
-This event will be fired when user clicks the copy button on the footer of a code block or selects some text inside a code block and triggers keyboard shortcuts for copying. It will pass `tabId`, `messageId`, `code` for the copied code to theclipboard as a text, `type` for the type of the code copied (block or selection) and the `referenceTrackerInformation` if the copied code block contains some code reference as the arguments.
+This event will be fired when user clicks the copy button on the footer of a code block or selects some text inside a code block and triggers keyboard shortcuts for copying. It will pass `tabId`, `messageId`, `code` for the copied code to theclipboard as a text, `type` for the type of the code copied (block or selection) and the `referenceTrackerInformation` if the copied code block contains some code reference as the arguments. Finally after the `eventId` attribute, you can get the index of the code block inside that message with `codeBlockIndex` together with total number of code blocks again inside that message with `totalCodeBlocks`
 
 **Note:** even though the `referenceTrackerInformation` comes to the message with `codeReference` attribute with the index position depending on the whole content of the body of the message, the return of it as an attribute from this event gives the indexes according to position inside that code block.
 
@@ -591,12 +599,16 @@ onCodeInsertToCursorPosition?: (
     messageId: string,
     code?: string,
     type?: CodeSelectionType,
-    referenceTrackerInformation?: ReferenceTrackerInformation[]):void => {
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId:string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number):void => {
       console.log(`Sent from tab: ${tabId}`);
       console.log(`Code inside message: ${messageId}`);
-      console.log(`Copied code: ${code}`);
+      console.log(`Code to insert: ${code}`);
       console.log(`Copy type: ${type}`); // selection | block
       console.log(`Reference tracker info: ${referenceTrackerInformation?.map(rti=>`${rti.licenseName} ${rti.repository}`).join(', ')}`);
+      console.log(`Code block index: ${codeBlockIndex + 1} of ${totalCodeBlocks}`);
     };
 ...
 ```

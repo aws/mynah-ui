@@ -33,8 +33,6 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
 import {
   CodeSelectionType,
-  OnCopiedToClipboardFunction,
-  OnInsertToCursorPositionFunction,
 } from '../static';
 import { Button } from './button';
 import { Notification } from './notification';
@@ -101,18 +99,17 @@ export interface SyntaxHighlighterProps {
   block?: boolean;
   startingLineNumber?: number;
   showCopyOptions?: boolean;
-  onCopiedToClipboard?: OnCopiedToClipboardFunction;
-  onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
+  index?: number;
+  onCopiedToClipboard?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
+  onInsertToCursorPosition?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
 }
 
 export class SyntaxHighlighter {
-  private readonly onCopiedToClipboard?: OnCopiedToClipboardFunction;
-  private readonly onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
+  private readonly props?: SyntaxHighlighterProps;
   render: ExtendedHTMLElement;
 
   constructor (props: SyntaxHighlighterProps) {
-    this.onCopiedToClipboard = props.onCopiedToClipboard;
-    this.onInsertToCursorPosition = props.onInsertToCursorPosition;
+    this.props = props;
 
     let codeMarkup = unescapeHTML(props.codeStringWithMarkup);
     // Replacing the incoming markups with keyword matching static texts
@@ -182,7 +179,7 @@ export class SyntaxHighlighter {
                         children: [ props.language ]
                       } ]
                     : []),
-                  ...(this.onInsertToCursorPosition != null
+                  ...(this.props?.onInsertToCursorPosition != null
                     ? [
                         new Button({
                           icon: new Icon({ icon: MynahIcons.CURSOR_INSERT }).render,
@@ -192,10 +189,11 @@ export class SyntaxHighlighter {
                           onClick: e => {
                             cancelEvent(e);
                             const selectedCode = this.getSelectedCode();
-                            if (this.onInsertToCursorPosition !== undefined) {
-                              this.onInsertToCursorPosition(
+                            if (this.props?.onInsertToCursorPosition !== undefined) {
+                              this.props.onInsertToCursorPosition(
                                 selectedCode.type,
                                 selectedCode.code,
+                                this.props?.index
                               );
                             }
                           },
@@ -203,7 +201,7 @@ export class SyntaxHighlighter {
                         }).render
                       ]
                     : []),
-                  ...(this.onCopiedToClipboard != null
+                  ...(this.props?.onCopiedToClipboard != null
                     ? [ new Button({
                         icon: new Icon({ icon: MynahIcons.COPY }).render,
                         label: Config.getInstance().config.texts.copy,
@@ -212,7 +210,9 @@ export class SyntaxHighlighter {
                         onClick: e => {
                           cancelEvent(e);
                           const selectedCode = this.getSelectedCode();
-                          this.copyToClipboard(selectedCode.code, selectedCode.type);
+                          if (this.props?.onCopiedToClipboard !== undefined) {
+                            this.props?.onCopiedToClipboard(selectedCode.type, selectedCode.code, this.props.index);
+                          }
                         },
                         additionalEvents: { mousedown: cancelEvent },
                       }).render ]
@@ -265,11 +265,11 @@ export class SyntaxHighlighter {
     navigator.clipboard
       .writeText(textToSendClipboard)
       .then(() => {
-        if (this.onCopiedToClipboard !== undefined) {
-          this.onCopiedToClipboard(
+        if (this.props?.onCopiedToClipboard !== undefined) {
+          this.props?.onCopiedToClipboard(
             type,
             textToSendClipboard,
-            // this.highlightRangeWithTooltip
+            this.props.index
           );
         }
         if (notificationText !== undefined) {
