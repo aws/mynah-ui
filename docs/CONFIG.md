@@ -45,6 +45,8 @@ interface ConfigModel {
     }>;
     tabBarButtons?: TabBarMainAction[]; // Tab bar buttons will be shown on the right of the tab
     maxUserInput: number; // max number of chars for the input field
+    codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on code blocks system wide
+    codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on code blocks system wide
     autoFocus: boolean; // auto focuses to input panel after every action
     maxTabs: number; // set 1 to hide tabs panel
     showPromptField: boolean; // shows prompt field (default: true)
@@ -283,6 +285,15 @@ Max number of chars user can insert into the prompt field. But, as might know yo
 **So beware that if you want 4000 chars exact, you need to give 4096 to the config.**
 
 default: `4096`
+
+---
+
+## `codeInsertToCursorEnabled` and `codeCopyToClipboardEnabled` (default: true)
+These two parameters allow you to make copy and insert buttons disabled system wide. If you want to disable it specifically for a message you can do it through `ChatItem` object. Please see [DATAMODEL Documentation](./DATAMODEL.md#codeInsertToCursorEnabled).
+
+<p align="center">
+  <img src="./img/data-model/chatItems/codeInsertAndCopyButtons.png" alt="codeInsertAndCopy" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ---
 

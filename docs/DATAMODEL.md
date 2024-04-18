@@ -577,6 +577,8 @@ interface ChatItem {
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
   messageId?: string;
   canBeVoted?: boolean; // requires messageId to be filled to show vote thumbs
+  codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on all code blocks for this message
+  codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on all code blocks for this message
   relatedContent?: {
     title?: string;
     content: SourceLink[];
@@ -1192,6 +1194,32 @@ mynahUI.addChatItem('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/chatItems/canBeVoted.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `codeInsertToCursorEnabled` and `codeCopyToClipboardEnabled` (default: true)
+These two parameters allow you to make copy and insert buttons disabled for that specific ChatItem. If you want to disable it system wide you can do it through [CONFIG](./CONFIG.md#codeInsertToCursorEnabled).
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    ...
+    codeInsertToCursorEnabled?: boolean;
+    codeCopyToClipboardEnabled?: boolean;
+    body: "Here's a message which doesn't show buttons for code blocks inside."
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/codeInsertAndCopyButtons.png" alt="codeInsertAndCopy" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

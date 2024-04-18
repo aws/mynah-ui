@@ -17,6 +17,7 @@ mynahUI.addChatItem(...);
 mynahUI.addToUserPrompt(...);
 mynahUI.updateLastChatAnswer(...);
 mynahUI.updateChatAnswerWithMessageId(...);
+mynahUI.endMessageStream(...);
 mynahUI.updateStore(...);
 mynahUI.selectTab(...);
 mynahUI.removeTab(...);
@@ -353,6 +354,36 @@ After the `updateChatAnswerWithMessageId` call, you'll see that the body of the 
 
 As you can update the body of a card, you can also update the other information related with the card. Like adding the related sources etc. 
 **Please refer to the [Data Model](./DATAMODEL.md) documentation for types of chat items and how they appear differently on screen.**
+
+---
+
+## Ending a chat stream (`endMessageStream`)
+
+You can stop a streaming message. But basically it will not make any change other than the type of the card to `ChatItemType.ANSWER`. And while ending the stream, you can also update the card with a partial ChatItem.
+
+**BUT** this function also returns you some details related with the rendered card. Currently only the `totalNumberOfCodeBlocks` inside that card which gives the number of code blocks with copy and insert buttons.
+
+```typescript
+const mynahUI = new MynahUI({
+  tabs: {
+    'tab-1': {
+      isSelected: true,
+      store: {}
+    }
+  }
+});
+
+const chatItemRenderDetails = mynahUI.endMessageStream('tab-1', 'message-id', {
+  buttons: [{
+    ...
+  }]
+  ...
+});
+
+console.log(chatItemRenderDetails); >> totalCodeBlocks: N
+```
+
+Can you end stream for a card you already ended the stream? Basically yes because it is just changing the type and returns you some insights about that card.
 
 ---
 
