@@ -6,7 +6,7 @@
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
+import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { Card } from '../card/card';
 import { CardBody, CardBodyProps } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
@@ -28,7 +28,7 @@ export interface ChatItemCardProps {
 export class ChatItemCard {
   readonly props: ChatItemCardProps;
   render: ExtendedHTMLElement;
-  contentBody: CardBody;
+  contentBody: CardBody | null = null;
   chatAvatar: ExtendedHTMLElement;
   updateStack: Array<Partial<ChatItem>> = [];
   chatFormItems: ChatItemFormItemsWrapper | null = null;
@@ -131,27 +131,62 @@ export class ChatItemCard {
           event: e,
         });
       },
-      onCopiedToClipboard: (type, text, referenceTrackerInformation, codeBlockIndex, totalCodeBlocks) => {
-        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
-          messageId: this.props.chatItem.messageId,
-          type,
-          text,
-          referenceTrackerInformation,
-          codeBlockIndex,
-          totalCodeBlocks,
-        });
-      },
-      onInsertToCursorPosition: (type, text, referenceTrackerInformation, codeBlockIndex, totalCodeBlocks) => {
-        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
-          messageId: this.props.chatItem.messageId,
-          type,
-          text,
-          referenceTrackerInformation,
-          codeBlockIndex,
-          totalCodeBlocks,
-        });
-      }
+      ...(Config.getInstance().config.codeCopyToClipboardEnabled !== false && this.props.chatItem.codeCopyToClipboardEnabled !== false
+        ? {
+            onCopiedToClipboard: (type, text, referenceTrackerInformation, codeBlockIndex) => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.COPY_CODE_TO_CLIPBOARD, {
+                messageId: this.props.chatItem.messageId,
+                type,
+                text,
+                referenceTrackerInformation,
+                codeBlockIndex,
+                totalCodeBlocks: (this.contentBody?.nextCodeBlockIndex ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
+              });
+            }
+          }
+        : {}),
+      ...(Config.getInstance().config.codeInsertToCursorEnabled !== false && this.props.chatItem.codeInsertToCursorEnabled !== false
+        ? {
+            onInsertToCursorPosition: (type, text, referenceTrackerInformation, codeBlockIndex) => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, {
+                messageId: this.props.chatItem.messageId,
+                type,
+                text,
+                referenceTrackerInformation,
+                codeBlockIndex,
+                totalCodeBlocks: (this.contentBody?.nextCodeBlockIndex ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
+              });
+            }
+          }
+        : {})
     };
+
+    /**
+     * Generate contentBody if available
+     */
+    if (this.contentBody !== null) {
+      this.contentBody.render.remove();
+      this.contentBody = null;
+    }
+    if (this.props.chatItem.body !== undefined) {
+      this.contentBody = new CardBody({
+        body: this.props.chatItem.body ?? '',
+        useParts: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
+        highlightRangeWithTooltip: this.props.chatItem.codeReference,
+        children:
+          this.props.chatItem.relatedContent !== undefined
+            ? [
+                new ChatItemSourceLinksContainer({
+                  messageId: this.props.chatItem.messageId ?? 'unknown',
+                  tabId: this.props.tabId,
+                  relatedContent: this.props.chatItem.relatedContent?.content,
+                  title: this.props.chatItem.relatedContent?.title,
+                }).render,
+              ]
+            : [],
+        ...bodyEvents,
+      });
+    }
 
     /**
      * Generate customRenderer if available
@@ -174,6 +209,7 @@ export class ChatItemCard {
         children: customRendererContent.children,
         processChildren: true,
         useParts: true,
+        codeBlockStartIndex: (this.contentBody?.nextCodeBlockIndex ?? 0),
         ...bodyEvents,
       });
     }
@@ -268,26 +304,7 @@ export class ChatItemCard {
                 ...(this.props.chatItem.icon !== undefined
                   ? [ new Icon({ icon: this.props.chatItem.icon, classNames: [ 'mynah-chat-item-card-icon' ] }).render ]
                   : []),
-                ((): ExtendedHTMLElement => {
-                  this.contentBody = new CardBody({
-                    body: this.props.chatItem.body ?? '',
-                    useParts: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
-                    highlightRangeWithTooltip: this.props.chatItem.codeReference,
-                    children:
-                      this.props.chatItem.relatedContent !== undefined
-                        ? [
-                            new ChatItemSourceLinksContainer({
-                              messageId: this.props.chatItem.messageId ?? 'unknown',
-                              tabId: this.props.tabId,
-                              relatedContent: this.props.chatItem.relatedContent?.content,
-                              title: this.props.chatItem.relatedContent?.title,
-                            }).render,
-                          ]
-                        : [],
-                    ...bodyEvents,
-                  });
-                  return this.contentBody.render;
-                })(),
+                ...(this.contentBody !== null ? [ this.contentBody.render ] : []),
                 ...(this.customRendererWrapper !== null ? [ this.customRendererWrapper.render ] : []),
                 ...(this.chatFormItems !== null ? [ this.chatFormItems.render ] : []),
                 ...(this.fileTreeWrapper !== null ? [ this.fileTreeWrapper.render ] : []),
@@ -383,7 +400,7 @@ export class ChatItemCard {
         }
 
         const newCardContent = this.getCardContent();
-        const upcomingWords = Array.from(this.contentBody.render.querySelectorAll('.typewriter-part'));
+        const upcomingWords = Array.from(this.contentBody?.render.querySelectorAll('.typewriter-part') ?? []);
         for (let i = 0; i < upcomingWords.length; i++) {
           upcomingWords[i].setAttribute('index', i.toString());
         }
@@ -428,5 +445,11 @@ export class ChatItemCard {
   public readonly updateCardStack = (updateWith: Partial<ChatItem>): void => {
     this.updateStack.push(updateWith);
     this.updateCard();
+  };
+
+  public readonly getRenderDetails = (): CardRenderDetails => {
+    return {
+      totalNumberOfCodeBlocks: (this.contentBody?.nextCodeBlockIndex ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0)
+    };
   };
 }

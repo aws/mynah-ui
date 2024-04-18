@@ -289,7 +289,7 @@ default: `4096`
 ---
 
 ## `codeInsertToCursorEnabled` and `codeCopyToClipboardEnabled` (default: true)
-These two parameters allow you to make copy and insert buttons disabled system wide. If you want to disable it specifically for a message you can do it through `ChatItem` object. Please see [DATAMODEL Documentation](./DATAMODEL.md#codeInsertToCursorEnabled).
+These two parameters allow you to make copy and insert buttons disabled system wide. If you want to disable it specifically for a message you can do it through `ChatItem` object. Please see [DATAMODEL Documentation](./DATAMODEL.md#codeinserttocursorenabled-and-codecopytoclipboardenabled-default-true).
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeInsertAndCopyButtons.png" alt="codeInsertAndCopy" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">

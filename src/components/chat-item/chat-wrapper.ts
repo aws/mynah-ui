@@ -6,7 +6,7 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { ChatItem, ChatItemType } from '../../static';
+import { CardRenderDetails, ChatItem, ChatItemType } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
@@ -88,6 +88,7 @@ export class ChatWrapper {
         ...(this.props?.onStopChatResponse !== undefined
           ? [ new Button({
               classNames: [ 'mynah-chat-stop-chat-response-button' ],
+              primary: false,
               label: Config.getInstance().config.texts.stopGenerating,
               icon: new Icon({ icon: MynahIcons.BLOCK }).render,
               onClick: () => {
@@ -166,6 +167,20 @@ export class ChatWrapper {
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
       this.lastChatItemCard.updateCardStack(updateWith);
+    }
+  };
+
+  public getChatItem = (messageId: string): {
+    chatItem: ChatItem;
+    render: ExtendedHTMLElement | HTMLElement;
+    renderDetails: CardRenderDetails;
+  } | undefined => {
+    if (this.allRenderedChatItems[messageId]?.render !== undefined) {
+      return {
+        chatItem: this.allRenderedChatItems[messageId].props.chatItem,
+        render: this.allRenderedChatItems[messageId].render,
+        renderDetails: this.allRenderedChatItems[messageId].getRenderDetails()
+      };
     }
   };
 

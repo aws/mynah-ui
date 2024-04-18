@@ -18,6 +18,7 @@ button.mynah-button {
     padding: 0;
     filter: brightness(0.9);
     opacity: 0.85;
+    line-height: var(--mynah-line-height);
     &.mynah-bottom-block-close-button {
         position: absolute;
         align-self: flex-end;

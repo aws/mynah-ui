@@ -38,7 +38,7 @@ export class TabBarButtonsWrapper {
 
   private readonly getTabsBarButtonsRender = (selectedTabId: string): ExtendedHTMLElement[] => {
     let tabBarButtons = Config.getInstance().config.tabBarButtons ?? [];
-    const tabBarButtonsFromTabStore = MynahUITabsStore.getInstance().getTabDataStore(selectedTabId).getValue('tabBarButtons');
+    const tabBarButtonsFromTabStore = MynahUITabsStore.getInstance().getTabDataStore(selectedTabId)?.getValue('tabBarButtons');
     if (tabBarButtonsFromTabStore != null && tabBarButtonsFromTabStore.length > 0) {
       tabBarButtons = tabBarButtonsFromTabStore;
     }

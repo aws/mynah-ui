@@ -1199,7 +1199,7 @@ mynahUI.addChatItem('tab-1', {
 ---
 
 ## `codeInsertToCursorEnabled` and `codeCopyToClipboardEnabled` (default: true)
-These two parameters allow you to make copy and insert buttons disabled for that specific ChatItem. If you want to disable it system wide you can do it through [CONFIG](./CONFIG.md#codeInsertToCursorEnabled).
+These two parameters allow you to make copy and insert buttons disabled for that specific ChatItem. If you want to disable it system wide you can do it through config. Please see [CONFIG Documentation](./CONFIG.md#codeinserttocursorenabled-and-codecopytoclipboardenabled-default-true).
 
 ```typescript
 const mynahUI = new MynahUI({

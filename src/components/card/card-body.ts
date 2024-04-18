@@ -36,6 +36,7 @@ export interface CardBodyProps {
   childLocation?: 'above-body' | 'below-body';
   highlightRangeWithTooltip?: ReferenceTrackerInformation[];
   useParts?: boolean;
+  codeBlockStartIndex?: number;
   processChildren?: boolean;
   onLinkClick?: (url: string, e: MouseEvent) => void;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
@@ -44,11 +45,12 @@ export interface CardBodyProps {
 export class CardBody {
   render: ExtendedHTMLElement;
   props: CardBodyProps;
+  nextCodeBlockIndex: number = 0;
+  codeBlockStartIndex: number = 0;
   private highlightRangeTooltip: Overlay | null;
   private highlightRangeTooltipTimeout: ReturnType<typeof setTimeout>;
-  private nextCodeBlockIndex: number = 0;
   constructor (props: CardBodyProps) {
-    this.nextCodeBlockIndex = 0;
+    this.codeBlockStartIndex = props.codeBlockStartIndex ?? 0;
     this.props = props;
     const childList = [
       ...this.getContentBodyChildren(this.props),
@@ -117,14 +119,24 @@ export class CardBody {
         onCopiedToClipboard: this.props.onCopiedToClipboard != null
           ? (type, text, codeBlockIndex) => {
               if (this.props.onCopiedToClipboard != null) {
-                this.props.onCopiedToClipboard(type, text, this.getReferenceTrackerInformationFromElement(highlighter), codeBlockIndex, this.nextCodeBlockIndex);
+                this.props.onCopiedToClipboard(
+                  type,
+                  text,
+                  this.getReferenceTrackerInformationFromElement(highlighter),
+                  this.codeBlockStartIndex + (codeBlockIndex ?? 0),
+                  this.nextCodeBlockIndex);
               }
             }
           : undefined,
         onInsertToCursorPosition: this.props.onInsertToCursorPosition != null
           ? (type, text, codeBlockIndex) => {
               if (this.props.onInsertToCursorPosition != null) {
-                this.props.onInsertToCursorPosition(type, text, this.getReferenceTrackerInformationFromElement(highlighter), codeBlockIndex, this.nextCodeBlockIndex);
+                this.props.onInsertToCursorPosition(
+                  type,
+                  text,
+                  this.getReferenceTrackerInformationFromElement(highlighter),
+                  this.codeBlockStartIndex + (codeBlockIndex ?? 0),
+                  this.nextCodeBlockIndex);
               }
             }
           : undefined
@@ -132,8 +144,8 @@ export class CardBody {
       if (this.props.useParts === true) {
         highlighter.classList.add(PARTS_CLASS_NAME);
       }
-      if (elementFromNode.tagName?.toLowerCase() === 'pre' && (elementFromNode.querySelector('code') != null)) {
-        this.nextCodeBlockIndex++;
+      if (isBlockCode) {
+        ++this.nextCodeBlockIndex;
       }
       return highlighter;
     }

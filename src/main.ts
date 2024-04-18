@@ -23,6 +23,8 @@ import {
   Engagement,
   ChatItemFormItem,
   ChatItemButton,
+  ChatItemType,
+  CardRenderDetails,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -185,9 +187,9 @@ export interface MynahUIProps {
 }
 
 export class MynahUI {
+  render: ExtendedHTMLElement;
   private lastEventId: string = '';
   private readonly props: MynahUIProps;
-  private readonly wrapper: ExtendedHTMLElement;
   private readonly tabsWrapper: ExtendedHTMLElement;
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
@@ -248,7 +250,7 @@ export class MynahUI {
       this.tabsWrapper.setAttribute('selected-tab', MynahUITabsStore.getInstance().getSelectedTabId());
     }
 
-    this.wrapper = DomBuilder.getInstance().createPortal(
+    this.render = DomBuilder.getInstance().createPortal(
       MynahPortalNames.WRAPPER,
       {
         type: 'div',
@@ -521,6 +523,29 @@ export class MynahUI {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, updateWith);
     }
+  };
+
+  /**
+   * Converts a card to an ANSWER if it is an ANSWER_STREAM
+   * @param tabId Corresponding tab ID.
+   * @param messageId Corresponding tab ID.
+   * @param updateWith Optional, if you like update the card while converting it to
+   * a normal ANSWER instead of a stream one, you can send a ChatItem object to update with.
+   */
+  public endMessageStream = (tabId: string, messageId: string, updateWith?: Partial<ChatItem>): CardRenderDetails => {
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      const chatMessage = this.chatWrappers[tabId].getChatItem(messageId);
+      if (chatMessage != null && ![ ChatItemType.AI_PROMPT, ChatItemType.PROMPT, ChatItemType.SYSTEM_PROMPT ].includes(chatMessage.chatItem.type)) {
+        this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, {
+          type: ChatItemType.ANSWER,
+          ...updateWith
+        });
+        return chatMessage.renderDetails;
+      }
+    }
+    return {
+      totalNumberOfCodeBlocks: 0
+    };
   };
 
   /**

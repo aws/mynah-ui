@@ -29,6 +29,7 @@
     --mynah-border-width: 1px;
 
     --mynah-color-text-default: var(--vscode-foreground);
+    --mynah-color-text-alternate: var(--mynah-color-button-reverse);
     --mynah-color-text-strong: var(--vscode-input-foreground);
     --mynah-color-text-weak: var(--vscode-disabledForeground);
     --mynah-color-text-link: var(--vscode-textLink-foreground);
@@ -70,6 +71,7 @@
     --mynah-color-alternate-reverse: var(--vscode-button-secondaryForeground);
 
     --mynah-card-bg: var(--vscode-editor-background);
+    --mynah-card-bg-alternate: var(--mynah-color-button);
 
     --mynah-shadow-button: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);
     --mynah-shadow-card: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);

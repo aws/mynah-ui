@@ -187,7 +187,7 @@
     }
 
     .mynah-chat-item-followup-question-option {
-        padding: var(--mynah-sizing-2);
+        padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
         color: var(--mynah-color-text-default);
         border: var(--mynah-border-width) solid currentColor;
         border-radius: var(--mynah-button-radius);
@@ -199,6 +199,7 @@
         gap: var(--mynah-sizing-2);
         align-items: center;
         user-select: none;
+        line-height: var(--mynah-line-height);
         * {
             pointer-events: none;
         }
@@ -306,13 +307,15 @@
         .mynah-chat-item-card-related-content > .mynah-card,
         > .mynah-card {
             padding: var(--mynah-sizing-4);
-            background-color: var(--mynah-color-button);
+            background-color: var(--mynah-card-bg-alternate);
             border-bottom-right-radius: var(--mynah-card-radius-corner);
-            border: none;
             &,
             > .mynah-card-body {
-                color: var(--mynah-color-button-reverse);
+                color: var(--mynah-color-text-alternate);
             }
+        }
+        .mynah-chat-item-card-related-content > .mynah-card {
+            border: none;
         }
     }
     &.mynah-chat-item-system-prompt {

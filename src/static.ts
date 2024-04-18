@@ -170,6 +170,8 @@ export interface ChatItem {
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
   messageId?: string;
   canBeVoted?: boolean;
+  codeInsertToCursorEnabled?: boolean;
+  codeCopyToClipboardEnabled?: boolean;
   followUp?: {
     text?: string;
     options?: ChatItemAction[];
@@ -383,8 +385,14 @@ export interface ConfigOptions {
   showPromptField: boolean;
   autoFocus: boolean;
   maxUserInput: number;
+  codeInsertToCursorEnabled?: boolean;
+  codeCopyToClipboardEnabled?: boolean;
 }
 
 export interface ConfigModel extends ConfigOptions {
   texts: Partial<ConfigTexts>;
+}
+
+export interface CardRenderDetails {
+  totalNumberOfCodeBlocks?: number;
 }
