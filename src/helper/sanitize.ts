@@ -122,6 +122,7 @@ export const AllowedAttributes = [
   'srclang',
   'srcset',
   'start',
+  'style',
   'target',
   'title',
   'translate',

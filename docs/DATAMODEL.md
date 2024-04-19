@@ -1103,7 +1103,7 @@ For example, you can check how the code blocks provided inside `customRenderer` 
     'shape','size','sizes','slot',
     'span','spellcheck','src',
     'srcdoc','srclang','srcset',
-    'start','target','title',
+    'start', 'style', 'target','title',
     'translate','usemap',
     'wrap','aspect-ratio'
 ]
@@ -1112,8 +1112,11 @@ For example, you can check how the code blocks provided inside `customRenderer` 
 ## Important Tips for `customRenderer`
 
 ### Tip 1
-As you might see there is also no `style`, `width` and `height` attributes are available. 
+As you might see there is also no `width` and `height` attributes are available. 
 As we've told you above, we know you're so good at styling components but our concern is the HTML itself. Since `mynah-ui` has a responsive design nature, we cannot let you write a static width or height to an `img` for example.
+
+### But you're free to write custom styles for each tag you can create. But don't forget that you're getting the responsibility of a broken UI. So be careful with the styles and try not to be so extreme on that.
+
 It applies to `iframe`s, `video`s and other similar media elements too. 
 So, **avoid writing static sizes** and learn **what is the aspect ratio of your media content**.
 
@@ -1158,7 +1161,7 @@ For `img` items, it is a bit different. First of all, `img` items doesn't have `
 If you want to specify a custom aspect ratio within the available options above, you can also do that for the `img` items too.
 
 ### Tip 6
-Even though we don't want you to write styles for the components, you might have some real edge cases you have to adjust the styles of your renderer(s). In this case you can use `id` or `class` attributes and define your styles in your style files properly.
+Even though we don't want you to write styles for the components, you might have some real edge cases you have to adjust the styles of your renderer(s). In this case you can use directly `style` attribute with 100% care of it or using an `id` or `class` attributes to define your styles in your style files properly.
 
 
 That's all!, please also see the **[samples data](https://github.com/aws/mynah-ui/blob/6dd5cfbbb9e9d67fec19c40a2f9fbd7dba4c027c/example/src/samples/sample-data.ts#L544)** of both options we've used in the example app.

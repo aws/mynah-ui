@@ -66,6 +66,10 @@
       }
     }
 
+    .mynah-ui-clickable-item {
+      cursor: pointer;
+    }
+
     // FULL WIDTH ITEMS
     table,
     hr,
@@ -81,9 +85,12 @@
       border: none;
       font-size: inherit;
     }
+    table {
+      table-layout: fixed;
+    }
 
     // BLOCKS
-    video{
+    video {
       background-color: var(--mynah-color-bg);
     }
     video,

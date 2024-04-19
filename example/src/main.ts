@@ -363,7 +363,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
         case Commands.CUSTOM_RENDERER_CARDS:
           mynahUI.addChatItem(tabId, exampleCustomRendererWithHTMLMarkup());
-          mynahUI.addChatItem(tabId, exampleCustomRendererWithDomBuilderJson());
+          mynahUI.addChatItem(tabId, exampleCustomRendererWithDomBuilderJson);
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.COMMAND_WITH_PROMPT:

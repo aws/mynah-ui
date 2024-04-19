@@ -190,6 +190,9 @@ export class DomBuilder {
             (readyToBuildObject.events[eventName] as DomBuilderEventHandlerWithOptions).options ?? undefined
           );
         }
+        if (eventName === 'dblclick' || eventName === 'click') {
+          buildedDom.classList.add('mynah-ui-clickable-item');
+        }
       }
     });
 
