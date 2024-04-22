@@ -373,7 +373,7 @@ export class ChatItemCard {
     });
 
   public readonly updateCard = (): void => {
-    if (this.updateTimer === undefined && this.updateCardStack.length > 0) {
+    if (this.updateTimer === undefined && this.updateStack.length > 0) {
       const updateWith: Partial<ChatItem> | undefined = this.updateStack.shift();
       if (updateWith !== undefined) {
         this.props.chatItem = {
@@ -408,6 +408,13 @@ export class ChatItemCard {
           this.typewriterId = `typewriter-card-${generateUID()}`;
         }
         this.render?.update({
+          ...(this.props.chatItem.messageId != null
+            ? {
+                attributes: {
+                  messageid: this.props.chatItem.messageId
+                }
+              }
+            : {}),
           classNames: [ ...this.getCardClasses(), 'reveal', this.typewriterId, 'typewriter-animating' ],
           children: [ ...newCardContent, this.getInsertedTypewriterPartsCss() ],
         });

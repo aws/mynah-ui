@@ -536,7 +536,7 @@ export class MynahUI {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       const chatMessage = this.chatWrappers[tabId].getChatItem(messageId);
       if (chatMessage != null && ![ ChatItemType.AI_PROMPT, ChatItemType.PROMPT, ChatItemType.SYSTEM_PROMPT ].includes(chatMessage.chatItem.type)) {
-        this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, {
+        this.chatWrappers[tabId].endStreamWithMessageId(messageId, {
           type: ChatItemType.ANSWER,
           ...updateWith
         });

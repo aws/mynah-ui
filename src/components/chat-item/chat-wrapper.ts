@@ -5,6 +5,7 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardRenderDetails, ChatItem, ChatItemType } from '../../static';
 import { Button } from '../button';
@@ -27,6 +28,7 @@ export class ChatWrapper {
   private readonly promptInfo: ExtendedHTMLElement;
   private readonly promptStickyCard: ExtendedHTMLElement;
   private lastChatItemCard: ChatItemCard | null;
+  private lastChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
@@ -138,9 +140,13 @@ export class ChatWrapper {
   }
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
+    this.lastChatItemMessageId = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
-      chatItem
+      chatItem: {
+        ...chatItem,
+        messageId: this.lastChatItemMessageId
+      }
     });
     if (chatItem.type === ChatItemType.ANSWER_STREAM) {
       this.lastChatItemCard?.render.addClass('stream-ended');
@@ -152,10 +158,12 @@ export class ChatWrapper {
         chatItem.type === ChatItemType.SYSTEM_PROMPT) && chatItem.body !== undefined) {
       this.lastChatItemCard?.render.addClass('stream-ended');
       this.lastChatItemCard = null;
+      this.lastChatItemMessageId = null;
     }
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
-    if (chatItem.messageId !== undefined) {
-      this.allRenderedChatItems[chatItem.messageId] = chatItemCard;
+
+    if (this.lastChatItemMessageId != null) {
+      this.allRenderedChatItems[this.lastChatItemMessageId] = chatItemCard;
     }
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
       // Make sure we scroll the chat window to the bottom
@@ -167,6 +175,19 @@ export class ChatWrapper {
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
     if (this.lastChatItemCard !== null) {
       this.lastChatItemCard.updateCardStack(updateWith);
+      if (updateWith.messageId != null && updateWith.messageId !== '') {
+        if (this.lastChatItemMessageId != null && this.lastChatItemMessageId !== updateWith.messageId) {
+          const renderChatItemInMap = this.allRenderedChatItems[this.lastChatItemMessageId];
+          if (renderChatItemInMap != null) {
+            this.allRenderedChatItems[updateWith.messageId] = renderChatItemInMap;
+            if (this.lastChatItemMessageId != null) {
+              // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+              delete this.allRenderedChatItems[this.lastChatItemMessageId];
+            }
+          }
+        }
+        this.lastChatItemMessageId = updateWith.messageId;
+      }
     }
   };
 
@@ -181,6 +202,13 @@ export class ChatWrapper {
         render: this.allRenderedChatItems[messageId].render,
         renderDetails: this.allRenderedChatItems[messageId].getRenderDetails()
       };
+    }
+  };
+
+  public endStreamWithMessageId = (messageId: string, updateWith: Partial<ChatItem>): void => {
+    if (this.allRenderedChatItems[messageId]?.render !== undefined) {
+      this.allRenderedChatItems[messageId].render.addClass('stream-ended');
+      this.updateChatAnswerWithMessageId(messageId, updateWith);
     }
   };
 
