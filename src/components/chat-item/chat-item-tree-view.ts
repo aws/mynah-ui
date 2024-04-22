@@ -100,7 +100,7 @@ export class ChatItemTreeView {
 
     const fileItem = new ChatItemTreeFile({
       fileName: this.node.name,
-      filePath: (this.node).filePath,
+      filePath: this.node.filePath,
       tabId: this.tabId,
       messageId: this.messageId,
       details: this.node.details,

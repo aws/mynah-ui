@@ -258,11 +258,10 @@
     }
 
     > .mynah-chat-item-tree-view-file-item {
-      margin: var(--mynah-sizing-2);
+      padding: var(--mynah-sizing-2);
       box-sizing: border-box;
-      padding-top: 0;
-      padding-bottom: 0;
-      padding-left: 0;
+      width: 100%;
+      border-radius: 0;
     }
   }
 }
