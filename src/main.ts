@@ -168,6 +168,15 @@ export interface MynahUIProps {
       formItemValues?: Record<string, string>;
     },
     eventId?: string) => void;
+  /**
+   * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
+   */
+  onOpenDiff?: (
+    tabId: string,
+    filePath: string,
+    deleted: boolean,
+    messageId?: string,
+    eventId?: string) => void;
   onFileClick?: (
     tabId: string,
     filePath: string,
@@ -447,6 +456,16 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_CLICK, (data) => {
       if (this.props.onFileClick !== undefined) {
         this.props.onFileClick(
+          data.tabId,
+          data.filePath,
+          data.deleted,
+          data.messageId,
+          this.getUserEventId());
+      }
+
+      if (this.props.onOpenDiff !== undefined) {
+        console.warn('onOpenDiff will be deprecated after v5.x.x. Please use MynahUIProps.onFileClick instead');
+        this.props.onOpenDiff(
           data.tabId,
           data.filePath,
           data.deleted,

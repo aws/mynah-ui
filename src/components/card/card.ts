@@ -84,7 +84,7 @@ export class Card {
               mouseup: e => {
                 const mouseUpInfo = { x: e.clientX, y: e.clientY, time: new Date().getTime() };
                 if (
-                  this.mouseDownInfo !== undefined && // in case of down is prevented by default by some listener
+                  this.mouseDownInfo !== undefined &&
                       (Math.abs(this.mouseDownInfo.x - mouseUpInfo.x) > ENGAGEMENT_MIN_SELECTION_DISTANCE ||
                           Math.abs(this.mouseDownInfo.y - mouseUpInfo.y) >
                           ENGAGEMENT_MIN_SELECTION_DISTANCE) &&
