@@ -115,7 +115,7 @@ export enum MynahEventNames {
   BODY_ACTION_CLICKED = 'bodyActionClicked',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
-  OPEN_DIFF = 'openDiff',
+  FILE_CLICK = 'fileClick',
   FILE_ACTION_CLICK = 'fileActionClick',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
   ADD_CODE_SNIPPET = 'addCodeSnippet',

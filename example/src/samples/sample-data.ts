@@ -178,7 +178,7 @@ export const exampleFileListChatItem: ChatItem = {
     },
   ],
   fileList: {
-    filePaths: ['src/App.tsx', 'devfile.yaml', 'src/App.test.tsx'],
+    filePaths: ['dummy.ts', 'src/App.tsx', 'devfile.yaml', 'src/App.test.tsx'],
     deletedFiles: ['src/devfile.yaml'],
     actions: {
       'src/App.tsx': [
@@ -366,10 +366,9 @@ _To send the form, mandatory items should be filled._`,
 };
 
 const checkIcons = {
-  wait: '![wait](data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMTkgM2gtMTRjLTEuMTEgMC0yIC44OS0yIDJ2MTRhMiAyIDAgMCAwIDIgMmgxNGEyIDIgMCAwIDAgMi0ydi0xNGMwLTEuMTEtLjktMi0yLTJtMCAydjE0aC0xNHYtMTR6Ii8+PC9zdmc+)',
-  current:
-    '![current](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpY29uIGljb24tdGFibGVyIGljb24tdGFibGVyLXNxdWFyZS1kb3QiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZT0iY3VycmVudENvbG9yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogIDxwYXRoIHN0cm9rZT0ibm9uZSIgZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPgogIDxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgcng9IjIiIC8+CiAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMSIgLz4KPC9zdmc+CgoK)',
-  done: '![check](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpY29uIGljb24tdGFibGVyIGljb24tdGFibGVyLWNoZWNrYm94IiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICA8cGF0aCBzdHJva2U9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI5IDExIDEyIDE0IDIwIDYiIC8+CiAgPHBhdGggZD0iTTIwIDEydjZhMiAyIDAgMCAxIC0yIDJoLTEyYTIgMiAwIDAgMSAtMiAtMnYtMTJhMiAyIDAgMCAxIDIgLTJoOSIgLz4KPC9zdmc+CgoK)',
+  wait: '&#9744;',
+  current: '&#9744;',
+  done: '&#9745;',
 };
 export const exampleProgressCards: Partial<ChatItem>[] = [
   {
@@ -507,25 +506,13 @@ ${checkIcons.done} Creating a refactor plan
 
 ${checkIcons.done} Showing the plan details
 
-Your refactor request is finished.
-
-Here's a preview of list of the files to be refactored:
+Your Refactor analysis is ready! You can review it by opening the Markdown file: [Refactor_analysis_[id].pdf](#)
+You can also ask me any follow-up questions that you have or adjust any part by generating a revised analysis.
 
 `,
     fileList: {
-      filePaths: ['fil1.tsx', 'file2.tsx'],
-      fileTreeTitle: 'Refactor result',
-      rootFolderTitle: 'Refactored files',
+      filePaths: ['Refactor_analysis_[id].pdf'],
     },
-    buttons: [
-      {
-        id: 'open-refactor-plan',
-        text: 'Open plan',
-        disabled: false,
-        icon: MynahIcons.EXTERNAL,
-        status: 'info',
-      },
-    ],
   },
 ];
 
@@ -701,6 +688,6 @@ export const exampleDownloadFile: ChatItem = {
   fileList: {
     fileTreeTitle: 'Report',
     rootFolderTitle: '',
-    filePaths: ['Refactor_analysis_[id] .pdf']
+    filePaths: ['Refactor_analysis_[id] .pdf'],
   },
 };

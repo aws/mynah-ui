@@ -168,7 +168,7 @@ export interface MynahUIProps {
       formItemValues?: Record<string, string>;
     },
     eventId?: string) => void;
-  onOpenDiff?: (
+  onFileClick?: (
     tabId: string,
     filePath: string,
     deleted: boolean,
@@ -444,9 +444,9 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_DIFF, (data) => {
-      if (this.props.onOpenDiff !== undefined) {
-        this.props.onOpenDiff(
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_CLICK, (data) => {
+      if (this.props.onFileClick !== undefined) {
+        this.props.onFileClick(
           data.tabId,
           data.filePath,
           data.deleted,

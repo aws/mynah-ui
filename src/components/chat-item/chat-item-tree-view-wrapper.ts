@@ -7,6 +7,8 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { fileListToTree } from '../../helper/file-tree';
 import { FileNodeAction, ReferenceTrackerInformation, TreeNodeDetails } from '../../static';
+import { MynahIcons } from '../icon';
+import { ChatItemTreeFile } from './chat-item-tree-file';
 import { ChatItemTreeView } from './chat-item-tree-view';
 import { ChatItemTreeViewLicense } from './chat-item-tree-view-license';
 
@@ -32,11 +34,22 @@ export class ChatItemTreeViewWrapper {
       references: props.references
     }).render;
 
-    const tree = new ChatItemTreeView({
-      messageId: props.messageId,
-      tabId: props.tabId,
-      node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle),
-    }).render;
+    const tree = props.files.length === 1
+      ? new ChatItemTreeFile({
+        filePath: props.files[0],
+        fileName: props.files[0],
+        tabId: props.tabId,
+        messageId: props.messageId,
+        deleted: props.deletedFiles.includes(props.files[0]),
+        details: props.details != null ? props.details[props.files[0]] : undefined,
+        actions: props.actions != null ? props.actions[props.files[0]] : undefined,
+        icon: MynahIcons.PAPER_CLIP
+      }).render
+      : new ChatItemTreeView({
+        messageId: props.messageId,
+        tabId: props.tabId,
+        node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle),
+      }).render;
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -46,20 +59,22 @@ export class ChatItemTreeViewWrapper {
           type: 'div',
           classNames: [ 'mynah-chat-item-tree-view-wrapper-container' ],
           children: [
-            {
-              type: 'div',
-              classNames: [ 'mynah-chat-item-tree-view-wrapper-title' ],
-              children: [
-                {
-                  type: 'h4',
-                  children: [ `${props.cardTitle ?? Config.getInstance().config.texts.codeSuggestions}` ]
-                },
-                {
-                  type: 'span',
-                  children: [ `${(props.files?.length ?? 0) + (props.deletedFiles?.length ?? 0)} ${Config.getInstance().config.texts.files}` ]
-                },
-              ]
-            },
+            ...(props.cardTitle != null && props.cardTitle !== ''
+              ? [ {
+                  type: 'div',
+                  classNames: [ 'mynah-chat-item-tree-view-wrapper-title' ],
+                  children: [
+                    {
+                      type: 'h4',
+                      children: [ `${props.cardTitle ?? Config.getInstance().config.texts.codeSuggestions}` ]
+                    },
+                    {
+                      type: 'span',
+                      children: [ `${(props.files?.length ?? 0) + (props.deletedFiles?.length ?? 0)} ${Config.getInstance().config.texts.files}` ]
+                    },
+                  ]
+                } ]
+              : []),
             license,
             tree,
           ]
