@@ -1,3 +1,4 @@
+/* eslint-disable import/no-webpack-loader-syntax */
 import {
   ChatItem,
   ChatItemBodyRenderer,
@@ -5,18 +6,18 @@ import {
   MynahIcons,
   SourceLink,
 } from '@aws/mynah-ui';
-import md0 from './sample-0.md';
-import md1 from './sample-1.md';
-import md2 from './sample-2.md';
-import md3 from './sample-3.md';
-import md4 from './sample-4.md';
-import md5 from './sample-5.md';
-import md6 from './sample-6.md';
-import md7 from './sample-7.md';
-import md8 from './sample-8.md';
-import md9 from './sample-9.md';
-import md10 from './sample-10.md';
-import SampleCode from './sample-code.md';
+import md0 from '!!raw-loader!./sample-0.md';
+import md1 from '!!raw-loader!./sample-1.md';
+import md2 from '!!raw-loader!./sample-2.md';
+import md3 from '!!raw-loader!./sample-3.md';
+import md4 from '!!raw-loader!./sample-4.md';
+import md5 from '!!raw-loader!./sample-5.md';
+import md6 from '!!raw-loader!./sample-6.md';
+import md7 from '!!raw-loader!./sample-7.md';
+import md8 from '!!raw-loader!./sample-8.md';
+import md9 from '!!raw-loader!./sample-9.md';
+import md10 from '!!raw-loader!./sample-10.md';
+import SampleCode from '!!raw-loader!./sample-code.md';
 import { Commands } from '../commands';
 
 export const mynahUIQRImageBase64 =
@@ -90,14 +91,13 @@ export const exampleStreamParts: Partial<ChatItem>[] = [
           start: 1034,
           end: 1409,
         },
-        information:
-          'Reference code *under the Apache License 2.0 license* from repository **`@aws/mynah-ui`**.',
+        information: 'Reference code *under the Apache License 2.0 license* from repository **`@aws/mynah-ui`**.',
       },
     ],
   },
 ];
 
-export const exampleCodeBlockToInsert: string = SampleCode;
+export const exampleCodeBlockToInsert = SampleCode;
 
 export const exampleRichFollowups: ChatItem = {
   type: ChatItemType.SYSTEM_PROMPT,
@@ -185,7 +185,7 @@ export const exampleFileListChatItem: ChatItem = {
     },
   ],
   fileList: {
-    filePaths: ['src/App.tsx', 'devfile.yaml', 'src/App.test.tsx'],
+    filePaths: ['dummy.ts', 'src/App.tsx', 'devfile.yaml', 'src/App.test.tsx'],
     deletedFiles: ['src/devfile.yaml'],
     actions: {
       'src/App.tsx': [
@@ -220,12 +220,10 @@ export const exampleFileListChatItem: ChatItem = {
   },
   codeReference: [
     {
-      information:
-        'Reference code *under the MIT license* from repository `amazon`.',
+      information: 'Reference code *under the MIT license* from repository `amazon`.',
     },
     {
-      information:
-        'Reference code *under the MIT license* from repository `aws`.',
+      information: 'Reference code *under the MIT license* from repository `aws`.',
     },
   ],
   canBeVoted: true,
@@ -375,10 +373,9 @@ _To send the form, mandatory items should be filled._`,
 };
 
 const checkIcons = {
-  wait: '![wait](data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMTkgM2gtMTRjLTEuMTEgMC0yIC44OS0yIDJ2MTRhMiAyIDAgMCAwIDIgMmgxNGEyIDIgMCAwIDAgMi0ydi0xNGMwLTEuMTEtLjktMi0yLTJtMCAydjE0aC0xNHYtMTR6Ii8+PC9zdmc+)',
-  current:
-    '![current](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpY29uIGljb24tdGFibGVyIGljb24tdGFibGVyLXNxdWFyZS1kb3QiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZT0iY3VycmVudENvbG9yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogIDxwYXRoIHN0cm9rZT0ibm9uZSIgZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPgogIDxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgcng9IjIiIC8+CiAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMSIgLz4KPC9zdmc+CgoK)',
-  done: '![check](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpY29uIGljb24tdGFibGVyIGljb24tdGFibGVyLWNoZWNrYm94IiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICA8cGF0aCBzdHJva2U9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI5IDExIDEyIDE0IDIwIDYiIC8+CiAgPHBhdGggZD0iTTIwIDEydjZhMiAyIDAgMCAxIC0yIDJoLTEyYTIgMiAwIDAgMSAtMiAtMnYtMTJhMiAyIDAgMCAxIDIgLTJoOSIgLz4KPC9zdmc+CgoK)',
+  wait: '&#9744;',
+  current: '&#9744;',
+  done: '&#9745;',
 };
 export const exampleProgressCards: Partial<ChatItem>[] = [
   {
@@ -516,25 +513,13 @@ ${checkIcons.done} Creating a refactor plan
 
 ${checkIcons.done} Showing the plan details
 
-Your refactor request is finished.
-
-Here's a preview of list of the files to be refactored:
+Your Refactor analysis is ready! You can review it by opening the Markdown file: [Refactor_analysis_[id].pdf](#)
+You can also ask me any follow-up questions that you have or adjust any part by generating a revised analysis.
 
 `,
     fileList: {
-      filePaths: ['fil1.tsx', 'file2.tsx'],
-      fileTreeTitle: 'Refactor result',
-      rootFolderTitle: 'Refactored files',
+      filePaths: ['Refactor_analysis_[id].pdf'],
     },
-    buttons: [
-      {
-        id: 'open-refactor-plan',
-        text: 'Open plan',
-        disabled: false,
-        icon: MynahIcons.EXTERNAL,
-        status: 'info',
-      },
-    ],
   },
 ];
 
@@ -643,137 +628,73 @@ You should go take a look to the <strong><a href="https://github.com/aws/mynah-u
   };
 };
 
-export const exampleCustomRendererWithDomBuilderJson = (): ChatItem => {
-  const topFrameworks: Record<string, string> = {
-    Vanilla: 'inf.',
-    React: '24',
-    JQuery: '10.6',
-    VUE: '4.75',
-  };
-  return {
-    messageId: new Date().getTime().toString(),
-    type: ChatItemType.ANSWER,
-    canBeVoted: true,
-    customRenderer: [
-      {
-        type: 'h3',
-        children: ["Custom renderer's with JSON dom builder objects"],
-      },
-      {
-        type: 'p',
-        children: [
-          'Here you will find some custom html rendering examples which may not be available with markdown or pretty hard to generate. But in this examples they are rendered from JSON definitions.',
-        ],
-      },
-      {
-        type: 'p',
-        children: [
-          'There is no difference between using a markup string or a JSON dom. You can create same accepted tags with same accepted attributes.',
-        ],
-      },
-      {
-        type: 'p',
-        children: [
-          'Except 1 thing: ',
-          {
-            type: 'strong',
-            children: ['attaching events! Like click or mousemove etc.'],
-          },
-        ],
-      },
-      { type: 'br' },
-      {
-        type: 'h3',
-        events: {
-          click: () => {
-            alert('Why you click to title?');
-          },
+const attachmentIcon = `<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="30" height="30" rx="4" fill="#687078"/>
+<path d="M19.6853 13.1011V13.1011C20.2085 12.195 19.898 11.0364 18.9919 10.5132L18.251 10.0854C17.0553 9.39509 15.5263 9.80478 14.8359 11.0005L11.0859 17.4957C10.3956 18.6914 10.8053 20.2204 12.001 20.9108V20.9108C13.1967 21.6011 14.7257 21.1914 15.4161 19.9957L17.7911 15.8821C18.1362 15.2842 17.9314 14.5197 17.3335 14.1746V14.1746C16.7357 13.8294 15.9712 14.0342 15.626 14.6321L14.0992 17.2765" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+</svg>`;
+export const exampleCustomRendererWithDomBuilderJson: ChatItem = {
+  messageId: new Date().getTime().toString(),
+  type: ChatItemType.ANSWER,
+  canBeVoted: true,
+  body: `Your Refactor analysis is ready! You can review it by opening the Markdown file: [file_name](#hello-pdf)
+  You can also ask me any follow-up questions that you have or adjust any part by generating a revised analysis.`,
+  customRenderer: [
+    {
+      type: 'blockquote',
+      events: {
+        click: (e: Event) => {
+          console.log('Hello!', e);
         },
-        children: ['Table (inside a blockqote)'],
       },
-      {
-        type: 'p',
-        children: [
-          'This is basically the same table one card above with markup strings, but in this one ',
-          { type: 'b', children: ['you can click to the table titles!'] },
-        ],
-      },
-      { type: 'br' },
-      {
-        type: 'blockquote',
-        children: [
-          'Most popular JS frameworks',
-          // Divider
-          { type: 'hr' },
-          {
-            type: 'table',
-            children: [
-              {
-                type: 'tr',
-                children: [
-                  {
-                    type: 'th',
-                    events: {
-                      click: () => {
-                        alert('Why you click this title?');
+
+      children: [
+        {
+          type: 'table',
+          children: [
+            {
+              type: 'tr',
+              children: [
+                {
+                  type: 'td',
+                  attributes: {
+                    style: 'min-width: 30px; width: 30px;',
+                  },
+                  children: [
+                    {
+                      type: 'img',
+                      attributes: {
+                        src: `data:image/svg+xml;base64,${window.btoa(attachmentIcon)}`,
                       },
                     },
-                    attributes: { align: 'left' },
-                    children: ['Name'],
-                  },
-                  {
-                    type: 'th',
-                    events: {
-                      click: () => {
-                        alert('Why you click to this title?');
-                      },
+                  ],
+                },
+                {
+                  type: 'td',
+                  children: [
+                    {
+                      type: 'strong',
+                      children: ['Refactor_analysis_[id] .pdf'],
                     },
-                    attributes: { align: 'right' },
-                    children: ['Weekly Downloads'],
-                  },
-                ],
-              },
-              ...Object.keys(topFrameworks).map(
-                (fw) =>
-                  ({
-                    type: 'tr',
-                    children: [
-                      { type: 'td', children: [fw] },
-                      {
-                        type: 'td',
-                        attributes: { align: 'right' },
-                        children: [
-                          topFrameworks[fw],
-                          ...(!isNaN(parseFloat(topFrameworks[fw]))
-                            ? [{ type: 'small', children: [' million'] }]
-                            : []),
-                        ],
-                      },
-                    ],
-                  }) as ChatItemBodyRenderer
-              ),
-            ],
-          },
-        ],
-      },
-      { type: 'br' },
-      {
-        type: 'p',
-        children: ['Or you can click below image to remove it!'],
-      },
-      { type: 'br' },
-      {
-        type: 'img',
-        events: {
-          click: (event: MouseEvent) => {
-            (event.target as HTMLElement).remove();
-          },
+                  ],
+                },
+              ],
+            },
+          ],
         },
-        attributes: {
-          src: 'https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_stacked_REV_SQ.91cd4af40773cbfbd15577a3c2b8a346fe3e8fa2.png',
-          alt: 'Powered by AWS!',
-        },
-      },
-    ],
-  };
+      ],
+    },
+  ],
+};
+
+export const exampleDownloadFile: ChatItem = {
+  messageId: new Date().getTime().toString(),
+  type: ChatItemType.ANSWER,
+  canBeVoted: true,
+  body: `Your Refactor analysis is ready! You can review it by opening the Markdown file: [file_name](#hello-pdf)
+  You can also ask me any follow-up questions that you have or adjust any part by generating a revised analysis.`,
+  fileList: {
+    fileTreeTitle: 'Report',
+    rootFolderTitle: '',
+    filePaths: ['Refactor_analysis_[id] .pdf'],
+  },
 };

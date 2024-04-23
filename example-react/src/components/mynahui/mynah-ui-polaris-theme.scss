@@ -1,4 +1,4 @@
-// @use '@amzn/awsui-design-tokens/polaris.scss' as awsui;
+@use '@cloudscape-design/design-tokens/index' as awsui;
 
 html,
 body {
@@ -24,21 +24,22 @@ div.mynah-ui-chat-wrapper {
 :root,
 body,
 div.mynah-ui-chat-wrapper {
-  --mynah-max-width: 2560px;
-  --mynah-sizing-base: 0.25rem;
-  --mynah-chat-wrapper-spacing: var(--mynah-sizing-6);
+  --mynah-max-width: 100%;
+  --mynah-sizing-base: #{awsui.$space-scaled-xxs};
+
+  --mynah-chat-wrapper-spacing: var(--mynah-sizing-4);
   --mynah-font-family: system-ui, -apple-system, sans-serif;
   --mynah-syntax-code-font-family: monospace;
-  --mynah-color-text-default: #517185;
-  --mynah-color-text-alternate: #ffffff;
-  --mynah-color-text-strong: #296689;
-  --mynah-color-text-weak: #a9bed0;
-  --mynah-color-text-link: #006ab1;
-  --mynah-color-text-input: #517185;
+  --mynah-color-text-default: #{awsui.$color-text-body-default};
+  --mynah-color-text-alternate: #{awsui.$color-text-button-primary-active};
+  --mynah-color-text-strong: #{awsui.$color-text-body-default};
+  --mynah-color-text-weak: #{awsui.$color-text-input-disabled};
+  --mynah-color-text-link: #{awsui.$color-text-link-default};
+  --mynah-color-text-input: #{awsui.$color-text-form-default};
   --mynah-color-light: rgba(0, 0, 0, 0.05);
-  --mynah-color-highlight: rgba(255, 180, 0, 0.1);
+  --mynah-color-highlight: rgba(255, 180, 0, 0.25);
   --mynah-color-highlight-text: #886411;
-  --mynah-color-border-default: rgba(119, 157, 182, 0.15);
+  --mynah-color-border-default: #{awsui.$color-border-divider-default};
   --mynah-button-border-width: 1px;
   --mynah-border-width: 1px;
   --mynah-color-syntax-variable: #7e009e;
@@ -48,25 +49,25 @@ div.mynah-ui-chat-wrapper {
   --mynah-color-syntax-attr: #dc0450;
   --mynah-color-syntax-property: #00d1e0;
   --mynah-color-syntax-comment: #0c923f;
-  --mynah-color-syntax-code: #0051a8;
+  --mynah-color-syntax-code: #{awsui.$color-text-accent};
   --mynah-color-syntax-bg: rgba(40, 120, 200, 0.2);
-  --mynah-color-status-info: #28a7e6;
-  --mynah-color-status-success: #36e281;
-  --mynah-color-status-warning: #eca14b;
-  --mynah-color-status-error: #e60063;
-  --mynah-color-bg: #fafbfc;
-  --mynah-color-tab-active: #ffffff;
-  --mynah-color-toggle: #fafbfc;
-  --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
-  --mynah-color-button: #1e9ddc;
-  --mynah-color-button-reverse: #ffffff;
-  --mynah-color-alternate: #5f6a79;
-  --mynah-color-alternate-reverse: #ffffff;
-  --mynah-card-bg: #ffffff;
-  --mynah-card-bg-alternate: #6a91af;
+  --mynah-color-status-info: #{awsui.$color-text-status-info};
+  --mynah-color-status-success: #{awsui.$color-text-status-success};
+  --mynah-color-status-warning: #{awsui.$color-text-status-warning};
+  --mynah-color-status-error: #{awsui.$color-text-status-error};
+  --mynah-card-bg-alternate: #{awsui.$color-background-button-primary-active};
+  --mynah-color-bg: #{awsui.$color-background-layout-main};
+  --mynah-color-tab-active: #{awsui.$color-background-container-content};
+  --mynah-color-toggle: #{awsui.$color-background-button-primary-default};
+  --mynah-color-toggle-reverse: #{awsui.$color-text-button-primary-default};
+  --mynah-color-button: #{awsui.$color-background-button-primary-default};
+  --mynah-color-button-reverse: #{awsui.$color-text-button-primary-default};
+  --mynah-color-alternate: #{awsui.$color-background-button-primary-default};
+  --mynah-color-alternate-reverse: #{awsui.$color-text-button-primary-default};
+  --mynah-card-bg: #{awsui.$color-background-container-content};
   --mynah-shadow-button: 0 5px 10px -10px rgba(0, 0, 0, 0.25);
-  --mynah-shadow-card: 0 10px 20px -15px rgba(0, 0, 0, 0.25);
-  --mynah-shadow-overlay: 0 7px 27px -12px rgba(0, 0, 0, 0.35);
+  --mynah-shadow-card: 0;
+  --mynah-shadow-overlay: #{awsui.$shadow-container-active};
   --mynah-syntax-code-font-size: 1rem;
   --mynah-syntax-code-line-height: 1.25rem;
   --mynah-font-size-xxsmall: 0.75rem;
@@ -75,10 +76,10 @@ div.mynah-ui-chat-wrapper {
   --mynah-font-size-medium: 1rem;
   --mynah-font-size-large: 1.125rem;
   --mynah-line-height: 1.25rem;
-  --mynah-card-radius: var(--mynah-sizing-5);
-  --mynah-card-radius-corner: var(--mynah-sizing-1);
-  --mynah-button-radius: var(--mynah-sizing-5);
-  --mynah-input-radius: var(--mynah-sizing-2);
+  --mynah-card-radius: #{awsui.$border-radius-container};
+  --mynah-card-radius-corner: #{awsui.$border-radius-container};
+  --mynah-button-radius: #{awsui.$border-radius-button};
+  --mynah-input-radius: #{awsui.$border-radius-input};
   --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
   --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
   --mynah-very-long-transition: all 1650ms cubic-bezier(0.25, 1, 0, 1);

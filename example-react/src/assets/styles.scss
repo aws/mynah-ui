@@ -1,4 +1,4 @@
-// @use '@amzn/awsui-design-tokens/polaris.scss' as awsui;
+@use '@cloudscape-design/design-tokens/index' as awsui;
 // @import './overrides.scss';
 
 div[data-class='main-panel-grid'] {
@@ -8,12 +8,13 @@ div[data-class='main-panel-grid'] {
 div[data-class='mynah-ui-chat-example-container'] {
   position: sticky !important;
   top: 10px;
+  overflow: hidden;
 }
 
 .main-panel-content-wrapper {
   display: flex;
   flex-flow: column nowrap;
-  /* gap: awsui.$space-scaled-m; */
+  gap: awsui.$space-scaled-m;
   justify-content: flex-start;
   align-items: stretch;
   overflow: hidden;

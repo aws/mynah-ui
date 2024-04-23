@@ -4,26 +4,32 @@ const INITIAL_STREAM_DELAY = 1250;
 
 export class Connector {
   requestGenerativeAIAnswer = async (
-    streamingChatItems: Partial<ChatItem>[],
-    onStreamUpdate: (chatItem: Partial<ChatItem>) => void,
+    streamingChatItems:Partial<ChatItem>[],
+    onStreamUpdate: (chatItem: Partial<ChatItem>) => boolean,
     onStreamEnd: () => void
-  ): Promise<boolean> =>
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
+  ): Promise<boolean> => await new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(true);
+      let streamFillInterval: ReturnType<typeof setInterval>;
+      const mdStream = streamingChatItems.map(i => i).reverse();
+      const intervalTimingMultiplier = Math.floor(Math.random() * (2) + 1);
 
-        const mdStream = streamingChatItems.map((i) => i).reverse();
-        const intervalTimingMultiplier = Math.floor(Math.random() * 2 + 1);
-        setTimeout(() => {
-          const streamFillInterval = setInterval(() => {
-            if (mdStream.length > 0) {
-              onStreamUpdate(mdStream.pop() ?? {});
-            } else {
-              clearInterval(streamFillInterval);
-              onStreamEnd();
+      const endStream = ()=>{
+        onStreamEnd();  
+        clearInterval(streamFillInterval);
+      }
+      setTimeout(() => {
+        streamFillInterval = setInterval(() => {
+          if (mdStream.length > 0) {
+            const stopStream = onStreamUpdate(mdStream.pop() ?? {});
+            if(stopStream){
+              endStream();
             }
-          }, STREAM_DELAY * intervalTimingMultiplier);
-        }, INITIAL_STREAM_DELAY);
-      }, 150);
-    });
+          } else {
+            endStream()
+          }
+        }, STREAM_DELAY * intervalTimingMultiplier);
+      }, INITIAL_STREAM_DELAY);
+    }, 150);
+  });
 }
