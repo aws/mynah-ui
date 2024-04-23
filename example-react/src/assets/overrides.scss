@@ -1,0 +1,21 @@
+div[class^='awsui_help-panel'] {
+  /* padding-left: awsui.$space-scaled-m !important;
+  padding-right: awsui.$space-scaled-m !important; */
+}
+div[class^='awsui_content-side'] {
+  display: flex !important;
+  flex-flow: column nowrap !important;
+  overflow: hidden !important;
+  /* height: calc(
+    100% - awsui.$space-scaled-xxxl - awsui.$space-scaled-m
+  ) !important; */
+  div[class^='awsui_pane-content-'] {
+    flex: 1;
+    display: flex !important;
+    flex-flow: column nowrap !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}

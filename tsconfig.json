@@ -24,6 +24,7 @@
 		"dist",
 		"node_modules",
 		"docs",
-		"example"
+		"example",
+		"example-react"
 	]
 }
