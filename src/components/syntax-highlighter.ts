@@ -9,7 +9,7 @@ import { highlightElement } from 'prismjs';
 import 'prismjs/components/prism-markup.min';
 import 'prismjs/components/prism-xml-doc.min';
 import 'prismjs/components/prism-css.min';
-import 'prismjs/components/prism-clike.min'; // default
+import 'prismjs/components/prism-clike.min';
 import 'prismjs/components/prism-javascript.min';
 import 'prismjs/components/prism-typescript.min';
 import 'prismjs/components/prism-jsx.min';

@@ -12,6 +12,7 @@ import MENU from './icons/menu.svg';
 import MINUS from './icons/minus.svg';
 import SEARCH from './icons/search.svg';
 import PLUS from './icons/plus.svg';
+import PAPER_CLIP from './icons/paper-clip.svg';
 import LIST_ADD from './icons/list-add.svg';
 import TABS from './icons/tabs.svg';
 import PENCIL from './icons/pencil.svg';
@@ -64,6 +65,7 @@ export class MynahUIIconImporter {
       MINUS,
       SEARCH,
       PLUS,
+      PAPER_CLIP,
       LIST_ADD,
       TABS,
       PENCIL,

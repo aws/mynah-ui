@@ -12,6 +12,7 @@ export enum MynahIcons {
   MINUS = 'minus',
   SEARCH = 'search',
   PLUS = 'plus',
+  PAPER_CLIP = 'paper-clip',
   LIST_ADD = 'list-add',
   TABS = 'tabs',
   CHAT = 'chat',

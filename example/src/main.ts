@@ -187,7 +187,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onVote: (tabId: string, messageId: string, vote: RelevancyVoteType) => {
       Log(`Message <b>${messageId}</b> is <b>${vote}d</b>.`);
     },
-    onOpenDiff: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => {
+    onFileClick: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => {
       Log(`File clicked: <b>${filePath}</b>`);
     },
     onFileActionClick: (tabId, messageId, filePath, actionName) => {

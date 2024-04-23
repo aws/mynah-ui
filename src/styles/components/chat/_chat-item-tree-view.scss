@@ -1,293 +1,322 @@
 .mynah-chat-item-tree-view-wrapper {
-    margin: 0;
-    margin-block-end: 0 !important;
-    margin-block-start: 0 !important;
+  margin: 0;
+  margin-block-end: 0 !important;
+  margin-block-start: 0 !important;
 
-    >.mynah-chat-item-tree-view-wrapper-container {
-        background-color: var(--mynah-card-bg);
-        color: var(--mynah-color-text-default);
-        margin-block-start: 0 !important;
-        margin-block-end: 0 !important;
-        position: relative;
-        border-radius: var(--mynah-input-radius);
-        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+  > .mynah-chat-item-tree-view-wrapper-container {
+    background-color: var(--mynah-card-bg);
+    color: var(--mynah-color-text-default);
+    margin-block-start: 0 !important;
+    margin-block-end: 0 !important;
+    position: relative;
+    border-radius: var(--mynah-input-radius);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    overflow: hidden;
+
+    > .mynah-chat-item-tree-view-wrapper-title {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+      padding: var(--mynah-sizing-3);
+      gap: var(--mynah-sizing-2);
+      border-bottom: var(--mynah-border-width) solid var(--mynah-color-border-default);
+
+      > h4 {
+        margin: 0;
+      }
+
+      &:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--mynah-color-border-default);
+        opacity: 0.25;
+        pointer-events: none;
+      }
+    }
+
+    > .mynah-chat-item-tree-view {
+      padding: var(--mynah-sizing-2);
+    }
+
+    .mynah-chat-item-tree-view {
+      overflow: hidden;
+      box-sizing: border-box;
+      width: 100%;
+      overflow-y: hidden;
+      overflow-x: auto;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: var(--mynah-sizing-half);
+
+      .mynah-chat-item-tree-view-button-title {
+        display: inline-flex;
+        gap: var(--mynah-sizing-1);
+      }
+
+      .mynah-chat-item-tree-view-button-weak-title {
+        opacity: 0.65;
+      }
+
+      .mynah-chat-item-pull-request-item {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .mynah-chat-item-tree-view {
+        padding-left: var(--mynah-sizing-4);
+      }
+    }
+
+    .mynah-chat-item-tree-view-file-item {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--mynah-sizing-2);
+      overflow: hidden;
+      cursor: pointer;
+      width: calc(100% - var(--mynah-sizing-4));
+      padding: calc(3 * var(--mynah-sizing-half));
+      position: relative;
+      box-sizing: content-box;
+      border-radius: var(--mynah-input-radius);
+
+      &:not(:hover) {
+        > .mynah-chat-item-tree-view-file-item-actions {
+          display: none;
+        }
+      }
+
+      &:hover {
+        background-color: var(--mynah-color-light);
+      }
+
+      &-status {
+        &-info,
+        &-success,
+        &-warning,
+        &-error {
+          &:before {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            opacity: 0.1;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border-radius: inherit;
+          }
+        }
+
+        &-info {
+          &:before {
+            background-color: var(--mynah-color-status-info);
+          }
+
+          > .mynah-chat-item-tree-view-file-item-details > .mynah-ui-icon {
+            color: var(--mynah-color-status-info);
+          }
+        }
+
+        &-success {
+          &:before {
+            background-color: var(--mynah-color-status-success);
+          }
+
+          > .mynah-chat-item-tree-view-file-item-details > .mynah-ui-icon {
+            color: var(--mynah-color-status-success);
+          }
+        }
+
+        &-warning {
+          &:before {
+            background-color: var(--mynah-color-status-warning);
+          }
+
+          > .mynah-chat-item-tree-view-file-item-details > .mynah-ui-icon {
+            color: var(--mynah-color-status-warning);
+          }
+        }
+
+        &-error {
+          &:before {
+            background-color: var(--mynah-color-status-error);
+          }
+
+          > .mynah-chat-item-tree-view-file-item-details > .mynah-ui-icon {
+            color: var(--mynah-color-status-error);
+          }
+        }
+      }
+
+      &-details {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: var(--mynah-sizing-1);
+        font-size: 90%;
+        z-index: 10;
+        flex: 1;
+        flex-shrink: 1;
         overflow: hidden;
 
-        >.mynah-chat-item-tree-view-wrapper-title {
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: flex-start;
-            align-items: center;
-            position: relative;
-            padding: var(--mynah-sizing-3);
-            gap: var(--mynah-sizing-2);
-            border-bottom: var(--mynah-border-width) solid var(--mynah-color-border-default);
-
-            >h4 {
-                margin: 0;
-            }
-
-            &:before {
-                content: "";
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: var(--mynah-color-border-default);
-                opacity: 0.25;
-                pointer-events: none;
-            }
+        > .mynah-chat-item-tree-view-file-item-details-text {
+          overflow: hidden;
+          flex: 1;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
+      }
 
-        .mynah-chat-item-tree-view {
-            overflow: hidden;
-            box-sizing: border-box;
-            width: 100%;
-            overflow-y: hidden;
-            overflow-x: auto;
-            display: flex;
-            flex-flow: column nowrap;
-            justify-content: flex-start;
-            align-items: flex-start;
-            gap: var(--mynah-sizing-half);
+      &-actions {
+        display: flex;
+        flex-flow: row-reverse nowrap;
+        justify-content: flex-end;
+        align-items: center;
+        gap: var(--mynah-sizing-2);
+        font-size: 90%;
+        z-index: 10;
+        padding-right: var(--mynah-sizing-1);
 
-            .mynah-chat-item-tree-view-button-title {
-                display: inline-flex;
-                gap: var(--mynah-sizing-1);
-            }
+        > .mynah-button {
+          width: auto;
+          height: auto;
+          min-width: auto;
 
-            .mynah-chat-item-tree-view-button-weak-title{
-                opacity: 0.65;
-            }
+          &.info {
+            color: var(--mynah-color-status-info);
+          }
 
-            .mynah-chat-item-pull-request-item {
-                width: 100%;
-                box-sizing: border-box;
-            }
+          &.success {
+            color: var(--mynah-color-status-success);
+          }
 
-            .mynah-chat-item-tree-view {
-                padding-left: var(--mynah-sizing-4);
-            }
+          &.warning {
+            color: var(--mynah-color-status-warning);
+          }
 
-            .mynah-chat-item-tree-view-file-item {
-                display: flex;
-                flex-flow: row nowrap;
-                justify-content: space-between;
-                align-items: center;
-                gap: var(--mynah-sizing-2);
-                overflow: hidden;
-                cursor: pointer;
-                width: calc(100% - var(--mynah-sizing-4));
-                padding: calc(3 * var(--mynah-sizing-half));
-                position: relative;
-                box-sizing: content-box;
-                border-radius: var(--mynah-button-radius);
-
-                &:not(:hover) {
-                    >.mynah-chat-item-tree-view-file-item-actions {
-                        display: none;
-                    }
-                }
-
-                &:hover {
-                    background-color: var(--mynah-color-light);
-                }
-
-                &-status {
-
-                    &-info,
-                    &-success,
-                    &-warning,
-                    &-error {
-                        &:before {
-                            content: "";
-                            position: absolute;
-                            z-index: 0;
-                            opacity: 0.1;
-                            width: 100%;
-                            height: 100%;
-                            left: 0;
-                            top: 0;
-                            border-radius: var(--mynah-button-radius);
-                        }
-                    }
-
-                    &-info {
-                        &:before {
-                            background-color: var(--mynah-color-status-info);
-                        }
-
-                        >.mynah-chat-item-tree-view-file-item-details>.mynah-ui-icon {
-                            color: var(--mynah-color-status-info);
-                        }
-                    }
-
-                    &-success {
-                        &:before {
-                            background-color: var(--mynah-color-status-success);
-                        }
-
-                        >.mynah-chat-item-tree-view-file-item-details>.mynah-ui-icon {
-                            color: var(--mynah-color-status-success);
-                        }
-                    }
-
-                    &-warning {
-                        &:before {
-                            background-color: var(--mynah-color-status-warning);
-                        }
-
-                        >.mynah-chat-item-tree-view-file-item-details>.mynah-ui-icon {
-                            color: var(--mynah-color-status-warning);
-                        }
-                    }
-
-                    &-error {
-                        &:before {
-                            background-color: var(--mynah-color-status-error);
-                        }
-
-                        >.mynah-chat-item-tree-view-file-item-details>.mynah-ui-icon {
-                            color: var(--mynah-color-status-error);
-                        }
-                    }
-                }
-
-                &-details {
-                    display: flex;
-                    flex-flow: row nowrap;
-                    justify-content: flex-start;
-                    align-items: center;
-                    gap: var(--mynah-sizing-1);
-                    font-size: 90%;
-                    z-index: 10;
-                    flex: 1;
-                    flex-shrink: 1;
-                    overflow: hidden;
-
-                    >.mynah-chat-item-tree-view-file-item-details-text {
-                        overflow: hidden;
-                        flex: 1;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    }
-                }
-
-                &-actions {
-                    display: flex;
-                    flex-flow: row-reverse nowrap;
-                    justify-content: flex-end;
-                    align-items: center;
-                    gap: var(--mynah-sizing-2);
-                    font-size: 90%;
-                    z-index: 10;
-                    padding-right: var(--mynah-sizing-1);
-
-                    >.mynah-button {
-                        width: auto;
-                        height: auto;
-                        min-width: auto;
-
-                        &.info {
-                            color: var(--mynah-color-status-info);
-                        }
-
-                        &.success {
-                            color: var(--mynah-color-status-success);
-                        }
-
-                        &.warning {
-                            color: var(--mynah-color-status-warning);
-                        }
-
-                        &.error {
-                            color: var(--mynah-color-status-error);
-                        }
-                    }
-                }
-
-                &-deleted {
-                    text-decoration: line-through;
-                }
-
-                &-title {
-                    display: flex;
-                    flex-flow: row nowrap;
-                    justify-content: flex-start;
-                    align-items: center;
-                    gap: var(--mynah-sizing-1);
-                    max-width: 100%;
-                    overflow: hidden;
-                    z-index: 10;
-                    flex-shrink: 0;
-
-                    >span {
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                        white-space: nowrap;
-                    }
-                }
-            }
+          &.error {
+            color: var(--mynah-color-status-error);
+          }
         }
+      }
 
-        >.mynah-chat-item-tree-view {
-            padding: var(--mynah-sizing-2);
+      &-deleted {
+        text-decoration: line-through;
+      }
+
+      &-title {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: var(--mynah-sizing-1);
+        max-width: 100%;
+        overflow: hidden;
+        z-index: 10;
+        flex-shrink: 1;
+
+        > span {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
         }
+      }
+
+      > .mynah-chat-single-file-icon {
+        position: relative;
+        padding: var(--mynah-sizing-2);
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        border-radius: var(--mynah-input-radius);
+        color: var(--mynah-card-bg);
+        &:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background-color: var(--mynah-color-text-default);
+          opacity: 0.5;
+          pointer-events: none;
+          border-radius: inherit;
+        }
+      }
     }
+
+    > .mynah-chat-item-tree-view-file-item {
+      padding: var(--mynah-sizing-2);
+      box-sizing: border-box;
+      width: 100%;
+      border-radius: 0;
+    }
+  }
 }
 
 .mynah-chat-item-tree-view-wrapper-label {
-    border-top-left-radius: var(--mynah-card-radius);
-    border-top-right-radius: var(--mynah-card-radius);
-    background-color: var(--mynah-color-alternate);
-    margin-bottom: 0px;
-    padding: var(--mynah-sizing-4);
+  border-top-left-radius: var(--mynah-card-radius);
+  border-top-right-radius: var(--mynah-card-radius);
+  background-color: var(--mynah-color-alternate);
+  margin-bottom: 0px;
+  padding: var(--mynah-sizing-4);
 }
 
 .mynah-chat-item-tree-view-wrapper-feedback-label {
-    padding-left: var(--mynah-sizing-4);
+  padding-left: var(--mynah-sizing-4);
 }
 
 .mynah-chat-item-tree-view-wrapper-feedback-div {
-    float: right;
+  float: right;
 
-    button:first-child {
-        margin-right: var(--mynah-sizing-2);
-    }
+  button:first-child {
+    margin-right: var(--mynah-sizing-2);
+  }
 }
 
 .mynah-chat-item-tree-view-license {
-    &:before {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background-color: var(--mynah-card-bg-alternate);
-        opacity: 0.07;
-        pointer-events: none;
-    }
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: var(--mynah-card-bg-alternate);
+    opacity: 0.07;
+    pointer-events: none;
+  }
 
-    color: var(--mynah-color-text-weak);
+  color: var(--mynah-color-text-weak);
 
-    ul {
+  ul {
+    margin: 0;
+    padding-left: var(--mynah-sizing-8);
+
+    > li {
+      &:not(:first-child) {
+        margin-top: var(--mynah-sizing-2);
+      }
+
+      .mynah-card-body p {
         margin: 0;
-        padding-left: var(--mynah-sizing-8);
-
-        >li {
-            &:not(:first-child) {
-                margin-top: var(--mynah-sizing-2);
-            }
-
-            .mynah-card-body p {
-                margin: 0;
-            }
-        }
+      }
     }
+  }
 
-    .mynah-chat-item-tree-view-license-dropdown-button>span {
-        max-width: unset;
-    }
+  .mynah-chat-item-tree-view-license-dropdown-button > span {
+    max-width: unset;
+  }
 }

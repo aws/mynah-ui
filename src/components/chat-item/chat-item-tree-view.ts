@@ -1,10 +1,10 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
-import { FileNode, TreeNode } from '../../helper/file-tree';
-import { FileNodeAction, MynahEventNames } from '../../static';
+import { cancelEvent } from '../../helper/events';
+import { TreeNode } from '../../helper/file-tree';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
+import { ChatItemTreeFile } from './chat-item-tree-file';
 
 export interface ChatItemTreeViewProps {
   node: TreeNode;
@@ -98,76 +98,15 @@ export class ChatItemTreeView {
   buildFileNode (): ExtendedHTMLElement[] {
     if (this.node.type !== 'file') return [];
 
-    const fileItem = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [
-        'mynah-chat-item-tree-view-file-item',
-        this.node.details?.status !== undefined ? `mynah-chat-item-tree-view-file-item-status-${this.node.details?.status}` : '',
-      ],
-      events: {
-        click: () => {
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_DIFF, {
-            tabId: this.tabId,
-            messageId: this.messageId,
-            filePath: (this.node as FileNode).filePath,
-            deleted: (this.node as FileNode).deleted,
-          });
-        }
-      },
-      children: [
-        {
-          type: 'div',
-          classNames: [
-            'mynah-chat-item-tree-view-file-item-title',
-            this.node.deleted ? 'mynah-chat-item-tree-view-file-item-deleted' : '',
-          ],
-          children: [ {
-            type: 'span',
-            children: [ this.node.name ]
-          } ]
-        },
-        ...(this.node.details !== undefined
-          ? [ {
-              type: 'div',
-              classNames: [ 'mynah-chat-item-tree-view-file-item-details' ],
-              children: [
-                ...(this.node.details.icon !== undefined ? [ new Icon({ icon: this.node.details.icon }).render ] : []),
-                ...(this.node.details.label !== undefined
-                  ? [ {
-                      type: 'span',
-                      classNames: [ 'mynah-chat-item-tree-view-file-item-details-text' ],
-                      children: [ this.node.details.label ]
-                    } ]
-                  : []),
-              ]
-            } ]
-          : []),
-        ...(this.node.actions !== undefined
-          ? [ {
-              type: 'div',
-              classNames: [ 'mynah-chat-item-tree-view-file-item-actions' ],
-              children: this.node.actions.map((action: FileNodeAction) => new Button({
-                icon: new Icon({ icon: action.icon }).render,
-                ...(action.label !== undefined ? { label: action.label } : {}),
-                attributes: {
-                  title: action.description ?? ''
-                },
-                classNames: [ 'mynah-icon-button', action.status ?? '' ],
-                primary: false,
-                onClick: (e) => {
-                  cancelEvent(e);
-                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_ACTION_CLICK, {
-                    tabId: this.tabId,
-                    messageId: this.messageId,
-                    filePath: (this.node as FileNode).filePath,
-                    actionName: action.name,
-                  });
-                },
-              }).render)
-            } ]
-          : []),
-      ]
-    });
+    const fileItem = new ChatItemTreeFile({
+      fileName: this.node.name,
+      filePath: this.node.filePath,
+      tabId: this.tabId,
+      messageId: this.messageId,
+      details: this.node.details,
+      deleted: this.node.deleted,
+      actions: this.node.actions
+    }).render;
 
     return [ fileItem ];
   }
