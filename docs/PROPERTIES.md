@@ -105,7 +105,16 @@ export interface MynahUIProps {
       formItemValues?: Record<string, string>;
     },
     eventId?: string) => void;
+  /**
+   * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
+   */
   onOpenDiff?: (
+    tabId: string,
+    filePath: string,
+    deleted: boolean,
+    messageId?: string,
+    eventId?: string) => void;
+  onFileClick?: (
     tabId: string,
     filePath: string,
     deleted: boolean,
@@ -729,7 +738,7 @@ This event will be fired when user clicks one of the buttons inside a custom pop
 
 
 <p align="center">
-  <img src="./img/onCustomFormAction.png" alt="onOpenDiff" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/onCustomFormAction.png" alt="onCustomFormAction" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ```typescript
@@ -747,7 +756,7 @@ onCustomFormAction?: (
 ---
 
 
-### `onOpenDiff`
+### `onOpenDiff` [DEPRECATED: will be dropped after version 5.x.x]
 
 This event will be fired when user clicks to a file name on the file list inside a chat message body. It will pass `tabId`, `filePath` for the clicked file, `deleted` to identify if the file is deleted and `messageId` as the arguments.
 
@@ -770,6 +779,34 @@ onOpenDiff?: (
     };
 ...
 ```
+
+---
+
+
+### `onFileClick`
+
+This event will be fired when user clicks to a file name on the file list inside a chat message body. It will pass `tabId`, `filePath` for the clicked file, `deleted` to identify if the file is deleted and `messageId` as the arguments.
+
+
+<p align="center">
+  <img src="./img/onOpenDiff.png" alt="onFileClick" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onFileClick?: (
+    tabId: string,
+    filePath: string,
+    deleted: boolean,
+    messageId?: string):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`For message: ${messageId}`);
+      console.log(`File to open diff view: ${filePath}`);
+      console.log(`Is file deleted: ${deleted}`);
+    };
+...
+```
+
 ---
 
 ### `onFileActionClick`
