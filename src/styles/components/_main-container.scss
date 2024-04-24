@@ -12,6 +12,8 @@ $smoothduration: 400ms;
     overflow: hidden;
     justify-content: stretch;
     align-items: stretch;
+    background-color: var(--mynah-color-bg);
+    color: var(--mynah-color-text-default);
 
     > .mynah-ui-tab-contents-wrapper {
         flex: 1;
@@ -21,5 +23,28 @@ $smoothduration: 400ms;
                 display: flex;
             }
         }
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-weight: 600;
+    }
+
+    ::-webkit-scrollbar {
+        width: 2px;
+        height: 2px;
+        opacity: 0.25;
+        &:horizontal {
+            width: 0px;
+            height: 0px;
+        }
+    }
+
+    *:focus {
+        outline: none;
     }
 }

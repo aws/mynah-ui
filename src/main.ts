@@ -196,7 +196,7 @@ export interface MynahUIProps {
 }
 
 export class MynahUI {
-  render: ExtendedHTMLElement;
+  private readonly render: ExtendedHTMLElement;
   private lastEventId: string = '';
   private readonly props: MynahUIProps;
   private readonly tabsWrapper: ExtendedHTMLElement;
@@ -268,7 +268,7 @@ export class MynahUI {
         },
         children: [
           this.tabsWrapper ?? '',
-          new NoTabs().render,
+          ...(Config.getInstance().config.maxTabs > 1 ? [ new NoTabs().render ] : []),
           this.tabContentsWrapper
         ]
       },

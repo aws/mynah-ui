@@ -1,54 +1,20 @@
-@import "mixins";
-@import "variables";
-@import "animations";
-@import "dark";
-@import "favicons";
+@import 'mixins';
+@import 'variables';
+@import 'animations';
+@import 'dark';
+@import 'favicons';
 
 // Components
-@import "./components/main-container";
-@import "./components/button";
-@import "./components/form-input";
-@import "./components/toggle";
-@import "./components/icon";
-@import "./components/nav-tabs";
-@import "./components/card/card";
-@import "./components/feedback-form";
-@import "./components/overlay";
-@import "./components/notification";
-@import "./components/syntax-highlighter";
-@import "./components/chat/chat-wrapper";
-@import "./components/collapsible-content";
-
-body,
-html {
-    background-color: var(--mynah-color-bg);
-    color: var(--mynah-color-text-default);
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-weight: 600;
-}
-
-::-webkit-scrollbar {
-    width: 2px;
-    height: 2px;
-    opacity: 0.25;
-    &:horizontal {
-        width: 0px;
-        height: 0px;
-    }
-}
-
-*:focus {
-    outline: none;
-}
+@import './components/main-container';
+@import './components/button';
+@import './components/form-input';
+@import './components/toggle';
+@import './components/icon';
+@import './components/nav-tabs';
+@import './components/card/card';
+@import './components/feedback-form';
+@import './components/overlay';
+@import './components/notification';
+@import './components/syntax-highlighter';
+@import './components/chat/chat-wrapper';
+@import './components/collapsible-content';

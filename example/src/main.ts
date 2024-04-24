@@ -336,10 +336,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.updateStore(tabId, {
             promptInputStickyCard: {
               messageId: 'sticky-card',
-              body: `Please read the [terms and conditions change](#) and after that click the **Acknowledge** button below!`,
+              body: `Our [Terms and Conditions](#) are updated. Please review and read it. To accept please hit the **Acknowledge** button.`,
               buttons: [
                 {
-                  text: 'Open transofmration hub',
+                  text: 'Acknowledge',
                   id: 'acknowledge',
                   status: 'info',
                 },

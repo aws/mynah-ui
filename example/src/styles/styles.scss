@@ -19,6 +19,9 @@ body {
   margin: 0;
   padding: 0;
   display: block;
+  overflow: hidden;
+  background-color: var(--mynah-color-bg);
+  color: var(--mynah-color-text-default);
 }
 .mynah-extension-showcase-grid {
   &:before {

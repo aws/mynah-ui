@@ -1,4 +1,4 @@
-import { ChatItem, ChatItemType, ChatPrompt } from '@aws/mynah-ui';
+import { ChatItem } from '@aws/mynah-ui';
 import { Log } from './logger';
 const STREAM_DELAY = 350;
 const INITIAL_STREAM_DELAY = 1250;
