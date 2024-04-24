@@ -42,7 +42,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     rootSelector: '#amzn-mynah-website-wrapper',
     defaults: mynahUIDefaults,
     config: {
-      maxTabs: 1,
+      maxTabs: 5,
       autoFocus: true,
       tabBarButtons: [
         {
