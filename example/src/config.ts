@@ -50,6 +50,10 @@ export const QuickActionCommands:QuickActionCommandGroup[] = [
         description: 'ChatItem cards can show a file list with a proper file-tree look. And those files can have actions and statuses with information too.',
       },
       {
+        command: Commands.CARD_WITH_MARKDOWN_LIST,
+        description: 'ChatItem card with a complex markdown list inside.',
+      },
+      {
         command: Commands.PROGRESSIVE_CARD,
         description: 'ChatItem cards can show a progress with its content. It doesn\'t have to be a stream by appending text each time.',
       },

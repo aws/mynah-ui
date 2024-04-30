@@ -10,6 +10,7 @@ import md7 from './sample-7.md';
 import md8 from './sample-8.md';
 import md9 from './sample-9.md';
 import md10 from './sample-10.md';
+import sampleList from './sample-list.md';
 import SampleCode from './sample-code.md';
 import { Commands } from '../commands';
 
@@ -53,6 +54,11 @@ export const exampleSources = [
 `,
   },
 ] as SourceLink[];
+
+export const sampleMarkdownList: ChatItem = {
+  type: ChatItemType.ANSWER,
+  body: `${sampleList as string}`
+};
 
 export const exampleStreamParts: Partial<ChatItem>[] = [
   { body: `${md0 as string}` },
@@ -136,6 +142,10 @@ export const defaultFollowUps: ChatItem = {
       {
         command: Commands.FORM_CARD,
         pillText: 'Form items',
+      },
+      {
+        command: Commands.CARD_WITH_MARKDOWN_LIST,
+        pillText: 'Markdown list',
       },
       {
         command: Commands.FILE_LIST_CARD,
@@ -511,6 +521,7 @@ You can also ask me any follow-up questions that you have or adjust any part by 
 
 `,
     fileList: {
+      fileTreeTitle: '',
       filePaths: ['Refactor_analysis_[id].pdf'],
     },
   },

@@ -59,7 +59,7 @@ export class ChatItemTreeViewWrapper {
           type: 'div',
           classNames: [ 'mynah-chat-item-tree-view-wrapper-container' ],
           children: [
-            ...(props.cardTitle != null && props.cardTitle !== ''
+            ...(props.cardTitle !== ''
               ? [ {
                   type: 'div',
                   classNames: [ 'mynah-chat-item-tree-view-wrapper-title' ],
