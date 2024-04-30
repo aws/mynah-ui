@@ -10,7 +10,10 @@ import md7 from './sample-7.md';
 import md8 from './sample-8.md';
 import md9 from './sample-9.md';
 import md10 from './sample-10.md';
-import sampleList from './sample-list.md';
+import sampleList0 from './sample-list-0.md';
+import sampleList1 from './sample-list-1.md';
+import sampleList2 from './sample-list-2.md';
+import sampleList3 from './sample-list-3.md';
 import SampleCode from './sample-code.md';
 import { Commands } from '../commands';
 
@@ -55,10 +58,12 @@ export const exampleSources = [
   },
 ] as SourceLink[];
 
-export const sampleMarkdownList: ChatItem = {
-  type: ChatItemType.ANSWER,
-  body: `${sampleList as string}`
-};
+export const sampleMarkdownList: Partial<ChatItem>[] = [
+  { body: `${sampleList0 as string}`},
+  { body: `${sampleList1 as string}`},
+  { body: `${sampleList2 as string}`},
+  { body: `${sampleList3 as string}`},
+];
 
 export const exampleStreamParts: Partial<ChatItem>[] = [
   { body: `${md0 as string}` },

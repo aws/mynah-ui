@@ -277,11 +277,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.CARD_WITH_MARKDOWN_LIST:
-          mynahUI.addChatItem(tabId, sampleMarkdownList);
-          mynahUI.addChatItem(tabId, defaultFollowUps);
+          getGenerativeAIAnswer(tabId, sampleMarkdownList);
           break;
         case Commands.PROGRESSIVE_CARD:
-          getProgressingCard(tabId);
+          getGenerativeAIAnswer(tabId, exampleProgressCards);
           break;
         case Commands.STATUS_CARDS:
           mynahUI.addChatItem(tabId, {
@@ -447,7 +446,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     );
   };
 
-  const getGenerativeAIAnswer = (tabId: string): void => {
+  const getGenerativeAIAnswer = (tabId: string, optionalParts?: Partial<ChatItem>[]): void => {
     const messageId = new Date().getTime().toString();
     mynahUI.updateStore(tabId, {
       loadingChat: true,
@@ -455,7 +454,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     });
     connector
       .requestGenerativeAIAnswer(
-        exampleStreamParts,
+        optionalParts ?? exampleStreamParts,
         (chatItem: Partial<ChatItem>) => {
           if (streamingMessageId != null) {
             mynahUI.updateChatAnswerWithMessageId(tabId, streamingMessageId, chatItem);
@@ -483,39 +482,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           body: '',
           canBeVoted: true,
           messageId: streamingMessageId,
-        });
-      });
-  };
-
-  const getProgressingCard = (tabId: string): void => {
-    const messageId = new Date().getTime().toString();
-    mynahUI.updateStore(tabId, {
-      loadingChat: true,
-      promptInputDisabledState: true,
-    });
-    connector
-      .requestGenerativeAIAnswer(
-        exampleProgressCards,
-        (chatItem: Partial<ChatItem>) => {
-          mynahUI.updateChatAnswerWithMessageId(tabId, messageId, chatItem);
-          return false;
-        },
-        () => {
-          mynahUI.updateStore(tabId, {
-            loadingChat: false,
-            promptInputDisabledState: false,
-          });
-          mynahUI.notify({
-            content: 'Your refactor request is finished',
-          });
-          mynahUI.addChatItem(tabId, defaultFollowUps);
-        }
-      )
-      .then(() => {
-        mynahUI.addChatItem(tabId, {
-          type: ChatItemType.ANSWER_STREAM,
-          body: '',
-          messageId,
         });
       });
   };

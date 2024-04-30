@@ -34,7 +34,7 @@ export class ChatItemTreeViewWrapper {
       references: props.references
     }).render;
 
-    const tree = props.files.length === 1
+    const tree = props.files.length === 1 && props.rootTitle == null
       ? new ChatItemTreeFile({
         filePath: props.files[0],
         fileName: props.files[0],
