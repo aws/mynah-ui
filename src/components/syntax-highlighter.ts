@@ -210,9 +210,7 @@ export class SyntaxHighlighter {
                         onClick: e => {
                           cancelEvent(e);
                           const selectedCode = this.getSelectedCode();
-                          if (this.props?.onCopiedToClipboard !== undefined) {
-                            this.props?.onCopiedToClipboard(selectedCode.type, selectedCode.code, this.props.index);
-                          }
+                          this.copyToClipboard(selectedCode.code, selectedCode.type);
                         },
                         additionalEvents: { mousedown: cancelEvent },
                       }).render ]
