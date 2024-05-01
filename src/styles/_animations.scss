@@ -24,20 +24,13 @@
 
 @keyframes typewriter {
     0% {
-        visibility: hidden;
-        opacity: 0;
-    }
-    1% {
         visibility: visible;
         opacity: 0;
+        max-height: 1px;
     }
     100% {
         opacity: 1;
-        visibility: visible;
-    }
-}
-@keyframes typewriter-visibility-only {
-    to {
+        max-height: 10000vh;
         visibility: visible;
     }
 }

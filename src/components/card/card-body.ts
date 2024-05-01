@@ -9,13 +9,25 @@ import {
   OnInsertToCursorPositionFunction,
   ReferenceTrackerInformation,
 } from '../../static';
-import { marked } from 'marked';
+import { Renderer, RendererExtensionFunction, marked } from 'marked';
 import unescapeHTML from 'unescape-html';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { generateUID } from '../../helper/guid';
 
 const PREVIEW_DELAY = 500;
+
+interface MarkedExtensions {
+  extensions?: null | {
+    renderers: {
+      [name: string]: RendererExtensionFunction;
+    };
+    childTokens: {
+      [name: string]: string[];
+    };
+  };
+}
+
 export const highlightersWithTooltip = {
   start: {
     markupStart: '<mark ',
@@ -236,6 +248,59 @@ export class CardBody {
     }
   };
 
+  /**
+   * Returns extension additions
+   * @returns marked options extensions
+   */
+  private readonly getMarkedExtensions = (): MarkedExtensions => {
+    return {
+      extensions: {
+        renderers: {
+          text: (token) => {
+            if (this.props.useParts === true) {
+              let codeOpen = false;
+              return token.text.split(' ').map((textPart: string) => {
+                if (textPart.match(/`/) != null) {
+                  // revert the code field open state back
+                  // or restart the open state of code field
+                  codeOpen = !codeOpen;
+                  // open or close state
+                  // return the text as is
+                  return textPart;
+                }
+
+                // if inside code field
+                // return text as is
+                if (codeOpen) {
+                  return textPart;
+                }
+
+                // otherwise add typewriter animation wrapper
+                return `<span class="${PARTS_CLASS_NAME}">${textPart}</span>`;
+              }).join(' ');
+            }
+            return token.text;
+          }
+        },
+        childTokens: {}
+      }
+    };
+  };
+
+  /**
+   * Contains renderer fixes
+   * unfortunately 'text' items don't work in renderers
+   * @returns marked options renderers
+   */
+  private readonly getMarkedRenderers = (): Renderer => {
+    const renderer: Renderer = new Renderer();
+    renderer.listitem = (text) => {
+      return `<li>${marked(text, { breaks: true }) as string}</li>`;
+    };
+
+    return renderer;
+  };
+
   private readonly getContentBodyChildren = (props: CardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
     if (props.body != null && props.body.trim() !== '') {
       let incomingBody = props.body;
@@ -257,34 +322,15 @@ export class CardBody {
         });
       }
 
-      // Define marked extension (and revert it back since it is global)
-      if (this.props.useParts === true) {
-        marked.use({
-          extensions: [ {
-            name: 'text',
-            renderer: (token) => {
-              if (this.props.useParts !== true) {
-                return false;
-              }
-              return token.text.split(' ').map((textPart: string) => `<span class="${PARTS_CLASS_NAME}">${textPart}</span>`).join(' ');
-            }
-          } ]
-        });
-      } else {
-        marked.use({
-          extensions: [ {
-            name: 'text',
-            renderer: (token) => {
-              return token.text;
-            }
-          } ]
-        });
-      }
       return [
         ...(Array.from(
           DomBuilder.getInstance().build({
             type: 'div',
-            innerHTML: `${marked.parse(incomingBody, { breaks: true })}`,
+            innerHTML: `${marked.parse(incomingBody, {
+              breaks: true,
+              renderer: this.getMarkedRenderers(),
+              ...this.getMarkedExtensions()
+            }) as string}`,
           }).childNodes
         ).map(node => {
           const processedNode = this.processNode(node as HTMLElement);
