@@ -9,7 +9,7 @@ import {
   OnInsertToCursorPositionFunction,
   ReferenceTrackerInformation,
 } from '../../static';
-import { Renderer, RendererExtensionFunction, marked } from 'marked';
+import { RendererExtensionFunction, marked } from 'marked';
 import unescapeHTML from 'unescape-html';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { SyntaxHighlighter } from '../syntax-highlighter';
@@ -17,6 +17,7 @@ import { generateUID } from '../../helper/guid';
 
 const PREVIEW_DELAY = 500;
 
+// Marked doesn't exports it, needs manual addition
 interface MarkedExtensions {
   extensions?: null | {
     renderers: {
@@ -258,6 +259,11 @@ export class CardBody {
         renderers: {
           text: (token) => {
             if (this.props.useParts === true) {
+              // We should skip words inside code blocks
+              // In general code blocks getting rendered before the text items
+              // However for listitems, the case is different
+              // We still need to check if the word is a code field start,
+              // is it inside a code field or is it a code field end
               let codeOpen = false;
               return token.text.split(' ').map((textPart: string) => {
                 if (textPart.match(/`/) != null) {
@@ -287,20 +293,6 @@ export class CardBody {
     };
   };
 
-  /**
-   * Contains renderer fixes
-   * unfortunately 'text' items don't work in renderers
-   * @returns marked options renderers
-   */
-  private readonly getMarkedRenderers = (): Renderer => {
-    const renderer: Renderer = new Renderer();
-    renderer.listitem = (text) => {
-      return `<li>${marked(text, { breaks: true }) as string}</li>`;
-    };
-
-    return renderer;
-  };
-
   private readonly getContentBodyChildren = (props: CardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
     if (props.body != null && props.body.trim() !== '') {
       let incomingBody = props.body;
@@ -328,7 +320,6 @@ export class CardBody {
             type: 'div',
             innerHTML: `${marked.parse(incomingBody, {
               breaks: true,
-              renderer: this.getMarkedRenderers(),
               ...this.getMarkedExtensions()
             }) as string}`,
           }).childNodes

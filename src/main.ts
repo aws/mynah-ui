@@ -32,6 +32,7 @@ import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import { Config } from './helper/config';
+import { marked } from 'marked';
 import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
@@ -204,6 +205,13 @@ export class MynahUI {
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
+    // Apply global fix for marked listitem content is not getting parsed.
+    marked.use({
+      renderer: {
+        listitem: (src) => `<li>${marked.parse(src, { breaks: true }) as string}</li>`
+      },
+    });
+
     this.props = props;
     Config.getInstance(props.config);
     DomBuilder.getInstance(props.rootSelector);
