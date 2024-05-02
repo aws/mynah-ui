@@ -29,7 +29,7 @@ export class NoTabs {
         {
           type: 'div',
           classNames: [ 'mynah-no-tabs-info' ],
-          innerHTML: marked(Config.getInstance().config.texts.noTabsOpen ?? '', { breaks: true })
+          innerHTML: marked(Config.getInstance().config.texts.noTabsOpen ?? '', { breaks: true }) as string
         },
         {
           type: 'div',

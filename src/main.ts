@@ -205,10 +205,10 @@ export class MynahUI {
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
-    // Fixes for marked
+    // Apply global fix for marked listitem content is not getting parsed.
     marked.use({
       renderer: {
-        listitem: (src) => `<li>${marked.parse(src)}</li>`
+        listitem: (src) => `<li>${marked.parse(src, { breaks: true }) as string}</li>`
       },
     });
 

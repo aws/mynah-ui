@@ -52,7 +52,7 @@ export class ChatItemFollowUpOption {
           : []),
         {
           type: 'span',
-          innerHTML: marked(croppedPillText, { breaks: true }).replace('<p>', '').replace('</p>', '')
+          innerHTML: (marked(croppedPillText, { breaks: true }) as string).replace('<p>', '').replace('</p>', '')
         }
       ],
       events: {
@@ -65,7 +65,7 @@ export class ChatItemFollowUpOption {
         ...(props.followUpOption.pillText.length > MAX_LENGTH || props.followUpOption.description !== undefined
           ? {
               mouseover: (e) => {
-                let tooltipText = marked(props.followUpOption.pillText.length > MAX_LENGTH ? props.followUpOption.pillText : '', { breaks: true });
+                let tooltipText = marked(props.followUpOption.pillText.length > MAX_LENGTH ? props.followUpOption.pillText : '', { breaks: true }) as string;
                 if (props.followUpOption.description !== undefined) {
                   if (tooltipText !== '') {
                     tooltipText += '\n\n';

@@ -42,7 +42,7 @@ export class Button {
         ...(props.tooltip != null
           ? {
               mouseover: (e) => {
-                const tooltipText = marked(props.tooltip ?? '', { breaks: true });
+                const tooltipText = marked(props.tooltip ?? '', { breaks: true }) as string;
                 this.showButtonTooltip(tooltipText, props.tooltipVerticalDirection, props.tooltipHorizontalDirection);
               },
               mouseleave: this.hideButtonTooltip
