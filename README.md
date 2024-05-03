@@ -2,6 +2,7 @@
 ### *A Data & Event Drivent Chat Interface Library for Browsers and Webviews*
 
 ### [Live Demo](https://aws.github.io/mynah-ui/)
+### [API Docs](https://aws.github.io/mynah-ui/api-doc/index.html)
 
 As you can understand from the title too, **Mynah UI** is a **_data and event_** driven chat interface for browsers and webviews on IDEs or any platform which supports latest web technologies which is also used by Amazon Q for [VSCode](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode) and [JetBrains](https://plugins.jetbrains.com/plugin/11349-aws-toolkit--amazon-q-codewhisperer-and-more) comes together with AWS Toolkit extension.
 
@@ -16,6 +17,10 @@ Please continue with one of the following guides:
 ### [How to use MynahUI](./docs/USAGE.md)
 ### [Data Model](./docs/DATAMODEL.md)
 ### [Styling Configuration](./docs/STYLING.md)
+
+and
+
+### [Developer Guidelines (Contribution)](./docs/DEVELOPER.md)
 
 <p align="center">
   <img src="./docs/img/splash.gif" alt="MynahUI" style="max-width:1280px; width:100%;border: 1px solid #e0e0e0;">
