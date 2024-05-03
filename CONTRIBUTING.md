@@ -21,6 +21,9 @@ reported the issue. Please try to include as much information as you can. Detail
 
 
 ## Contributing via Pull Requests
+
+**Read [DEVELOPER Guidelines](./docs/DEVELOPER.md) first.**
+
 Contributions via pull requests are much appreciated. Before sending us a pull request, please ensure that:
 
 1. You are working against the latest source on the *main* branch.

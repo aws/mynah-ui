@@ -33,7 +33,10 @@ jobs:
       - name: Build mynah-ui
         run: npm run build
       - name: Build demo app
-        run: npm run packdemo
+        working-directory: ./example
+        run: npm run pack
+      - name: Create API doc
+        run: npm run api-doc-deploy
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Build with Jekyll
