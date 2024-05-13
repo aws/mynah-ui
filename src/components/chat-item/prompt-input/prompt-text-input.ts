@@ -1,6 +1,8 @@
 import { Config } from '../../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
+import { MynahUIGlobalEvents } from '../../../helper/events';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
+import { MynahEventNames } from '../../../static';
 import { MAX_USER_INPUT } from '../chat-prompt-input';
 
 export interface PromptTextInputProps {
@@ -39,6 +41,7 @@ export class PromptTextInput {
         type: 'text',
         placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
         value: '',
+        ...(Config.getInstance().config.autoFocus ? { autofocus: 'autofocus' } : {})
       },
       events: {
         keypress: (e: KeyboardEvent) => {
@@ -99,6 +102,12 @@ export class PromptTextInput {
             placeholder: placeholderText
           }
         });
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TAB_FOCUS, (data) => {
+      if (data.tabId === this.props.tabId) {
+        this.promptTextInput.focus();
       }
     });
   }
