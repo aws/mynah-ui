@@ -244,6 +244,7 @@ export class MynahUI {
     if (Config.getInstance().config.maxTabs > 1) {
       this.tabsWrapper = new Tabs({
         onChange: (selectedTabId: string) => {
+          this.focusToInput(selectedTabId);
           if (this.props.onTabChange !== undefined) {
             this.props.onTabChange(selectedTabId, this.getUserEventId());
           }
@@ -287,6 +288,7 @@ export class MynahUI {
           : undefined,
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
+      this.focusToInput(tabId);
       if (this.props.onTabAdd !== undefined) {
         this.props.onTabAdd(tabId, this.getUserEventId());
       }
@@ -301,6 +303,11 @@ export class MynahUI {
     });
 
     this.addGlobalListeners();
+    const tabId = MynahUITabsStore.getInstance().getSelectedTabId() ?? '';
+    window.addEventListener('focus', () => {
+      this.focusToInput(tabId);
+    }, false);
+    this.focusToInput(tabId);
     if (this.props.onReady !== undefined) {
       this.props.onReady();
     }
@@ -309,6 +316,12 @@ export class MynahUI {
   private readonly getUserEventId = (): string => {
     this.lastEventId = generateUID();
     return this.lastEventId;
+  };
+
+  private readonly focusToInput = (tabId: string): void => {
+    if (Config.getInstance().config.autoFocus) {
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TAB_FOCUS, { tabId });
+    }
   };
 
   private readonly addGlobalListeners = (): void => {

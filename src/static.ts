@@ -117,6 +117,7 @@ export enum MynahEventNames {
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   FILE_CLICK = 'fileClick',
   FILE_ACTION_CLICK = 'fileActionClick',
+  TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
   ADD_CODE_SNIPPET = 'addCodeSnippet',
   REMOVE_CODE_SNIPPET = 'removeCodeSnippet',
