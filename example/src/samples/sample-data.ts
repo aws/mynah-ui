@@ -14,6 +14,7 @@ import sampleList0 from './sample-list-0.md';
 import sampleList1 from './sample-list-1.md';
 import sampleList2 from './sample-list-2.md';
 import sampleList3 from './sample-list-3.md';
+import sampleList4 from './sample-list-4.md';
 import SampleCode from './sample-code.md';
 import { Commands } from '../commands';
 
@@ -63,6 +64,7 @@ export const sampleMarkdownList: Partial<ChatItem>[] = [
   { body: `${sampleList1 as string}`},
   { body: `${sampleList2 as string}`},
   { body: `${sampleList3 as string}`},
+  { body: `${sampleList4 as string}`},
 ];
 
 export const exampleStreamParts: Partial<ChatItem>[] = [
