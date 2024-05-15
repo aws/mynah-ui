@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { marked } from 'marked';
+// import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Card } from './card/card';
 import { CardBody } from './card/card-body';
+import { MynahUIButton } from '../../../mynah-ui-react-components/dist/MynahUIReactComponents.umd.js';
+import { createElement, ReactElement } from 'react';
+import { Root, createRoot } from 'react-dom/client';
 
 const PREVIEW_DELAY = 350;
 export interface ButtonProps {
@@ -25,10 +28,14 @@ export interface ButtonProps {
 }
 export class Button {
   render: ExtendedHTMLElement;
+  root: Root;
+  elm: ReactElement;
+  props: ButtonProps;
   private buttonTooltip: Overlay | null;
   private buttonTooltipTimeout: ReturnType<typeof setTimeout>;
   constructor (props: ButtonProps) {
-    this.render = DomBuilder.getInstance().build({
+    this.props = props;
+    /* this.render = DomBuilder.getInstance().build({
       type: 'button',
       classNames: [
         'mynah-button',
@@ -54,7 +61,18 @@ export class Button {
         ...(props.label !== undefined ? [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ props.label ] } ] : []),
         ...(props.children ?? []),
       ],
+    }); */
+    this.render = DomBuilder.getInstance().build({
+      type: 'span'
     });
+    this.elm = createElement(MynahUIButton, {
+      children: props.children,
+      label: props.label,
+      icon: props.icon,
+      onClick: props.onClick
+    });
+    this.root = createRoot(this.render);
+    this.root.render(this.elm);
   }
 
   private readonly showButtonTooltip = (content: string, vDir?: OverlayVerticalDirection, hDir?: OverlayHorizontalDirection): void => {
@@ -99,10 +117,15 @@ export class Button {
   };
 
   setEnabled = (enabled: boolean): void => {
-    if (enabled) {
-      this.render.removeAttribute('disabled');
-    } else {
-      this.render.setAttribute('disabled', 'disabled');
-    }
+    this.root.unmount();
+    this.root = createRoot(this.render);
+    this.elm = createElement(MynahUIButton, {
+      children: this.props.children,
+      label: this.props.label,
+      icon: this.props.icon,
+      onClick: this.props.onClick,
+      disabled: !enabled
+    });
+    this.root.render(this.elm);
   };
 }

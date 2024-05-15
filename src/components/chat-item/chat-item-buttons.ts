@@ -31,40 +31,20 @@ export class ChatItemButtonsWrapper {
       classNames: [ 'mynah-chat-item-buttons-container',
         props.useButtonComponent === true ? 'mynah-chat-item-buttons-container-use-real-buttons' : '' ],
       children: this.props.buttons.map(chatActionAction => {
-        let actionItem;
-        if (props.useButtonComponent !== true) {
-          actionItem = new ChatItemFollowUpOption({
-            followUpOption: {
-              pillText: chatActionAction.text,
-              disabled: chatActionAction.disabled,
-              description: chatActionAction.description,
-              status: chatActionAction.status,
-              icon: chatActionAction.icon,
-            },
-            onClick: () => {
-              if (props.formItems !== null) {
-                props.formItems.disableAll();
-              }
-              this.disableAll();
-              this.props.onActionClick(chatActionAction);
+        const actionItem = new Button({
+          label: chatActionAction.text,
+          icon: chatActionAction.icon,
+          primary: chatActionAction.status !== undefined,
+          onClick: (e) => {
+            if (props.formItems !== null) {
+              props.formItems.disableAll();
             }
-          });
-        } else {
-          actionItem = new Button({
-            label: chatActionAction.text,
-            icon: chatActionAction.icon,
-            primary: chatActionAction.status !== undefined,
-            onClick: (e) => {
-              if (props.formItems !== null) {
-                props.formItems.disableAll();
-              }
-              this.disableAll();
-              this.props.onActionClick(chatActionAction, e);
-            }
-          });
-          if (chatActionAction.disabled === true) {
-            actionItem.setEnabled(false);
+            this.disableAll();
+            this.props.onActionClick(chatActionAction, e);
           }
+        });
+        if (chatActionAction.disabled === true) {
+          actionItem.setEnabled(false);
         }
         this.actions[chatActionAction.id] = {
           data: chatActionAction,
