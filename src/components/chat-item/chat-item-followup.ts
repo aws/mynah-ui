@@ -63,16 +63,23 @@ export class ChatItemFollowUpContainer {
     Array.from(this.render.getElementsByTagName('a')).forEach(a => {
       const url = a.href;
 
-      a.onclick = (event?: MouseEvent) => {
-        MynahUIGlobalEvents
-          .getInstance()
-          .dispatch(MynahEventNames.LINK_CLICK, {
-            tabId: this.props.tabId,
-            messageId: this.props.chatItem.messageId,
-            link: url,
-            event,
-          });
+      a.onclick = (event: MouseEvent) => {
+        this.handleLinkClick(url, event);
+      };
+      a.onauxclick = (event: MouseEvent) => {
+        this.handleLinkClick(url, event);
       };
     });
   }
+
+  private readonly handleLinkClick = (url: string, event?: MouseEvent): void => {
+    MynahUIGlobalEvents
+      .getInstance()
+      .dispatch(MynahEventNames.LINK_CLICK, {
+        tabId: this.props.tabId,
+        messageId: this.props.chatItem.messageId,
+        link: url,
+        event,
+      });
+  };
 }

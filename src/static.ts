@@ -170,6 +170,7 @@ export interface ChatItem {
   body?: string;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
   messageId?: string;
+  snapToTop?: boolean;
   canBeVoted?: boolean;
   codeInsertToCursorEnabled?: boolean;
   codeCopyToClipboardEnabled?: boolean;

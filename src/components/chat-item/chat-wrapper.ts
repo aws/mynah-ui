@@ -15,6 +15,7 @@ import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
 import { ChatPromptInputStickyCard } from './chat-prompt-input-sticky-card';
 
+export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
   onStopChatResponse?: (tabId: string) => void;
   tabId: string;

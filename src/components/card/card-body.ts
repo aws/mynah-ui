@@ -109,6 +109,11 @@ export class CardBody {
                 this.props.onLinkClick(url, e);
               }
             },
+            auxclick: (e: MouseEvent) => {
+              if (this.props.onLinkClick !== undefined) {
+                this.props.onLinkClick(url, e);
+              }
+            },
           },
           attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },
           innerHTML: elementFromNode.innerHTML,

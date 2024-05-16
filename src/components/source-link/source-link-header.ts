@@ -59,6 +59,7 @@ export class SourceLinkHeader {
               events: {
                 ...(props.onClick !== undefined && {
                   click: props.onClick,
+                  auxclick: props.onClick,
                 }),
               },
               attributes: { href: props.sourceLink.url, target: '_blank' },
@@ -74,6 +75,7 @@ export class SourceLinkHeader {
               events: {
                 ...(props.onClick !== undefined && {
                   click: props.onClick,
+                  auxclick: props.onClick
                 }),
               },
               attributes: { href: props.sourceLink.url, target: '_blank' },

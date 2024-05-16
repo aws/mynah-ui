@@ -37,7 +37,7 @@ export class PromptTextInput {
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),
         tabindex: '1',
         rows: '1',
-        maxlength: MAX_USER_INPUT.toString(),
+        maxlength: MAX_USER_INPUT().toString(),
         type: 'text',
         placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
         value: '',
