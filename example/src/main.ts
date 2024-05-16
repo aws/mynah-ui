@@ -279,6 +279,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         case Commands.CARD_WITH_MARKDOWN_LIST:
           getGenerativeAIAnswer(tabId, sampleMarkdownList);
           break;
+        case Commands.CARD_SNAPS_TO_TOP:
+          getGenerativeAIAnswer(tabId, [...sampleMarkdownList.slice(0,-1), {body: sampleMarkdownList.slice(-1)[0].body, snapToTop: true}]);
+          break;
         case Commands.PROGRESSIVE_CARD:
           getGenerativeAIAnswer(tabId, exampleProgressCards);
           break;

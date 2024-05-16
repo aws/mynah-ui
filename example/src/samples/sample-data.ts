@@ -155,6 +155,10 @@ export const defaultFollowUps: ChatItem = {
         pillText: 'Markdown list',
       },
       {
+        command: Commands.CARD_SNAPS_TO_TOP,
+        pillText: 'Snaps to top',
+      },
+      {
         command: Commands.FILE_LIST_CARD,
         pillText: 'File list',
       },

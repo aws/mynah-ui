@@ -54,6 +54,10 @@ export const QuickActionCommands:QuickActionCommandGroup[] = [
         description: 'ChatItem card with a complex markdown list inside.',
       },
       {
+        command: Commands.CARD_SNAPS_TO_TOP,
+        description: 'ChatItem card which snaps to top of the scolling container after the stream finishes or when the snapToTop value is set to true.',
+      },
+      {
         command: Commands.PROGRESSIVE_CARD,
         description: 'ChatItem cards can show a progress with its content. It doesn\'t have to be a stream by appending text each time.',
       },
