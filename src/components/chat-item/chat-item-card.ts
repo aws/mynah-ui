@@ -19,6 +19,7 @@ import { generateUID } from '../../helper/guid';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
+import { CONTAINER_GAP } from './chat-wrapper';
 
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardProps {
@@ -89,6 +90,7 @@ export class ChatItemCard {
     setTimeout(
       () => {
         generatedCard.addClass('reveal');
+        this.checkCardSnap();
       },
       this.props.chatItem.type === ChatItemType.PROMPT ? 10 : 200
     );
@@ -372,7 +374,15 @@ export class ChatItemCard {
         `,
     });
 
+  private readonly checkCardSnap = (): void => {
+    // If the chat item has snapToTop value as true, we'll snap the card to the container top
+    if (this.render.offsetParent != null && this.props.chatItem.snapToTop === true) {
+      this.render.offsetParent.scrollTop = this.render.offsetTop - CONTAINER_GAP - (this.render.offsetParent as HTMLElement).offsetTop;
+    }
+  };
+
   public readonly updateCard = (): void => {
+    this.checkCardSnap();
     if (this.updateTimer === undefined && this.updateStack.length > 0) {
       const updateWith: Partial<ChatItem> | undefined = this.updateStack.shift();
       if (updateWith !== undefined) {

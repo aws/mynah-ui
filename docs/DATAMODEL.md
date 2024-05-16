@@ -576,6 +576,7 @@ interface ChatItem {
   body?: string; // supports MARKDOWN string
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
   messageId?: string;
+  snapToTop?: boolean;
   canBeVoted?: boolean; // requires messageId to be filled to show vote thumbs
   codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on all code blocks for this message
   codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on all code blocks for this message
@@ -1165,6 +1166,30 @@ Even though we don't want you to write styles for the components, you might have
 
 
 That's all!, please also see the **[samples data](https://github.com/aws/mynah-ui/blob/6dd5cfbbb9e9d67fec19c40a2f9fbd7dba4c027c/example/src/samples/sample-data.ts#L544)** of both options we've used in the example app.
+
+---
+
+## `snapToTop`
+It gives you the option to snap the card to the top of the scrolling container. By default, if the user already scrolled to the bottom of the container, container will autoscroll whenever the content is updated. 
+
+**BUT:** There is one thing you need to think about, if your card is a streaming one, you may want to give the `snapToTop` value with the last stream part, otherwise after each content update it will snap to top which may cause a flickery view. And also it would be nice to show the content while it is being generated, and when it ends let it snap to top. **If** your chat item type is a strait `ANSWER`, you should give it initially with the data, when it appears on the screen it will be already snapped to top.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    type: ChatItemType.ANSWER,
+    ...
+    snapToTop: true,
+    body: "Put a very long message to see if it really snaps or still scrolls."
+});
+```
 
 ---
 
