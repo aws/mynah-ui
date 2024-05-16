@@ -27,8 +27,10 @@
     min-height: var(--mynah-sizing-8);
     padding-left: var(--mynah-sizing-2);
     border: var(--mynah-button-border-width) solid currentColor;
+    background-color: var(--mynah-card-bg);
     &:not(:hover) {
-      opacity: 0.5;
+      opacity: 0.9;
+      filter: brightness(0.95);
     }
     &:active {
       box-shadow: none;
