@@ -7,7 +7,6 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames } from '../../static';
-import { Card } from '../card/card';
 import { CardBody, CardBodyProps } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemFollowUpContainer } from './chat-item-followup';
@@ -73,7 +72,7 @@ export class ChatItemCard {
         ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM && (this.props.chatItem.body ?? '').trim() === ''
           ? [
               // Create an empty card with its child set to the loading spinner
-              new Card({
+              new (Config.getInstance().config.componentClasses.Card)({
                 children: [
                   DomBuilder.getInstance().build({
                     type: 'div',
@@ -290,7 +289,7 @@ export class ChatItemCard {
 
       ...(chatItemHasContent(this.props.chatItem)
         ? [
-            new Card({
+            new (Config.getInstance().config.componentClasses.Card)({
               onCardEngaged: engagement => {
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ENGAGEMENT, {
                   engagement,

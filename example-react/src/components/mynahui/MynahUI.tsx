@@ -2,6 +2,8 @@ import { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { MynahUI, MynahUIProps } from '@aws/mynah-ui';
 import './mynah-ui-polaris-theme.scss';
 import { CardRenderDetails } from '../../../../dist/static';
+import { CloudscapeMynahUICard } from './component-maps/card';
+import { CloudscapeMynahUIButton } from './component-maps/button';
 
 type PickMatching<T, V> = {
   [K in keyof T as T[K] extends V ? K : never]: T[K];
@@ -59,6 +61,13 @@ export const MynahUIWrapper = forwardRef((props: MynahUIProps, ref: React.Ref<My
       // eslint-disable-next-line react-hooks/exhaustive-deps
       mynahUI = new MynahUI({
         ...props,
+        config: {
+          ...props.config,
+          componentClasses: {
+            Card: CloudscapeMynahUICard,
+            Button: CloudscapeMynahUIButton
+          }
+        },
         rootSelector: `#${mynahWrapperId}`,
       });
     }

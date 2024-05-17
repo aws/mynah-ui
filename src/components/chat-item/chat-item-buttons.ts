@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItemButton } from '../../static';
 import { Button } from '../button';
@@ -31,7 +32,7 @@ export class ChatItemButtonsWrapper {
       classNames: [ 'mynah-chat-item-buttons-container',
         props.useButtonComponent === true ? 'mynah-chat-item-buttons-container-use-real-buttons' : '' ],
       children: this.props.buttons.map(chatActionAction => {
-        const actionItem = new Button({
+        const actionItem = new (Config.getInstance().config.componentClasses.Button)({
           label: chatActionAction.text,
           icon: chatActionAction.icon,
           primary: chatActionAction.status !== undefined,
@@ -48,7 +49,7 @@ export class ChatItemButtonsWrapper {
         }
         this.actions[chatActionAction.id] = {
           data: chatActionAction,
-          element: actionItem,
+          element: actionItem as Button,
         };
         return actionItem.render;
       })

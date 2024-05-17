@@ -30,15 +30,21 @@ export interface CardProps extends Partial<DomBuilderObject> {
     selectionDistanceTraveled?: { x: number; y: number; selectedText?: string | undefined };
   }) => void;
 }
-export class Card {
-  private readonly props: CardProps;
+export abstract class CardAbstract {
+  protected readonly props: CardProps;
+  render: ExtendedHTMLElement;
+  constructor (props: CardProps) {
+    this.props = props;
+  }
+}
+
+export class Card extends CardAbstract {
   private engagementStartTime: number = -1;
   private totalMouseDistanceTraveled: { x: number; y: number } = { x: 0, y: 0 };
   private previousMousePosition!: { x: number; y: number };
   private mouseDownInfo!: { x: number; y: number; time: number };
-  render: ExtendedHTMLElement;
   constructor (props: CardProps) {
-    this.props = props;
+    super(props);
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [

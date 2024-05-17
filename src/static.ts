@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { ButtonAbstract, ButtonProps } from './components/button';
+import { CardAbstract, CardProps } from './components/card/card';
 import { MynahIcons } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
 
@@ -386,6 +388,15 @@ export interface ConfigTexts {
   openNewTab: string;
 };
 
+type PickMatching<T, V> = {
+  [K in keyof T as T[K] extends V ? K : never]: T[K];
+};
+type ExtractMethods<T> = PickMatching<T, any>;
+
+export interface ComponentClasses {
+  Card: new(props: CardProps) => ExtractMethods<CardAbstract>;
+  Button: new(props: ButtonProps) => ExtractMethods<ButtonAbstract>;
+};
 export interface ConfigOptions {
   feedbackOptions: Array<{
     label: string;
@@ -402,6 +413,7 @@ export interface ConfigOptions {
 
 export interface ConfigModel extends ConfigOptions {
   texts: Partial<ConfigTexts>;
+  componentClasses: Partial<ComponentClasses>;
 }
 
 export interface CardRenderDetails {

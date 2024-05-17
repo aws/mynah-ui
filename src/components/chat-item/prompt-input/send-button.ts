@@ -1,6 +1,6 @@
+import { Config } from '../../../helper/config';
 import { ExtendedHTMLElement } from '../../../helper/dom';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
-import { Button } from '../../button';
 import { Icon, MynahIcons } from '../../icon';
 
 export interface ISendButtonProps {
@@ -16,7 +16,7 @@ export class SendButton {
 
     const initialDisabledState = MynahUITabsStore.getInstance().getTabDataStore(this._props.tabId).getValue('promptInputDisabledState') as boolean;
 
-    this._render = new Button({
+    this._render = new (Config.getInstance().config.componentClasses.Button)({
       classNames: [ 'mynah-icon-button', 'mynah-chat-prompt-button' ],
       attributes: {
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),
