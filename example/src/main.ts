@@ -204,7 +204,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         default:
           break;
       }
-      // mynahUI.updateChatAnswerWithMessageId(tabId, messageId, exampleFileListChatItemForUpdate);
     },
     onCustomFormAction: (tabId, action) => {
       Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
