@@ -71,19 +71,6 @@ export const MyChat = (props: MyChatProps): JSX.Element => {
         referenceTracker: <b>${referenceTrackerInformation?.map((rt) => rt.information).join('<br/>') ?? ''}</b><br/>
       `);
     },
-    onCodeInsertToCursorPosition: (
-      tabId,
-      messageId,
-      code,
-      type,
-      referenceTrackerInformation
-    ) => {
-      Log(`Clicked insert code to cursor position from message <b>${messageId}</b><br/>
-        type: <b>${type ?? 'unknown'}</b><br/>
-        code: <b>${escapeHTML(code ?? '')}</b><br/>
-        referenceTracker: <b>${referenceTrackerInformation?.map((rt) => rt.information).join('<br/>') ?? ''}</b><br/>
-      `);
-    },
     onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
       Log(`New prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b>`);
@@ -512,7 +499,7 @@ export const MyChat = (props: MyChatProps): JSX.Element => {
     >
       <MynahUIWrapper
         ref={mynahUIRef}
-        config={{ maxTabs: 1 }}
+        config={{ maxTabs: 1, codeInsertToCursorEnabled: false }}
         tabs={{
           [tabId]: {
             isSelected: true,

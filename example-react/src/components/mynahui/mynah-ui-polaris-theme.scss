@@ -20,13 +20,13 @@ div.mynah-ui-chat-wrapper {
     }
   }
 }
-/* 
+
 :root,
 body,
 div.mynah-ui-chat-wrapper {
   --mynah-max-width: 100%;
   --mynah-sizing-base: #{awsui.$space-scaled-xxs};
-
+  font-size: #{awsui.$font-size-body-m};
   --mynah-chat-wrapper-spacing: var(--mynah-sizing-4);
   --mynah-font-family: system-ui, -apple-system, sans-serif;
   --mynah-syntax-code-font-family: monospace;
@@ -87,4 +87,4 @@ div.mynah-ui-chat-wrapper {
   --mynah-short-transition-rev: all 580ms cubic-bezier(0.35, 1, 0, 1);
   --mynah-short-transition-rev-opacity: opacity 750ms cubic-bezier(0.35, 1, 0, 1);
   --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1.2, 0, 1), transform 800ms cubic-bezier(0.2, 1.05, 0, 1);
-} */
+}

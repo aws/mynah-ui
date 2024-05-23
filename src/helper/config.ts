@@ -3,19 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Button } from '../components/button';
-import { Card } from '../components/card/card';
-import { ComponentClasses, ConfigModel, ConfigOptions, ConfigTexts } from '../static';
+import { ButtonInternal } from '../components/button';
+import { ComponentOverrides, ConfigModel, ConfigOptions, ConfigTexts } from '../static';
 
 interface ConfigFullModel extends ConfigOptions {
   texts: ConfigTexts;
-  componentClasses: ComponentClasses;
+  componentClasses: ComponentOverrides;
 };
 
 const configDefaults: ConfigFullModel = {
   componentClasses: {
-    Card,
-    Button
+    Button: ButtonInternal
   },
   maxTabs: 1000,
   maxUserInput: 4096,
@@ -95,7 +93,7 @@ export class Config {
       },
       componentClasses: {
         ...configDefaults.componentClasses,
-        ...config?.componentClasses
+        ...config?.componentOverrides
       }
     };
   }

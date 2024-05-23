@@ -4,7 +4,6 @@
  */
 
 import { ButtonAbstract, ButtonProps } from './components/button';
-import { CardAbstract, CardProps } from './components/card/card';
 import { MynahIcons } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
 
@@ -393,8 +392,7 @@ type PickMatching<T, V> = {
 };
 type ExtractMethods<T> = PickMatching<T, any>;
 
-export interface ComponentClasses {
-  Card: new(props: CardProps) => ExtractMethods<CardAbstract>;
+export interface ComponentOverrides {
   Button: new(props: ButtonProps) => ExtractMethods<ButtonAbstract>;
 };
 export interface ConfigOptions {
@@ -413,7 +411,7 @@ export interface ConfigOptions {
 
 export interface ConfigModel extends ConfigOptions {
   texts: Partial<ConfigTexts>;
-  componentClasses: Partial<ComponentClasses>;
+  componentOverrides: Partial<ComponentOverrides>;
 }
 
 export interface CardRenderDetails {

@@ -8,12 +8,13 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Card } from './card/card';
 import { CardBody } from './card/card-body';
+import { Config } from '../helper/config';
 
 const PREVIEW_DELAY = 350;
 export interface ButtonProps {
   classNames?: string[];
   attributes?: Record<string, string>;
-  icon?: HTMLElement | ExtendedHTMLElement | string;
+  icon?: HTMLElement | ExtendedHTMLElement;
   label?: HTMLElement | ExtendedHTMLElement | string;
   tooltip?: string;
   tooltipVerticalDirection?: OverlayVerticalDirection;
@@ -32,7 +33,7 @@ export abstract class ButtonAbstract {
   };
 }
 
-export class Button extends ButtonAbstract {
+export class ButtonInternal extends ButtonAbstract {
   render: ExtendedHTMLElement;
   private buttonTooltip: Overlay | null;
   private buttonTooltipTimeout: ReturnType<typeof setTimeout>;
@@ -114,5 +115,20 @@ export class Button extends ButtonAbstract {
     } else {
       this.render.setAttribute('disabled', 'disabled');
     }
+  };
+}
+
+export class Button extends ButtonAbstract {
+  render: ExtendedHTMLElement;
+
+  constructor (props: ButtonProps) {
+    super();
+    return new (Config.getInstance().config.componentClasses.Button)(props);
+  }
+
+  updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
+  };
+
+  setEnabled = (enabled: boolean): void => {
   };
 }

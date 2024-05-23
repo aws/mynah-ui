@@ -92,9 +92,8 @@ export class ChatWrapper {
         ...(this.props?.onStopChatResponse !== undefined
           ? [ new Button({
               classNames: [ 'mynah-chat-stop-chat-response-button' ],
-              primary: false,
               label: Config.getInstance().config.texts.stopGenerating,
-              icon: new Icon({ icon: MynahIcons.BLOCK }).render,
+              icon: new Icon({ icon: MynahIcons.CANCEL }).render,
               onClick: () => {
                 if ((this.props?.onStopChatResponse) !== undefined) {
                   this.props?.onStopChatResponse(this.props.tabId);

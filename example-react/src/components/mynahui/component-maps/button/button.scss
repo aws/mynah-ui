@@ -1,0 +1,34 @@
+@use '@cloudscape-design/design-tokens/index' as awsui;
+.mynah-ui-cloudscape-button-wrapper {
+    position: relative;
+    display: inline-flex;
+    border-radius: awsui.$border-radius-button;
+    > button:not([class*='inline-icon']) {
+        /* padding-block-start: 0 !important;
+        padding-block-end: 0 !important;
+        padding-inline-start: calc(awsui.$space-container-horizontal / 2) !important;
+        padding-inline-end: calc(awsui.$space-container-horizontal / 2) !important; */
+    }
+    > button[class*='inline-icon'] {
+        // padding-inline-start: 0 !important;
+        // padding-inline-end: 0 !important;
+    }
+    &.mynah-chat-prompt-button {
+        > button {
+            width: auto!important;
+            height: auto!important;
+            padding: 0!important;
+            > span {
+                width: auto!important;
+                height: auto!important;
+                padding: 0!important;
+                display: inline-flex!important;
+            }
+        }
+    }
+    .mynah-ui-cloudscape-button-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

@@ -100,6 +100,7 @@ export class FeedbackForm {
 
     this.feedbackSubmitButton = new Button({
       label: Config.getInstance().config.texts.submit,
+      primary: true,
       onClick: () => {
         this.onFeedbackSet(this.feedbackPayload);
         this.close();

@@ -68,19 +68,9 @@ export {
   DomBuilder, DomBuilderObject, ExtendedHTMLElement
 } from './helper/dom';
 export {
-  CardProps,
-  CardAbstract
-} from './components/card/card';
-export {
   ButtonProps,
   ButtonAbstract
 } from './components/button';
-
-/* export type PickMatching<T, V> = {
-  [K in keyof T as T[K] extends V ? K : never]: T[K];
-};
-export type ExtractMethods<T> = PickMatching<T, any>;
-export type MynahUIPublicFeatures = ExtractMethods<MynahUI>; */
 
 export interface MynahUIProps {
   rootSelector?: string;

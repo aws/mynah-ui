@@ -20,6 +20,7 @@ import { ChatItemButtonsWrapper } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
 import { CONTAINER_GAP } from './chat-wrapper';
 import { chatItemHasContent } from '../../helper/chat-item';
+import { Card } from '../card/card';
 
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardProps {
@@ -72,7 +73,7 @@ export class ChatItemCard {
         ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM && (this.props.chatItem.body ?? '').trim() === ''
           ? [
               // Create an empty card with its child set to the loading spinner
-              new (Config.getInstance().config.componentClasses.Card)({
+              new Card({
                 children: [
                   DomBuilder.getInstance().build({
                     type: 'div',
@@ -289,7 +290,7 @@ export class ChatItemCard {
 
       ...(chatItemHasContent(this.props.chatItem)
         ? [
-            new (Config.getInstance().config.componentClasses.Card)({
+            new Card({
               onCardEngaged: engagement => {
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ENGAGEMENT, {
                   engagement,
