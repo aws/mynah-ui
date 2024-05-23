@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { chatItemHasContent } from '../../helper/chat-item';
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
@@ -28,8 +29,8 @@ export class ChatWrapper {
   private readonly promptInput: ChatPromptInput;
   private readonly promptInfo: ExtendedHTMLElement;
   private readonly promptStickyCard: ExtendedHTMLElement;
-  private lastChatItemCard: ChatItemCard | null;
-  private lastChatItemMessageId: string | null;
+  private lastStreamingChatItemCard: ChatItemCard | null;
+  private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
@@ -141,31 +142,40 @@ export class ChatWrapper {
   }
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
-    this.lastChatItemMessageId = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
+    const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
       chatItem: {
         ...chatItem,
-        messageId: this.lastChatItemMessageId
+        messageId: currentMessageId
       }
     });
+
     if (chatItem.type === ChatItemType.ANSWER_STREAM) {
-      this.lastChatItemCard?.render.addClass('stream-ended');
-      this.lastChatItemCard = chatItemCard;
+      // End previous streaming card if there is
+      this.lastStreamingChatItemCard?.render.addClass('stream-ended');
+
+      // Update the lastStreaming variables with the new one
+      this.lastStreamingChatItemMessageId = currentMessageId;
+      this.lastStreamingChatItemCard = chatItemCard;
     } else if (
-      (chatItem.type === ChatItemType.ANSWER ||
-        chatItem.type === ChatItemType.PROMPT ||
-        chatItem.type === ChatItemType.AI_PROMPT ||
-        chatItem.type === ChatItemType.SYSTEM_PROMPT) && chatItem.body !== undefined) {
-      this.lastChatItemCard?.render.addClass('stream-ended');
-      this.lastChatItemCard = null;
-      this.lastChatItemMessageId = null;
+      chatItem.type !== ChatItemType.ANSWER &&
+      chatItem.type !== ChatItemType.ANSWER_PART &&
+      chatItemHasContent(chatItem)) {
+      // If the new card is not a streaming one and it has any kind of content,
+      // it means that the last card is not a streaming card anymore.
+      // So end the previous stream and reset the lastStreaming variables
+      this.lastStreamingChatItemCard?.render.addClass('stream-ended');
+      this.lastStreamingChatItemCard = null;
+      this.lastStreamingChatItemMessageId = null;
     }
+
+    // Add to render
     this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
 
-    if (this.lastChatItemMessageId != null) {
-      this.allRenderedChatItems[this.lastChatItemMessageId] = chatItemCard;
-    }
+    // Add to all rendered chat items map
+    this.allRenderedChatItems[currentMessageId] = chatItemCard;
+
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
       // Make sure we scroll the chat window to the bottom
       // Only if it is a PROMPT
@@ -174,20 +184,20 @@ export class ChatWrapper {
   };
 
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
-    if (this.lastChatItemCard !== null) {
-      this.lastChatItemCard.updateCardStack(updateWith);
+    if (this.lastStreamingChatItemCard !== null) {
+      this.lastStreamingChatItemCard.updateCardStack(updateWith);
       if (updateWith.messageId != null && updateWith.messageId !== '') {
-        if (this.lastChatItemMessageId != null && this.lastChatItemMessageId !== updateWith.messageId) {
-          const renderChatItemInMap = this.allRenderedChatItems[this.lastChatItemMessageId];
+        if (this.lastStreamingChatItemMessageId != null && this.lastStreamingChatItemMessageId !== updateWith.messageId) {
+          const renderChatItemInMap = this.allRenderedChatItems[this.lastStreamingChatItemMessageId];
           if (renderChatItemInMap != null) {
             this.allRenderedChatItems[updateWith.messageId] = renderChatItemInMap;
-            if (this.lastChatItemMessageId != null) {
+            if (this.lastStreamingChatItemMessageId != null) {
               // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-              delete this.allRenderedChatItems[this.lastChatItemMessageId];
+              delete this.allRenderedChatItems[this.lastStreamingChatItemMessageId];
             }
           }
         }
-        this.lastChatItemMessageId = updateWith.messageId;
+        this.lastStreamingChatItemMessageId = updateWith.messageId;
       }
     }
   };

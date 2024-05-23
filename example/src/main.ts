@@ -192,19 +192,19 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`File clicked: <b>${filePath}</b>`);
     },
     onFileActionClick: (tabId, messageId, filePath, actionName) => {
+      console.log("YARAK!");
       Log(`File action clicked: <b>${filePath}</b> -> ${actionName}`);
       switch (actionName) {
-        case 'update-comment':
-        case 'comment-to-change':
-          showCustomForm(tabId);
-          break;
         case 'reject-change':
-          mynahUI.updateChatAnswerWithMessageId(tabId, 'file-list-message', exampleFileListChatItemForUpdate);
+          mynahUI.updateChatAnswerWithMessageId(tabId, messageId, exampleFileListChatItemForUpdate);
+          break;
+        case 'revert-rejection':
+          mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {fileList: exampleFileListChatItem.fileList});
           break;
         default:
           break;
       }
-      mynahUI.updateChatAnswerWithMessageId(tabId, 'file-list-message', exampleFileListChatItemForUpdate);
+      // mynahUI.updateChatAnswerWithMessageId(tabId, messageId, exampleFileListChatItemForUpdate);
     },
     onCustomFormAction: (tabId, action) => {
       Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
