@@ -192,7 +192,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`File clicked: <b>${filePath}</b>`);
     },
     onFileActionClick: (tabId, messageId, filePath, actionName) => {
-      console.log("YARAK!");
       Log(`File action clicked: <b>${filePath}</b> -> ${actionName}`);
       switch (actionName) {
         case 'reject-change':
