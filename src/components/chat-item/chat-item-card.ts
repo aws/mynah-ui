@@ -20,6 +20,7 @@ import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
 import { CONTAINER_GAP } from './chat-wrapper';
+import { chatItemHasContent } from '../../helper/chat-item';
 
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardProps {
@@ -98,15 +99,9 @@ export class ChatItemCard {
     return generatedCard;
   };
 
-  private readonly cardHasContent = (): boolean => ((this.props.chatItem.body != null && this.props.chatItem.body !== '') ||
-    this.props.chatItem.fileList != null ||
-    this.props.chatItem.formItems != null ||
-    this.props.chatItem.customRenderer != null ||
-    this.props.chatItem.buttons != null);
-
   private readonly getCardClasses = (): string[] => {
     const isNoContent =
-      !this.cardHasContent() &&
+      !chatItemHasContent(this.props.chatItem) &&
       this.props.chatItem.followUp == null &&
       this.props.chatItem.relatedContent == null &&
       this.props.chatItem.type === ChatItemType.ANSWER;
@@ -115,7 +110,7 @@ export class ChatItemCard {
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
       'mynah-chat-item-card',
       `mynah-chat-item-${this.props.chatItem.type ?? ChatItemType.ANSWER}`,
-      ...(!this.cardHasContent() ? [ 'mynah-chat-item-empty' ] : []),
+      ...(!chatItemHasContent(this.props.chatItem) ? [ 'mynah-chat-item-empty' ] : []),
       ...(isNoContent ? [ 'mynah-chat-item-no-content' ] : []),
     ];
   };
@@ -293,7 +288,7 @@ export class ChatItemCard {
     return [
       ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
 
-      ...(this.cardHasContent()
+      ...(chatItemHasContent(this.props.chatItem)
         ? [
             new Card({
               onCardEngaged: engagement => {
