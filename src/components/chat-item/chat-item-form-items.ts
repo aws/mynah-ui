@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItem, ChatItemFormItem } from '../../static';
 import { RadioGroup } from '../form-items/radio-group';
@@ -51,6 +52,7 @@ export class ChatItemFormItemsWrapper {
               value,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
+              placeholder: Config.getInstance().config.texts.pleaseSelect,
               ...(this.getValidationHandler(chatItemOption))
             });
             break;
@@ -83,7 +85,16 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               label,
               value,
-              numeric: true,
+              type: 'number',
+              placeholder: chatItemOption.placeholder,
+              ...(this.getValidationHandler(chatItemOption))
+            });
+            break;
+          case 'email':
+            chatOption = new TextInput({
+              label,
+              value,
+              type: 'email',
               placeholder: chatItemOption.placeholder,
               ...(this.getValidationHandler(chatItemOption))
             });

@@ -3,6 +3,10 @@ import { MynahUI, MynahUIProps } from '@aws/mynah-ui';
 import './mynah-ui-polaris-theme.scss';
 import { CardRenderDetails } from '../../../../dist/static';
 import { CloudscapeMynahUIButton } from './component-maps/button/button';
+import { CloudscapeMynahUIRadioGroup } from './component-maps/radio-group';
+import { CloudscapeMynahUISelect } from './component-maps/select';
+import { CloudscapeMynahUITextInput } from './component-maps/text-input';
+import { CloudscapeMynahUITextArea } from './component-maps/text-area';
 
 type PickMatching<T, V> = {
   [K in keyof T as T[K] extends V ? K : never]: T[K];
@@ -63,7 +67,11 @@ export const MynahUIWrapper = forwardRef((props: MynahUIProps, ref: React.Ref<My
         config: {
           ...props.config,
           componentOverrides: {
-            Button: CloudscapeMynahUIButton
+            Button: CloudscapeMynahUIButton,
+            RadioGroup: CloudscapeMynahUIRadioGroup,
+            Select: CloudscapeMynahUISelect,
+            TextInput: CloudscapeMynahUITextInput,
+            TextArea: CloudscapeMynahUITextArea
           }
         },
         rootSelector: `#${mynahWrapperId}`,

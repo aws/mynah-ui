@@ -71,6 +71,22 @@ export {
   ButtonProps,
   ButtonAbstract
 } from './components/button';
+export {
+  RadioGroupProps,
+  RadioGroupAbstract
+} from './components/form-items/radio-group';
+export {
+  SelectProps,
+  SelectAbstract
+} from './components/form-items/select';
+export {
+  TextInputProps,
+  TextInputAbstract
+} from './components/form-items/text-input';
+export {
+  TextAreaProps,
+  TextAreaAbstract
+} from './components/form-items/text-area';
 
 export interface MynahUIProps {
   rootSelector?: string;

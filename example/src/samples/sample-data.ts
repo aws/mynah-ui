@@ -314,7 +314,7 @@ _To send the form, mandatory items should be filled._`,
         },
         {
             id: 'email',
-            type: 'textinput',
+            type: 'email',
             mandatory: true,
             title: `Email`,
             placeholder: 'email',

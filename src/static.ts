@@ -3,9 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ButtonAbstract, ButtonProps } from './components/button';
 import { MynahIcons } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
+import {
+  SelectAbstract,
+  SelectProps,
+  RadioGroupAbstract,
+  RadioGroupProps,
+  ButtonAbstract,
+  ButtonProps,
+  TextInputProps,
+  TextInputAbstract,
+  TextAreaProps,
+  TextAreaAbstract,
+} from './main';
 
 export interface QuickActionCommand {
   command: string;
@@ -207,7 +218,7 @@ export interface ChatItem {
 
 export interface ChatItemFormItem {
   id: string;
-  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup';
+  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup' | 'email';
   mandatory?: boolean;
   title?: string;
   placeholder?: string;
@@ -394,6 +405,10 @@ type ExtractMethods<T> = PickMatching<T, any>;
 
 export interface ComponentOverrides {
   Button?: new(props: ButtonProps) => ExtractMethods<ButtonAbstract>;
+  RadioGroup?: new(props: RadioGroupProps) => ExtractMethods<RadioGroupAbstract>;
+  Select?: new(props: SelectProps) => ExtractMethods<SelectAbstract>;
+  TextInput?: new(props: TextInputProps) => ExtractMethods<TextInputAbstract>;
+  TextArea?: new(props: TextAreaProps) => ExtractMethods<TextAreaAbstract>;
 };
 export interface ConfigOptions {
   feedbackOptions: Array<{
