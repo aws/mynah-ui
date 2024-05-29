@@ -3,16 +3,6 @@
     position: relative;
     display: inline-flex;
     border-radius: awsui.$border-radius-button;
-    > button:not([class*='inline-icon']) {
-        /* padding-block-start: 0 !important;
-        padding-block-end: 0 !important;
-        padding-inline-start: calc(awsui.$space-container-horizontal / 2) !important;
-        padding-inline-end: calc(awsui.$space-container-horizontal / 2) !important; */
-    }
-    > button[class*='inline-icon'] {
-        // padding-inline-start: 0 !important;
-        // padding-inline-end: 0 !important;
-    }
     &.mynah-chat-prompt-button {
         > button {
             width: auto!important;

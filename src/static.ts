@@ -393,7 +393,7 @@ type PickMatching<T, V> = {
 type ExtractMethods<T> = PickMatching<T, any>;
 
 export interface ComponentOverrides {
-  Button: new(props: ButtonProps) => ExtractMethods<ButtonAbstract>;
+  Button?: new(props: ButtonProps) => ExtractMethods<ButtonAbstract>;
 };
 export interface ConfigOptions {
   feedbackOptions: Array<{

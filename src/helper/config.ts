@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ButtonInternal } from '../components/button';
 import { ComponentOverrides, ConfigModel, ConfigOptions, ConfigTexts } from '../static';
 
 interface ConfigFullModel extends ConfigOptions {
@@ -13,7 +12,6 @@ interface ConfigFullModel extends ConfigOptions {
 
 const configDefaults: ConfigFullModel = {
   componentClasses: {
-    Button: ButtonInternal
   },
   maxTabs: 1000,
   maxUserInput: 4096,

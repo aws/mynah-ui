@@ -55,7 +55,6 @@ export const MynahUIButton = (props: MynahUIButtonProps) => {
 
 export class CloudscapeMynahUIButton extends ButtonAbstract {
     private root: Root;
-    private elm: any;
     private props: ButtonProps;
     private disabled: boolean = false;
     constructor(props: ButtonProps) {

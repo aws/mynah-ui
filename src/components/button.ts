@@ -33,7 +33,7 @@ export abstract class ButtonAbstract {
   };
 }
 
-export class ButtonInternal extends ButtonAbstract {
+class ButtonInternal extends ButtonAbstract {
   render: ExtendedHTMLElement;
   private buttonTooltip: Overlay | null;
   private buttonTooltipTimeout: ReturnType<typeof setTimeout>;
@@ -123,7 +123,7 @@ export class Button extends ButtonAbstract {
 
   constructor (props: ButtonProps) {
     super();
-    return new (Config.getInstance().config.componentClasses.Button)(props);
+    return new (Config.getInstance().config.componentClasses.Button ?? ButtonInternal)(props);
   }
 
   updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
