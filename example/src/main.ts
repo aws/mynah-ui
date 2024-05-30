@@ -189,10 +189,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`Message <b>${messageId}</b> is <b>${vote}d</b>.`);
     },
     onFileClick: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => {
-      Log(`File clicked: <b>${filePath}</b>`);
+      Log(`File clicked on message ${messageId}: <b>${filePath}</b>`);
     },
     onFileActionClick: (tabId, messageId, filePath, actionName) => {
-      Log(`File action clicked: <b>${filePath}</b> -> ${actionName}`);
+      Log(`File action clicked on message ${messageId}: <b>${filePath}</b> -> ${actionName}`);
       switch (actionName) {
         case 'reject-change':
           mynahUI.updateChatAnswerWithMessageId(tabId, messageId, exampleFileListChatItemForUpdate);
@@ -353,7 +353,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           });
           break;
         case Commands.FILE_LIST_CARD:
-          mynahUI.addChatItem(tabId, exampleFileListChatItem);
+          mynahUI.addChatItem(tabId, {
+            ...exampleFileListChatItem,
+            messageId: `FILE_LIST_${new Date().getTime().toString()}`,
+          });
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.FOLLOWUPS_AT_RIGHT:

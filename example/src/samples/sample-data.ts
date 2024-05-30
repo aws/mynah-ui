@@ -188,8 +188,6 @@ export const defaultFollowUps: ChatItem = {
 
 export const exampleFileListChatItem: ChatItem = {
     type: ChatItemType.ANSWER,
-    body: '',
-    messageId: `FILE_LIST_${new Date().getTime().toString()}`,
     fileList: {
         rootFolderTitle: 'Changes',
         filePaths: ['src/index.ts'],

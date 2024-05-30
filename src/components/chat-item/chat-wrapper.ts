@@ -183,6 +183,19 @@ export class ChatWrapper {
     }
   };
 
+  private readonly checkLastAnswerStreamChange = (updateWith: Partial<ChatItem>): void => {
+    // If the new type is not a stream anymore
+    // Clear lastStremingMessage variables.
+    if (updateWith.type !== undefined &&
+        updateWith.type !== null &&
+        updateWith.type !== ChatItemType.ANSWER_STREAM &&
+        updateWith.type !== ChatItemType.ANSWER_PART) {
+      console.log(`Reverting ${this.lastStreamingChatItemMessageId ?? ''} card to ANSWER and removing lastCardThing`);
+      this.lastStreamingChatItemCard = null;
+      this.lastStreamingChatItemMessageId = null;
+    }
+  };
+
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
     if (this.lastStreamingChatItemCard !== null) {
       this.lastStreamingChatItemCard.updateCardStack(updateWith);
@@ -199,6 +212,8 @@ export class ChatWrapper {
         }
         this.lastStreamingChatItemMessageId = updateWith.messageId;
       }
+
+      this.checkLastAnswerStreamChange(updateWith);
     }
   };
 
@@ -220,12 +235,23 @@ export class ChatWrapper {
     if (this.allRenderedChatItems[messageId]?.render !== undefined) {
       this.allRenderedChatItems[messageId].render.addClass('stream-ended');
       this.updateChatAnswerWithMessageId(messageId, updateWith);
+
+      // If the last streaming chat answer is the same with the messageId
+      if (this.lastStreamingChatItemMessageId === messageId) {
+        this.lastStreamingChatItemCard = null;
+        this.lastStreamingChatItemMessageId = null;
+      }
     }
   };
 
   public updateChatAnswerWithMessageId = (messageId: string, updateWith: Partial<ChatItem>): void => {
     if (this.allRenderedChatItems[messageId]?.render !== undefined) {
       this.allRenderedChatItems[messageId].updateCardStack(updateWith);
+
+      // If the last streaming chat answer is the same with the messageId
+      if (this.lastStreamingChatItemMessageId === messageId) {
+        this.checkLastAnswerStreamChange(updateWith);
+      }
     }
   };
 
