@@ -81,7 +81,7 @@ describe('chat-prompt-input', () => {
 
     // Code snippet should change the remaining character count
     const textToAdd = "console.log('hello')";
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_ATTACHMENT, {
       tabId: testTabId,
       textToAdd
     });

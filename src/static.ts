@@ -119,8 +119,8 @@ export enum MynahEventNames {
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
-  ADD_CODE_SNIPPET = 'addCodeSnippet',
-  REMOVE_CODE_SNIPPET = 'removeCodeSnippet',
+  ADD_ATTACHMENT = 'addAttachment',
+  REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
 };
 
@@ -130,6 +130,8 @@ export enum MynahPortalNames {
   OVERLAY = 'overlay',
   FEEDBACK_FORM = 'feedbackForm',
 };
+
+export type PromptAttachmentType = 'code' | 'markdown';
 
 export interface SourceLinkMetaData {
   stars?: number; // repo stars

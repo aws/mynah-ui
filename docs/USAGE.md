@@ -391,12 +391,21 @@ Can you end stream for a card you already ended the stream? Basically yes becaus
 
 You can add code attachments under the prompt field of the desired tab. When user fills the prompt field and sends it, the attached code block will be appended at the end of the prompt text. It accepts max chars set through **[CONFIG](./CONFIG.md#maxUserInput)** however you don't need to worry about it. MynahUI will automatically crop it depending on the available chars left from the prompt field itself by using a `96` chars of threshold. **So beware that for example if you want 4000 chars exact, you need to give 4096 to the config.**
 
+Another note is the option to render a markdown content or put the incoming content to a code block as is without parsin it. The default is `'markdown'` however you can change the type argument to `'code'` to render the content directly in a code block without and parsing.
+
 ```typescript
 mynahUI.addToUserPrompt('tab-1', `
 \`\`\`typescript
 const a = 5;
 \`\`\`
-`);
+`, 'markdown');
+```
+
+Above code will look identical with the below one
+
+
+```typescript
+mynahUI.addToUserPrompt('tab-1', 'const a = 5;', 'code');
 ```
 
 <p align="center">

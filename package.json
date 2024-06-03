@@ -1,7 +1,7 @@
 {
   "name": "@aws/mynah-ui",
   "displayName": "AWS Mynah UI",
-  "version": "4.9.2",
+  "version": "4.10.0",
   "description": "AWS Toolkit VSCode and Intellij IDE Extension Mynah UI",
   "publisher": "Amazon Web Services",
   "license": "Apache License 2.0",
@@ -28,6 +28,15 @@
     "marked": "^12.0.2",
     "prismjs": "1.29.0",
     "sanitize-html": "^2.12.1",
+    "escape-html": "^1.0.3",
+    "unescape-html": "^1.1.0"
+  },
+  "peerDependencies": {
+    "escape-html": "^1.0.3",
+    "just-clone": "^6.2.0",
+    "marked": "^12.0.2",
+    "prismjs": "1.29.0",
+    "sanitize-html": "^2.12.1",
     "unescape-html": "^1.1.0"
   },
   "devDependencies": {
@@ -46,7 +55,6 @@
     "babel-jest": "^29.7.0",
     "core-js": "^3.33.3",
     "css-loader": "6.6.0",
-    "escape-html": "^1.0.3",
     "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-config-standard-with-typescript": "22.0.0",
