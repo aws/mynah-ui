@@ -4,13 +4,13 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { KeyMap, MynahEventNames, QuickActionCommand, QuickActionCommandGroup, SourceLink } from '../../static';
+import { KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
-import { CodeSnippet } from './prompt-input/code-snippet';
+import { PromptAttachment } from './prompt-input/prompt-attachment';
 import { SendButton } from './prompt-input/send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
@@ -30,12 +30,11 @@ export class ChatPromptInput {
   private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly remainingCharsIndicator: ExtendedHTMLElement;
   private readonly sendButton: SendButton;
-  private readonly codeSnippet: CodeSnippet;
+  private readonly promptAttachment: PromptAttachment;
   private quickActionCommands: QuickActionCommandGroup[];
   private commandSelector: Overlay;
   private commandSelectorOpen: boolean = false;
   private selectedCommand: string = '';
-  private attachment?: SourceLink;
   private filteredCommandsList: QuickActionCommandGroup[];
   constructor (props: ChatPromptInputProps) {
     this.props = props;
@@ -65,7 +64,7 @@ export class ChatPromptInput {
       },
     });
 
-    this.codeSnippet = new CodeSnippet({
+    this.promptAttachment = new PromptAttachment({
       tabId: this.props.tabId,
     });
 
@@ -73,7 +72,7 @@ export class ChatPromptInput {
       type: 'div',
       classNames: [ 'mynah-chat-prompt-attachment-wrapper' ],
       children: [
-        this.codeSnippet.render
+        this.promptAttachment.render
       ]
     });
     this.render = DomBuilder.getInstance().build({
@@ -100,19 +99,20 @@ export class ChatPromptInput {
       ],
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ADD_CODE_SNIPPET, (data: {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ADD_ATTACHMENT, (data: {
       textToAdd?: string;
       tabId?: string;
+      type?: PromptAttachmentType;
     }) => {
       if (this.props.tabId === data.tabId) {
         // Code snippet will have a limit of MAX_USER_INPUT - MAX_USER_INPUT_THRESHOLD - current prompt text length
         // If exceeding that, we will crop it
         const textInputLength = this.promptTextInput.getTextInputValue().trim().length;
         const currentSelectedCodeMaxLength = (MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD) - textInputLength;
-        const croppedSelectedCodeSnippet = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
-        this.codeSnippet.updateSelectedCodeSnippet(croppedSelectedCodeSnippet);
+        const croppedAttachmentContent = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
+        this.promptAttachment.updateAttachment(croppedAttachmentContent, data.type);
         // Also update the limit on prompt text given the selected code
-        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT(), Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD) - croppedSelectedCodeSnippet.length)));
+        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT(), Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD) - croppedAttachmentContent.length)));
         this.updateAvailableCharactersIndicator();
 
         // When code is attached, focus to the input with a delay
@@ -123,9 +123,9 @@ export class ChatPromptInput {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REMOVE_CODE_SNIPPET, () => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.REMOVE_ATTACHMENT, () => {
       this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT());
-      this.codeSnippet.clear();
+      this.promptAttachment.clear();
       // Update the limit on prompt text given the selected code
       this.updateAvailableCharactersIndicator();
     });
@@ -350,30 +350,30 @@ export class ChatPromptInput {
     this.promptTextInputCommand.setCommand('');
     if (keepAttachment !== true) {
       this.attachmentWrapper.clear();
-      this.codeSnippet.clear();
-      this.attachment = undefined;
+      this.promptAttachment.clear();
     }
     this.updateAvailableCharactersIndicator();
   };
 
-  public readonly addText = (textToAdd: string): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CODE_SNIPPET, {
-      textToAdd,
-      tabId: this.props.tabId
+  public readonly addAttachment = (attachmentContent: string, type?: PromptAttachmentType): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_ATTACHMENT, {
+      textToAdd: attachmentContent,
+      tabId: this.props.tabId,
+      type
     });
   };
 
   private readonly sendPrompt = (): void => {
     const currentInputValue = this.promptTextInput.getTextInputValue();
     if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
-      const selectedCodeSnippet: string | undefined = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('selectedCodeSnippet');
+      const attachmentContent: string | undefined = this.promptAttachment?.lastAttachmentContent;
+      const promptText = currentInputValue + (attachmentContent ?? '');
       const promptData = {
         tabId: this.props.tabId,
         prompt: {
-          prompt: currentInputValue + (selectedCodeSnippet ?? ''),
-          escapedPrompt: escapeHTML(currentInputValue + (selectedCodeSnippet ?? '')),
+          prompt: promptText,
+          escapedPrompt: escapeHTML(promptText),
           ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
-          attachment: this.attachment
         }
       };
       this.clearTextArea();

@@ -88,7 +88,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           chatItems: [],
         });
       } else if (buttonId === 'insert-code') {
-        mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert);
+        mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert, 'code');
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
@@ -246,7 +246,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     if (prompt.command !== undefined && prompt.command.trim() !== '') {
       switch (prompt.command) {
         case Commands.INSERT_CODE:
-          mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert);
+          mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert, 'code');
           break;
         case Commands.CLEAR:
           mynahUI.updateStore(tabId, {

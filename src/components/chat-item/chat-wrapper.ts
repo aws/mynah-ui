@@ -8,7 +8,7 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { CardRenderDetails, ChatItem, ChatItemType } from '../../static';
+import { CardRenderDetails, ChatItem, ChatItemType, PromptAttachmentType } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
@@ -255,7 +255,7 @@ export class ChatWrapper {
     }
   };
 
-  public addToPrompt = (textToAdd: string): void => {
-    this.promptInput.addText(textToAdd);
+  public addAttachmentToPrompt = (textToAdd: string, type?: PromptAttachmentType): void => {
+    this.promptInput.addAttachment(textToAdd, type);
   };
 }

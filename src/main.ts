@@ -25,6 +25,7 @@ import {
   ChatItemButton,
   ChatItemType,
   CardRenderDetails,
+  PromptAttachmentType,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -511,9 +512,9 @@ export class MynahUI {
     });
   };
 
-  public addToUserPrompt = (tabId: string, codeStringToAdd: string): void => {
+  public addToUserPrompt = (tabId: string, attachmentContent: string, type?: PromptAttachmentType): void => {
     if (Config.getInstance().config.showPromptField && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      this.chatWrappers[tabId].addToPrompt(codeStringToAdd);
+      this.chatWrappers[tabId].addAttachmentToPrompt(attachmentContent, type);
     }
   };
 
