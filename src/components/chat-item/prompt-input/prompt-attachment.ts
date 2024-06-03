@@ -30,9 +30,9 @@ export class PromptAttachment {
     this.lastAttachmentContent = attachmentContent != null
       ? (type === 'code'
           ? `
-\`\`\`\`
+~~~~~~~~~~
 ${attachmentContent}
-\`\`\`\``
+~~~~~~~~~~`
           : `
 ${attachmentContent}
 `)
