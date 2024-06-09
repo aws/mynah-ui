@@ -246,7 +246,7 @@ export class SyntaxHighlighter {
       ]
     });
 
-    if (props.showCopyOptions === true) {
+    if (props.showCopyOptions === true && (this.props.onCopiedToClipboard != null || this.props.onInsertToCursorPosition != null)) {
       setTimeout(() => {
         this.render.insertAdjacentElement('afterbegin', DomBuilder.getInstance().build({
           type: 'div',
