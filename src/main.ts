@@ -46,19 +46,7 @@ export {
   AllowedAttributesInCustomRenderer,
   AllowedTagsInCustomRenderer
 } from './helper/sanitize';
-export {
-  FeedbackPayload,
-  RelevancyVoteType,
-  EngagementType,
-  Engagement,
-  MynahUIDataModel,
-  NotificationType,
-  ChatItem,
-  ChatItemAction,
-  ChatItemType,
-  ChatPrompt,
-  SourceLink,
-} from './static';
+export * from './static';
 export {
   ToggleOption
 } from './components/toggle';
@@ -90,8 +78,10 @@ export {
   TextAreaProps,
   TextAreaAbstract
 } from './components/form-items/text-area';
-
-export { ChatItemCardContent, ChatItemCardContentProps } from './components/chat-item/chat-item-card-content';
+export {
+  ChatItemCardContent,
+  ChatItemCardContentProps
+} from './components/chat-item/chat-item-card-content';
 
 export interface MynahUIProps {
   rootSelector?: string;
