@@ -15,6 +15,7 @@ import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
 import { ChatPromptInputStickyCard } from './chat-prompt-input-sticky-card';
+import '../../styles/components/chat/_chat-wrapper.scss';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {

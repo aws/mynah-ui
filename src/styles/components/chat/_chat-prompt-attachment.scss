@@ -1,3 +1,4 @@
+@import '../../mixins';
 .outer-container {
   display: flex;
   &:not(:empty) {

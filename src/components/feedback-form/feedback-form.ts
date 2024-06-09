@@ -12,6 +12,7 @@ import { Icon, MynahIcons } from '../icon';
 import { Config } from '../../helper/config';
 import { Select } from '../form-items/select';
 import { CustomFormWrapper } from './custom-form';
+import '../../styles/components/_feedback-form.scss';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;

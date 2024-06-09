@@ -8,6 +8,7 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import { cancelEvent } from '../../helper/events';
 import { generateUID } from '../../helper/guid';
 import { Icon, MynahIcons } from '../icon';
+import '../../styles/components/_form-input.scss';
 
 interface SelectOption {
   value: string;

@@ -9,6 +9,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { Card } from './card/card';
 import { CardBody } from './card/card-body';
 import { Config } from '../helper/config';
+import '../styles/components/_button.scss';
 
 const PREVIEW_DELAY = 350;
 export interface ButtonProps {

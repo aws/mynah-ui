@@ -44,6 +44,7 @@ import { Config } from '../helper/config';
 import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
+import '../styles/components/_syntax-highlighter.scss';
 
 const IMPORTED_LANGS = [
   'markup',

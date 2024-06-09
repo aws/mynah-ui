@@ -15,6 +15,7 @@ import { Icon, MynahIcons } from './icon';
 import { TabBarButtonsWrapper } from './navigation-tab-bar-buttons';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Toggle, ToggleOption } from './toggle';
+import '../styles/components/_nav-tabs.scss';
 
 export interface TabsProps {
   onChange?: (selectedTabId: string) => void;

@@ -4,6 +4,7 @@
  */
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { EngagementType } from '../../static';
+import '../../styles/components/card/_card.scss';
 
 /**
  * We'll not consider it as an engagement if the total spend time is lower than below constant and won't trigger the event

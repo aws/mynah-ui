@@ -5,6 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { Icon, MynahIcons } from '../icon';
+import '../../styles/components/_form-input.scss';
 
 export type StarValues = 1 | 2 | 3 | 4 | 5;
 export interface StarsProps {

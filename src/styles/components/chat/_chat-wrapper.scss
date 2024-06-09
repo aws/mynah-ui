@@ -27,7 +27,7 @@
         padding-right: var(--mynah-sizing-4);
     }
     &:after {
-        transition: all $smoothduration $smoothbezier;
+        transition: var(--mynah-very-short-transition);
         content: "";
         position: absolute;
         top: 0;

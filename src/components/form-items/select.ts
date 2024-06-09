@@ -6,6 +6,7 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { Icon, MynahIcons } from '../icon';
+import '../../styles/components/_form-input.scss';
 
 interface SelectOption {
   value: string;

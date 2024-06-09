@@ -14,6 +14,7 @@ import unescapeHTML from 'unescape-html';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { generateUID } from '../../helper/guid';
+import '../../styles/components/card/_card.scss';
 
 const PREVIEW_DELAY = 500;
 

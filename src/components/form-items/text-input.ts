@@ -5,6 +5,7 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import '../../styles/components/_form-input.scss';
 
 export interface TextInputProps {
   classNames?: string[];
