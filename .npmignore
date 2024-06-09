@@ -17,3 +17,4 @@ api-docs
 **/__test__
 example
 example-react
+!**dist/**
