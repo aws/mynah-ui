@@ -5,15 +5,11 @@ out
 .idea
 .gitcommit
 .github
-.eslintignore
+.eslint*
 .gitignore
 .npmignore
-.eslintrc.json
+*config.js
 package-lock.json
 tsconfig.json
 webpack.config.js
 **/src
-api-docs
-**/__test__
-example
-example-react
