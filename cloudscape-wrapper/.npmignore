@@ -13,4 +13,5 @@ package-lock.json
 tsconfig.json
 webpack.config.js
 **/src
+test-config
 main.ts
