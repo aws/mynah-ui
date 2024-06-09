@@ -13,7 +13,11 @@ import { TextArea } from '../form-items/text-area';
 import { TextInput } from '../form-items/text-input';
 import { Icon, MynahIcons } from '../icon';
 
-export interface ChatItemFormItemsWrapperProps {tabId: string; chatItem: Partial<ChatItem>}
+export interface ChatItemFormItemsWrapperProps {
+  tabId: string;
+  chatItem: Partial<ChatItem>;
+  classNames?: string[];
+}
 export class ChatItemFormItemsWrapper {
   private readonly props: ChatItemFormItemsWrapperProps;
   private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars> = {};
@@ -26,7 +30,7 @@ export class ChatItemFormItemsWrapper {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-form-items-container' ],
+      classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
         let chatOption;
         let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true ? '* ' : ''}${chatItemOption.title ?? ''}`;

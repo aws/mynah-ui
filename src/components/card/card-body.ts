@@ -51,6 +51,7 @@ export interface CardBodyProps {
   useParts?: boolean;
   codeBlockStartIndex?: number;
   processChildren?: boolean;
+  classNames?: string[];
   onLinkClick?: (url: string, e: MouseEvent) => void;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
   onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
@@ -81,7 +82,7 @@ export class CardBody {
     ];
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-card-body' ],
+      classNames: [ 'mynah-card-body', ...(this.props.classNames ?? []) ],
       children: this.props.childLocation === 'above-body' ? childList.reverse() : childList,
     });
 

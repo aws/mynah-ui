@@ -7,6 +7,7 @@
   "license": "Apache License 2.0",
   "readme": "README.md",
   "main": "./dist/main.js",
+  "typeDefs": "./dist/main.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/aws/mynah-ui"
@@ -14,6 +15,7 @@
   "scripts": {
     "clean": "rm -rf dist node_modules",
     "build": "rm -rf dist && webpack --config webpack.config.js --mode production",
+    "buildall": "rm -rf dist && npm install && webpack --config webpack.config.js --mode production && cd ./cloudscape-wrapper && rm -rf dist && npm install && npm run build && cd .. && cp -R ./cloudscape-wrapper/dist ./dist/cloudscape-wrapper",
     "packdemo": "cd ./example && npm run pack",
     "watch": "webpack --config webpack.config.js --mode development --watch",
     "lint-fix": "npx eslint \"./**\" --fix",

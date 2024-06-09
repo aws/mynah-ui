@@ -21,9 +21,6 @@ const config = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
-    alias: {
-      react: path.resolve("./node_modules/react")
-    }
   },
   module: {
     rules: [

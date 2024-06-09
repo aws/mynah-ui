@@ -26,6 +26,6 @@
 		"node_modules",
 		"docs",
 		"example",
-		"example-react"
+		"cloudscape-wrapper",
 	]
 }

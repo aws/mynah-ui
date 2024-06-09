@@ -1,0 +1,72 @@
+{
+  "name": "@aws/mynah-ui-cloudscape-wrapper",
+  "version": "0.1.0",
+  "description": "MynahUI React wrapper with Cloudscape elements",
+  "author": "",
+  "license": "UNLICENSED",
+  "repository": "ssh://git.amazon.com/pkg/MynahUICloudscapeReact",
+  "homepage": "https://code.amazon.com/packages/MynahUICloudscapeReact",
+  "main": "dist/main.js",
+  "typeDefs": "dist/main.d.ts",
+  "module": "dist/main.es.js",
+  "jsnext:main": "dist/main.es.js",
+  "scripts": {
+    "clean": "rm -rf build out dist node_modules",
+    "test": "jest",
+    "testclean": "cross-env BABEL_ENV=test jest -u --passWithNoTests",
+    "build": "cross-env BABEL_ENV=production rollup -c",
+    "start": "cross-env BABEL_ENV=production rollup -c -w",
+    "prepublishOnly": "npm run testclean && npm run build"
+  },
+  "dependencies": {
+    "@aws/mynah-ui": "file:../"
+  },
+  "peerDependencies": {
+    "@cloudscape-design/components": "^3.0.615",
+    "@cloudscape-design/design-tokens": "^3.0.35",
+    "@cloudscape-design/global-styles": "^1.0.27",
+    "react": "^16.8 || ^17 || ^18",
+    "react-dom": "^16.8 || ^17 || ^18"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.10",
+    "@babel/preset-env": "^7.17.10",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.2.0",
+    "@types/events": "^3.0.0",
+    "@types/jest": "^27.5.1",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "babel-jest": "^28.1.0",
+    "babel-preset-jest": "^29.5.0",
+    "cross-env": "^7.0.3",
+    "jest": "^28.1.0",
+    "jest-environment-jsdom": "^28.1.0",
+    "rollup": "^2.73.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-plugin-typescript2": "^0.31.2",
+    "sass": "^1.51.0",
+    "ts-jest": "^28.0.2",
+    "typescript": "^5.1.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "prettier": {
+    "jsxSingleQuote": true,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "tabWidth": 2
+  },
+  "npm-pretty-much": {
+    "runTest": "never",
+    "ciBuild": "always"
+  }
+}

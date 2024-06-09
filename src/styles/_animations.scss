@@ -21,16 +21,3 @@
         transform: rotate(360deg);
     }
 }
-
-@keyframes typewriter {
-    0% {
-        visibility: visible;
-        opacity: 0;
-        max-height: 1px;
-    }
-    100% {
-        opacity: 1;
-        max-height: 10000vh;
-        visibility: visible;
-    }
-}

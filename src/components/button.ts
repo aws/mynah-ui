@@ -123,7 +123,7 @@ export class Button extends ButtonAbstract {
 
   constructor (props: ButtonProps) {
     super();
-    return new (Config.getInstance().config.componentClasses.Button ?? ButtonInternal)(props);
+    return (new (Config.getInstance().config.componentClasses.Button ?? ButtonInternal)(props));
   }
 
   updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {

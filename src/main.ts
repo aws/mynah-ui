@@ -38,6 +38,7 @@ import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 
+export { generateUID } from './helper/guid';
 export {
   ChatItemBodyRenderer,
 } from './helper/dom';
@@ -65,7 +66,9 @@ export {
   MynahIcons
 } from './components/icon';
 export {
-  DomBuilder, DomBuilderObject, ExtendedHTMLElement
+  DomBuilder,
+  DomBuilderObject,
+  ExtendedHTMLElement,
 } from './helper/dom';
 export {
   ButtonProps,
@@ -87,6 +90,8 @@ export {
   TextAreaProps,
   TextAreaAbstract
 } from './components/form-items/text-area';
+
+export { ChatItemCardContent, ChatItemCardContentProps } from './components/chat-item/chat-item-card-content';
 
 export interface MynahUIProps {
   rootSelector?: string;

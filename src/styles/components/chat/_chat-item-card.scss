@@ -44,9 +44,6 @@
         &.typewriter-animating {
             @import "chat-items-bottom-animator";
         }
-        .typewriter-part {
-            visibility: hidden;
-        }
     }
 
     .mynah-chat-item-card {

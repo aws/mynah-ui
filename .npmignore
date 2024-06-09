@@ -1,5 +1,5 @@
 out
-node_modules
+**/node_modules
 *.bk
 **/.DS_Store
 .idea
@@ -12,7 +12,7 @@ node_modules
 package-lock.json
 tsconfig.json
 webpack.config.js
-src
+**/src
 docs
 example
 example-react

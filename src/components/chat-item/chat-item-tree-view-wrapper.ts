@@ -17,6 +17,7 @@ export interface ChatItemTreeViewWrapperProps {
   messageId: string;
   files: string[];
   cardTitle?: string;
+  classNames?: string[];
   rootTitle?: string;
   deletedFiles: string[];
   actions?: Record<string, FileNodeAction[]>;
@@ -54,7 +55,7 @@ export class ChatItemTreeViewWrapper {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-tree-view-wrapper' ],
+      classNames: [ 'mynah-chat-item-tree-view-wrapper', ...(props.classNames ?? []) ],
       children: [
         {
           type: 'div',
