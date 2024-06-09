@@ -3,6 +3,7 @@
         "sourceMap": true,
         "allowJs": false,
         "esModuleInterop": true,
+        "outDir": "./lib",
         "lib": [
             "ES2015",
             "dom"
