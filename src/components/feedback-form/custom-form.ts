@@ -84,7 +84,6 @@ export class CustomFormWrapper {
       this.chatButtons = new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
         formItems: this.chatFormItems,
-        useButtonComponent: true,
         buttons: this.props.chatItem.buttons,
         onActionClick: (action, e) => {
           if (e !== undefined) {
