@@ -10,6 +10,7 @@ import { cancelEvent } from '../helper/events';
 import { MynahUITabsStore } from '../helper/tabs-store';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
+import '../styles/components/_no-tabs.scss';
 
 export class NoTabs {
   render: ExtendedHTMLElement;

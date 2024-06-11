@@ -1,8 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  ChatItemCardContent,
-  ChatItemCardContentProps,
-} from '@aws/mynah-ui';
+import { ChatItemCardContent, ChatItemCardContentProps } from '@aws/mynah-ui';
 
 export const MynahUIStreamingContent = (
   props: ChatItemCardContentProps
@@ -14,7 +11,7 @@ export const MynahUIStreamingContent = (
     contentElement?.updateCardStack(props);
   }, [props.body, props.children]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (
       contentElement == null &&
       containerRef?.current != null &&
@@ -26,12 +23,7 @@ export const MynahUIStreamingContent = (
       setContentElement(elm);
       containerRef.current.appendChild(elm.render);
     }
-  }, [])
+  }, []);
 
-  return (
-    <div
-      className='mynah-ui-streaming-content'
-      ref={containerRef}
-    />
-  );
+  return <div className='mynah-ui-streaming-content' ref={containerRef} />;
 };
