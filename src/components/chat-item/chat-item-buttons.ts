@@ -15,7 +15,6 @@ export interface ChatItemButtonsWrapperProps {
   classNames?: string[];
   buttons: ChatItemButton[];
   formItems: ChatItemFormItemsWrapper | null;
-  useButtonComponent?: boolean;
   onActionClick: (action: ChatItemButton, e?: Event) => void;
 }
 export class ChatItemButtonsWrapper {
@@ -30,8 +29,7 @@ export class ChatItemButtonsWrapper {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-buttons-container', ...(this.props.classNames ?? []),
-        props.useButtonComponent === true ? 'mynah-chat-item-buttons-container-use-real-buttons' : '' ],
+      classNames: [ 'mynah-chat-item-buttons-container', ...(this.props.classNames ?? []) ],
       children: this.props.buttons.map(chatActionAction => {
         const actionItem = new Button({
           label: chatActionAction.text,
