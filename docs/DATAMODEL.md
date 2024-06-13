@@ -536,6 +536,7 @@ export interface TreeNodeDetails {
   status?: 'info' | 'success' | 'warning' | 'error';
   icon?: MynahIcons;
   label?: string;
+  description?: string; // Markdown tooltip
 }
 
 export interface SourceLink {
@@ -1348,7 +1349,8 @@ mynahUI.addChatItem(tabId, {
       'src/devfile.yaml': {
         status: 'error',
         label: "Change rejected",
-        icon: MynahIcons.REVERT
+        icon: MynahIcons.REVERT,
+        description: 'Markdown tooltip to show'
       }
     }
   },
