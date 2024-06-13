@@ -252,35 +252,31 @@ export class SyntaxHighlighter {
     type: 'block'
   });
 
-  private readonly copyToClipboard = (
+  private readonly copyToClipboard = async (
     textToSendClipboard: string,
     type?: CodeSelectionType,
     notificationText?: string,
-  ): void => {
+  ): Promise<void> => {
     if (!document.hasFocus()) {
       window.focus();
     }
-    navigator.clipboard
-      .writeText(textToSendClipboard)
-      .then(() => {
-        if (this.props?.onCopiedToClipboard !== undefined) {
-          this.props?.onCopiedToClipboard(
-            type,
-            textToSendClipboard,
-            this.props.index
-          );
-        }
-        if (notificationText !== undefined) {
-          // eslint-disable no-new
-          new Notification({
-            content: notificationText,
-            title: Config.getInstance().config.texts.copyToClipboard,
-            duration: 2000,
-          }).notify();
-        }
-      })
-      .catch(e => {
-        //
-      });
+    try {
+      await navigator.clipboard.writeText(textToSendClipboard);
+    } finally {
+      if (this.props?.onCopiedToClipboard != null) {
+        this.props?.onCopiedToClipboard(
+          type,
+          textToSendClipboard,
+          this.props.index
+        );
+      }
+      if (notificationText != null) {
+        new Notification({
+          content: notificationText,
+          title: Config.getInstance().config.texts.copyToClipboard,
+          duration: 2000,
+        }).notify();
+      }
+    }
   };
 }
