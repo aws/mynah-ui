@@ -221,7 +221,8 @@ export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
             'src/index.ts': {
                 status: 'error',
                 label: 'File rejected',
-                icon: MynahIcons.CANCEL_CIRCLE
+                icon: MynahIcons.CANCEL_CIRCLE,
+                description: exampleCodeDiff
             },
         },
         actions: {

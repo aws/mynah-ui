@@ -19,7 +19,7 @@ export interface ChatItemTreeFileProps {
   actions?: FileNodeAction[];
 }
 
-const PREVIEW_DELAY = 350;
+const PREVIEW_DELAY = 250;
 export class ChatItemTreeFile {
   render: ExtendedHTMLElement;
   private fileTooltip: Overlay | null;
