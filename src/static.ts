@@ -165,6 +165,7 @@ export interface TreeNodeDetails {
   status?: 'info' | 'success' | 'warning' | 'error';
   icon?: MynahIcons;
   label?: string;
+  description?: string;
 }
 
 export interface ChatItem {

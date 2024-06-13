@@ -1,8 +1,12 @@
+import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { FileNodeAction, MynahEventNames, TreeNodeDetails } from '../../static';
 import { Button } from '../button';
+import { Card } from '../card/card';
+import { CardBody } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 
 export interface ChatItemTreeFileProps {
   tabId: string;
@@ -15,8 +19,11 @@ export interface ChatItemTreeFileProps {
   actions?: FileNodeAction[];
 }
 
+const PREVIEW_DELAY = 350;
 export class ChatItemTreeFile {
   render: ExtendedHTMLElement;
+  private fileTooltip: Overlay | null;
+  private fileTooltipTimeout: ReturnType<typeof setTimeout>;
   constructor (props: ChatItemTreeFileProps) {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -26,13 +33,23 @@ export class ChatItemTreeFile {
       ],
       events: {
         click: () => {
+          this.hideTooltip();
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
             tabId: props.tabId,
             messageId: props.messageId,
             filePath: props.filePath,
             deleted: props.deleted,
           });
-        }
+        },
+        ...(props.details?.description != null
+          ? {
+              mouseenter: (e: MouseEvent) => {
+                const tooltipText = marked(props.details?.description ?? '', { breaks: true }) as string;
+                this.showTooltip(tooltipText, OverlayVerticalDirection.CENTER, OverlayHorizontalDirection.TO_RIGHT);
+              },
+              mouseout: this.hideTooltip
+            }
+          : {})
       },
       children: [
         ...(props.icon != null
@@ -83,6 +100,7 @@ export class ChatItemTreeFile {
                 primary: false,
                 onClick: (e) => {
                   cancelEvent(e);
+                  this.hideTooltip();
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_ACTION_CLICK, {
                     tabId: props.tabId,
                     messageId: props.messageId,
@@ -96,4 +114,39 @@ export class ChatItemTreeFile {
       ]
     });
   }
+
+  private readonly showTooltip = (content: string, vDir?: OverlayVerticalDirection, hDir?: OverlayHorizontalDirection): void => {
+    if (content.trim() !== undefined) {
+      clearTimeout(this.fileTooltipTimeout);
+      this.fileTooltipTimeout = setTimeout(() => {
+        this.fileTooltip = new Overlay({
+          background: true,
+          closeOnOutsideClick: false,
+          referenceElement: this.render,
+          dimOutside: false,
+          removeOtherOverlays: true,
+          verticalDirection: vDir ?? OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: hDir ?? OverlayHorizontalDirection.CENTER,
+          children: [
+            new Card({
+              border: false,
+              children: [
+                new CardBody({
+                  body: content
+                }).render
+              ]
+            }).render
+          ],
+        });
+      }, PREVIEW_DELAY);
+    }
+  };
+
+  public readonly hideTooltip = (): void => {
+    clearTimeout(this.fileTooltipTimeout);
+    if (this.fileTooltip !== null) {
+      this.fileTooltip?.close();
+      this.fileTooltip = null;
+    }
+  };
 }
