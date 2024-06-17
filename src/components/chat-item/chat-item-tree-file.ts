@@ -116,7 +116,7 @@ export class ChatItemTreeFile {
   }
 
   private readonly showTooltip = (content: string, vDir?: OverlayVerticalDirection, hDir?: OverlayHorizontalDirection): void => {
-    if (content.trim() !== undefined) {
+    if (content.trim() !== '') {
       clearTimeout(this.fileTooltipTimeout);
       this.fileTooltipTimeout = setTimeout(() => {
         this.fileTooltip = new Overlay({
@@ -143,8 +143,10 @@ export class ChatItemTreeFile {
   };
 
   public readonly hideTooltip = (): void => {
-    clearTimeout(this.fileTooltipTimeout);
-    if (this.fileTooltip !== null) {
+    if (this.fileTooltipTimeout != null) {
+      clearTimeout(this.fileTooltipTimeout);
+    }
+    if (this.fileTooltip != null) {
       this.fileTooltip?.close();
       this.fileTooltip = null;
     }

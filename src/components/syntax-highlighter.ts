@@ -32,7 +32,6 @@ import 'prismjs/components/prism-less.min';
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
 import 'prismjs/plugins/diff-highlight/prism-diff-highlight.min';
-// import 'prismjs/plugins/diff-highlight/prism-diff-highlight.min.css';
 
 import {
   CodeSelectionType,

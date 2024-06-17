@@ -198,6 +198,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         case 'reject-change':
           mynahUI.updateChatAnswerWithMessageId(tabId, messageId, exampleFileListChatItemForUpdate);
           break;
+        case 'show-diff':
+          mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+            body: exampleCodeDiff
+          });
+          break;
         case 'revert-rejection':
           mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {fileList: exampleFileListChatItem.fileList});
           break;

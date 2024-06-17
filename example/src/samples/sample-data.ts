@@ -201,6 +201,11 @@ export const exampleFileListChatItem: ChatItem = {
                     name: 'reject-change',
                     description: 'Reject Change',
                 },
+                {
+                    icon: MynahIcons.CODE_BLOCK,
+                    name: 'show-diff',
+                    description: 'Show Diff',
+                },
             ],
         },
         details: {
