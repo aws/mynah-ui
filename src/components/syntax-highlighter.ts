@@ -13,6 +13,7 @@ import 'prismjs/components/prism-clike.min';
 import 'prismjs/components/prism-javascript.min';
 import 'prismjs/components/prism-typescript.min';
 import 'prismjs/components/prism-jsx.min';
+import 'prismjs/components/prism-diff.min';
 import 'prismjs/components/prism-tsx.min';
 import 'prismjs/components/prism-lua.min';
 import 'prismjs/components/prism-java.min';
@@ -28,9 +29,10 @@ import 'prismjs/components/prism-regex.min';
 import 'prismjs/components/prism-scala.min';
 import 'prismjs/components/prism-scss.min';
 import 'prismjs/components/prism-less.min';
-
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
+import 'prismjs/plugins/diff-highlight/prism-diff-highlight.min';
+
 import {
   CodeSelectionType,
 } from '../static';
@@ -48,6 +50,7 @@ const IMPORTED_LANGS = [
   'xml',
   'css',
   'clike',
+  'diff',
   'javascript',
   'typescript',
   'jsx',
@@ -66,6 +69,29 @@ const IMPORTED_LANGS = [
   'scala',
   'scss',
   'less',
+  'diff-markup',
+  'diff-xml',
+  'diff-css',
+  'diff-clike',
+  'diff-diff',
+  'diff-javascript',
+  'diff-typescript',
+  'diff-jsx',
+  'diff-tsx',
+  'diff-lua',
+  'diff-java',
+  'diff-json',
+  'diff-markdown',
+  'diff-mongodb',
+  'diff-c',
+  'diff-bash',
+  'diff-csharp',
+  'diff-objectivec',
+  'diff-python',
+  'diff-regex',
+  'diff-scala',
+  'diff-scss',
+  'diff-less',
 ];
 const DEFAULT_LANG = 'clike';
 
@@ -133,6 +159,7 @@ export class SyntaxHighlighter {
       type: 'pre',
       classNames: [ 'keep-markup',
           `language-${props.language !== undefined && IMPORTED_LANGS.includes(props.language) ? props.language : DEFAULT_LANG}`,
+          ...(((props.language?.match('diff')) != null) ? [ 'diff-highlight' ] : []),
           ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
       ],
       children: [

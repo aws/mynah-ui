@@ -16,6 +16,7 @@ import sampleList2 from './sample-list-2.md';
 import sampleList3 from './sample-list-3.md';
 import sampleList4 from './sample-list-4.md';
 import SampleCode from './sample-code.md';
+import SampleDiff from './sample-diff.md';
 import { Commands } from '../commands';
 
 export const mynahUIQRImageBase64 =
@@ -104,6 +105,7 @@ export const exampleStreamParts: Partial<ChatItem>[] = [
 ];
 
 export const exampleCodeBlockToInsert = SampleCode;
+export const exampleCodeDiff = SampleDiff;
 
 export const exampleRichFollowups: ChatItem = {
     type: ChatItemType.SYSTEM_PROMPT,
@@ -199,7 +201,17 @@ export const exampleFileListChatItem: ChatItem = {
                     name: 'reject-change',
                     description: 'Reject Change',
                 },
+                {
+                    icon: MynahIcons.CODE_BLOCK,
+                    name: 'show-diff',
+                    description: 'Show Diff',
+                },
             ],
+        },
+        details: {
+            'src/index.ts': {
+                description: exampleCodeDiff
+            },
         },
     },
 };
@@ -215,6 +227,7 @@ export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
                 status: 'error',
                 label: 'File rejected',
                 icon: MynahIcons.CANCEL_CIRCLE,
+                description: exampleCodeDiff
             },
         },
         actions: {

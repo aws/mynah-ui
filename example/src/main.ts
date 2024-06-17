@@ -27,6 +27,7 @@ import {
   exampleRichFollowups,
   exampleStreamParts,
   sampleMarkdownList,
+  exampleCodeDiff,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -54,18 +55,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           icon: MynahIcons.ELLIPSIS,
           items: [
             {
-              id: 'menu-action-1',
-              text: 'Menu action 1!',
-              icon: MynahIcons.CHAT,
-            },
-            {
-              id: 'menu-action-2',
-              text: 'Menu action 2!',
-              icon: MynahIcons.COMMENT,
+              id: 'show-code-diff',
+              text: 'Show code diff!',
+              icon: MynahIcons.CODE_BLOCK,
             },
             {
               id: 'insert-code',
-              icon: MynahIcons.CODE_BLOCK,
+              icon: MynahIcons.CURSOR_INSERT,
               text: 'Insert code!',
             },
           ],
@@ -86,6 +82,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       if (buttonId === 'clear') {
         mynahUI.updateStore(tabId, {
           chatItems: [],
+        });
+      } else if (buttonId === 'show-code-diff') {
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.ANSWER,
+          body: exampleCodeDiff
         });
       } else if (buttonId === 'insert-code') {
         mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert, 'code');
@@ -196,6 +197,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       switch (actionName) {
         case 'reject-change':
           mynahUI.updateChatAnswerWithMessageId(tabId, messageId, exampleFileListChatItemForUpdate);
+          break;
+        case 'show-diff':
+          mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+            body: exampleCodeDiff
+          });
           break;
         case 'revert-rejection':
           mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {fileList: exampleFileListChatItem.fileList});

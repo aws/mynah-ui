@@ -131,65 +131,29 @@ export class Overlay {
       'beforeend'
     );
 
-    const containerRectangle = this.container.getBoundingClientRect();
+    // Screen edge fixes
     const winHeight = Math.max(document.documentElement.clientHeight ?? 0, window.innerHeight ?? 0);
     const winWidth = Math.max(document.documentElement.clientWidth ?? 0, window.innerWidth ?? 0);
+    const lastContainerRect = this.container.getBoundingClientRect();
+    const effectiveTop = parseFloat(this.container.style.top ?? '0');
+    const effectiveLeft = parseFloat(this.container.style.left ?? '0');
 
-    // if it will open at the center of the reference element or point
-    // we only need the half of both measurements
-    const comparingWidth =
-            horizontalDirection === OverlayHorizontalDirection.CENTER
-              ? containerRectangle.width / 2
-              : containerRectangle.width;
-    const comparingHeight =
-            verticalDirection === OverlayVerticalDirection.CENTER
-              ? containerRectangle.height / 2
-              : containerRectangle.height;
-
-    // if overlay will open to right or at center
-    // we're checking if it exceeds from the right edge of the window
-    if (
-      horizontalDirection !== OverlayHorizontalDirection.TO_LEFT &&
-            horizontalDirection !== OverlayHorizontalDirection.END_TO_LEFT &&
-            comparingWidth + OVERLAY_MARGIN + calculatedLeft > winWidth
-    ) {
-      if (horizontalDirection === OverlayHorizontalDirection.CENTER) {
-        // Exceed right edge of the window, shift left by the width of exceeding part * 0.5
-        // to correctly handle the 50% horizontal transform
-        this.container.style.left =
-                  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                  (calculatedLeft - (containerRectangle.width + (OVERLAY_MARGIN * 2) + calculatedLeft - winWidth) * 0.5) + 'px';
-      } else {
-        this.container.style.left =
-                  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                  calculatedLeft - (containerRectangle.width + OVERLAY_MARGIN + calculatedLeft - winWidth) + 'px';
-      }
-    }
-    // else if the direction is selected as a one that goes to the left,
-    // we need to check if it is exceeding from the left edge of the window
-    else if (calculatedLeft + comparingWidth - containerRectangle.width < OVERLAY_MARGIN) {
-      this.container.style.left =
-                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                calculatedLeft + (OVERLAY_MARGIN - calculatedLeft + (comparingWidth - containerRectangle.width)) + 'px';
+    // Vertical edge
+    // Check top exceeding
+    if (lastContainerRect.top < OVERLAY_MARGIN) {
+      this.container.style.top = `${effectiveTop + (OVERLAY_MARGIN - lastContainerRect.top)}px`;
+    } // Check bottom exceeding
+    else if (lastContainerRect.top + lastContainerRect.height + OVERLAY_MARGIN > winHeight) {
+      this.container.style.top = `${effectiveTop - (lastContainerRect.top + lastContainerRect.height + OVERLAY_MARGIN - winHeight)}px`;
     }
 
-    // if overlay will open to bottom or at center
-    // we're checking if it exceeds from the bottom edge of the window
-    if (
-      verticalDirection !== OverlayVerticalDirection.TO_TOP &&
-            verticalDirection !== OverlayVerticalDirection.END_TO_TOP &&
-            comparingHeight + OVERLAY_MARGIN + calculatedTop > winHeight
-    ) {
-      this.container.style.top =
-                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                calculatedTop - (comparingHeight + OVERLAY_MARGIN + calculatedTop - winHeight) + 'px';
-    }
-    // else if the direction is selected as a one that goes to the top,
-    // we need to check if it is exceeding from the top edge of the window
-    else if (calculatedTop + comparingHeight - containerRectangle.height < OVERLAY_MARGIN) {
-      this.container.style.top =
-                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                calculatedTop + (OVERLAY_MARGIN - calculatedTop + (comparingHeight - containerRectangle.height)) + 'px';
+    // Horizontal edge
+    // Check left exceeding
+    if (lastContainerRect.left < OVERLAY_MARGIN) {
+      this.container.style.left = `${effectiveLeft + (OVERLAY_MARGIN - lastContainerRect.left)}px`;
+    } // Check right exceeding
+    else if (lastContainerRect.left + lastContainerRect.width + OVERLAY_MARGIN > winWidth) {
+      this.container.style.left = `${effectiveLeft - (lastContainerRect.left + lastContainerRect.width + OVERLAY_MARGIN - winWidth)}px`;
     }
 
     // we need to delay the class toggle

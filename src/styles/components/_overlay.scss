@@ -32,6 +32,8 @@
         border-radius: var(--mynah-card-radius);
         max-width: calc(100vw - var(--mynah-sizing-8))!important;
         width: max-content;
+        height: max-content;
+        max-height: calc(100vh - var(--mynah-sizing-8))!important;
 
         .mynah-card,
         .mynah-card * {
