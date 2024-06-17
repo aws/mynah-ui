@@ -146,9 +146,7 @@ export class ChatItemTreeFile {
     if (this.fileTooltipTimeout != null) {
       clearTimeout(this.fileTooltipTimeout);
     }
-    if (this.fileTooltip != null) {
-      this.fileTooltip?.close();
-      this.fileTooltip = null;
-    }
+    this.fileTooltip?.close();
+    this.fileTooltip = null;
   };
 }
