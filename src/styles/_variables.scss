@@ -6,34 +6,33 @@
     --mynah-max-width: 2560px;
     --mynah-sizing-base: 0.25rem;
     --mynah-sizing-half: calc(var(--mynah-sizing-base) / 2);
-    --mynah-sizing-1: var(--mynah-sizing-base);
-    --mynah-sizing-2: calc(var(--mynah-sizing-base) * 2);
-    --mynah-sizing-3: calc(var(--mynah-sizing-base) * 3);
-    --mynah-sizing-4: calc(var(--mynah-sizing-base) * 4);
-    --mynah-sizing-5: calc(var(--mynah-sizing-base) * 5);
-    --mynah-sizing-6: calc(var(--mynah-sizing-base) * 6);
-    --mynah-sizing-7: calc(var(--mynah-sizing-base) * 7);
-    --mynah-sizing-8: calc(var(--mynah-sizing-base) * 8);
-    --mynah-sizing-9: calc(var(--mynah-sizing-base) * 9);
-    --mynah-sizing-10: calc(var(--mynah-sizing-base) * 10);
-    --mynah-sizing-11: calc(var(--mynah-sizing-base) * 11);
-    --mynah-sizing-12: calc(var(--mynah-sizing-base) * 12);
-    --mynah-sizing-13: calc(var(--mynah-sizing-base) * 13);
-    --mynah-sizing-14: calc(var(--mynah-sizing-base) * 14);
-    --mynah-sizing-15: calc(var(--mynah-sizing-base) * 15);
-    --mynah-sizing-16: calc(var(--mynah-sizing-base) * 16);
-    --mynah-sizing-17: calc(var(--mynah-sizing-base) * 17);
-    --mynah-sizing-18: calc(var(--mynah-sizing-base) * 18);
+
+    /**
+     * Sizing variables
+     */
+    @for $i from 1 through 18 {
+        --mynah-sizing-#{$i}: calc(var(--mynah-sizing-base) * #{$i});
+    }
+
     --mynah-chat-wrapper-spacing: var(--mynah-sizing-4);
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
 
-    --mynah-color-text-default: var(--vscode-foreground);
-    --mynah-color-text-alternate: var(--mynah-color-button-reverse);
-    --mynah-color-text-strong: var(--vscode-input-foreground);
-    --mynah-color-text-weak: var(--vscode-disabledForeground);
-    --mynah-color-text-link: var(--vscode-textLink-foreground);
-    --mynah-color-text-input: var(--vscode-input-foreground);
+    /**
+     * Color variables
+     */
+    $mynah-color-text: (
+        'default': var(--vscode-foreground),
+        'alternate': var(--mynah-color-button-reverse),
+        'strong': var(--vscode-input-foreground),
+        'weak': var(--vscode-disabledForeground),
+        'link': var(--vscode-textLink-foreground),
+        'input': var(--vscode-input-foreground)
+    );
+
+    @each $name, $value in $mynah-color-text {
+        --mynah-color-text-#{$name}: #{$value};
+    }
 
     --mynah-color-bg: var(--vscode-sideBar-background);
     --mynah-color-tab-active: var(--vscode-tab-activeBackground, var(--vscode-editor-background, var(--mynah-card-bg)));
@@ -47,22 +46,42 @@
     --mynah-color-toggle: var(--vscode-sideBar-background);
     --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
 
-    --mynah-color-syntax-bg: var(--vscode-terminal-dropBackground);
-    --mynah-color-syntax-variable: var(--vscode-debugTokenExpression-name);
-    --mynah-color-syntax-function: var(--vscode-gitDecoration-modifiedResourceForeground);
-    --mynah-color-syntax-operator: var(--vscode-debugTokenExpression-name);
-    --mynah-color-syntax-attr-value: var(--vscode-debugIcon-stepBackForeground);
-    --mynah-color-syntax-attr: var(--vscode-debugTokenExpression-string);
-    --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan);
-    --mynah-color-syntax-comment: var(--vscode-debugConsole-sourceForeground);
-    --mynah-color-syntax-code: var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit));
+
+    /**
+     * Syntax highlighting variables
+     */
+     $mynah-syntax-colors: (
+        'bg': var(--vscode-terminal-dropBackground),
+        'variable': var(--vscode-debugTokenExpression-name),
+        'function': var(--vscode-gitDecoration-modifiedResourceForeground),
+        'operator': var(--vscode-debugTokenExpression-name),
+        'attr-value': var(--vscode-debugIcon-stepBackForeground),
+        'attr': var(--vscode-debugTokenExpression-string),
+        'property': var(--vscode-terminal-ansiCyan),
+        'comment': var(--vscode-debugConsole-sourceForeground),
+        'code': var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit))
+    );
+
+    @each $name, $value in $mynah-syntax-colors {
+        --mynah-color-syntax-#{$name}: #{$value};
+    }
+
     --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
     --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
 
-    --mynah-color-status-info: #0971d3;
-    --mynah-color-status-success: #037f03;
-    --mynah-color-status-warning: #b2911c;
-    --mynah-color-status-error: #d91515;
+    /**
+     * Status variables
+     */
+    $mynah-status-colors: (
+        'info': #0971d3,
+        'success': #037f03,
+        'warning': #b2911c,
+        'error': #d91515
+    );
+
+    @each $name, $value in $mynah-status-colors {
+        --mynah-color-status-#{$name}: #{$value};
+    }
 
     --mynah-color-button: var(--vscode-button-background);
     --mynah-color-button-reverse: var(--vscode-button-foreground);
@@ -77,11 +96,21 @@
     --mynah-shadow-card: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);
     --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
 
-    --mynah-font-size-xxsmall: 0.75rem;
-    --mynah-font-size-xsmall: 0.85rem;
-    --mynah-font-size-small: 0.95rem;
-    --mynah-font-size-medium: 1rem;
-    --mynah-font-size-large: 1.125rem;
+    /**
+     * Font variables
+     */
+    $mynah-font-sizes: (
+        'xxsmall': 0.75rem,
+        'xsmall': 0.85rem,
+        'small': 0.95rem,
+        'medium': 1rem,
+        'large': 1.125rem
+    );
+
+    @each $name, $value in $mynah-font-sizes {
+        --mynah-font-size-#{$name}: #{$value};
+    }
+
     --mynah-line-height: 1.5rem;
     --mynah-syntax-code-line-height: 1.5rem;
 
@@ -90,12 +119,21 @@
     --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
 
-    --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-very-long-transition: all 1650ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-short-transition: all 550ms cubic-bezier(0.85, 0.15, 0, 1);
-    --mynah-short-transition-rev: all 580ms cubic-bezier(0.35, 1, 0, 1);
+
+    /**
+     * Transition variables
+     */
+    $mynah-transitions: (
+        'bottom-panel': (850, cubic-bezier(0.25, 1, 0, 1)),
+        'very-short': (600, cubic-bezier(0.25, 1, 0, 1)),
+        'very-long': (1650, cubic-bezier(0.25, 1, 0, 1)),
+        'short': (550, cubic-bezier(0.85, 0.15, 0, 1)),
+        'short-rev': (580, cubic-bezier(0.35, 1, 0, 1))
+    );
+    @each $name, $values in $mynah-transitions {
+        @include mynah-transition($name, nth($values, 1), nth($values, 2));
+    }
+
     --mynah-short-transition-rev-opacity: opacity 750ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1.2, 0, 1),
-        transform 800ms cubic-bezier(0.2, 1.05, 0, 1);
+    --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1.2, 0, 1), transform 800ms cubic-bezier(0.2, 1.05, 0, 1);
 }

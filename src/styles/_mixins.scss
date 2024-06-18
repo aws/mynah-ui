@@ -11,3 +11,55 @@
     mask-image: $listFader;
     mask-size: 100% 100%;
 }
+
+/**
+ * @param {string} $size - The size of the font.
+ * @param {string} $weight - The weight of the font.
+ * @param {string} $family - The family of the font.
+ */
+@mixin mynah-font($size, $weight: normal, $family: var(--mynah-font-family)) {
+    font-size: $size;
+    font-weight: $weight;
+    font-family: $family;
+}
+
+/**
+ * @param {string} $text-color - The color of the text.
+ * @param {string} $bg-color - The background color.
+ */
+@mixin mynah-color($text-color, $bg-color) {
+    color: $text-color;
+    background-color: $bg-color;
+}
+
+/**
+ * @param {string} $margin - The margin of the element.
+ * @param {string} $padding - The padding of the element.
+ */
+@mixin mynah-spacing($margin: 0, $padding: 0) {
+    margin: $margin;
+    padding: $padding;
+}
+
+/**
+ * @param {string} $radius - The radius of the border.
+ */
+@mixin mynah-border-radius($radius) {
+    border-radius: $radius;
+}
+
+/**
+ * @param {string} $shadow - The shadow of the element.
+ */
+ @mixin mynah-box-shadow($shadow) {
+    box-shadow: $shadow;
+}
+
+/**
+ * @param {string} $name - The name of the transition.
+ * @param {number} $duration - The duration of the transition in milliseconds.
+ * @param {string} $timing-function - The timing function of the transition.
+ */
+@mixin mynah-transition($name, $duration, $timing-function) {
+    --mynah-#{$name}-transition: all #{$duration}ms #{$timing-function};
+}
