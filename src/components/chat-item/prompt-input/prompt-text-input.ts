@@ -112,13 +112,24 @@ export class PromptTextInput {
     });
   }
 
-  private readonly updatePromptTextInputSizer = (): void => {
+  private readonly updatePromptTextInputSizer = (placeHolder?: {
+    index?: number;
+    text?: string;
+  }): void => {
     if (this.promptTextInput.value.trim() !== '') {
       this.render.removeClass('no-text');
     } else {
       this.render.addClass('no-text');
     }
-    this.promptTextInputSizer.innerHTML = this.promptTextInput.value.replace(/\n/g, '</br>&nbsp;');
+    let initProcessedValue = this.promptTextInput.value;
+    if (placeHolder?.text != null) {
+      initProcessedValue = `${initProcessedValue.substring(0, placeHolder.index ?? initProcessedValue.length)} <span class="placeholder">${placeHolder.text}</span> ${initProcessedValue.substring((placeHolder.index ?? initProcessedValue.length) + 1)}`;
+    }
+    this.promptTextInputSizer.innerHTML = `${initProcessedValue.replace(/\n/g, '<br>').replace(/@\S*/gi, (match) => `<span class="context">${match}</span>`)}&nbsp`;
+  };
+
+  public readonly getCursorPos = (): number => {
+    return this.promptTextInput.selectionStart ?? this.promptTextInput.value.length;
   };
 
   public readonly clear = (): void => {
@@ -129,19 +140,27 @@ export class PromptTextInput {
     this.render.addClass('no-text');
   };
 
-  public readonly focus = (): void => {
+  public readonly focus = (cursorIndex?: number): void => {
     if (Config.getInstance().config.autoFocus) {
       this.promptTextInput.focus();
     }
-    this.updateTextInputValue('');
+    if (cursorIndex != null) {
+      this.promptTextInput.setSelectionRange(cursorIndex, cursorIndex);
+    } else {
+      this.updateTextInputValue('');
+    }
   };
 
   public readonly getTextInputValue = (): string => {
     return this.promptTextInput.value;
   };
 
-  public readonly updateTextInputValue = (value: string): void => {
+  public readonly updateTextInputValue = (value: string, placeHolder?: {
+    index?: number;
+    text?: string;
+  }): void => {
     this.promptTextInput.value = value;
+    this.updatePromptTextInputSizer(placeHolder);
   };
 
   public readonly updateTextInputMaxLength = (maxLength: number): void => {

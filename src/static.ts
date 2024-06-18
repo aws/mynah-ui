@@ -53,6 +53,10 @@ export interface MynahUIDataModel {
   */
   quickActionCommands?: QuickActionCommandGroup[];
   /**
+  * Context commands to show when user hits @ to the input any point
+  */
+  contextCommands?: QuickActionCommandGroup[];
+  /**
   * Placeholder to be shown on prompt input
   */
   promptInputPlaceholder?: string;
@@ -279,6 +283,7 @@ export enum KeyMap {
   SHIFT = 'Shift',
   CONTROL = 'Control',
   ALT = 'Alt',
+  AT = '@',
   SLASH = '/',
   BACK_SLASH = '\\'
 }

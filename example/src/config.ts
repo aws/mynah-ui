@@ -101,7 +101,7 @@ export const QuickActionCommands:QuickActionCommandGroup[] = [
       },
     ],
   },
-];
+] as QuickActionCommandGroup[];
 
 export const mynahUIDefaults = {
   store: {
@@ -117,6 +117,35 @@ export const mynahUIDefaults = {
       defaultFollowUps
     ],
     quickActionCommands: QuickActionCommands,
-    promptInputPlaceholder: 'Type something or "/" for quick action commands',
+    contextCommands: [
+      {
+        commands:[
+          {
+            command: '@workspace',
+            description: 'All files in my IDE'
+          },
+          {
+            command: '@folder',
+            placeholder: 'mention a specific folder',
+            description: 'All files within a specific folder'
+          },
+          {
+            command: '@file',
+            placeholder: 'mention a specific file',
+            description: 'Reference a specific file'
+          },
+          {
+            command: '@code',
+            placeholder: 'mention a specific file/folder, or leave blank for full project',
+            description: 'After that mention a specific file/folder, or leave blank for full project'
+          },
+          {
+            command: '@gitlab',
+            description: 'Ask about data in gitlab account'
+          }
+        ]
+      }
+    ] as QuickActionCommandGroup[],
+    promptInputPlaceholder: 'Type something or "/" for quick action commands or @ for choosing context',
   }
 };
