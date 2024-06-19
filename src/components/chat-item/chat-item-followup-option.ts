@@ -10,9 +10,9 @@ import { Icon } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
+import { cancelEvent } from '../../helper/events';
 
 const PREVIEW_DELAY = 250;
-const MAX_LENGTH = 40;
 export interface ChatItemFollowUpOptionProps {
   followUpOption: ChatItemAction;
   onClick: (followUpOption: ChatItemAction) => void;
@@ -36,7 +36,6 @@ export class ChatItemFollowUpOption {
         }
       } ]
     });
-    const croppedPillText = props.followUpOption.pillText.length > MAX_LENGTH ? `${props.followUpOption.pillText.substring(0, MAX_LENGTH - 3)}...` : props.followUpOption.pillText;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [
@@ -52,7 +51,8 @@ export class ChatItemFollowUpOption {
           : []),
         {
           type: 'span',
-          innerHTML: (marked(croppedPillText, { breaks: true }) as string).replace('<p>', '').replace('</p>', '')
+          classNames: [ 'mynah-chat-item-followup-question-option-text' ],
+          innerHTML: (marked(props.followUpOption.pillText, { breaks: true }) as string).replace('<p>', '').replace('</p>', '')
         }
       ],
       events: {
@@ -62,21 +62,24 @@ export class ChatItemFollowUpOption {
             this.props.onClick(props.followUpOption);
           }
         },
-        ...(props.followUpOption.pillText.length > MAX_LENGTH || props.followUpOption.description !== undefined
-          ? {
-              mouseover: (e) => {
-                let tooltipText = marked(props.followUpOption.pillText.length > MAX_LENGTH ? props.followUpOption.pillText : '', { breaks: true }) as string;
-                if (props.followUpOption.description !== undefined) {
-                  if (tooltipText !== '') {
-                    tooltipText += '\n\n';
-                  }
-                  tooltipText += props.followUpOption.description;
-                }
-                this.showCroppedFollowupText(e, tooltipText);
-              },
-              mouseleave: this.hideCroppedFollowupText
+        mouseover: (e) => {
+          cancelEvent(e);
+          const textContentSpan: HTMLSpanElement | null = this.render.querySelector('.mynah-chat-item-followup-question-option-text');
+          let tooltipText;
+          if (textContentSpan != null && textContentSpan.offsetWidth < textContentSpan.scrollWidth) {
+            tooltipText = marked(props.followUpOption.pillText, { breaks: true }) as string;
+          }
+          if (props.followUpOption.description !== undefined) {
+            if (tooltipText != null) {
+              tooltipText += '\n\n';
             }
-          : {})
+            tooltipText = props.followUpOption.description;
+          }
+          if (tooltipText != null) {
+            this.showCroppedFollowupText(e, tooltipText);
+          }
+        },
+        mouseleave: this.hideCroppedFollowupText
       }
     });
   }

@@ -103,7 +103,8 @@
       }
       &:not(:hover) {
         > .mynah-chat-item-tree-view-file-item-actions {
-          display: none;
+          opacity: 0;
+          pointer-events: none;
         }
       }
 
@@ -179,7 +180,7 @@
         font-size: 90%;
         z-index: 10;
         flex: 1;
-        flex-shrink: 1;
+        flex-shrink: 2;
         overflow: hidden;
 
         > .mynah-chat-item-tree-view-file-item-details-text {
@@ -199,7 +200,7 @@
         font-size: 90%;
         z-index: 10;
         padding-right: var(--mynah-sizing-1);
-
+        flex-shrink: 0;
         > .mynah-button {
           width: auto;
           height: auto;
@@ -236,12 +237,13 @@
         max-width: 100%;
         overflow: hidden;
         z-index: 10;
-        flex-shrink: 1;
+        flex-shrink: 0;
 
         > span {
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
+          max-width: 100%;
         }
       }
 

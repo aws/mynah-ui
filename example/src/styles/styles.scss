@@ -146,6 +146,7 @@ body {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: stretch;
+    z-index: 100;
 
     > #amzn-mynah-website-wrapper {
       max-width: var(--mynah-max-width);

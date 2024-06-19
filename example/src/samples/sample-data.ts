@@ -192,26 +192,41 @@ export const exampleFileListChatItem: ChatItem = {
     type: ChatItemType.ANSWER,
     fileList: {
         rootFolderTitle: 'Changes',
-        filePaths: ['src/index.ts'],
+        filePaths: ['./package.json', './tsconfig.json', 'src/game.ts', 'tests/game.test.ts'],
         deletedFiles: [],
         actions: {
-            'src/index.ts': [
+            './package.json': [
                 {
                     icon: MynahIcons.CANCEL_CIRCLE,
+                    status: 'error',
                     name: 'reject-change',
-                    description: 'Reject Change',
-                },
-                {
-                    icon: MynahIcons.CODE_BLOCK,
-                    name: 'show-diff',
-                    description: 'Show Diff',
+                    description: 'Reject change',
                 },
             ],
-        },
-        details: {
-            'src/index.ts': {
-                description: exampleCodeDiff
-            },
+            './tsconfig.json': [
+                {
+                    icon: MynahIcons.CANCEL_CIRCLE,
+                    status: 'error',
+                    name: 'reject-change',
+                    description: 'Reject change',
+                },
+            ],
+            'src/game.ts': [
+                {
+                    icon: MynahIcons.CANCEL_CIRCLE,
+                    status: 'error',
+                    name: 'reject-change',
+                    description: 'Reject change',
+                },
+            ],
+            'tests/game.test.ts': [
+                {
+                    icon: MynahIcons.CANCEL_CIRCLE,
+                    status: 'error',
+                    name: 'reject-change',
+                    description: 'Reject change',
+                },
+            ],
         },
     },
 };
