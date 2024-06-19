@@ -200,6 +200,11 @@
         align-items: center;
         user-select: none;
         line-height: var(--mynah-line-height);
+        > span {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
         * {
             pointer-events: none;
         }
