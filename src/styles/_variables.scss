@@ -1,3 +1,159 @@
+/**
+ * Flatten a map or list into a string
+ * @param {any} $value - The value to flatten
+ * @returns {string} The flattened value
+ */
+@function flatten($value) {
+    @if type-of($value) == 'map' {
+        $result: "";
+        @each $key, $val in $value {
+            $flattened-val: flatten($val);
+            $result: "#{$result}#{$key}: #{$flattened-val}; ";
+        }
+        @return $result;
+    } @else if type-of($value) == 'list' {
+        $result: "";
+        @each $item in $value {
+            $flattened-item: flatten($item);
+            $result: "#{$result}#{$flattened-item}, ";
+        }
+        @return $result;
+    } @else {
+        @return $value;
+    }
+}
+
+/**
+ * Export a map as CSS variables
+ * @param {map} $map - The map to export
+ * @param {string} $name - The name of the export
+ */
+@mixin export-map($map, $name) {
+    :export {
+        #{$name}: "#{flatten($map)}";
+    }
+}
+
+/**
+ * Color variables
+ */
+$mynah-color-text: (
+    'default': var(--vscode-foreground),
+    'alternate': var(--mynah-color-button-reverse),
+    'strong': var(--vscode-input-foreground),
+    'weak': var(--vscode-disabledForeground),
+    'link': var(--vscode-textLink-foreground),
+    'input': var(--vscode-input-foreground)
+);
+
+/**
+ * Statuses
+ */
+$mynah-statuses: ("success", "error", "warning", "info");
+
+/**
+ * Status variables
+ */
+$mynah-status-colors: (
+    'info': #0971d3,
+    'success': #037f03,
+    'warning': #b2911c,
+    'error': #d91515
+);
+
+/**
+ * Font variables
+ */
+$mynah-font-sizes: (
+    'xxsmall': 0.75rem,
+    'xsmall': 0.85rem,
+    'small': 0.95rem,
+    'medium': 1rem,
+    'large': 1.125rem
+);
+
+/**
+ * Padding sizes
+ */
+$mynah-padding-sizes: (
+  'none': 0,
+  'small': 1,
+  'medium': 3,
+  'large': 5,
+);
+
+/**
+ * Transition variables
+ */
+$mynah-transitions: (
+    'bottom-panel': (850, cubic-bezier(0.25, 1, 0, 1)),
+    'very-short': (600, cubic-bezier(0.25, 1, 0, 1)),
+    'very-long': (1650, cubic-bezier(0.25, 1, 0, 1)),
+    'short': (550, cubic-bezier(0.85, 0.15, 0, 1)),
+    'short-rev': (580, cubic-bezier(0.35, 1, 0, 1))
+);
+
+/**
+ * Syntax highlighting variables
+ */
+ $mynah-syntax-colors: (
+    'bg': var(--vscode-terminal-dropBackground),
+    'variable': var(--vscode-debugTokenExpression-name),
+    'function': var(--vscode-gitDecoration-modifiedResourceForeground),
+    'operator': var(--vscode-debugTokenExpression-name),
+    'attr-value': var(--vscode-debugIcon-stepBackForeground),
+    'attr': var(--vscode-debugTokenExpression-string),
+    'property': var(--vscode-terminal-ansiCyan),
+    'comment': var(--vscode-debugConsole-sourceForeground),
+    'code': var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit))
+);
+
+/**
+ * Token styles
+ */
+ $mynah-token-styles: (
+    'comments': (color: var(--mynah-color-syntax-comment)),
+    'punctuation': (color: currentColor),
+    'namespace': (opacity: 0.7),
+    'properties': (color: var(--mynah-color-syntax-property)),
+    'attributes': (color: var(--mynah-color-syntax-attr)),
+    'operators': (color: var(--mynah-color-syntax-operator)),
+    'attr-values': (color: var(--mynah-color-syntax-attr-value)),
+    'functions': (color: var(--mynah-color-syntax-function), font-weight: 500),
+    'variables': (color: var(--mynah-color-syntax-variable), font-weight: 500),
+    'bold': (font-weight: bold),
+    'italic': (font-style: italic),
+    'entity': (cursor: help)
+);
+
+/**
+ * Syntax token styles
+ */
+$mynah-syntax-token-styles: (
+    'comments': (comment, prolog, doctype, cdata),
+    'punctuation': (punctuation),
+    'namespace': (namespace),
+    'properties': (property, tag, boolean, number, constant, symbol, inserted),
+    'attributes': (selector, attr-name, string, char, builtin, deleted),
+    'operators': (operator, entity, url),
+    'attr-values': (atrule, attr-value, class-name, keyword),
+    'functions': (function),
+    'variables': (regex, important, variable),
+    'bold': (important, bold),
+    'italic': (italic),
+    'entity': (entity)
+);
+
+@include export-map($mynah-color-text, 'mynah-color-text');
+@include export-map($mynah-statuses, 'mynah-statuses');
+@include export-map($mynah-syntax-colors, 'mynah-syntax-colors');
+@include export-map($mynah-status-colors, 'mynah-status-colors');
+@include export-map($mynah-font-sizes, 'mynah-font-sizes');
+@include export-map($mynah-padding-sizes, 'mynah-padding-sizes');
+@include export-map($mynah-transitions, 'mynah-transitions');
+@include export-map($mynah-syntax-token-styles, 'mynah-syntax-token-styles');
+
+
 :root {
     --mynah-font-family: var(--vscode-font-family), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         "Amazon Ember", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -18,18 +174,6 @@
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
 
-    /**
-     * Color variables
-     */
-    $mynah-color-text: (
-        'default': var(--vscode-foreground),
-        'alternate': var(--mynah-color-button-reverse),
-        'strong': var(--vscode-input-foreground),
-        'weak': var(--vscode-disabledForeground),
-        'link': var(--vscode-textLink-foreground),
-        'input': var(--vscode-input-foreground)
-    );
-
     @each $name, $value in $mynah-color-text {
         --mynah-color-text-#{$name}: #{$value};
     }
@@ -46,22 +190,6 @@
     --mynah-color-toggle: var(--vscode-sideBar-background);
     --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
 
-
-    /**
-     * Syntax highlighting variables
-     */
-     $mynah-syntax-colors: (
-        'bg': var(--vscode-terminal-dropBackground),
-        'variable': var(--vscode-debugTokenExpression-name),
-        'function': var(--vscode-gitDecoration-modifiedResourceForeground),
-        'operator': var(--vscode-debugTokenExpression-name),
-        'attr-value': var(--vscode-debugIcon-stepBackForeground),
-        'attr': var(--vscode-debugTokenExpression-string),
-        'property': var(--vscode-terminal-ansiCyan),
-        'comment': var(--vscode-debugConsole-sourceForeground),
-        'code': var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit))
-    );
-
     @each $name, $value in $mynah-syntax-colors {
         --mynah-color-syntax-#{$name}: #{$value};
     }
@@ -69,15 +197,6 @@
     --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
     --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
 
-    /**
-     * Status variables
-     */
-    $mynah-status-colors: (
-        'info': #0971d3,
-        'success': #037f03,
-        'warning': #b2911c,
-        'error': #d91515
-    );
 
     @each $name, $value in $mynah-status-colors {
         --mynah-color-status-#{$name}: #{$value};
@@ -96,17 +215,6 @@
     --mynah-shadow-card: none; //0 10px 20px -15px rgba(0, 0, 0, 0.25);
     --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
 
-    /**
-     * Font variables
-     */
-    $mynah-font-sizes: (
-        'xxsmall': 0.75rem,
-        'xsmall': 0.85rem,
-        'small': 0.95rem,
-        'medium': 1rem,
-        'large': 1.125rem
-    );
-
     @each $name, $value in $mynah-font-sizes {
         --mynah-font-size-#{$name}: #{$value};
     }
@@ -119,17 +227,6 @@
     --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
 
-
-    /**
-     * Transition variables
-     */
-    $mynah-transitions: (
-        'bottom-panel': (850, cubic-bezier(0.25, 1, 0, 1)),
-        'very-short': (600, cubic-bezier(0.25, 1, 0, 1)),
-        'very-long': (1650, cubic-bezier(0.25, 1, 0, 1)),
-        'short': (550, cubic-bezier(0.85, 0.15, 0, 1)),
-        'short-rev': (580, cubic-bezier(0.35, 1, 0, 1))
-    );
     @each $name, $values in $mynah-transitions {
         @include mynah-transition($name, nth($values, 1), nth($values, 2));
     }
