@@ -59,7 +59,7 @@ export const fileListToTree = (
   details?: Record<string, TreeNodeDetails>,
   rootTitle?: string): TreeNode => {
   return [ ...splitFilePaths(modifiedFilePaths, false), ...splitFilePaths(deletedFilePaths, true) ].reduce<TreeNode>(
-    (acc, { filePath, deleted }) => {
+    (acc, { originalFilePath, filePath, deleted }) => {
       // pointer to keep track of the current tree node
       let currentNode = acc;
       for (let i = 0; i < filePath.length; i++) {
@@ -74,8 +74,8 @@ export const fileListToTree = (
             name: fileOrFolder,
             filePath: filePathJoined,
             deleted,
-            actions: actions !== undefined ? actions[filePathJoined] : undefined,
-            details: details !== undefined ? details[filePathJoined] : undefined,
+            actions: actions !== undefined ? actions[originalFilePath] : undefined,
+            details: details !== undefined ? details[originalFilePath] : undefined,
           });
           break;
         } else {
@@ -97,7 +97,7 @@ export const fileListToTree = (
   );
 };
 
-const splitFilePaths = (paths: string[], deleted: boolean): Array<{ filePath: string[]; deleted: boolean }> =>
+const splitFilePaths = (paths: string[], deleted: boolean): Array<{ originalFilePath: string; filePath: string[]; deleted: boolean }> =>
   paths
     // split file path by folder. ignore dot folders
-    .map(filePath => ({ filePath: filePath.split('/').filter(item => item !== undefined && item !== '.'), deleted }));
+    .map(filePath => ({ originalFilePath: filePath, filePath: filePath.split('/').filter(item => item !== undefined && item !== '.'), deleted }));
