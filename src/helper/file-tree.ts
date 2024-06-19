@@ -11,6 +11,7 @@ export interface FileNode {
   name: string;
   type: 'file';
   filePath: string;
+  originalFilePath: string;
   deleted: boolean;
   actions?: FileNodeAction[];
   details?: TreeNodeDetails;
@@ -74,6 +75,7 @@ export const fileListToTree = (
             name: fileOrFolder,
             filePath: filePathJoined,
             deleted,
+            originalFilePath,
             actions: actions !== undefined ? actions[originalFilePath] : undefined,
             details: details !== undefined ? details[originalFilePath] : undefined,
           });

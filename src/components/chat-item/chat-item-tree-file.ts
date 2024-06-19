@@ -12,6 +12,7 @@ export interface ChatItemTreeFileProps {
   tabId: string;
   messageId: string;
   filePath: string;
+  originalFilePath: string;
   fileName: string;
   icon?: MynahIcons;
   deleted?: boolean;
@@ -37,7 +38,7 @@ export class ChatItemTreeFile {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
             tabId: props.tabId,
             messageId: props.messageId,
-            filePath: props.filePath,
+            filePath: props.originalFilePath,
             deleted: props.deleted,
           });
         },
@@ -104,7 +105,7 @@ export class ChatItemTreeFile {
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_ACTION_CLICK, {
                     tabId: props.tabId,
                     messageId: props.messageId,
-                    filePath: props.filePath,
+                    filePath: props.originalFilePath,
                     actionName: action.name,
                   });
                 },

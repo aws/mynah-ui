@@ -190,7 +190,6 @@ export class ChatWrapper {
         updateWith.type !== null &&
         updateWith.type !== ChatItemType.ANSWER_STREAM &&
         updateWith.type !== ChatItemType.ANSWER_PART) {
-      console.log(`Reverting ${this.lastStreamingChatItemMessageId ?? ''} card to ANSWER and removing lastCardThing`);
       this.lastStreamingChatItemCard = null;
       this.lastStreamingChatItemMessageId = null;
     }

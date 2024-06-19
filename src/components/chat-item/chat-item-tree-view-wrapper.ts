@@ -38,6 +38,7 @@ export class ChatItemTreeViewWrapper {
       ? new ChatItemTreeFile({
         filePath: props.files[0],
         fileName: props.files[0],
+        originalFilePath: props.files[0],
         tabId: props.tabId,
         messageId: props.messageId,
         deleted: props.deletedFiles.includes(props.files[0]),
