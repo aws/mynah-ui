@@ -119,10 +119,11 @@ export const mynahUIDefaults = {
     quickActionCommands: QuickActionCommands,
     contextCommands: [
       {
+        groupName: 'Metion code',
         commands:[
           {
-            command: '@workspace',
-            description: 'All files in my IDE'
+            command: '@ws',
+            description: '(BETA) Reference all code in workspace.'
           },
           {
             command: '@folder',
