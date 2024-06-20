@@ -274,16 +274,16 @@ export class ChatPromptInput {
               this.quickPick.close();
             } else {
               this.filteredQuickPickItemGroups = [];
-              [ ...this.quickPickItemGroups ].forEach((quickActionGroup: QuickActionCommandGroup) => {
-                const newQuickActionCommandGroup = { ...quickActionGroup };
+              [ ...this.quickPickItemGroups ].forEach((quickPickGroup: QuickActionCommandGroup) => {
+                const newQuickPickCommandGroup = { ...quickPickGroup };
                 try {
                   const searchTerm = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0];
                   const promptRegex = new RegExp(searchTerm ?? '', 'gi');
-                  newQuickActionCommandGroup.commands = newQuickActionCommandGroup.commands.filter(command =>
+                  newQuickPickCommandGroup.commands = newQuickPickCommandGroup.commands.filter(command =>
                     command.command.match(promptRegex)
                   );
-                  if (newQuickActionCommandGroup.commands.length > 0) {
-                    this.filteredQuickPickItemGroups.push(newQuickActionCommandGroup);
+                  if (newQuickPickCommandGroup.commands.length > 0) {
+                    this.filteredQuickPickItemGroups.push(newQuickPickCommandGroup);
                   }
                 } catch (e) {
                   // In case the prompt is an incomplete regex
