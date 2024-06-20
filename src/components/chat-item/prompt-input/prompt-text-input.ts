@@ -132,6 +132,35 @@ export class PromptTextInput {
     return this.promptTextInput.selectionStart ?? this.promptTextInput.value.length;
   };
 
+  public readonly getWordAndIndexOnCursorPos = (): { wordStartIndex: number; word: string } => {
+    const currentValue = this.promptTextInput.value;
+    const cursorPos = this.getCursorPos();
+    let prevSpaceIndex = -1;
+    let nextSpaceIndex = currentValue.indexOf(' ', cursorPos);
+
+    // We're not splitting the text value by spaces to get the words and check all of them
+    // Reason behind that is performance concerns.
+    // We know that we're looking for a word, and we only need the word for the given index if it is inside a word
+
+    // Find previous space chararacter
+    for (let i = cursorPos - 1; i >= 0; i--) {
+      if (currentValue[i] === ' ') {
+        prevSpaceIndex = i;
+        break;
+      }
+    }
+
+    // Find next space character
+    if (nextSpaceIndex === -1) {
+      nextSpaceIndex = currentValue.length;
+    }
+
+    return {
+      wordStartIndex: prevSpaceIndex + 1,
+      word: currentValue.substring(prevSpaceIndex + 1, nextSpaceIndex)
+    };
+  };
+
   public readonly clear = (): void => {
     this.promptTextInputSizer.innerHTML = '';
     this.updateTextInputValue('');

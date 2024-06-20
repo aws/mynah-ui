@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatPrompt, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -145,9 +145,21 @@ export class ChatPromptInput {
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (!this.quickPickOpen) {
-      if (e.key === KeyMap.BACKSPACE && this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
-        cancelEvent(e);
-        this.clearTextArea(true);
+      if (e.key === KeyMap.BACKSPACE || e.key === KeyMap.DELETE) {
+        if (this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
+          cancelEvent(e);
+          this.clearTextArea(true);
+        } else {
+          // If we're trying to delete a context item, we should do it as a word, not just some letter inside the context.
+          // Since those context are defined, it should match the whole term or it shouldn't be there at all.
+          const targetWord = this.promptTextInput.getWordAndIndexOnCursorPos();
+          if (targetWord.word.charAt(0) === KeyMap.AT) {
+            cancelEvent(e);
+            const currValue = this.promptTextInput.getTextInputValue();
+            this.promptTextInput.updateTextInputValue(currValue.substring(0, targetWord.wordStartIndex) + currValue.substring(targetWord.wordStartIndex + targetWord.word.length));
+            this.promptTextInput.focus(targetWord.wordStartIndex);
+          }
+        }
       } else if (e.key === KeyMap.ENTER &&
         ((!e.isComposing && !e.shiftKey && !e.ctrlKey) ||
         (e.isComposing && (e.shiftKey)))) {
@@ -397,11 +409,19 @@ export class ChatPromptInput {
     if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
       const attachmentContent: string | undefined = this.promptAttachment?.lastAttachmentContent;
       const promptText = currentInputValue + (attachmentContent ?? '');
-      const promptData = {
+      const context: string[] = [];
+      const escapedPrompt = escapeHTML(promptText.replace(/@\S*/gi, (match) => {
+        if (!context.includes(match)) {
+          context.push(match);
+        }
+        return `**${match}**`;
+      }));
+      const promptData: {tabId: string; prompt: ChatPrompt} = {
         tabId: this.props.tabId,
         prompt: {
           prompt: promptText,
-          escapedPrompt: escapeHTML(promptText),
+          escapedPrompt,
+          context,
           ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
         }
       };

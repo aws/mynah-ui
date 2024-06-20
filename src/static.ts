@@ -221,6 +221,7 @@ export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
+  context?: string[];
 }
 
 export interface ChatItemAction extends ChatPrompt {
