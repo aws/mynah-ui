@@ -364,6 +364,7 @@ onChatPrompt?: (
       console.log(`Prompt text (as written): ${prompt.prompt}`);
       console.log(`Prompt text (HTML escaped): ${prompt.escapedPrompt}`);
       console.log(`Command (if selected from quick actions): ${prompt.command}`);
+      console.log(`Context (if selected from context selector): ${(prompt.context??[]).join(', ')}`);
       console.log(`Attachment (feature not available yet): ${prompt.attachment}`);
     };
 ...

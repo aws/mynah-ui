@@ -22,6 +22,7 @@ export class EmptyMynahUIDataModel {
       cancelButtonWhenLoading: true,
       showChatAvatars: false,
       quickActionCommands: [],
+      contextCommands: [],
       promptInputPlaceholder: '',
       promptInputInfo: '',
       promptInputStickyCard: null,

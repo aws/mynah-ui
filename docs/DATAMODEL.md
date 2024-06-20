@@ -29,8 +29,11 @@ interface MynahUIDataModel {
    */
   loadingChat?: boolean;
   /**
+   * Show chat avatars or not
+   * */
+  showChatAvatars?: boolean;
+  /**
    * Show cancel button while loading the chat
-   * If you want to disable it globally, leave the onStopChatResponse on mynah ui constructor as undefined
    * */
   cancelButtonWhenLoading?: boolean;
   /**
@@ -38,13 +41,17 @@ interface MynahUIDataModel {
   */
   quickActionCommands?: QuickActionCommandGroup[];
   /**
+  * Context commands to show when user hits @ to the input any point
+  */
+  contextCommands?: QuickActionCommandGroup[];
+  /**
   * Placeholder to be shown on prompt input
   */
   promptInputPlaceholder?: string;
   /**
   * Info block to be shown under prompt input
   */
-  promptInputInfo?: string; // supports MARKDOWN string
+  promptInputInfo?: string;
   /**
   * A sticky chat item card on top of the prompt input
   */
@@ -218,7 +225,7 @@ mynahUI.updateStore('tab-1', {
 ```
 
 <p align="center">
-  <img src="./img/data-model/tabStore/quickActionCommands.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/tabStore/quickActionCommands.png" alt="quickActionCommands" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 To handle the incoming command (if there is) check it with the prompt object in the `onChatPrompt` event.
@@ -239,6 +246,72 @@ const mynahUI = new MynahUI({
                     ...
                     break;
                 }
+        }
+    }
+});
+```
+
+---
+
+### `contextCommands` (default: `[]`)
+Context commands are the predefined context items which user can pick between but unlike quick action commands, they can be picked several times at any point in the prompt text. When users hit `@` from their keyboard in the input, if there is an available list of context items provided through store it will show up as an overlay menu.
+
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    contextCommands: [
+      {
+        groupName: 'Metion code',
+        commands:[
+          {
+            command: '@ws',
+            description: '(BETA) Reference all code in workspace.'
+          },
+          {
+            command: '@folder',
+            placeholder: 'mention a specific folder',
+            description: 'All files within a specific folder'
+          },
+          {
+            command: '@file',
+            placeholder: 'mention a specific file',
+            description: 'Reference a specific file'
+          },
+          {
+            command: '@code',
+            placeholder: 'mention a specific file/folder, or leave blank for full project',
+            description: 'After that mention a specific file/folder, or leave blank for full project'
+          },
+          {
+            command: '@gitlab',
+            description: 'Ask about data in gitlab account'
+          }
+        ]
+      }
+    ]
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/contextCommands.png" alt="contextCommands" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+To see which context is used, check the incoming array in the prompt object comes with the `onChatPrompt` event.
+
+```typescript
+const mynahUI = new MynahUI({
+    ...
+    onChatPrompt: (prompt)=>{
+        if(prompt.context != null && prompt.context.indexOf('@ws') {
+          // Use whole workspace!
         }
     }
 });
@@ -1988,3 +2061,18 @@ mynahUI.notify({
 <p align="center">
   <img src="./img/data-model/chatItems/notification-4.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+
+---
+
+## ChatPrompt
+This is the object model which will be send along with the `onChatPrompt` event.
+
+```typescript
+export interface ChatPrompt {
+  prompt?: string;
+  escapedPrompt?: string; // Generally being used to send it back to mynah-ui for end user prompt rendering
+  command?: string;
+  context?: string[];
+}
+```

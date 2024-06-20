@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatPrompt, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -31,14 +31,16 @@ export class ChatPromptInput {
   private readonly remainingCharsIndicator: ExtendedHTMLElement;
   private readonly sendButton: SendButton;
   private readonly promptAttachment: PromptAttachment;
-  private quickActionCommands: QuickActionCommandGroup[];
-  private commandSelector: Overlay;
-  private commandSelectorOpen: boolean = false;
+  private quickPickTriggerIndex: number;
+  private quickPickType: 'quick-action' | 'context';
+  private textAfter: string;
+  private quickPickItemGroups: QuickActionCommandGroup[];
+  private filteredQuickPickItemGroups: QuickActionCommandGroup[];
+  private quickPick: Overlay;
+  private quickPickOpen: boolean = false;
   private selectedCommand: string = '';
-  private filteredCommandsList: QuickActionCommandGroup[];
   constructor (props: ChatPromptInputProps) {
     this.props = props;
-    this.quickActionCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
     this.promptTextInputCommand = new ChatPromptInputCommand({
       command: '',
       onRemoveClick: () => {
@@ -142,70 +144,94 @@ export class ChatPromptInput {
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
-    if (!this.commandSelectorOpen) {
-      this.quickActionCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
-      if (e.key === KeyMap.BACKSPACE && this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
-        cancelEvent(e);
-        this.clearTextArea(true);
+    if (!this.quickPickOpen) {
+      if (e.key === KeyMap.BACKSPACE || e.key === KeyMap.DELETE) {
+        if (this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
+          cancelEvent(e);
+          this.clearTextArea(true);
+        } else {
+          // If we're trying to delete a context item, we should do it as a word, not just some letter inside the context.
+          // Since those context are defined, it should match the whole term or it shouldn't be there at all.
+          const targetWord = this.promptTextInput.getWordAndIndexOnCursorPos();
+          if (targetWord.word.charAt(0) === KeyMap.AT) {
+            cancelEvent(e);
+            const currValue = this.promptTextInput.getTextInputValue();
+            this.promptTextInput.updateTextInputValue(currValue.substring(0, targetWord.wordStartIndex) + currValue.substring(targetWord.wordStartIndex + targetWord.word.length));
+            this.promptTextInput.focus(targetWord.wordStartIndex);
+          }
+        }
       } else if (e.key === KeyMap.ENTER &&
         ((!e.isComposing && !e.shiftKey && !e.ctrlKey) ||
         (e.isComposing && (e.shiftKey)))) {
         cancelEvent(e);
         this.sendPrompt();
-      } else if (this.selectedCommand === '' && this.quickActionCommands.length > 0 && e.key === KeyMap.SLASH && this.promptTextInput.getTextInputValue() === '') {
-        // Show available quick actions
-        if (this.commandSelector !== undefined) {
-          this.commandSelector.close();
-        }
-        this.filteredCommandsList = [ ...this.quickActionCommands ];
-        this.commandSelector = new Overlay({
-          closeOnOutsideClick: true,
-          referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
-          dimOutside: false,
-          stretchWidth: true,
-          verticalDirection: OverlayVerticalDirection.TO_TOP,
-          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
-          onClose: () => {
-            this.commandSelectorOpen = false;
-          },
-          children: [
-            this.getQuickCommandActions(this.quickActionCommands)
-          ],
-        });
+      } else if (
+        (this.selectedCommand === '' && e.key === KeyMap.SLASH && this.promptTextInput.getTextInputValue() === '') ||
+        (e.key === KeyMap.AT)
+      ) {
+        this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
+        this.quickPickItemGroups = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue(this.quickPickType === 'context' ? 'contextCommands' : 'quickActionCommands') as QuickActionCommandGroup[];
+        this.quickPickTriggerIndex = this.quickPickType === 'context' ? this.promptTextInput.getCursorPos() : 1;
+        this.textAfter = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex);
 
-        this.commandSelectorOpen = true;
+        if (this.quickPickItemGroups.length > 0) {
+          this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+          this.quickPick = new Overlay({
+            closeOnOutsideClick: true,
+            referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
+            dimOutside: false,
+            stretchWidth: true,
+            verticalDirection: OverlayVerticalDirection.TO_TOP,
+            horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+            onClose: () => {
+              this.quickPickOpen = false;
+            },
+            children: [
+              this.getQuickPickItemGroups(this.filteredQuickPickItemGroups)
+            ],
+          });
+
+          this.quickPickOpen = true;
+        }
       }
     } else {
-      const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
+      const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
       const navigationalKeys = [ KeyMap.ARROW_UP, KeyMap.ARROW_DOWN ] as string[];
       if (blockedKeys.includes(e.key)) {
         e.preventDefault();
-        if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
+        if (e.key === KeyMap.ESCAPE) {
+          if (this.quickPickType === 'quick-action') {
+            this.clearTextArea(true);
+          } else {
+            this.promptTextInput.updateTextInputValue(`${this.promptTextInput.getTextInputValue().substring(0, this.quickPickTriggerIndex)}${this.textAfter}`);
+            this.promptTextInput.focus(this.quickPickTriggerIndex);
+          }
+          this.quickPick?.close();
+        } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
           let targetElement;
-          if (this.filteredCommandsList.length > 0) {
-            // If list is empty, it means there's no match, so we need to clear the selection
-            if (this.commandSelector.render.querySelector('.target-command') != null) {
-              targetElement = this.commandSelector.render.querySelector('.target-command');
-            } else if (this.commandSelector.render.querySelector('.mynah-chat-command-selector-command')?.getAttribute('disabled') !== 'true') {
-              targetElement = this.commandSelector.render.querySelector('.mynah-chat-command-selector-command');
+          // If list is empty, it means there's no match, so we need to clear the selection
+          if (this.filteredQuickPickItemGroups.length > 0) {
+            if (this.quickPick.render.querySelector('.target-command') != null) {
+              targetElement = this.quickPick.render.querySelector('.target-command');
+            } else if (this.quickPick.render.querySelector('.mynah-chat-command-selector-command')?.getAttribute('disabled') !== 'true') {
+              targetElement = this.quickPick.render.querySelector('.mynah-chat-command-selector-command');
             }
           }
-          this.handleCommandSelection({
+          const commandToSend = {
             command: targetElement?.getAttribute('command') ?? '',
             placeholder: targetElement?.getAttribute('placeholder') ?? undefined,
-          });
-        }
-        if (this.commandSelector !== undefined) {
-          if (e.key === KeyMap.ESCAPE) {
-            this.clearTextArea(true);
+          };
+          if (this.quickPickType === 'context') {
+            this.handleContextCommandSelection(commandToSend);
+          } else {
+            this.handleQuickActionCommandSelection(commandToSend);
           }
-          this.commandSelector.close();
         }
       } else if (navigationalKeys.includes(e.key)) {
         e.preventDefault();
-        const commandsWrapper = this.commandSelector.render.querySelector('.mynah-chat-command-selector');
+        const commandsWrapper = this.quickPick.render.querySelector('.mynah-chat-command-selector');
         (commandsWrapper as ExtendedHTMLElement).addClass('has-target-item');
-        const commandElements = Array.from(this.commandSelector.render.querySelectorAll('.mynah-chat-command-selector-command'));
+        const commandElements = Array.from(this.quickPick.render.querySelectorAll('.mynah-chat-command-selector-command'));
         let lastActiveElement = commandElements.findIndex(commandElement => commandElement.classList.contains('target-command'));
         lastActiveElement = lastActiveElement === -1 ? commandElements.length : lastActiveElement;
         let nextElementIndex: number = lastActiveElement;
@@ -242,32 +268,33 @@ export class ChatPromptInput {
           }
         }
       } else {
-        if (this.commandSelector !== undefined) {
+        if (this.quickPick != null) {
           setTimeout(() => {
             if (this.promptTextInput.getTextInputValue() === '') {
-              this.commandSelector.close();
+              this.quickPick.close();
             } else {
-              this.filteredCommandsList = [];
-              [ ...this.quickActionCommands ].forEach((quickActionGroup: QuickActionCommandGroup) => {
-                const newQuickActionCommandGroup = { ...quickActionGroup };
+              this.filteredQuickPickItemGroups = [];
+              [ ...this.quickPickItemGroups ].forEach((quickPickGroup: QuickActionCommandGroup) => {
+                const newQuickPickCommandGroup = { ...quickPickGroup };
                 try {
-                  const promptRegex = new RegExp(`${this.promptTextInput.getTextInputValue().substring(1)}` ?? '', 'gi');
-                  newQuickActionCommandGroup.commands = newQuickActionCommandGroup.commands.filter(command =>
+                  const searchTerm = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0];
+                  const promptRegex = new RegExp(searchTerm ?? '', 'gi');
+                  newQuickPickCommandGroup.commands = newQuickPickCommandGroup.commands.filter(command =>
                     command.command.match(promptRegex)
                   );
-                  if (newQuickActionCommandGroup.commands.length > 0) {
-                    this.filteredCommandsList.push(newQuickActionCommandGroup);
+                  if (newQuickPickCommandGroup.commands.length > 0) {
+                    this.filteredQuickPickItemGroups.push(newQuickPickCommandGroup);
                   }
                 } catch (e) {
                   // In case the prompt is an incomplete regex
                 }
               });
-              if (this.filteredCommandsList.length > 0) {
-                this.commandSelector.toggleHidden(false);
-                this.commandSelector.updateContent([ this.getQuickCommandActions(this.filteredCommandsList) ]);
+              if (this.filteredQuickPickItemGroups.length > 0) {
+                this.quickPick.toggleHidden(false);
+                this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
               } else {
                 // If there's no matching action, hide the command selector overlay
-                this.commandSelector.toggleHidden(true);
+                this.quickPick.toggleHidden(true);
               }
             }
           }, 1);
@@ -276,33 +303,37 @@ export class ChatPromptInput {
     }
   };
 
-  private readonly getQuickCommandActions = (quickCommandList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
+  private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-command-selector' ],
-      children: quickCommandList.map((quickActionCommandGroup) => {
+      children: quickPickGroupList.map((quickPickGroup) => {
         return DomBuilder.getInstance().build({
           type: 'div',
           classNames: [ 'mynah-chat-command-selector-group' ],
           children: [
-            ...(quickActionCommandGroup.groupName !== undefined
+            ...(quickPickGroup.groupName !== undefined
               ? [ DomBuilder.getInstance().build({
                   type: 'h4',
                   classNames: [ 'mynah-chat-command-selector-group-title' ],
-                  children: [ quickActionCommandGroup.groupName ]
+                  children: [ quickPickGroup.groupName ]
                 }) ]
               : []),
-            ...(quickActionCommandGroup.commands.map(quickActionCommand => {
+            ...(quickPickGroup.commands.map(quickPickCommand => {
               return DomBuilder.getInstance().build({
                 type: 'div',
                 classNames: [ 'mynah-chat-command-selector-command' ],
                 attributes: {
-                  ...quickActionCommand
+                  ...quickPickCommand
                 },
                 events: {
                   click: () => {
-                    if (quickActionCommand.disabled !== true) {
-                      this.handleCommandSelection(quickActionCommand);
+                    if (quickPickCommand.disabled !== true) {
+                      if (this.quickPickType === 'context') {
+                        this.handleContextCommandSelection(quickPickCommand);
+                      } else {
+                        this.handleQuickActionCommandSelection(quickPickCommand);
+                      }
                     }
                   }
                 },
@@ -310,13 +341,13 @@ export class ChatPromptInput {
                   {
                     type: 'div',
                     classNames: [ 'mynah-chat-command-selector-command-name' ],
-                    children: [ quickActionCommand.command ]
+                    children: [ quickPickCommand.command ]
                   },
-                  ...(quickActionCommand.description !== undefined
+                  ...(quickPickCommand.description !== undefined
                     ? [ {
                         type: 'div',
                         classNames: [ 'mynah-chat-command-selector-command-description' ],
-                        children: [ quickActionCommand.description ]
+                        children: [ quickPickCommand.description ]
                       } ]
                     : [])
                 ]
@@ -328,7 +359,7 @@ export class ChatPromptInput {
     });
   };
 
-  private readonly handleCommandSelection = (quickActionCommand: QuickActionCommand): void => {
+  private readonly handleQuickActionCommandSelection = (quickActionCommand: QuickActionCommand): void => {
     this.selectedCommand = quickActionCommand.command;
     this.promptTextInput.updateTextInputValue('');
     if (quickActionCommand.placeholder !== undefined) {
@@ -337,10 +368,20 @@ export class ChatPromptInput {
     } else {
       this.sendPrompt();
     }
-    this.commandSelector.close();
+    this.quickPick.close();
     if (Config.getInstance().config.autoFocus) {
       this.promptTextInput.focus();
     }
+  };
+
+  private readonly handleContextCommandSelection = (contextCommand: QuickActionCommand): void => {
+    const previousText = this.promptTextInput.getTextInputValue().substring(0, this.quickPickTriggerIndex);
+    this.promptTextInput.updateTextInputValue(`${previousText}${contextCommand.command} ${this.textAfter}`, {
+      index: this.quickPickTriggerIndex + contextCommand.command.length,
+      text: contextCommand.placeholder
+    });
+    this.quickPick.close();
+    this.promptTextInput.focus(this.quickPickTriggerIndex + contextCommand.command.length + 1);
   };
 
   public readonly clearTextArea = (keepAttachment?: boolean): void => {
@@ -368,11 +409,19 @@ export class ChatPromptInput {
     if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
       const attachmentContent: string | undefined = this.promptAttachment?.lastAttachmentContent;
       const promptText = currentInputValue + (attachmentContent ?? '');
-      const promptData = {
+      const context: string[] = [];
+      const escapedPrompt = escapeHTML(promptText.replace(/@\S*/gi, (match) => {
+        if (!context.includes(match)) {
+          context.push(match);
+        }
+        return `**${match}**`;
+      }));
+      const promptData: {tabId: string; prompt: ChatPrompt} = {
         tabId: this.props.tabId,
         prompt: {
           prompt: promptText,
-          escapedPrompt: escapeHTML(promptText),
+          escapedPrompt,
+          context,
           ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
         }
       };

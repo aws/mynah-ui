@@ -143,7 +143,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
       Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
-      command: <b>${prompt.command ?? '{none}'}</b>`);
+      command: <b>${prompt.command ?? '{none}'}</b><br/>
+      context: <b>${(prompt.context??[]).join('</b>, <b>')}`);
       if (tabId === 'tab-1') {
         mynahUI.updateStore(tabId, {
           tabCloseConfirmationMessage: `Working on "${prompt.prompt}"`,
