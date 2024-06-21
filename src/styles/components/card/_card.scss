@@ -1,3 +1,5 @@
+@import '../../variables';
+
 .mynah-card {
     text-decoration: none;
     outline: none;
@@ -29,18 +31,13 @@
     }
 
     &.padding {
-        &-none {
-            padding: 0;
-            border-radius: 0;
-        }
-        &-small {
-            padding: var(--mynah-sizing-1);
-        }
-        &-medium {
-            padding: var(--mynah-sizing-3);
-        }
-        &-large {
-            padding: var(--mynah-sizing-5);
+        @each $size, $padding in $mynah-padding-sizes {
+            &-#{$size} {
+            padding: var(--mynah-sizing-#{$padding});
+            @if $size == 'none' {
+                border-radius: 0;
+            }
+            }
         }
     }
     &.background {
