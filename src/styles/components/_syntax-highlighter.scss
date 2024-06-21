@@ -1,3 +1,5 @@
+@import '../variables';
+@import '../mixins';
 pre.diff-highlight > code .token.deleted:not(.prefix),
 pre > code.diff-highlight .token.deleted:not(.prefix) {
     background-color: rgba(255, 0, 0, 0.1);
