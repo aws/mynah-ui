@@ -139,7 +139,7 @@ export class SyntaxHighlighter {
   constructor (props: SyntaxHighlighterProps) {
     this.props = props;
 
-    if (this.props?.onInsertToCursorPosition != null) {
+    if (props.showCopyOptions === true && this.props?.onInsertToCursorPosition != null) {
       this.codeBlockButtons.push(new Button({
         icon: new Icon({ icon: MynahIcons.CURSOR_INSERT }).render,
         label: Config.getInstance().config.texts.insertAtCursorLabel,
@@ -160,7 +160,7 @@ export class SyntaxHighlighter {
       }).render);
     }
 
-    if (this.props?.onCopiedToClipboard != null) {
+    if (props.showCopyOptions === true && this.props?.onCopiedToClipboard != null) {
       this.codeBlockButtons.push(new Button({
         icon: new Icon({ icon: MynahIcons.COPY }).render,
         label: Config.getInstance().config.texts.copy,
@@ -247,7 +247,7 @@ export class SyntaxHighlighter {
       ]
     });
 
-    if (props.showCopyOptions === true && (this.props.onCopiedToClipboard != null || this.props.onInsertToCursorPosition != null)) {
+    if (this.codeBlockButtons.length > 0) {
       setTimeout(() => {
         this.render.insertAdjacentElement('afterbegin', DomBuilder.getInstance().build({
           type: 'div',
@@ -264,6 +264,7 @@ export class SyntaxHighlighter {
           ],
         }));
       }, 1);
+      // This delay is required for broken code block renderings in JetBrainds JCEF browser.
     }
   }
 
