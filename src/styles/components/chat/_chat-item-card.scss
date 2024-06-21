@@ -10,35 +10,13 @@
     gap: var(--mynah-sizing-4);
 
     &-status {
-        &-success {
-            > .mynah-card {
-                border-color: var(--mynah-color-status-success);
-                > .mynah-chat-item-card-icon {
-                    color: var(--mynah-color-status-success);
-                }
-            }
-        }
-        &-error {
-            > .mynah-card {
-                border-color: var(--mynah-color-status-error);
-                > .mynah-chat-item-card-icon {
-                    color: var(--mynah-color-status-error);
-                }
-            }
-        }
-        &-warning {
-            > .mynah-card {
-                border-color: var(--mynah-color-status-warning);
-                > .mynah-chat-item-card-icon {
-                    color: var(--mynah-color-status-warning);
-                }
-            }
-        }
-        &-info {
-            > .mynah-card {
-                border-color: var(--mynah-color-status-info);
-                > .mynah-chat-item-card-icon {
-                    color: var(--mynah-color-status-info);
+        @each $status in $mynah-statuses {
+            &-#{$status} {
+                > .mynah-card {
+                    border-color: var(--mynah-color-status-#{$status});
+                    > .mynah-chat-item-card-icon {
+                        color: var(--mynah-color-status-#{$status});
+                    }
                 }
             }
         }
@@ -141,12 +119,12 @@
                 > .mynah-syntax-highlighter {
                     filter: contrast(1.15) brightness(0.85);
                 }
-                > h1,
-                > h2,
-                > h3,
-                > h4 {
-                    &:first-child {
-                        margin-top: 0;
+
+                @for $i from 1 through 4 {
+                    h#{$i} {
+                        &:first-child {
+                            margin-top: 0;
+                        }
                     }
                 }
             }
@@ -216,17 +194,10 @@
             opacity: 0.75;
         }
         &-status {
-            &-success {
-                color: var(--mynah-color-status-success);
-            }
-            &-error {
-                color: var(--mynah-color-status-error);
-            }
-            &-warning {
-                color: var(--mynah-color-status-warning);
-            }
-            &-info {
-                color: var(--mynah-color-status-info);
+            @each $status in $mynah-statuses {
+                &-#{$status} {
+                    color: var(--mynah-color-status-#{$status});
+                }
             }
         }
     }

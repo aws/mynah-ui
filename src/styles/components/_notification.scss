@@ -17,14 +17,10 @@
             &ok-circled {
                 color: var(--mynah-color-status-success);
             }
-            &info {
-                color: var(--mynah-color-status-info);
-            }
-            &warning {
-                color: var(--mynah-color-status-warning);
-            }
-            &error {
-                color: var(--mynah-color-status-error);
+            @each $status in info warning error {
+                &#{$status} {
+                    color: var(--mynah-color-status-#{$status});
+                }
             }
         }
     }

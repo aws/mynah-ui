@@ -28,7 +28,22 @@ const config = {
     module: {
         rules: [
             { test: /\.md$/, use: ['raw-loader'] },
-            { test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+            {
+                test: /\.scss$/,
+                use: [
+                  'style-loader',
+                  {
+                    loader: 'css-loader',
+                    options: {
+                      importLoaders: 1,
+                      modules: {
+                        mode: 'icss', // Enable ICSS (Interoperable CSS)
+                      },
+                    },
+                  },
+                  'sass-loader',
+                ],
+            },
             {
                 test: /\.ts$/,
                 exclude: /node_modules/,
