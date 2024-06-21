@@ -156,7 +156,21 @@ export class ChatItemCard {
               });
             }
           }
-        : {})
+        : {}),
+      ...(Config.getInstance().config.acceptDiffEnabled !== false && this.props.chatItem.acceptDiffEnabled !== false
+        ? {
+            onAcceptDiff: (type, text, referenceTrackerInformation, codeBlockIndex) => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ACCEPT_DIFF, {
+                messageId: this.props.chatItem.messageId,
+                type,
+                text,
+                referenceTrackerInformation,
+                codeBlockIndex,
+                totalCodeBlocks: (this.contentBody?.getRenderDetails().totalNumberOfCodeBlocks ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
+              });
+            }
+          }
+        : {}),
     };
 
     if (chatItemHasContent(this.props.chatItem)) {

@@ -125,6 +125,7 @@ export enum MynahEventNames {
   CHAT_ITEM_ENGAGEMENT = 'chatItemEngagement',
   COPY_CODE_TO_CLIPBOARD = 'copyCodeToClipboard',
   INSERT_CODE_TO_CURSOR_POSITION = 'insertCodeToCursorPosition',
+  ACCEPT_DIFF = 'acceptDiff',
   CHAT_PROMPT = 'chatPrompt',
   CHAT_ITEM_ADD = 'chatItemAdd',
   FOLLOW_UP_CLICKED = 'followUpClicked',
@@ -193,6 +194,7 @@ export interface ChatItem {
   canBeVoted?: boolean;
   codeInsertToCursorEnabled?: boolean;
   codeCopyToClipboardEnabled?: boolean;
+  acceptDiffEnabled?: boolean; // show or hide Accept Diff button
   followUp?: {
     text?: string;
     options?: ChatItemAction[];
@@ -315,6 +317,7 @@ export interface ReferenceTrackerInformation {
 export type CodeSelectionType = 'selection' | 'block';
 export type OnCopiedToClipboardFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number) => void;
 export type OnInsertToCursorPositionFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number) => void;
+export type OnAcceptDiffFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number) => void;
 
 export enum RelevancyVoteType {
   UP = 'upvote',
@@ -380,6 +383,7 @@ export interface ConfigTexts {
   files: string;
   changes: string;
   insertAtCursorLabel: string;
+  acceptDiff: string;
   copy: string;
   showMore: string;
   save: string;
@@ -422,6 +426,7 @@ export interface ConfigOptions {
   maxUserInput: number;
   codeInsertToCursorEnabled?: boolean;
   codeCopyToClipboardEnabled?: boolean;
+  acceptDiffEnabled?: boolean; // show or hide Accept Diff button
 }
 
 export interface ConfigModel extends ConfigOptions {

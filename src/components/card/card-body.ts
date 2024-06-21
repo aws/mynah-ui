@@ -5,6 +5,7 @@
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import {
+  OnAcceptDiffFunction,
   OnCopiedToClipboardFunction,
   OnInsertToCursorPositionFunction,
   ReferenceTrackerInformation,
@@ -44,6 +45,7 @@ export interface CardBodyProps {
   onLinkClick?: (url: string, e: MouseEvent) => void;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
   onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
+  onAcceptDiff?: OnAcceptDiffFunction;
 }
 export class CardBody {
   render: ExtendedHTMLElement;
@@ -152,6 +154,18 @@ export class CardBody {
             ? (type, text, codeBlockIndex) => {
                 if (this.props.onInsertToCursorPosition != null) {
                   this.props.onInsertToCursorPosition(
+                    type,
+                    text,
+                    this.getReferenceTrackerInformationFromElement(highlighter),
+                    this.codeBlockStartIndex + (codeBlockIndex ?? 0),
+                    this.nextCodeBlockIndex);
+                }
+              }
+            : undefined,
+          onAcceptDiff: this.props.onAcceptDiff != null
+            ? (type, text, codeBlockIndex) => {
+                if (this.props.onAcceptDiff != null) {
+                  this.props.onAcceptDiff(
                     type,
                     text,
                     this.getReferenceTrackerInformationFromElement(highlighter),

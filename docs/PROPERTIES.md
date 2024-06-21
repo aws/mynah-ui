@@ -76,6 +76,15 @@ export interface MynahUIProps {
     eventId?: string,
     codeBlockIndex?: number,
     totalCodeBlocks?: number) => void;
+  onAcceptDiff?: (
+    tabId: string,
+    messageId: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId?: string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number) => void;
   onSourceLinkClick?: (
     tabId: string,
     messageId: string,
@@ -605,6 +614,39 @@ _Please refer to the [data model](./DATAMODEL.md) to learn more about the `Refer
 ```typescript
 ...
 onCodeInsertToCursorPosition?: (
+    tabId: string,
+    messageId: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId:string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number):void => {
+      console.log(`Sent from tab: ${tabId}`);
+      console.log(`Code inside message: ${messageId}`);
+      console.log(`Code to insert: ${code}`);
+      console.log(`Copy type: ${type}`); // selection | block
+      console.log(`Reference tracker info: ${referenceTrackerInformation?.map(rti=>`${rti.licenseName} ${rti.repository}`).join(', ')}`);
+      console.log(`Code block index: ${codeBlockIndex + 1} of ${totalCodeBlocks}`);
+    };
+...
+```
+---
+
+### `onAcceptDiff`
+
+This event is fired when `Accept` button is clicked. The button is only displayed when a language is of `diff` type.
+
+_Please refer to the [data model](./DATAMODEL.md) to learn more about the `ReferenceTrackerInformation` object type._
+
+
+<p align="center">
+  <img src="./img/onAcceptDiff.png" alt="onAcceptDiff" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onAcceptDiff?: (
     tabId: string,
     messageId: string,
     code?: string,

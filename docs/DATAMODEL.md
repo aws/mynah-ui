@@ -654,6 +654,7 @@ interface ChatItem {
   canBeVoted?: boolean; // requires messageId to be filled to show vote thumbs
   codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on all code blocks for this message
   codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on all code blocks for this message
+  acceptDiffEnabled?: boolean; // show or hide Accept Diff button
   relatedContent?: {
     title?: string;
     content: SourceLink[];
@@ -1875,7 +1876,7 @@ This is one of the most complex and hard to tell features you can use on `MynahU
 
 They reflect their position according to the whole body
 
-**BUT;** if they appear inside a code block, when user clicks one of the copy or the insert to cursor position buttons in the footer of the code block, that `codeReference` content span position will be recalculated according to the position inside the code block while sending it to the events `onCopyCodeToClipboard` or `onCodeInsertToCursorPosition` which can be binded through [Constructor properties](./PROPERTIES.md).
+**BUT;** if they appear inside a code block, when user clicks one of the copy or the insert to cursor position buttons in the footer of the code block, that `codeReference` content span position will be recalculated according to the position inside the code block while sending it to the events `onCopyCodeToClipboard` or `onCodeInsertToCursorPosition` or `onAcceptDiff` which can be binded through [Constructor properties](./PROPERTIES.md).
 
 #### Note:
 The position for the recommandation span has to be calculated considering all chars in the string. Even the back ticks etc.

@@ -129,6 +129,7 @@ export interface SyntaxHighlighterProps {
   index?: number;
   onCopiedToClipboard?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
   onInsertToCursorPosition?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
+  onAcceptDiff?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
 }
 
 export class SyntaxHighlighter {
@@ -138,6 +139,27 @@ export class SyntaxHighlighter {
 
   constructor (props: SyntaxHighlighterProps) {
     this.props = props;
+
+    if (props.showCopyOptions === true && this.props?.onAcceptDiff != null && this.props.language !== undefined && this.props.language.startsWith('diff')) {
+      this.codeBlockButtons.push(new Button({
+        icon: new Icon({ icon: MynahIcons.OK_CIRCLED }).render,
+        label: Config.getInstance().config.texts.acceptDiff,
+        attributes: { title: Config.getInstance().config.texts.acceptDiff },
+        primary: false,
+        onClick: e => {
+          cancelEvent(e);
+          const selectedCode = this.getSelectedCode();
+          if (this.props?.onAcceptDiff !== undefined) {
+            this.props.onAcceptDiff(
+              selectedCode.type,
+              selectedCode.code,
+              this.props?.index
+            );
+          }
+        },
+        additionalEvents: { mousedown: cancelEvent },
+      }).render);
+    }
 
     if (props.showCopyOptions === true && this.props?.onInsertToCursorPosition != null) {
       this.codeBlockButtons.push(new Button({

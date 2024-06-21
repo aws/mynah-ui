@@ -32,6 +32,7 @@ const mynahUI = new MynahUI({
     onChatItemEngagement: ...,
     onCopyCodeToClipboard: ...,
     onCodeInsertToCursorPosition: ...,
+    onAcceptDiff: ...,
     onSourceLinkClick: ...,
     onLinkClick: ...,
     onInfoLinkClick: ...,
@@ -48,4 +49,3 @@ You're ready to go, now you have a Chat UI generated and rendered into place you
 - Take a look to the **[How to use MynahUI](./USAGE.md)**
 - Take a look to the **[Data Model](./DATAMODEL.md)**
 - Take a look to the **[Styling Configuration](./STYLING.md)**
-

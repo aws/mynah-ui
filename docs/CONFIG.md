@@ -47,6 +47,7 @@ interface ConfigModel {
     maxUserInput: number; // max number of chars for the input field
     codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on code blocks system wide
     codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on code blocks system wide
+    acceptDiffEnabled?: boolean; // show or hide Accept Diff button
     autoFocus: boolean; // auto focuses to input panel after every action
     maxTabs: number; // set 1 to hide tabs panel
     showPromptField: boolean; // shows prompt field (default: true)

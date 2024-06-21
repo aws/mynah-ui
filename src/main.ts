@@ -158,6 +158,15 @@ export interface MynahUIProps {
     eventId?: string,
     codeBlockIndex?: number,
     totalCodeBlocks?: number) => void;
+  onAcceptDiff?: (
+    tabId: string,
+    messageId: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId?: string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number) => void;
   onSourceLinkClick?: (
     tabId: string,
     messageId: string,
@@ -422,6 +431,21 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, (data) => {
       if (this.props.onCodeInsertToCursorPosition !== undefined) {
         this.props.onCodeInsertToCursorPosition(
+          MynahUITabsStore.getInstance().getSelectedTabId(),
+          data.messageId,
+          data.text,
+          data.type,
+          data.referenceTrackerInformation,
+          this.getUserEventId(),
+          data.codeBlockIndex,
+          data.totalCodeBlocks,
+        );
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ACCEPT_DIFF, (data) => {
+      if (this.props.onAcceptDiff !== undefined) {
+        this.props.onAcceptDiff(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
           data.text,
