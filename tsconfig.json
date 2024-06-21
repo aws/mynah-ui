@@ -25,7 +25,6 @@
 		"dist",
 		"node_modules",
 		"docs",
-		"example",
-		"cloudscape-wrapper",
+		"example"
 	]
 }

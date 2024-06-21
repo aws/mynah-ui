@@ -11,7 +11,6 @@ postinstall.js
 dist/**
 example*/**
 *api-docs/**
-cloudscape-wrapper
 docs/**
 out/**
 *.config.js
