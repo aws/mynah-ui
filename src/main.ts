@@ -38,6 +38,7 @@ import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 
+export { generateUID } from './helper/guid';
 export {
   ChatItemBodyRenderer,
 } from './helper/dom';
@@ -45,25 +46,42 @@ export {
   AllowedAttributesInCustomRenderer,
   AllowedTagsInCustomRenderer
 } from './helper/sanitize';
-export {
-  FeedbackPayload,
-  RelevancyVoteType,
-  EngagementType,
-  Engagement,
-  MynahUIDataModel,
-  NotificationType,
-  ChatItem,
-  ChatItemAction,
-  ChatItemType,
-  ChatPrompt,
-  SourceLink,
-} from './static';
+export * from './static';
 export {
   ToggleOption
 } from './components/toggle';
 export {
   MynahIcons
 } from './components/icon';
+export {
+  DomBuilder,
+  DomBuilderObject,
+  ExtendedHTMLElement,
+} from './helper/dom';
+export {
+  ButtonProps,
+  ButtonAbstract
+} from './components/button';
+export {
+  RadioGroupProps,
+  RadioGroupAbstract
+} from './components/form-items/radio-group';
+export {
+  SelectProps,
+  SelectAbstract
+} from './components/form-items/select';
+export {
+  TextInputProps,
+  TextInputAbstract
+} from './components/form-items/text-input';
+export {
+  TextAreaProps,
+  TextAreaAbstract
+} from './components/form-items/text-area';
+export {
+  ChatItemCardContent,
+  ChatItemCardContentProps
+} from './components/chat-item/chat-item-card-content';
 
 export interface MynahUIProps {
   rootSelector?: string;

@@ -7,7 +7,6 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames } from '../../static';
-import { Card } from '../card/card';
 import { CardBody, CardBodyProps } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemFollowUpContainer } from './chat-item-followup';
@@ -15,14 +14,14 @@ import { ChatItemSourceLinksContainer } from './chat-item-source-links';
 import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { Config } from '../../helper/config';
-import { generateUID } from '../../helper/guid';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
 import { CONTAINER_GAP } from './chat-wrapper';
 import { chatItemHasContent } from '../../helper/chat-item';
+import { Card } from '../card/card';
+import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
 
-const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardProps {
   tabId: string;
   chatItem: ChatItem;
@@ -30,17 +29,18 @@ export interface ChatItemCardProps {
 export class ChatItemCard {
   readonly props: ChatItemCardProps;
   render: ExtendedHTMLElement;
-  contentBody: CardBody | null = null;
-  chatAvatar: ExtendedHTMLElement;
-  updateStack: Array<Partial<ChatItem>> = [];
-  chatFormItems: ChatItemFormItemsWrapper | null = null;
-  customRendererWrapper: CardBody | null = null;
-  chatButtons: ChatItemButtonsWrapper | null = null;
-  fileTreeWrapper: ChatItemTreeViewWrapper | null = null;
-  typewriterItemIndex: number = 0;
-  previousTypewriterItemIndex: number = 0;
-  typewriterId: string;
-  private updateTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly card: Card | null = null;
+  private readonly updateStack: Array<Partial<ChatItem>> = [];
+  private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
+  private cardIcon: Icon | null = null;
+  private contentBody: ChatItemCardContent | null = null;
+  private chatAvatar: ExtendedHTMLElement;
+  private chatFormItems: ChatItemFormItemsWrapper | null = null;
+  private customRendererWrapper: CardBody | null = null;
+  private chatButtons: ChatItemButtonsWrapper | null = null;
+  private fileTreeWrapper: ChatItemTreeViewWrapper | null = null;
+  private followUps: ChatItemFollowUpContainer | null = null;
+  private votes: ChatItemRelevanceVote | null = null;
   constructor (props: ChatItemCardProps) {
     this.props = props;
     this.chatAvatar = this.getChatAvatar();
@@ -54,6 +54,19 @@ export class ChatItemCard {
           this.chatAvatar.remove();
         }
       });
+    if (this.props.chatItem.type === ChatItemType.ANSWER_STREAM) {
+      this.initialSpinner = [ DomBuilder.getInstance().build({
+        type: 'div',
+        persistent: true,
+        classNames: [ 'mynah-chat-items-spinner' ],
+        children: [ { type: 'span' }, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
+      }) ];
+    }
+    this.card = new Card({
+      classNames: [ 'hide-if-empty' ],
+      children: this.initialSpinner ?? [],
+    });
+    this.updateCardContent();
     this.render = this.generateCard();
 
     if (this.props.chatItem.type === ChatItemType.ANSWER_STREAM &&
@@ -70,21 +83,9 @@ export class ChatItemCard {
         messageId: this.props.chatItem.messageId ?? 'unknown',
       },
       children: [
-        ...(this.props.chatItem.type === ChatItemType.ANSWER_STREAM && (this.props.chatItem.body ?? '').trim() === ''
-          ? [
-              // Create an empty card with its child set to the loading spinner
-              new Card({
-                children: [
-                  DomBuilder.getInstance().build({
-                    type: 'div',
-                    persistent: true,
-                    classNames: [ 'mynah-chat-items-spinner' ],
-                    children: [ { type: 'span' }, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
-                  }),
-                ],
-              }).render,
-            ]
-          : [ ...this.getCardContent() ]),
+        ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
+        ...(this.card != null ? [ this.card?.render ] : []),
+        ...(this.props.chatItem.followUp?.text !== undefined ? [ new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render ] : [])
       ],
     });
 
@@ -115,9 +116,9 @@ export class ChatItemCard {
     ];
   };
 
-  private readonly getCardContent = (): Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject> => {
+  private readonly updateCardContent = (): void => {
     if (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId) === undefined) {
-      return [];
+      return;
     }
 
     const bodyEvents: Partial<CardBodyProps> = {
@@ -137,7 +138,7 @@ export class ChatItemCard {
                 text,
                 referenceTrackerInformation,
                 codeBlockIndex,
-                totalCodeBlocks: (this.contentBody?.nextCodeBlockIndex ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
+                totalCodeBlocks: (this.contentBody?.getRenderDetails().totalNumberOfCodeBlocks ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
               });
             }
           }
@@ -151,25 +152,46 @@ export class ChatItemCard {
                 text,
                 referenceTrackerInformation,
                 codeBlockIndex,
-                totalCodeBlocks: (this.contentBody?.nextCodeBlockIndex ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
+                totalCodeBlocks: (this.contentBody?.getRenderDetails().totalNumberOfCodeBlocks ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
               });
             }
           }
         : {})
     };
 
+    if (chatItemHasContent(this.props.chatItem)) {
+      this.initialSpinner?.[0]?.remove();
+    }
+
+    /**
+     * Generate card icon if available
+     */
+    if (this.props.chatItem.icon !== undefined) {
+      if (this.cardIcon !== null) {
+        this.cardIcon.render.remove();
+        this.cardIcon = null;
+      } else {
+        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10' ] });
+        this.card?.render.insertChild('beforeend', this.cardIcon.render);
+      }
+    }
+
     /**
      * Generate contentBody if available
      */
-    if (this.contentBody !== null) {
-      this.contentBody.render.remove();
-      this.contentBody = null;
-    }
-    if (this.props.chatItem.body !== undefined) {
-      this.contentBody = new CardBody({
+    if (this.props.chatItem.body !== undefined && this.props.chatItem.body !== '') {
+      const updatedCardContentBodyProps: ChatItemCardContentProps = {
         body: this.props.chatItem.body ?? '',
-        useParts: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
-        highlightRangeWithTooltip: this.props.chatItem.codeReference,
+        classNames: [ 'mynah-card-inner-order-20' ],
+        renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
+        codeReference: this.props.chatItem.codeReference,
+        onAnimationStateChange: (isAnimating) => {
+          if (isAnimating) {
+            this.render.addClass('typewriter-animating');
+          } else {
+            this.render.removeClass('typewriter-animating');
+          }
+        },
         children:
           this.props.chatItem.relatedContent !== undefined
             ? [
@@ -181,8 +203,14 @@ export class ChatItemCard {
                 }).render,
               ]
             : [],
-        ...bodyEvents,
-      });
+        contentEvents: bodyEvents,
+      };
+      if (this.contentBody !== null) {
+        this.contentBody.updateCardStack(updatedCardContentBodyProps);
+      } else {
+        this.contentBody = new ChatItemCardContent(updatedCardContentBodyProps);
+        this.card?.render.insertChild('beforeend', this.contentBody.render);
+      }
     }
 
     /**
@@ -204,22 +232,56 @@ export class ChatItemCard {
       this.customRendererWrapper = new CardBody({
         body: customRendererContent.innerHTML,
         children: customRendererContent.children,
+        classNames: [ 'mynah-card-inner-order-30' ],
         processChildren: true,
         useParts: true,
-        codeBlockStartIndex: (this.contentBody?.nextCodeBlockIndex ?? 0),
+        codeBlockStartIndex: (this.contentBody?.getRenderDetails().totalNumberOfCodeBlocks ?? 0),
         ...bodyEvents,
       });
+
+      this.card?.render.insertChild('beforeend', this.customRendererWrapper.render);
     }
 
     /**
-     * Generate form items if available
-     */
+       * Generate form items if available
+      */
     if (this.chatFormItems !== null) {
       this.chatFormItems.render.remove();
       this.chatFormItems = null;
     }
     if (this.props.chatItem.formItems !== undefined) {
-      this.chatFormItems = new ChatItemFormItemsWrapper({ tabId: this.props.tabId, chatItem: this.props.chatItem });
+      this.chatFormItems = new ChatItemFormItemsWrapper({
+        classNames: [ 'mynah-card-inner-order-40' ],
+        tabId: this.props.tabId,
+        chatItem: this.props.chatItem
+      });
+      this.card?.render.insertChild('beforeend', this.chatFormItems.render);
+    }
+
+    /**
+     * Generate file tree if available
+     */
+    if (this.fileTreeWrapper !== null) {
+      this.fileTreeWrapper.render.remove();
+      this.fileTreeWrapper = null;
+    }
+    if (this.props.chatItem.fileList !== undefined) {
+      const { filePaths = [], deletedFiles = [], actions, details } = this.props.chatItem.fileList;
+      const referenceSuggestionLabel = this.props.chatItem.body ?? '';
+      this.fileTreeWrapper = new ChatItemTreeViewWrapper({
+        tabId: this.props.tabId,
+        classNames: [ 'mynah-card-inner-order-50' ],
+        messageId: this.props.chatItem.messageId ?? '',
+        cardTitle: this.props.chatItem.fileList.fileTreeTitle,
+        rootTitle: this.props.chatItem.fileList.rootFolderTitle,
+        files: filePaths,
+        deletedFiles,
+        actions,
+        details,
+        references: this.props.chatItem.codeReference ?? [],
+        referenceSuggestionLabel,
+      });
+      this.card?.render.insertChild('beforeend', this.fileTreeWrapper.render);
     }
 
     /**
@@ -232,6 +294,7 @@ export class ChatItemCard {
     if (this.props.chatItem.buttons !== undefined) {
       this.chatButtons = new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
+        classNames: [ 'mynah-card-inner-order-60' ],
         formItems: this.chatFormItems,
         buttons: this.props.chatItem.buttons,
         onActionClick: action => {
@@ -259,62 +322,36 @@ export class ChatItemCard {
           }
         },
       });
+      this.card?.render.insertChild('beforeend', this.chatButtons.render);
     }
 
     /**
-     * Generate file tree if available
+     * Generate votes if available
      */
-    if (this.fileTreeWrapper !== null) {
-      this.fileTreeWrapper.render.remove();
-      this.fileTreeWrapper = null;
+    if (this.votes !== null) {
+      this.votes.render.remove();
+      this.votes = null;
     }
-    if (this.props.chatItem.fileList !== undefined) {
-      const { filePaths = [], deletedFiles = [], actions, details } = this.props.chatItem.fileList;
-      const referenceSuggestionLabel = this.props.chatItem.body ?? '';
-      this.fileTreeWrapper = new ChatItemTreeViewWrapper({
+    if (this.props.chatItem.canBeVoted === true && this.props.chatItem.messageId !== undefined) {
+      this.votes = new ChatItemRelevanceVote({
         tabId: this.props.tabId,
-        messageId: this.props.chatItem.messageId ?? '',
-        cardTitle: this.props.chatItem.fileList.fileTreeTitle,
-        rootTitle: this.props.chatItem.fileList.rootFolderTitle,
-        files: filePaths,
-        deletedFiles,
-        actions,
-        details,
-        references: this.props.chatItem.codeReference ?? [],
-        referenceSuggestionLabel,
+        classNames: [ 'mynah-card-inner-order-70' ],
+        messageId: this.props.chatItem.messageId
       });
+      this.card?.render.insertChild('beforeend', this.votes.render);
     }
 
-    return [
-      ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
-
-      ...(chatItemHasContent(this.props.chatItem)
-        ? [
-            new Card({
-              onCardEngaged: engagement => {
-                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ENGAGEMENT, {
-                  engagement,
-                  messageId: this.props.chatItem.messageId,
-                });
-              },
-              children: [
-                ...(this.props.chatItem.icon !== undefined
-                  ? [ new Icon({ icon: this.props.chatItem.icon, classNames: [ 'mynah-chat-item-card-icon' ] }).render ]
-                  : []),
-                ...(this.contentBody !== null ? [ this.contentBody.render ] : []),
-                ...(this.customRendererWrapper !== null ? [ this.customRendererWrapper.render ] : []),
-                ...(this.chatFormItems !== null ? [ this.chatFormItems.render ] : []),
-                ...(this.fileTreeWrapper !== null ? [ this.fileTreeWrapper.render ] : []),
-                ...(this.chatButtons !== null ? [ this.chatButtons.render ] : []),
-                ...(this.props.chatItem.canBeVoted === true && this.props.chatItem.messageId !== undefined
-                  ? [ new ChatItemRelevanceVote({ tabId: this.props.tabId, messageId: this.props.chatItem.messageId }).render ]
-                  : []),
-              ],
-            }).render,
-          ]
-        : ''),
-      this.props.chatItem.followUp?.text !== undefined ? new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render : '',
-    ];
+    /**
+     * Generate/update followups if available
+     */
+    if (this.followUps !== null) {
+      this.followUps.render.remove();
+      this.followUps = null;
+    }
+    if (this.props.chatItem.followUp?.text !== undefined) {
+      this.followUps = new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem });
+      this.render?.insertChild('afterend', this.followUps.render);
+    }
   };
 
   private readonly getChatAvatar = (): ExtendedHTMLElement =>
@@ -322,51 +359,6 @@ export class ChatItemCard {
       type: 'div',
       classNames: [ 'mynah-chat-item-card-icon-wrapper' ],
       children: [ new Icon({ icon: this.props.chatItem.type === ChatItemType.PROMPT ? MynahIcons.USER : MynahIcons.MYNAH }).render ],
-    });
-
-  private readonly getInsertedTypewriterPartsCss = (): ExtendedHTMLElement =>
-    DomBuilder.getInstance().build({
-      type: 'style',
-      attributes: {
-        type: 'text/css',
-      },
-      persistent: true,
-      innerHTML: `
-    ${new Array(Math.max(0, (this.typewriterItemIndex ?? 0) - (this.previousTypewriterItemIndex ?? 0)))
-      .fill(null)
-      .map((n, i) => {
-        return `
-        .${this.typewriterId} .typewriter-part[index="${i + this.previousTypewriterItemIndex}"] {
-          animation: none !important;
-          opacity: 1 !important;
-          visibility: visible !important;
-        }
-
-        `;
-      })
-      .join('')}
-    `,
-    });
-
-  private readonly getInsertingTypewriterPartsCss = (newWordsCount: number, timeForEach: number): ExtendedHTMLElement =>
-    DomBuilder.getInstance().build({
-      type: 'style',
-      attributes: {
-        type: 'text/css',
-      },
-      innerHTML: `
-        ${new Array(Math.max(0, newWordsCount ?? 0))
-          .fill(null)
-          .map((n, i) => {
-            return `
-            .${this.typewriterId} .typewriter-part[index="${i + this.typewriterItemIndex}"] {
-              animation: typewriter 100ms ease-out forwards;
-              animation-delay: ${i * timeForEach}ms !important;
-            }
-            `;
-          })
-          .join('')}
-        `,
     });
 
   private readonly checkCardSnap = (): void => {
@@ -377,8 +369,7 @@ export class ChatItemCard {
   };
 
   public readonly updateCard = (): void => {
-    this.checkCardSnap();
-    if (this.updateTimer === undefined && this.updateStack.length > 0) {
+    if (this.updateStack.length > 0) {
       const updateWith: Partial<ChatItem> | undefined = this.updateStack.shift();
       if (updateWith !== undefined) {
         this.props.chatItem = {
@@ -404,14 +395,6 @@ export class ChatItemCard {
             );
         }
 
-        const newCardContent = this.getCardContent();
-        const upcomingWords = Array.from(this.contentBody?.render.querySelectorAll('.typewriter-part') ?? []);
-        for (let i = 0; i < upcomingWords.length; i++) {
-          upcomingWords[i].setAttribute('index', i.toString());
-        }
-        if (this.typewriterId === undefined) {
-          this.typewriterId = `typewriter-card-${generateUID()}`;
-        }
         this.render?.update({
           ...(this.props.chatItem.messageId != null
             ? {
@@ -420,37 +403,15 @@ export class ChatItemCard {
                 }
               }
             : {}),
-          classNames: [ ...this.getCardClasses(), 'reveal', this.typewriterId, 'typewriter-animating' ],
-          children: [ ...newCardContent, this.getInsertedTypewriterPartsCss() ],
+          classNames: [ ...this.getCardClasses(), 'reveal' ],
         });
-
-        // How many new words will be added
-        const newWordsCount = upcomingWords.length - this.typewriterItemIndex;
-
-        // For each stack, without exceeding 500ms in total
-        // we're setting each words delay time according to the count of them.
-        // Word appearance time cannot exceed 50ms
-        // Stack's total appearance time cannot exceed 500ms
-        const timeForEach = Math.min(50, Math.floor(TYPEWRITER_STACK_TIME / newWordsCount));
-
-        // Generate animator style and inject into render
-        // CSS animations ~100 times faster then js timeouts/intervals
-        this.render.insertChild('beforeend', this.getInsertingTypewriterPartsCss(newWordsCount, timeForEach));
-
-        // All the animator selectors injected
-        // update the words count for a potential upcoming set
-        this.previousTypewriterItemIndex = this.typewriterItemIndex;
-        this.typewriterItemIndex = upcomingWords.length;
-
-        // If there is another set
-        // call the same function to check after current stack totally shown
-        this.updateTimer = setTimeout(() => {
-          this.render.removeClass('typewriter-animating');
-          this.render.insertChild('beforeend', this.getInsertedTypewriterPartsCss());
-          this.updateTimer = undefined;
-          this.updateCard();
-        }, timeForEach * newWordsCount);
+        this.updateCardContent();
+        this.updateCard();
       }
+    } else {
+      setTimeout(() => {
+        this.checkCardSnap();
+      }, 200);
     }
   };
 
@@ -461,7 +422,7 @@ export class ChatItemCard {
 
   public readonly getRenderDetails = (): CardRenderDetails => {
     return {
-      totalNumberOfCodeBlocks: (this.contentBody?.nextCodeBlockIndex ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0)
+      totalNumberOfCodeBlocks: (this.contentBody?.getRenderDetails().totalNumberOfCodeBlocks ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0)
     };
   };
 }

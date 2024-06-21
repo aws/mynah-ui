@@ -8,12 +8,14 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Card } from './card/card';
 import { CardBody } from './card/card-body';
+import { Config } from '../helper/config';
+import '../styles/components/_button.scss';
 
 const PREVIEW_DELAY = 350;
 export interface ButtonProps {
   classNames?: string[];
   attributes?: Record<string, string>;
-  icon?: HTMLElement | ExtendedHTMLElement | string;
+  icon?: HTMLElement | ExtendedHTMLElement;
   label?: HTMLElement | ExtendedHTMLElement | string;
   tooltip?: string;
   tooltipVerticalDirection?: OverlayVerticalDirection;
@@ -23,11 +25,21 @@ export interface ButtonProps {
   additionalEvents?: Record<string, (event?: any) => any>;
   onClick: (e: Event) => void;
 }
-export class Button {
+export abstract class ButtonAbstract {
+  render: ExtendedHTMLElement;
+  updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
+  };
+
+  setEnabled = (enabled: boolean): void => {
+  };
+}
+
+class ButtonInternal extends ButtonAbstract {
   render: ExtendedHTMLElement;
   private buttonTooltip: Overlay | null;
   private buttonTooltipTimeout: ReturnType<typeof setTimeout>;
   constructor (props: ButtonProps) {
+    super();
     this.render = DomBuilder.getInstance().build({
       type: 'button',
       classNames: [
@@ -104,5 +116,20 @@ export class Button {
     } else {
       this.render.setAttribute('disabled', 'disabled');
     }
+  };
+}
+
+export class Button extends ButtonAbstract {
+  render: ExtendedHTMLElement;
+
+  constructor (props: ButtonProps) {
+    super();
+    return (new (Config.getInstance().config.componentClasses.Button ?? ButtonInternal)(props));
+  }
+
+  updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
+  };
+
+  setEnabled = (enabled: boolean): void => {
   };
 }

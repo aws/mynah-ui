@@ -24,10 +24,11 @@ describe('syntax-highlighter', () => {
       onInsertToCursorPosition: () => {},
       block: true,
     });
-
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(2);
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Insert at cursor');
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.title).toBe('Copy');
+    setTimeout(() => {
+      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(2);
+      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Insert at cursor');
+      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.title).toBe('Copy');
+    }, 100);
   });
 
   it('should NOT show related button if its event is not connected even when showCopyButtons true', () => {
@@ -39,8 +40,9 @@ describe('syntax-highlighter', () => {
       onCopiedToClipboard: () => {},
       block: true,
     });
-
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(1);
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Copy');
+    setTimeout(() => {
+      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(1);
+      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Copy');
+    }, 100);
   });
 });

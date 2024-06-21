@@ -9,6 +9,7 @@ import { cancelEvent } from '../helper/events';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
+import '../styles/components/_toggle.scss';
 
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;

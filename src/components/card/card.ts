@@ -4,6 +4,7 @@
  */
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { EngagementType } from '../../static';
+import '../../styles/components/card/_card.scss';
 
 /**
  * We'll not consider it as an engagement if the total spend time is lower than below constant and won't trigger the event
@@ -31,12 +32,12 @@ export interface CardProps extends Partial<DomBuilderObject> {
   }) => void;
 }
 export class Card {
+  render: ExtendedHTMLElement;
   private readonly props: CardProps;
   private engagementStartTime: number = -1;
   private totalMouseDistanceTraveled: { x: number; y: number } = { x: 0, y: 0 };
   private previousMousePosition!: { x: number; y: number };
   private mouseDownInfo!: { x: number; y: number; time: number };
-  render: ExtendedHTMLElement;
   constructor (props: CardProps) {
     this.props = props;
     this.render = DomBuilder.getInstance().build({

@@ -12,6 +12,7 @@ import { Icon, MynahIcons } from '../icon';
 import { Config } from '../../helper/config';
 import { Select } from '../form-items/select';
 import { CustomFormWrapper } from './custom-form';
+import '../../styles/components/_feedback-form.scss';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;
@@ -100,6 +101,7 @@ export class FeedbackForm {
 
     this.feedbackSubmitButton = new Button({
       label: Config.getInstance().config.texts.submit,
+      primary: true,
       onClick: () => {
         this.onFeedbackSet(this.feedbackPayload);
         this.close();

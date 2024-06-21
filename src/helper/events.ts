@@ -7,9 +7,9 @@ import { MynahEventNames } from '../static';
 import { generateUID } from './guid';
 
 export const cancelEvent = (event: Event): boolean => {
-  event.preventDefault();
-  event.stopPropagation();
-  event.stopImmediatePropagation();
+  event.preventDefault?.();
+  event.stopPropagation?.();
+  event.stopImmediatePropagation?.();
   return false;
 };
 

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItem, ChatItemFormItem } from '../../static';
 import { RadioGroup } from '../form-items/radio-group';
@@ -12,7 +13,11 @@ import { TextArea } from '../form-items/text-area';
 import { TextInput } from '../form-items/text-input';
 import { Icon, MynahIcons } from '../icon';
 
-export interface ChatItemFormItemsWrapperProps {tabId: string; chatItem: Partial<ChatItem>}
+export interface ChatItemFormItemsWrapperProps {
+  tabId: string;
+  chatItem: Partial<ChatItem>;
+  classNames?: string[];
+}
 export class ChatItemFormItemsWrapper {
   private readonly props: ChatItemFormItemsWrapperProps;
   private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars> = {};
@@ -25,7 +30,7 @@ export class ChatItemFormItemsWrapper {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-form-items-container' ],
+      classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
         let chatOption;
         let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true ? '* ' : ''}${chatItemOption.title ?? ''}`;
@@ -51,6 +56,7 @@ export class ChatItemFormItemsWrapper {
               value,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
+              placeholder: Config.getInstance().config.texts.pleaseSelect,
               ...(this.getValidationHandler(chatItemOption))
             });
             break;
@@ -83,7 +89,16 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               label,
               value,
-              numeric: true,
+              type: 'number',
+              placeholder: chatItemOption.placeholder,
+              ...(this.getValidationHandler(chatItemOption))
+            });
+            break;
+          case 'email':
+            chatOption = new TextInput({
+              label,
+              value,
+              type: 'email',
               placeholder: chatItemOption.placeholder,
               ...(this.getValidationHandler(chatItemOption))
             });

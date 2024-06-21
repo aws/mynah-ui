@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import '../../styles/components/_form-input.scss';
 
 export interface TextAreaProps {
   classNames?: string[];
@@ -13,10 +15,18 @@ export interface TextAreaProps {
   value?: string;
   onChange?: (value: string) => void;
 }
-export class TextArea {
+
+export abstract class TextAreaAbstract {
+  render: ExtendedHTMLElement;
+  setValue = (value: string): void => {};
+  getValue = (): string => '';
+  setEnabled = (enabled: boolean): void => {};
+}
+export class TextAreaInternal extends TextAreaAbstract {
   private readonly inputElement: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
   constructor (props: TextAreaProps) {
+    super();
     this.inputElement = DomBuilder.getInstance().build({
       type: 'textarea',
       classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
@@ -70,4 +80,17 @@ export class TextArea {
       this.inputElement.setAttribute('disabled', 'disabled');
     }
   };
+}
+
+export class TextArea extends TextAreaAbstract {
+  render: ExtendedHTMLElement;
+
+  constructor (props: TextAreaProps) {
+    super();
+    return new (Config.getInstance().config.componentClasses.TextArea ?? TextAreaInternal)(props);
+  }
+
+  setValue = (value: string): void => {};
+  getValue = (): string => '';
+  setEnabled = (enabled: boolean): void => {};
 }

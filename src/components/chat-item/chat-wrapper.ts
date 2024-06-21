@@ -15,6 +15,7 @@ import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
 import { ChatPromptInputStickyCard } from './chat-prompt-input-sticky-card';
+import '../../styles/components/chat/_chat-wrapper.scss';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -92,9 +93,8 @@ export class ChatWrapper {
         ...(this.props?.onStopChatResponse !== undefined
           ? [ new Button({
               classNames: [ 'mynah-chat-stop-chat-response-button' ],
-              primary: false,
               label: Config.getInstance().config.texts.stopGenerating,
-              icon: new Icon({ icon: MynahIcons.BLOCK }).render,
+              icon: new Icon({ icon: MynahIcons.CANCEL }).render,
               onClick: () => {
                 if ((this.props?.onStopChatResponse) !== undefined) {
                   this.props?.onStopChatResponse(this.props.tabId);

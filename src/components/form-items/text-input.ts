@@ -3,26 +3,37 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import '../../styles/components/_form-input.scss';
 
 export interface TextInputProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
   placeholder?: string;
-  numeric?: boolean;
+  type?: 'text' | 'number' | 'email';
   value?: string;
   onChange?: (value: string) => void;
 }
-export class TextInput {
+
+export abstract class TextInputAbstract {
+  render: ExtendedHTMLElement;
+  setValue = (value: string): void => {};
+  getValue = (): string => '';
+  setEnabled = (enabled: boolean): void => {};
+}
+
+export class TextInputInternal extends TextInputAbstract {
   private readonly inputElement: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
   constructor (props: TextInputProps) {
+    super();
     this.inputElement = DomBuilder.getInstance().build({
       type: 'input',
       classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
       attributes: {
-        type: props.numeric === true ? 'number' : 'text',
+        type: props.type ?? 'text',
         ...(props.placeholder !== undefined
           ? {
               placeholder: props.placeholder
@@ -74,4 +85,17 @@ export class TextInput {
       this.inputElement.setAttribute('disabled', 'disabled');
     }
   };
+}
+
+export class TextInput extends TextInputAbstract {
+  render: ExtendedHTMLElement;
+
+  constructor (props: TextInputProps) {
+    super();
+    return new (Config.getInstance().config.componentClasses.TextInput ?? TextInputInternal)(props);
+  }
+
+  setValue = (value: string): void => {};
+  getValue = (): string => '';
+  setEnabled = (enabled: boolean): void => {};
 }

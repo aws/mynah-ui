@@ -6,14 +6,15 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItemButton } from '../../static';
 import { Button } from '../button';
+import { Icon } from '../icon';
 import { ChatItemFollowUpOption } from './chat-item-followup-option';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 
 export interface ChatItemButtonsWrapperProps {
   tabId: string;
+  classNames?: string[];
   buttons: ChatItemButton[];
   formItems: ChatItemFormItemsWrapper | null;
-  useButtonComponent?: boolean;
   onActionClick: (action: ChatItemButton, e?: Event) => void;
 }
 export class ChatItemButtonsWrapper {
@@ -28,43 +29,22 @@ export class ChatItemButtonsWrapper {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-buttons-container',
-        props.useButtonComponent === true ? 'mynah-chat-item-buttons-container-use-real-buttons' : '' ],
+      classNames: [ 'mynah-chat-item-buttons-container', ...(this.props.classNames ?? []) ],
       children: this.props.buttons.map(chatActionAction => {
-        let actionItem;
-        if (props.useButtonComponent !== true) {
-          actionItem = new ChatItemFollowUpOption({
-            followUpOption: {
-              pillText: chatActionAction.text,
-              disabled: chatActionAction.disabled,
-              description: chatActionAction.description,
-              status: chatActionAction.status,
-              icon: chatActionAction.icon,
-            },
-            onClick: () => {
-              if (props.formItems !== null) {
-                props.formItems.disableAll();
-              }
-              this.disableAll();
-              this.props.onActionClick(chatActionAction);
+        const actionItem = new Button({
+          label: chatActionAction.text,
+          icon: chatActionAction.icon != null ? new Icon({ icon: chatActionAction.icon }).render : undefined,
+          primary: chatActionAction.status !== undefined,
+          onClick: (e) => {
+            if (props.formItems !== null) {
+              props.formItems.disableAll();
             }
-          });
-        } else {
-          actionItem = new Button({
-            label: chatActionAction.text,
-            icon: chatActionAction.icon,
-            primary: chatActionAction.status !== undefined,
-            onClick: (e) => {
-              if (props.formItems !== null) {
-                props.formItems.disableAll();
-              }
-              this.disableAll();
-              this.props.onActionClick(chatActionAction, e);
-            }
-          });
-          if (chatActionAction.disabled === true) {
-            actionItem.setEnabled(false);
+            this.disableAll();
+            this.props.onActionClick(chatActionAction, e);
           }
+        });
+        if (chatActionAction.disabled === true) {
+          actionItem.setEnabled(false);
         }
         this.actions[chatActionAction.id] = {
           data: chatActionAction,

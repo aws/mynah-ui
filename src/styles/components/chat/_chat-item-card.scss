@@ -1,3 +1,4 @@
+@import '../../variables';
 .mynah-chat-item-card {
     display: inline-flex;
     flex-flow: column nowrap;
@@ -43,9 +44,6 @@
     &.mynah-chat-item-answer-stream {
         &.typewriter-animating {
             @import "chat-items-bottom-animator";
-        }
-        .typewriter-part {
-            visibility: hidden;
         }
     }
 

@@ -5,6 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIIconImporter } from './icon/icon-importer';
+import '../styles/components/_icon.scss';
 
 export enum MynahIcons {
   MYNAH = 'mynah',

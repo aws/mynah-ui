@@ -82,11 +82,17 @@ export class DomBuilder {
 
   public static getInstance (rootSelector?: string): DomBuilder {
     if (!DomBuilder.instance) {
-      DomBuilder.instance = new DomBuilder(rootSelector !== undefined ? rootSelector : 'body');
+      DomBuilder.instance = new DomBuilder(rootSelector != null ? rootSelector : 'body');
     }
-
+    if (rootSelector != null) {
+      DomBuilder.instance.setRoot(rootSelector);
+    }
     return DomBuilder.instance;
   }
+
+  setRoot = (rootSelector?: string): void => {
+    this.root = this.extendDomFunctionality((DS(rootSelector ?? 'body')[0] ?? document.body) as HTMLElement);
+  };
 
   addClass = function (this: ExtendedHTMLElement, className: string): ExtendedHTMLElement {
     if (className !== '') {
@@ -294,3 +300,62 @@ export const htmlDecode = (input: string): string => {
   e.innerHTML = input;
   return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue ?? input;
 };
+
+export const getTypewriterPartsCss = (
+  typewriterId: string,
+  lastVisibleItemIndex: number,
+  totalNumberOfItems: number,
+  timeForEach: number): ExtendedHTMLElement =>
+  DomBuilder.getInstance().build({
+    type: 'style',
+    attributes: {
+      type: 'text/css'
+    },
+    persistent: true,
+    innerHTML: `
+    root:{
+    --mynah-typewriter-bottom-pull: max(-100%, calc(-5 * var(--mynah-line-height, 1.5rem)));
+    }
+    @keyframes typewriter-${typewriterId} {
+      0% {
+          opacity: 0;
+          margin-bottom: var(--mynah-typewriter-bottom-pull, -1.5rem);
+          visibility: visible;
+      }
+      99% {
+          opacity: 1;
+          margin-bottom: 0px;
+          visibility: visible;
+      }
+      100% {
+          opacity: 1;
+          margin-bottom: initial;
+          visibility: visible;
+      }
+  }
+  ${new Array(Math.max(0, totalNumberOfItems))
+    .fill(null)
+    .map((n, i) => {
+      if (i < lastVisibleItemIndex) {
+        return `
+      .${typewriterId} .typewriter-part[index="${i}"] {
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin-bottom: inherit;
+        animation: none;
+      }
+      `;
+      }
+      return `
+      .${typewriterId} .typewriter-part[index="${i}"] {
+        visibility: hidden;
+        opacity: 0;
+        margin-bottom: var(--mynah-typewriter-bottom-pull, -1.5rem);
+        animation: typewriter-${typewriterId} ${150 + timeForEach}ms ease-out forwards;
+        animation-delay: ${(i - lastVisibleItemIndex) * timeForEach}ms;
+      }
+      `;
+    })
+    .join('')}
+  `,
+  });

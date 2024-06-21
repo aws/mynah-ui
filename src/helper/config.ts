@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ConfigModel, ConfigOptions, ConfigTexts } from '../static';
+import { ComponentOverrides, ConfigModel, ConfigOptions, ConfigTexts } from '../static';
 
 interface ConfigFullModel extends ConfigOptions {
   texts: ConfigTexts;
+  componentClasses: ComponentOverrides;
 };
 
 const configDefaults: ConfigFullModel = {
+  componentClasses: {
+  },
   maxTabs: 1000,
   maxUserInput: 4096,
   showPromptField: true,
@@ -85,6 +88,10 @@ export class Config {
       texts: {
         ...configDefaults.texts,
         ...config?.texts
+      },
+      componentClasses: {
+        ...configDefaults.componentClasses,
+        ...config?.componentOverrides
       }
     };
   }

@@ -9,25 +9,14 @@ import {
   OnInsertToCursorPositionFunction,
   ReferenceTrackerInformation,
 } from '../../static';
-import { RendererExtensionFunction, marked } from 'marked';
+import { marked } from 'marked';
 import unescapeHTML from 'unescape-html';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { generateUID } from '../../helper/guid';
+import '../../styles/components/card/_card.scss';
 
 const PREVIEW_DELAY = 500;
-
-// Marked doesn't exports it, needs manual addition
-interface MarkedExtensions {
-  extensions?: null | {
-    renderers: {
-      [name: string]: RendererExtensionFunction;
-    };
-    childTokens: {
-      [name: string]: string[];
-    };
-  };
-}
 
 export const highlightersWithTooltip = {
   start: {
@@ -51,6 +40,7 @@ export interface CardBodyProps {
   useParts?: boolean;
   codeBlockStartIndex?: number;
   processChildren?: boolean;
+  classNames?: string[];
   onLinkClick?: (url: string, e: MouseEvent) => void;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
   onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
@@ -81,7 +71,7 @@ export class CardBody {
     ];
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-card-body' ],
+      classNames: [ 'mynah-card-body', ...(this.props.classNames ?? []) ],
       children: this.props.childLocation === 'above-body' ? childList.reverse() : childList,
     });
 
@@ -97,80 +87,93 @@ export class CardBody {
   }
 
   private readonly processNode = (node: HTMLElement): HTMLElement => {
-    const elementFromNode: HTMLElement = node;
-    if (elementFromNode.tagName?.toLowerCase() === 'a') {
-      const url = elementFromNode.getAttribute('href') ?? '';
-      return DomBuilder.getInstance().build(
-        {
-          type: 'a',
-          events: {
-            click: (e: MouseEvent) => {
-              if (this.props.onLinkClick !== undefined) {
-                this.props.onLinkClick(url, e);
-              }
+    let elementFromNode: HTMLElement = node;
+    if (this.props.useParts === true && elementFromNode.nodeType === Node.TEXT_NODE) {
+      elementFromNode = DomBuilder.getInstance().build({
+        type: 'span',
+        classNames: [ 'mynah-ui-animation-text-content' ],
+        children: elementFromNode.textContent?.split(' ').map(textPart => DomBuilder.getInstance().build({
+          type: 'span',
+          classNames: [ PARTS_CLASS_NAME ],
+          children: [ textPart, ' ' ]
+        }))
+      });
+    } else {
+      if (elementFromNode.tagName?.toLowerCase() === 'a') {
+        const url = elementFromNode.getAttribute('href') ?? '';
+        return DomBuilder.getInstance().build(
+          {
+            type: 'a',
+            classNames: this.props.useParts === true ? [ PARTS_CLASS_NAME ] : [],
+            events: {
+              click: (e: MouseEvent) => {
+                if (this.props.onLinkClick !== undefined) {
+                  this.props.onLinkClick(url, e);
+                }
+              },
+              auxclick: (e: MouseEvent) => {
+                if (this.props.onLinkClick !== undefined) {
+                  this.props.onLinkClick(url, e);
+                }
+              },
             },
-            auxclick: (e: MouseEvent) => {
-              if (this.props.onLinkClick !== undefined) {
-                this.props.onLinkClick(url, e);
-              }
-            },
-          },
-          attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },
-          innerHTML: elementFromNode.innerHTML,
-        });
-    }
-    if ((elementFromNode.tagName?.toLowerCase() === 'pre' && elementFromNode.querySelector('code') !== null) ||
-      elementFromNode.tagName?.toLowerCase() === 'code'
-    ) {
-      const isBlockCode = elementFromNode.tagName?.toLowerCase() === 'pre' || elementFromNode.innerHTML.match(/\r|\n/) !== null;
-      const codeElement = (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode);
-      const snippetLanguage = Array.from(codeElement?.classList ?? []).find(className => className.match('language-'))?.replace('language-', '');
-      const codeString = codeElement?.innerHTML ?? '';
-
-      const highlighter = new SyntaxHighlighter({
-        codeStringWithMarkup: unescapeHTML(codeString),
-        language: snippetLanguage?.trim() !== '' ? snippetLanguage : '',
-        keepHighlights: true,
-        showCopyOptions: isBlockCode,
-        block: isBlockCode,
-        index: isBlockCode ? this.nextCodeBlockIndex : undefined,
-        onCopiedToClipboard: this.props.onCopiedToClipboard != null
-          ? (type, text, codeBlockIndex) => {
-              if (this.props.onCopiedToClipboard != null) {
-                this.props.onCopiedToClipboard(
-                  type,
-                  text,
-                  this.getReferenceTrackerInformationFromElement(highlighter),
-                  this.codeBlockStartIndex + (codeBlockIndex ?? 0),
-                  this.nextCodeBlockIndex);
-              }
-            }
-          : undefined,
-        onInsertToCursorPosition: this.props.onInsertToCursorPosition != null
-          ? (type, text, codeBlockIndex) => {
-              if (this.props.onInsertToCursorPosition != null) {
-                this.props.onInsertToCursorPosition(
-                  type,
-                  text,
-                  this.getReferenceTrackerInformationFromElement(highlighter),
-                  this.codeBlockStartIndex + (codeBlockIndex ?? 0),
-                  this.nextCodeBlockIndex);
-              }
-            }
-          : undefined
-      }).render;
-      if (this.props.useParts === true) {
-        highlighter.classList.add(PARTS_CLASS_NAME);
+            attributes: { href: elementFromNode.getAttribute('href') ?? '', target: '_blank' },
+            innerHTML: elementFromNode.innerHTML,
+          });
       }
-      if (isBlockCode) {
-        ++this.nextCodeBlockIndex;
-      }
-      return highlighter;
-    }
+      if ((elementFromNode.tagName?.toLowerCase() === 'pre' && elementFromNode.querySelector('code') !== null) ||
+        elementFromNode.tagName?.toLowerCase() === 'code'
+      ) {
+        const isBlockCode = elementFromNode.tagName?.toLowerCase() === 'pre' || elementFromNode.innerHTML.match(/\r|\n/) !== null;
+        const codeElement = (elementFromNode.tagName?.toLowerCase() === 'pre' ? elementFromNode.querySelector('code') : elementFromNode);
+        const snippetLanguage = Array.from(codeElement?.classList ?? []).find(className => className.match('language-'))?.replace('language-', '');
+        const codeString = codeElement?.innerHTML ?? '';
 
-    elementFromNode.childNodes?.forEach((child) => {
-      elementFromNode.replaceChild(this.processNode(child as HTMLElement), child);
-    });
+        const highlighter = new SyntaxHighlighter({
+          codeStringWithMarkup: unescapeHTML(codeString),
+          language: snippetLanguage?.trim() !== '' ? snippetLanguage : '',
+          keepHighlights: true,
+          showCopyOptions: isBlockCode,
+          block: isBlockCode,
+          index: isBlockCode ? this.nextCodeBlockIndex : undefined,
+          onCopiedToClipboard: this.props.onCopiedToClipboard != null
+            ? (type, text, codeBlockIndex) => {
+                if (this.props.onCopiedToClipboard != null) {
+                  this.props.onCopiedToClipboard(
+                    type,
+                    text,
+                    this.getReferenceTrackerInformationFromElement(highlighter),
+                    this.codeBlockStartIndex + (codeBlockIndex ?? 0),
+                    this.nextCodeBlockIndex);
+                }
+              }
+            : undefined,
+          onInsertToCursorPosition: this.props.onInsertToCursorPosition != null
+            ? (type, text, codeBlockIndex) => {
+                if (this.props.onInsertToCursorPosition != null) {
+                  this.props.onInsertToCursorPosition(
+                    type,
+                    text,
+                    this.getReferenceTrackerInformationFromElement(highlighter),
+                    this.codeBlockStartIndex + (codeBlockIndex ?? 0),
+                    this.nextCodeBlockIndex);
+                }
+              }
+            : undefined
+        }).render;
+        if (this.props.useParts === true) {
+          highlighter.classList.add(PARTS_CLASS_NAME);
+        }
+        if (isBlockCode) {
+          ++this.nextCodeBlockIndex;
+        }
+        return highlighter;
+      }
+
+      elementFromNode.childNodes?.forEach((child) => {
+        elementFromNode.replaceChild(this.processNode(child as HTMLElement), child);
+      });
+    }
     return elementFromNode;
   };
 
@@ -254,50 +257,6 @@ export class CardBody {
     }
   };
 
-  /**
-   * Returns extension additions
-   * @returns marked options extensions
-   */
-  private readonly getMarkedExtensions = (): MarkedExtensions => {
-    return {
-      extensions: {
-        renderers: {
-          text: (token) => {
-            if (this.props.useParts === true) {
-              // We should skip words inside code blocks
-              // In general code blocks getting rendered before the text items
-              // However for listitems, the case is different
-              // We still need to check if the word is a code field start,
-              // is it inside a code field or is it a code field end
-              let codeOpen = false;
-              return token.text.split(' ').map((textPart: string) => {
-                if (textPart.match(/`/) != null) {
-                  // revert the code field open state back
-                  // or restart the open state of code field
-                  codeOpen = !codeOpen;
-                  // open or close state
-                  // return the text as is
-                  return textPart;
-                }
-
-                // if inside code field
-                // return text as is
-                if (codeOpen) {
-                  return textPart;
-                }
-
-                // otherwise add typewriter animation wrapper
-                return `<span class="${PARTS_CLASS_NAME}">${textPart}</span>`;
-              }).join(' ');
-            }
-            return token.text;
-          }
-        },
-        childTokens: {}
-      }
-    };
-  };
-
   private readonly getContentBodyChildren = (props: CardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
     if (props.body != null && props.body.trim() !== '') {
       let incomingBody = props.body;
@@ -325,7 +284,6 @@ export class CardBody {
             type: 'div',
             innerHTML: `${marked.parse(incomingBody, {
               breaks: true,
-              ...this.getMarkedExtensions()
             }) as string}`,
           }).childNodes
         ).map(node => {

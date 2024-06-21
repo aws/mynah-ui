@@ -1,3 +1,5 @@
+@import '../variables';
+@import '../mixins';
 pre.diff-highlight > code .token.deleted:not(.prefix),
 pre > code.diff-highlight .token.deleted:not(.prefix) {
     background-color: rgba(255, 0, 0, 0.1);
@@ -16,7 +18,6 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
     flex-flow: column nowrap;
     box-sizing: border-box;
     overflow: hidden;
-    margin: var(--mynah-sizing-1) 0;
     background-color: var(--mynah-card-bg);
     max-width: 100%;
     & + *:not(:empty) {

@@ -7,6 +7,7 @@
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
 import { generateUID } from '../helper/guid';
 import { MynahPortalNames } from '../static';
+import '../styles/components/_overlay.scss';
 
 export const OVERLAY_MARGIN = 8;
 /**

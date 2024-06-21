@@ -6,6 +6,7 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { Icon, MynahIcons } from '../icon';
+import '../../styles/components/_form-input.scss';
 
 interface SelectOption {
   value: string;
@@ -20,9 +21,18 @@ export interface SelectProps {
   value?: string;
   optional?: boolean;
   options?: SelectOption[];
+  placeholder?: string;
   onChange?: (value: string) => void;
 }
-export class Select {
+
+export abstract class SelectAbstract {
+  render: ExtendedHTMLElement;
+  setValue = (value: string): void => {};
+  getValue = (): string => '';
+  setEnabled = (enabled: boolean): void => {};
+}
+
+export class SelectInternal {
   private readonly selectElement: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
   constructor (props: SelectProps) {
@@ -39,7 +49,7 @@ export class Select {
       children:
         [ ...(props.optional === true
           ? [ {
-              label: Config.getInstance().config.texts.pleaseSelect,
+              label: props.placeholder ?? '...',
               value: ''
             } ]
           : []), ...props.options ?? [] ].map(option => ({
@@ -88,4 +98,17 @@ export class Select {
       this.selectElement.setAttribute('disabled', 'disabled');
     }
   };
+}
+
+export class Select extends SelectAbstract {
+  render: ExtendedHTMLElement;
+
+  constructor (props: SelectProps) {
+    super();
+    return new (Config.getInstance().config.componentClasses.Select ?? SelectInternal)(props);
+  }
+
+  setValue = (value: string): void => {};
+  getValue = (): string => '';
+  setEnabled = (enabled: boolean): void => {};
 }

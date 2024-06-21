@@ -1,47 +1,59 @@
+@import '../../variables';
+
 .mynah-card {
-  text-decoration: none;
-  outline: none;
-  position: relative;
-  transition: var(--mynah-short-transition-rev);
-  box-sizing: border-box;
-  display: flex;
-  flex-flow: column nowrap;
-  gap: var(--mynah-sizing-3);
-  transform: translate3d(0, 0, 0);
-  flex: auto 0 0;
-  width: 100%;
-  overflow: hidden;
-  border-radius: var(--mynah-card-radius);
-  box-shadow: var(--mynah-shadow-card);
-
-  .mynah-ui-clickable-item {
-    cursor: pointer;
-  }
-
-  &.padding {
-    @each $size, $padding in $mynah-padding-sizes {
-      &-#{$size} {
-        padding: var(--mynah-sizing-#{$padding});
-        @if $size == 'none' {
-          border-radius: 0;
-        }
-      }
-    }
-  }
-  &.background {
-    background-color: var(--mynah-card-bg);
-  }
-  &.border {
-    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-  }
-
-  > * {
-    z-index: 10;
+    text-decoration: none;
+    outline: none;
     position: relative;
-  }
+    transition: var(--mynah-short-transition-rev);
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-3);
+    transform: translate3d(0, 0, 0);
+    flex: auto 0 0;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--mynah-card-radius);
+    box-shadow: var(--mynah-shadow-card);
 
-  @import '../source-link-header';
-  @import '../votes-wrapper';
+    @for $i from 0 through 10 {
+        > .mynah-card-inner-order-#{$i * 10} {
+            order: $i * 10;
+        }
+    }
+
+    &.hide-if-empty:empty {
+        display: none;
+    }
+
+    .mynah-ui-clickable-item {
+        cursor: pointer;
+    }
+
+    &.padding {
+        @each $size, $padding in $mynah-padding-sizes {
+            &-#{$size} {
+            padding: var(--mynah-sizing-#{$padding});
+            @if $size == 'none' {
+                border-radius: 0;
+            }
+            }
+        }
+    }
+    &.background {
+        background-color: var(--mynah-card-bg);
+    }
+    &.border {
+        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    }
+
+    > * {
+        z-index: 10;
+        position: relative;
+    }
+
+    @import '../source-link-header';
+    @import '../votes-wrapper';
 }
 
 @import 'card-body';

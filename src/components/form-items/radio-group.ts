@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Config } from '../../helper/config';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import { generateUID } from '../../helper/guid';
 import { Icon, MynahIcons } from '../icon';
+import '../../styles/components/_form-input.scss';
 
 interface SelectOption {
   value: string;
@@ -22,11 +24,19 @@ export interface RadioGroupProps {
   options?: SelectOption[];
   onChange?: (value: string) => void;
 }
-export class RadioGroup {
+
+export abstract class RadioGroupAbstract {
+  render: ExtendedHTMLElement;
+  setValue = (value: string): void => {};
+  getValue = (): string => '';
+  setEnabled = (enabled: boolean): void => {};
+}
+export class RadioGroupInternal extends RadioGroupAbstract {
   private readonly radioGroupElement: ExtendedHTMLElement;
   private readonly groupName: string = generateUID();
   render: ExtendedHTMLElement;
   constructor (props: RadioGroupProps) {
+    super();
     this.radioGroupElement = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-form-input', 'no-border', ...(props.classNames ?? []) ],
@@ -114,4 +124,17 @@ export class RadioGroup {
       this.radioGroupElement.querySelectorAll('input').forEach(inputElm => inputElm.setAttribute('disabled', 'disabled'));
     }
   };
+}
+
+export class RadioGroup extends RadioGroupAbstract {
+  render: ExtendedHTMLElement;
+
+  constructor (props: RadioGroupProps) {
+    super();
+    return new (Config.getInstance().config.componentClasses.RadioGroup ?? RadioGroupInternal)(props);
+  }
+
+  setValue = (value: string): void => {};
+  getValue = (): string => '';
+  setEnabled = (enabled: boolean): void => {};
 }

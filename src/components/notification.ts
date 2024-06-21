@@ -8,6 +8,7 @@ import { cancelEvent } from '../helper/events';
 import { NotificationType } from '../static';
 import { Icon, MynahIcons } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection, OVERLAY_MARGIN } from './overlay';
+import '../styles/components/_notification.scss';
 
 type NotificationContentType = string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
 

@@ -13,6 +13,7 @@ import { Config } from '../../helper/config';
 const THANKS_REMOVAL_DURATION = 3500;
 export interface ChatItemRelevanceVoteProps {
   tabId: string;
+  classNames?: string[];
   messageId: string;
 }
 export class ChatItemRelevanceVote {
@@ -25,7 +26,7 @@ export class ChatItemRelevanceVote {
     this.votingId = `${this.props.tabId}-${this.props.messageId}`;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-card-votes-wrapper' ],
+      classNames: [ 'mynah-card-votes-wrapper', ...(this.props.classNames ?? []) ],
       children: [
         {
           type: 'div',
