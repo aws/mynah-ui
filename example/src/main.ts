@@ -107,6 +107,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               id: 'accept-diff',
               label: 'Accept Diff',
               icon: MynahIcons.OK_CIRCLED,
+              acceptedLanguages: ['diff-typescript'],
               data: {
                 updatedCode: exampleCodeDiffApplied
               }

@@ -297,6 +297,45 @@ These two parameters allow you to make copy and insert buttons disabled system w
 
 ---
 
+## `codeBlockActions`
+With this parameter, you can add global code block actions to the code blocks. But, you can override them through [ChatItem Data Model](./DATAMODEL.md#codeBlockActions). 
+
+### Note
+If you want to show that action only for certain coding languages, you can set the array for `acceptedLanguages` parameter. Keep in mind that it will check an exact mathc. If the incoming language is same with one of the acceptedLanguages list, it will show the action.
+
+#### By default, we add `copy` and `insert to cursor position` ones:
+
+```typescript
+{
+  codeBlockActions: {
+    ...(codeCopyToClipboardEnabled !== false
+      ? {
+          copy: {
+            id: 'copy',
+            label: texts.copy,
+            icon: MynahIcons.COPY
+          }
+        }
+      : {}),
+    ...(codeInsertToCursorEnabled !== false
+      ? {
+          'insert-to-cursor': {
+            id: 'insert-to-cursor',
+            label: texts.insertAtCursorLabel,
+            icon: MynahIcons.CURSOR_INSERT
+          }
+        }
+      : {}),
+  }
+}
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/codeInsertAndCopyButtonsThroughConfig.png" alt="codeInsertAndCopy" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
 <p><br/></p>
 
 # `showPromptField`

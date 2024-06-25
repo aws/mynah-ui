@@ -563,7 +563,7 @@ enum ChatItemType {
   SYSTEM_PROMPT = 'system-prompt'
 }
 
-export interface ChatItemAction extends ChatPrompt {
+interface ChatItemAction extends ChatPrompt {
   type?: string;
   pillText: string;
   disabled?: boolean;
@@ -572,7 +572,7 @@ export interface ChatItemAction extends ChatPrompt {
   icon?: MynahIcons;
 }
 
-export interface ChatItemButton {
+interface ChatItemButton {
   keepCardAfterClick?: boolean;
   waitMandatoryFormItems?: boolean;
   text: string;
@@ -583,7 +583,7 @@ export interface ChatItemButton {
   icon?: MynahIcons;
 }
 
-export interface ChatItemFormItem {
+interface ChatItemFormItem {
   id: string;
   type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup';
   mandatory?: boolean;
@@ -596,7 +596,7 @@ export interface ChatItemFormItem {
   }>;
 }
 
-export interface FileNodeAction {
+interface FileNodeAction {
   name: string;
   label?: string;
   disabled?: boolean;
@@ -605,14 +605,14 @@ export interface FileNodeAction {
   icon: MynahIcons;
 }
 
-export interface TreeNodeDetails {
+interface TreeNodeDetails {
   status?: 'info' | 'success' | 'warning' | 'error';
   icon?: MynahIcons;
   label?: string;
   description?: string; // Markdown tooltip
 }
 
-export interface SourceLink {
+interface SourceLink {
   title: string;
   id?: string;
   url: string;
@@ -621,7 +621,7 @@ export interface SourceLink {
   metadata?: Record<string, SourceLinkMetaData>;
 }
 
-export interface ReferenceTrackerInformation {
+interface ReferenceTrackerInformation {
   licenseName?: string;
   repository?: string;
   url?: string;
@@ -632,41 +632,56 @@ export interface ReferenceTrackerInformation {
   information: string;
 }
 
-export interface ChatItemBodyRenderer extends GenericDomBuilderAttributes {
+interface ChatItemBodyRenderer extends GenericDomBuilderAttributes {
   type: AllowedTagsInCustomRenderer;
   children?: Array<string | ChatItemBodyRenderer> | undefined;
   attributes?: Partial<Record<AllowedAttributesInCustomRenderer, string>> | undefined;
 }
 
+interface CodeBlockAction {
+  id: 'copy' | 'insert-to-cursor' | string;
+  label: string;
+  description?: string;
+  icon?: MynahIcons;
+  data?: any;
+  acceptedLanguages?: string[];
+}
+type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAction | undefined | null>;
+
 // ################################# 
-interface ChatItem {
-  type: ChatItemType;
+interface ChatItemContent {
+  body?: string;
+  customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
+  followUp?: {
+    text?: string;
+    options?: ChatItemAction[];
+  };
+  relatedContent?: {
+    title?: string;
+    content: SourceLink[];
+  };
+  codeReference?: ReferenceTrackerInformation[];
   fileList?: {
+    fileTreeTitle?: string;
+    rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
   };
-  body?: string; // supports MARKDOWN string
-  customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
-  messageId?: string;
-  snapToTop?: boolean;
-  canBeVoted?: boolean; // requires messageId to be filled to show vote thumbs
-  codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on all code blocks for this message
-  codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on all code blocks for this message
-  relatedContent?: {
-    title?: string;
-    content: SourceLink[];
-  };
-  followUp?: {
-    text?: string;
-    options?: ChatItemAction[];
-  };
   buttons?: ChatItemButton[];
   formItems?: ChatItemFormItem[];
-  status?: 'error' | 'success' | 'warning' | 'info';
+  footer?: ChatItemContent;
+  codeBlockActions?: CodeBlockActions;
+}
+
+interface ChatItem extends ChatItemContent{
+  type: ChatItemType;
+  messageId?: string;
+  snapToTop?: boolean;
+  canBeVoted?: boolean;
   icon?: MynahIcons;
-  codeReference?: ReferenceTrackerInformation[];
+  status?: 'info' | 'success' | 'warning' | 'error';
 }
 // ################################# 
 ```
@@ -1300,8 +1315,11 @@ mynahUI.addChatItem('tab-1', {
 
 ---
 
-## `codeInsertToCursorEnabled` and `codeCopyToClipboardEnabled` (default: true)
-These two parameters allow you to make copy and insert buttons disabled for that specific ChatItem. If you want to disable it system wide you can do it through config. Please see [CONFIG Documentation](./CONFIG.md#codeinserttocursorenabled-and-codecopytoclipboardenabled-default-true).
+## `codeBlockActions`
+With this parameter, you can add per chatitem code block actions to the code blocks inside that ChatItem. You can also override the actions added through [CONFIG](./CONFIG.md#codeblockactions). 
+
+### Note
+If you want to show that action only for certain coding languages, you can set the array for `acceptedLanguages` parameter. Keep in mind that it will check an exact mathc. If the incoming language is same with one of the acceptedLanguages list, it will show the action.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -1312,16 +1330,66 @@ const mynahUI = new MynahUI({
     }
 });
 
-mynahUI.addChatItem('tab-1', {
-    ...
-    codeInsertToCursorEnabled?: boolean;
-    codeCopyToClipboardEnabled?: boolean;
-    body: "Here's a message which doesn't show buttons for code blocks inside."
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  body: `SOME CODE DIFF`,
+  codeBlockActions: {
+    'copy': undefined, // To override the one comes from the config by default
+    'accept-diff': {
+      id: 'accept-diff',
+      label: 'Accept Diff',
+      icon: MynahIcons.OK_CIRCLED,
+      data: { // Can be "any"thing
+        updatedCode: `SOME CODE DIFF APPLIED`
+      },
+      acceptedLanguages: ['diff-typescript']
+    }
+  }
 });
 ```
 
 <p align="center">
-  <img src="./img/data-model/chatItems/codeInsertAndCopyButtons.png" alt="codeInsertAndCopy" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/chatItems/codeBlockActions.png" alt="codeBlockActions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `footer`
+With this parameter, you can add another `ChatItem` only with contents to the footer of a ChatItem. 
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  body: `SOME CONTENT`,
+  footer: {
+    fileList: { // For example, want to show which file is used to generate that answer
+      rootFolderTitle: undefined,
+      fileTreeTitle: '',
+      filePaths: ['./src/index.ts'],
+      details: {
+        './src/index.ts': {
+          icon: MynahIcons.FILE,
+          description: `SOME DESCRIPTION.`
+        }
+      }
+    }
+  }
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/footer.png" alt="footer-1" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+<p align="center">
+  <img src="./img/data-model/chatItems/footer2.png" alt="footer-2" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
