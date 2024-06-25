@@ -41,7 +41,6 @@ import {
 import { Button } from './button';
 import { Icon } from './icon';
 import { cancelEvent } from '../helper/events';
-import { Config } from '../helper/config';
 import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
@@ -197,12 +196,12 @@ export class SyntaxHighlighter {
 
     if (props.codeBlockActions != null) {
       Object.keys(props.codeBlockActions).forEach((actionId: string) => {
-        const validAction = props.codeBlockActions?.[actionId]?.acceptedLanguages == null || props.codeBlockActions?.[actionId]?.acceptedLanguages?.find(acceptedLang => props.language === acceptedLang) != null ? props.codeBlockActions?.[actionId] : undefined;
+        const validAction = props.codeBlockActions?.[actionId]?.acceptedLanguages == null || props.language == null || props.codeBlockActions?.[actionId]?.acceptedLanguages?.find(acceptedLang => props.language === acceptedLang) != null ? props.codeBlockActions?.[actionId] : undefined;
         if (validAction != null) {
           this.codeBlockButtons.push(new Button({
             icon: validAction.icon != null ? new Icon({ icon: validAction.icon }).render : undefined,
             label: validAction.label,
-            attributes: { title: Config.getInstance().config.texts.insertAtCursorLabel },
+            attributes: { title: validAction.description ?? '' },
             primary: false,
             onClick: e => {
               cancelEvent(e);
