@@ -53,11 +53,11 @@ export class ChatItemTreeFile {
           : {})
       },
       children: [
-        ...(props.icon != null
+        ...(props.icon != null && props.details?.icon == null
           ? [ {
               type: 'span',
               classNames: [ 'mynah-chat-single-file-icon' ],
-              children: [ new Icon({ icon: props.icon ?? MynahIcons.PAPER_CLIP }).render ]
+              children: [ new Icon({ icon: props.icon }).render ]
             } ]
           : []),
         {
@@ -66,17 +66,18 @@ export class ChatItemTreeFile {
             'mynah-chat-item-tree-view-file-item-title',
             props.deleted === true ? 'mynah-chat-item-tree-view-file-item-deleted' : '',
           ],
-          children: [ {
-            type: 'span',
-            children: [ props.fileName ]
-          } ]
+          children: [
+            new Icon({ icon: props.details?.icon ?? MynahIcons.FILE }).render,
+            {
+              type: 'span',
+              children: [ props.fileName ]
+            } ]
         },
         {
           type: 'div',
           classNames: [ 'mynah-chat-item-tree-view-file-item-details' ],
           children: props.details != null
             ? [
-                ...(props.details.icon !== undefined ? [ new Icon({ icon: props.details.icon }).render ] : []),
                 ...(props.details.label !== undefined
                   ? [ {
                       type: 'span',
