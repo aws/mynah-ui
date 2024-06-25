@@ -22,10 +22,6 @@
         }
     }
 
-    &.hide-if-empty:empty {
-        display: none;
-    }
-
     .mynah-ui-clickable-item {
         cursor: pointer;
     }
@@ -33,15 +29,19 @@
     &.padding {
         @each $size, $padding in $mynah-padding-sizes {
             &-#{$size} {
-            padding: var(--mynah-sizing-#{$padding});
-            @if $size == 'none' {
-                border-radius: 0;
-            }
+                padding: var(--mynah-sizing-#{$padding});
+                @if $size == 'none' {
+                    border-radius: 0;
+                    gap: var(--mynah-sizing-1);
+                }
             }
         }
     }
     &.background {
         background-color: var(--mynah-card-bg);
+    }
+    &:not(.background){
+        box-shadow: none;
     }
     &.border {
         border: var(--mynah-border-width) solid var(--mynah-color-border-default);

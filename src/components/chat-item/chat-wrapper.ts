@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { chatItemHasContent } from '../../helper/chat-item';
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
@@ -141,7 +140,17 @@ export class ChatWrapper {
     }
   }
 
+  private readonly removeEmptyCardsAndFollowups = (): void => {
+    Object.keys(this.allRenderedChatItems).forEach(messageId => {
+      if (this.allRenderedChatItems[messageId].cleanFollowupsAndRemoveIfEmpty()) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.allRenderedChatItems[messageId];
+      }
+    });
+  };
+
   private readonly insertChatItem = (chatItem: ChatItem): void => {
+    this.removeEmptyCardsAndFollowups();
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
@@ -151,23 +160,15 @@ export class ChatWrapper {
       }
     });
 
-    if (chatItem.type === ChatItemType.ANSWER_STREAM) {
-      // End previous streaming card if there is
-      this.lastStreamingChatItemCard?.render.addClass('stream-ended');
+    // When a new card appears, we're cleaning the last streaming card vars, since it is not the last anymore
+    if (this.lastStreamingChatItemMessageId != null) {
+      this.endStreamWithMessageId(this.lastStreamingChatItemMessageId, {});
+    }
 
+    if (chatItem.type === ChatItemType.ANSWER_STREAM) {
       // Update the lastStreaming variables with the new one
       this.lastStreamingChatItemMessageId = currentMessageId;
       this.lastStreamingChatItemCard = chatItemCard;
-    } else if (
-      chatItem.type !== ChatItemType.ANSWER &&
-      chatItem.type !== ChatItemType.ANSWER_PART &&
-      chatItemHasContent(chatItem)) {
-      // If the new card is not a streaming one and it has any kind of content,
-      // it means that the last card is not a streaming card anymore.
-      // So end the previous stream and reset the lastStreaming variables
-      this.lastStreamingChatItemCard?.render.addClass('stream-ended');
-      this.lastStreamingChatItemCard = null;
-      this.lastStreamingChatItemMessageId = null;
     }
 
     // Add to render
@@ -196,7 +197,7 @@ export class ChatWrapper {
   };
 
   public updateLastChatAnswer = (updateWith: Partial<ChatItem>): void => {
-    if (this.lastStreamingChatItemCard !== null) {
+    if (this.lastStreamingChatItemCard != null) {
       this.lastStreamingChatItemCard.updateCardStack(updateWith);
       if (updateWith.messageId != null && updateWith.messageId !== '') {
         if (this.lastStreamingChatItemMessageId != null && this.lastStreamingChatItemMessageId !== updateWith.messageId) {
@@ -214,6 +215,10 @@ export class ChatWrapper {
 
       this.checkLastAnswerStreamChange(updateWith);
     }
+  };
+
+  public getLastStreamingMessageId = (): string | null => {
+    return this.lastStreamingChatItemMessageId;
   };
 
   public getChatItem = (messageId: string): {
