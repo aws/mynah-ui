@@ -7,7 +7,7 @@
 import { DomBuilder } from '../../helper/dom';
 import { MynahIcons } from '../icon';
 // ICONS
-import MYNAH from './icons/mynah.svg';
+import Q from './icons/q.svg';
 import MENU from './icons/menu.svg';
 import MINUS from './icons/minus.svg';
 import SEARCH from './icons/search.svg';
@@ -16,6 +16,8 @@ import PAPER_CLIP from './icons/paper-clip.svg';
 import LIST_ADD from './icons/list-add.svg';
 import TABS from './icons/tabs.svg';
 import PENCIL from './icons/pencil.svg';
+import FOLDER from './icons/folder.svg';
+import FILE from './icons/file.svg';
 import CHAT from './icons/chat.svg';
 import COMMENT from './icons/comment.svg';
 import LINK from './icons/link.svg';
@@ -25,6 +27,7 @@ import CANCEL from './icons/cancel.svg';
 import CANCEL_CIRCLE from './icons/cancel-circle.svg';
 import CALENDAR from './icons/calendar.svg';
 import MEGAPHONE from './icons/megaphone.svg';
+import MAGIC from './icons/magic.svg';
 import NOTIFICATION from './icons/notification.svg';
 import EYE from './icons/eye.svg';
 import ELLIPSIS from './icons/ellipsis.svg';
@@ -60,13 +63,15 @@ export class MynahUIIconImporter {
   private static instance: MynahUIIconImporter;
   private constructor () {
     const mynahIconMappings = {
-      MYNAH,
+      Q,
       MENU,
       MINUS,
       SEARCH,
       PLUS,
       PAPER_CLIP,
       LIST_ADD,
+      FOLDER,
+      FILE,
       TABS,
       PENCIL,
       CHAT,
@@ -78,6 +83,7 @@ export class MynahUIIconImporter {
       CALENDAR,
       COMMENT,
       MEGAPHONE,
+      MAGIC,
       NOTIFICATION,
       EYE,
       ELLIPSIS,
