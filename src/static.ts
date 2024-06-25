@@ -124,7 +124,7 @@ export enum MynahEventNames {
   LINK_CLICK = 'linkClick',
   CHAT_ITEM_ENGAGEMENT = 'chatItemEngagement',
   COPY_CODE_TO_CLIPBOARD = 'copyCodeToClipboard',
-  INSERT_CODE_TO_CURSOR_POSITION = 'insertCodeToCursorPosition',
+  CODE_BLOCK_ACTION = 'codeBlockAction',
   CHAT_PROMPT = 'chatPrompt',
   CHAT_ITEM_ADD = 'chatItemAdd',
   FOLLOW_UP_CLICKED = 'followUpClicked',
@@ -184,15 +184,9 @@ export interface TreeNodeDetails {
   description?: string;
 }
 
-export interface ChatItem {
-  type: ChatItemType;
+export interface ChatItemContent {
   body?: string;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
-  messageId?: string;
-  snapToTop?: boolean;
-  canBeVoted?: boolean;
-  codeInsertToCursorEnabled?: boolean;
-  codeCopyToClipboardEnabled?: boolean;
   followUp?: {
     text?: string;
     options?: ChatItemAction[];
@@ -210,10 +204,19 @@ export interface ChatItem {
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
   };
-  icon?: MynahIcons;
-  status?: 'info' | 'success' | 'warning' | 'error';
   buttons?: ChatItemButton[];
   formItems?: ChatItemFormItem[];
+  footer?: ChatItemContent;
+  codeBlockActions?: CodeBlockActions;
+}
+
+export interface ChatItem extends ChatItemContent{
+  type: ChatItemType;
+  messageId?: string;
+  snapToTop?: boolean;
+  canBeVoted?: boolean;
+  icon?: MynahIcons;
+  status?: 'info' | 'success' | 'warning' | 'error';
 }
 
 export interface ChatItemFormItem {
@@ -314,7 +317,7 @@ export interface ReferenceTrackerInformation {
 
 export type CodeSelectionType = 'selection' | 'block';
 export type OnCopiedToClipboardFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number) => void;
-export type OnInsertToCursorPositionFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number) => void;
+export type OnCodeBlockActionFunction = (actionId: string, data?: any, type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number) => void;
 
 export enum RelevancyVoteType {
   UP = 'upvote',
@@ -368,6 +371,16 @@ export enum NotificationType {
   ERROR = MynahIcons.ERROR,
 }
 
+export interface CodeBlockAction {
+  id: 'copy' | 'insert-to-cursor' | string;
+  label: string;
+  description?: string;
+  icon?: MynahIcons;
+  data?: any;
+  acceptedLanguages?: string[];
+}
+export type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAction | undefined | null>;
+
 export interface ConfigTexts {
   mainTitle: string;
   feedbackFormTitle: string;
@@ -420,6 +433,7 @@ export interface ConfigOptions {
   showPromptField: boolean;
   autoFocus: boolean;
   maxUserInput: number;
+  codeBlockActions?: CodeBlockActions;
   codeInsertToCursorEnabled?: boolean;
   codeCopyToClipboardEnabled?: boolean;
 }

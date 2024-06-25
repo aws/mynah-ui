@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { MynahIcons } from '../main';
 import { ComponentOverrides, ConfigModel, ConfigOptions, ConfigTexts } from '../static';
 
 interface ConfigFullModel extends ConfigOptions {
@@ -93,6 +94,26 @@ export class Config {
         ...configDefaults.componentClasses,
         ...config?.componentOverrides
       }
+    };
+    this.config.codeBlockActions = {
+      ...(this.config.codeCopyToClipboardEnabled !== false
+        ? {
+            copy: {
+              id: 'copy',
+              label: this.config.texts.copy,
+              icon: MynahIcons.COPY
+            }
+          }
+        : {}),
+      ...(this.config.codeInsertToCursorEnabled !== false
+        ? {
+            'insert-to-cursor': {
+              id: 'insert-to-cursor',
+              label: this.config.texts.insertAtCursorLabel,
+              icon: MynahIcons.CURSOR_INSERT
+            }
+          }
+        : {}),
     };
   }
 
