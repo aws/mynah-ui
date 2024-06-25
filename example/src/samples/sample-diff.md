@@ -1,7 +1,7 @@
-### Changes on `index.ts`
+### Refactoring process on `index.ts`
 
- 
-> _Between line 42 and 70_
+Changes will be applied _between line 42 and 70_.
+&nbsp;
 ```diff-typescript
 const mynahUI = new MynahUI({
     tabs: {

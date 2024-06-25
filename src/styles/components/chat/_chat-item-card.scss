@@ -37,13 +37,10 @@
         opacity: 1;
         transform: translate3d(0, 0, 0) scale(1, 1);
     }
-    &.mynah-chat-item-no-content {
-        display: none !important;
-    }
 
     &.mynah-chat-item-answer-stream {
         &.typewriter-animating {
-            @import "chat-items-bottom-animator";
+            @import 'chat-items-bottom-animator';
         }
     }
 
@@ -67,8 +64,9 @@
         min-width: 70%;
     }
     > .mynah-chat-item-card-icon-wrapper {
-        background-color: var(--mynah-color-alternate);
-        color: var(--mynah-color-alternate-reverse);
+        background-color: var(--mynah-card-bg);
+        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+        color: var(--mynah-color-text-default);
         padding: var(--mynah-sizing-2);
         border-radius: 100%;
     }
@@ -94,7 +92,7 @@
                 overflow: visible;
                 &:before {
                     position: absolute;
-                    content: "";
+                    content: '';
                     top: calc(-1 * var(--mynah-sizing-half));
                     left: calc(-1 * var(--mynah-sizing-half));
                     right: calc(-1 * var(--mynah-sizing-half));
@@ -140,7 +138,22 @@
                     font-weight: 400;
                 }
             }
-            padding-left: 0;
+            padding-left: calc(2 * var(--mynah-border-width));
+        }
+
+        > .mynah-chat-item-card-footer {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--mynah-sizing-3);
+            border-top: 1px solid var(--mynah-color-border-default);
+            > .mynah-ui-chat-item-small-card {
+                padding: 0;
+                margin: 0;
+                border: none;
+                flex: 0;
+            }
         }
     }
 
@@ -221,9 +234,9 @@
         &:not(.expanded) {
             > .mynah-chat-item-card-related-content-item {
                 $maxItems: 1;
-                $selector: "&";
+                $selector: '&';
                 @for $i from 1 through $maxItems {
-                    $selector: #{$selector} + ":not(:nth-of-type(" + #{$i} + "))";
+                    $selector: #{$selector} + ':not(:nth-of-type(' + #{$i} + '))';
                 }
                 #{$selector} {
                     display: none;
@@ -266,6 +279,9 @@
         align-self: flex-end;
         > .mynah-chat-item-card-icon-wrapper {
             align-self: flex-end;
+            margin-bottom: calc(-2* var(--mynah-sizing-1));
+            background-color: var(--mynah-card-bg-alternate);
+            color: var(--mynah-color-text-alternate);
         }
         .mynah-chat-item-followup-question,
         .mynah-chat-item-card-related-content {
@@ -298,7 +314,7 @@
         }
     }
 
-    &.mynah-chat-item-empty:empty {
+    &.mynah-chat-item-empty > .mynah-card:empty {
         display: none;
     }
     &.mynah-chat-item-answer-stream.mynah-chat-item-empty.stream-ended {
@@ -318,6 +334,10 @@
     &.mynah-chat-item-answer-stream {
         > .mynah-chat-item-card-icon-wrapper {
             align-self: flex-start;
+            margin-bottom: calc(-2* var(--mynah-sizing-1));
+            background-color: var(--mynah-card-bg);
+            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+            color: var(--mynah-color-text-default);
         }
         > .mynah-chat-item-card-related-content {
             > .mynah-chat-item-card-related-content-item > .mynah-card-compact {
@@ -326,6 +346,24 @@
                     opacity: 1;
                 }
             }
+        }
+    }
+
+    &.mynah-ui-chat-item-inline-card {
+        &.mynah-chat-item-card-has-icon {
+            > .mynah-card {
+                padding-left: var(--mynah-sizing-3);
+                > .mynah-chat-item-card-icon {
+                    left: 0;
+                }
+            }
+        }
+    }
+
+    &.mynah-ui-chat-item-small-card {
+        &,
+        & * {
+            font-size: var(--mynah-font-size-xsmall);
         }
     }
 }

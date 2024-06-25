@@ -56,9 +56,14 @@
       align-items: flex-start;
       gap: var(--mynah-sizing-half);
 
+      > .mynah-chat-item-tree-view-button {
+        gap: var(--mynah-sizing-1);
+      }
+
       .mynah-chat-item-tree-view-button-title {
         display: inline-flex;
         gap: var(--mynah-sizing-1);
+        align-items: center;
       }
 
       .mynah-chat-item-tree-view-button-weak-title {
@@ -237,6 +242,10 @@
         overflow: hidden;
         z-index: 10;
         flex-shrink: 0;
+
+        > i {
+          @include mynah-font($size: var(--mynah-font-size-xsmall))
+        }
 
         > span {
           text-overflow: ellipsis;

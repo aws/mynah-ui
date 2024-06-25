@@ -73,6 +73,7 @@ export class ChatItemTreeView {
         type: 'div',
         classNames: [ 'mynah-chat-item-tree-view-button-title' ],
         children: [
+          new Icon({ icon: MynahIcons.FOLDER }).render,
           {
             type: 'span',
             children: [ this.node.name ]

@@ -341,7 +341,7 @@ export const getTypewriterPartsCss = (
       .${typewriterId} .typewriter-part[index="${i}"] {
         visibility: visible !important;
         opacity: 1 !important;
-        margin-bottom: inherit;
+        margin-bottom: initial;
         animation: none;
       }
       `;

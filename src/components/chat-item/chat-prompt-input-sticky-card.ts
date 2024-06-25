@@ -20,6 +20,8 @@ export class ChatPromptInputStickyCard {
       } else {
         this.render.update({
           children: [ new ChatItemCard({
+            inline: true,
+            small: true,
             chatItem: {
               ...newChatItem,
               messageId: newChatItem.messageId ?? 'sticky-card',
@@ -38,6 +40,8 @@ export class ChatPromptInputStickyCard {
       children: initChatItemForStickyCard !== null
         ? [
             new ChatItemCard({
+              inline: true,
+              small: true,
               chatItem: {
                 ...initChatItemForStickyCard,
                 messageId: initChatItemForStickyCard.messageId ?? 'sticky-card',

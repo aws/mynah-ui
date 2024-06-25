@@ -8,7 +8,7 @@ import { MynahUIIconImporter } from './icon/icon-importer';
 import '../styles/components/_icon.scss';
 
 export enum MynahIcons {
-  MYNAH = 'mynah',
+  Q = 'q',
   MENU = 'menu',
   MINUS = 'minus',
   SEARCH = 'search',
@@ -18,6 +18,8 @@ export enum MynahIcons {
   TABS = 'tabs',
   CHAT = 'chat',
   LINK = 'link',
+  FOLDER = 'folder',
+  FILE = 'file',
   DOC = 'doc',
   EXTERNAL = 'external',
   CANCEL = 'cancel',
@@ -25,6 +27,7 @@ export enum MynahIcons {
   CALENDAR = 'calendar',
   COMMENT = 'comment',
   MEGAPHONE = 'megaphone',
+  MAGIC = 'magic',
   NOTIFICATION = 'notification',
   EYE = 'eye',
   ELLIPSIS = 'ellipsis',

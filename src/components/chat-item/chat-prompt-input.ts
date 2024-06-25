@@ -145,11 +145,13 @@ export class ChatPromptInput {
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (!this.quickPickOpen) {
+      const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+      const quickPickCommandItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[]) ?? [];
       if (e.key === KeyMap.BACKSPACE || e.key === KeyMap.DELETE) {
         if (this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
           cancelEvent(e);
           this.clearTextArea(true);
-        } else {
+        } else if (quickPickContextItems.length > 0) {
           // If we're trying to delete a context item, we should do it as a word, not just some letter inside the context.
           // Since those context are defined, it should match the whole term or it shouldn't be there at all.
           const targetWord = this.promptTextInput.getWordAndIndexOnCursorPos();
@@ -170,9 +172,10 @@ export class ChatPromptInput {
         (e.key === KeyMap.AT)
       ) {
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
-        this.quickPickItemGroups = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue(this.quickPickType === 'context' ? 'contextCommands' : 'quickActionCommands') as QuickActionCommandGroup[];
+        this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;
         this.quickPickTriggerIndex = this.quickPickType === 'context' ? this.promptTextInput.getCursorPos() : 1;
         this.textAfter = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex);
+        this.promptTextInput.setContextReplacement(this.quickPickItemGroups.length > 0);
 
         if (this.quickPickItemGroups.length > 0) {
           this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];

@@ -4,7 +4,7 @@
  */
 
 import { DomBuilderObject, ExtendedHTMLElement, getTypewriterPartsCss } from '../../helper/dom';
-import { CardRenderDetails, ChatItem, OnCopiedToClipboardFunction, OnInsertToCursorPositionFunction, ReferenceTrackerInformation } from '../../static';
+import { CardRenderDetails, ChatItem, CodeBlockActions, OnCodeBlockActionFunction, OnCopiedToClipboardFunction, ReferenceTrackerInformation } from '../../static';
 import { CardBody } from '../card/card-body';
 import { generateUID } from '../../helper/guid';
 
@@ -15,10 +15,11 @@ export interface ChatItemCardContentProps {
   classNames?: string[];
   codeReference?: ReferenceTrackerInformation[];
   onAnimationStateChange?: (isAnimating: boolean) => void;
-  contentEvents?: {
+  contentProperties?: {
+    codeBlockActions?: CodeBlockActions;
     onLinkClick?: (url: string, e: MouseEvent) => void;
     onCopiedToClipboard?: OnCopiedToClipboardFunction;
-    onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
+    onCodeBlockAction?: OnCodeBlockActionFunction;
   };
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
 }
@@ -48,7 +49,7 @@ export class ChatItemCardContent {
       classNames: [ this.typewriterId, ...(this.props.classNames ?? []) ],
       highlightRangeWithTooltip: this.props.codeReference,
       children: this.props.children,
-      ...this.props.contentEvents,
+      ...this.props.contentProperties,
     });
   };
 

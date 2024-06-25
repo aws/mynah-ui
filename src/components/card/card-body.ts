@@ -5,8 +5,9 @@
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import {
+  CodeBlockActions,
+  OnCodeBlockActionFunction,
   OnCopiedToClipboardFunction,
-  OnInsertToCursorPositionFunction,
   ReferenceTrackerInformation,
 } from '../../static';
 import { marked } from 'marked';
@@ -15,6 +16,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { generateUID } from '../../helper/guid';
 import '../../styles/components/card/_card.scss';
+import { Config } from '../../helper/config';
 
 const PREVIEW_DELAY = 500;
 
@@ -37,13 +39,14 @@ export interface CardBodyProps {
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   childLocation?: 'above-body' | 'below-body';
   highlightRangeWithTooltip?: ReferenceTrackerInformation[];
+  codeBlockActions?: CodeBlockActions;
   useParts?: boolean;
   codeBlockStartIndex?: number;
   processChildren?: boolean;
   classNames?: string[];
   onLinkClick?: (url: string, e: MouseEvent) => void;
   onCopiedToClipboard?: OnCopiedToClipboardFunction;
-  onInsertToCursorPosition?: OnInsertToCursorPositionFunction;
+  onCodeBlockAction?: OnCodeBlockActionFunction;
 }
 export class CardBody {
   render: ExtendedHTMLElement;
@@ -133,7 +136,12 @@ export class CardBody {
           codeStringWithMarkup: unescapeHTML(codeString),
           language: snippetLanguage?.trim() !== '' ? snippetLanguage : '',
           keepHighlights: true,
-          showCopyOptions: isBlockCode,
+          codeBlockActions: !isBlockCode
+            ? undefined
+            : {
+                ...Config.getInstance().config.codeBlockActions,
+                ...this.props.codeBlockActions
+              },
           block: isBlockCode,
           index: isBlockCode ? this.nextCodeBlockIndex : undefined,
           onCopiedToClipboard: this.props.onCopiedToClipboard != null
@@ -148,16 +156,16 @@ export class CardBody {
                 }
               }
             : undefined,
-          onInsertToCursorPosition: this.props.onInsertToCursorPosition != null
-            ? (type, text, codeBlockIndex) => {
-                if (this.props.onInsertToCursorPosition != null) {
-                  this.props.onInsertToCursorPosition(
-                    type,
-                    text,
-                    this.getReferenceTrackerInformationFromElement(highlighter),
-                    this.codeBlockStartIndex + (codeBlockIndex ?? 0),
-                    this.nextCodeBlockIndex);
-                }
+          onCodeBlockAction: this.props.onCodeBlockAction != null
+            ? (actionId, data, type, text, refTracker, codeBlockIndex) => {
+                this.props.onCodeBlockAction?.(
+                  actionId,
+                  data,
+                  type,
+                  text,
+                  this.getReferenceTrackerInformationFromElement(highlighter),
+                  this.codeBlockStartIndex + (codeBlockIndex ?? 0),
+                  this.nextCodeBlockIndex);
               }
             : undefined
         }).render;

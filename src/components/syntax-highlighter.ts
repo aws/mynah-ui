@@ -34,17 +34,18 @@ import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
 import 'prismjs/plugins/diff-highlight/prism-diff-highlight.min';
 
 import {
+  CodeBlockActions,
   CodeSelectionType,
+  OnCodeBlockActionFunction,
 } from '../static';
 import { Button } from './button';
-import { Notification } from './notification';
-import { Icon, MynahIcons } from './icon';
+import { Icon } from './icon';
 import { cancelEvent } from '../helper/events';
-import { Config } from '../helper/config';
 import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
 import '../styles/components/_syntax-highlighter.scss';
+import { copyToClipboard } from '../helper/chat-item';
 
 const IMPORTED_LANGS = [
   'markup',
@@ -125,10 +126,10 @@ export interface SyntaxHighlighterProps {
   showLineNumbers?: boolean;
   block?: boolean;
   startingLineNumber?: number;
-  showCopyOptions?: boolean;
   index?: number;
+  codeBlockActions?: CodeBlockActions;
   onCopiedToClipboard?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
-  onInsertToCursorPosition?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
+  onCodeBlockAction?: OnCodeBlockActionFunction;
 }
 
 export class SyntaxHighlighter {
@@ -138,42 +139,6 @@ export class SyntaxHighlighter {
 
   constructor (props: SyntaxHighlighterProps) {
     this.props = props;
-
-    if (props.showCopyOptions === true && this.props?.onInsertToCursorPosition != null) {
-      this.codeBlockButtons.push(new Button({
-        icon: new Icon({ icon: MynahIcons.CURSOR_INSERT }).render,
-        label: Config.getInstance().config.texts.insertAtCursorLabel,
-        attributes: { title: Config.getInstance().config.texts.insertAtCursorLabel },
-        primary: false,
-        onClick: e => {
-          cancelEvent(e);
-          const selectedCode = this.getSelectedCode();
-          if (this.props?.onInsertToCursorPosition !== undefined) {
-            this.props.onInsertToCursorPosition(
-              selectedCode.type,
-              selectedCode.code,
-              this.props?.index
-            );
-          }
-        },
-        additionalEvents: { mousedown: cancelEvent },
-      }).render);
-    }
-
-    if (props.showCopyOptions === true && this.props?.onCopiedToClipboard != null) {
-      this.codeBlockButtons.push(new Button({
-        icon: new Icon({ icon: MynahIcons.COPY }).render,
-        label: Config.getInstance().config.texts.copy,
-        attributes: { title: Config.getInstance().config.texts.copy },
-        primary: false,
-        onClick: e => {
-          cancelEvent(e);
-          const selectedCode = this.getSelectedCode();
-          this.copyToClipboard(selectedCode.code, selectedCode.type);
-        },
-        additionalEvents: { mousedown: cancelEvent },
-      }).render);
-    }
 
     let codeMarkup = unescapeHTML(props.codeStringWithMarkup);
     // Replacing the incoming markups with keyword matching static texts
@@ -210,7 +175,11 @@ export class SyntaxHighlighter {
         copy: (e) => {
           cancelEvent(e);
           const selectedCode = this.getSelectedCodeContextMenu();
-          if (selectedCode.code.length > 0) { this.copyToClipboard(selectedCode.code, selectedCode.type); }
+          if (selectedCode.code.length > 0) {
+            copyToClipboard(selectedCode.code, (): void => {
+              this.onCopiedToClipboard(selectedCode.code, selectedCode.type);
+            });
+          }
         }
       }
     });
@@ -223,6 +192,35 @@ export class SyntaxHighlighter {
         .replace(new RegExp(highlighters.end.textReplacement, 'g'), highlighters.end.markup)
         .replace(new RegExp(ellipsis.start.textReplacement, 'g'), ellipsis.start.markup)
         .replace(new RegExp(ellipsis.end.textReplacement, 'g'), ellipsis.end.markup);
+    }
+
+    if (props.codeBlockActions != null) {
+      Object.keys(props.codeBlockActions).forEach((actionId: string) => {
+        const validAction = props.codeBlockActions?.[actionId]?.acceptedLanguages == null || props.language == null || props.codeBlockActions?.[actionId]?.acceptedLanguages?.find(acceptedLang => props.language === acceptedLang) != null ? props.codeBlockActions?.[actionId] : undefined;
+        if (validAction != null) {
+          this.codeBlockButtons.push(new Button({
+            icon: validAction.icon != null ? new Icon({ icon: validAction.icon }).render : undefined,
+            label: validAction.label,
+            attributes: { title: validAction.description ?? '' },
+            primary: false,
+            onClick: e => {
+              cancelEvent(e);
+              const selectedCode = this.getSelectedCode();
+              if (this.props?.onCodeBlockAction !== undefined) {
+                this.props.onCodeBlockAction(
+                  validAction.id,
+                  validAction.data,
+                  selectedCode.type,
+                  selectedCode.code,
+                  undefined,
+                  this.props?.index
+                );
+              }
+            },
+            additionalEvents: { mousedown: cancelEvent },
+          }).render);
+        }
+      });
     }
 
     this.render = DomBuilder.getInstance().build({
@@ -243,29 +241,23 @@ export class SyntaxHighlighter {
                 })),
               }
             ]
-          : [])
-      ]
-    });
-
-    if (this.codeBlockButtons.length > 0) {
-      setTimeout(() => {
-        this.render.insertAdjacentElement('afterbegin', DomBuilder.getInstance().build({
+          : []),
+        {
           type: 'div',
           classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
           children: [
-            ...(props.language !== undefined
+            ...this.codeBlockButtons,
+            ...(this.codeBlockButtons.length > 0
               ? [ {
                   type: 'span',
                   classNames: [ 'mynah-syntax-highlighter-language' ],
-                  children: [ props.language ]
+                  children: [ props.language ?? 'text' ]
                 } ]
               : []),
-            ...this.codeBlockButtons
           ],
-        }));
-      }, 1);
-      // This delay is required for broken code block renderings in JetBrainds JCEF browser.
-    }
+        }
+      ]
+    });
   }
 
   private readonly getSelectedCodeContextMenu = (): {
@@ -284,31 +276,15 @@ export class SyntaxHighlighter {
     type: 'block'
   });
 
-  private readonly copyToClipboard = async (
+  private readonly onCopiedToClipboard = (
     textToSendClipboard: string,
-    type?: CodeSelectionType,
-    notificationText?: string,
-  ): Promise<void> => {
-    if (!document.hasFocus()) {
-      window.focus();
-    }
-    try {
-      await navigator.clipboard.writeText(textToSendClipboard);
-    } finally {
-      if (this.props?.onCopiedToClipboard != null) {
-        this.props?.onCopiedToClipboard(
-          type,
-          textToSendClipboard,
-          this.props.index
-        );
-      }
-      if (notificationText != null) {
-        new Notification({
-          content: notificationText,
-          title: Config.getInstance().config.texts.copyToClipboard,
-          duration: 2000,
-        }).notify();
-      }
+    type?: CodeSelectionType): void => {
+    if (this.props?.onCopiedToClipboard != null) {
+      this.props?.onCopiedToClipboard(
+        type,
+        textToSendClipboard,
+        this.props.index
+      );
     }
   };
 }
