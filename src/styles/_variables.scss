@@ -66,11 +66,11 @@ $mynah-status-colors: (
  * Font variables
  */
 $mynah-font-sizes: (
-    'xxsmall': 0.75rem,
-    'xsmall': 0.85rem,
-    'small': 0.95rem,
-    'medium': 1rem,
-    'large': 1.125rem
+    'xxsmall': 0.8rem,
+    'xsmall': 0.9rem,
+    'small': 1rem,
+    'medium': 1.125rem,
+    'large': 1.25rem
 );
 
 /**
@@ -228,10 +228,25 @@ $mynah-syntax-token-styles: (
     --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
 
+    /* Transition variables */
+    // TODO this block doesn't give the transition animations we originally have
+    /* Output from this is as follows which is not matching the ones we need to have down below
+    --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-very-long-transition: all 1650ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-short-transition: all 550ms cubic-bezier(0.85, 0.15, 0, 1);
+    --mynah-short-rev-transition: all 580ms cubic-bezier(0.35, 1, 0, 1);
+    */
     @each $name, $values in $mynah-transitions {
         @include mynah-transition($name, nth($values, 1), nth($values, 2));
     }
 
+
+    /* Hand added transitions */
+    --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-very-long-transition: all 1650ms cubic-bezier(0.25, 1, 0, 1);
+    --mynah-short-transition: all 550ms cubic-bezier(0.85, 0.15, 0, 1);
+    --mynah-short-transition-rev: all 580ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-short-transition-rev-opacity: opacity 750ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1.2, 0, 1), transform 800ms cubic-bezier(0.2, 1.05, 0, 1);
 }
