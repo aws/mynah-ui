@@ -197,7 +197,7 @@ export class SyntaxHighlighter {
 
     if (props.codeBlockActions != null) {
       Object.keys(props.codeBlockActions).forEach((actionId: string) => {
-        const validAction = props.codeBlockActions?.[actionId]?.acceptedLanguages == null || props.codeBlockActions?.[actionId]?.acceptedLanguages?.find(acceptedLang => props.language?.match(new RegExp(acceptedLang, 'gi'))) != null ? props.codeBlockActions?.[actionId] : undefined;
+        const validAction = props.codeBlockActions?.[actionId]?.acceptedLanguages == null || props.codeBlockActions?.[actionId]?.acceptedLanguages?.find(acceptedLang => props.language === acceptedLang) != null ? props.codeBlockActions?.[actionId] : undefined;
         if (validAction != null) {
           this.codeBlockButtons.push(new Button({
             icon: validAction.icon != null ? new Icon({ icon: validAction.icon }).render : undefined,
