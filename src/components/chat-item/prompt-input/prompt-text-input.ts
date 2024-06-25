@@ -8,6 +8,7 @@ import { MAX_USER_INPUT } from '../chat-prompt-input';
 export interface PromptTextInputProps {
   tabId: string;
   initMaxLength: number;
+  contextReplacement?: boolean;
   onKeydown: (e: KeyboardEvent) => void;
   onInput?: (e: KeyboardEvent) => void;
 }
@@ -44,6 +45,9 @@ export class PromptTextInput {
         ...(Config.getInstance().config.autoFocus ? { autofocus: 'autofocus' } : {})
       },
       events: {
+        scroll: () => {
+          this.promptTextInputSizer.scrollTop = this.promptTextInput.scrollTop;
+        },
         keypress: (e: KeyboardEvent) => {
           if (!this.keydownSupport) {
             this.props.onKeydown(e);
@@ -125,7 +129,15 @@ export class PromptTextInput {
     if (placeHolder?.text != null) {
       initProcessedValue = `${initProcessedValue.substring(0, placeHolder.index ?? initProcessedValue.length)} <span class="placeholder">${placeHolder.text}</span> ${initProcessedValue.substring((placeHolder.index ?? initProcessedValue.length) + 1)}`;
     }
-    this.promptTextInputSizer.innerHTML = `${initProcessedValue.replace(/\n/g, '<br>').replace(/@\S*/gi, (match) => `<span class="context">${match}</span>`)}&nbsp`;
+    let newVal = initProcessedValue.replace(/\n/g, ' <br>');
+    if (this.props.contextReplacement === true) {
+      newVal = `${newVal.replace(/@\S*/gi, (match) => `<span class="context">${match}</span>`)}&nbsp`;
+    }
+    this.promptTextInputSizer.innerHTML = newVal; ;
+  };
+
+  public readonly setContextReplacement = (contextReplacement: boolean): void => {
+    this.props.contextReplacement = contextReplacement;
   };
 
   public readonly getCursorPos = (): number => {
