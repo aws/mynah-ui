@@ -17,6 +17,7 @@ import sampleList3 from './sample-list-3.md';
 import sampleList4 from './sample-list-4.md';
 import SampleCode from './sample-code.md';
 import SampleDiff from './sample-diff.md';
+import SampleDiffApplied from './sample-diff-applied.md';
 import { Commands } from '../commands';
 
 export const mynahUIQRImageBase64 =
@@ -106,6 +107,7 @@ export const exampleStreamParts: Partial<ChatItem>[] = [
 
 export const exampleCodeBlockToInsert = SampleCode;
 export const exampleCodeDiff = SampleDiff;
+export const exampleCodeDiffApplied = SampleDiffApplied;
 
 export const exampleRichFollowups: ChatItem = {
     type: ChatItemType.SYSTEM_PROMPT,

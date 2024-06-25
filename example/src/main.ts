@@ -11,6 +11,7 @@ import {
   NotificationType,
   ChatItem,
   MynahIcons,
+  generateUID,
 } from '@aws/mynah-ui';
 import { mynahUIDefaults } from './config';
 import { Log, LogClear } from './logger';
@@ -28,6 +29,7 @@ import {
   exampleStreamParts,
   sampleMarkdownList,
   exampleCodeDiff,
+  exampleCodeDiffApplied,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -37,10 +39,16 @@ import { Commands } from './commands';
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   const connector = new Connector();
   let streamingMessageId: string | null;
+  let showChatAvatars: boolean = false;
 
   const mynahUI = new MynahUI({
     rootSelector: '#amzn-mynah-website-wrapper',
-    defaults: mynahUIDefaults,
+    defaults: {
+      store: {
+        ...(mynahUIDefaults.store),
+        showChatAvatars
+      }
+    },
     config: {
       maxTabs: 5,
       autoFocus: true,
@@ -54,6 +62,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           id: 'multi',
           icon: MynahIcons.ELLIPSIS,
           items: [
+            {
+              id: 'show-avatars',
+              text: 'Show/Hide avatars',
+              icon: MynahIcons.USER,
+            },
             {
               id: 'show-code-diff',
               text: 'Show code diff!',
@@ -75,6 +88,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           tabCloseConfirmationMessage: 'Only this tab has a different message than others!',
           ...mynahUIDefaults.store,
           ...initialData,
+          showChatAvatars
         },
       },
     },
@@ -86,10 +100,27 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       } else if (buttonId === 'show-code-diff') {
         mynahUI.addChatItem(tabId, {
           type: ChatItemType.ANSWER,
-          body: exampleCodeDiff
+          body: exampleCodeDiff,
+          codeBlockActions: {
+            'copy': undefined,
+            'accept-diff': {
+              id: 'accept-diff',
+              label: 'Accept Diff',
+              icon: MynahIcons.OK_CIRCLED,
+              data: {
+                updatedCode: exampleCodeDiffApplied
+              }
+            }
+          }
         });
+        mynahUI.addChatItem(tabId, defaultFollowUps);
       } else if (buttonId === 'insert-code') {
         mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert, 'code');
+      } else if (buttonId === 'show-avatars') {
+        showChatAvatars = !showChatAvatars;
+        Object.keys(mynahUI.getAllTabs()).forEach(tabIdFromStore=>mynahUI.updateStore(tabIdFromStore, {
+          showChatAvatars: showChatAvatars
+        }));
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
@@ -135,6 +166,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onCodeInsertToCursorPosition: (tabId, messageId, code, type, referenceTrackerInformation, eventId, codeBlockIndex, totalCodeBlocks) => {
       Log(`Code insert to position clicked on tab <b>${tabId}</b> inside message <b>${messageId}</b><br/>
         type: <b>${type ?? 'unknown'}</b><br/>
+        code: <b>${escapeHTML(code ?? '')}</b><br/>
+        referenceTracker: <b>${referenceTrackerInformation?.map(rt => rt.information).join('<br/>') ?? ''}</b><br/>
+        codeBlockIndex: <b>${(codeBlockIndex ?? 0) + 1}</b> of ${totalCodeBlocks}
+      `);
+    },
+    onCodeBlockActionClicked: (tabId, messageId, actionId, data, code, type, referenceTrackerInformation, eventId, codeBlockIndex, totalCodeBlocks) => {
+      Log(`Code action <b>${actionId}</b> clicked on tab <b>${tabId}</b> inside message <b>${messageId}</b><br/>
+        type: <b>${type ?? 'unknown'}</b><br/>
+        data: <b>${JSON.stringify(data ?? {})}</b><br/>
         code: <b>${escapeHTML(code ?? '')}</b><br/>
         referenceTracker: <b>${referenceTrackerInformation?.map(rt => rt.information).join('<br/>') ?? ''}</b><br/>
         codeBlockIndex: <b>${(codeBlockIndex ?? 0) + 1}</b> of ${totalCodeBlocks}
@@ -285,7 +325,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           getGenerativeAIAnswer(tabId, sampleMarkdownList);
           break;
         case Commands.CARD_SNAPS_TO_TOP:
-          getGenerativeAIAnswer(tabId, [...sampleMarkdownList.slice(0,-1), {body: sampleMarkdownList.slice(-1)[0].body, snapToTop: true}]);
+          mynahUI.addChatItem(tabId, {
+            type: ChatItemType.ANSWER,
+            messageId: generateUID(),
+            body: sampleMarkdownList.slice(-1)[0].body, 
+            snapToTop: true
+          });
+          mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.PROGRESSIVE_CARD:
           getGenerativeAIAnswer(tabId, exampleProgressCards);
@@ -478,7 +524,22 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             loadingChat: false,
             promptInputDisabledState: false,
           });
-          const cardDetails = mynahUI.endMessageStream(tabId, messageId) as Record<string, any>;
+          const cardDetails = mynahUI.endMessageStream(tabId, messageId, {
+            footer: {
+              fileList: {
+                rootFolderTitle: undefined,
+                fileTreeTitle: '',
+                filePaths: ['./src/index.ts'],
+                details: {
+                  './src/index.ts': {
+                    icon: MynahIcons.FILE,
+                    description: `Files used for this response: **index.ts**
+Use \`@\` to mention a file, folder, or method.`
+                  }
+                }
+              }
+            }
+          }) as Record<string, any>;
           Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails).map(key=>`${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
