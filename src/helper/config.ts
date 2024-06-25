@@ -114,6 +114,7 @@ export class Config {
             }
           }
         : {}),
+      ...config?.codeBlockActions
     };
   }
 
