@@ -40,7 +40,6 @@ export class PromptTextAttachment {
                 children: [ new SyntaxHighlighter({
                   block: true,
                   codeStringWithMarkup: this.props.content,
-                  showCopyOptions: false,
                 }).render ]
               }),
         }).render,
@@ -79,7 +78,6 @@ export class PromptTextAttachment {
                     children: [ new SyntaxHighlighter({
                       block: true,
                       codeStringWithMarkup: this.props.content,
-                      showCopyOptions: false,
                     }).render ]
                   }),
             }).render,
