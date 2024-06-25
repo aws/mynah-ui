@@ -37,6 +37,7 @@ import { marked } from 'marked';
 import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
+import { copyToClipboard } from './helper/chat-item';
 
 export { generateUID } from './helper/guid';
 export {
@@ -140,6 +141,20 @@ export interface MynahUIProps {
     tabId: string,
     messageId: string,
     engagement: Engagement) => void;
+  onCodeBlockActionClicked?: (
+    tabId: string,
+    messageId: string,
+    actionId: string,
+    data?: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId?: string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number,) => void;
+  /**
+   * @deprecated since version 4.14.0. It will be only used for keyboard, context menu copy actions, not for button actions after version 5.x.x. Use {@link onCodeBlockActionClicked} instead
+   */
   onCopyCodeToClipboard?: (
     tabId: string,
     messageId: string,
@@ -148,7 +163,11 @@ export interface MynahUIProps {
     referenceTrackerInformation?: ReferenceTrackerInformation[],
     eventId?: string,
     codeBlockIndex?: number,
-    totalCodeBlocks?: number) => void;
+    totalCodeBlocks?: number,
+    data?: any) => void;
+  /**
+   * @deprecated since version 4.14.0. Will be dropped after version 5.x.x. Use {@link onCodeBlockActionClicked} instead
+   */
   onCodeInsertToCursorPosition?: (
     tabId: string,
     messageId: string,
@@ -157,7 +176,8 @@ export interface MynahUIProps {
     referenceTrackerInformation?: ReferenceTrackerInformation[],
     eventId?: string,
     codeBlockIndex?: number,
-    totalCodeBlocks?: number) => void;
+    totalCodeBlocks?: number,
+    data?: any) => void;
   onSourceLinkClick?: (
     tabId: string,
     messageId: string,
@@ -404,9 +424,10 @@ export class MynahUI {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.COPY_CODE_TO_CLIPBOARD, (data) => {
-      if (this.props.onCopyCodeToClipboard !== undefined) {
-        this.props.onCopyCodeToClipboard(
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CODE_BLOCK_ACTION, (data) => {
+      // TODO needs to be deprecated and followed through onCodeBlockActionClicked
+      if (data.actionId === 'insert-to-cursor') {
+        this.props.onCodeInsertToCursorPosition?.(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
           data.text,
@@ -417,11 +438,39 @@ export class MynahUI {
           data.totalCodeBlocks,
         );
       }
+      // TODO needs to be deprecated and followed through onCodeBlockActionClicked
+      if (data.actionId === 'copy') {
+        copyToClipboard(data.text, (): void => {
+          this.props.onCopyCodeToClipboard?.(
+            MynahUITabsStore.getInstance().getSelectedTabId(),
+            data.messageId,
+            data.text,
+            data.type,
+            data.referenceTrackerInformation,
+            this.getUserEventId(),
+            data.codeBlockIndex,
+            data.totalCodeBlocks,
+          );
+        });
+      }
+
+      this.props.onCodeBlockActionClicked?.(
+        MynahUITabsStore.getInstance().getSelectedTabId(),
+        data.messageId,
+        data.actionId,
+        data.data,
+        data.text,
+        data.type,
+        data.referenceTrackerInformation,
+        this.getUserEventId(),
+        data.codeBlockIndex,
+        data.totalCodeBlocks,
+      );
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INSERT_CODE_TO_CURSOR_POSITION, (data) => {
-      if (this.props.onCodeInsertToCursorPosition !== undefined) {
-        this.props.onCodeInsertToCursorPosition(
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.COPY_CODE_TO_CLIPBOARD, (data) => {
+      if (this.props.onCopyCodeToClipboard !== undefined) {
+        this.props.onCopyCodeToClipboard(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
           data.text,
@@ -539,7 +588,7 @@ export class MynahUI {
   /**
    * Adds a new item to the chat window
    * @param tabId Corresponding tab ID.
-   * @param answer An ChatItem object.
+   * @param answer ChatItem object.
    */
   public addChatItem = (tabId: string, chatItem: ChatItem): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
@@ -559,8 +608,18 @@ export class MynahUI {
    * @param updateWith ChatItem object to update with.
    */
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
-    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
+    if (MynahUITabsStore.getInstance().getTab(tabId) != null) {
+      if (this.chatWrappers[tabId].getLastStreamingMessageId() != null) {
+        this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
+      } else {
+        // Dumb eliminator: We're assuming consumer shouldn't try to update last chat item if it is not a streaming one
+        // However, to be on the safe side, if there is no streaming card available, we're adding one.
+        this.addChatItem(tabId, {
+          type: ChatItemType.ANSWER_STREAM,
+          body: ''
+        });
+        this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
+      }
     }
   };
 
