@@ -26,7 +26,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
     border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     position: relative;
     border-radius: var(--mynah-input-radius);
-    line-height: normal;
+    line-height: var(--mynah-syntax-code-line-height);
     color: var(--mynah-color-text-default);
     &:before,
     & > .line-numbers-rows:before {
@@ -43,6 +43,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
     }
     > .mynah-syntax-highlighter-copy-buttons {
         display: flex;
+        flex-flow: row-reverse nowrap;
         align-items: center;
         justify-content: flex-end;
         padding: var(--mynah-sizing-half);

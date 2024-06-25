@@ -19,30 +19,21 @@ describe('syntax-highlighter', () => {
       codeStringWithMarkup: 'alert("hello");\n',
       language: 'js',
       keepHighlights: true,
-      showCopyOptions: true,
-      onCopiedToClipboard: () => {},
-      onInsertToCursorPosition: () => {},
-      block: true,
-    });
-    setTimeout(() => {
-      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(2);
-      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Insert at cursor');
-      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.title).toBe('Copy');
-    }, 100);
-  });
-
-  it('should NOT show related button if its event is not connected even when showCopyButtons true', () => {
-    const testSyntaxHighlighter = new SyntaxHighlighter({
-      codeStringWithMarkup: 'alert("hello");\n',
-      language: 'js',
-      keepHighlights: true,
-      showCopyOptions: true,
+      codeBlockActions: {
+        copy: {
+          id: 'copy',
+          label: 'Copy'
+        },
+        'insert-at-cursor': {
+          id: 'insert-at-cursor',
+          label: 'Insert at cursor'
+        },
+      },
       onCopiedToClipboard: () => {},
       block: true,
     });
-    setTimeout(() => {
-      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(1);
-      expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Copy');
-    }, 100);
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(2);
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.title).toBe('Insert at cursor');
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.title).toBe('Copy');
   });
 });
