@@ -58,6 +58,17 @@ export interface MynahUIProps {
     tabId: string,
     messageId: string,
     engagement: Engagement) => void;
+  onCodeBlockActionClicked?: (
+    tabId: string,
+    messageId: string,
+    actionId: string,
+    data?: string,
+    code?: string,
+    type?: CodeSelectionType,
+    referenceTrackerInformation?: ReferenceTrackerInformation[],
+    eventId?: string,
+    codeBlockIndex?: number,
+    totalCodeBlocks?: number,) => void;
   onCopyCodeToClipboard?: (
     tabId: string,
     messageId: string,
@@ -66,7 +77,8 @@ export interface MynahUIProps {
     referenceTrackerInformation?: ReferenceTrackerInformation[],
     eventId?: string,
     codeBlockIndex?: number,
-    totalCodeBlocks?: number) => void;
+    totalCodeBlocks?: number,
+    data?: string,) => void;
   onCodeInsertToCursorPosition?: (
     tabId: string,
     messageId: string,
@@ -75,7 +87,8 @@ export interface MynahUIProps {
     referenceTrackerInformation?: ReferenceTrackerInformation[],
     eventId?: string,
     codeBlockIndex?: number,
-    totalCodeBlocks?: number) => void;
+    totalCodeBlocks?: number,
+    data?: string,) => void;
   onSourceLinkClick?: (
     tabId: string,
     messageId: string,
@@ -550,6 +563,45 @@ onChatItemEngagement?: (
       selected text: ${engagement.selectionDistanceTraveled?.selectedText}
       `);
     };
+...
+```
+---
+
+### `onCodeBlockActionClicked`
+
+This event will be fired when user clicks one of the buttons from custom added `codeBlockActions` button on the footer of a code block. It will pass `tabId`, `actionId`, `data`, `messageId`, `code` for the copied code to theclipboard as a text, `type` for the type of the code copied (block or selection) and the `referenceTrackerInformation` if the copied code block contains some code reference as the arguments. Finally after the `eventId` attribute, you can get the index of the code block inside that message with `codeBlockIndex` together with total number of code blocks again inside that message with `totalCodeBlocks`.
+
+**Note:** even though the `referenceTrackerInformation` comes to the message with `codeReference` attribute with the index position depending on the whole content of the body of the message, the return of it as an attribute from this event gives the indexes according to position inside that code block.
+
+_Please refer to the [data model](./DATAMODEL.md#codeblockactions) to learn more about the `codeBlockActions`._
+_Please refer to the [data model](./DATAMODEL.md#codereference) to learn more about the `ReferenceTrackerInformation` object type._
+
+
+<p align="center">
+  <img src="./img/data-model/chatItems/codeBlockActions.png" alt="onCodeBlockActionClicked" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onCodeBlockActionClicked: (
+  tabId, 
+  messageId, 
+  actionId, 
+  data, 
+  code, 
+  type, 
+  referenceTrackerInformation, 
+  eventId, 
+  codeBlockIndex, 
+  totalCodeBlocks) => {
+    Log(`Code action <b>${actionId}</b> clicked on tab <b>${tabId}</b> inside message <b>${messageId}</b><br/>
+      type: <b>${type ?? 'unknown'}</b><br/>
+      data: <b>${JSON.stringify(data ?? {})}</b><br/>
+      code: <b>${escapeHTML(code ?? '')}</b><br/>
+      referenceTracker: <b>${referenceTrackerInformation?.map(rt => rt.information).join('<br/>') ?? ''}</b><br/>
+      codeBlockIndex: <b>${(codeBlockIndex ?? 0) + 1}</b> of ${totalCodeBlocks}
+    `);
+},
 ...
 ```
 ---
