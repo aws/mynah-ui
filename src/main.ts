@@ -612,7 +612,7 @@ export class MynahUI {
       if (this.chatWrappers[tabId].getLastStreamingMessageId() != null) {
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
       } else {
-        // Dumb eliminator: We're assuming consumer shouldn't try to update last chat item if it is not a streaming one
+        // We're assuming consumer shouldn't try to update last chat item if it is not a streaming one
         // However, to be on the safe side, if there is no streaming card available, we're adding one.
         this.addChatItem(tabId, {
           type: ChatItemType.ANSWER_STREAM,
