@@ -63,6 +63,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           icon: MynahIcons.ELLIPSIS,
           items: [
             {
+              id: 'custom-data-check',
+              text: 'Custom check',
+              icon: MynahIcons.MAGIC,
+            },
+            {
               id: 'show-avatars',
               text: 'Show/Hide avatars',
               icon: MynahIcons.USER,
@@ -91,6 +96,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           showChatAvatars
         },
       },
+    },
+    onFocusStateChanged: (focusState:boolean) => {
+      Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
     },
     onTabBarButtonClick: (tabId: string, buttonId: string) => {
       if (buttonId === 'clear') {
@@ -122,6 +130,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         Object.keys(mynahUI.getAllTabs()).forEach(tabIdFromStore=>mynahUI.updateStore(tabIdFromStore, {
           showChatAvatars: showChatAvatars
         }));
+      } else if (buttonId === 'custom-data-check') {
+        // Use for custom temporary checks
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
@@ -490,7 +500,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         {
           id: 'save-comment',
           text: 'Send',
-          status: 'info',
+          status: 'primary',
           waitMandatoryFormItems: true,
         },
         {

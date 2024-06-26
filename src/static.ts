@@ -118,6 +118,7 @@ export interface MynahUITabStoreModel {
 export enum MynahEventNames {
   RESET_STORE = 'resetStore',
   FEEDBACK_SET = 'feedbackSet',
+  ROOT_FOCUS = 'rootFocusStateChange',
   CARD_VOTE = 'cardVote',
   SOURCE_LINK_CLICK = 'sourceLinkClick',
   INFO_LINK_CLICK = 'infoLinkClick',
@@ -244,7 +245,7 @@ export interface ChatItemAction extends ChatPrompt {
   pillText: string;
   disabled?: boolean;
   description?: string;
-  status?: 'info' | 'success' | 'warning' | 'error';
+  status?: 'primary' | 'info' | 'success' | 'warning' | 'error';
   icon?: MynahIcons;
 }
 export interface ChatItemButton {
@@ -254,7 +255,7 @@ export interface ChatItemButton {
   id: string;
   disabled?: boolean;
   description?: string;
-  status?: 'info' | 'success' | 'warning' | 'error';
+  status?: 'primary' | 'info' | 'success' | 'warning' | 'error';
   icon?: MynahIcons;
 }
 

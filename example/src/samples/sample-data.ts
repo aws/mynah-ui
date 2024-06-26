@@ -356,7 +356,7 @@ _To send the form, mandatory items should be filled._`,
         {
             id: 'submit',
             text: 'Submit',
-            status: 'info',
+            status: 'primary',
         },
         {
             id: 'cancel-feedback',

@@ -34,7 +34,8 @@ export class ChatItemButtonsWrapper {
         const actionItem = new Button({
           label: chatActionAction.text,
           icon: chatActionAction.icon != null ? new Icon({ icon: chatActionAction.icon }).render : undefined,
-          primary: chatActionAction.status !== undefined,
+          primary: chatActionAction.status === 'primary',
+          classNames: chatActionAction.status !== undefined ? [ `status-${chatActionAction.status}` ] : [],
           onClick: (e) => {
             if (props.formItems !== null) {
               props.formItems.disableAll();

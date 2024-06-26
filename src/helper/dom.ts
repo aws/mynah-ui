@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MynahPortalNames } from '../static';
+import { MynahEventNames, MynahPortalNames } from '../static';
+import { MynahUIGlobalEvents } from './events';
 import { AllowedTagsInCustomRenderer, AllowedAttributesInCustomRenderer } from './sanitize';
 
 /* eslint-disable @typescript-eslint/method-signature-style */
@@ -72,13 +73,42 @@ export interface ExtendedHTMLElement extends HTMLInputElement {
 
 export class DomBuilder {
   private static instance: DomBuilder;
+  private rootFocus: boolean;
   root: ExtendedHTMLElement;
   private portals: Record<string, ExtendedHTMLElement> = {};
 
   private constructor (rootSelector: string) {
     this.root = DS(rootSelector)[0] as ExtendedHTMLElement;
     this.extendDomFunctionality(this.root);
+    this.rootFocus = this.root.matches(':focus') ?? false;
+    this.attachRootFocusListeners();
   }
+
+  private readonly attachRootFocusListeners = (): void => {
+    this.root?.setAttribute('tabindex', '0');
+    this.root?.setAttribute('autofocus', 'true');
+    this.root?.style.setProperty('outline', 'none');
+    this.root?.addEventListener('focusin', this.onRootFocus, { capture: true });
+    window.addEventListener('blur', this.onRootBlur);
+  };
+
+  private readonly onRootFocus = (e: FocusEvent): void => {
+    if (!this.rootFocus) {
+      this.rootFocus = true;
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ROOT_FOCUS, { focusState: this.rootFocus });
+    }
+  };
+
+  private readonly onRootBlur = (e: FocusEvent): void => {
+    if (this.rootFocus) {
+      this.rootFocus = false;
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ROOT_FOCUS, { focusState: this.rootFocus });
+    }
+  };
+
+  public readonly setFocusToRoot = (): void => {
+    this.root?.focus();
+  };
 
   public static getInstance (rootSelector?: string): DomBuilder {
     if (!DomBuilder.instance) {
@@ -91,14 +121,17 @@ export class DomBuilder {
   }
 
   setRoot = (rootSelector?: string): void => {
+    this.root.removeEventListener('focus', this.onRootFocus);
+    window.removeEventListener('blur', this.onRootBlur);
     this.root = this.extendDomFunctionality((DS(rootSelector ?? 'body')[0] ?? document.body) as HTMLElement);
+    this.attachRootFocusListeners();
   };
 
   addClass = function (this: ExtendedHTMLElement, className: string): ExtendedHTMLElement {
     if (className !== '') {
       this.classList.add(className);
       // eslint-disable-next-line @typescript-eslint/prefer-includes
-      if (this.builderObject.classNames?.indexOf(className) === -1) {
+      if (this.builderObject?.classNames?.indexOf(className) === -1) {
         this.builderObject.classNames = [ ...this.builderObject.classNames, className ];
       }
     }

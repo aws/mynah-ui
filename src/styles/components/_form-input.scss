@@ -1,3 +1,4 @@
+@import '../variables';
 .mynah-form-input-wrapper {
     position: relative;
     display: flex;
@@ -117,7 +118,7 @@
                         }
                         &::after {
                             $edgeSpace: calc(0 * var(--mynah-border-width));
-                            content: "";
+                            content: '';
                             transition: inherit;
                             position: absolute;
                             top: $edgeSpace;
@@ -193,4 +194,14 @@
     padding-bottom: var(--mynah-sizing-1);
     justify-content: flex-end;
     align-items: center;
+
+    > .mynah-button.mynah-button-secondary {
+        border: var(--mynah-border-width) solid currentColor !important;
+        @each $status in $mynah-statuses {
+            &.status-#{$status} {
+                color: var(--mynah-color-status-#{$status});
+                border-color: var(--mynah-color-status-#{$status});
+            }
+        }
+    }
 }

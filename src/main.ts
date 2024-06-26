@@ -94,6 +94,7 @@ export interface MynahUIProps {
     messageId: string,
     eventId?: string) => void;
   onReady?: () => void;
+  onFocusStateChanged?: (focusState: boolean) => void;
   onVote?: (
     tabId: string,
     messageId: string,
@@ -532,6 +533,10 @@ export class MynahUI {
       if (this.props.onResetStore !== undefined) {
         this.props.onResetStore(data.tabId);
       }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_FOCUS, (data: {focusState: boolean}) => {
+      this.props.onFocusStateChanged?.(data.focusState);
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_CLICK, (data) => {
