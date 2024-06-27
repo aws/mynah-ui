@@ -28,9 +28,6 @@
         transform-origin: center center;
         z-index: -1;
     }
-    > .mynah-bottom-block-close-button {
-        transform: translate3d(calc(-1 * var(--mynah-sizing-1)), calc(-100% - var(--mynah-sizing-3)), 0px);
-    }
     & + #mynah-wrapper {
         transition: var(--mynah-bottom-panel-transition);
     }
