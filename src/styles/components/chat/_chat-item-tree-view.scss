@@ -2,6 +2,7 @@
   margin: 0;
   margin-block-end: 0 !important;
   margin-block-start: 0 !important;
+  padding: var(--mynah-sizing-half);
 
   > .mynah-chat-item-tree-view-wrapper-container {
     background-color: var(--mynah-card-bg);
@@ -41,7 +42,7 @@
     }
 
     > .mynah-chat-item-tree-view {
-      padding: var(--mynah-sizing-2);
+      padding: var(--mynah-sizing-1);
     }
 
     .mynah-chat-item-tree-view {
@@ -54,7 +55,6 @@
       flex-flow: column nowrap;
       justify-content: flex-start;
       align-items: flex-start;
-      gap: var(--mynah-sizing-half);
 
       > .mynah-chat-item-tree-view-button {
         gap: var(--mynah-sizing-1);
@@ -76,7 +76,7 @@
       }
 
       .mynah-chat-item-tree-view {
-        padding-left: var(--mynah-sizing-4);
+        padding-left: var(--mynah-sizing-5);
       }
     }
 
@@ -89,20 +89,13 @@
       overflow: hidden;
       cursor: pointer;
       width: calc(100% - var(--mynah-sizing-4));
-      padding: calc(3 * var(--mynah-sizing-half));
+      padding: calc(3* var(--mynah-sizing-half));
       position: relative;
       box-sizing: content-box;
-      border-radius: var(--mynah-input-radius);
-      &:after{
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: all;
-        z-index: 100;
-      }
+      min-height: auto;
+      height: auto;
+      margin: 0;
+
       > .mynah-chat-item-tree-view-file-item-actions {
         z-index: 150;
       }
@@ -112,28 +105,22 @@
           pointer-events: none;
         }
       }
-
-      &:hover {
-        background-color: var(--mynah-color-light);
+      &:before {
+        content: '';
+        position: absolute;
+        z-index: 0;
+        opacity: 0.1;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        border-radius: inherit;
+        z-index: 100;
+        pointer-events: all;
       }
 
       &-status {
-        &-info,
-        &-success,
-        &-warning,
-        &-error {
-          &:before {
-            content: '';
-            position: absolute;
-            z-index: 0;
-            opacity: 0.1;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            top: 0;
-            border-radius: inherit;
-          }
-        }
+        
 
         &-info {
           &:before {
@@ -209,6 +196,9 @@
           width: auto;
           height: auto;
           min-width: auto;
+          padding: var(--mynah-sizing-half);
+          border-radius: var(--mynah-button-radius);
+          margin: 0;
 
           &.info {
             color: var(--mynah-color-status-info);
@@ -244,7 +234,7 @@
         flex-shrink: 0;
 
         > i {
-          @include mynah-font($size: var(--mynah-font-size-xsmall))
+          opacity: 0.75;
         }
 
         > span {
@@ -283,7 +273,7 @@
       padding: var(--mynah-sizing-2);
       box-sizing: border-box;
       width: 100%;
-      border-radius: 0;
+      border-radius: inherit;
     }
   }
 }
