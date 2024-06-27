@@ -1,3 +1,4 @@
+import escapeHTML from 'escape-html';
 import { Config } from '../../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
 import { MynahUIGlobalEvents } from '../../../helper/events';
@@ -133,7 +134,7 @@ export class PromptTextInput {
     if (this.props.contextReplacement === true) {
       newVal = `${newVal.replace(/@\S*/gi, (match) => `<span class="context">${match}</span>`)}&nbsp`;
     }
-    this.promptTextInputSizer.innerHTML = newVal; ;
+    this.promptTextInputSizer.innerHTML = escapeHTML(newVal);
   };
 
   public readonly setContextReplacement = (contextReplacement: boolean): void => {
