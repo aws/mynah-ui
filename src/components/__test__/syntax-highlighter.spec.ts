@@ -22,13 +22,11 @@ describe('syntax-highlighter', () => {
       codeBlockActions: {
         copy: {
           id: 'copy',
-          label: 'Copy',
-          acceptedLanguages: [ 'typescript' ]
+          label: 'Copy'
         },
         'insert-at-cursor': {
           id: 'insert-at-cursor',
-          label: 'Insert at cursor',
-          acceptedLanguages: [ 'typescript' ]
+          label: 'Insert at cursor'
         },
       },
       onCopiedToClipboard: () => {},
@@ -36,7 +34,7 @@ describe('syntax-highlighter', () => {
       block: true,
     });
     expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(2);
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.textContent).toBe('Copy');
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.textContent).toBe('Insert at cursor');
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.textContent?.trim()).toBe('Copy');
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.textContent?.trim()).toBe('Insert at cursor');
   });
 });

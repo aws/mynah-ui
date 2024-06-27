@@ -8,10 +8,11 @@ describe('button', () => {
       onClick: mockOnClickHandler,
     });
 
-    expect(testButton.render.textContent).toBe('Test button');
+    expect(testButton.render).toBeDefined();
+    expect(testButton.render.querySelector('span')?.textContent?.trim()).toBe('Test button');
 
     testButton.updateLabel('Updated label');
-    expect(testButton.render.textContent).toBe('Updated label');
+    expect(testButton.render.textContent?.trim()).toBe('Updated label');
   });
 
   it('attributes', () => {
@@ -66,7 +67,7 @@ describe('button', () => {
       },
       onClick: mockOnClickHandler,
       additionalEvents: {
-        mouseover: mockMouseOverHandler,
+        mouseenter: mockMouseOverHandler,
       }
     });
 
@@ -75,7 +76,7 @@ describe('button', () => {
     testButtonElement?.click();
     expect(mockOnClickHandler).toHaveBeenCalledTimes(1);
 
-    testButtonElement.dispatchEvent(new Event('mouseover'));
+    testButtonElement.dispatchEvent(new Event('mouseenter'));
     expect(mockMouseOverHandler).toHaveBeenCalledTimes(1);
   });
 });

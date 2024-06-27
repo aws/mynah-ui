@@ -4,7 +4,7 @@
  */
 
 import { marked } from 'marked';
-import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Card } from './card/card';
 import { CardBody } from './card/card-body';
@@ -93,15 +93,22 @@ class ButtonInternal extends ButtonAbstract {
       },
       children: [
         ...(props.icon !== undefined ? [ props.icon ] : []),
-        ...(props.label !== undefined
-          ? typeof props.label !== 'string'
-            ? [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ typeof props.label === 'string' ? marked(props.label) as string : props.label ] } ]
-            : [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: marked(escapeHTML(props.label)) as string } ]
-          : []),
+        ...(this.getButtonLabelDomBuilderObject(props.label)),
         ...(props.children ?? []),
       ],
     });
   }
+
+  private readonly getButtonLabelDomBuilderObject = (label?: HTMLElement | ExtendedHTMLElement | string): DomBuilderObject[] => {
+    if (label !== undefined) {
+      if (typeof label !== 'string') {
+        return [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ typeof label === 'string' ? marked(label) as string : label ] } ];
+      } else {
+        return [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: marked(escapeHTML(label)) as string } ];
+      }
+    }
+    return [];
+  };
 
   private readonly showTooltip = (content: string): void => {
     if (content.trim() !== undefined) {
@@ -141,7 +148,7 @@ class ButtonInternal extends ButtonAbstract {
 
   public readonly updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
     (this.render.querySelector('.mynah-button-label') as ExtendedHTMLElement).replaceWith(
-      DomBuilder.getInstance().build({ type: 'span', classNames: [ 'mynah-button-label' ], children: [ label ] })
+      DomBuilder.getInstance().build(this.getButtonLabelDomBuilderObject(label)[0])
     );
   };
 
