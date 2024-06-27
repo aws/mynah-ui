@@ -11,6 +11,7 @@ export interface MynahUIProps {
     messageId: string,
     eventId?: string) => void;
   onReady?: () => void;
+  onFocusStateChanged?: (focusState: boolean) => void;
   onVote?: (
     tabId: string,
     messageId: string,
@@ -293,6 +294,20 @@ This event will be fired when the UI is initialized and rendered without any arg
 ...
 onReady: () => {
       console.log('UI is ready');
+    };
+...
+```
+
+---
+
+### `onFocusStateChanged`
+
+This event will be fired whenever user targets to MynahUI or wents away.
+
+```typescript
+...
+onFocusStateChanged: (focusState: boolean) => {
+      console.log(`MynahUI is ${focusState ? 'focused' : 'not focused'}.`);
     };
 ...
 ```
