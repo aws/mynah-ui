@@ -5,8 +5,8 @@
   align-items: center;
   overflow: hidden;
   z-index: 100;
-  min-height: var(--mynah-sizing-10);
-  max-height: var(--mynah-sizing-10);
+  min-height: var(--mynah-sizing-9);
+  max-height: var(--mynah-sizing-9);
   position: relative;
   &:after {
     content: '';
@@ -34,6 +34,9 @@
   &.mynah-nav-tabs-loading,
   &.mynah-nav-tabs-loading * {
     pointer-events: none;
+  }
+  .mynah-button{
+    margin: var(--mynah-sizing-half);
   }
 }
 
