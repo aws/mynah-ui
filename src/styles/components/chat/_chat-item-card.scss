@@ -111,6 +111,7 @@
             }
         }
         > .mynah-card-body {
+            padding: calc(2 * var(--mynah-border-width));
             & > div {
                 > .mynah-syntax-highlighter {
                     filter: contrast(1.15) brightness(0.85);
@@ -138,7 +139,6 @@
                     font-weight: 400;
                 }
             }
-            padding-left: calc(2 * var(--mynah-border-width));
         }
 
         > .mynah-chat-item-card-footer {
@@ -171,43 +171,11 @@
             display: inline-flex;
             flex-flow: row wrap;
             max-width: 100%;
-            gap: var(--mynah-sizing-2);
-        }
-    }
-
-    .mynah-chat-item-followup-question-option {
-        padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
-        color: var(--mynah-color-text-default);
-        border: var(--mynah-border-width) solid currentColor;
-        border-radius: var(--mynah-button-radius);
-        cursor: pointer;
-        font-size: var(--mynah-font-size-xsmall);
-        max-width: 100%;
-        overflow: hidden;
-        display: inline-flex;
-        gap: var(--mynah-sizing-2);
-        align-items: center;
-        user-select: none;
-        line-height: var(--mynah-line-height);
-        > span {
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-        * {
-            pointer-events: none;
-        }
-        &-disabled {
-            opacity: 0.25 !important;
-            cursor: default !important;
-        }
-        &:not(:hover) {
-            opacity: 0.75;
-        }
-        &-status {
-            @each $status in $mynah-statuses {
-                &-#{$status} {
-                    color: var(--mynah-color-status-#{$status});
+            gap: var(--mynah-sizing-1);
+            > .mynah-chat-item-followup-question-option {
+                color: var(--mynah-color-text-default);
+                &:not(:hover) {
+                    opacity: 0.75;
                 }
             }
         }
@@ -279,7 +247,7 @@
         align-self: flex-end;
         > .mynah-chat-item-card-icon-wrapper {
             align-self: flex-end;
-            margin-bottom: calc(-2* var(--mynah-sizing-1));
+            margin-bottom: calc(-2 * var(--mynah-sizing-1));
             background-color: var(--mynah-card-bg-alternate);
             color: var(--mynah-color-text-alternate);
         }
@@ -334,7 +302,7 @@
     &.mynah-chat-item-answer-stream {
         > .mynah-chat-item-card-icon-wrapper {
             align-self: flex-start;
-            margin-bottom: calc(-2* var(--mynah-sizing-1));
+            margin-bottom: calc(-2 * var(--mynah-sizing-1));
             background-color: var(--mynah-card-bg);
             border: var(--mynah-border-width) solid var(--mynah-color-border-default);
             color: var(--mynah-color-text-default);
