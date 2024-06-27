@@ -10,8 +10,10 @@ import { Card } from './card/card';
 import { CardBody } from './card/card-body';
 import { Config } from '../helper/config';
 import '../styles/components/_button.scss';
+import { cancelEvent } from '../helper/events';
+import escapeHTML from 'escape-html';
 
-const PREVIEW_DELAY = 350;
+const TOOLTIP_DELAY = 350;
 export interface ButtonProps {
   classNames?: string[];
   attributes?: Record<string, string>;
@@ -21,7 +23,10 @@ export interface ButtonProps {
   tooltipVerticalDirection?: OverlayVerticalDirection;
   tooltipHorizontalDirection?: OverlayHorizontalDirection;
   children?: Array<HTMLElement | ExtendedHTMLElement | string>;
+  disabled?: boolean;
   primary?: boolean;
+  border?: boolean;
+  status?: 'primary' | 'info' | 'success' | 'warning' | 'error';
   additionalEvents?: Record<string, (event?: any) => any>;
   onClick: (e: Event) => void;
 }
@@ -32,55 +37,85 @@ export abstract class ButtonAbstract {
 
   setEnabled = (enabled: boolean): void => {
   };
+
+  hideTooltip = (): void => {
+  };
 }
 
 class ButtonInternal extends ButtonAbstract {
   render: ExtendedHTMLElement;
-  private buttonTooltip: Overlay | null;
-  private buttonTooltipTimeout: ReturnType<typeof setTimeout>;
+  private readonly props: ButtonProps;
+  private tooltipOverlay: Overlay | null;
+  private tooltipTimeout: ReturnType<typeof setTimeout>;
   constructor (props: ButtonProps) {
     super();
+    this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'button',
       classNames: [
         'mynah-button',
         ...(props.primary === false ? [ 'mynah-button-secondary' ] : []),
+        ...(props.border === true ? [ 'mynah-button-border' ] : []),
+        ...(props.status != null ? [ `status-${props.status}` ] : []),
         ...(props.classNames !== undefined ? props.classNames : []),
       ],
-      attributes: { ...props.attributes },
+      attributes: {
+        ...(props.disabled === true ? { disabled: 'disabled' } : {}),
+        tabindex: '0',
+        ...props.attributes,
+      },
       events: {
         ...props.additionalEvents,
-        click: props.onClick,
-        ...(props.tooltip != null
-          ? {
-              mouseover: (e) => {
-                const tooltipText = marked(props.tooltip ?? '', { breaks: true }) as string;
-                this.showButtonTooltip(tooltipText, props.tooltipVerticalDirection, props.tooltipHorizontalDirection);
-              },
-              mouseleave: this.hideButtonTooltip
+        click: (e) => {
+          this.hideTooltip();
+          props.onClick(e);
+        },
+        mouseover: (e) => {
+          cancelEvent(e);
+          const textContentSpan: HTMLSpanElement | null = this.render.querySelector('.mynah-button-label');
+          let tooltipText;
+          if (props.label != null && typeof props.label === 'string' && textContentSpan != null && textContentSpan.offsetWidth < textContentSpan.scrollWidth) {
+            tooltipText = marked(props.label ?? '', { breaks: true }) as string;
+          }
+          if (props.tooltip !== undefined) {
+            if (tooltipText != null) {
+              tooltipText += '\n\n';
+            } else {
+              tooltipText = '';
             }
-          : {})
+            tooltipText += marked(props.tooltip ?? '', { breaks: true }) as string;
+          }
+          if (tooltipText != null) {
+            this.showTooltip(tooltipText);
+          }
+        },
+        mouseleave: this.hideTooltip
       },
       children: [
         ...(props.icon !== undefined ? [ props.icon ] : []),
-        ...(props.label !== undefined ? [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ props.label ] } ] : []),
+        ...(props.label !== undefined
+          ? typeof props.label !== 'string'
+            ? [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ typeof props.label === 'string' ? marked(props.label) as string : props.label ] } ]
+            : [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: marked(escapeHTML(props.label)) as string } ]
+          : []),
         ...(props.children ?? []),
       ],
     });
   }
 
-  private readonly showButtonTooltip = (content: string, vDir?: OverlayVerticalDirection, hDir?: OverlayHorizontalDirection): void => {
+  private readonly showTooltip = (content: string): void => {
     if (content.trim() !== undefined) {
-      clearTimeout(this.buttonTooltipTimeout);
-      this.buttonTooltipTimeout = setTimeout(() => {
-        this.buttonTooltip = new Overlay({
+      clearTimeout(this.tooltipTimeout);
+      this.tooltipTimeout = setTimeout(() => {
+        const elm: HTMLElement = this.render;
+        this.tooltipOverlay = new Overlay({
           background: true,
           closeOnOutsideClick: false,
-          referenceElement: this.render,
+          referenceElement: elm,
           dimOutside: false,
           removeOtherOverlays: true,
-          verticalDirection: vDir ?? OverlayVerticalDirection.TO_TOP,
-          horizontalDirection: hDir ?? OverlayHorizontalDirection.CENTER,
+          verticalDirection: this.props.tooltipVerticalDirection ?? OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: this.props.tooltipHorizontalDirection ?? OverlayHorizontalDirection.START_TO_RIGHT,
           children: [
             new Card({
               border: false,
@@ -92,25 +127,25 @@ class ButtonInternal extends ButtonAbstract {
             }).render
           ],
         });
-      }, PREVIEW_DELAY);
+      }, TOOLTIP_DELAY);
     }
   };
 
-  public readonly hideButtonTooltip = (): void => {
-    clearTimeout(this.buttonTooltipTimeout);
-    if (this.buttonTooltip !== null) {
-      this.buttonTooltip?.close();
-      this.buttonTooltip = null;
+  public readonly hideTooltip = (): void => {
+    clearTimeout(this.tooltipTimeout);
+    if (this.tooltipOverlay !== null) {
+      this.tooltipOverlay?.close();
+      this.tooltipOverlay = null;
     }
   };
 
-  updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
+  public readonly updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
     (this.render.querySelector('.mynah-button-label') as ExtendedHTMLElement).replaceWith(
       DomBuilder.getInstance().build({ type: 'span', classNames: [ 'mynah-button-label' ], children: [ label ] })
     );
   };
 
-  setEnabled = (enabled: boolean): void => {
+  public readonly setEnabled = (enabled: boolean): void => {
     if (enabled) {
       this.render.removeAttribute('disabled');
     } else {
@@ -131,5 +166,8 @@ export class Button extends ButtonAbstract {
   };
 
   setEnabled = (enabled: boolean): void => {
+  };
+
+  hideTooltip = (): void => {
   };
 }
