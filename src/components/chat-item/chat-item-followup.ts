@@ -6,26 +6,34 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { ChatItem, MynahEventNames } from '../../static';
-import { ChatItemFollowUpOption } from './chat-item-followup-option';
+import { Button } from '../button';
+import { Icon } from '../icon';
 
 export interface ChatItemFollowUpProps {tabId: string; chatItem: ChatItem}
 export class ChatItemFollowUpContainer {
   private readonly props: ChatItemFollowUpProps;
   render: ExtendedHTMLElement;
   private readonly itemAddListenerId: string;
-  private followupOptions: ChatItemFollowUpOption[];
+  private followupOptions: Button[];
   constructor (props: ChatItemFollowUpProps) {
     this.props = props;
     this.props.chatItem = props.chatItem;
     this.followupOptions = (this.props.chatItem.followUp?.options ?? []).map(followUpOption => (
-      new ChatItemFollowUpOption({
-        followUpOption,
-        onClick: (clickedFollowUpOption) => {
+      new Button({
+        classNames: [ 'mynah-chat-item-followup-question-option' ],
+        status: followUpOption.status,
+        label: followUpOption.pillText,
+        tooltip: followUpOption.description,
+        disabled: followUpOption.disabled,
+        border: true,
+        primary: false,
+        ...(followUpOption.icon != null ? { icon: new Icon({ icon: followUpOption.icon }).render } : {}),
+        onClick: () => {
           MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FOLLOW_UP_CLICKED, {
             tabId: this.props.tabId,
             messageId: this.props.chatItem.messageId,
-            followUpOption: clickedFollowUpOption
+            followUpOption
           });
           if ((this.render.parentElement as ExtendedHTMLElement)?.hasClass('mynah-chat-item-empty')) {
             this.render.parentElement?.remove();
@@ -38,7 +46,7 @@ export class ChatItemFollowUpContainer {
     this.itemAddListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_ITEM_ADD, (data) => {
       if (data.tabId === this.props.tabId) {
         this.render.remove();
-        this.followupOptions.forEach(option => option.hideCroppedFollowupText());
+        this.followupOptions.forEach(option => option.hideTooltip());
         this.followupOptions = [];
         MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.CHAT_ITEM_ADD, this.itemAddListenerId);
       }

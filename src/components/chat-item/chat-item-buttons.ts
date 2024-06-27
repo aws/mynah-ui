@@ -7,7 +7,6 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItemButton } from '../../static';
 import { Button } from '../button';
 import { Icon } from '../icon';
-import { ChatItemFollowUpOption } from './chat-item-followup-option';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 
 export interface ChatItemButtonsWrapperProps {
@@ -21,7 +20,7 @@ export class ChatItemButtonsWrapper {
   private readonly props: ChatItemButtonsWrapperProps;
   private readonly actions: Record<string, {
     data: ChatItemButton;
-    element: ChatItemFollowUpOption | Button;
+    element: Button;
   }> = {};
 
   render: ExtendedHTMLElement;
@@ -35,7 +34,8 @@ export class ChatItemButtonsWrapper {
           label: chatActionAction.text,
           icon: chatActionAction.icon != null ? new Icon({ icon: chatActionAction.icon }).render : undefined,
           primary: chatActionAction.status === 'primary',
-          classNames: chatActionAction.status !== undefined ? [ `status-${chatActionAction.status}` ] : [],
+          border: chatActionAction.status !== 'primary',
+          status: chatActionAction.status,
           onClick: (e) => {
             if (props.formItems !== null) {
               props.formItems.disableAll();
