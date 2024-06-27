@@ -11,7 +11,7 @@ import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
 import { PromptAttachment } from './prompt-input/prompt-attachment';
-import { SendButton } from './prompt-input/send-button';
+import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
 
@@ -29,7 +29,7 @@ export class ChatPromptInput {
   private readonly promptTextInput: PromptTextInput;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly remainingCharsIndicator: ExtendedHTMLElement;
-  private readonly sendButton: SendButton;
+  private readonly sendButton: PromptInputSendButton;
   private readonly promptAttachment: PromptAttachment;
   private quickPickTriggerIndex: number;
   private quickPickType: 'quick-action' | 'context';
@@ -59,7 +59,7 @@ export class ChatPromptInput {
       classNames: [ 'mynah-chat-prompt-chars-indicator' ],
       innerHTML: `${MAX_USER_INPUT() - this.promptTextInput.getTextInputValue().length}/${MAX_USER_INPUT()}`
     });
-    this.sendButton = new SendButton({
+    this.sendButton = new PromptInputSendButton({
       tabId: this.props.tabId,
       onClick: () => {
         this.sendPrompt();
@@ -91,7 +91,13 @@ export class ChatPromptInput {
               children: [
                 this.promptTextInputCommand.render,
                 this.promptTextInput.render,
-                this.sendButton.render,
+                {
+                  type: 'div',
+                  classNames: [ 'mynah-chat-prompt-button-wrapper' ],
+                  children: [
+                    this.sendButton.render,
+                  ]
+                },
               ]
             },
             this.attachmentWrapper
@@ -131,8 +137,6 @@ export class ChatPromptInput {
       // Update the limit on prompt text given the selected code
       this.updateAvailableCharactersIndicator();
     });
-
-    this.promptTextInput.focus();
   }
 
   private readonly updateAvailableCharactersIndicator = (): void => {
