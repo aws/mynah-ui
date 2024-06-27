@@ -8,7 +8,7 @@ export interface SendButtonProps {
   onClick: () => void;
 }
 
-export class SendButton {
+export class PromptInputSendButton {
   render: ExtendedHTMLElement;
   private readonly props: SendButtonProps;
   constructor (props: SendButtonProps) {
@@ -17,13 +17,15 @@ export class SendButton {
     const initialDisabledState = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputDisabledState') as boolean;
 
     this.render = new Button({
-      classNames: [ 'mynah-icon-button', 'mynah-chat-prompt-button' ],
+      classNames: [ 'mynah-chat-prompt-button' ],
       attributes: {
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),
-        tabindex: '5'
+        tabindex: '0'
       },
       icon: new Icon({ icon: MynahIcons.ENVELOPE_SEND }).render,
       primary: false,
+      border: false,
+      status: 'info',
       onClick: () => {
         this.props.onClick();
       },

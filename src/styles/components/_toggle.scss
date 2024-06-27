@@ -41,7 +41,7 @@
                 pointer-events: all;
                 position: relative;
                 z-index: 100;
-                padding: 0 var(--mynah-sizing-3) 0 var(--mynah-sizing-5);
+                padding: 0 var(--mynah-sizing-1) 0 var(--mynah-sizing-5);
                 height: 100%;
                 box-sizing: border-box;
                 display: inline-flex;
@@ -66,9 +66,13 @@
                     display: block;
                 }
                 > .mynah-toggle-close-button {
-                    margin-left: var(--mynah-sizing-3);
-                    font-size: var(--mynah-font-size-xsmall);
-                    min-width: 1em;
+                    margin-left: var(--mynah-sizing-4);
+                    $closeBtnSize: var(--mynah-sizing-5); 
+                    min-width: $closeBtnSize;
+                    max-width: $closeBtnSize;
+                    min-height: $closeBtnSize;
+                    max-height: $closeBtnSize;
+                    padding: 0;
                 }
             }
             &:checked + .mynah-toggle-option-label {

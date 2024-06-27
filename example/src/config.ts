@@ -3,7 +3,7 @@ import {
 } from '@aws/mynah-ui';
 import { defaultFollowUps } from './samples/sample-data';
 import { Commands } from './commands';
-import { QuickActionCommandGroup } from '../../dist/static';
+import { MynahUITabStoreTab, QuickActionCommandGroup } from '../../dist/static';
 export const WelcomeMessage = `Hi, this is \`MynahUI\` and it is a **data and event driven** web based chat interface library and it is independent from any framework like react or vue etc. 
 In this example web app which uses mynah-ui as its renderer, we're simulating its capabilities with some static content with an IDE look&feel. 
 
@@ -101,9 +101,9 @@ export const QuickActionCommands:QuickActionCommandGroup[] = [
       },
     ],
   },
-] as QuickActionCommandGroup[];
+];
 
-export const mynahUIDefaults = {
+export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
   store: {
     tabTitle: 'Chat',
     cancelButtonWhenLoading: true,
@@ -119,7 +119,7 @@ export const mynahUIDefaults = {
     quickActionCommands: QuickActionCommands,
     contextCommands: [
       {
-        groupName: 'Metion code',
+        groupName: 'Mention code',
         commands:[
           {
             command: '@ws',
@@ -146,7 +146,7 @@ export const mynahUIDefaults = {
           }
         ]
       }
-    ] as QuickActionCommandGroup[],
+    ],
     promptInputPlaceholder: 'Type something or "/" for quick action commands or @ for choosing context',
   }
 };

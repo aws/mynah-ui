@@ -269,7 +269,7 @@ const mynahUI = new MynahUI({
 mynahUI.updateStore('tab-1', {
     contextCommands: [
       {
-        groupName: 'Metion code',
+        groupName: 'Mention code',
         commands:[
           {
             command: '@ws',
@@ -2134,7 +2134,7 @@ mynahUI.notify({
 ---
 
 ## ChatPrompt
-This is the object model which will be send along with the `onChatPrompt` event.
+This is the object model which will be sent along with the `onChatPrompt` event.
 
 ```typescript
 export interface ChatPrompt {

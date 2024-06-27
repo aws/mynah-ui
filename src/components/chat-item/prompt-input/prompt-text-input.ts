@@ -37,7 +37,7 @@ export class PromptTextInput {
       classNames: [ 'mynah-chat-prompt-input' ],
       attributes: {
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),
-        tabindex: '1',
+        tabindex: '0',
         rows: '1',
         maxlength: MAX_USER_INPUT().toString(),
         type: 'text',
@@ -115,6 +115,8 @@ export class PromptTextInput {
         this.promptTextInput.focus();
       }
     });
+
+    this.clear();
   }
 
   private readonly updatePromptTextInputSizer = (placeHolder?: {
@@ -126,15 +128,18 @@ export class PromptTextInput {
     } else {
       this.render.addClass('no-text');
     }
-    let initProcessedValue = this.promptTextInput.value;
+    let visualisationValue = escapeHTML(this.promptTextInput.value);
     if (placeHolder?.text != null) {
-      initProcessedValue = `${initProcessedValue.substring(0, placeHolder.index ?? initProcessedValue.length)} <span class="placeholder">${placeHolder.text}</span> ${initProcessedValue.substring((placeHolder.index ?? initProcessedValue.length) + 1)}`;
+      const placeHolderIndex = escapeHTML(this.promptTextInput.value.substring(0, placeHolder.index ?? visualisationValue.length)).length;
+      visualisationValue = `${visualisationValue.substring(0, placeHolderIndex)} <span class="placeholder">${placeHolder.text}</span> ${visualisationValue.substring(placeHolderIndex + 1)}`;
     }
-    let newVal = initProcessedValue.replace(/\n/g, ' <br>');
     if (this.props.contextReplacement === true) {
-      newVal = `${newVal.replace(/@\S*/gi, (match) => `<span class="context">${match}</span>`)}&nbsp`;
+      visualisationValue = `${visualisationValue.replace(/@\S*/gi, (match) => `<span class="context">${match}</span>`)}&nbsp`;
     }
-    this.promptTextInputSizer.innerHTML = escapeHTML(newVal);
+    // HTML br element, which gives a new line, will not work without a content if it is placed at the end of the parent node
+    // If it doesn't take effect, first new line step won't work with shift+enter
+    // We're adding a space to make the br take effect.
+    this.promptTextInputSizer.innerHTML = `${visualisationValue}&nbsp<br/>`;
   };
 
   public readonly setContextReplacement = (contextReplacement: boolean): void => {
@@ -147,30 +152,28 @@ export class PromptTextInput {
 
   public readonly getWordAndIndexOnCursorPos = (): { wordStartIndex: number; word: string } => {
     const currentValue = this.promptTextInput.value;
-    const cursorPos = this.getCursorPos();
-    let prevSpaceIndex = -1;
-    let nextSpaceIndex = currentValue.indexOf(' ', cursorPos);
-
-    // We're not splitting the text value by spaces to get the words and check all of them
-    // Reason behind that is performance concerns.
+    // We're not splitting the text value by spaces to get the words
+    // Reason behind that is the new line character can also be a word separator and additionally performance concerns.
     // We know that we're looking for a word, and we only need the word for the given index if it is inside a word
+    const cursorPos = this.getCursorPos();
+    let prevWordEndIndex = -1;
+    const nextNewLineIndex = currentValue.indexOf('\n', cursorPos);
+    const nextSpaceIndex = currentValue.indexOf(' ', cursorPos);
 
-    // Find previous space chararacter
+    // Either the first space or new line which separates the word
+    const nextNewWordIndex = Math.min(nextSpaceIndex !== -1 ? nextSpaceIndex : currentValue.length, nextNewLineIndex !== -1 ? nextNewLineIndex : currentValue.length);
+
+    // Find previous word separator chararacter
     for (let i = cursorPos - 1; i >= 0; i--) {
-      if (currentValue[i] === ' ') {
-        prevSpaceIndex = i;
+      if (currentValue[i] === ' ' || currentValue[i] === '\n') {
+        prevWordEndIndex = i;
         break;
       }
     }
 
-    // Find next space character
-    if (nextSpaceIndex === -1) {
-      nextSpaceIndex = currentValue.length;
-    }
-
     return {
-      wordStartIndex: prevSpaceIndex + 1,
-      word: currentValue.substring(prevSpaceIndex + 1, nextSpaceIndex)
+      wordStartIndex: prevWordEndIndex + 1,
+      word: currentValue.substring(prevWordEndIndex + 1, nextNewWordIndex)
     };
   };
 

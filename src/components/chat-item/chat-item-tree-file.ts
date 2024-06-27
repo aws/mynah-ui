@@ -30,6 +30,7 @@ export class ChatItemTreeFile {
       type: 'div',
       classNames: [
         'mynah-chat-item-tree-view-file-item',
+        'mynah-button', 'mynah-button-secondary',
         props.details?.status !== undefined ? `mynah-chat-item-tree-view-file-item-status-${props.details?.status}` : '',
       ],
       events: {

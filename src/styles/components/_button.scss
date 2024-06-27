@@ -1,4 +1,5 @@
-button.mynah-button {
+@import '../variables';
+.mynah-button {
     border: none;
     min-width: var(--mynah-sizing-8);
     height: var(--mynah-sizing-8);
@@ -17,7 +18,7 @@ button.mynah-button {
     transform: translate3d(0, 0, 0) scale(1.00001);
     padding-left: var(--mynah-sizing-2);
     padding-right: var(--mynah-sizing-2);
-    gap: var(--mynah-sizing-2);
+    gap: var(--mynah-sizing-1);
     filter: brightness(0.925);
     opacity: 1;
     line-height: var(--mynah-line-height);
@@ -26,24 +27,18 @@ button.mynah-button {
     &:after {
         content: '';
         pointer-events: none;
-        transition: var(--mynah-text-flow-transition);
+        transition: var(--mynah-very-short-transition);
         opacity: 0;
         position: absolute;
         top: 0;
         left: 0;
-        width: 125%;
+        width: 100%;
         height: 100%;
-        filter: brightness(1.65) saturate(0.65);
+        filter: brightness(1.35) saturate(0.75);
         opacity: 0;
+        border-radius: inherit;
         background-color: currentColor;
-        transform: translate3d(-100%, 0, 0);
-    }
-    &.mynah-bottom-block-close-button {
-        position: absolute;
-        align-self: flex-end;
-        transform: translate3d(var(--mynah-sizing-2), calc(-100% - var(--mynah-sizing-6)), 0px);
-        background-color: var(--mynah-card-bg);
-        color: var(--mynah-color-text-default);
+        transform: translate3d(-7%, 0, 0) scale(0.93);
     }
     &[disabled='disabled'] {
         opacity: 0.25 !important;
@@ -53,7 +48,15 @@ button.mynah-button {
         background-color: rgba(0, 0, 0, 0);
         color: currentColor;
         box-sizing: border-box;
-        border: var(--mynah-border-width) solid rgba(0,0,0,0);
+        &.mynah-button-border {
+            border: var(--mynah-border-width) solid currentColor !important;
+        }
+        @each $status in $mynah-statuses {
+            &.status-#{$status} {
+                color: var(--mynah-color-status-#{$status}) !important;
+            }
+        }
+        box-shadow: none;
     }
     &:active,
     &:focus-visible,
@@ -61,7 +64,7 @@ button.mynah-button {
         filter: brightness(1);
         &:after {
             transform: translate3d(0%, 0, 0);
-            opacity: 0.2;
+            opacity: 0.15;
         }
     }
     &.mynah-icon-button {
@@ -71,8 +74,6 @@ button.mynah-button {
     }
     > span {
         white-space: nowrap;
-        font-size: var(--mynah-font-size-medium);
-        max-width: 35vw;
         transition: var(--mynah-very-long-transition);
         overflow: hidden;
         box-sizing: border-box;
