@@ -26,7 +26,7 @@ describe('feedback form', () => {
     });
 
     const submitButtonElement = testFeedbackForm.feedbackFormContainer.querySelectorAll('button')[2];
-    expect(submitButtonElement.textContent?.trim()).toBe('Submit');
+    expect(submitButtonElement.textContent).toBe('Submit');
     submitButtonElement.click();
     expect(spyDispatch).toHaveBeenCalledTimes(2);
     expect(spyDispatch).toHaveBeenNthCalledWith(1, MynahEventNames.SHOW_FEEDBACK_FORM, {
@@ -60,7 +60,7 @@ describe('feedback form', () => {
     });
 
     const cancelButtonElement = testFeedbackForm.feedbackFormContainer.querySelectorAll('button')[1];
-    expect(cancelButtonElement.textContent?.trim()).toBe('Cancel');
+    expect(cancelButtonElement.textContent).toBe('Cancel');
     cancelButtonElement.click();
     expect(spyDispatch).toHaveBeenCalledTimes(1);
     expect(spyDispatch).toHaveBeenNthCalledWith(1, MynahEventNames.SHOW_FEEDBACK_FORM, {

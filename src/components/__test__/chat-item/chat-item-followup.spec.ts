@@ -22,11 +22,11 @@ describe('chat-item-followup', () => {
     });
     expect(testFollowupContainer.render.children[0].textContent).toBe('Test follow up title');
     expect(testFollowupContainer.render.children[0].classList.contains('mynah-chat-item-followup-question-text')).toBeTruthy();
-    expect(testFollowupContainer.render.children[1].children[0].textContent?.trim()).toBe('Test follow up question 1');
+    expect(testFollowupContainer.render.children[1].children[0].textContent).toBe('Test follow up question 1');
     expect(testFollowupContainer.render.children[1].children[0].classList.contains('mynah-chat-item-followup-question-option')).toBeTruthy();
-    expect(testFollowupContainer.render.children[1].children[1].textContent?.trim()).toBe('Test follow up question 2');
+    expect(testFollowupContainer.render.children[1].children[1].textContent).toBe('Test follow up question 2');
     expect(testFollowupContainer.render.children[1].children[1].classList.contains('mynah-chat-item-followup-question-option')).toBeTruthy();
-    expect(testFollowupContainer.render.children[1].children[2].textContent?.trim()).toBe('Test follow up question 3');
+    expect(testFollowupContainer.render.children[1].children[2].textContent).toBe('Test follow up question 3');
     expect(testFollowupContainer.render.children[1].children[2].classList.contains('mynah-chat-item-followup-question-option')).toBeTruthy();
   });
 });

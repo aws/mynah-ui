@@ -102,9 +102,9 @@ class ButtonInternal extends ButtonAbstract {
   private readonly getButtonLabelDomBuilderObject = (label?: HTMLElement | ExtendedHTMLElement | string): DomBuilderObject[] => {
     if (label !== undefined) {
       if (typeof label !== 'string') {
-        return [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ typeof label === 'string' ? marked(label) as string : label ] } ];
+        return [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ label ] } ];
       } else {
-        return [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: marked(escapeHTML(label)) as string } ];
+        return [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: marked.parseInline(escapeHTML(label)) as string } ];
       }
     }
     return [];

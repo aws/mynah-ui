@@ -9,10 +9,10 @@ describe('button', () => {
     });
 
     expect(testButton.render).toBeDefined();
-    expect(testButton.render.querySelector('span')?.textContent?.trim()).toBe('Test button');
+    expect(testButton.render.querySelector('span')?.textContent).toBe('Test button');
 
     testButton.updateLabel('Updated label');
-    expect(testButton.render.textContent?.trim()).toBe('Updated label');
+    expect(testButton.render.textContent).toBe('Updated label');
   });
 
   it('attributes', () => {

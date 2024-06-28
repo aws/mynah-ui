@@ -34,7 +34,7 @@ describe('syntax-highlighter', () => {
       block: true,
     });
     expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(2);
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.textContent?.trim()).toBe('Copy');
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.textContent?.trim()).toBe('Insert at cursor');
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.textContent).toBe('Copy');
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.textContent).toBe('Insert at cursor');
   });
 });
