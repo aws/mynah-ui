@@ -417,7 +417,7 @@ export class ChatPromptInput {
       const attachmentContent: string | undefined = this.promptAttachment?.lastAttachmentContent;
       const promptText = currentInputValue + (attachmentContent ?? '');
       const context: string[] = [];
-      const escapedPrompt = escapeHTML(promptText.replace(/@\S*/gi, (match) => {
+      const escapedPrompt = escapeHTML(promptText.replace(/^\s+/gm, '').replace(/@\S*/gi, (match) => {
         if (!context.includes(match)) {
           context.push(match);
         }
