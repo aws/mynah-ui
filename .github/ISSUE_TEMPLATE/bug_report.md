@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Help us improve AWS Toolkit by reporting a bug
+about: Help us improve MynahUI by reporting a bug
 labels: bug
 ---
 
@@ -18,6 +18,10 @@ labels: bug
 
 ## System details (run the `AWS: About Toolkit` command)
 
--   OS:
--   Visual Studio Code version:
--   AWS Toolkit version:
+- OS:
+- Tested enviroment:
+    - [ ] Web (Demo app)
+    - [ ] VSCode Amazon Q Chat
+    - [ ] JetBrains IntelliJ Amazon Q Chat
+- Enviroment extension version (if applicable): 
+- [ ] Enviroment is remote 

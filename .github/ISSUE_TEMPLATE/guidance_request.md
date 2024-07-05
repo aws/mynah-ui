@@ -4,11 +4,15 @@ about: Ask for guidance, "how to", or other questions
 labels: guidance
 ---
 
-## System details (run the `AWS: About Toolkit` command)
+## System details
 
--   OS:
--   Visual Studio Code version:
--   AWS Toolkit version:
+- OS:
+- Enviroment:
+    - [ ] Web (Demo app)
+    - [ ] VSCode Amazon Q Chat
+    - [ ] JetBrains IntelliJ Amazon Q Chat
+- Enviroment extension version (if applicable): 
+- [ ] Enviroment is remote 
 
 ## Question
 
