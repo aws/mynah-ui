@@ -16,7 +16,7 @@ labels: bug
 
 ## Expected behavior
 
-## System details (run the `AWS: About Toolkit` command)
+## System details
 
 - OS:
 - Tested enviroment:
