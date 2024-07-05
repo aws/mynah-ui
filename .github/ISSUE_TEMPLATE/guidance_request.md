@@ -7,12 +7,10 @@ labels: guidance
 ## System details
 
 - OS:
-- Enviroment:
-    - [ ] Web (Demo app)
+- Enviroment to run:
+    - [ ] Web
     - [ ] VSCode Amazon Q Chat
     - [ ] JetBrains IntelliJ Amazon Q Chat
-- Enviroment extension version (if applicable): 
-- [ ] Enviroment is remote 
 
 ## Question
 
