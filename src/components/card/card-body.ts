@@ -91,7 +91,7 @@ export class CardBody {
 
   private readonly processNode = (node: HTMLElement): HTMLElement => {
     let elementFromNode: HTMLElement = node;
-    if (this.props.useParts === true && elementFromNode.nodeType === Node.TEXT_NODE) {
+    if (this.props.useParts === true && elementFromNode.nodeType === Node.TEXT_NODE && elementFromNode.textContent?.trim() !== '') {
       elementFromNode = DomBuilder.getInstance().build({
         type: 'span',
         classNames: [ 'mynah-ui-animation-text-content' ],
