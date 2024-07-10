@@ -73,7 +73,7 @@ export class PromptTextInput {
         },
         focus: () => {
           this.render.addClass('input-has-focus');
-          if (this.props.onFocus !== undefined) {
+          if (typeof this.props.onFocus !== 'undefined') {
             this.props.onFocus();
           }
         },

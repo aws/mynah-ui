@@ -313,14 +313,10 @@ export class ChatPromptInput {
 
   private readonly handleInputFocus = (): void => {
     const inputValue = this.promptTextInput.getTextInputValue();
-    if (inputValue.startsWith('/') || inputValue.startsWith('@')) {
-      this.quickPickType = inputValue.startsWith('@') ? 'context' : 'quick-action';
-      const quickPickItems =
-        this.quickPickType === 'context'
-          ? MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]
-          : MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
+    if (inputValue.startsWith('/')) {
+      const quickPickItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
       this.quickPickItemGroups = [ ...quickPickItems ];
-      this.quickPickTriggerIndex = inputValue.startsWith('@') ? inputValue.indexOf('@') : 1;
+      this.quickPickTriggerIndex = 1;
       this.textAfter = inputValue.substring(this.quickPickTriggerIndex);
       this.promptTextInput.setContextReplacement(this.quickPickItemGroups.length > 0);
       const restorePreviousFilteredQuickPickItemGroups: QuickActionCommandGroup[] = [];
