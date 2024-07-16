@@ -69,6 +69,7 @@
                     line-height: var(--mynah-line-height);
                     white-space: pre-wrap;
                     word-break: normal;
+                    overflow-wrap: break-word;
 
                     &:placeholder-shown {
                         text-overflow: ellipsis;

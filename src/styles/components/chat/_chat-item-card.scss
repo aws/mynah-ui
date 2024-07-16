@@ -270,6 +270,7 @@
             &,
             > .mynah-card-body {
                 color: var(--mynah-color-text-alternate);
+                overflow-wrap: break-word;
             }
         }
         .mynah-chat-item-card-related-content > .mynah-card {
