@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .mynah-card-body {
   flex-shrink: 0;
   overflow: hidden;
@@ -5,6 +7,8 @@
   display: block;
   line-height: var(--mynah-line-height);
   font-size: var(--mynah-font-size-medium);
+  overflow-wrap: anywhere;
+  word-break: break-all;
 
   &:empty {
     display: none;
@@ -81,8 +85,26 @@
       border: none;
       font-size: inherit;
     }
+
     table {
       table-layout: fixed;
+
+      thead {
+        background: var(--mynah-color-bg);
+      }
+
+      tbody {
+        tr:nth-child(even) {
+          background: var(--mynah-color-bg);
+        }
+      }
+    }
+
+    table, tr, th, td {
+      border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+      border-collapse: collapse;
+      padding: var(--mynah-sizing-2);
+      word-break: auto-phrase;
     }
 
     // BLOCKS

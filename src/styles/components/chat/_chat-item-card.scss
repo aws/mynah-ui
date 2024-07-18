@@ -9,6 +9,8 @@
     opacity: 0;
     transform-origin: center bottom;
     gap: var(--mynah-sizing-4);
+    overflow-wrap: anywhere;
+    word-break: break-all;
 
     &-status {
         @each $status in $mynah-statuses {

@@ -4,10 +4,11 @@ import {
 import { defaultFollowUps } from './samples/sample-data';
 import { Commands } from './commands';
 import { MynahUITabStoreTab, QuickActionCommandGroup } from '../../dist/static';
-export const WelcomeMessage = `Hi, this is \`MynahUI\` and it is a **data and event driven** web based chat interface library and it is independent from any framework like react or vue etc. 
-In this example web app which uses mynah-ui as its renderer, we're simulating its capabilities with some static content with an IDE look&feel. 
+export const WelcomeMessage = `Hi, this is \`MynahUI\` and it is a **data and event driven** web based chat interface library and it is independent from any framework like react or vue etc.
+In this example web app which uses mynah-ui as its renderer, we're simulating its capabilities with some static content with an IDE look&feel.
 
-*To see more examples about the possible content types, interactions or various component types, you can type \`/\` to open the quick actions list panel.*`;
+*To see more examples about the possible content types, interactions or various component types, you can type \`/\` to open the quick actions list panel.*
+`;
 
 export const QuickActionCommands:QuickActionCommandGroup[] = [
   {
@@ -31,7 +32,7 @@ export const QuickActionCommands:QuickActionCommandGroup[] = [
         command: Commands.SHOW_STICKY_CARD,
         description: 'You can stick a ChatItem card on top of the input field which will stay there independently from the conversation block. It might be handy to give some info to the user.',
       },
-      
+
     ],
   },
   {
@@ -52,6 +53,14 @@ export const QuickActionCommands:QuickActionCommandGroup[] = [
       {
         command: Commands.CARD_WITH_MARKDOWN_LIST,
         description: 'ChatItem card with a complex markdown list inside.',
+      },
+      {
+        command: Commands.CARD_WITH_ALL_MARKDOWN_TAGS,
+        description: 'ChatItem card with a markdown file with all markdown tags',
+      },
+      {
+        command: Commands.CARD_RENDER_MARKDOWN_TABLE,
+        description: 'ChatItem card for markdown table',
       },
       {
         command: Commands.CARD_SNAPS_TO_TOP,
