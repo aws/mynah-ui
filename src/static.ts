@@ -431,7 +431,7 @@ export interface ConfigOptions {
   }>;
   tabBarButtons?: TabBarMainAction[];
   maxTabs: number;
-  maxReachedOverlayDuration?: number;
+  maxTabsTooltipDuration?: number;
   noMoreTabsTooltip?: string;
   showPromptField: boolean;
   autoFocus: boolean;

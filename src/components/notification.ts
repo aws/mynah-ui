@@ -30,7 +30,7 @@ export class Notification {
   private readonly props;
 
   constructor (props: NotificationProps) {
-    this.duration = props.duration !== undefined ? props.duration : DEFAULT_TIMEOUT;
+    this.duration = props.duration ?? DEFAULT_TIMEOUT;
     this.type = props.type ?? NotificationType.INFO;
     this.props = props;
   }

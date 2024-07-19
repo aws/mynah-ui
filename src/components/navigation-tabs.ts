@@ -22,7 +22,7 @@ export interface TabsProps {
   onChange?: (selectedTabId: string) => void;
   noMoreTabsTooltip?: string;
   onBeforeTabRemove?: (tabId: string) => boolean;
-  maxReachedOverlayDuration?: number;
+  maxTabsTooltipDuration?: number;
 }
 export class Tabs {
   render: ExtendedHTMLElement;
@@ -118,7 +118,7 @@ export class Tabs {
         additionalEvents: {
           mouseenter: (e) => {
             if (MynahUITabsStore.getInstance().tabsLength() === Config.getInstance().config.maxTabs) {
-              this.showMaxReachedOverLay(e.currentTarget, this.props.noMoreTabsTooltip ?? Config.getInstance().config.texts.noMoreTabsTooltip, this.props.maxReachedOverlayDuration);
+              this.showMaxReachedOverLay(e.currentTarget, this.props.noMoreTabsTooltip ?? Config.getInstance().config.texts.noMoreTabsTooltip, this.props.maxTabsTooltipDuration);
             }
           },
           mouseleave: () => {
