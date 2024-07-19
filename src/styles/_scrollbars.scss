@@ -1,0 +1,8 @@
+* {
+  scrollbar-gutter: unset;
+  scrollbar-color: color-mix(
+    in hsl,
+    var(--mynah-color-text-default),
+    hsl(0, 100%, 100%) 90%)
+    transparent;
+}
