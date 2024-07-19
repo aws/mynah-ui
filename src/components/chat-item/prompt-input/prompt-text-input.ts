@@ -12,6 +12,7 @@ export interface PromptTextInputProps {
   contextReplacement?: boolean;
   onKeydown: (e: KeyboardEvent) => void;
   onInput?: (e: KeyboardEvent) => void;
+  onFocus?: () => void;
 }
 
 export class PromptTextInput {
@@ -72,6 +73,9 @@ export class PromptTextInput {
         },
         focus: () => {
           this.render.addClass('input-has-focus');
+          if (typeof this.props.onFocus !== 'undefined') {
+            this.props.onFocus();
+          }
         },
         blur: () => {
           this.render.removeClass('input-has-focus');
