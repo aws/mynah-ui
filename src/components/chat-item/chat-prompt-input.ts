@@ -53,6 +53,7 @@ export class ChatPromptInput {
       tabId: this.props.tabId,
       onKeydown: this.handleInputKeydown,
       onInput: () => this.updateAvailableCharactersIndicator(),
+      onFocus: this.handleInputFocus,
     });
     this.remainingCharsIndicator = DomBuilder.getInstance().build({
       type: 'span',
@@ -306,6 +307,51 @@ export class ChatPromptInput {
             }
           }, 1);
         }
+      }
+    }
+  };
+
+  private readonly handleInputFocus = (): void => {
+    const inputValue = this.promptTextInput.getTextInputValue();
+    if (inputValue.startsWith('/')) {
+      const quickPickItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
+      this.quickPickItemGroups = [ ...quickPickItems ];
+      this.quickPickTriggerIndex = 1;
+      this.textAfter = inputValue.substring(this.quickPickTriggerIndex);
+      this.promptTextInput.setContextReplacement(this.quickPickItemGroups.length > 0);
+      const restorePreviousFilteredQuickPickItemGroups: QuickActionCommandGroup[] = [];
+      this.quickPickItemGroups.forEach((quickPickGroup: QuickActionCommandGroup) => {
+        const newQuickPickCommandGroup = { ...quickPickGroup };
+        try {
+          const searchTerm = inputValue.substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0];
+          const promptRegex = new RegExp(searchTerm ?? '', 'gi');
+          newQuickPickCommandGroup.commands = newQuickPickCommandGroup.commands.filter(command =>
+            command.command.match(promptRegex)
+          );
+          if (newQuickPickCommandGroup.commands.length > 0) {
+            restorePreviousFilteredQuickPickItemGroups.push(newQuickPickCommandGroup);
+          }
+        } catch (e) {
+          // In case the prompt is an incomplete regex
+        }
+      });
+
+      if (this.quickPickItemGroups.length > 0) {
+        this.filteredQuickPickItemGroups = [ ...restorePreviousFilteredQuickPickItemGroups ];
+        this.quickPick = new Overlay({
+          closeOnOutsideClick: true,
+          referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
+          dimOutside: false,
+          stretchWidth: true,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+          onClose: () => {
+            this.quickPickOpen = false;
+          },
+          children: [ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ],
+        });
+
+        this.quickPickOpen = true;
       }
     }
   };
