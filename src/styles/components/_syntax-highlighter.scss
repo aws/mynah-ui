@@ -140,12 +140,24 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
         code {
             color: var(--mynah-color-syntax-code);
             filter: brightness(0.95);
+            white-space: pre;
+            background-color: inherit;
+        }
+
+        /**
+        * Apply the default styles to the code block.
+        * Should we decide to use word wrapping in the future, we can uncomment the following lines.
+        * We would need to add line numberes to the code block as well.
+        code {
+            color: var(--mynah-color-syntax-code);
+            filter: brightness(0.95);
             background-color: inherit;
             white-space: pre-wrap;
             word-wrap: break-word;
             overflow-wrap: anywhere;
             word-break: break-all;
         }
+        */
 
         > code::selection,
         &::selection {
