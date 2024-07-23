@@ -289,6 +289,8 @@ export class MynahUI {
             this.props.onTabChange(selectedTabId, this.getUserEventId());
           }
         },
+        maxTabsTooltipDuration: Config.getInstance().config.maxTabsTooltipDuration,
+        noMoreTabsTooltip: Config.getInstance().config.noMoreTabsTooltip,
         onBeforeTabRemove: (tabId): boolean => {
           if (props.onBeforeTabRemove !== undefined) {
             return props.onBeforeTabRemove(tabId, this.getUserEventId());

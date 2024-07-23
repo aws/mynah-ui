@@ -51,6 +51,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     },
     config: {
       maxTabs: 5,
+      maxTabsTooltipDuration: 5000,
+      noMoreTabsTooltip: 'You can only open five conversation tabs at a time.',
       autoFocus: true,
       tabBarButtons: [
         {

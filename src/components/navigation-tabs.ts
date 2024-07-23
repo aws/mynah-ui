@@ -16,10 +16,13 @@ import { TabBarButtonsWrapper } from './navigation-tab-bar-buttons';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Toggle, ToggleOption } from './toggle';
 import '../styles/components/_nav-tabs.scss';
+import { DEFAULT_TIMEOUT } from './notification';
 
 export interface TabsProps {
   onChange?: (selectedTabId: string) => void;
+  noMoreTabsTooltip?: string;
   onBeforeTabRemove?: (tabId: string) => boolean;
+  maxTabsTooltipDuration?: number;
 }
 export class Tabs {
   render: ExtendedHTMLElement;
@@ -115,7 +118,7 @@ export class Tabs {
         additionalEvents: {
           mouseenter: (e) => {
             if (MynahUITabsStore.getInstance().tabsLength() === Config.getInstance().config.maxTabs) {
-              this.showMaxReachedOverLay(e.currentTarget, Config.getInstance().config.texts.noMoreTabsTooltip);
+              this.showMaxReachedOverLay(e.currentTarget, this.props.noMoreTabsTooltip ?? Config.getInstance().config.texts.noMoreTabsTooltip, this.props.maxTabsTooltipDuration);
             }
           },
           mouseleave: () => {
@@ -134,7 +137,7 @@ export class Tabs {
     ];
   };
 
-  private readonly showMaxReachedOverLay = (elm: HTMLElement, markdownText: string): void => {
+  private readonly showMaxReachedOverLay = (elm: HTMLElement, markdownText: string, duration?: number): void => {
     this.maxReachedOverlay = new Overlay({
       background: true,
       closeOnOutsideClick: false,
@@ -155,6 +158,16 @@ export class Tabs {
         }).render
       ],
     });
+
+    if (duration !== undefined && duration !== -1) {
+      setTimeout(() => {
+        this.hideMaxReachedOverLay();
+      }, duration);
+    } else if (duration === undefined) {
+      setTimeout(() => {
+        this.hideMaxReachedOverLay();
+      }, DEFAULT_TIMEOUT);
+    }
   };
 
   private readonly hideMaxReachedOverLay = (): void => {
