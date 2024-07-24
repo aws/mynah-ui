@@ -18,6 +18,8 @@ import sampleList4 from './sample-list-4.md';
 import SampleCode from './sample-code.md';
 import SampleDiff from './sample-diff.md';
 import SampleDiffApplied from './sample-diff-applied.md';
+import SampleAllInOne from './sample-all-in-one.md'
+import SampleTable from './sample-table.md'
 import { Commands } from '../commands';
 
 export const mynahUIQRImageBase64 =
@@ -46,8 +48,8 @@ export const exampleSources = [
         body: `To see how to configure statics for MynahUI please refer to **[Configuration](./CONFIG.md)** document.
 
   Lastly before you start reading here, you can find more details on the **[Data Model](./DATAMODEL.md)** document. That document also contains visuals related with each type of the chat message in detail.
-  
-  
+
+
   #### All publicly available functions
   \`\`\`typescript
   mynahUI.addChatItem(...);
@@ -67,6 +69,14 @@ export const sampleMarkdownList: Partial<ChatItem>[] = [
     { body: `${sampleList2 as string}` },
     { body: `${sampleList3 as string}` },
     { body: `${sampleList4 as string}` },
+];
+
+export const sampleAllInOneList: Partial<ChatItem>[] = [
+    { body: `${SampleAllInOne as string}`},
+];
+
+export const sampleTableList: Partial<ChatItem>[] = [
+    { body: `${SampleTable as string}`},
 ];
 
 export const exampleStreamParts: Partial<ChatItem>[] = [
@@ -157,6 +167,14 @@ export const defaultFollowUps: ChatItem = {
             {
                 command: Commands.CARD_WITH_MARKDOWN_LIST,
                 pillText: 'Markdown list',
+            },
+            {
+                command: Commands.CARD_WITH_ALL_MARKDOWN_TAGS,
+                pillText: 'All markdown tags',
+            },
+            {
+                command: Commands.CARD_RENDER_MARKDOWN_TABLE,
+                pillText: 'Render markdown table',
             },
             {
                 command: Commands.CARD_SNAPS_TO_TOP,
@@ -262,7 +280,7 @@ export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
 export const exampleFormChatItem: ChatItem = {
     type: ChatItemType.ANSWER,
     messageId: new Date().getTime().toString(),
-    body: `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.  
+    body: `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.
 
 _To send the form, mandatory items should be filled._`,
     formItems: [
@@ -526,7 +544,7 @@ export const exampleImageCard = (): ChatItem => {
         body: `
 ### Image!
 Here's a QR code for mynah-ui github link:
-  
+
 ${mynahUIQRMarkdown}
 `,
     };
@@ -619,7 +637,7 @@ You can find more information and references <strong><a href="https://github.com
 <br />
 
 <p>There might be infinite number of possible examples with all supported tags and their attributes. It doesn't make so much sense to demonstrate all of them here.
-You should go take a look to the <strong><a href="https://github.com/aws/mynah-ui/blob/main/docs/DATAMODEL.md">documentation</a></strong> for details and limitations.</p> 
+You should go take a look to the <strong><a href="https://github.com/aws/mynah-ui/blob/main/docs/DATAMODEL.md">documentation</a></strong> for details and limitations.</p>
 `,
     };
 };

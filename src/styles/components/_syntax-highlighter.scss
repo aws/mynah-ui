@@ -1,5 +1,6 @@
 @import '../variables';
 @import '../mixins';
+
 pre.diff-highlight > code .token.deleted:not(.prefix),
 pre > code.diff-highlight .token.deleted:not(.prefix) {
     background-color: rgba(255, 0, 0, 0.1);
@@ -135,6 +136,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             font-size: var(--mynah-syntax-code-font-size) !important;
             font-family: var(--mynah-syntax-code-font-family) !important;
         }
+
         code {
             color: var(--mynah-color-syntax-code);
             filter: brightness(0.95);
@@ -142,16 +144,21 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             background-color: inherit;
         }
 
-        > code,
-        & {
-            text-align: left;
-            white-space: pre;
-            word-spacing: normal;
-            word-break: normal;
-            word-wrap: normal;
-            tab-size: 4;
-            hyphens: none;
+        /**
+        * Apply the default styles to the code block.
+        * Should we decide to use word wrapping in the future, we can uncomment the following lines.
+        * We would need to add line numberes to the code block as well.
+        code {
+            color: var(--mynah-color-syntax-code);
+            filter: brightness(0.95);
+            background-color: inherit;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+            word-break: break-all;
         }
+        */
+
         > code::selection,
         &::selection {
             text-shadow: none;

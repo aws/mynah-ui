@@ -30,6 +30,8 @@ import {
   sampleMarkdownList,
   exampleCodeDiff,
   exampleCodeDiffApplied,
+  sampleAllInOneList,
+  sampleTableList,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -337,11 +339,27 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         case Commands.CARD_WITH_MARKDOWN_LIST:
           getGenerativeAIAnswer(tabId, sampleMarkdownList);
           break;
+        case Commands.CARD_WITH_ALL_MARKDOWN_TAGS:
+          mynahUI.addChatItem(tabId, {
+            type: ChatItemType.ANSWER,
+            messageId: generateUID(),
+            body: sampleAllInOneList.slice(-1)[0].body,
+            snapToTop: true
+          });
+          break;
+        case Commands.CARD_RENDER_MARKDOWN_TABLE:
+          mynahUI.addChatItem(tabId, {
+            type: ChatItemType.ANSWER,
+            messageId: generateUID(),
+            body: sampleTableList.slice(-1)[0].body,
+            snapToTop: true
+          });
+          break;
         case Commands.CARD_SNAPS_TO_TOP:
           mynahUI.addChatItem(tabId, {
             type: ChatItemType.ANSWER,
             messageId: generateUID(),
-            body: sampleMarkdownList.slice(-1)[0].body, 
+            body: sampleMarkdownList.slice(-1)[0].body,
             snapToTop: true
           });
           mynahUI.addChatItem(tabId, defaultFollowUps);
