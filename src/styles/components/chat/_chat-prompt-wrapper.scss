@@ -61,7 +61,7 @@
                     resize: none;
                     background-color: rgba(0, 0, 0, 0);
                     font-size: var(--mynah-font-size-large);
-                    color: rgba(0, 0, 0, 0);
+                    color: var(--mynah-color-text-input);
                     caret-color: var(--mynah-color-text-input);
                     outline: none;
                     width: 100%;
@@ -101,15 +101,17 @@
                     opacity: 1;
                     pointer-events: none;
                     overflow: auto;
-                    color: var(--mynah-color-text-input);
+                    color: rgba(0, 0, 0, 0);
                     position: relative;
-                    z-index: 50;
+                    z-index: 150;
                     > span.context {
                         position: relative;
                         color: var(--mynah-color-button-reverse);
                         border-radius: calc(var(--mynah-input-radius) / 2);
                         display: inline;
                         white-space: nowrap;
+                        overflow-wrap: break-word;
+                        z-index: 1000;
                         &:before {
                             content: '';
                             position: absolute;
@@ -121,10 +123,6 @@
                             border-radius: inherit;
                             z-index: -1;
                         }
-                    }
-                    > span.placeholder {
-                        position: relative;
-                        color: var(--mynah-color-text-weak);
                     }
                 }
 

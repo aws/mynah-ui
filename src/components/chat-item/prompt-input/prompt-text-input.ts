@@ -5,6 +5,9 @@ import { MynahUIGlobalEvents } from '../../../helper/events';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
 import { MynahEventNames } from '../../../static';
 import { MAX_USER_INPUT } from '../chat-prompt-input';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay';
+import { Card } from '../../card/card';
+import { CardBody } from '../../card/card-body';
 
 export interface PromptTextInputProps {
   tabId: string;
@@ -21,6 +24,7 @@ export class PromptTextInput {
   private readonly props: PromptTextInputProps;
   private readonly promptTextInputSizer: ExtendedHTMLElement;
   private readonly promptTextInput: ExtendedHTMLElement;
+  private promptInputOverlay: Overlay | null = null;
   private keydownSupport: boolean = true;
   constructor (props: PromptTextInputProps) {
     this.props = props;
@@ -32,6 +36,13 @@ export class PromptTextInput {
       type: 'span',
       classNames: [ 'mynah-chat-prompt-input', 'mynah-chat-prompt-input-sizer' ],
     });
+
+    // To realign context items if resize happens on block
+    if (ResizeObserver != null) {
+      new ResizeObserver(() => {
+        this.promptTextInputSizer.scrollTop = this.promptTextInput.scrollTop;
+      }).observe(this.promptTextInputSizer);
+    }
 
     this.promptTextInput = DomBuilder.getInstance().build({
       type: 'textarea',
@@ -127,16 +138,16 @@ export class PromptTextInput {
     index?: number;
     text?: string;
   }): void => {
+    if (this.promptInputOverlay !== null) {
+      this.promptInputOverlay.close();
+      this.promptInputOverlay = null;
+    }
     if (this.promptTextInput.value.trim() !== '') {
       this.render.removeClass('no-text');
     } else {
       this.render.addClass('no-text');
     }
     let visualisationValue = escapeHTML(this.promptTextInput.value);
-    if (placeHolder?.text != null) {
-      const placeHolderIndex = escapeHTML(this.promptTextInput.value.substring(0, placeHolder.index ?? visualisationValue.length)).length;
-      visualisationValue = `${visualisationValue.substring(0, placeHolderIndex)} <span class="placeholder">${placeHolder.text}</span> ${visualisationValue.substring(placeHolderIndex + 1)}`;
-    }
     if (this.props.contextReplacement === true) {
       visualisationValue = `${visualisationValue.replace(/@\S*/gi, (match) => `<span class="context">${match}</span>`)}&nbsp`;
     }
@@ -144,6 +155,29 @@ export class PromptTextInput {
     // If it doesn't take effect, first new line step won't work with shift+enter
     // We're adding a space to make the br take effect.
     this.promptTextInputSizer.innerHTML = `${visualisationValue}&nbsp<br/>`;
+
+    if (placeHolder?.text != null) {
+      const targetContextItem = this.getContextElementAtTextIndex(placeHolder.index ?? 0);
+      this.promptInputOverlay = new Overlay({
+        background: true,
+        closeOnOutsideClick: true,
+        referenceElement: targetContextItem ?? this.render,
+        dimOutside: false,
+        removeOtherOverlays: true,
+        verticalDirection: OverlayVerticalDirection.TO_TOP,
+        horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+        children: [
+          new Card({
+            border: false,
+            children: [
+              new CardBody({
+                body: placeHolder.text
+              }).render
+            ]
+          }).render
+        ],
+      });
+    }
   };
 
   public readonly setContextReplacement = (contextReplacement: boolean): void => {
@@ -179,6 +213,20 @@ export class PromptTextInput {
       wordStartIndex: prevWordEndIndex + 1,
       word: currentValue.substring(prevWordEndIndex + 1, nextNewWordIndex)
     };
+  };
+
+  public readonly getContextElementAtTextIndex = (textIndex: number): HTMLSpanElement | null => {
+    let startIndex = 0;
+    let contextElement: HTMLSpanElement | null = null;
+    for (const node of this.promptTextInputSizer.childNodes) {
+      const currentEndIndex = startIndex + (node.textContent?.length ?? 0);
+      if (textIndex > startIndex && textIndex <= currentEndIndex && node.nodeName === 'SPAN') {
+        contextElement = node as HTMLSpanElement;
+        break;
+      }
+      startIndex = currentEndIndex;
+    };
+    return contextElement;
   };
 
   public readonly clear = (): void => {
