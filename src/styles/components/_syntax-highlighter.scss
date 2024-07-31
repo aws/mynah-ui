@@ -144,20 +144,16 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             background-color: inherit;
         }
 
-        /**
-        * Apply the default styles to the code block.
-        * Should we decide to use word wrapping in the future, we can uncomment the following lines.
-        * We would need to add line numberes to the code block as well.
-        code {
-            color: var(--mynah-color-syntax-code);
-            filter: brightness(0.95);
-            background-color: inherit;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            overflow-wrap: anywhere;
-            word-break: break-all;
+        > code,
+        & {
+            text-align: left;
+            white-space: pre;
+            word-spacing: normal;
+            word-break: normal;
+            word-wrap: normal;
+            tab-size: 4;
+            hyphens: none;
         }
-        */
 
         > code::selection,
         &::selection {
