@@ -38,9 +38,11 @@ export class PromptTextInput {
     });
 
     // To realign context items if resize happens on block
-    new ResizeObserver(() => {
-      this.promptTextInputSizer.scrollTop = this.promptTextInput.scrollTop;
-    }).observe(this.promptTextInputSizer);
+    if (ResizeObserver != null) {
+      new ResizeObserver(() => {
+        this.promptTextInputSizer.scrollTop = this.promptTextInput.scrollTop;
+      }).observe(this.promptTextInputSizer);
+    }
 
     this.promptTextInput = DomBuilder.getInstance().build({
       type: 'textarea',

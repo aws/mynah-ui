@@ -2,6 +2,7 @@ node_modules/**
 postinstall.js
 **/*.json
 **/*.md
+**/test-config
 **/*.css
 **/*.scss
 **/*.svg
