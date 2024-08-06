@@ -458,10 +458,28 @@ export class ChatPromptInput {
   };
 
   private readonly sendPrompt = (): void => {
+    const quickPickItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
     const currentInputValue = this.promptTextInput.getTextInputValue();
     if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
+      let selectedCommand = this.selectedCommand;
+
+      // Catching cases where user could send a prompt with quick action command but the command is not be selected correctly
+      if (selectedCommand === '') {
+        for (const quickPickItem of quickPickItems) {
+          if (selectedCommand !== '') break;
+          const matchedCommand = quickPickItem.commands.find((item) => currentInputValue.startsWith(item.command));
+          if (matchedCommand !== undefined) {
+            selectedCommand = matchedCommand.command;
+          }
+        }
+      }
+
       const attachmentContent: string | undefined = this.promptAttachment?.lastAttachmentContent;
-      const promptText = currentInputValue + (attachmentContent ?? '');
+
+      // Trim prompt text with command selectedCommand exists
+      const promptText = this.selectedCommand === '' && selectedCommand !== ''
+        ? currentInputValue.replace(selectedCommand, '') + (attachmentContent ?? '')
+        : currentInputValue + (attachmentContent ?? '');
       const context: string[] = [];
       const escapedPrompt = escapeHTML(promptText.replace(/^\s+/gm, '').replace(/@\S*/gi, (match) => {
         if (!context.includes(match)) {
@@ -469,13 +487,14 @@ export class ChatPromptInput {
         }
         return `**${match}**`;
       }));
+
       const promptData: {tabId: string; prompt: ChatPrompt} = {
         tabId: this.props.tabId,
         prompt: {
           prompt: promptText,
           escapedPrompt,
           context,
-          ...(this.selectedCommand !== '' ? { command: this.selectedCommand } : {}),
+          ...(selectedCommand !== '' ? { command: selectedCommand } : {}),
         }
       };
       this.clearTextArea();
