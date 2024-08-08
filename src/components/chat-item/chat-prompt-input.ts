@@ -48,10 +48,13 @@ export class ChatPromptInput {
         this.promptTextInputCommand.setCommand('');
       }
     });
+    const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+    const allQuickPickContextItems = quickPickContextItems.flatMap(cntxGroup => cntxGroup.commands.map(cmd => cmd.command));
     this.promptTextInput = new PromptTextInput({
       initMaxLength: MAX_USER_INPUT(),
       tabId: this.props.tabId,
       onKeydown: this.handleInputKeydown,
+      contextItems: allQuickPickContextItems,
       onInput: () => this.updateAvailableCharactersIndicator(),
       onFocus: this.handleInputFocus,
     });
@@ -151,7 +154,12 @@ export class ChatPromptInput {
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
     if (!this.quickPickOpen) {
       const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+      const allQuickPickContextItems = quickPickContextItems.flatMap(cntxGroup => cntxGroup.commands.map(cmd => cmd.command));
       const quickPickCommandItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[]) ?? [];
+
+      // Update the contextList on promptTextInput too
+      this.promptTextInput.updateContextItems(allQuickPickContextItems);
+
       if (e.key === KeyMap.BACKSPACE || e.key === KeyMap.DELETE) {
         if (this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
           cancelEvent(e);
@@ -161,10 +169,12 @@ export class ChatPromptInput {
           // Since those context are defined, it should match the whole term or it shouldn't be there at all.
           const targetWord = this.promptTextInput.getWordAndIndexOnCursorPos();
           if (targetWord.word.charAt(0) === KeyMap.AT) {
-            cancelEvent(e);
-            const currValue = this.promptTextInput.getTextInputValue();
-            this.promptTextInput.updateTextInputValue(currValue.substring(0, targetWord.wordStartIndex) + currValue.substring(targetWord.wordStartIndex + targetWord.word.length));
-            this.promptTextInput.focus(targetWord.wordStartIndex);
+            if (allQuickPickContextItems.includes(targetWord.word)) {
+              cancelEvent(e);
+              const currValue = this.promptTextInput.getTextInputValue();
+              this.promptTextInput.updateTextInputValue(currValue.substring(0, targetWord.wordStartIndex) + currValue.substring(targetWord.wordStartIndex + targetWord.word.length));
+              this.promptTextInput.focus(targetWord.wordStartIndex);
+            }
           }
         }
       } else if (e.key === KeyMap.ENTER &&
@@ -210,9 +220,6 @@ export class ChatPromptInput {
         if (e.key === KeyMap.ESCAPE) {
           if (this.quickPickType === 'quick-action') {
             this.clearTextArea(true);
-          } else {
-            this.promptTextInput.updateTextInputValue(`${this.promptTextInput.getTextInputValue().substring(0, this.quickPickTriggerIndex)}${this.textAfter}`);
-            this.promptTextInput.focus(this.quickPickTriggerIndex);
           }
           this.quickPick?.close();
         } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
@@ -230,7 +237,13 @@ export class ChatPromptInput {
             placeholder: targetElement?.getAttribute('placeholder') ?? undefined,
           };
           if (this.quickPickType === 'context') {
-            this.handleContextCommandSelection(commandToSend);
+            if (commandToSend.command !== '') {
+              this.handleContextCommandSelection(commandToSend);
+            } else {
+              // Otherwise pass the given text by user
+              const command = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0] ?? '';
+              this.handleContextCommandSelection({ command });
+            }
           } else {
             this.handleQuickActionCommandSelection(commandToSend);
           }
@@ -481,8 +494,11 @@ export class ChatPromptInput {
         ? currentInputValue.replace(selectedCommand, '') + (attachmentContent ?? '')
         : currentInputValue + (attachmentContent ?? '');
       const context: string[] = [];
+
+      const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+      const allQuickPickContextItems = quickPickContextItems.flatMap(cntxGroup => cntxGroup.commands.map(cmd => cmd.command));
       const escapedPrompt = escapeHTML(promptText.replace(/^\s+/gm, '').replace(/@\S*/gi, (match) => {
-        if (!context.includes(match)) {
+        if (!context.includes(match) && allQuickPickContextItems.includes(match)) {
           context.push(match);
         }
         return `**${match}**`;
