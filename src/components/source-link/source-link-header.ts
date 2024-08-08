@@ -5,8 +5,9 @@
 
 import { getTimeDiff } from '../../helper/date-time';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { MynahUIGlobalEvents } from '../../helper/events';
 import { getOrigin } from '../../helper/url';
-import { SourceLink, SourceLinkMetaData } from '../../static';
+import { MynahEventNames, SourceLink, SourceLinkMetaData } from '../../static';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { SourceLinkCard } from './source-link';
@@ -28,6 +29,11 @@ export class SourceLinkHeader {
     if (splitUrl[splitUrl.length - 1].trim() === '') {
       splitUrl.pop();
     }
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_FOCUS, (data: {focusState: boolean}) => {
+      if (!data.focusState) {
+        this.hideLinkPreview();
+      }
+    });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-source-link-header' ],
@@ -35,6 +41,8 @@ export class SourceLinkHeader {
         ? {
             events: {
               mouseenter: (e) => {
+                // If it is already there
+                this.hideLinkPreview();
                 this.showLinkPreview(e, props.sourceLink);
               },
               mouseleave: this.hideLinkPreview,
