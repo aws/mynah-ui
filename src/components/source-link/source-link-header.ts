@@ -41,8 +41,6 @@ export class SourceLinkHeader {
         ? {
             events: {
               mouseenter: (e) => {
-                // If it is already there
-                this.hideLinkPreview();
                 this.showLinkPreview(e, props.sourceLink);
               },
               mouseleave: this.hideLinkPreview,
