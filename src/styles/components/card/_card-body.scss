@@ -53,6 +53,9 @@
     h4,
     h5,
     h6 {
+      word-break: normal;
+      overflow-wrap: break-word;
+      line-height: calc(var(--mynah-line-height) * 1.25);
       margin-block-start: 0.75em;
       margin-block-end: 0.75em;
       padding-bottom: 1px !important;
