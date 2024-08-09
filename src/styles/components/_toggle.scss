@@ -9,6 +9,8 @@
     justify-content: flex-start;
     overflow-y: hidden;
     overflow-x: auto;
+    scrollbar-color: transparent transparent;
+    scrollbar-width: none;
     display: flex;
     > span {
         overflow: hidden;
@@ -23,7 +25,7 @@
             }
             &:not(:checked) + .mynah-toggle-option-label {
                 &.indication:after {
-                    content: "";
+                    content: '';
                     position: absolute;
                     top: 50%;
                     margin-top: calc(-1 * var(--mynah-sizing-half));
@@ -67,7 +69,7 @@
                 }
                 > .mynah-toggle-close-button {
                     margin-left: var(--mynah-sizing-4);
-                    $closeBtnSize: var(--mynah-sizing-5); 
+                    $closeBtnSize: var(--mynah-sizing-5);
                     min-width: $closeBtnSize;
                     max-width: $closeBtnSize;
                     min-height: $closeBtnSize;
@@ -81,7 +83,7 @@
                 opacity: 1;
                 background-color: var(--mynah-color-tab-active);
             }
-            &[disabled="disabled"] {
+            &[disabled='disabled'] {
                 pointer-events: none !important;
                 & + .mynah-toggle-option-label {
                     pointer-events: none !important;
