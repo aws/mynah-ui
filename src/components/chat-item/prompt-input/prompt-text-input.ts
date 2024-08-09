@@ -13,6 +13,7 @@ export interface PromptTextInputProps {
   tabId: string;
   initMaxLength: number;
   contextReplacement?: boolean;
+  contextItems?: string[];
   onKeydown: (e: KeyboardEvent) => void;
   onInput?: (e: KeyboardEvent) => void;
   onFocus?: () => void;
@@ -149,7 +150,12 @@ export class PromptTextInput {
     }
     let visualisationValue = escapeHTML(this.promptTextInput.value);
     if (this.props.contextReplacement === true) {
-      visualisationValue = `${visualisationValue.replace(/@\S*/gi, (match) => `<span class="context">${match}</span>`)}&nbsp`;
+      visualisationValue = `${visualisationValue.replace(/@\S*/gi, (match) => {
+        if ((this.props.contextItems == null) || !this.props.contextItems.includes(match)) {
+          return match;
+        }
+        return `<span class="context">${match}</span>`;
+      })}&nbsp`;
     }
     // HTML br element, which gives a new line, will not work without a content if it is placed at the end of the parent node
     // If it doesn't take effect, first new line step won't work with shift+enter
@@ -275,5 +281,9 @@ export class PromptTextInput {
         placeholder: text,
       }
     });
+  };
+
+  public readonly updateContextItems = (contextItems: string[]): void => {
+    this.props.contextItems = contextItems;
   };
 }
