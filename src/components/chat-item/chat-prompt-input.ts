@@ -480,7 +480,7 @@ export class ChatPromptInput {
       if (selectedCommand === '') {
         for (const quickPickItem of quickPickItems) {
           if (selectedCommand !== '') break;
-          const matchedCommand = quickPickItem.commands.find((item) => currentInputValue.startsWith(item.command));
+          const matchedCommand = quickPickItem.commands.find((item) => item.disabled === false && currentInputValue.startsWith(item.command));
           if (matchedCommand !== undefined) {
             selectedCommand = matchedCommand.command;
           }
