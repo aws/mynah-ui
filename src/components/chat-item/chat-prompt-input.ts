@@ -497,7 +497,7 @@ export class ChatPromptInput {
 
       const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
       const allQuickPickContextItems = quickPickContextItems.flatMap(cntxGroup => cntxGroup.commands.map(cmd => cmd.command));
-      const escapedPrompt = escapeHTML(promptText.replace(/^\s+/gm, '').replace(/@\S*/gi, (match) => {
+      const escapedPrompt = escapeHTML(promptText.replace(/@\S*/gi, (match) => {
         if (!context.includes(match) && allQuickPickContextItems.includes(match)) {
           context.push(match);
         }
