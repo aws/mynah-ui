@@ -84,7 +84,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
         }
     }
     &.mynah-inline-code {
-        display: inline-flex;
+        display: inline-block;
         max-width: 100%;
         line-height: normal;
         padding: 0 !important;
@@ -96,11 +96,13 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
         color: var(--mynah-color-syntax-attr);
         margin-left: 2px;
         margin-right: 2px;
-        padding-bottom: 1px !important;
-        margin-bottom: -1px;
         background-color: transparent !important;
+        vertical-align: middle;
+        padding-bottom: 1px !important;
+        margin-bottom: 2px;
         > pre {
             padding: 0;
+            display: inline-block;
         }
         &:after {
             content: '';
