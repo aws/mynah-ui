@@ -86,7 +86,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
     &.mynah-inline-code {
         display: inline-block;
         max-width: 100%;
-        line-height: normal;
+        line-height: inherit;
         padding: 0 !important;
         margin: 0;
         margin-block-start: 0;
@@ -96,6 +96,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
         color: var(--mynah-color-syntax-attr);
         margin-left: 2px;
         margin-right: 2px;
+        margin-top: -2px;
         background-color: transparent !important;
         vertical-align: middle;
         &,
@@ -103,15 +104,15 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
         & > pre > code {
             padding: 0;
             user-select: text;
-            display: inline;
+            display: inline-block;
         }
 
         &:after,
         &:before {
             content: '';
             position: absolute;
-            top: -2px;
-            height: calc(100% + 4px);
+            top: 0px;
+            height: 100%;
             left: -4px;
             width: calc(100% + 8px);
             border-radius: var(--mynah-input-radius);
