@@ -6,7 +6,7 @@
     "scripts": {
         "clean": "rm -rf build dist node_modules",
         "tests:prepare": "webpack --config webpack.config.js --mode development",
-        "tests:e2e": "jest --detectOpenHandles --config=./jest.config.js"
+        "tests:e2e": "jest --runInBand --detectOpenHandles --config=./jest.config.js"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../"
