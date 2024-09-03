@@ -1,63 +1,52 @@
-import puppeteer, { Page } from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';
-import fs from 'fs';
-export const TEMP_SCREENSHOT_PATH = './temp-snapshot.png';
-async function waitForTransitionEnd (page: Page, element: string): Promise<void> {
-  await page.evaluate(async (element: string) => {
-    return await new Promise<void>((resolve, reject) => {
-      const transition = document.querySelector(element);
-      if (transition != null) {
-        const onEnd = (): void => {
-          transition.removeEventListener('transitionend', onEnd);
-          resolve();
-        };
-        transition.addEventListener('transitionend', onEnd);
-      } else {
-        // eslint-disable-next-line prefer-promise-reject-errors
-        reject();
-      }
-    });
-  }, element);
-}
+import { deleteTempScreenShotBuffer } from './helpers';
+import { initRender } from './flows/init-render';
+import { renderUserPrompt } from './flows/render-user-prompt';
+import { clickToFollowup } from './flows/click-followup';
+import { closeTab } from './flows/close-tab';
+import { openNewTab } from './flows/open-new-tab';
 
-describe('mynah-ui', () => {
-  it('Should render default page', async () => {
-    const browser = await puppeteer.launch({
+describe('Open MynahUI', () => {
+  let browser: Browser;
+  let page: Page;
+  beforeAll(async () => {
+    browser = await puppeteer.launch({
       headless: false,
       args: [ '--no-sandbox', '--disable-setuid-sandbox' ],
       defaultViewport: null,
       timeout: 5000,
       dumpio: true
     });
-    const page = await browser.newPage();
+    page = await browser.newPage();
     const htmlFilePath = path.join(__dirname, '../dist/index.html');
     const fileUrl = 'file://' + htmlFilePath;
-    await page.setViewport({ width: 500, height: 650 });
-    const response = await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
+    await page.setViewport({ width: 500, height: 950 });
+    await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
+  });
 
-    // Be sure the page is displayed correctly with puppeteer & Jest
-    expect(response?.status()).toBe(200);
-    await page.waitForSelector('.mynah-chat-item-card', { timeout: 5_000 });
-    await waitForTransitionEnd(page, '.mynah-chat-item-card');
-
-    // Take the screenshot of the page with puppeteer
-    // and write it to disk
-    await page.screenshot({
-      type: 'png',
-      captureBeyondViewport: false,
-      optimizeForSpeed: true,
-      path: TEMP_SCREENSHOT_PATH
-    });
-
-    // read the screenshot as a buffer
-    const ss = await fs.readFileSync(TEMP_SCREENSHOT_PATH);
-
-    // send the buffer to toMatchImageSnapshot
-    expect(ss).toMatchImageSnapshot();
-
-    // remove the temp screenshot file
-    await fs.unlinkSync(TEMP_SCREENSHOT_PATH);
-
+  afterAll(async () => {
+    await deleteTempScreenShotBuffer();
     await browser.close();
+  });
+
+  it('should render initial data', async () => {
+    await initRender(page);
+  });
+
+  it('should render user prompt', async () => {
+    await renderUserPrompt(page);
+  });
+
+  it('should render new card when followup click', async () => {
+    await clickToFollowup(page);
+  });
+
+  it('should close the tab', async () => {
+    await closeTab(page);
+  });
+
+  it('should open a new the tab', async () => {
+    await openNewTab(page);
   });
 });
