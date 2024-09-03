@@ -1,38 +1,9 @@
 import {
   ChatItemType,
-  ChatItem,
   MynahUITabStoreTab,
   QuickActionCommandGroup
 } from '@aws/mynah-ui';
-
-export enum Commands {
-  HELP = '/help',
-  CLEAR = '/clear'
-}
-
-export const welcomeMessage = `### MynahUI
-Hello world!.`;
-
-export const staticFollowups: ChatItem = {
-  type: ChatItemType.ANSWER,
-  messageId: new Date().getTime().toString(),
-  followUp: {
-    text: 'Mock followups',
-    options: [
-      {
-        command: 'followup-1',
-        pillText: 'Followup 1',
-        description: 'Followup 1 description',
-        prompt: 'Followup 1 prompt',
-      },
-      {
-        command: 'followup-2',
-        pillText: 'Followup 2',
-        prompt: 'Followup 2 prompt',
-      },
-    ],
-  },
-};
+import { Commands, mockFollowups, welcomeMessage } from './mocks/mock-data';
 
 export const quickActionCommands: QuickActionCommandGroup[] = [
   {
@@ -71,7 +42,7 @@ export const defaultDataSet: Partial<MynahUITabStoreTab> = {
         body: welcomeMessage,
         messageId: 'welcome-message'
       },
-      staticFollowups
+      mockFollowups
     ],
     quickActionCommands,
     contextCommands,
