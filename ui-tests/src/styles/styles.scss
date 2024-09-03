@@ -1,0 +1,29 @@
+@import 'theme';
+
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    background-color: var(--mynah-color-bg);
+    color: var(--mynah-color-text-default);
+}
+
+#mynah-ui-wrapper {
+    max-width: var(--mynah-max-width);
+    background-color: var(--mynah-color-bg);
+    border: none;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    z-index: 100;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin: 0 auto;
+}
