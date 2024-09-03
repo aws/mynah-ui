@@ -17,51 +17,51 @@ export const staticFollowups: ChatItem = {
   type: ChatItemType.ANSWER,
   messageId: new Date().getTime().toString(),
   followUp: {
-      text: 'Mock followups',
-      options: [
-          {
-              command: 'followup-1',
-              pillText: 'Followup 1',
-              description: 'Followup 1 description',
-              prompt: 'Followup 1 prompt',
-          },
-          {
-            command: 'followup-2',
-            pillText: 'Followup 2',
-            prompt: 'Followup 2 prompt',
-        },
-      ],
+    text: 'Mock followups',
+    options: [
+      {
+        command: 'followup-1',
+        pillText: 'Followup 1',
+        description: 'Followup 1 description',
+        prompt: 'Followup 1 prompt',
+      },
+      {
+        command: 'followup-2',
+        pillText: 'Followup 2',
+        prompt: 'Followup 2 prompt',
+      },
+    ],
   },
 };
 
-export const quickActionCommands:QuickActionCommandGroup[] = [
+export const quickActionCommands: QuickActionCommandGroup[] = [
   {
     commands: [
       {
         command: Commands.HELP,
-        description: 'Show what MynahUI can do.',
+        description: 'Show help text.',
       },
       {
         command: Commands.CLEAR,
-        description: 'Clear previous chat.',
+        description: 'Clear all chat.',
       }
     ],
   },
 ];
 
-export const contextCommands:QuickActionCommandGroup[] =[
+export const contextCommands: QuickActionCommandGroup[] = [
   {
     groupName: 'Mention code',
-    commands:[
+    commands: [
       {
         command: '@workspace',
         description: 'Reference all code in workspace.'
       }
     ]
   }
-]
+];
 
-export const defaultDataSet:Partial<MynahUITabStoreTab> = {
+export const defaultDataSet: Partial<MynahUITabStoreTab> = {
   store: {
     tabTitle: 'Chat',
     cancelButtonWhenLoading: true,

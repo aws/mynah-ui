@@ -6,26 +6,25 @@ import md3 from './stream-3.md';
 import md4 from './stream-4.md';
 import { mockSources } from './sources';
 
-
-export const mockStreamParts: Partial<ChatItem>[] = [
-    { body: `${md0 as string}` },
-    { body: `${md1 as string}` },
-    { body: `${md2 as string}` },
-    { body: `${md3 as string}` },
-    { body: `${md4 as string}` },
-    {
-        relatedContent: {
-            content: mockSources,
-            title: 'Sources',
-        },
-        codeReference: [
-            {
-                recommendationContentSpan: {
-                    start: 762,
-                    end: 777,
-                },
-                information: 'Mock code reference **`MynahUI`**.',
-            }
-        ],
+export const mockStreamParts: Array<Partial<ChatItem>> = [
+  { body: `${md0 as string}` },
+  { body: `${md1 as string}` },
+  { body: `${md2 as string}` },
+  { body: `${md3 as string}` },
+  { body: `${md4 as string}` },
+  {
+    relatedContent: {
+      content: mockSources,
+      title: 'Sources',
     },
+    codeReference: [
+      {
+        recommendationContentSpan: {
+          start: 762,
+          end: 777,
+        },
+        information: 'Mock code reference **`MynahUI`**.',
+      }
+    ],
+  },
 ];
