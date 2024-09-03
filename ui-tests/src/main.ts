@@ -10,8 +10,8 @@ import {
   ChatItem,
   generateUID,
 } from '@aws/mynah-ui';
-import { Commands, defaultDataSet, staticFollowups } from './defaults';
-import { mockStreamParts } from './mocks/mock-data';
+import { defaultDataSet } from './defaults';
+import { Commands, mockFollowups, mockStreamParts } from './mocks/mock-data';
 import './styles/styles.scss';
 
 export const createMynahUI = (): MynahUI => {
@@ -179,7 +179,7 @@ export const createMynahUI = (): MynahUI => {
           });
           mynahUI.endMessageStream(tabId, messageId) as Record<string, any>;
           streamingMessageId = null;
-          mynahUI.addChatItem(tabId, staticFollowups);
+          mynahUI.addChatItem(tabId, mockFollowups);
         }
       )
       .then(() => {
