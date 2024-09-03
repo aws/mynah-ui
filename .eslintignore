@@ -9,6 +9,7 @@ postinstall.js
 **/*rc.js
 **/jest.config.js
 **/webpack.config.js
+*.json
 dist/**
 example*/**
 *api-docs/**
