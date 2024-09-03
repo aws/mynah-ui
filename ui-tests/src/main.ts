@@ -17,14 +17,12 @@ import './styles/styles.scss';
 export const createMynahUI = (): MynahUI => {
   const connector = new Connector();
   let streamingMessageId: string | null;
-  let showChatAvatars: boolean = false;
 
   const mynahUI = new MynahUI({
     rootSelector: '#mynah-ui-wrapper',
     defaults: {
       store: {
-        ...(defaultDataSet.store),
-        showChatAvatars
+        ...(defaultDataSet.store)
       }
     },
     config: {
@@ -35,12 +33,11 @@ export const createMynahUI = (): MynahUI => {
       'tab-1': {
         isSelected: true,
         store: {
-          ...defaultDataSet.store,
-          showChatAvatars
+          ...defaultDataSet.store
         },
       },
     },
-    onFocusStateChanged: (focusState:boolean) => {
+    onFocusStateChanged: (focusState: boolean) => {
       //
     },
     onTabBarButtonClick: (tabId: string, buttonId: string) => {
@@ -50,10 +47,10 @@ export const createMynahUI = (): MynahUI => {
       //
     },
     onBeforeTabRemove: (tabId: string): boolean => {
-      return !mynahUI.getAllTabs()[tabId].store?.loadingChat;
+      return !((mynahUI.getAllTabs()[tabId].store?.loadingChat) ?? true);
     },
     onTabRemove: (tabId: string) => {
-      // 
+      //
     },
     onTabChange: (tabId: string) => {
       //
@@ -76,7 +73,7 @@ export const createMynahUI = (): MynahUI => {
     onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
       if (tabId === 'tab-1') {
         mynahUI.updateStore(tabId, {
-          tabCloseConfirmationMessage: `Working on "${prompt.prompt}"`,
+          tabCloseConfirmationMessage: `Working on "${prompt.prompt ?? ''}"`,
         });
       }
       onChatPrompt(tabId, prompt);
@@ -125,14 +122,14 @@ export const createMynahUI = (): MynahUI => {
     },
   });
 
-  const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {
+  const onChatPrompt = (tabId: string, prompt: ChatPrompt): void => {
     if (prompt.command !== undefined && prompt.command.trim() !== '') {
       switch (prompt.command) {
         case Commands.HELP:
           mynahUI.addChatItem(tabId, {
             type: ChatItemType.ANSWER,
             messageId: generateUID(),
-            body: `Help Text`,
+            body: 'Help Text',
           });
           break;
         case Commands.CLEAR:
@@ -159,7 +156,7 @@ export const createMynahUI = (): MynahUI => {
     }
   };
 
-  const getGenerativeAIAnswer = (tabId: string, optionalParts?: Partial<ChatItem>[]): void => {
+  const getGenerativeAIAnswer = (tabId: string, optionalParts?: Array<Partial<ChatItem>>): void => {
     const messageId = new Date().getTime().toString();
     mynahUI.updateStore(tabId, {
       loadingChat: true,

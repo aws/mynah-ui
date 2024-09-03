@@ -19,9 +19,7 @@
         "strictPropertyInitialization": false
     },
     "exclude": [
-        "build",
-        "out",
-        "node_modules",
-        ".vscode-test"
+        "dist",
+        "node_modules"
     ]
 }

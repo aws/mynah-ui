@@ -1,10 +1,10 @@
 import { ChatItem } from '@aws/mynah-ui';
-const STREAM_DELAY = 350;
-const INITIAL_STREAM_DELAY = 1250;
+const STREAM_DELAY = 250;
+const INITIAL_STREAM_DELAY = 1000;
 
 export class Connector {
   requestGenerativeAIAnswer = async (
-    streamingChatItems:Partial<ChatItem>[],
+    streamingChatItems: Array<Partial<ChatItem>>,
     onStreamUpdate: (chatItem: Partial<ChatItem>) => boolean,
     onStreamEnd: () => void
   ): Promise<boolean> => await new Promise((resolve, reject) => {
@@ -14,19 +14,19 @@ export class Connector {
       const mdStream = streamingChatItems.map(i => i).reverse();
       const intervalTimingMultiplier = Math.floor(Math.random() * (2) + 1);
 
-      const endStream = ()=>{
-        onStreamEnd();  
+      const endStream = (): void => {
+        onStreamEnd();
         clearInterval(streamFillInterval);
-      }
+      };
       setTimeout(() => {
         streamFillInterval = setInterval(() => {
           if (mdStream.length > 0) {
             const stopStream = onStreamUpdate(mdStream.pop() ?? {});
-            if(stopStream){
+            if (stopStream) {
               endStream();
             }
           } else {
-            endStream()
+            endStream();
           }
         }, STREAM_DELAY * intervalTimingMultiplier);
       }, INITIAL_STREAM_DELAY);
