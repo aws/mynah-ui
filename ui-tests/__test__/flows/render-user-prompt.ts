@@ -1,4 +1,4 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { ElementHandle, Page } from 'playwright/test';
 import { createTempScreenShotBuffer, waitForTransitionEnd } from '../helpers';
 
 export const renderUserPrompt = async (page: Page): Promise<void> => {

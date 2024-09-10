@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright/test';
 import { createTempScreenShotBuffer } from '../helpers';
 
 export const closeTab = async (page: Page): Promise<void> => {

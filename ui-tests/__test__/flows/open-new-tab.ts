@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 import { createTempScreenShotBuffer, waitForTransitionEnd } from '../helpers';
 
 export const openNewTab = async (page: Page): Promise<void> => {

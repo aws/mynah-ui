@@ -1,4 +1,4 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { ElementHandle, Page } from 'playwright/test';
 import fs from 'fs';
 
 export const TEMP_SCREENSHOT_PATH = './temp-snapshot.png';
@@ -25,8 +25,8 @@ export async function createTempScreenShotBuffer (target: Page | ElementHandle<E
   // and write it to disk
   await target.screenshot({
     type: 'png',
-    captureBeyondViewport: false,
-    optimizeForSpeed: true,
+    // captureBeyondViewport: false,
+    // optimizeForSpeed: true,
     path: TEMP_SCREENSHOT_PATH
   });
 

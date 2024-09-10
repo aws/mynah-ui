@@ -1,5 +1,6 @@
-import puppeteer, { Browser, Page } from 'puppeteer';
 import path from 'path';
+import { Page, Browser } from 'playwright/test';
+import playwright from 'playwright';
 import { deleteTempScreenShotBuffer } from './helpers';
 import { initRender } from './flows/init-render';
 import { renderUserPrompt } from './flows/render-user-prompt';
@@ -11,17 +12,20 @@ describe('Open MynahUI', () => {
   let browser: Browser;
   let page: Page;
   beforeAll(async () => {
-    browser = await puppeteer.launch({
+    browser = await playwright.chromium.launch({
       headless: false,
       args: [ '--no-sandbox', '--disable-setuid-sandbox' ],
-      defaultViewport: null,
-      timeout: 5000,
-      dumpio: true
+      timeout: 5000
     });
-    page = await browser.newPage();
+    page = await browser.newPage({
+      viewport: {
+        width: 500,
+        height: 950
+      }
+    });
     const htmlFilePath = path.join(__dirname, '../dist/index.html');
     const fileUrl = 'file://' + htmlFilePath;
-    await page.setViewport({ width: 500, height: 950 });
+    // await page.setViewport({ width: 500, height: 950 });
     await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
   });
 

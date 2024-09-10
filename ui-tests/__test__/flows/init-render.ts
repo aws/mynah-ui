@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright/test';
 import { createTempScreenShotBuffer, waitForTransitionEnd } from '../helpers';
 
 export const initRender = async (page: Page): Promise<void> => {
