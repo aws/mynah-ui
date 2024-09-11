@@ -7,7 +7,7 @@
         "clean": "rm -rf build dist node_modules",
         "tests:prepare": "webpack --config webpack.config.js --mode development",
         "tests:e2e": "wdio run ./wdio.conf.ts",
-        "tests:run": "npm run tests:prepare && npm run tests:e2e"
+        "tests:run": "npm install && npm run tests:prepare && npm run tests:e2e"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../"
