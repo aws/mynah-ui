@@ -1,39 +1,32 @@
-import { ElementHandle, Page } from 'puppeteer';
-import fs from 'fs';
+export const MAX_TRANSITION_DURATION = 2000;
 
-export const TEMP_SCREENSHOT_PATH = './temp-snapshot.png';
+export async function waitForTransitionEnd(browser: WebdriverIO.Browser, selector: string): Promise<void | unknown> {
+    const elm = await browser.$(selector);
+    if (elm != null) {
+        return await browser.pause(MAX_TRANSITION_DURATION);
+    }
 
-export async function waitForTransitionEnd (page: Page, element: string): Promise<void> {
-  await page.evaluate(async (element: string) => {
-    return await new Promise<void>((resolve) => {
-      const transition = document.querySelector(element);
-      if (transition != null) {
-        const onEnd = (): void => {
-          transition.removeEventListener('transitionend', onEnd);
-          resolve();
-        };
-        transition.addEventListener('transitionend', onEnd);
-      } else {
-        resolve();
-      }
+    return await new Promise<void>((resolve, reject) => {
+        reject();
     });
-  }, element);
 }
 
-export async function createTempScreenShotBuffer (target: Page | ElementHandle<Element>): Promise<Buffer> {
-  // Take the screenshot of the page with puppeteer
-  // and write it to disk
-  await target.screenshot({
-    type: 'png',
-    captureBeyondViewport: false,
-    optimizeForSpeed: true,
-    path: TEMP_SCREENSHOT_PATH
-  });
+export async function waitChatStreamEnd(browser: WebdriverIO.Browser): Promise<void | unknown> {
+    const chatWrapper = await browser.$('.mynah-chat-wrapper');
+    if (chatWrapper != null) {
+        return await await chatWrapper.waitUntil(
+            async () => {
+                const classList = await chatWrapper.getAttribute('class');
+                return classList.split(' ').indexOf('loading') === -1;
+            },
+            {
+                interval: 250,
+                timeout: 5000,
+            }
+        );
+    }
 
-  // read the screenshot as a buffer
-  return fs.readFileSync(TEMP_SCREENSHOT_PATH);
-}
-
-export async function deleteTempScreenShotBuffer (): Promise<void> {
-  return fs.unlinkSync(TEMP_SCREENSHOT_PATH);
+    return await new Promise<void>((resolve, reject) => {
+        reject();
+    });
 }

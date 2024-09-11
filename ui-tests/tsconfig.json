@@ -13,14 +13,12 @@
         "sourceMap": true,
         "strict": true,
         "resolveJsonModule": true,
-        "typeRoots": [
-            "./node_modules/@types"
-        ],
+        "types": ["node", "@wdio/globals/types", "@wdio/visual-service", "mocha"],
         "strictPropertyInitialization": false
     },
     "exclude": [
         "dist",
-        "__test__",
-        "node_modules"
+        "node_modules",
+        "wdio.conf.ts"
     ]
 }

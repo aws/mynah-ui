@@ -1,11 +1,6 @@
-import { Browser } from 'webdriverio';
-import { createTempScreenShotBuffer, waitForTransitionEnd } from '../helpers';
+import { waitForTransitionEnd } from "../helpers";
 
-export const initRender = async (browser: Browser): Promise<void> => {
-  browser.execute(()=>{})
-  await browser.waitUntil(, { timeout: 5_000 });
-  await waitForTransitionEnd(browser, '.mynah-chat-item-card');
-
-  // send the buffer to toMatchImageSnapshot
-  expect(await createTempScreenShotBuffer(browser)).toMatchImageSnapshot();
+export const initRender = async (browser: WebdriverIO.Browser): Promise<void> => {
+    await waitForTransitionEnd(browser, '.mynah-chat-item-card[messageid="mynah-ui-test-followup"]');
+    await expect(browser.$('#mynah-wrapper')).toMatchElementSnapshot('initRender');
 };

@@ -1,8 +1,6 @@
 node_modules/**
-postinstall.js
 **/*.json
 **/*.md
-**/test-config
 **/*.css
 **/*.scss
 **/*.svg
@@ -11,10 +9,6 @@ postinstall.js
 **/*.config.json
 *.json
 dist/**
-example*/**
-*api-docs/**
-docs/**
-out/**
 *.config.js
 **/*.d.ts
 LICENSE
