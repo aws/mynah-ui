@@ -23,6 +23,7 @@
 	},
 	"exclude": [
 		"dist",
+		"ui-tests",
 		"node_modules",
 		"docs",
 		"example"

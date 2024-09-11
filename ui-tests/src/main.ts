@@ -12,7 +12,6 @@ import {
 } from '@aws/mynah-ui';
 import { defaultDataSet } from './defaults';
 import { Commands, mockFollowups, mockStreamParts } from './mocks/mock-data';
-import './styles/styles.scss';
 
 export const createMynahUI = (): MynahUI => {
   const connector = new Connector();

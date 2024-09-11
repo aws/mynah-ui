@@ -1,10 +1,11 @@
-import { Page } from 'puppeteer';
+import { Browser } from 'webdriverio';
 import { createTempScreenShotBuffer, waitForTransitionEnd } from '../helpers';
 
-export const initRender = async (page: Page): Promise<void> => {
-  await page.waitForSelector('.mynah-chat-item-card', { timeout: 5_000 });
-  await waitForTransitionEnd(page, '.mynah-chat-item-card');
+export const initRender = async (browser: Browser): Promise<void> => {
+  browser.execute(()=>{})
+  await browser.waitUntil(, { timeout: 5_000 });
+  await waitForTransitionEnd(browser, '.mynah-chat-item-card');
 
   // send the buffer to toMatchImageSnapshot
-  expect(await createTempScreenShotBuffer(page)).toMatchImageSnapshot();
+  expect(await createTempScreenShotBuffer(browser)).toMatchImageSnapshot();
 };

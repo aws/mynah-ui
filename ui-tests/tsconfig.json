@@ -20,6 +20,7 @@
     },
     "exclude": [
         "dist",
+        "__test__",
         "node_modules"
     ]
 }
