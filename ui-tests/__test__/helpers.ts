@@ -1,6 +1,7 @@
-export const MAX_TRANSITION_DURATION = 2000;
+export const MAX_TRANSITION_DURATION = 850;
+export const DEFAULT_TOLERANCE = 0.15;
 
-export async function waitForTransitionEnd(browser: WebdriverIO.Browser, selector: string): Promise<void | unknown> {
+export async function waitForCardReveal(browser: WebdriverIO.Browser, selector: string): Promise<void | unknown> {
     const elm = await browser.$(selector);
     if (elm != null) {
         return await browser.pause(MAX_TRANSITION_DURATION);
@@ -11,7 +12,7 @@ export async function waitForTransitionEnd(browser: WebdriverIO.Browser, selecto
     });
 }
 
-export async function waitChatStreamEnd(browser: WebdriverIO.Browser): Promise<void | unknown> {
+export async function waitForCardStreamEnd(browser: WebdriverIO.Browser): Promise<void | unknown> {
     const chatWrapper = await browser.$('.mynah-chat-wrapper');
     if (chatWrapper != null) {
         return await await chatWrapper.waitUntil(

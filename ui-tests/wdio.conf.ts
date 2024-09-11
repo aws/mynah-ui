@@ -119,7 +119,7 @@ export const config: Options.Testrunner = {
                 screenshotPath: '__test__/__snapshots__/',
                 createJsonReportFiles: false,
                 clearRuntimeFolder: true,
-                saveAboveTolerance: 5
+                saveAboveTolerance: 0.15
             },
         ],
     ],
