@@ -8,5 +8,5 @@ export const renderUserPrompt = async (browser: WebdriverIO.Browser): Promise<vo
     await waitForTransitionEnd(browser, '.mynah-chat-item-card.mynah-chat-item-prompt');
 
     expect(userCard).toBeDefined();
-    await expect(userCard).toMatchElementSnapshot('userCard');
+    await expect(userCard).toMatchElementSnapshot('userCard', 10);
 };
