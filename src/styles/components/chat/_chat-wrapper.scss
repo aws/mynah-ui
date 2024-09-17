@@ -7,29 +7,31 @@
     align-items: flex-start;
 }
 .mynah-chat-wrapper {
-    transition: var(--mynah-bottom-panel-transition);
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: auto;
-    height: auto;
+    // This allows us to recalculate depending on the screen width went to 0 and reverted back (VSCode panel close/open)
+    transition: all 10ms 10ms linear;
+
+    position: relative;
+    width: inherit;
+    min-width: inherit;
+    max-width: inherit;
+    height: 100%;
+    flex: 1 0 100%;
     flex-flow: column nowrap;
     overflow: hidden;
     justify-content: space-around;
     align-items: stretch;
     display: none;
-    > div[class^="mynah-chat"] {
-        width: 100%;
-        max-width: 100%;
+    > div[class^='mynah-chat'] {
+        width: inherit;
+        min-width: inherit;
+        max-width: inherit;
         box-sizing: border-box;
         padding-left: var(--mynah-sizing-4);
         padding-right: var(--mynah-sizing-4);
     }
     &:after {
         transition: var(--mynah-very-short-transition);
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         right: 0;
@@ -45,16 +47,16 @@
         transform-origin: center center;
     }
 
-    @import "chat-items-container";
-    @import "chat-overflowing-intermediate-block";
-    @import "chat-prompt-wrapper";
+    @import 'chat-items-container';
+    @import 'chat-overflowing-intermediate-block';
+    @import 'chat-prompt-wrapper';
 }
 
 .mynah-chat-items-container,
 .mynah-chat-prompt-input-sticky-card {
-    @import "chat-item-card";
+    @import 'chat-item-card';
 }
 
-@import "chat-command-selector";
-@import "chat-item-tree-view";
-@import "chat-prompt-attachment";
+@import 'chat-command-selector';
+@import 'chat-item-tree-view';
+@import 'chat-prompt-attachment';

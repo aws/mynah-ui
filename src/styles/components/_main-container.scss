@@ -1,8 +1,16 @@
+body.mynah-ui-root {
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
 #mynah-wrapper {
+    container-type: size;
+    container-name: mynah-wrapper;
     display: flex;
     flex-flow: column nowrap;
     margin: 0 auto;
-    width: 100%;
+    width: inherit;
+    min-width: inherit;
     max-width: var(--mynah-max-width);
     box-sizing: border-box;
     height: 100%;
@@ -13,9 +21,20 @@
     background-color: var(--mynah-color-bg);
     color: var(--mynah-color-text-default);
 
+    > .mynah-no-tabs-wrapper:not(.hidden) {
+        & + .mynah-ui-tab-contents-wrapper {
+            display: none;
+        }
+    }
     > .mynah-ui-tab-contents-wrapper {
-        flex: 1;
         position: relative;
+        width: inherit;
+        min-width: inherit;
+        max-width: inherit;
+        display: block;
+        height: inherit;
+        flex: 1;
+
         &:first-child {
             > .mynah-chat-wrapper {
                 display: flex;
@@ -41,5 +60,12 @@
 
     *:focus {
         outline: none;
+    }
+}
+
+@container mynah-wrapper (max-width: 0px) {
+    * {
+        display: none !important;
+        content-visibility: hidden !important;
     }
 }
