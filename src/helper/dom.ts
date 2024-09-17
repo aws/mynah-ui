@@ -80,6 +80,7 @@ export class DomBuilder {
   private constructor (rootSelector: string) {
     this.root = DS(rootSelector)[0] as ExtendedHTMLElement;
     this.extendDomFunctionality(this.root);
+    this.root.addClass('mynah-ui-root');
     this.rootFocus = this.root.matches(':focus') ?? false;
     this.attachRootFocusListeners();
   }
