@@ -2,7 +2,8 @@
     display: flex;
     flex-flow: column nowrap;
     margin: 0 auto;
-    width: 100%;
+    width: inherit;
+    min-width: inherit;
     max-width: var(--mynah-max-width);
     box-sizing: border-box;
     height: 100%;
@@ -16,6 +17,12 @@
     > .mynah-ui-tab-contents-wrapper {
         flex: 1;
         position: relative;
+        width: inherit;
+        min-width: inherit;
+        max-width: inherit;
+        overflow: hidden;
+        display: flex;
+        flex-flow: column nowrap;
         &:first-child {
             > .mynah-chat-wrapper {
                 display: flex;
