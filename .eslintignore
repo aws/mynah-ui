@@ -15,7 +15,9 @@ example*/**
 docs/**
 out/**
 *.config.js
+**/dev.js
 **/*.d.ts
+**/*.config.json
 LICENSE
 THIRD-PARTY-LICENSES
 NOTICE
