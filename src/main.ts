@@ -428,11 +428,12 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CODE_BLOCK_ACTION, (data) => {
-      // TODO needs to be deprecated and followed through onCodeBlockActionClicked
       if (data.actionId === 'insert-to-cursor') {
-        this.props.onCodeInsertToCursorPosition?.(
+        this.props.onCodeBlockActionClicked?.(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
+          data.actionId,
+          data.data,
           data.text,
           data.type,
           data.referenceTrackerInformation,
@@ -441,12 +442,13 @@ export class MynahUI {
           data.totalCodeBlocks,
         );
       }
-      // TODO needs to be deprecated and followed through onCodeBlockActionClicked
       if (data.actionId === 'copy') {
         copyToClipboard(data.text, (): void => {
-          this.props.onCopyCodeToClipboard?.(
+          this.props.onCodeBlockActionClicked?.(
             MynahUITabsStore.getInstance().getSelectedTabId(),
             data.messageId,
+            data.actionId,
+            data.data,
             data.text,
             data.type,
             data.referenceTrackerInformation,
