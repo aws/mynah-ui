@@ -42,7 +42,7 @@ const config = {
       },
       {
         test: /\.ts$/,
-        exclude: [/node_modules/, /.\/example/, /.\/example-react/],
+        exclude: [/node_modules/, /.\/example/, /.\/ui-tests/, /.\/example-react/],
         use: [
           {
             loader: 'ts-loader',

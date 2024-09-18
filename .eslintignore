@@ -12,6 +12,7 @@ postinstall.js
 *.json
 dist/**
 example*/**
+ui-tests*/**
 *api-docs/**
 docs/**
 out/**
