@@ -23,6 +23,7 @@ interface ToggleOptionRenderProps extends ToggleOption {
   wrapperTestId?: string;
   optionTestId?: string;
   labelTestId?: string;
+  closeButtonTestId?: string;
   name: string;
   onChange?: (selectedValue: string) => void;
   onRemove?: (selectedValue: string, domElement: ExtendedHTMLElement) => void;
@@ -119,6 +120,7 @@ class ToggleOptionItem {
             },
             this.props.onRemove !== undefined
               ? new Button({
+                testId: this.props.closeButtonTestId,
                 classNames: [ 'mynah-toggle-close-button' ],
                 onClick: () => {
                   if (this.props.onRemove !== undefined) {
@@ -185,9 +187,10 @@ export class Toggle {
         onRemove: this.props.onRemove,
         ...(this.props.testId != null
           ? {
-              wrapperTestId: `${this.props.testId}-options-wrapper`,
+              wrapperTestId: `${this.props.testId}-option-wrapper`,
               optionTestId: `${this.props.testId}-option`,
-              labelTestId: `${this.props.testId}-option-label`
+              labelTestId: `${this.props.testId}-option-label`,
+              closeButtonTestId: `${this.props.testId}-option-close-button`
             }
           : {})
       }).render;
@@ -223,7 +226,8 @@ export class Toggle {
         ? {
             wrapperTestId: `${this.props.testId}-options-wrapper`,
             optionTestId: `${this.props.testId}-option`,
-            labelTestId: `${this.props.testId}-option-label`
+            labelTestId: `${this.props.testId}-option-label`,
+            closeButtonTestId: `${this.props.testId}-option-close-button`
           }
         : {})
     }).render);

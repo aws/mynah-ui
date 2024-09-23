@@ -43,7 +43,7 @@ export default {
       optionsWrapper: 'chat-item-followup-options-wrapper',
       optionButton: 'chat-item-followup-option',
       title: 'chat-item-followup-title',
-      wrapper: 'chat-item-followup-title',
+      wrapper: 'chat-item-followup-wrapper',
     },
     syntaxHighlighter: {
       wrapper: 'chat-item-syntax-highlighter-wrapper',
@@ -56,7 +56,7 @@ export default {
     chatItemForm: {
       wrapper: 'chat-item-form-wrapper',
       title: 'chat-item-form-title',
-      itemSelectWrapper: 'chat-item-form-item-select',
+      itemSelectWrapper: 'chat-item-form-item-select-wrapper',
       itemSelect: 'chat-item-form-item-select',
       itemRadioWrapper: 'chat-item-form-item-radio-wrapper',
       itemRadio: 'chat-item-form-item-radio',
@@ -94,14 +94,14 @@ export default {
     }
   },
   feedbackForm: {
-    wrapper: 'custom-feedback-form-wrapper',
-    title: 'custom-feedback-form-title',
-    optionsSelectWrapper: 'custom-feedback-form-options-select-wrapper',
-    optionsSelect: 'custom-feedback-form-options-select',
-    comment: 'custom-feedback-form-comment-text-area',
-    closeButton: 'custom-feedback-form-close-button',
-    cancelButton: 'custom-feedback-form-cancel-button',
-    submitButton: 'custom-feedback-form-submit-button',
+    wrapper: 'feedback-form-wrapper',
+    title: 'feedback-form-title',
+    optionsSelectWrapper: 'feedback-form-options-select-wrapper',
+    optionsSelect: 'feedback-form-options-select',
+    comment: 'feedback-form-comment-text-area',
+    closeButton: 'feedback-form-close-button',
+    cancelButton: 'feedback-form-cancel-button',
+    submitButton: 'feedback-form-submit-button',
   },
   customFeedbackForm: {
     wrapper: 'custom-feedback-form-wrapper',
@@ -119,6 +119,7 @@ export default {
     tabOptionWrapper: 'tab-bar-tabs-option-wrapper',
     tabOption: 'tab-bar-tabs-option',
     tabOptionLabel: 'tab-bar-tabs-option-label',
+    tabOptionCloseButton: 'tab-bar-tabs-option-close-button',
     tabAddButton: 'tab-bar-tab-add-button',
     maxTabsReachedOverlay: 'tab-bar-max-tabs-reached-overlay',
     tabCloseConfirmationOverlay: 'tab-bar-tab-close-confirmation-overlay',
