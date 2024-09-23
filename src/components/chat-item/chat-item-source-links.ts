@@ -5,6 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
+import testIds from '../../helper/test-ids';
 import { MynahEventNames, SourceLink } from '../../static';
 import { Button } from '../button';
 import { Card } from '../card/card';
@@ -26,6 +27,7 @@ export class ChatItemSourceLinksContainer {
   constructor (props: ChatItemSourceLinksContainerProps) {
     this.props = props;
     this.showMoreButtonBlock = new Button({
+      testId: testIds.chatItem.relatedLinks.showMore,
       classNames: [ 'mynah-chat-item-card-related-content-show-more' ],
       primary: false,
       icon: new Icon({ icon: MynahIcons.DOWN_OPEN }).render,
@@ -40,12 +42,14 @@ export class ChatItemSourceLinksContainer {
     if (this.props.relatedContent !== undefined) {
       this.render = DomBuilder.getInstance().build({
         type: 'div',
+        testId: testIds.chatItem.relatedLinks.wrapper,
         classNames: [ 'mynah-chat-item-card-related-content',
           this.props.relatedContent !== undefined && this.props.relatedContent.length <= MAX_ITEMS ? 'expanded' : '' ],
         children: [
           ...(this.props.title !== undefined
             ? [ {
                 type: 'span',
+                testId: testIds.chatItem.relatedLinks.title,
                 classNames: [ 'mynah-chat-item-card-related-content-title' ],
                 children: [ this.props.title ],
               } ]

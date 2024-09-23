@@ -63,6 +63,7 @@ export enum OverlayVerticalDirection {
 }
 
 export interface OverlayProps {
+  testId?: string;
   referenceElement?: HTMLElement | ExtendedHTMLElement;
   referencePoint?: { top: number; left: number };
   children: Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject>;
@@ -118,6 +119,7 @@ export class Overlay {
       `${MynahPortalNames.OVERLAY}-${this.guid}`,
       {
         type: 'div',
+        testId: props.testId,
         attributes: { id: `mynah-overlay-${this.guid}` },
         classNames: [
           'mynah-overlay',

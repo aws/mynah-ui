@@ -4,6 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import testIds from '../../helper/test-ids';
 
 export interface ChatPromptInputCommandProps {
   command: string;
@@ -24,6 +25,7 @@ export class ChatPromptInputCommand {
     });
     this.render = DomBuilder.getInstance().build({
       type: 'span',
+      testId: testIds.prompt.selectedCommand,
       classNames: [ 'mynah-chat-prompt-input-command-wrapper', this.props.command === '' ? 'hidden' : '' ],
       children: [
         this.promptTextInputCommand,

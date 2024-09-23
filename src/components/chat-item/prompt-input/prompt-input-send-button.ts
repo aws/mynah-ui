@@ -1,5 +1,6 @@
 import { ExtendedHTMLElement } from '../../../helper/dom';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
+import testIds from '../../../helper/test-ids';
 import { Button } from '../../button';
 import { Icon, MynahIcons } from '../../icon';
 
@@ -17,6 +18,7 @@ export class PromptInputSendButton {
     const initialDisabledState = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputDisabledState') as boolean;
 
     this.render = new Button({
+      testId: testIds.prompt.send,
       classNames: [ 'mynah-chat-prompt-button' ],
       attributes: {
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),

@@ -2,6 +2,7 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import { TreeNode } from '../../helper/file-tree';
+import testIds from '../../helper/test-ids';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemTreeFile } from './chat-item-tree-file';
@@ -67,6 +68,7 @@ export class ChatItemTreeView {
     if (this.node.type !== 'folder') return [];
 
     const folderItem = new Button({
+      testId: testIds.chatItem.fileTree.folder,
       icon: new Icon({ icon: this.isOpen ? MynahIcons.DOWN_OPEN : MynahIcons.RIGHT_OPEN }).render,
       classNames: [ 'mynah-chat-item-tree-view-button' ],
       label: DomBuilder.getInstance().build({

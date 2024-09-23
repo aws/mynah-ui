@@ -12,6 +12,7 @@ import { ChatItemButtonsWrapper } from '../chat-item/chat-item-buttons';
 import { CardBody } from '../card/card-body';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
+import testIds from '../../helper/test-ids';
 
 export interface CustomFormWrapperProps {
   tabId: string;
@@ -30,6 +31,7 @@ export class CustomFormWrapper {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.customFeedbackForm.wrapper,
       classNames: [ 'mynah-feedback-form' ],
       events: { click: cancelEvent },
       children: [
@@ -40,10 +42,12 @@ export class CustomFormWrapper {
             ...(this.props.title !== undefined
               ? [ {
                   type: 'h4',
+                  testId: testIds.customFeedbackForm.title,
                   children: [ this.props.title ],
                 } ]
               : []),
             new Button({
+              testId: testIds.customFeedbackForm.closeButton,
               primary: false,
               onClick: (e) => {
                 if (this.props.onCloseButtonClick !== undefined) {
@@ -56,6 +60,7 @@ export class CustomFormWrapper {
         },
         ...(this.props.description !== undefined
           ? [ new CardBody({
+              testId: testIds.customFeedbackForm.description,
               body: this.props.description
             }).render ]
           : []),

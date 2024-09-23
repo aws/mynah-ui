@@ -13,6 +13,7 @@ import { Config } from '../../helper/config';
 import { Select } from '../form-items/select';
 import { CustomFormWrapper } from './custom-form';
 import '../../styles/components/_feedback-form.scss';
+import testIds from '../../helper/test-ids';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;
@@ -45,6 +46,7 @@ export class FeedbackForm {
           MynahPortalNames.FEEDBACK_FORM,
           {
             type: 'div',
+            testId: testIds.feedbackForm.wrapper,
             attributes: {
               id: 'mynah-feedback-form-wrapper'
             },
@@ -85,6 +87,8 @@ export class FeedbackForm {
     });
 
     this.feedbackOptionsWrapper = new Select({
+      wrapperTestId: testIds.feedbackForm.optionsSelectWrapper,
+      optionTestId: testIds.feedbackForm.optionsSelect,
       options: Config.getInstance().config.feedbackOptions,
       onChange: (val) => {
         this.feedbackPayload.selectedOption = val;
@@ -100,6 +104,7 @@ export class FeedbackForm {
     });
 
     this.feedbackSubmitButton = new Button({
+      testId: testIds.feedbackForm.submitButton,
       label: Config.getInstance().config.texts.submit,
       primary: true,
       onClick: () => {
@@ -119,9 +124,11 @@ export class FeedbackForm {
           children: [
             {
               type: 'h4',
+              testId: testIds.feedbackForm.title,
               children: [ Config.getInstance().config.texts.feedbackFormTitle ]
             },
             new Button({
+              testId: testIds.feedbackForm.closeButton,
               primary: false,
               onClick: () => {
                 this.close();
@@ -141,6 +148,7 @@ export class FeedbackForm {
           classNames: [ 'mynah-feedback-form-buttons-container' ],
           children: [
             new Button({
+              testId: testIds.feedbackForm.cancelButton,
               primary: false,
               label: Config.getInstance().config.texts.cancel,
               onClick: () => {

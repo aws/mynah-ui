@@ -19,6 +19,7 @@ const configDefaults: ConfigFullModel = {
   showPromptField: true,
   autoFocus: true,
   tabBarButtons: [],
+  test: false,
   feedbackOptions: [
     {
       value: 'inaccurate-response',

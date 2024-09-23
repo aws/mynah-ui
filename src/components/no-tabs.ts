@@ -11,12 +11,14 @@ import { MynahUITabsStore } from '../helper/tabs-store';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
 import '../styles/components/_no-tabs.scss';
+import testIds from '../helper/test-ids';
 
 export class NoTabs {
   render: ExtendedHTMLElement;
   constructor () {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.noTabs.wrapper,
       persistent: true,
       classNames: [ 'mynah-no-tabs-wrapper', ...(MynahUITabsStore.getInstance().tabsLength() > 0 ? [ 'hidden' ] : []) ],
       children: [
@@ -37,6 +39,7 @@ export class NoTabs {
           classNames: [ 'mynah-no-tabs-buttons-wrapper' ],
           children: [
             new Button({
+              testId: testIds.noTabs.newTabButton,
               onClick: (e) => {
                 cancelEvent(e);
                 if (MynahUITabsStore.getInstance().tabsLength() < Config.getInstance().config.maxTabs) {

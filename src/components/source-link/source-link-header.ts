@@ -6,6 +6,7 @@
 import { getTimeDiff } from '../../helper/date-time';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
+import testIds from '../../helper/test-ids';
 import { getOrigin } from '../../helper/url';
 import { MynahEventNames, SourceLink, SourceLinkMetaData } from '../../static';
 import { Icon, MynahIcons } from '../icon';
@@ -36,6 +37,7 @@ export class SourceLinkHeader {
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chatItem.relatedLinks.linkWrapper,
       classNames: [ 'mynah-source-link-header' ],
       ...(props.showCardOnHover === true
         ? {
@@ -77,6 +79,7 @@ export class SourceLinkHeader {
             },
             {
               type: 'a',
+              testId: testIds.chatItem.relatedLinks.link,
               classNames: [ 'mynah-source-link-url' ],
               events: {
                 ...(props.onClick !== undefined && {
@@ -199,6 +202,7 @@ export class SourceLinkHeader {
       this.sourceLinkPreviewTimeout = setTimeout(() => {
         const elm: HTMLElement = e.target as HTMLElement;
         this.sourceLinkPreview = new Overlay({
+          testId: testIds.chatItem.relatedLinks.linkPreviewOverlay,
           background: true,
           closeOnOutsideClick: false,
           referenceElement: elm,

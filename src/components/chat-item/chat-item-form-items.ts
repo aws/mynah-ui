@@ -5,6 +5,7 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import testIds from '../../helper/test-ids';
 import { ChatItem, ChatItemFormItem } from '../../static';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
@@ -30,6 +31,7 @@ export class ChatItemFormItemsWrapper {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chatItem.chatItemForm.wrapper,
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
         let chatOption;
@@ -37,6 +39,7 @@ export class ChatItemFormItemsWrapper {
         if (chatItemOption.mandatory === true) {
           label = DomBuilder.getInstance().build({
             type: 'div',
+            testId: testIds.chatItem.chatItemForm.title,
             classNames: [ 'mynah-ui-form-item-mandatory-title' ],
             children: [
               new Icon({ icon: MynahIcons.ASTERISK }).render,
@@ -52,6 +55,8 @@ export class ChatItemFormItemsWrapper {
         switch (chatItemOption.type) {
           case 'select':
             chatOption = new Select({
+              wrapperTestId: testIds.chatItem.chatItemForm.itemSelectWrapper,
+              optionTestId: testIds.chatItem.chatItemForm.itemSelect,
               label,
               value,
               options: chatItemOption.options,
@@ -62,6 +67,8 @@ export class ChatItemFormItemsWrapper {
             break;
           case 'radiogroup':
             chatOption = new RadioGroup({
+              wrapperTestId: testIds.chatItem.chatItemForm.itemRadioWrapper,
+              optionTestId: testIds.chatItem.chatItemForm.itemRadio,
               label,
               value,
               options: chatItemOption.options,
@@ -71,6 +78,7 @@ export class ChatItemFormItemsWrapper {
             break;
           case 'textarea':
             chatOption = new TextArea({
+              testId: testIds.chatItem.chatItemForm.itemTextArea,
               label,
               value,
               placeholder: chatItemOption.placeholder,
@@ -79,6 +87,7 @@ export class ChatItemFormItemsWrapper {
             break;
           case 'textinput':
             chatOption = new TextInput({
+              testId: testIds.chatItem.chatItemForm.itemInput,
               label,
               value,
               placeholder: chatItemOption.placeholder,
@@ -87,6 +96,7 @@ export class ChatItemFormItemsWrapper {
             break;
           case 'numericinput':
             chatOption = new TextInput({
+              testId: testIds.chatItem.chatItemForm.itemInput,
               label,
               value,
               type: 'number',
@@ -96,6 +106,7 @@ export class ChatItemFormItemsWrapper {
             break;
           case 'email':
             chatOption = new TextInput({
+              testId: testIds.chatItem.chatItemForm.itemInput,
               label,
               value,
               type: 'email',
@@ -105,6 +116,8 @@ export class ChatItemFormItemsWrapper {
             break;
           case 'stars':
             chatOption = new Stars({
+              wrapperTestId: testIds.chatItem.chatItemForm.itemStarsWrapper,
+              optionTestId: testIds.chatItem.chatItemForm.itemStars,
               label,
               value,
               ...(this.getValidationHandler(chatItemOption))

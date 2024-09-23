@@ -36,6 +36,7 @@ export const PARTS_CLASS_NAME_VISIBLE = 'typewriter';
 
 export interface CardBodyProps {
   body?: string;
+  testId?: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   childLocation?: 'above-body' | 'below-body';
   highlightRangeWithTooltip?: ReferenceTrackerInformation[];
@@ -74,6 +75,7 @@ export class CardBody {
     ];
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: this.props.testId,
       classNames: [ 'mynah-card-body', ...(this.props.classNames ?? []) ],
       children: this.props.childLocation === 'above-body' ? childList.reverse() : childList,
     });

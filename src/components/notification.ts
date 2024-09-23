@@ -9,6 +9,7 @@ import { NotificationType } from '../static';
 import { Icon, MynahIcons } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection, OVERLAY_MARGIN } from './overlay';
 import '../styles/components/_notification.scss';
+import testIds from '../helper/test-ids';
 
 type NotificationContentType = string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
 
@@ -49,14 +50,15 @@ export class Notification {
       children: [
         {
           type: 'div',
+          testId: testIds.notification.wrapper,
           classNames: [
             'mynah-notification',
-            this.props.onNotificationClick !== undefined ? 'mynah-notification-clickable' : '',
+            this.props.onNotificationClick != null ? 'mynah-notification-clickable' : '',
           ],
           events: {
             click: e => {
               cancelEvent(e);
-              if (this.props.onNotificationClick !== undefined) {
+              if (this.props.onNotificationClick != null) {
                 this.props.onNotificationClick();
                 this.notificationOverlay?.close();
               }
@@ -70,11 +72,13 @@ export class Notification {
               children: [
                 {
                   type: 'h3',
+                  testId: testIds.notification.title,
                   classNames: [ 'mynah-notification-title' ],
                   children: [ this.props.title ?? '' ],
                 },
                 {
                   type: 'div',
+                  testId: testIds.notification.content,
                   classNames: [ 'mynah-notification-content' ],
                   children: this.getChildren(this.props.content),
                 },

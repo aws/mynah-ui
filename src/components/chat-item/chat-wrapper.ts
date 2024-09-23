@@ -15,6 +15,7 @@ import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
 import { ChatPromptInputStickyCard } from './chat-prompt-input-sticky-card';
 import '../../styles/components/chat/_chat-wrapper.scss';
+import testIds from '../../helper/test-ids';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -77,6 +78,7 @@ export class ChatWrapper {
 
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chat.chatItemsContainer,
       classNames: [ 'mynah-chat-items-container' ],
       persistent: true,
       children: [],
@@ -86,11 +88,13 @@ export class ChatWrapper {
     this.promptStickyCard = new ChatPromptInputStickyCard({ tabId: this.props.tabId }).render;
     this.intermediateBlockContainer = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chat.middleBlockWrapper,
       classNames: [ 'mynah-chat-overflowing-intermediate-block',
         ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('cancelButtonWhenLoading') === false ? [ 'hidden' ] : []) ],
       children: [
         ...(this.props?.onStopChatResponse !== undefined
           ? [ new Button({
+              testId: testIds.chat.stopButton,
               classNames: [ 'mynah-chat-stop-chat-response-button' ],
               label: Config.getInstance().config.texts.stopGenerating,
               icon: new Icon({ icon: MynahIcons.CANCEL }).render,
@@ -110,6 +114,7 @@ export class ChatWrapper {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chat.wrapper,
       classNames: [ 'mynah-chat-wrapper' ],
       attributes: {
         'mynah-tab-id': this.props.tabId,

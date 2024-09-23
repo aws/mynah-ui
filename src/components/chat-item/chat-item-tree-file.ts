@@ -7,6 +7,7 @@ import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
+import testIds from '../../helper/test-ids';
 
 export interface ChatItemTreeFileProps {
   tabId: string;
@@ -28,6 +29,7 @@ export class ChatItemTreeFile {
   constructor (props: ChatItemTreeFileProps) {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chatItem.fileTree.file,
       classNames: [
         'mynah-chat-item-tree-view-file-item',
         'mynah-button', 'mynah-button-secondary',
@@ -94,6 +96,7 @@ export class ChatItemTreeFile {
               type: 'div',
               classNames: [ 'mynah-chat-item-tree-view-file-item-actions' ],
               children: props.actions.map((action: FileNodeAction) => new Button({
+                testId: testIds.chatItem.fileTree.fileAction,
                 icon: new Icon({ icon: action.icon }).render,
                 ...(action.label !== undefined ? { label: action.label } : {}),
                 attributes: {
@@ -123,6 +126,7 @@ export class ChatItemTreeFile {
       clearTimeout(this.fileTooltipTimeout);
       this.fileTooltipTimeout = setTimeout(() => {
         this.fileTooltip = new Overlay({
+          testId: testIds.chatItem.fileTree.fileTooltipWrapper,
           background: true,
           closeOnOutsideClick: false,
           referenceElement: this.render,

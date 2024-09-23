@@ -23,6 +23,8 @@ export interface RadioGroupProps {
   optional?: boolean;
   options?: SelectOption[];
   onChange?: (value: string) => void;
+  wrapperTestId?: string;
+  optionTestId?: string;
 }
 
 export abstract class RadioGroupAbstract {
@@ -39,6 +41,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
     super();
     this.radioGroupElement = DomBuilder.getInstance().build({
       type: 'div',
+      testId: props.wrapperTestId,
       classNames: [ 'mynah-form-input', 'no-border', ...(props.classNames ?? []) ],
       children:
         props.options?.map((option, index) => ({
@@ -46,6 +49,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
           classNames: [ 'mynah-form-input-radio-wrapper' ],
           children: [ {
             type: 'label',
+            testId: props.optionTestId,
             classNames: [ 'mynah-form-input-radio-label' ],
             events: {
               click: (e) => {

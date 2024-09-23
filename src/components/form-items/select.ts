@@ -23,6 +23,8 @@ export interface SelectProps {
   options?: SelectOption[];
   placeholder?: string;
   onChange?: (value: string) => void;
+  wrapperTestId?: string;
+  optionTestId?: string;
 }
 
 export abstract class SelectAbstract {
@@ -38,6 +40,7 @@ export class SelectInternal {
   constructor (props: SelectProps) {
     this.selectElement = DomBuilder.getInstance().build({
       type: 'select',
+      testId: props.wrapperTestId,
       classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
       events: {
         change: (e) => {
@@ -54,6 +57,7 @@ export class SelectInternal {
             } ]
           : []), ...props.options ?? [] ].map(option => ({
           type: 'option',
+          testId: props.optionTestId,
           classNames: option.value === '' ? [ 'empty-option' ] : [],
           attributes: { value: option.value },
           children: [ option.label ]

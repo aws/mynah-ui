@@ -4,6 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import testIds from '../../helper/test-ids';
 
 export interface FeedbackFormCommentProps {
   onChange?: (comment: string) => void;
@@ -15,6 +16,7 @@ export class FeedbackFormComment {
   constructor (props: FeedbackFormCommentProps) {
     this.render = DomBuilder.getInstance().build({
       type: 'textarea',
+      testId: testIds.feedbackForm.comment,
       events: {
         keyup: (e: InputEvent) => {
           if (props.onChange !== undefined) {

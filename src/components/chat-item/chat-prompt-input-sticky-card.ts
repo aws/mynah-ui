@@ -5,6 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUITabsStore } from '../../helper/tabs-store';
+import testIds from '../../helper/test-ids';
 import { ChatItemType } from '../../static';
 import { ChatItemCard } from './chat-item-card';
 
@@ -36,6 +37,7 @@ export class ChatPromptInputStickyCard {
     const initChatItemForStickyCard = MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputStickyCard');
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.prompt.stickyCard,
       classNames: [ 'mynah-chat-prompt-input-sticky-card' ],
       children: initChatItemForStickyCard !== null
         ? [

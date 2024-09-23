@@ -14,6 +14,7 @@ import { PromptAttachment } from './prompt-input/prompt-attachment';
 import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
+import testIds from '../../helper/test-ids';
 
 export const MAX_USER_INPUT_THRESHOLD = 96;
 export const MAX_USER_INPUT = (): number => {
@@ -60,6 +61,7 @@ export class ChatPromptInput {
     });
     this.remainingCharsIndicator = DomBuilder.getInstance().build({
       type: 'span',
+      testId: testIds.prompt.remainingCharsIndicator,
       classNames: [ 'mynah-chat-prompt-chars-indicator' ],
       innerHTML: `${MAX_USER_INPUT() - this.promptTextInput.getTextInputValue().length}/${MAX_USER_INPUT()}`
     });
@@ -76,6 +78,7 @@ export class ChatPromptInput {
 
     this.attachmentWrapper = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.prompt.attachmentWrapper,
       classNames: [ 'mynah-chat-prompt-attachment-wrapper' ],
       children: [
         this.promptAttachment.render
@@ -83,6 +86,7 @@ export class ChatPromptInput {
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.prompt.wrapper,
       classNames: [ 'mynah-chat-prompt-wrapper' ],
       children: [
         {
@@ -372,15 +376,18 @@ export class ChatPromptInput {
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
     return DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.prompt.quickPicksWrapper,
       classNames: [ 'mynah-chat-command-selector' ],
       children: quickPickGroupList.map((quickPickGroup) => {
         return DomBuilder.getInstance().build({
           type: 'div',
+          testId: testIds.prompt.quickPicksGroup,
           classNames: [ 'mynah-chat-command-selector-group' ],
           children: [
             ...(quickPickGroup.groupName !== undefined
               ? [ DomBuilder.getInstance().build({
                   type: 'h4',
+                  testId: testIds.prompt.quickPicksGroupTitle,
                   classNames: [ 'mynah-chat-command-selector-group-title' ],
                   children: [ quickPickGroup.groupName ]
                 }) ]
@@ -388,6 +395,7 @@ export class ChatPromptInput {
             ...(quickPickGroup.commands.map(quickPickCommand => {
               return DomBuilder.getInstance().build({
                 type: 'div',
+                testId: testIds.prompt.quickPickItem,
                 classNames: [ 'mynah-chat-command-selector-command' ],
                 attributes: {
                   ...quickPickCommand

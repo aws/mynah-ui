@@ -14,6 +14,7 @@ export interface TextAreaProps {
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
+  testId?: string;
 }
 
 export abstract class TextAreaAbstract {
@@ -29,6 +30,7 @@ export class TextAreaInternal extends TextAreaAbstract {
     super();
     this.inputElement = DomBuilder.getInstance().build({
       type: 'textarea',
+      testId: props.testId,
       classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
       attributes: props.placeholder !== undefined
         ? {
