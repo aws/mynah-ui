@@ -24,6 +24,7 @@
     "lint-fix": "npx eslint \"./**\" --fix",
     "lint": "npx eslint \"./**\"",
     "test": "jest",
+    "test:e2e": "npm install && npm run build && cd ./ui-tests && npm install && npm run tests:run",
     "api-docs": "npx typedoc src/main.ts --out ./api-docs",
     "api-doc-deploy": "npx typedoc src/main.ts --out ./example/dist/api-doc",
     "postinstall": "node postinstall.js"
