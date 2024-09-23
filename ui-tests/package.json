@@ -7,7 +7,8 @@
         "clean": "rm -rf build dist node_modules",
         "tests:prepare": "webpack --config webpack.config.js --mode development",
         "tests:e2e": "jest --runInBand --detectOpenHandles --config=./jest.config.js",
-        "tests:run": "npm install && npm run tests:prepare && npm run tests:e2e"
+        "tests:run": "npm install && npm run tests:prepare && npm run tests:e2e",
+        "postinstall": "npx playwright install webkit"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../"

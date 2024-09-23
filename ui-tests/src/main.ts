@@ -28,6 +28,7 @@ export const createMynahUI = (): MynahUI => {
     config: {
       noMoreTabsTooltip: 'Tabs limit.',
       autoFocus: true,
+      test: true
     },
     tabs: {
       'tab-1': {

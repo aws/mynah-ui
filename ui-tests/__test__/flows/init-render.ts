@@ -1,10 +1,13 @@
 import { Page } from 'playwright/test';
-import { createTempScreenShotBuffer, waitForTransitionEnd } from '../helpers';
+import { waitForTransitionEnd } from '../helpers';
+import testIds from '../../../src/helper/test-ids';
 
 export const initRender = async (page: Page): Promise<void> => {
-  await page.waitForSelector('.mynah-chat-item-card', { timeout: 5_000 });
-  await waitForTransitionEnd(page, '.mynah-chat-item-card');
+  const welcomeCardSelector = `[${testIds.selector}="${testIds.chatItem.type.answer}"]`;
+  const welcomeCard = await page.waitForSelector(welcomeCardSelector);
+  await waitForTransitionEnd(page, welcomeCardSelector);
+  
+  expect(welcomeCard).toBeDefined();
 
-  // send the buffer to toMatchImageSnapshot
-  expect(await createTempScreenShotBuffer(page)).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchImageSnapshot();
 };

@@ -1,12 +1,15 @@
 import { Page } from 'playwright';
-import { createTempScreenShotBuffer, waitForTransitionEnd } from '../helpers';
+import { waitForTransitionEnd } from '../helpers';
+import testIds from '../../../src/helper/test-ids';
 
 export const openNewTab = async (page: Page): Promise<void> => {
   // Open new tab
-  await page.locator('.mynah-nav-tabs-wrapper > .mynah-toggle-container.mynah-toggle-type-tabs + button.mynah-button').click();
-  await page.waitForSelector('.mynah-chat-item-card', { timeout: 5_000 });
-  await waitForTransitionEnd(page, '.mynah-chat-item-card');
-
-  // send the buffer to toMatchImageSnapshot
-  expect(await createTempScreenShotBuffer(page)).toMatchImageSnapshot();
+  await page.locator(`[${testIds.selector}="${testIds.tabBar.tabAddButton}"]`).click();
+  const welcomeCardSelector = `[${testIds.selector}="${testIds.chatItem.type.answer}"]`;
+  const welcomeCard = await page.waitForSelector(welcomeCardSelector);
+  await waitForTransitionEnd(page, welcomeCardSelector);
+  
+  expect(welcomeCard).toBeDefined();
+  
+  expect(await page.screenshot()).toMatchImageSnapshot();
 };

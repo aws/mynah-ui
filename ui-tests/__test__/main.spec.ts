@@ -1,7 +1,6 @@
 import path from 'path';
 import { Page, Browser } from 'playwright/test';
 import playwright from 'playwright';
-import { deleteTempScreenShotBuffer } from './helpers';
 import { initRender } from './flows/init-render';
 import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
@@ -12,7 +11,7 @@ describe('Open MynahUI', () => {
   let browser: Browser;
   let page: Page;
   beforeAll(async () => {
-    browser = await playwright.chromium.launch({
+    browser = await playwright.webkit.launch({
       headless: false,
       args: [ '--no-sandbox', '--disable-setuid-sandbox' ],
       timeout: 5000
@@ -30,7 +29,6 @@ describe('Open MynahUI', () => {
   });
 
   afterAll(async () => {
-    await deleteTempScreenShotBuffer();
     await browser.close();
   });
 

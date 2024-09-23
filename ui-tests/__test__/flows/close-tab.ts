@@ -1,10 +1,8 @@
 import { Page } from 'playwright/test';
-import { createTempScreenShotBuffer } from '../helpers';
+import testIds from '../../../src/helper/test-ids';
 
 export const closeTab = async (page: Page): Promise<void> => {
-  // Close the first tab
-  await page.locator('.mynah-nav-tabs-wrapper > .mynah-toggle-container > span[key="mynah-main-tabs-tab-1"] button').click();
+  await page.locator(`[${testIds.selector}="${testIds.tabBar.tabOptionWrapper}"]:nth-child(1) [${testIds.selector}="${testIds.tabBar.tabOptionCloseButton}"]`).click();
 
-  // send the buffer to toMatchImageSnapshot
-  expect(await createTempScreenShotBuffer(page)).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchImageSnapshot();
 };
