@@ -1,7 +1,5 @@
 import { ElementHandle, Page } from 'playwright/test';
-import fs from 'fs';
-
-export const TEMP_SCREENSHOT_PATH = './temp-snapshot.png';
+import testIds from '../../src/helper/test-ids';
 
 export async function waitForTransitionEnd (page: Page, element: string): Promise<void> {
   if(typeof element === 'string'){
@@ -25,4 +23,8 @@ export async function waitForTransitionEnd (page: Page, element: string): Promis
       });
     }, element);
   }
+}
+
+export function getSelector(selector: string):string {
+  return `[${testIds.selector}="${selector}"]`;
 }
