@@ -11,6 +11,7 @@ import { generateUID } from '../../helper/guid';
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardContentProps {
   body?: string;
+  testId?: string;
   renderAsStream?: boolean;
   classNames?: string[];
   codeReference?: ReferenceTrackerInformation[];
@@ -45,6 +46,7 @@ export class ChatItemCardContent {
   private readonly getCardContent = (): CardBody => {
     return new CardBody({
       body: this.props.body ?? '',
+      testId: this.props.testId,
       useParts: this.props.renderAsStream,
       classNames: [ this.typewriterId, ...(this.props.classNames ?? []) ],
       highlightRangeWithTooltip: this.props.codeReference,

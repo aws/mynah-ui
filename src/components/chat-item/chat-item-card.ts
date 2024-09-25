@@ -21,6 +21,7 @@ import { CONTAINER_GAP } from './chat-wrapper';
 import { chatItemHasContent } from '../../helper/chat-item';
 import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
+import testIds from '../../helper/test-ids';
 
 export interface ChatItemCardProps {
   tabId: string;
@@ -68,6 +69,7 @@ export class ChatItemCard {
     }
     this.cardFooter = this.getCardFooter();
     this.card = new Card({
+      testId: testIds.chatItem.card,
       children: this.initialSpinner ?? [],
       background: this.props.inline !== true,
       border: this.props.inline !== true,
@@ -92,6 +94,7 @@ export class ChatItemCard {
   private readonly generateCard = (): ExtendedHTMLElement => {
     const generatedCard = DomBuilder.getInstance().build({
       type: 'div',
+      testId: `${testIds.chatItem.type.any}-${this.props.chatItem.type ?? ChatItemType.ANSWER}`,
       classNames: this.getCardClasses(),
       attributes: {
         messageId: this.props.chatItem.messageId ?? 'unknown',

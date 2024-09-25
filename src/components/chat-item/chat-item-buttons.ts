@@ -4,6 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import testIds from '../../helper/test-ids';
 import { ChatItemButton } from '../../static';
 import { Button } from '../button';
 import { Icon } from '../icon';
@@ -28,13 +29,18 @@ export class ChatItemButtonsWrapper {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chatItem.buttons.wrapper,
       classNames: [ 'mynah-chat-item-buttons-container', ...(this.props.classNames ?? []) ],
       children: this.props.buttons.map(chatActionAction => {
         const actionItem = new Button({
+          testId: testIds.chatItem.buttons.button,
           label: chatActionAction.text,
           icon: chatActionAction.icon != null ? new Icon({ icon: chatActionAction.icon }).render : undefined,
           primary: chatActionAction.status === 'primary',
           border: chatActionAction.status !== 'primary',
+          attributes: {
+            'action-id': chatActionAction.id
+          },
           status: chatActionAction.status,
           onClick: (e) => {
             if (props.formItems !== null) {

@@ -7,10 +7,12 @@ postinstall.js
 **/*.scss
 **/*.svg
 **/*rc.js
-**/jest.config.js
-**/webpack.config.js
+**/*.config.js
+**/*.config.json
+*.json
 dist/**
 example*/**
+ui-tests*/**
 *api-docs/**
 docs/**
 out/**

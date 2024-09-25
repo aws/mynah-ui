@@ -7,6 +7,7 @@ import { MynahEventNames, PromptAttachmentType } from '../../../static';
 import { Card } from '../../card/card';
 import { CardBody } from '../../card/card-body';
 import { SyntaxHighlighter } from '../../syntax-highlighter';
+import testIds from '../../../helper/test-ids';
 
 export interface PromptTextAttachmentProps {
   tabId: string;
@@ -21,6 +22,7 @@ export class PromptTextAttachment {
   constructor (props: PromptTextAttachmentProps) {
     this.props = props;
     this.render = new Card({
+      testId: testIds.prompt.attachment,
       padding: 'none',
       border: false,
       events: {
@@ -44,6 +46,7 @@ export class PromptTextAttachment {
               }),
         }).render,
         new Button({
+          testId: testIds.prompt.attachmentRemove,
           classNames: [ 'code-snippet-close-button' ],
           onClick: e => {
             cancelEvent(e);

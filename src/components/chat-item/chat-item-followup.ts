@@ -5,6 +5,7 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents } from '../../helper/events';
+import testIds from '../../helper/test-ids';
 import { ChatItem, MynahEventNames } from '../../static';
 import { Button } from '../button';
 import { Icon } from '../icon';
@@ -20,6 +21,7 @@ export class ChatItemFollowUpContainer {
     this.props.chatItem = props.chatItem;
     this.followupOptions = (this.props.chatItem.followUp?.options ?? []).map(followUpOption => (
       new Button({
+        testId: testIds.chatItem.chatItemFollowup.optionButton,
         classNames: [ 'mynah-chat-item-followup-question-option' ],
         status: followUpOption.status,
         label: followUpOption.pillText,
@@ -53,15 +55,18 @@ export class ChatItemFollowUpContainer {
     });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chatItem.chatItemFollowup.wrapper,
       classNames: [ 'mynah-chat-item-followup-question' ],
       children: [
         {
           type: 'div',
+          testId: testIds.chatItem.chatItemFollowup.title,
           classNames: [ 'mynah-chat-item-followup-question-text' ],
           children: [ this.props.chatItem.followUp?.text ?? '' ]
         },
         {
           type: 'div',
+          testId: testIds.chatItem.chatItemFollowup.optionsWrapper,
           classNames: [ 'mynah-chat-item-followup-question-options-wrapper' ],
           children: this.followupOptions.map(option => option.render)
         },

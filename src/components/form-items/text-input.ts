@@ -15,6 +15,7 @@ export interface TextInputProps {
   type?: 'text' | 'number' | 'email';
   value?: string;
   onChange?: (value: string) => void;
+  testId?: string;
 }
 
 export abstract class TextInputAbstract {
@@ -31,6 +32,7 @@ export class TextInputInternal extends TextInputAbstract {
     super();
     this.inputElement = DomBuilder.getInstance().build({
       type: 'input',
+      testId: props.testId,
       classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
       attributes: {
         type: props.type ?? 'text',

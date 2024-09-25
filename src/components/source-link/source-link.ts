@@ -4,6 +4,7 @@
  */
 
 import { ExtendedHTMLElement } from '../../helper/dom';
+import testIds from '../../helper/test-ids';
 import { SourceLink } from '../../static';
 import { Card } from '../card/card';
 import { SourceLinkBody } from './source-link-body';
@@ -16,6 +17,7 @@ export class SourceLinkCard {
   constructor (props: SourceLinkCardProps) {
     this.sourceLink = props.sourceLink;
     this.render = new Card({
+      testId: testIds.chatItem.relatedLinks.linkPreviewOverlayCard,
       border: false,
       background: false,
       children: [

@@ -11,6 +11,7 @@ import '../styles/components/_collapsible-content.scss';
 
 interface CollapsibleContentProps {
   title: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
+  testId?: string;
   children: Array<string | ExtendedHTMLElement | HTMLElement | DomBuilderObject>;
   classNames?: string[];
   initialCollapsedState?: boolean;
@@ -26,12 +27,14 @@ export class CollapsibleContent {
     this.props = {
       initialCollapsedState: true,
       onCollapseStateChange: () => {},
+      testId: 'mynah-ui-collapsible-content',
       classNames: [],
       ...props
     };
     this.icon = new Icon({ icon: this.props.initialCollapsedState ? MynahIcons.RIGHT_OPEN : MynahIcons.DOWN_OPEN }).render;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: this.props.testId,
       classNames: [ 'mynah-collapsible-content-wrapper', ...this.props.classNames ],
       children: [
         {

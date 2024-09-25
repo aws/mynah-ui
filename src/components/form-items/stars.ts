@@ -15,6 +15,8 @@ export interface StarsProps {
   value?: string;
   onChange?: (value: string) => void;
   initStar?: StarValues;
+  wrapperTestId?: string;
+  optionTestId?: string;
 }
 export class Stars {
   private readonly starsContainer: ExtendedHTMLElement;
@@ -23,6 +25,7 @@ export class Stars {
   constructor (props: StarsProps) {
     this.starsContainer = DomBuilder.getInstance().build({
       type: 'div',
+      testId: props.wrapperTestId,
       classNames: [ 'mynah-feedback-form-stars-container' ],
       attributes: { ...(props.value !== undefined && { 'selected-star': props.value?.toString() ?? '1' }) },
       children: Array(5)
@@ -30,6 +33,7 @@ export class Stars {
         .map((n, index) =>
           DomBuilder.getInstance().build({
             type: 'div',
+            testId: props.optionTestId,
             classNames: [ 'mynah-feedback-form-star', ...(props.value === (index + 1).toString() ? [ 'selected' ] : []) ],
             events: {
               click: (e: MouseEvent) => {

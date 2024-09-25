@@ -20,6 +20,10 @@ export interface ToggleOption {
   disabledTooltip?: string | ExtendedHTMLElement;
 }
 interface ToggleOptionRenderProps extends ToggleOption {
+  wrapperTestId?: string;
+  optionTestId?: string;
+  labelTestId?: string;
+  closeButtonTestId?: string;
   name: string;
   onChange?: (selectedValue: string) => void;
   onRemove?: (selectedValue: string, domElement: ExtendedHTMLElement) => void;
@@ -33,6 +37,7 @@ class ToggleOptionItem {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'span',
+      testId: props.wrapperTestId,
       attributes: {
         key: `${this.props.name}-${this.props.value}`,
         title: this.props.label as string ?? '',
@@ -71,6 +76,7 @@ class ToggleOptionItem {
       children: [
         {
           type: 'input',
+          testId: props.optionTestId,
           classNames: [ 'mynah-toggle-option' ],
           attributes: {
             type: 'radio',
@@ -90,6 +96,7 @@ class ToggleOptionItem {
         },
         {
           type: 'label',
+          testId: props.labelTestId,
           classNames: [ 'mynah-toggle-option-label' ],
           attributes: {
             for: `${this.props.name}-${this.props.value}`,
@@ -113,6 +120,7 @@ class ToggleOptionItem {
             },
             this.props.onRemove !== undefined
               ? new Button({
+                testId: this.props.closeButtonTestId,
                 classNames: [ 'mynah-toggle-close-button' ],
                 onClick: () => {
                   if (this.props.onRemove !== undefined) {
@@ -130,6 +138,7 @@ class ToggleOptionItem {
   }
 }
 export interface ToggleProps {
+  testId?: string;
   options: ToggleOption[];
   direction?: 'horizontal' | 'vertical';
   value?: string | null;
@@ -148,6 +157,7 @@ export class Toggle {
     this.currentValue = this.props.value;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: this.props.testId,
       classNames: [ 'mynah-toggle-container', 'mynah-toggle-type-tabs', `mynah-toggle-direction-${this.props.direction as string}` ],
       attributes: { disabled: props.disabled === true ? 'disabled' : '' },
       children: this.getChildren(props.value),
@@ -174,7 +184,15 @@ export class Toggle {
         selected: value === option.value,
         name: this.props.name,
         onChange: this.updateSelectionRender,
-        onRemove: this.props.onRemove
+        onRemove: this.props.onRemove,
+        ...(this.props.testId != null
+          ? {
+              wrapperTestId: `${this.props.testId}-option-wrapper`,
+              optionTestId: `${this.props.testId}-option`,
+              labelTestId: `${this.props.testId}-option-label`,
+              closeButtonTestId: `${this.props.testId}-option-close-button`
+            }
+          : {})
       }).render;
     })
   ];
@@ -203,7 +221,15 @@ export class Toggle {
       ...option,
       name: this.props.name,
       onChange: this.updateSelectionRender,
-      onRemove: this.props.onRemove
+      onRemove: this.props.onRemove,
+      ...(this.props.testId != null
+        ? {
+            wrapperTestId: `${this.props.testId}-options-wrapper`,
+            optionTestId: `${this.props.testId}-option`,
+            labelTestId: `${this.props.testId}-option-label`,
+            closeButtonTestId: `${this.props.testId}-option-close-button`
+          }
+        : {})
     }).render);
     if (option.selected === true) {
       this.setValue(option.value);

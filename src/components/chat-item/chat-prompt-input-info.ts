@@ -9,6 +9,7 @@ import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardBody } from '../card/card-body';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { MynahEventNames } from '../../static';
+import testIds from '../../helper/test-ids';
 
 export interface ChatPromptInputInfoProps{
   tabId: string;
@@ -38,9 +39,11 @@ export class ChatPromptInputInfo {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.prompt.footerInfo,
       classNames: [ 'mynah-chat-prompt-input-info' ],
       children: [
         new CardBody({
+          testId: testIds.prompt.footerInfoBody,
           onLinkClick: this.linkClick,
           body: MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo') ?? ''
         }).render

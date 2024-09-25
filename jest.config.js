@@ -1,6 +1,7 @@
 const jestConfig = {
     testEnvironment: 'jsdom',
     preset: 'ts-jest',
+    modulePathIgnorePatterns: ['<rootDir>/ui-tests/'],
     moduleNameMapper: {
         '\\.svg$': 'jest-svg-transformer',
         '^.+\\.(css|less|scss)$': 'babel-jest',
