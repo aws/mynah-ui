@@ -6,5 +6,5 @@ module.exports = {
     testMatch: ['**/?(*.)+(spec|test).[t]s'],
     testPathIgnorePatterns: ['/node_modules/', 'dist', 'src'],
     setupFilesAfterEnv: ['./jest.image.ts'],
-    testTimeout: 30000,
+    testTimeout: 15000,
 };
