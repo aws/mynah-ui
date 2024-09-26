@@ -1,6 +1,6 @@
 import { Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
-import { DEFAULT_VIEWPORT, getSelector, waitForAllAnimationsEnd } from '../helpers';
+import { DEFAULT_VIEWPORT, getSelector, waitForAnimationEnd } from '../helpers';
 import { clickToFollowup } from './click-followup';
 
 const getOffsetHeight = (boxRect: {
@@ -40,7 +40,7 @@ export const windowBoundary = async (page: Page): Promise<void> => {
 
   // The reason we're waiting for the animations for resize actions
   // is that we have a 1ms animation for the container which fixes the left screen edge shift for flex boxes
-  await waitForAllAnimationsEnd(page);
+  await waitForAnimationEnd(page);
 
   // Check if the footer element exceeds from bottom
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
@@ -61,7 +61,7 @@ export const windowBoundary = async (page: Page): Promise<void> => {
 
   // The reason we're waiting for the animations for resize actions
   // is that we have a 1ms animation for the container which fixes the left screen edge shift for flex boxes
-  await waitForAllAnimationsEnd(page);
+  await waitForAnimationEnd(page);
 
   // Check if the footer element exceeds from bottom
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);

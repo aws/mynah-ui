@@ -44,11 +44,11 @@ describe('Open MynahUI', () => {
   });
 
   it('should close the tab', async () => {
-    await closeTab(page);
+    await closeTab(page, true);
   });
 
   it('should open a new the tab', async () => {
-    await openNewTab(page);
+    await openNewTab(page, true);
   });
 
   it('should keep the content inside window boundaries', async () => {
