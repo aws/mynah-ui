@@ -21,7 +21,7 @@ describe('Open MynahUI', () => {
     page = await browser.newPage({
       viewport: DEFAULT_VIEWPORT
     });
-    const htmlFilePath = path.join(__dirname, '../dist/index.html');
+    const htmlFilePath: string = path.join(__dirname, '../dist/index.html');
     const fileUrl = `file://${htmlFilePath}`;
     await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
   });
