@@ -51,11 +51,11 @@ describe('Open MynahUI', () => {
   });
 
   it('should close the tab with middle click', async () => {
-    await closeTab(page, true);
+    await closeTab(page, true, true);
   });
 
-  it('should open a new the tab with double click', async () => {
-    await openNewTab(page, true);
+  it('should open a new tab with double click', async () => {
+    await openNewTab(page, true, true);
   });
 
   it('should keep the content inside window boundaries', async () => {
