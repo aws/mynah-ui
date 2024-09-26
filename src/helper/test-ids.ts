@@ -1,5 +1,5 @@
 export default {
-  selector: 'mynah-ui-test-id',
+  selector: 'data-testid',
   prompt: {
     wrapper: 'prompt-input-wrapper',
     attachmentWrapper: 'prompt-input-attachment-wrapper',
