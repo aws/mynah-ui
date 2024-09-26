@@ -34,5 +34,5 @@ export async function justWait (duration: number): Promise<void> {
 }
 
 export function getSelector (selector: string): string {
-  return `[${testIds.selector}="${selector}"]`;
+  return `css=[${testIds.selector}="${selector}"]`;
 }
