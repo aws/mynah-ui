@@ -23,7 +23,6 @@ describe('Open MynahUI', () => {
     });
     const htmlFilePath = path.join(__dirname, '../dist/index.html');
     const fileUrl = 'file://' + htmlFilePath;
-    // await page.setViewport({ width: 500, height: 950 });
     await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
   });
 
@@ -44,10 +43,18 @@ describe('Open MynahUI', () => {
   });
 
   it('should close the tab', async () => {
-    await closeTab(page, true);
+    await closeTab(page);
   });
 
   it('should open a new the tab', async () => {
+    await openNewTab(page);
+  });
+
+  it('should close the tab with middle click', async () => {
+    await closeTab(page, true);
+  });
+
+  it('should open a new the tab with double click', async () => {
     await openNewTab(page, true);
   });
 
