@@ -34,27 +34,27 @@ describe('Open MynahUI', () => {
   });
 
   it('should render initial data', async () => {
-    await initRender(page);
+    await initRender(_page);
   });
 
   it('should render user prompt', async () => {
-    await renderUserPrompt(page);
+    await renderUserPrompt(_page);
   });
 
   it('should render new card when followup click', async () => {
-    await clickToFollowup(page);
+    await clickToFollowup(_page);
   });
 
   it('should close the tab', async () => {
-    await closeTab(page);
+    await closeTab(_page);
   });
 
   it('should open a new the tab', async () => {
-    await openNewTab(page);
+    await openNewTab(_page);
   });
 
   it('should close the tab with middle click', async () => {
-    await closeTab(page, true, true);
+    await closeTab(_page, true, true);
   });
 
   it('should open a new tab with double click', async () => {
