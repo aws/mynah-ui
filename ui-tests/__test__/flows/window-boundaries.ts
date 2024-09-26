@@ -1,6 +1,6 @@
 import { Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
-import { DEFAULT_VIEWPORT, getSelector, justWait, waitForAllAnimationsEnd } from '../helpers';
+import { DEFAULT_VIEWPORT, getSelector, waitForAllAnimationsEnd } from '../helpers';
 import { clickToFollowup } from './click-followup';
 
 const getOffsetHeight = (boxRect: {
@@ -47,6 +47,14 @@ export const windowBoundary = async (page: Page): Promise<void> => {
 
   // Snap
   expect(await page.screenshot()).toMatchImageSnapshot();
+
+  // Set viewport size to
+  await page.setViewportSize({
+    width: 1,
+    height: 1
+  });
+  // We don't need to wait here, we're just checking if the viewport width is changed or not
+  expect(page.viewportSize()?.width).toBeLessThanOrEqual(1);
 
   // Revert viewport size
   await page.setViewportSize(DEFAULT_VIEWPORT);
