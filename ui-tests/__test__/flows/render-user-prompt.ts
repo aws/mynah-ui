@@ -1,5 +1,5 @@
 import { Page } from 'playwright/test';
-import { getSelector, waitForTransitionEnd } from '../helpers';
+import { getSelector, waitForAllAnimationsEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
 export const renderUserPrompt = async (page: Page): Promise<void> => {
@@ -8,7 +8,7 @@ export const renderUserPrompt = async (page: Page): Promise<void> => {
 
   const userCardSelector = `${getSelector(testIds.chatItem.type.prompt)}`;
   const userCard = await page.waitForSelector(userCardSelector);
-  await waitForTransitionEnd(page, userCardSelector);
+  await waitForAllAnimationsEnd(page);
 
   expect(userCard).toBeDefined();
 

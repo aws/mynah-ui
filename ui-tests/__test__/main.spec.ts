@@ -6,6 +6,8 @@ import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
 import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
+import { windowBoundary } from './flows/window-boundaries';
+import { DEFAULT_VIEWPORT } from './helpers';
 
 describe('Open MynahUI', () => {
   let browser: Browser;
@@ -17,10 +19,7 @@ describe('Open MynahUI', () => {
       timeout: 5000
     });
     page = await browser.newPage({
-      viewport: {
-        width: 500,
-        height: 950
-      }
+      viewport: DEFAULT_VIEWPORT
     });
     const htmlFilePath = path.join(__dirname, '../dist/index.html');
     const fileUrl = 'file://' + htmlFilePath;
@@ -50,5 +49,9 @@ describe('Open MynahUI', () => {
 
   it('should open a new the tab', async () => {
     await openNewTab(page);
+  });
+
+  it('should keep the content inside window boundaries', async () => {
+    await windowBoundary(page);
   });
 });

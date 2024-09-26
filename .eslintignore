@@ -14,7 +14,6 @@ postinstall.js
 .husky
 dist/**
 example*/**
-ui-tests*/**
 *api-docs/**
 docs/**
 out/**
