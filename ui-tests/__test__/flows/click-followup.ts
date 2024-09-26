@@ -8,11 +8,9 @@ export const clickToFollowup = async (page: Page, skipScreenshots?: boolean): Pr
   await waitForAllAnimationsEnd(page);
 
   await page.locator(`${followupMessageSelector} ${getSelector(testIds.chatItem.chatItemFollowup.optionButton)}:nth-child(1)`).click();
-  // await page.mouse.move(0, 0);
-  await page.mouse.click(0, 0);
+  await page.mouse.move(0, 0);
 
   await page.waitForSelector(`${getSelector(testIds.chat.wrapper)}:not(.loading)`);
-  (await page.waitForSelector(followupMessageSelector)).focus();
   await waitForAllAnimationsEnd(page);
 
   if (skipScreenshots !== true) {
