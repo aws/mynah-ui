@@ -48,7 +48,7 @@ export const createMynahUI = (): MynahUI => {
       //
     },
     onBeforeTabRemove: (tabId: string): boolean => {
-      return (mynahUI.getAllTabs()[tabId].store?.loadingChat === true);
+      return (mynahUI.getAllTabs()[tabId].store?.loadingChat === false);
     },
     onTabRemove: (tabId: string) => {
       //
