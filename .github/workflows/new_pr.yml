@@ -14,14 +14,14 @@ jobs:
           scope: '@aws'
       - run: npm ci
       - run: npm run build
+      - run: npm run test
       - run: cd ./ui-tests && npm install && npm run prepare
       - run: cd ./ui-tests && npx playwright install webkit chromium --with-deps
       - run: cd ./ui-tests && npm run e2e 
       - run: npm run lint
-      - run: npm run test
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: tests-report
-          path: tests-report/
+          name: diff-snapshots
+          path: ./__test__/__image_snapshots__/
           retention-days: 30
