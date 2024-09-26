@@ -22,7 +22,7 @@ describe('Open MynahUI', () => {
       viewport: DEFAULT_VIEWPORT
     });
     const htmlFilePath = path.join(__dirname, '../dist/index.html');
-    const fileUrl = 'file://' + htmlFilePath;
+    const fileUrl = `file://${htmlFilePath}`;
     await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
   });
 
