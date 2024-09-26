@@ -7,7 +7,7 @@
         "clean": "rm -rf build dist node_modules",
         "prepare": "webpack --config webpack.config.js --mode development",
         "e2e": "jest --runInBand --detectOpenHandles --config=./jest.config.js",
-        "postinstall": "npx playwright install webkit"
+        "postinstall": "npx playwright install webkit chromium"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../"

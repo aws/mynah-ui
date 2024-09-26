@@ -1,6 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference types="jest-playwright-preset" />
 import path from 'path';
-import { Page, Browser } from 'playwright/test';
-import playwright from 'playwright';
 import { initRender } from './flows/init-render';
 import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
@@ -8,22 +8,32 @@ import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
 import { windowBoundary } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
+import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
+import { Page } from 'playwright';
 
 describe('Open MynahUI', () => {
-  let browser: Browser;
-  let page: Page;
+  let _page: Page;
   beforeAll(async () => {
-    browser = await playwright.webkit.launch({
-      headless: true,
-      args: [ '--no-sandbox', '--disable-setuid-sandbox' ],
-      timeout: 5000
+    const browserName = await (await browser.browserType()).name();
+    const toMatchImageSnapshot = configureToMatchImageSnapshot({
+      failureThreshold: browserName === 'webkit' ? 0.01 : 0.1,
+      comparisonMethod: 'ssim',
+      failureThresholdType: 'percent',
+      customSnapshotsDir: `./__test__/__image_snapshots__/${browserName}`
     });
-    page = await browser.newPage({
-      viewport: DEFAULT_VIEWPORT
-    });
+
+    expect.extend({ toMatchImageSnapshot });
     const htmlFilePath: string = path.join(__dirname, '../dist/index.html');
     const fileUrl = `file://${htmlFilePath}`;
-    await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
+    if (browserName === 'webkit') {
+      _page = await browser.newPage({
+        viewport: DEFAULT_VIEWPORT
+      });
+    } else {
+      _page = page;
+      await _page.setViewportSize(DEFAULT_VIEWPORT);
+    }
+    await _page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
   });
 
   afterAll(async () => {
@@ -31,34 +41,34 @@ describe('Open MynahUI', () => {
   });
 
   it('should render initial data', async () => {
-    await initRender(page);
+    await initRender(_page);
   });
 
   it('should render user prompt', async () => {
-    await renderUserPrompt(page);
+    await renderUserPrompt(_page);
   });
 
   it('should render new card when followup click', async () => {
-    await clickToFollowup(page);
+    await clickToFollowup(_page);
   });
 
   it('should close the tab', async () => {
-    await closeTab(page);
+    await closeTab(_page);
   });
 
   it('should open a new the tab', async () => {
-    await openNewTab(page);
+    await openNewTab(_page);
   });
 
   it('should close the tab with middle click', async () => {
-    await closeTab(page, true, true);
+    await closeTab(_page, true, true);
   });
 
   it('should open a new tab with double click', async () => {
-    await openNewTab(page, true, true);
+    await openNewTab(_page, true, true);
   });
 
   it('should keep the content inside window boundaries', async () => {
-    await windowBoundary(page);
+    await windowBoundary(_page);
   });
 });
