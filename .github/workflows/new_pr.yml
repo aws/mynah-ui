@@ -13,8 +13,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
       - run: npm ci
-      - run: cd ./ui-tests && npm install
+      - run: npm run build
+      - run: cd ./ui-tests && npm run tests:prepare
       - run: cd ..
+      - run: npm run test:e2e
       - run: npm run lint
       - run: npm run test
       - run: npm run build
