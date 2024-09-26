@@ -14,9 +14,11 @@ jobs:
           scope: '@aws'
       - run: npm ci
       - run: npm run build
-      - run: cd ./ui-tests && npm run tests:prepare
+      - run: cd ./ui-tests
+      - run: npm install
+      - run: npm run prepare
+      - run: npm run e2e
       - run: cd ..
-      - run: npm run test:e2e
       - run: npm run lint
       - run: npm run test
       - run: npm run build
