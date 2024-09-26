@@ -19,7 +19,6 @@ export async function waitForElementAnimationEnd (page: Page, selector: string):
           const isAnimating = elm
             .getAnimations()
             .filter((animation) => {
-              console.log(animation.playState);
               return animation.playState === 'running';
             });
           if (isAnimating != null) {
