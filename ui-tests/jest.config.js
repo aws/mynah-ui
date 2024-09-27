@@ -7,11 +7,6 @@ module.exports = {
             browsers: ['webkit', 'chromium'],
             launchOptions: {
                 headless: true,
-                args: [
-                    '--disable-skia-runtime-opts',
-                    '--disable-font-subpixel-positioning',
-                    '--disable-lcd-text',
-                ]
             }
         },
     },

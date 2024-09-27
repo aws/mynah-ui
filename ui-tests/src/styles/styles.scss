@@ -13,6 +13,7 @@ body {
     color: var(--mynah-color-text-default);
     line-height: var(--mynah-line-height) !important;
     transform: translateZ(0);
+    filter: contrast(1);
 }
 * {
     font-stretch: 100%;
