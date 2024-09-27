@@ -2,6 +2,7 @@
 
 html,
 body {
+    font-size: var(--mynah-font-size-medium) !important;
     width: 100vw;
     height: 100vh;
     margin: 0;
@@ -14,6 +15,7 @@ body {
 }
 * {
     text-rendering: optimizeLegibility !important;
+    -webkit-text-stroke: thin;
 }
 
 #mynah-ui-wrapper {
