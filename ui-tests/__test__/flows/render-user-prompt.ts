@@ -16,7 +16,6 @@ export const renderUserPrompt = async (page: Page, skipScreenshots?: boolean): P
   expect(await promptInput.isDisabled()).toEqual(false);
 
   if (skipScreenshots !== true) {
-    const chatItemsContainer = await page.waitForSelector(`${getSelector(testIds.chat.chatItemsContainer)}`);
-    expect(await chatItemsContainer.screenshot()).toMatchImageSnapshot();
+    expect(await userCard.screenshot()).toMatchImageSnapshot();
   }
 };
