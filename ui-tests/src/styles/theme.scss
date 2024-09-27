@@ -1,9 +1,19 @@
+@font-face {
+    font-family: 'roboto';
+    font-weight: 400;
+    src: url('roboto.woff') format('woff');
+}
+@font-face {
+    font-family: 'roboto';
+    font-weight: 700;
+    src: url('roboto-bold.woff') format('woff');
+}
 :root {
     font-size: 13px !important;
     --mynah-max-width: 100vw;
     --mynah-sizing-base: 0.225rem;
     --mynah-chat-wrapper-spacing: var(--mynah-sizing-6);
-    --mynah-font-family: system-ui, -apple-system, sans-serif;
+    --mynah-font-family: 'roboto', system-ui, -apple-system, sans-serif;
     --mynah-syntax-code-font-family: monospace;
     --mynah-color-text-default: #517185;
     --mynah-color-text-alternate: #ffffff;
