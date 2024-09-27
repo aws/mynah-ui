@@ -15,9 +15,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run test
-      - run: cd ./ui-tests && npm install && npm run prepare
-      - run: cd ./ui-tests && npx playwright install webkit chromium --with-deps
-      - run: cd ./ui-tests && npm run e2e 
+      - run: cd ./ui-tests && npm install && npm run prepare && npm run e2e
       - run: npm run lint
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

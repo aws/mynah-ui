@@ -10,6 +10,10 @@ body {
     overflow: hidden;
     background-color: var(--mynah-color-bg);
     color: var(--mynah-color-text-default);
+    font-smooth: always;
+}
+* {
+    text-rendering: optimizeLegibility !important;
 }
 
 #mynah-ui-wrapper {
