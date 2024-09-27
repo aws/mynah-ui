@@ -9,15 +9,13 @@ import { openNewTab } from './flows/open-new-tab';
 import { windowBoundary } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
-import { Page } from 'playwright';
 
 describe('Open MynahUI', () => {
-  let _page: Page;
   beforeAll(async () => {
     const browserName = await (await browser.browserType()).name();
     const toMatchImageSnapshot = configureToMatchImageSnapshot({
-      failureThreshold: 0.1,
-      comparisonMethod: 'pixelmatch',
+      failureThreshold: 0.05,
+      comparisonMethod: 'ssim',
       failureThresholdType: 'percent',
       customSnapshotsDir: `./__test__/__image_snapshots__/${browserName}`
     });
@@ -25,15 +23,8 @@ describe('Open MynahUI', () => {
     expect.extend({ toMatchImageSnapshot });
     const htmlFilePath: string = path.join(__dirname, '../dist/index.html');
     const fileUrl = `file://${htmlFilePath}`;
-    if (browserName === 'webkit') {
-      _page = await browser.newPage({
-        viewport: DEFAULT_VIEWPORT
-      });
-    } else {
-      _page = page;
-      await _page.setViewportSize(DEFAULT_VIEWPORT);
-    }
-    await _page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
+    await page.setViewportSize(DEFAULT_VIEWPORT);
+    await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
   });
 
   afterAll(async () => {
@@ -41,34 +32,34 @@ describe('Open MynahUI', () => {
   });
 
   it('should render initial data', async () => {
-    await initRender(_page);
+    await initRender(page);
   });
 
   it('should render user prompt', async () => {
-    await renderUserPrompt(_page);
+    await renderUserPrompt(page);
   });
 
   it('should render new card when followup click', async () => {
-    await clickToFollowup(_page);
+    await clickToFollowup(page);
   });
 
   it('should close the tab', async () => {
-    await closeTab(_page);
+    await closeTab(page);
   });
 
   it('should open a new the tab', async () => {
-    await openNewTab(_page);
+    await openNewTab(page);
   });
 
   it('should close the tab with middle click', async () => {
-    await closeTab(_page, true, true);
+    await closeTab(page, true, true);
   });
 
   it('should open a new tab with double click', async () => {
-    await openNewTab(_page, true, true);
+    await openNewTab(page, true, true);
   });
 
   it('should keep the content inside window boundaries', async () => {
-    await windowBoundary(_page);
+    await windowBoundary(page);
   });
 });
