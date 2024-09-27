@@ -16,6 +16,7 @@ export const renderUserPrompt = async (page: Page, skipScreenshots?: boolean): P
   expect(await promptInput.isDisabled()).toEqual(false);
 
   if (skipScreenshots !== true) {
-    expect(await userCard.screenshot()).toMatchImageSnapshot();
+    const box = await userCard.boundingBox();
+    expect(await page.screenshot({ clip: box ?? undefined })).toMatchImageSnapshot();
   }
 };

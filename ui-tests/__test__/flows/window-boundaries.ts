@@ -34,8 +34,8 @@ export const windowBoundary = async (page: Page): Promise<void> => {
 
   // Update viewport size
   await page.setViewportSize({
-    width: 250,
-    height: 400
+    width: 350,
+    height: 500
   });
 
   // The reason we're waiting for the animations for resize actions

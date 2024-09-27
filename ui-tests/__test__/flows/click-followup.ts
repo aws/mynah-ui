@@ -14,6 +14,7 @@ export const clickToFollowup = async (page: Page, skipScreenshots?: boolean): Pr
 
   if (skipScreenshots !== true) {
     const chatItemsContainer = await page.waitForSelector(`${getSelector(testIds.chat.chatItemsContainer)}`);
-    expect(await chatItemsContainer.screenshot()).toMatchImageSnapshot();
+    const box = await chatItemsContainer.boundingBox();
+    expect(await page.screenshot({ clip: box ?? undefined })).toMatchImageSnapshot();
   }
 };
