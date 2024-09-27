@@ -17,9 +17,6 @@ export const renderUserPrompt = async (page: Page, skipScreenshots?: boolean): P
 
   if (skipScreenshots !== true) {
     const box = await userCard.boundingBox();
-    expect(await page.screenshot({ clip: box ?? undefined })).toMatchImageSnapshot({
-      failureThreshold: 0.25,
-      failureThresholdType: 'percent'
-    });
+    expect(await page.screenshot({ clip: box ?? undefined })).toMatchImageSnapshot();
   }
 };

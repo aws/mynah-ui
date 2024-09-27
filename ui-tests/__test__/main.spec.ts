@@ -16,6 +16,7 @@ describe('Open MynahUI', () => {
     const toMatchImageSnapshot = configureToMatchImageSnapshot({
       failureThreshold: 0.1,
       failureThresholdType: 'percent',
+      storeReceivedOnFailure: true,
       customSnapshotsDir: `./__test__/__image_snapshots__/${browserName}`
     });
 
