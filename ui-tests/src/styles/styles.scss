@@ -22,7 +22,7 @@ body {
     font-optical-sizing: none;
     -webkit-text-stroke: thin !important;
     text-rendering: optimizeLegibility !important;
-    -webkit-font-smoothing: none !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
 }
 
 #mynah-ui-wrapper {
