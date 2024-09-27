@@ -17,8 +17,8 @@ body {
 * {
     font-stretch: 100%;
     letter-spacing: normal;
-    text-rendering: geometricPrecision;
-    -webkit-font-smoothing: subpixel-antialiased;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
 }
 
 #mynah-ui-wrapper {
