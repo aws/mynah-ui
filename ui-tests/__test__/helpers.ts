@@ -16,8 +16,8 @@ export async function waitForAnimationEnd (page: Page, selector?: string): Promi
               clearInterval(animationStateCheckInterval);
               resolve();
             }
-          }, 150);
-        }, 600);
+          }, 200);
+        }, 700);
       } else {
         resolve();
       }
