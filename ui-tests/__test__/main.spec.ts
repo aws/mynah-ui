@@ -15,6 +15,7 @@ describe('Open MynahUI', () => {
     const browserName = await (await browser.browserType()).name();
     const toMatchImageSnapshot = configureToMatchImageSnapshot({
       failureThreshold: 0.05,
+      failureThresholdType: 'percent',
       customSnapshotsDir: `./__test__/__image_snapshots__/${browserName}`
     });
 
