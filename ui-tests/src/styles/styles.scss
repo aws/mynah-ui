@@ -12,6 +12,7 @@ body {
     background-color: var(--mynah-color-bg);
     color: var(--mynah-color-text-default);
     font-smooth: always;
+    line-height: var(--mynah-line-height) !important;
 }
 * {
     text-rendering: optimizeLegibility !important;
