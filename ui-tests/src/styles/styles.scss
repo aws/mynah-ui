@@ -12,18 +12,13 @@ body {
     background-color: var(--mynah-color-bg);
     color: var(--mynah-color-text-default);
     line-height: var(--mynah-line-height) !important;
-    transform: translate3d(0, 0, 0.01px);
+    transform: translateZ(0);
 }
 * {
-    text-rendering: optimizeLegibility !important;
-    font-kerning: normal !important;
-    font-feature-settings: 'liga' 0 !important;
     font-stretch: 100%;
-    font-synthesis: none;
-    font-optical-sizing: none;
-    -webkit-text-stroke: thin !important;
-    text-rendering: optimizeLegibility !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
+    letter-spacing: normal;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: subpixel-antialiased;
 }
 
 #mynah-ui-wrapper {
