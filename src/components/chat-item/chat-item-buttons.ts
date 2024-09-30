@@ -11,11 +11,11 @@ import { Icon } from '../icon';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 
 export interface ChatItemButtonsWrapperProps {
-  tabId: string;
+  tabId?: string;
   classNames?: string[];
   buttons: ChatItemButton[];
-  formItems: ChatItemFormItemsWrapper | null;
-  onActionClick: (action: ChatItemButton, e?: Event) => void;
+  formItems?: ChatItemFormItemsWrapper | null;
+  onActionClick?: (action: ChatItemButton, e?: Event) => void;
 }
 export class ChatItemButtonsWrapper {
   private readonly props: ChatItemButtonsWrapperProps;
@@ -43,11 +43,13 @@ export class ChatItemButtonsWrapper {
           },
           status: chatActionAction.status,
           onClick: (e) => {
-            if (props.formItems !== null) {
+            if (props.formItems != null) {
               props.formItems.disableAll();
             }
             this.disableAll();
-            this.props.onActionClick(chatActionAction, e);
+            if (this.props.onActionClick != null) {
+              this.props.onActionClick(chatActionAction, e);
+            }
           }
         });
         if (chatActionAction.disabled === true) {
@@ -60,7 +62,7 @@ export class ChatItemButtonsWrapper {
         return actionItem.render;
       })
     });
-    if (props.formItems !== null) {
+    if (props.formItems != null) {
       this.handleValidationChange(props.formItems.isFormValid());
       props.formItems.onValidationChange = (isValid) => {
         this.handleValidationChange(isValid);

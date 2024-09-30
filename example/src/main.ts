@@ -97,7 +97,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           tabCloseConfirmationMessage: 'Only this tab has a different message than others!',
           ...mynahUIDefaults.store,
           ...initialData,
-          showChatAvatars
+          showChatAvatars,
         },
       },
     },
@@ -222,6 +222,20 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           prompt: followUp.prompt,
           escapedPrompt: followUp.escapedPrompt ?? followUp.prompt,
         });
+      }
+    },
+    onChatPromptProgressActionButtonClicked: (tabId: string, action) => {
+      Log(`Chat prompt progress action clicked on tab <b>${tabId}</b>:<br/>
+      Action Id: <b>${action.id}</b><br/>
+      Action Text: <b>${action.text}</b><br/>
+      `);
+
+      if(action.id === 'cancel-running-task'){
+        streamingMessageId = null;
+        mynahUI.updateStore(tabId, {
+          loadingChat: false
+        });
+        Log(`Stop generating code: <b>${tabId}</b>`);        
       }
     },
     onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
@@ -543,18 +557,22 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     connector
       .requestGenerativeAIAnswer(
         optionalParts ?? exampleStreamParts,
-        (chatItem: Partial<ChatItem>) => {
+        (chatItem: Partial<ChatItem>, percentage: number) => {
           if (streamingMessageId != null) {
             mynahUI.updateChatAnswerWithMessageId(tabId, streamingMessageId, chatItem);
+            mynahUI.updateStore(tabId, {
+              promptInputProgress: {
+                  status: 'info',
+                  ...(percentage > 50 ? {text: 'Almost done...'} : {}),
+                  valueText: `${parseInt(percentage.toString())}%`,
+                  value: percentage,
+              }
+            });
             return false;
           }
           return true;
         },
         () => {
-          mynahUI.updateStore(tabId, {
-            loadingChat: false,
-            promptInputDisabledState: false,
-          });
           const cardDetails = mynahUI.endMessageStream(tabId, messageId, {
             footer: {
               fileList: {
@@ -571,6 +589,25 @@ Use \`@\` to mention a file, folder, or method.`
               }
             }
           }) as Record<string, any>;
+          mynahUI.updateStore(tabId, {
+            promptInputProgress: {
+                status: 'success',
+                text: 'Completed...',
+                valueText: '',
+                value: 100,
+                actions: []
+            }
+          });
+
+          mynahUI.updateStore(tabId, {
+            loadingChat: false,
+          });
+          setTimeout(()=>{
+            mynahUI.updateStore(tabId, {
+              promptInputDisabledState: false,
+              promptInputProgress: null
+            });
+          },1500);
           Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails).map(key=>`${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
@@ -585,6 +622,19 @@ Use \`@\` to mention a file, folder, or method.`
           body: '',
           canBeVoted: true,
           messageId: streamingMessageId,
+        });
+        mynahUI.updateStore(tabId, {
+          promptInputProgress: {
+              status: 'default',
+              text: 'Work in progress...',
+              value: -1,
+              actions: [{
+                id: 'cancel-running-task',
+                text: 'Cancel',
+                icon: MynahIcons.CANCEL,
+                disabled: false,
+              }]
+          }
         });
       });
   };

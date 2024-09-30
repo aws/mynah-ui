@@ -1,12 +1,12 @@
 import { ChatItem } from '@aws/mynah-ui';
 import { Log } from './logger';
 const STREAM_DELAY = 350;
-const INITIAL_STREAM_DELAY = 1250;
+const INITIAL_STREAM_DELAY = 2000;
 
 export class Connector {
   requestGenerativeAIAnswer = async (
     streamingChatItems:Partial<ChatItem>[],
-    onStreamUpdate: (chatItem: Partial<ChatItem>) => boolean,
+    onStreamUpdate: (chatItem: Partial<ChatItem>, progressPercentage: number) => boolean,
     onStreamEnd: () => void
   ): Promise<boolean> => await new Promise((resolve, reject) => {
     Log('Simulating server response');
@@ -23,7 +23,7 @@ export class Connector {
       setTimeout(() => {
         streamFillInterval = setInterval(() => {
           if (mdStream.length > 0) {
-            const stopStream = onStreamUpdate(mdStream.pop() ?? {});
+            const stopStream = onStreamUpdate(mdStream.pop() ?? {}, 100 - (mdStream.length * 100 / streamingChatItems.length));
             if(stopStream){
               endStream();
             }

@@ -1,6 +1,3 @@
-@import '../variables';
-@import '../mixins';
-
 pre.diff-highlight > code .token.deleted:not(.prefix),
 pre > code.diff-highlight .token.deleted:not(.prefix) {
     background-color: rgba(255, 0, 0, 0.1);
@@ -167,19 +164,77 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             background: #b3d4fc;
         }
 
-        /**
-        * Loop through each style category and its corresponding tokens in $mynah-syntax-token-styles.
-        * For each token, apply the styles defined in $mynah-token-styles based on the style category.
-        * This replaces individual style definitions for each token class and makes the SCSS more maintainable.
-        */
-        @each $style, $tokens in $mynah-syntax-token-styles {
-            @each $token in $tokens {
-                .token.#{$token} {
-                    @each $property, $value in map-get($mynah-token-styles, $style) {
-                        #{$property}: #{$value};
-                    }
-                }
-            }
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: var(--mynah-color-syntax-comment);
+        }
+
+        .token.punctuation {
+            color: currentColor;
+        }
+
+        .token.namespace {
+            opacity: 0.7;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol,
+        .token.inserted {
+            color: var(--mynah-color-syntax-property);
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin,
+        .token.deleted {
+            color: var(--mynah-color-syntax-attr);
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string {
+            color: var(--mynah-color-syntax-operator);
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.class-name,
+        .token.keyword {
+            color: var(--mynah-color-syntax-attr-value);
+        }
+
+        .token.function {
+            color: var(--mynah-color-syntax-function);
+            font-weight: 500;
+        }
+
+        .token.regex,
+        .token.important,
+        .token.variable {
+            color: var(--mynah-color-syntax-variable);
+            font-weight: 500;
+        }
+
+        .token.important,
+        .token.bold {
+            font-weight: bold;
+        }
+        .token.italic {
+            font-style: italic;
+        }
+
+        .token.entity {
+            cursor: help;
         }
 
         &.line-numbers {
