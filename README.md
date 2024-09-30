@@ -30,9 +30,10 @@ Mynah UI operates independently of any framework or UI library, enabling seamles
 > Local environment quick start
  ```console
  git clone git@github.com:aws/mynah-ui.git
- cd mynah-ui
- npm run dev
+ cd mynah-ui && npm install
+ cd example && npm install
 ```
+Now run `npm watch` in both the `mynah-ui` and the `example` directories, and open `mynah-ui/example/dist/index.html` in a browser of choice.
 
 #### Guides and documentation
 Please refer to the following guides:
