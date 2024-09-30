@@ -147,6 +147,7 @@ export class ChatItemCard {
           referenceTrackerInformation,
           codeBlockIndex,
           totalCodeBlocks: (this.contentBody?.getRenderDetails().totalNumberOfCodeBlocks ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
+          userIntent: this.props.chatItem?.userIntent
         });
       },
       ...(Object.keys(Config.getInstance().config.codeBlockActions ?? {}).length > 0 || Object.keys(this.props.chatItem.codeBlockActions ?? {}).length > 0
@@ -165,6 +166,7 @@ export class ChatItemCard {
                 referenceTrackerInformation,
                 codeBlockIndex,
                 totalCodeBlocks: (this.contentBody?.getRenderDetails().totalNumberOfCodeBlocks ?? 0) + (this.customRendererWrapper?.nextCodeBlockIndex ?? 0),
+                userIntent: this.props.chatItem?.userIntent
               });
             }
           }

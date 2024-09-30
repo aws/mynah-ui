@@ -209,9 +209,10 @@ export interface ChatItemContent {
   formItems?: ChatItemFormItem[];
   footer?: ChatItemContent;
   codeBlockActions?: CodeBlockActions;
+  userIntent?: string;
 }
 
-export interface ChatItem extends ChatItemContent{
+export interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
@@ -317,8 +318,8 @@ export interface ReferenceTrackerInformation {
 }
 
 export type CodeSelectionType = 'selection' | 'block';
-export type OnCopiedToClipboardFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number) => void;
-export type OnCodeBlockActionFunction = (actionId: string, data?: any, type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number) => void;
+export type OnCopiedToClipboardFunction = (type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number, userIntent?: string) => void;
+export type OnCodeBlockActionFunction = (actionId: string, data?: any, type?: CodeSelectionType, text?: string, referenceTrackerInformation?: ReferenceTrackerInformation[], codeBlockIndex?: number, totalCodeBlocks?: number, userIntent?: string) => void;
 
 export enum RelevancyVoteType {
   UP = 'upvote',

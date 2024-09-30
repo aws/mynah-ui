@@ -152,7 +152,8 @@ export interface MynahUIProps {
     referenceTrackerInformation?: ReferenceTrackerInformation[],
     eventId?: string,
     codeBlockIndex?: number,
-    totalCodeBlocks?: number,) => void;
+    totalCodeBlocks?: number,
+    userIntent?: string) => void;
   /**
    * @deprecated since version 4.14.0. It will be only used for keyboard, context menu copy actions, not for button actions after version 5.x.x. Use {@link onCodeBlockActionClicked} instead
    */
@@ -165,6 +166,7 @@ export interface MynahUIProps {
     eventId?: string,
     codeBlockIndex?: number,
     totalCodeBlocks?: number,
+    userIntent?: string,
     data?: any) => void;
   /**
    * @deprecated since version 4.14.0. Will be dropped after version 5.x.x. Use {@link onCodeBlockActionClicked} instead
@@ -178,6 +180,7 @@ export interface MynahUIProps {
     eventId?: string,
     codeBlockIndex?: number,
     totalCodeBlocks?: number,
+    userIntent?: string,
     data?: any) => void;
   onSourceLinkClick?: (
     tabId: string,
@@ -439,6 +442,7 @@ export class MynahUI {
           this.getUserEventId(),
           data.codeBlockIndex,
           data.totalCodeBlocks,
+          data.userIntent
         );
       }
       // TODO needs to be deprecated and followed through onCodeBlockActionClicked
@@ -453,6 +457,7 @@ export class MynahUI {
             this.getUserEventId(),
             data.codeBlockIndex,
             data.totalCodeBlocks,
+            data.userIntent,
           );
         });
       }
@@ -468,6 +473,7 @@ export class MynahUI {
         this.getUserEventId(),
         data.codeBlockIndex,
         data.totalCodeBlocks,
+        data.userIntent,
       );
     });
 
@@ -482,6 +488,7 @@ export class MynahUI {
           this.getUserEventId(),
           data.codeBlockIndex,
           data.totalCodeBlocks,
+          data.userIntent,
         );
       }
     });
