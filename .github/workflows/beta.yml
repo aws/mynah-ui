@@ -17,9 +17,6 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm test
-      - run: cd ./cloudscape-wrapper
-      - run: npm ci && npm run build
-      - run: cd ..
       - run: npm publish --tag beta --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
