@@ -247,6 +247,7 @@
     & + .mynah-chat-prompt-input-info {
         padding-top: 0;
         margin-top: calc(-1 * var(--mynah-sizing-2));
+        flex-basis: fit-content;
     }
 }
 

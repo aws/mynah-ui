@@ -7,6 +7,7 @@ import { Config } from '../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIGlobalEvents } from '../helper/events';
 import { MynahUITabsStore } from '../helper/tabs-store';
+import testIds from '../helper/test-ids';
 import { MynahEventNames, TabBarAction, TabBarMainAction } from '../static';
 import { Button } from './button';
 import { Icon } from './icon';
@@ -23,6 +24,7 @@ export class TabBarButtonsWrapper {
     this.props = props ?? {};
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.tabBar.buttonsWrapper,
       persistent: true,
       classNames: [ 'mynah-nav-tabs-bar-buttons-wrapper' ],
       children: this.getTabsBarButtonsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
@@ -66,6 +68,7 @@ class TabBarButtonWithMultipleOptions {
   constructor (props: TabBarButtonWithMultipleOptionsProps) {
     this.props = props;
     this.render = new Button({
+      testId: (this.props.tabBarActionButton.items != null && this.props.tabBarActionButton.items?.length > 0) ? testIds.tabBar.menuButton : testIds.tabBar.button,
       label: this.props.tabBarActionButton.text,
       tooltip: this.props.tabBarActionButton.description,
       tooltipVerticalDirection: OverlayVerticalDirection.START_TO_BOTTOM,
@@ -96,6 +99,7 @@ class TabBarButtonWithMultipleOptions {
           type: 'div',
           classNames: [ 'mynah-nav-tabs-bar-buttons-wrapper-overlay' ],
           children: items.map(item => new Button({
+            testId: testIds.tabBar.menuOption,
             label: item.text,
             icon: item.icon != null ? new Icon({ icon: item.icon }).render : undefined,
             primary: false,

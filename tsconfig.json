@@ -25,6 +25,7 @@
 		"dist",
 		"node_modules",
 		"docs",
-		"example"
+		"example",
+		"ui-tests"
 	]
 }

@@ -32,8 +32,7 @@ The steps in the script are as follows:
 - First, it cleans the project by removing `dist` and `node_modules` directories.
 - Then, it installs the dependencies.
 - After that, it builds the project.
-- Finally, it serves the example on port 9000 using `live-server`.
-- It will open a browser at `http://127.0.0.1:9000`.
+- Finally, open `index.html` inside the `dist` folder in your browser.
 
 ### How to use the project
 

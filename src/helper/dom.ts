@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import testIds from '../helper/test-ids';
 import { MynahEventNames, MynahPortalNames } from '../static';
+import { Config } from './config';
 import { MynahUIGlobalEvents } from './events';
 import { AllowedTagsInCustomRenderer, AllowedAttributesInCustomRenderer } from './sanitize';
 
@@ -35,6 +37,7 @@ export interface DomBuilderObject extends GenericDomBuilderAttributes{
   type: string;
   children?: Array<string | DomBuilderObject | HTMLElement | ExtendedHTMLElement> | undefined;
   innerHTML?: string | undefined;
+  testId?: string;
   persistent?: boolean | undefined;
 }
 
@@ -44,6 +47,7 @@ export interface DomBuilderObjectFilled {
   events?: Record<string, (event?: any) => any>;
   children?: Array<string | DomBuilderObject | HTMLElement | ExtendedHTMLElement>;
   innerHTML?: string | undefined;
+  testId?: string;
   persistent?: boolean;
 }
 
@@ -80,6 +84,7 @@ export class DomBuilder {
   private constructor (rootSelector: string) {
     this.root = DS(rootSelector)[0] as ExtendedHTMLElement;
     this.extendDomFunctionality(this.root);
+    this.root.addClass('mynah-ui-root');
     this.rootFocus = this.root.matches(':focus') ?? false;
     this.attachRootFocusListeners();
   }
@@ -239,6 +244,10 @@ export class DomBuilder {
       buildedDom.setAttribute(attributeName, readyToBuildObject.attributes !== undefined ? readyToBuildObject.attributes[attributeName].toString() : '')
     );
 
+    if (readyToBuildObject.testId != null && Config.getInstance().config.test) {
+      buildedDom.setAttribute(testIds.selector, readyToBuildObject.testId);
+    }
+
     if (typeof readyToBuildObject.innerHTML === 'string') {
       buildedDom.innerHTML = readyToBuildObject.innerHTML;
     } else if (readyToBuildObject.children !== undefined && readyToBuildObject.children?.length > 0) {
@@ -289,6 +298,10 @@ export class DomBuilder {
           domToUpdate.setAttribute(attributeName, domBuilderObject.attributes[attributeName] as string);
         }
       });
+
+      if (domBuilderObject.testId != null && Config.getInstance().config.test) {
+        domToUpdate.setAttribute(testIds.selector, domBuilderObject.testId);
+      }
 
       if (typeof domBuilderObject.innerHTML === 'string') {
         domToUpdate.innerHTML = domBuilderObject.innerHTML;

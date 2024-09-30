@@ -8,6 +8,7 @@ import { MAX_USER_INPUT } from '../chat-prompt-input';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay';
 import { Card } from '../../card/card';
 import { CardBody } from '../../card/card-body';
+import testIds from '../../../helper/test-ids';
 
 export interface PromptTextInputProps {
   tabId: string;
@@ -47,6 +48,7 @@ export class PromptTextInput {
 
     this.promptTextInput = DomBuilder.getInstance().build({
       type: 'textarea',
+      testId: testIds.prompt.input,
       classNames: [ 'mynah-chat-prompt-input' ],
       attributes: {
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),
@@ -97,6 +99,7 @@ export class PromptTextInput {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.prompt.inputWrapper,
       classNames: [ 'mynah-chat-prompt-input-inner-wrapper', 'no-text' ],
       children: [
         this.promptTextInputSizer,

@@ -1,7 +1,7 @@
 {
   "name": "@aws/mynah-ui",
   "displayName": "AWS Mynah UI",
-  "version": "4.15.8",
+  "version": "4.15.11",
   "description": "AWS Toolkit VSCode and Intellij IDE Extension Mynah UI",
   "publisher": "Amazon Web Services",
   "license": "Apache License 2.0",
@@ -19,15 +19,16 @@
     "packdemo": "cd ./example && npm run pack",
     "watch": "webpack --config webpack.config.js --mode development --watch",
     "watch:example": "cd ./example && npm run watch",
-    "watch:web": "run-p watch watch:example serve:example",
-    "serve:example": "live-server --port=9000 example/dist",
-    "dev": "npm run clean && npm install && npm run build && npm run packdemo && npm run watch:web",
+    "start:example": "cd ./example && npm install && npm run build && npm run dev",
+    "dev": "npm run clean && npm install && npm run build && npm run start:example",
     "lint-fix": "npx eslint \"./**\" --fix",
     "lint": "npx eslint \"./**\"",
     "test": "jest",
+    "test:e2e": "npm install && npm run build && cd ./ui-tests && npm run tests:run",
     "api-docs": "npx typedoc src/main.ts --out ./api-docs",
     "api-doc-deploy": "npx typedoc src/main.ts --out ./example/dist/api-doc",
-    "postinstall": "node postinstall.js"
+    "postinstall": "node postinstall.js",
+    "prepare": "husky"
   },
   "dependencies": {
     "escape-html": "^1.0.3",
@@ -70,10 +71,10 @@
     "eslint-plugin-no-null": "^1.0.2",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "6.0.0",
+    "husky": "^9.1.6",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-svg-transformer": "^1.0.0",
-    "live-server": "^1.2.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.0.3",
     "sass": "1.49.8",
@@ -85,7 +86,7 @@
     "ts-node": "^10.9.1",
     "typedoc": "^0.25.13",
     "typescript": "^5.0.4",
-    "webpack": "5.76.0",
+    "webpack": "5.94.0",
     "webpack-cli": "4.7.2"
   },
   "prettier": {

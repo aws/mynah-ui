@@ -46,6 +46,7 @@ import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
 import '../styles/components/_syntax-highlighter.scss';
 import { copyToClipboard } from '../helper/chat-item';
+import testIds from '../helper/test-ids';
 
 const IMPORTED_LANGS = [
   'markup',
@@ -160,6 +161,7 @@ export class SyntaxHighlighter {
 
     const preElement = DomBuilder.getInstance().build({
       type: 'pre',
+      testId: testIds.chatItem.syntaxHighlighter.codeBlock,
       classNames: [ 'keep-markup',
           `language-${props.language !== undefined && IMPORTED_LANGS.includes(props.language) ? props.language : DEFAULT_LANG}`,
           ...(((props.language?.match('diff')) != null) ? [ 'diff-highlight' ] : []),
@@ -199,6 +201,7 @@ export class SyntaxHighlighter {
         const validAction = props.codeBlockActions?.[actionId]?.acceptedLanguages == null || props.language == null || props.codeBlockActions?.[actionId]?.acceptedLanguages?.find(acceptedLang => props.language === acceptedLang) != null ? props.codeBlockActions?.[actionId] : undefined;
         if (validAction != null) {
           this.codeBlockButtons.push(new Button({
+            testId: testIds.chatItem.syntaxHighlighter.button,
             icon: validAction.icon != null ? new Icon({ icon: validAction.icon }).render : undefined,
             label: validAction.label,
             attributes: { title: validAction.description ?? '' },
@@ -225,6 +228,7 @@ export class SyntaxHighlighter {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chatItem.syntaxHighlighter.wrapper,
       classNames: [ 'mynah-syntax-highlighter',
         ...(props.block !== true ? [ 'mynah-inline-code' ] : []),
       ],
@@ -234,6 +238,7 @@ export class SyntaxHighlighter {
           ? [
               {
                 type: 'span',
+                testId: testIds.chatItem.syntaxHighlighter.lineNumbers,
                 classNames: [ 'line-numbers-rows' ],
                 children: (preElement.innerHTML).split(/\n/).slice(0, -1).map((n: string, i: number) => ({
                   type: 'span',
@@ -244,12 +249,14 @@ export class SyntaxHighlighter {
           : []),
         {
           type: 'div',
+          testId: testIds.chatItem.syntaxHighlighter.buttonsWrapper,
           classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
           children: [
             ...this.codeBlockButtons,
             ...(this.codeBlockButtons.length > 0
               ? [ {
                   type: 'span',
+                  testId: testIds.chatItem.syntaxHighlighter.language,
                   classNames: [ 'mynah-syntax-highlighter-language' ],
                   children: [ props.language ?? 'text' ]
                 } ]

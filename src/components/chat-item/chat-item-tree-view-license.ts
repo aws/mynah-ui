@@ -5,6 +5,7 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import testIds from '../../helper/test-ids';
 import { ReferenceTrackerInformation } from '../../static';
 import { CardBody } from '../card/card-body';
 import { CollapsibleContent } from '../collapsible-content';
@@ -29,6 +30,7 @@ export class ChatItemTreeViewLicense {
 
     this.render = new CollapsibleContent({
       title: Config.getInstance().config.texts.codeSuggestionWithReferenceTitle,
+      testId: testIds.chatItem.fileTree.license,
       classNames: [ 'mynah-chat-item-tree-view-license' ],
       children: [ this.buildDropdownChildren(props.references) ]
     }).render;

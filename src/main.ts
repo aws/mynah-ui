@@ -83,6 +83,7 @@ export {
   ChatItemCardContent,
   ChatItemCardContentProps
 } from './components/chat-item/chat-item-card-content';
+export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {
   rootSelector?: string;

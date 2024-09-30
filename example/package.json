@@ -7,7 +7,8 @@
         "clean": "rm -rf build out dist node_modules",
         "pack": "npm install && webpack --config webpack.config.js --mode development && node pack.js",
         "build": "webpack --config webpack.config.js --mode development",
-        "watch": "webpack --config webpack.config.js --mode development --watch"
+        "watch": "webpack --config webpack.config.js --mode development --watch",
+        "dev": "node ./dev.js"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../",
@@ -30,6 +31,7 @@
         "eslint-plugin-no-null": "^1.0.2",
         "eslint-plugin-promise": "6.0.0",
         "html-webpack-plugin": "^5.5.0",
+        "open": "^10.1.0",
         "raw-loader": "^4.0.2",
         "sass": "^1.49.8",
         "sass-loader": "^12.6.0",

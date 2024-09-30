@@ -1,0 +1,46 @@
+{
+    "name": "@amzn/mynah-website",
+    "version": "1.0.0",
+    "description": "",
+    "main": "webpack.media.config.js",
+    "scripts": {
+        "clean": "rm -rf build dist node_modules",
+        "tests:prepare": "webpack --config webpack.config.js --mode development",
+        "tests:e2e": "jest --runInBand --detectOpenHandles --config=./jest.config.js",
+        "tests:run": "npm install && npm run tests:prepare && npm run tests:e2e",
+        "postinstall": "npx playwright install webkit"
+    },
+    "dependencies": {
+        "@aws/mynah-ui": "file:../"
+    },
+    "devDependencies": {
+        "@types/jest": "^29.5.12",
+        "@types/jest-image-snapshot": "^6.4.0",
+        "css-loader": "^6.6.0",
+        "html-webpack-plugin": "^5.5.0",
+        "jest": "^29.7.0",
+        "jest-image-snapshot": "^6.4.0",
+        "jest-playwright-preset": "^4.0.0",
+        "playwright": "^1.47.0",
+        "raw-loader": "^4.0.2",
+        "sass": "^1.49.8",
+        "sass-loader": "^12.6.0",
+        "style-loader": "^3.3.1",
+        "ts-loader": "^9.4.4",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.0.4",
+        "webpack": "^5.61.0",
+        "webpack-cli": "^4.7.2"
+    },
+    "prettier": {
+        "printWidth": 160,
+        "trailingComma": "es5",
+        "tabWidth": 4,
+        "singleQuote": true,
+        "semi": true,
+        "bracketSpacing": true,
+        "arrowParens": "avoid",
+        "endOfLine": "lf"
+    },
+    "author": ""
+}

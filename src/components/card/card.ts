@@ -42,6 +42,7 @@ export class Card {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: this.props.testId,
       classNames: [
         'mynah-card',
         `padding-${props.padding ?? 'large'}`,

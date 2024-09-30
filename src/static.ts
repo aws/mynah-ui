@@ -440,6 +440,7 @@ export interface ConfigOptions {
   codeBlockActions?: CodeBlockActions;
   codeInsertToCursorEnabled?: boolean;
   codeCopyToClipboardEnabled?: boolean;
+  test?: boolean;
 }
 
 export interface ConfigModel extends ConfigOptions {

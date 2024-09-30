@@ -17,6 +17,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { Toggle, ToggleOption } from './toggle';
 import '../styles/components/_nav-tabs.scss';
 import { DEFAULT_TIMEOUT } from './notification';
+import testIds from '../helper/test-ids';
 
 export interface TabsProps {
   onChange?: (selectedTabId: string) => void;
@@ -37,6 +38,7 @@ export class Tabs {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.tabBar.wrapper,
       persistent: true,
       classNames: [ 'mynah-nav-tabs-wrapper' ],
       events: {
@@ -94,6 +96,7 @@ export class Tabs {
       this.assignListener(tab.value);
     });
     this.toggleGroup = new Toggle({
+      testId: testIds.tabBar.tabsWrapper,
       onChange: (selectedTabId: string) => {
         MynahUITabsStore.getInstance().selectTab(selectedTabId);
         if (this.props.onChange !== undefined) {
@@ -114,6 +117,7 @@ export class Tabs {
     return [
       this.toggleGroup.render,
       new Button({
+        testId: testIds.tabBar.tabAddButton,
         classNames: [ 'mynah-toggle-close-button' ],
         additionalEvents: {
           mouseenter: (e) => {
@@ -139,6 +143,7 @@ export class Tabs {
 
   private readonly showMaxReachedOverLay = (elm: HTMLElement, markdownText: string, duration?: number): void => {
     this.maxReachedOverlay = new Overlay({
+      testId: testIds.tabBar.maxTabsReachedOverlay,
       background: true,
       closeOnOutsideClick: false,
       referenceElement: elm,
@@ -179,6 +184,7 @@ export class Tabs {
 
   private readonly showCloseTabConfirmationOverLay = (elm: HTMLElement, selectedTabId: string): void => {
     this.closeConfirmationOverlay = new Overlay({
+      testId: testIds.tabBar.tabCloseConfirmationOverlay,
       background: true,
       closeOnOutsideClick: true,
       referenceElement: elm,
@@ -192,6 +198,7 @@ export class Tabs {
           classNames: [ 'mynah-nav-tabs-close-confirmation-overlay' ],
           children: [
             new CardBody({
+              testId: testIds.tabBar.tabCloseConfirmationBody,
               body: MynahUITabsStore.getInstance().getTabDataStore(selectedTabId).getValue('tabCloseConfirmationMessage') ??
               Config.getInstance().config.texts.tabCloseConfirmationMessage,
             }).render,
@@ -200,6 +207,7 @@ export class Tabs {
               classNames: [ 'mynah-nav-tabs-close-confirmation-buttons-wrapper' ],
               children: [
                 new Button({
+                  testId: testIds.tabBar.tabCloseConfirmationCancelButton,
                   onClick: () => {
                     this.hideshowCloseTabConfirmationOverLay();
                   },
@@ -207,6 +215,7 @@ export class Tabs {
                   Config.getInstance().config.texts.tabCloseConfirmationKeepButton
                 }).render,
                 new Button({
+                  testId: testIds.tabBar.tabCloseConfirmationAcceptButton,
                   onClick: () => {
                     MynahUITabsStore.getInstance().removeTab(selectedTabId);
                     this.hideshowCloseTabConfirmationOverLay();

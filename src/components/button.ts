@@ -18,6 +18,7 @@ export interface ButtonProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   icon?: HTMLElement | ExtendedHTMLElement;
+  testId?: string;
   label?: HTMLElement | ExtendedHTMLElement | string;
   tooltip?: string;
   tooltipVerticalDirection?: OverlayVerticalDirection;
@@ -59,6 +60,7 @@ class ButtonInternal extends ButtonAbstract {
         ...(props.status != null ? [ `status-${props.status}` ] : []),
         ...(props.classNames !== undefined ? props.classNames : []),
       ],
+      testId: props.testId,
       attributes: {
         ...(props.disabled === true ? { disabled: 'disabled' } : {}),
         tabindex: '0',

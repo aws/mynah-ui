@@ -9,6 +9,7 @@ import { Icon, MynahIcons } from '../icon';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { Button } from '../button';
 import { Config } from '../../helper/config';
+import testIds from '../../helper/test-ids';
 
 const THANKS_REMOVAL_DURATION = 3500;
 export interface ChatItemRelevanceVoteProps {
@@ -34,6 +35,7 @@ export class ChatItemRelevanceVote {
           children: [
             {
               type: 'input',
+              testId: testIds.chatItem.vote.upvote,
               events: {
                 change: (e: Event) => {
                   this.handleVoteChange(RelevancyVoteType.UP);
@@ -49,6 +51,7 @@ export class ChatItemRelevanceVote {
             },
             {
               type: 'input',
+              testId: testIds.chatItem.vote.downvote,
               events: {
                 change: (e: Event) => {
                   this.handleVoteChange(RelevancyVoteType.DOWN);
@@ -64,12 +67,14 @@ export class ChatItemRelevanceVote {
             },
             {
               type: 'label',
+              testId: testIds.chatItem.vote.upvoteLabel,
               attributes: { for: `${this.votingId}-vote-up` },
               classNames: [ 'mynah-vote-label', 'mynah-vote-up' ],
               children: [ new Icon({ icon: MynahIcons.THUMBS_UP }).render ],
             },
             {
               type: 'label',
+              testId: testIds.chatItem.vote.downvoteLabel,
               attributes: { for: `${this.votingId}-vote-down` },
               classNames: [ 'mynah-vote-label', 'mynah-vote-down' ],
               children: [ new Icon({ icon: MynahIcons.THUMBS_DOWN }).render ],
@@ -83,10 +88,15 @@ export class ChatItemRelevanceVote {
   private readonly handleVoteChange = (vote: RelevancyVoteType): void => {
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CARD_VOTE, { messageId: this.props.messageId, tabId: this.props.tabId, vote });
     const newChildren = [
-      Config.getInstance().config.texts.feedbackThanks,
+      DomBuilder.getInstance().build({
+        type: 'span',
+        testId: testIds.chatItem.vote.thanks,
+        innerHTML: Config.getInstance().config.texts.feedbackThanks,
+      }),
       ...(vote === RelevancyVoteType.DOWN
         ? [
             new Button({
+              testId: testIds.chatItem.vote.reportButton,
               label: Config.getInstance().config.texts.feedbackReportButtonLabel,
               onClick: () => {
                 if (this.sendFeedbackListenerId === undefined) {

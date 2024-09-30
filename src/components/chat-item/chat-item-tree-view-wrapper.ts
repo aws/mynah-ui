@@ -4,6 +4,7 @@
  */
 
 import { Config } from '../../helper/config';
+import testIds from '../../helper/test-ids';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { fileListToTree } from '../../helper/file-tree';
 import { FileNodeAction, ReferenceTrackerInformation, TreeNodeDetails } from '../../static';
@@ -55,6 +56,7 @@ export class ChatItemTreeViewWrapper {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.chatItem.fileTree.wrapper,
       classNames: [ 'mynah-chat-item-tree-view-wrapper', ...(props.classNames ?? []) ],
       children: [
         {
@@ -64,6 +66,7 @@ export class ChatItemTreeViewWrapper {
             ...(props.cardTitle !== ''
               ? [ {
                   type: 'div',
+                  testId: testIds.chatItem.fileTree.title,
                   classNames: [ 'mynah-chat-item-tree-view-wrapper-title' ],
                   children: [
                     {
