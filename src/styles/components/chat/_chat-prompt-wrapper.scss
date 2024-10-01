@@ -268,6 +268,7 @@
 > .mynah-chat-prompt-input-info {
     display: flex;
     flex-flow: row nowrap;
+    justify-content: center;
     box-sizing: border-box;
     overflow: hidden;
     padding: var(--mynah-sizing-4);
