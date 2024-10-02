@@ -1,4 +1,4 @@
-declare module "escape-html" {
-    function escapeHTML(a:string): string;
-    export = escapeHTML;
+declare module 'escape-html' {
+  function escapeHTML (a: string): string;
+  export = escapeHTML;
 }

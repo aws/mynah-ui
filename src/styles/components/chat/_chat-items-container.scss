@@ -32,7 +32,7 @@
                     }
                 }
                 &:not(.mynah-chat-item-empty) {
-                    @import "chat-items-bottom-animator";
+                    @import 'chat-items-bottom-animator';
                 }
             }
         }

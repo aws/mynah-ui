@@ -25,7 +25,7 @@
         position: relative;
         overflow: hidden;
         &:after {
-            content: "";
+            content: '';
             pointer-events: none;
             box-sizing: border-box;
             position: absolute;
@@ -91,7 +91,7 @@
             display: inline-block;
             transition: var(--mynah-short-transition-rev);
             &:after {
-                content: "";
+                content: '';
                 position: relative;
                 display: block;
                 bottom: 0;
@@ -113,7 +113,7 @@
             > span {
                 &:not(:last-child) {
                     &:after {
-                        content: ">";
+                        content: '>';
                         margin: 0 var(--mynah-sizing-1);
                     }
                 }
@@ -124,7 +124,7 @@
                     font-weight: bold;
                 }
                 &:nth-child(3):not(:last-child):after {
-                    content: "> ... >";
+                    content: '> ... >';
                 }
             }
         }
@@ -164,7 +164,7 @@
                     border-color: green;
                     position: relative;
                     &:before {
-                        content: "";
+                        content: '';
                         border-radius: var(--mynah-button-radius);
                         position: absolute;
                         top: 0;

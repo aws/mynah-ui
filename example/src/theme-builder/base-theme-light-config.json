@@ -21,8 +21,18 @@
         "category": "sizing",
         "value": "var(--mynah-sizing-6)"
     },
-    "--mynah-font-family": { "type": "text", "description": "Base font-family", "category": "font-family", "value": "system-ui, -apple-system, sans-serif" },
-    "--mynah-syntax-code-font-family": { "type": "text", "description": "Code blocks' font-family", "category": "font-family", "value": "monospace" },
+    "--mynah-font-family": {
+        "type": "text",
+        "description": "Base font-family",
+        "category": "font-family",
+        "value": "system-ui, -apple-system, sans-serif"
+    },
+    "--mynah-syntax-code-font-family": {
+        "type": "text",
+        "description": "Code blocks' font-family",
+        "category": "font-family",
+        "value": "monospace"
+    },
     "--mynah-color-text-default": {
         "type": "color",
         "description": "Default text color used in various places",
@@ -51,7 +61,13 @@
         "alpha": "100",
         "value": "#a9bed0"
     },
-    "--mynah-color-text-link": { "type": "color", "description": "Link text color", "category": "text-color", "alpha": "100", "value": "#006ab1" },
+    "--mynah-color-text-link": {
+        "type": "color",
+        "description": "Link text color",
+        "category": "text-color",
+        "alpha": "100",
+        "value": "#006ab1"
+    },
     "--mynah-color-text-input": {
         "type": "color",
         "description": "Input text color used in input fields",
@@ -166,11 +182,41 @@
         "alpha": "20",
         "value": "#2878C8"
     },
-    "--mynah-color-status-info": { "type": "color", "description": "Info color", "category": "status-color", "alpha": "100", "value": "#28a7e6" },
-    "--mynah-color-status-success": { "type": "color", "description": "Success color", "category": "status-color", "alpha": "100", "value": "#36e281" },
-    "--mynah-color-status-warning": { "type": "color", "description": "Warning color", "category": "status-color", "alpha": "100", "value": "#eca14b" },
-    "--mynah-color-status-error": { "type": "color", "description": "Error color", "category": "status-color", "alpha": "100", "value": "#e60063" },
-    "--mynah-color-bg": { "type": "color", "description": "Main background color ", "category": "background-color", "alpha": "100", "value": "#fafbfc" },
+    "--mynah-color-status-info": {
+        "type": "color",
+        "description": "Info color",
+        "category": "status-color",
+        "alpha": "100",
+        "value": "#28a7e6"
+    },
+    "--mynah-color-status-success": {
+        "type": "color",
+        "description": "Success color",
+        "category": "status-color",
+        "alpha": "100",
+        "value": "#36e281"
+    },
+    "--mynah-color-status-warning": {
+        "type": "color",
+        "description": "Warning color",
+        "category": "status-color",
+        "alpha": "100",
+        "value": "#eca14b"
+    },
+    "--mynah-color-status-error": {
+        "type": "color",
+        "description": "Error color",
+        "category": "status-color",
+        "alpha": "100",
+        "value": "#e60063"
+    },
+    "--mynah-color-bg": {
+        "type": "color",
+        "description": "Main background color ",
+        "category": "background-color",
+        "alpha": "100",
+        "value": "#fafbfc"
+    },
     "--mynah-color-tab-active": {
         "type": "color",
         "description": "Tab active background color",
@@ -178,7 +224,13 @@
         "alpha": "100",
         "value": "#ffffff"
     },
-    "--mynah-color-toggle": { "type": "color", "description": "Toggle background color", "category": "background-color", "alpha": "100", "value": "#fafbfc" },
+    "--mynah-color-toggle": {
+        "type": "color",
+        "description": "Toggle background color",
+        "category": "background-color",
+        "alpha": "100",
+        "value": "#fafbfc"
+    },
     "--mynah-color-toggle-reverse": {
         "type": "color",
         "description": "Toggle foreground/text color",
@@ -186,7 +238,13 @@
         "alpha": "50",
         "value": "#000000"
     },
-    "--mynah-color-button": { "type": "color", "description": "Button background color", "category": "background-color", "alpha": "100", "value": "#1e9ddc" },
+    "--mynah-color-button": {
+        "type": "color",
+        "description": "Button background color",
+        "category": "background-color",
+        "alpha": "100",
+        "value": "#1e9ddc"
+    },
     "--mynah-color-button-reverse": {
         "type": "color",
         "description": "Button foreground/text color",
@@ -208,7 +266,13 @@
         "alpha": "100",
         "value": "#ffffff"
     },
-    "--mynah-card-bg": { "type": "color", "description": "Card background color", "category": "background-color", "alpha": "100", "value": "#ffffff" },
+    "--mynah-card-bg": {
+        "type": "color",
+        "description": "Card background color",
+        "category": "background-color",
+        "alpha": "100",
+        "value": "#ffffff"
+    },
     "--mynah-card-bg-alternate": {
         "type": "color",
         "description": "Card alternate background color",
@@ -216,8 +280,18 @@
         "alpha": "100",
         "value": "#6a91af"
     },
-    "--mynah-shadow-button": { "type": "text", "description": "Button shadows", "category": "shadow", "value": "0 5px 10px -10px rgba(0, 0, 0, 0.25)" },
-    "--mynah-shadow-card": { "type": "text", "description": "Card shadow", "category": "shadow", "value": "0 10px 20px -15px rgba(0, 0, 0, 0.25)" },
+    "--mynah-shadow-button": {
+        "type": "text",
+        "description": "Button shadows",
+        "category": "shadow",
+        "value": "0 5px 10px -10px rgba(0, 0, 0, 0.25)"
+    },
+    "--mynah-shadow-card": {
+        "type": "text",
+        "description": "Card shadow",
+        "category": "shadow",
+        "value": "0 10px 20px -15px rgba(0, 0, 0, 0.25)"
+    },
     "--mynah-shadow-overlay": {
         "type": "text",
         "description": "Overlay shadows (notification, bottom popup etc.)",
