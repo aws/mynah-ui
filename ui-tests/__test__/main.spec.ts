@@ -12,7 +12,7 @@ describe('Open MynahUI', () => {
   let page: Page;
   beforeAll(async () => {
     browser = await playwright.webkit.launch({
-      headless: false,
+      headless: true,
       args: [ '--no-sandbox', '--disable-setuid-sandbox' ],
       timeout: 5000
     });
