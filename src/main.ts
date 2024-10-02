@@ -679,6 +679,23 @@ export class MynahUI {
   };
 
   /**
+   * Selects a tab with the given generated ID.
+   * @param tabId - The ID of the tab to select.
+   * @returns void
+   * This function is used to select a tab with the given generated ID.
+   * If the tab does not exist, it will not select any tab.
+   * This function is useful when you want to select a tab with a known ID, yet without user interaction.
+   * for example, in response to a message from the chat, which produces a notification and the tab currently selected is not the one that the notification is related to.
+   * @example
+   */
+  public setFocusTab = (tabId: string): void => {
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      const eventId = this.getUserEventId();
+      this.selectTab(tabId, eventId);
+    }
+  };
+
+  /**
    * If exists, close the given tab
    * @param tabId Tab ID to switch to
    * @param eventId last action's user event ID passed from an event binded to mynahUI.
