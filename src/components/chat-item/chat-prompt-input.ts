@@ -18,11 +18,18 @@ import testIds from '../../helper/test-ids';
 import { CardBody } from '../card/card-body';
 import { Card } from '../card/card';
 
+// 96 extra is added as a threshold to allow for attachments
+// We ignore this for the textual character limit
 export const MAX_USER_INPUT_THRESHOLD = 96;
 export const MAX_USER_INPUT = (): number => {
   return Config.getInstance().config.maxUserInput - MAX_USER_INPUT_THRESHOLD;
 };
-export const INPUT_LENGTH_WARNING_THRESHOLD = 5;
+
+// The amount of characters in the prompt input necessary for the warning to show
+export const INPUT_LENGTH_WARNING_THRESHOLD = (): number => {
+  return Config.getInstance().config.userInputLengthWarningThreshold;
+};
+
 export interface ChatPromptInputProps {
   tabId: string;
 }
@@ -175,7 +182,7 @@ export class ChatPromptInput {
 
     // Set the visibility based on whether the threshold is hit
     const characterAmount = this.promptTextInput.getTextInputValue().trim().length;
-    if (characterAmount >= INPUT_LENGTH_WARNING_THRESHOLD) {
+    if (characterAmount >= INPUT_LENGTH_WARNING_THRESHOLD()) {
       this.remainingCharsOverlay.toggleHidden(false);
     } else {
       this.remainingCharsOverlay.toggleHidden(true);

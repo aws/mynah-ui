@@ -436,6 +436,7 @@ export interface ConfigOptions {
   showPromptField: boolean;
   autoFocus: boolean;
   maxUserInput: number;
+  userInputLengthWarningThreshold: number;
   codeBlockActions?: CodeBlockActions;
   codeInsertToCursorEnabled?: boolean;
   codeCopyToClipboardEnabled?: boolean;
