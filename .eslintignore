@@ -2,6 +2,7 @@
 *.json
 *.md
 *.css
+*.ttf
 *.scss
 *.svg
 *.png

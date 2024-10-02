@@ -7,9 +7,10 @@ module.exports = {
     extends: ['standard-with-typescript'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
+        tsconfigRootDir: __dirname,
         ecmaVersion: 'latest',
         sourceType: 'module',
-        project: './tsconfig.json',
+        project: ['./tsconfig.json', './ui-tests/tsconfig.json'],
     },
     plugins: ['@typescript-eslint', 'prettier'],
     rules: {
