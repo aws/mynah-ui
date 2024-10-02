@@ -15,11 +15,14 @@ import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
+import { CardBody } from '../card/card-body';
+import { Card } from '../card/card';
 
 export const MAX_USER_INPUT_THRESHOLD = 96;
 export const MAX_USER_INPUT = (): number => {
   return Config.getInstance().config.maxUserInput - MAX_USER_INPUT_THRESHOLD;
 };
+export const INPUT_LENGTH_WARNING_THRESHOLD = 5;
 export interface ChatPromptInputProps {
   tabId: string;
 }
@@ -29,9 +32,10 @@ export class ChatPromptInput {
   private readonly attachmentWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: PromptTextInput;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
-  private readonly remainingCharsIndicator: ExtendedHTMLElement;
   private readonly sendButton: PromptInputSendButton;
   private readonly promptAttachment: PromptAttachment;
+  private readonly chatPrompt: ExtendedHTMLElement;
+  private remainingCharsOverlay: Overlay;
   private quickPickTriggerIndex: number;
   private quickPickType: 'quick-action' | 'context';
   private textAfter: string;
@@ -59,12 +63,6 @@ export class ChatPromptInput {
       onInput: () => this.updateAvailableCharactersIndicator(),
       onFocus: this.handleInputFocus,
     });
-    this.remainingCharsIndicator = DomBuilder.getInstance().build({
-      type: 'span',
-      testId: testIds.prompt.remainingCharsIndicator,
-      classNames: [ 'mynah-chat-prompt-chars-indicator' ],
-      innerHTML: `${MAX_USER_INPUT() - this.promptTextInput.getTextInputValue().length}/${MAX_USER_INPUT()}`
-    });
     this.sendButton = new PromptInputSendButton({
       tabId: this.props.tabId,
       onClick: () => {
@@ -84,34 +82,36 @@ export class ChatPromptInput {
         this.promptAttachment.render
       ]
     });
+
+    this.chatPrompt = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-prompt' ],
+      children: [
+        {
+          type: 'div',
+          classNames: [ 'mynah-chat-prompt-input-wrapper' ],
+          children: [
+            this.promptTextInputCommand.render,
+            this.promptTextInput.render,
+            {
+              type: 'div',
+              classNames: [ 'mynah-chat-prompt-button-wrapper' ],
+              children: [
+                this.sendButton.render,
+              ]
+            },
+          ]
+        },
+        this.attachmentWrapper
+      ]
+    });
+
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.wrapper,
       classNames: [ 'mynah-chat-prompt-wrapper' ],
       children: [
-        {
-          type: 'div',
-          classNames: [ 'mynah-chat-prompt' ],
-          children: [
-            {
-              type: 'div',
-              classNames: [ 'mynah-chat-prompt-input-wrapper' ],
-              children: [
-                this.promptTextInputCommand.render,
-                this.promptTextInput.render,
-                {
-                  type: 'div',
-                  classNames: [ 'mynah-chat-prompt-button-wrapper' ],
-                  children: [
-                    this.sendButton.render,
-                  ]
-                },
-              ]
-            },
-            this.attachmentWrapper
-          ]
-        },
-        this.remainingCharsIndicator,
+        this.chatPrompt
       ],
     });
 
@@ -148,11 +148,49 @@ export class ChatPromptInput {
   }
 
   private readonly updateAvailableCharactersIndicator = (): void => {
-    const remainingChars =
-      this.promptTextInput.promptTextInputMaxLength - this.promptTextInput.getTextInputValue().trim().length;
-    this.remainingCharsIndicator.update({
-      innerHTML: `${Math.max(0, remainingChars)}/${MAX_USER_INPUT()}`
-    });
+    // Re(render) if the overlay is not in the DOM
+    if (this.remainingCharsOverlay == null || !this.remainingCharsOverlay.render.checkVisibility()) {
+      this.remainingCharsOverlay = new Overlay({
+        testId: testIds.prompt.remainingCharsIndicator,
+        background: true,
+        closeOnOutsideClick: false,
+        referenceElement: this.chatPrompt,
+        dimOutside: false,
+        verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
+        horizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
+        children: [
+          new Card({
+            border: false,
+            children: [
+              new CardBody({
+                body: `${MAX_USER_INPUT() - this.promptTextInput.getTextInputValue().length}/${MAX_USER_INPUT()}`
+              }).render
+            ]
+          }).render
+        ],
+      });
+      this.remainingCharsOverlay.toggleHidden(true);
+    }
+
+    // Set the visibility based on whether the threshold is hit
+    const characterAmount = this.promptTextInput.getTextInputValue().trim().length;
+    if (characterAmount >= INPUT_LENGTH_WARNING_THRESHOLD) {
+      this.remainingCharsOverlay.toggleHidden(false);
+    } else {
+      this.remainingCharsOverlay.toggleHidden(true);
+    }
+
+    // Update the card's body
+    this.remainingCharsOverlay.updateContent([
+      new Card({
+        border: false,
+        children: [
+          new CardBody({
+            body: `${this.promptTextInput.getTextInputValue().trim().length} / ${MAX_USER_INPUT()}`
+          }).render
+        ]
+      }).render
+    ]);
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
@@ -329,6 +367,9 @@ export class ChatPromptInput {
   };
 
   private readonly handleInputFocus = (): void => {
+    // Show the character limit warning overlay if the threshold is hit
+    this.updateAvailableCharactersIndicator();
+
     const inputValue = this.promptTextInput.getTextInputValue();
     if (inputValue.startsWith('/')) {
       const quickPickItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
