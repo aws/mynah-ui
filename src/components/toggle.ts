@@ -159,7 +159,7 @@ export class Toggle {
       type: 'div',
       testId: this.props.testId,
       classNames: [ 'mynah-toggle-container', 'mynah-toggle-type-tabs', `mynah-toggle-direction-${this.props.direction as string}` ],
-      attributes: { disabled: props.disabled === true ? 'disabled' : '' },
+      attributes: props.disabled === true ? { disabled: 'disabled' } : {},
       children: this.getChildren(props.value),
       events: {
         wheel: {

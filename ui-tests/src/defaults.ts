@@ -36,6 +36,7 @@ export const defaultDataSet: Partial<MynahUITabStoreTab> = {
   store: {
     tabTitle: 'Chat',
     cancelButtonWhenLoading: true,
+    promptInputInfo: 'This is the **footer** of the panel.',
     chatItems: [
       {
         type: ChatItemType.ANSWER,

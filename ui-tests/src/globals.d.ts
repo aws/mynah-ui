@@ -1,2 +1,3 @@
-declare module "*.md";
-declare interface Window { mynahUI: any;}
+declare module '*.md';
+declare module '*.png';
+declare interface Window { mynahUI: any}

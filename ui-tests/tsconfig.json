@@ -11,5 +11,4 @@
         "typeRoots": ["./node_modules/@types"],
         "strictPropertyInitialization": false,
     },
-    "exclude": ["dist", "node_modules"],
 }

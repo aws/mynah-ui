@@ -1,15 +1,23 @@
 import { Page } from 'playwright';
-import { getSelector, waitForTransitionEnd } from '../helpers';
+import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
-export const openNewTab = async (page: Page): Promise<void> => {
+export const openNewTab = async (page: Page, withMiddleClick?: boolean, skipScreenshots?: boolean): Promise<void> => {
   // Open new tab
-  await page.locator(`${getSelector(testIds.tabBar.tabAddButton)}`).click();
-  const welcomeCardSelector = `${getSelector(testIds.chatItem.type.answer)}`;
+  if (withMiddleClick !== true) {
+    await page.locator(`${getSelector(testIds.tabBar.tabAddButton)}`).click();
+  } else {
+    await page.mouse.move(100, 10);
+    await page.locator(`${getSelector(testIds.tabBar.wrapper)}`).dblclick({ position: { x: 100, y: 10 } });
+  }
+  await page.mouse.move(0, 0);
+  const welcomeCardSelector = `${getSelector(testIds.chatItem.type.answer)}[messageid="welcome-message"]`;
   const welcomeCard = await page.waitForSelector(welcomeCardSelector);
-  await waitForTransitionEnd(page, welcomeCardSelector);
-  
+  await waitForAnimationEnd(page);
   expect(welcomeCard).toBeDefined();
-  
-  expect(await page.screenshot()).toMatchImageSnapshot();
+
+  if (skipScreenshots !== true) {
+    // snap
+    expect(await page.screenshot()).toMatchImageSnapshot();
+  }
 };

@@ -5,10 +5,9 @@
     "main": "webpack.media.config.js",
     "scripts": {
         "clean": "rm -rf build dist node_modules",
-        "tests:prepare": "webpack --config webpack.config.js --mode development",
-        "tests:e2e": "jest --runInBand --detectOpenHandles --config=./jest.config.js",
-        "tests:run": "npm install && npm run tests:prepare && npm run tests:e2e",
-        "postinstall": "npx playwright install webkit"
+        "prepare": "webpack --config webpack.config.js --mode development",
+        "e2e": "npm run prepare && jest --detectOpenHandles --config=./jest.config.js",
+        "postinstall": "npx playwright install webkit chromium --with-deps"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../"

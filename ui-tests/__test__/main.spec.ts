@@ -1,30 +1,30 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference types="jest-playwright-preset" />
 import path from 'path';
-import { Page, Browser } from 'playwright/test';
-import playwright from 'playwright';
 import { initRender } from './flows/init-render';
 import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
 import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
+import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
+import { DEFAULT_VIEWPORT } from './helpers';
+import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 
 describe('Open MynahUI', () => {
-  let browser: Browser;
-  let page: Page;
   beforeAll(async () => {
-    browser = await playwright.webkit.launch({
-      headless: true,
-      args: [ '--no-sandbox', '--disable-setuid-sandbox' ],
-      timeout: 5000
+    const browserName = await (await browser.browserType()).name();
+    const toMatchImageSnapshot = configureToMatchImageSnapshot({
+      failureThreshold: 0.12,
+      allowSizeMismatch: true,
+      failureThresholdType: 'percent',
+      storeReceivedOnFailure: true,
+      customSnapshotsDir: `./__test__/__image_snapshots__/${browserName}`
     });
-    page = await browser.newPage({
-      viewport: {
-        width: 500,
-        height: 950
-      }
-    });
-    const htmlFilePath = path.join(__dirname, '../dist/index.html');
-    const fileUrl = 'file://' + htmlFilePath;
-    // await page.setViewport({ width: 500, height: 950 });
+
+    expect.extend({ toMatchImageSnapshot });
+    const htmlFilePath: string = path.join(__dirname, '../dist/index.html');
+    const fileUrl = `file://${htmlFilePath}`;
+    await page.setViewportSize(DEFAULT_VIEWPORT);
     await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
   });
 
@@ -50,5 +50,17 @@ describe('Open MynahUI', () => {
 
   it('should open a new the tab', async () => {
     await openNewTab(page);
+  });
+
+  it('should close the tab with middle click', async () => {
+    await closeTab(page, true, true);
+  });
+
+  it('should open a new tab with double click', async () => {
+    await openNewTab(page, true, true);
+  });
+
+  it('should keep the content inside window boundaries', async () => {
+    await checkContentInsideWindowBoundaries(page);
   });
 });

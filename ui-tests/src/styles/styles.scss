@@ -2,6 +2,7 @@
 
 html,
 body {
+    font-size: var(--mynah-font-size-medium) !important;
     width: 100vw;
     height: 100vh;
     margin: 0;
@@ -10,6 +11,15 @@ body {
     overflow: hidden;
     background-color: var(--mynah-color-bg);
     color: var(--mynah-color-text-default);
+    line-height: var(--mynah-line-height) !important;
+    transform: translateZ(0);
+    filter: contrast(1);
+}
+* {
+    font-stretch: 100%;
+    letter-spacing: normal;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
 }
 
 #mynah-ui-wrapper {

@@ -1,16 +1,22 @@
 import { Page } from 'playwright/test';
-import { getSelector, waitForTransitionEnd } from '../helpers';
+import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
-export const renderUserPrompt = async (page: Page): Promise<void> => {
+export const renderUserPrompt = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await page.locator(`${getSelector(testIds.prompt.input)}`).fill('This is a user Prompt');
   await page.locator(`${getSelector(testIds.prompt.send)}`).click();
+  const promptInput = await page.waitForSelector(`${getSelector(testIds.prompt.input)}`);
+  expect(await promptInput.isDisabled()).toEqual(true);
 
   const userCardSelector = `${getSelector(testIds.chatItem.type.prompt)}`;
   const userCard = await page.waitForSelector(userCardSelector);
-  await waitForTransitionEnd(page, userCardSelector);
-
   expect(userCard).toBeDefined();
+  await waitForAnimationEnd(page);
+  await userCard.scrollIntoViewIfNeeded();
+  expect(await promptInput.isDisabled()).toEqual(false);
 
-  expect(await userCard.screenshot()).toMatchImageSnapshot();
+  if (skipScreenshots !== true) {
+    const box = await userCard.boundingBox();
+    expect(await page.screenshot({ clip: box ?? undefined })).toMatchImageSnapshot();
+  }
 };

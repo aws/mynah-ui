@@ -1,30 +1,38 @@
-import { ElementHandle, Page } from 'playwright/test';
+import { Page } from 'playwright/test';
 import testIds from '../../src/helper/test-ids';
-
-export async function waitForTransitionEnd (page: Page, element: string): Promise<void> {
-  if(typeof element === 'string'){
-    await page.evaluate(async (element: string | ElementHandle<Element>) => {
-      return await new Promise<void>((resolve) => {
-        let elm:any = element;
-        if(typeof element === 'string'){
-          elm = document.querySelector(element) as HTMLElement;
-        }
-        if (elm != null) {
-          const onEnd = (): void => {
-            elm.removeEventListener('transitionend', onEnd);
-            setTimeout(()=>{
+export const DEFAULT_VIEWPORT = {
+  width: 500,
+  height: 950
+};
+export async function waitForAnimationEnd (page: Page, selector?: string): Promise<void> {
+  await page.locator(selector ?? `${getSelector(testIds.chat.wrapper)}:not(.loading)`).evaluate(async (elm) => {
+    return await new Promise<void>((resolve) => {
+      if (elm != null) {
+        // Start delayed, for the not started animations yet
+        setTimeout(() => {
+          const animationStateCheckInterval: ReturnType<typeof setInterval> = setInterval(() => {
+            if (elm.getAnimations({ subtree: true })
+              .find((animation) => animation.playState === 'running') == null) {
+              clearInterval(animationStateCheckInterval);
               resolve();
-            }, 250);
-          };
-          elm.addEventListener('transitionend', onEnd);
-        } else {
-          resolve();
-        }
-      });
-    }, element);
-  }
+            }
+          }, 200);
+        }, 700);
+      } else {
+        resolve();
+      }
+    });
+  });
 }
 
-export function getSelector(selector: string):string {
-  return `[${testIds.selector}="${selector}"]`;
+export async function justWait (duration: number): Promise<void> {
+  return await new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });
+}
+
+export function getSelector (selector: string): string {
+  return `css=[${testIds.selector}="${selector}"]`;
 }
