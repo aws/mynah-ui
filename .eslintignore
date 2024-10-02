@@ -10,6 +10,8 @@ postinstall.js
 **/*.config.js
 **/*.config.json
 *.json
+.github
+.husky
 dist/**
 example*/**
 ui-tests*/**
@@ -18,7 +20,6 @@ docs/**
 out/**
 *.config.js
 **/dev.js
-**/*.d.ts
 **/*.config.json
 LICENSE
 THIRD-PARTY-LICENSES

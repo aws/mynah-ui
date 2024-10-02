@@ -10,13 +10,13 @@ output.on('close', function () {
     console.log('archiver has been finalized and the output file descriptor has closed.');
 });
 
-archive.on('error', function(err){
+archive.on('error', function (err) {
     throw err;
 });
 
 archive.pipe(output);
 
 // append files from a sub-directory, putting its contents at the root of archive
-archive.directory('dist/', `mynah-ui-${mynahUIPackageJson?.version ?? '??' }`);
+archive.directory('dist/', `mynah-ui-${mynahUIPackageJson?.version ?? '??'}`);
 
 archive.finalize();

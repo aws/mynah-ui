@@ -1,2 +1,2 @@
-import open from'open';
+import open from 'open';
 await open('./dist/index.html');

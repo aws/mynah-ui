@@ -3,7 +3,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-
 /**@type {import('webpack').Configuration}*/
 const config = {
     target: 'web',
@@ -17,8 +16,8 @@ const config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.html'
-        })
+            template: 'src/index.html',
+        }),
     ],
     devtool: 'source-map',
     resolve: {
@@ -31,17 +30,17 @@ const config = {
             {
                 test: /\.scss$/,
                 use: [
-                  'style-loader',
-                  {
-                    loader: 'css-loader',
-                    options: {
-                      importLoaders: 1,
-                      modules: {
-                        mode: 'icss', // Enable ICSS (Interoperable CSS)
-                      },
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1,
+                            modules: {
+                                mode: 'icss', // Enable ICSS (Interoperable CSS)
+                            },
+                        },
                     },
-                  },
-                  'sass-loader',
+                    'sass-loader',
                 ],
             },
             {

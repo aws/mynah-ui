@@ -10,7 +10,7 @@
     z-index: 1000000;
     &.mynah-overlay-dim-outside {
         &:before {
-            content: "";
+            content: '';
             position: absolute;
             left: 0;
             top: 0;
@@ -32,8 +32,8 @@
         border-radius: var(--mynah-card-radius);
         width: max-content;
         height: max-content;
-        max-width: calc(100vw - var(--mynah-sizing-16))!important;
-        max-height: calc(100vh - var(--mynah-sizing-16))!important;
+        max-width: calc(100vw - var(--mynah-sizing-16)) !important;
+        max-height: calc(100vh - var(--mynah-sizing-16)) !important;
 
         .mynah-card,
         .mynah-card * {
@@ -48,7 +48,7 @@
 
         &.background {
             &:before {
-                content: "";
+                content: '';
                 background-color: transparent;
                 transition: var(--mynah-short-transition-rev);
                 position: absolute;
@@ -69,7 +69,7 @@
             }
 
             &:after {
-                content: "";
+                content: '';
                 position: absolute;
                 width: var(--mynah-sizing-8);
                 height: var(--mynah-sizing-8);
@@ -89,7 +89,7 @@
             &-from-end-to-left {
                 --overlayLeftPos: -100%;
                 --overlayInnerHorizontalOrigin: right;
-                &:before{
+                &:before {
                     transform-origin: right center;
                 }
                 &:after {

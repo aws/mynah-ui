@@ -1,11 +1,6 @@
 @mixin list-fader-bottom($height: var(--mynah-sizing-6)) {
     position: relative;
-    $listFader: linear-gradient(
-        to bottom,
-        black 30%,
-        black calc(100% - $height),
-        transparent 100%
-    );
+    $listFader: linear-gradient(to bottom, black 30%, black calc(100% - $height), transparent 100%);
     -webkit-mask-image: $listFader;
     -webkit-mask-size: 100% 100%;
     mask-image: $listFader;
@@ -51,7 +46,7 @@
 /**
  * @param {string} $shadow - The shadow of the element.
  */
- @mixin mynah-box-shadow($shadow) {
+@mixin mynah-box-shadow($shadow) {
     box-shadow: $shadow;
 }
 

@@ -40,7 +40,7 @@
     &.background {
         background-color: var(--mynah-card-bg);
     }
-    &:not(.background){
+    &:not(.background) {
         box-shadow: none;
     }
     &.border {

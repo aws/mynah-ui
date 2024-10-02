@@ -14,7 +14,7 @@
     overflow: visible;
     &:before {
         transition: all 400ms cubic-bezier(0.25, 0, 0, 1);
-        content: "";
+        content: '';
         position: absolute;
         right: calc(-1 * var(--mynah-sizing-2));
         bottom: 0;
