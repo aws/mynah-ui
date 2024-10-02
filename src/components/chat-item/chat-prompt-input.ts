@@ -62,6 +62,7 @@ export class ChatPromptInput {
       contextItems: allQuickPickContextItems,
       onInput: () => this.updateAvailableCharactersIndicator(),
       onFocus: this.handleInputFocus,
+      onBlur: () => this.remainingCharsOverlay?.close()
     });
     this.sendButton = new PromptInputSendButton({
       tabId: this.props.tabId,
