@@ -6,7 +6,7 @@ import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
 import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
-import { windowBoundary } from './flows/window-boundaries';
+import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 
@@ -61,6 +61,6 @@ describe('Open MynahUI', () => {
   });
 
   it('should keep the content inside window boundaries', async () => {
-    await windowBoundary(page);
+    await checkContentInsideWindowBoundaries(page);
   });
 });
