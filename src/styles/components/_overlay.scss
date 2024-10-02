@@ -87,7 +87,7 @@
         &.horizontal-direction {
             &-to-left,
             &-from-end-to-left {
-                --overlayLeftPos: -100%;
+                --overlayLeftPos: calc(-100%);
                 --overlayInnerHorizontalOrigin: right;
                 &:before {
                     transform-origin: right center;
@@ -142,7 +142,9 @@
             transition-delay: 0ms;
         }
 
-        transform: translate3d(var(--overlayLeftPos), var(--overlayTopPos), 0);
+        transform: translate3d(var(--overlayLeftPos), var(--overlayTopPos), 0) scale(1);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
     &:not(.mynah-overlay-open) {
         &,
@@ -155,17 +157,13 @@
         > .mynah-overlay-container {
             > .mynah-overlay-inner-container {
                 transform: translate3d(0, 0, 0) scale(1);
-            }
-            &:before {
-                transform: translate3d(0, 0, 0) scale(1);
-                transition-delay: 50ms;
-                opacity: 1;
-            }
-            > .mynah-overlay-inner-container {
                 transition-delay: 20ms;
-            }
-            > .mynah-overlay-inner-container {
                 opacity: 1;
+                &:before {
+                    transform: translate3d(0, 0, 0) scale(1);
+                    transition-delay: 50ms;
+                    opacity: 1;
+                }
             }
             &:after {
                 transition-delay: 0ms;
