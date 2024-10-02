@@ -7,7 +7,7 @@ module.exports = {
             browsers: ['webkit', 'chromium'],
             launchOptions: {
                 headless: true,
-            }
+            },
         },
     },
     transform: { '^.+\\.ts?$': 'ts-jest' },
