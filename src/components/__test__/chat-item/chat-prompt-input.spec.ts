@@ -1,7 +1,7 @@
 import { MynahUIGlobalEvents } from '../../../helper/events';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
 import { MynahEventNames } from '../../../static';
-import { ChatPromptInput, MAX_USER_INPUT, MAX_USER_INPUT_THRESHOLD } from '../../chat-item/chat-prompt-input';
+import { ChatPromptInput, MAX_USER_INPUT } from '../../chat-item/chat-prompt-input';
 
 describe('chat-prompt-input', () => {
   it('render', () => {
@@ -87,7 +87,7 @@ describe('chat-prompt-input', () => {
     });
 
     expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${
-      Math.min(MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD - textToAdd.length, MAX_USER_INPUT()) - textareaElement.value.length
+      MAX_USER_INPUT() - textToAdd.length - textareaElement.value.length
     }/${MAX_USER_INPUT()}`);
   });
 });
