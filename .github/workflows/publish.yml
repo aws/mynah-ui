@@ -13,12 +13,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
       - run: npm ci
-      - name: Check lint
-        run: npm run lint
       - name: Build mynah-ui
         run: npm run build
       - name: Run tests
-        run: npm test
+        run: npm run tests:unit && npm run tests:e2e
+      - name: Check lint
+        run: npm run lint
       - name: Build demo app
         run: npm run packdemo
       - name: Get release info
