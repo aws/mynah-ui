@@ -14,7 +14,9 @@ export async function waitForAnimationEnd (page: Page, selector?: string): Promi
             if (elm.getAnimations({ subtree: true })
               .find((animation) => animation.playState === 'running') == null) {
               clearInterval(animationStateCheckInterval);
-              resolve();
+              setTimeout(() => {
+                resolve();
+              }, 500);
             }
           }, 200);
         }, 700);
