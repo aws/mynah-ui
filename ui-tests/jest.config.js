@@ -1,3 +1,5 @@
+const isHeadless = process.env.HEADLESS !== 'false';
+
 module.exports = {
     rootDir: './',
     roots: ['./__test__', './src'],
@@ -6,7 +8,7 @@ module.exports = {
         'jest-playwright': {
             browsers: ['webkit', 'chromium'],
             launchOptions: {
-                headless: true,
+                headless: isHeadless,
             },
         },
     },
