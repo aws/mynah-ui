@@ -174,13 +174,15 @@ export const createMynahUI = (): MynahUI => {
           return true;
         },
         () => {
-          mynahUI.updateStore(tabId, {
-            loadingChat: false,
-            promptInputDisabledState: false,
-          });
-          mynahUI.endMessageStream(tabId, messageId) as Record<string, any>;
           streamingMessageId = null;
-          mynahUI.addChatItem(tabId, mockFollowups);
+          setTimeout(() => {
+            mynahUI.addChatItem(tabId, mockFollowups);
+            mynahUI.updateStore(tabId, {
+              loadingChat: false,
+              promptInputDisabledState: false,
+            });
+            mynahUI.endMessageStream(tabId, messageId) as Record<string, any>;
+          }, 200);
         }
       )
       .then(() => {
