@@ -15,8 +15,6 @@ import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
-import { CardBody } from '../card/card-body';
-import { Card } from '../card/card';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -132,17 +130,17 @@ export class ChatPromptInput {
         // Code snippet will have a limit of MAX_USER_INPUT - MAX_USER_INPUT_THRESHOLD - current prompt text length
         // If exceeding that, we will crop it
         const textInputLength = this.promptTextInput.getTextInputValue().trim().length;
-        const currentSelectedCodeMaxLength = (MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD) - textInputLength;
+        const currentSelectedCodeMaxLength = (MAX_USER_INPUT()) - textInputLength;
         const croppedAttachmentContent = (data.textToAdd ?? '')?.slice(0, currentSelectedCodeMaxLength);
         this.promptAttachment.updateAttachment(croppedAttachmentContent, data.type);
         // Also update the limit on prompt text given the selected code
-        this.promptTextInput.updateTextInputMaxLength(Math.min(MAX_USER_INPUT(), Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD) - croppedAttachmentContent.length)));
+        this.promptTextInput.updateTextInputMaxLength(Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT() - croppedAttachmentContent.length)));
         this.updateAvailableCharactersIndicator();
 
         // When code is attached, focus to the input with a delay
         // Delay is necessary for the render updates
         setTimeout(() => {
-          this.promptTextInput.focus();
+          this.promptTextInput.focus(-1);
         }, 100);
       }
     });
@@ -156,7 +154,7 @@ export class ChatPromptInput {
   }
 
   private readonly updateAvailableCharactersIndicator = (): void => {
-    const characterAmount = this.promptTextInput.getTextInputValue().trim().length;
+    const characterAmount = MAX_USER_INPUT() - Math.max(0, (this.promptTextInput.promptTextInputMaxLength - this.promptTextInput.getTextInputValue().trim().length));
     const bodyText = `${characterAmount}/${MAX_USER_INPUT()}`;
 
     // Re(render) if the overlay is not in the DOM

@@ -1,7 +1,7 @@
 import { MynahUIGlobalEvents } from '../../../helper/events';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
 import { MynahEventNames } from '../../../static';
-import { ChatPromptInput, MAX_USER_INPUT, MAX_USER_INPUT_THRESHOLD } from '../../chat-item/chat-prompt-input';
+import { ChatPromptInput, MAX_USER_INPUT, INPUT_LENGTH_WARNING_THRESHOLD } from '../../chat-item/chat-prompt-input';
 
 describe('chat-prompt-input', () => {
   it('render', () => {
@@ -17,8 +17,8 @@ describe('chat-prompt-input', () => {
       tabId: testTabId,
     });
 
-    // Remaining character indicator
-    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${MAX_USER_INPUT()}/${MAX_USER_INPUT()}`);
+    // Remaining character indicator should be undefined as the overlay should only be defined when the threshold is hit
+    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBeUndefined();
     // Send icon
     expect(testChatInput.render.querySelector('i .mynah-ui-icon .mynah-ui-icon-envelope-send')).toBeDefined();
     // Text area
@@ -74,10 +74,10 @@ describe('chat-prompt-input', () => {
     const textareaElement = document.body.querySelector('textarea') as HTMLTextAreaElement;
 
     // Input character should change the remaining character count
-    textareaElement.value = 'z';
+    textareaElement.value = 'z'.repeat(INPUT_LENGTH_WARNING_THRESHOLD());
     textareaElement?.dispatchEvent(new KeyboardEvent('input', { key: 'z' }));
 
-    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${MAX_USER_INPUT() - 1}/${MAX_USER_INPUT()}`);
+    expect(document.body.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${INPUT_LENGTH_WARNING_THRESHOLD()}/${MAX_USER_INPUT()}`);
 
     // Code snippet should change the remaining character count
     const textToAdd = "console.log('hello')";
@@ -86,8 +86,7 @@ describe('chat-prompt-input', () => {
       textToAdd
     });
 
-    expect(testChatInput.render.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${
-      Math.min(MAX_USER_INPUT() + MAX_USER_INPUT_THRESHOLD - textToAdd.length, MAX_USER_INPUT()) - textareaElement.value.length
-    }/${MAX_USER_INPUT()}`);
+    expect(document.body.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${
+      textareaElement.value.length + textToAdd.length}/${MAX_USER_INPUT()}`);
   });
 });
