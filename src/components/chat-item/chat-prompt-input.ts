@@ -15,8 +15,6 @@ import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
-import { CardBody } from '../card/card-body';
-import { Card } from '../card/card';
 import { PromptInputProgress } from './prompt-input/prompt-progress';
 
 // 96 extra is added as a threshold to allow for attachments
