@@ -157,6 +157,7 @@ export class ChatPromptInput {
 
   private readonly updateAvailableCharactersIndicator = (): void => {
     const characterAmount = this.promptTextInput.getTextInputValue().trim().length;
+    const bodyText = `${characterAmount}/${MAX_USER_INPUT()}`;
 
     // Re(render) if the overlay is not in the DOM
     if (this.remainingCharsOverlay == null || this.remainingCharsOverlay.render.parentNode == null) {
@@ -169,15 +170,11 @@ export class ChatPromptInput {
         verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
         horizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
         children: [
-          new Card({
-            border: false,
-            children: [
-              new CardBody({
-                body: `${characterAmount}/${MAX_USER_INPUT()}`,
-                classNames: [ 'mynah-chat-prompt-chars-indicator' ]
-              }).render
-            ]
-          }).render
+          DomBuilder.getInstance().build({
+            type: 'span',
+            classNames: [ 'mynah-chat-prompt-chars-indicator' ],
+            innerHTML: bodyText,
+          })
         ],
       });
     }
@@ -191,15 +188,11 @@ export class ChatPromptInput {
 
     // Update the card's body
     this.remainingCharsOverlay.updateContent([
-      new Card({
-        border: false,
-        children: [
-          new CardBody({
-            body: `${characterAmount}/${MAX_USER_INPUT()}`,
-            classNames: [ 'mynah-chat-prompt-chars-indicator' ]
-          }).render
-        ]
-      }).render
+      DomBuilder.getInstance().build({
+        type: 'span',
+        classNames: [ 'mynah-chat-prompt-chars-indicator' ],
+        innerHTML: bodyText,
+      })
     ]);
   };
 
