@@ -45,6 +45,7 @@ interface ConfigModel {
     }>;
     tabBarButtons?: TabBarMainAction[]; // Tab bar buttons will be shown on the right of the tab
     maxUserInput: number; // max number of chars for the input field
+    userInputLengthWarningThreshold: number; // The amount of characters in the input field necessary for the character limit warning to show
     codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on code blocks system wide
     codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on code blocks system wide
     autoFocus: boolean; // auto focuses to input panel after every action
@@ -274,6 +275,23 @@ _Assume that you've provided `1` for `maxTabs`._
 Just auto focus to prompt input field after every response arrival or initialization.
 
 default: `true`
+
+---
+<p align="center">
+  <img src="./img/feedbackOptions.png" alt="feedbackOptions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+<p><br/></p>
+
+# `userInputLengthWarningThreshold`
+The amount of characters in the prompt input necessary for the character limit warning overlay to show up.
+> [!NOTE]
+> In older versions, the character count used to always show underneath the input, but this was changed in a recent release.
+
+default: `3500`
+
+<p align="center">
+  <img src="./img/characterLimitWarning.png" alt="feedbackOptions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ---
 
