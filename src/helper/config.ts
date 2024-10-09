@@ -12,9 +12,9 @@ interface ConfigFullModel extends ConfigOptions {
 };
 
 const configDefaults: ConfigFullModel = {
-  componentClasses: {
-  },
+  componentClasses: {},
   maxTabs: 1000,
+  userInputLengthWarningThreshold: 3500,
   maxUserInput: 4096,
   showPromptField: true,
   autoFocus: true,
@@ -78,7 +78,7 @@ const configDefaults: ConfigFullModel = {
     tabCloseConfirmationKeepButton: 'Keep tab',
     noTabsOpen: '### Open a tab to chat with Q',
     openNewTab: 'New tab'
-  }
+  },
 };
 export class Config {
   private static instance: Config;
