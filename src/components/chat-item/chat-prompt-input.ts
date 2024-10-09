@@ -156,6 +156,8 @@ export class ChatPromptInput {
   }
 
   private readonly updateAvailableCharactersIndicator = (): void => {
+    const characterAmount = this.promptTextInput.getTextInputValue().trim().length;
+
     // Re(render) if the overlay is not in the DOM
     if (this.remainingCharsOverlay == null || !this.remainingCharsOverlay.render.checkVisibility()) {
       this.remainingCharsOverlay = new Overlay({
@@ -171,7 +173,8 @@ export class ChatPromptInput {
             border: false,
             children: [
               new CardBody({
-                body: `${MAX_USER_INPUT() - this.promptTextInput.getTextInputValue().length}/${MAX_USER_INPUT()}`
+                body: `${MAX_USER_INPUT() - characterAmount}/${MAX_USER_INPUT()}`,
+                classNames: [ 'mynah-chat-prompt-chars-indicator' ]
               }).render
             ]
           }).render
@@ -181,7 +184,6 @@ export class ChatPromptInput {
     }
 
     // Set the visibility based on whether the threshold is hit
-    const characterAmount = this.promptTextInput.getTextInputValue().trim().length;
     if (characterAmount >= INPUT_LENGTH_WARNING_THRESHOLD()) {
       this.remainingCharsOverlay.toggleHidden(false);
     } else {
