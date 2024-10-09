@@ -38,3 +38,8 @@ export async function justWait (duration: number): Promise<void> {
 export function getSelector (selector: string): string {
   return `css=[${testIds.selector}="${selector}"]`;
 }
+
+export function isVisible (el: SVGElement | HTMLElement): boolean {
+  const style = window.getComputedStyle(el);
+  return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+}

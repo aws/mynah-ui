@@ -9,6 +9,7 @@ import { openNewTab } from './flows/open-new-tab';
 import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
+import { renderCharacterCount } from './flows/render-character-count';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -58,6 +59,10 @@ describe('Open MynahUI', () => {
 
   it('should open a new tab with double click', async () => {
     await openNewTab(page, true, true);
+  });
+
+  it('should render character limit counter', async () => {
+    await renderCharacterCount(page);
   });
 
   it('should keep the content inside window boundaries', async () => {

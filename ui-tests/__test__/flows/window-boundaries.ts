@@ -12,6 +12,8 @@ const getOffsetHeight = (boxRect: {
   return boxRect != null ? (boxRect?.y ?? 0) + (boxRect?.height ?? 0) : 0;
 };
 export const checkContentInsideWindowBoundaries = async (page: Page): Promise<void> => {
+  await page.locator(`${getSelector(testIds.prompt.input)}`).clear();
+
   await page.mouse.move(0, 0);
   const footerPanel = await page.waitForSelector(`${getSelector(testIds.prompt.footerInfo)}`);
   expect(footerPanel).toBeDefined();
