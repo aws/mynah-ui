@@ -1,17 +1,17 @@
 :root {
-    --mynah-font-family: var(--vscode-font-family), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Amazon Ember', Roboto, Oxygen, Ubuntu, Cantarell,
-        'Open Sans', 'Helvetica Neue', sans-serif;
+    --mynah-font-family: var(--vscode-font-family), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        'Amazon Ember', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: var(--vscode-font-size, 13px);
     font-family: var(--mynah-font-family, 'system-ui');
     --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
-    
+
     --mynah-max-width: 2560px;
     --mynah-sizing-base: 0.25rem;
     --mynah-chat-wrapper-spacing: var(--mynah-sizing-4);
-    
+
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
-    
+
     --mynah-color-text-default: var(--vscode-foreground);
     --mynah-color-text-alternate: var(--mynah-color-button-reverse);
     --mynah-color-text-strong: var(--vscode-input-foreground);
@@ -27,7 +27,7 @@
     --mynah-color-highlight-text: #886411;
     --mynah-color-toggle: var(--vscode-sideBar-background);
     --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
-    
+
     --mynah-color-syntax-bg: var(--vscode-terminal-dropBackground);
     --mynah-color-syntax-variable: var(--vscode-debugTokenExpression-name);
     --mynah-color-syntax-function: var(--vscode-gitDecoration-modifiedResourceForeground);
@@ -37,27 +37,35 @@
     --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan);
     --mynah-color-syntax-comment: var(--vscode-debugConsole-sourceForeground);
     --mynah-color-syntax-code: var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit));
-    
+
     --mynah-color-status-info: #0971d3;
     --mynah-color-status-success: #037f03;
     --mynah-color-status-warning: #b2911c;
     --mynah-color-status-error: #d91515;
 
-    --mynah-color-gradient-base-color: #7638fa;;
+    --mynah-color-gradient-base-color: #7638fa;
     // --mynah-color-gradient-main: linear-gradient(35deg, #7638FA, #3E8DFF, #8AF3FF, #8AF3FF, #3E8DFF, #7638FA);
-    --mynah-color-gradient-main: linear-gradient(35deg, #7638FA, #3E8DFF, var(--mynah-color-light), var(--mynah-color-light), #3E8DFF, #7638FA);
-    
+    --mynah-color-gradient-main: linear-gradient(
+        35deg,
+        #7638fa,
+        #3e8dff,
+        var(--mynah-color-light),
+        var(--mynah-color-light),
+        #3e8dff,
+        #7638fa
+    );
+
     --mynah-color-button: var(--vscode-button-background);
     --mynah-color-button-reverse: var(--vscode-button-foreground);
     --mynah-color-alternate: var(--vscode-button-secondaryBackground);
     --mynah-color-alternate-reverse: var(--vscode-button-secondaryForeground);
     --mynah-card-bg: var(--vscode-editor-background);
     --mynah-card-bg-alternate: var(--mynah-color-button);
-    
+
     --mynah-shadow-button: none;
     --mynah-shadow-card: none;
     --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
-    
+
     --mynah-font-size-xxsmall: 0.8rem;
     --mynah-font-size-xsmall: 0.9rem;
     --mynah-font-size-small: 1rem;
