@@ -155,9 +155,13 @@ export class ChatPromptInput {
 
   private readonly updateAvailableCharactersIndicator = (): void => {
     const characterAmount = MAX_USER_INPUT() - Math.max(0, (this.promptTextInput.promptTextInputMaxLength - this.promptTextInput.getTextInputValue().trim().length));
-    const bodyText = `${characterAmount}/${MAX_USER_INPUT()}`;
+    const charTextElm = DomBuilder.getInstance().build({
+      type: 'span',
+      classNames: [ 'mynah-chat-prompt-chars-indicator' ],
+      innerHTML: `${characterAmount}/${MAX_USER_INPUT()}`,
+    });
 
-    // Re(render) if the overlay is not in the DOM
+    // Re(render) if the overlay is not in the DOM, else update
     if (this.remainingCharsOverlay == null || this.remainingCharsOverlay.render.parentNode == null) {
       this.remainingCharsOverlay = new Overlay({
         testId: testIds.prompt.remainingCharsIndicator,
@@ -168,13 +172,13 @@ export class ChatPromptInput {
         verticalDirection: OverlayVerticalDirection.TO_BOTTOM,
         horizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
         children: [
-          DomBuilder.getInstance().build({
-            type: 'span',
-            classNames: [ 'mynah-chat-prompt-chars-indicator' ],
-            innerHTML: bodyText,
-          })
+          charTextElm
         ],
       });
+    } else {
+      this.remainingCharsOverlay.updateContent([
+        charTextElm
+      ]);
     }
 
     // Set the visibility based on whether the threshold is hit
@@ -183,15 +187,6 @@ export class ChatPromptInput {
     } else {
       this.remainingCharsOverlay.toggleHidden(true);
     }
-
-    // Update the card's body
-    this.remainingCharsOverlay.updateContent([
-      DomBuilder.getInstance().build({
-        type: 'span',
-        classNames: [ 'mynah-chat-prompt-chars-indicator' ],
-        innerHTML: bodyText,
-      })
-    ]);
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
