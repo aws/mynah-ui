@@ -52,6 +52,12 @@
     @import 'chat-prompt-wrapper';
 }
 
+.mynah-overlay > .mynah-overlay-container > .mynah-overlay-inner-container {
+    &:has(> .mynah-chat-prompt-chars-indicator) {
+        padding: var(--mynah-sizing-4);
+    }
+}
+
 .mynah-chat-items-container,
 .mynah-chat-prompt-input-sticky-card {
     @import 'chat-item-card';
