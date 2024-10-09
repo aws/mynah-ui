@@ -114,7 +114,8 @@ export class ChatPromptInput {
             },
           ]
         },
-        this.attachmentWrapper
+        this.attachmentWrapper,
+        this.progressIndicator.render
       ]
     });
 
