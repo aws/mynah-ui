@@ -182,7 +182,7 @@ export class ChatPromptInput {
     }
 
     // Set the visibility based on whether the threshold is hit
-    if (characterAmount >= 5) {
+    if (characterAmount >= INPUT_LENGTH_WARNING_THRESHOLD()) {
       this.remainingCharsOverlay.toggleHidden(false);
     } else {
       this.remainingCharsOverlay.toggleHidden(true);
