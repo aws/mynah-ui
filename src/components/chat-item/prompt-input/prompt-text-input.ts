@@ -18,6 +18,7 @@ export interface PromptTextInputProps {
   onKeydown: (e: KeyboardEvent) => void;
   onInput?: (e: KeyboardEvent) => void;
   onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 export class PromptTextInput {
@@ -93,6 +94,9 @@ export class PromptTextInput {
         },
         blur: () => {
           this.render.removeClass('input-has-focus');
+          if (typeof this.props.onBlur !== 'undefined') {
+            this.props.onBlur();
+          }
         }
       },
     });
