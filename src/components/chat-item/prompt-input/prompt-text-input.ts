@@ -58,6 +58,7 @@ export class PromptTextInput {
         maxlength: MAX_USER_INPUT().toString(),
         type: 'text',
         placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'),
+        style: this.getPlaceholderWidth(),
         value: '',
         ...(Config.getInstance().config.autoFocus ? { autofocus: 'autofocus' } : {})
       },
@@ -94,9 +95,6 @@ export class PromptTextInput {
         },
         blur: () => {
           this.render.removeClass('input-has-focus');
-          if (typeof this.props.onBlur !== 'undefined') {
-            this.props.onBlur();
-          }
         }
       },
     });
@@ -141,6 +139,27 @@ export class PromptTextInput {
 
     this.clear();
   }
+
+  private readonly getPlaceholderWidth = (): string => {
+    const span = document.createElement('span');
+    span.style.visibility = 'hidden';
+    span.setAttribute('class', 'mynah-chat-prompt-input-scroll-measure');
+    document.body.appendChild(span);
+
+    const inputStyles = window.getComputedStyle(span);
+    span.style.font = inputStyles.getPropertyValue('font');
+    span.style.fontSize = inputStyles.getPropertyValue('font-size');
+    span.style.fontFamily = inputStyles.getPropertyValue('font-family');
+    span.style.fontWeight = inputStyles.getPropertyValue('font-weight');
+    span.style.letterSpacing = inputStyles.getPropertyValue('letter-spacing');
+    span.style.whiteSpace = 'nowrap';
+    span.textContent = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder');
+
+    const textWidth = span.offsetWidth;
+    document.body.removeChild(span);
+
+    return `--mynah-placeholder-width: ${textWidth * 1.125}px`; //
+  };
 
   private readonly updatePromptTextInputSizer = (placeHolder?: {
     index?: number;
