@@ -54,6 +54,7 @@
                 width: 100%;
                 position: relative;
                 align-self: center;
+                overflow: hidden;
 
                 > .mynah-chat-prompt-input {
                     font-family: var(--mynah-font-family);
