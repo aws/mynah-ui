@@ -107,6 +107,11 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             display: inline-block;
             position: relative;
             vertical-align: middle;
+            white-space: pre-wrap;
+
+            & * {
+                white-space: pre-wrap;
+            }
         }
 
         &:after,
@@ -114,7 +119,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             content: '';
             position: absolute;
             top: 50%;
-            height: calc(3px + var(--mynah-line-height));
+            height: 100%;
             left: -3px;
             width: calc(100% + 6px);
             border-radius: var(--mynah-input-radius);
