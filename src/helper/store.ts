@@ -27,6 +27,7 @@ export class EmptyMynahUIDataModel {
       promptInputInfo: '',
       promptInputStickyCard: null,
       promptInputDisabledState: false,
+      promptInputProgress: null,
       chatItems: [],
       selectedCodeSnippet: '',
       tabBarButtons: [],

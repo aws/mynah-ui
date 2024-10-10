@@ -1,3 +1,7 @@
-declare module '*.md';
-declare module '*.png';
-declare interface Window { mynahUI: any}
+import { MynahUI } from '@aws/mynah-ui';
+
+declare global {
+  interface Window {
+    mynahUI: MynahUI;
+  }
+}

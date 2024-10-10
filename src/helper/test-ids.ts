@@ -17,6 +17,7 @@ export default {
     footerInfo: 'prompt-input-footer-info',
     footerInfoBody: 'prompt-input-footer-info-body',
     stickyCard: 'prompt-input-sticky-card',
+    progress: 'prompt-input-progress-wrapper',
   },
   chat: {
     wrapper: 'chat-wrapper',

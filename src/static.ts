@@ -85,6 +85,10 @@ export interface MynahUIDataModel {
   */
   promptInputDisabledState?: boolean;
   /**
+  * Prompt input progress field
+  */
+  promptInputProgress?: ProgressField | null;
+  /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
@@ -139,6 +143,7 @@ export enum MynahEventNames {
   ADD_ATTACHMENT = 'addAttachment',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
+  PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
 };
 
 export enum MynahPortalNames {
@@ -176,6 +181,29 @@ export enum ChatItemType {
   ANSWER_STREAM = 'answer-stream',
   ANSWER_PART = 'answer-part',
   CODE_RESULT = 'code-result',
+}
+
+export interface ProgressField {
+  /**
+   * Prompt input progress status
+   */
+  status?: 'default' | 'info' | 'success' | 'warning' | 'error';
+  /**
+  * Prompt input progress text
+  */
+  text?: string;
+  /**
+  * Prompt input progress text for the current state (ie: 15%, 2min remaining)
+  */
+  valueText?: string;
+  /**
+  * Prompt input progress value to show the inner bar state, -1 for infinite
+  */
+  value?: number;
+  /**
+   * Prompt input progress actions
+   */
+  actions?: ChatItemButton[];
 }
 
 export interface TreeNodeDetails {

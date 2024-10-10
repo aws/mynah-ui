@@ -1,0 +1,16 @@
+// Global scss vars
+
+/**
+* Status
+*/
+$mynah-statuses: ('success', 'error', 'warning', 'info');
+
+/**
+ * Padding sizes
+ */
+$mynah-padding-sizes: (
+    'none': 0,
+    'small': 1,
+    'medium': 3,
+    'large': 5,
+);

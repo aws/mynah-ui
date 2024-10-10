@@ -109,6 +109,13 @@ export interface MynahUIProps {
     tabId: string,
     prompt: ChatPrompt,
     eventId?: string) => void;
+  onChatPromptProgressActionButtonClicked?: (
+    tabId: string,
+    action: {
+      id: string;
+      text?: string;
+    },
+    eventId?: string) => void;
   onFollowUpClicked?: (
     tabId: string,
     messageId: string,
@@ -400,6 +407,19 @@ export class MynahUI {
           id: data.actionId,
           text: data.actionText,
           formItemValues: data.formItemValues
+        }, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_PROGRESS_ACTION_CLICK, (data: {
+      tabId: string;
+      actionId: string;
+      actionText?: string;
+    }) => {
+      if (this.props.onChatPromptProgressActionButtonClicked !== undefined) {
+        this.props.onChatPromptProgressActionButtonClicked(data.tabId, {
+          id: data.actionId,
+          text: data.actionText
         }, this.getUserEventId());
       }
     });

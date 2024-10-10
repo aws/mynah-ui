@@ -15,6 +15,7 @@ import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
+import { PromptInputProgress } from './prompt-input/prompt-progress';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -38,6 +39,7 @@ export class ChatPromptInput {
   private readonly promptTextInput: PromptTextInput;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly sendButton: PromptInputSendButton;
+  private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
   private readonly chatPrompt: ExtendedHTMLElement;
   private remainingCharsOverlay: Overlay;
@@ -75,6 +77,9 @@ export class ChatPromptInput {
         this.sendPrompt();
       },
     });
+    this.progressIndicator = new PromptInputProgress({
+      tabId: this.props.tabId,
+    });
 
     this.promptAttachment = new PromptAttachment({
       tabId: this.props.tabId,
@@ -93,6 +98,7 @@ export class ChatPromptInput {
       type: 'div',
       classNames: [ 'mynah-chat-prompt' ],
       children: [
+        this.chatPrompt,
         {
           type: 'div',
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
@@ -108,7 +114,8 @@ export class ChatPromptInput {
             },
           ]
         },
-        this.attachmentWrapper
+        this.attachmentWrapper,
+        this.progressIndicator.render
       ]
     });
 

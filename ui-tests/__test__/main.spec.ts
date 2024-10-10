@@ -10,6 +10,7 @@ import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { renderCharacterCount } from './flows/render-character-count';
+import { progressIndicator } from './flows/prompt-progress-indicator';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -35,6 +36,10 @@ describe('Open MynahUI', () => {
 
   it('should render initial data', async () => {
     await initRender(page);
+  });
+
+  it('should show progress indicator', async () => {
+    await progressIndicator(page);
   });
 
   it('should render user prompt', async () => {
