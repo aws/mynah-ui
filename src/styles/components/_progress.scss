@@ -9,7 +9,6 @@
     &.no-content,
     &.no-content * {
         opacity: 0;
-        // display: none!important;
         pointer-events: none !important;
         user-select: none !important;
     }
