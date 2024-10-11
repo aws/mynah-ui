@@ -21,6 +21,7 @@ import {
 export interface QuickActionCommand {
   command: string;
   disabled?: boolean;
+  icon?: MynahIcons;
   description?: string;
   placeholder?: string;
 }

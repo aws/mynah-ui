@@ -16,6 +16,8 @@ import { PromptTextInput } from './prompt-input/prompt-text-input';
 import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
 import { PromptInputProgress } from './prompt-input/prompt-progress';
+import { CardBody } from '../card/card-body';
+import { Icon } from '../icon';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -430,10 +432,12 @@ export class ChatPromptInput {
           children: [
             ...(quickPickGroup.groupName !== undefined
               ? [ DomBuilder.getInstance().build({
-                  type: 'h4',
+                  type: 'div',
                   testId: testIds.prompt.quickPicksGroupTitle,
                   classNames: [ 'mynah-chat-command-selector-group-title' ],
-                  children: [ quickPickGroup.groupName ]
+                  children: [ new CardBody({
+                    body: quickPickGroup.groupName
+                  }).render ]
                 }) ]
               : []),
             ...(quickPickGroup.commands.map(quickPickCommand => {
@@ -456,18 +460,31 @@ export class ChatPromptInput {
                   }
                 },
                 children: [
+                  ...(quickPickCommand.icon !== undefined
+                    ? [
+                        new Icon({
+                          icon: quickPickCommand.icon
+                        }).render
+                      ]
+                    : []),
                   {
                     type: 'div',
-                    classNames: [ 'mynah-chat-command-selector-command-name' ],
-                    children: [ quickPickCommand.command ]
-                  },
-                  ...(quickPickCommand.description !== undefined
-                    ? [ {
+                    classNames: [ 'mynah-chat-command-selector-command-container' ],
+                    children: [
+                      {
                         type: 'div',
-                        classNames: [ 'mynah-chat-command-selector-command-description' ],
-                        children: [ quickPickCommand.description ]
-                      } ]
-                    : [])
+                        classNames: [ 'mynah-chat-command-selector-command-name' ],
+                        children: [ quickPickCommand.command ]
+                      },
+                      ...(quickPickCommand.description !== undefined
+                        ? [ {
+                            type: 'div',
+                            classNames: [ 'mynah-chat-command-selector-command-description' ],
+                            children: [ quickPickCommand.description ]
+                          } ]
+                        : [])
+                    ]
+                  }
                 ]
               });
             }))

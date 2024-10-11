@@ -19,7 +19,7 @@ export async function waitForAnimationEnd (page: Page, selector?: string): Promi
               }, 500);
             }
           }, 200);
-        }, 700);
+        }, 1000);
       } else {
         resolve();
       }

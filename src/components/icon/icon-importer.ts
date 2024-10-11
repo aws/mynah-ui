@@ -58,6 +58,13 @@ import CURSOR_INSERT from './icons/cursor-insert.svg';
 import TEXT_SELECT from './icons/text-select.svg';
 import REVERT from './icons/revert.svg';
 import ASTERISK from './icons/asterisk.svg';
+import BUG from './icons/bug.svg';
+import CHECK_LIST from './icons/check-list.svg';
+import DEPLOY from './icons/deploy.svg';
+import HELP from './icons/help.svg';
+import MESSAGE from './icons/message.svg';
+import TRASH from './icons/trash.svg';
+import TRANSFORM from './icons/transform.svg';
 
 export class MynahUIIconImporter {
   private static instance: MynahUIIconImporter;
@@ -113,7 +120,14 @@ export class MynahUIIconImporter {
       CURSOR_INSERT,
       TEXT_SELECT,
       REVERT,
-      ASTERISK
+      ASTERISK,
+      BUG,
+      CHECK_LIST,
+      DEPLOY,
+      HELP,
+      MESSAGE,
+      TRASH,
+      TRANSFORM,
     };
     DomBuilder.getInstance().createPortal('mynah-ui-icons', {
       type: 'style',
