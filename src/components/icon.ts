@@ -59,6 +59,13 @@ export enum MynahIcons {
   TEXT_SELECT = 'text-select',
   REVERT = 'revert',
   ASTERISK = 'asterisk',
+  BUG = 'bug',
+  CHECK_LIST = 'check-list',
+  DEPLOY = 'deploy',
+  HELP = 'help',
+  MESSAGE = 'message',
+  TRASH = 'trash',
+  TRANSFORM = 'transform',
 }
 
 export interface IconProps {
