@@ -1,3 +1,5 @@
+@import '../scss-variables';
+
 pre.diff-highlight > code .token.deleted:not(.prefix),
 pre > code.diff-highlight .token.deleted:not(.prefix) {
     background-color: rgba(255, 0, 0, 0.1);
@@ -150,6 +152,10 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             filter: brightness(0.95);
             white-space: pre;
             background-color: inherit;
+
+            @media (max-width: $mynah-code-blocks-wrap-under) {
+                white-space: pre-wrap;
+            }
         }
 
         > code,
@@ -161,6 +167,11 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             word-wrap: normal;
             tab-size: 4;
             hyphens: none;
+
+            @media (max-width: $mynah-code-blocks-wrap-under) {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
         }
 
         > code::selection,
