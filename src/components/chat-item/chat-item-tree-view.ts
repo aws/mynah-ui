@@ -75,7 +75,7 @@ export class ChatItemTreeView {
         type: 'div',
         classNames: [
           'mynah-chat-item-tree-view-button-title',
-          this.node.deleted === true ? 'mynah-chat-item-tree-view-button-title-deleted' : '',
+          this.node.deleted ? 'mynah-chat-item-tree-view-button-title-deleted' : '',
         ],
         children: [
           new Icon({ icon: MynahIcons.FOLDER }).render,
