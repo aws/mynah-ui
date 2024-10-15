@@ -67,7 +67,6 @@ export class ChatItemTreeView {
   buildFolderNode (): ExtendedHTMLElement[] {
     if (this.node.type !== 'folder') return [];
 
-    console.log(this.node);
     const folderItem = new Button({
       testId: testIds.chatItem.fileTree.folder,
       icon: new Icon({ icon: this.isOpen ? MynahIcons.DOWN_OPEN : MynahIcons.RIGHT_OPEN }).render,
@@ -76,7 +75,7 @@ export class ChatItemTreeView {
         type: 'div',
         classNames: [
           'mynah-chat-item-tree-view-button-title',
-          this.node.deleted ? 'mynah-chat-item-tree-view-button-title-deleted' : '',
+          this.node.deleted === true ? 'mynah-chat-item-tree-view-button-title-deleted' : '',
         ],
         children: [
           new Icon({ icon: MynahIcons.FOLDER }).render,
