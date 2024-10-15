@@ -70,8 +70,14 @@ export class ChatPromptInput {
       onKeydown: this.handleInputKeydown,
       contextItems: allQuickPickContextItems,
       onInput: () => this.updateAvailableCharactersIndicator(),
-      onFocus: this.handleInputFocus,
-      onBlur: () => this.remainingCharsOverlay?.close()
+      onFocus: () => {
+        this.render.addClass('input-has-focus');
+        this.handleInputFocus();
+      },
+      onBlur: () => {
+        this.render.removeClass('input-has-focus');
+        this.remainingCharsOverlay?.close();
+      }
     });
     this.sendButton = new PromptInputSendButton({
       tabId: this.props.tabId,

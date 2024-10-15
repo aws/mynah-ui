@@ -87,13 +87,11 @@ export class PromptTextInput {
           }
         },
         focus: () => {
-          this.render.addClass('input-has-focus');
           if (typeof this.props.onFocus !== 'undefined') {
             this.props.onFocus();
           }
         },
         blur: () => {
-          this.render.removeClass('input-has-focus');
           if (typeof this.props.onBlur !== 'undefined') {
             this.props.onBlur();
           }
