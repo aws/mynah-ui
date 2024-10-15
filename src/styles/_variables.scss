@@ -43,16 +43,25 @@
     --mynah-color-status-warning: #b2911c;
     --mynah-color-status-error: #d91515;
 
-    --mynah-color-gradient-base-color: #7638fa;
-    // --mynah-color-gradient-main: linear-gradient(35deg, #7638FA, #3E8DFF, #8AF3FF, #8AF3FF, #3E8DFF, #7638FA);
+    --mynah-color-gradient-start: #7638fa;
+    --mynah-color-gradient-mid: #3e8dff;
+    --mynah-color-gradient-end: #8af3ff;
+
+    --mynah-color-gradient-semi-transparent: linear-gradient(
+        35deg,
+        var(--mynah-color-gradient-start),
+        var(--mynah-color-gradient-mid),
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0),
+        var(--mynah-color-gradient-mid),
+        var(--mynah-color-gradient-start)
+    );
     --mynah-color-gradient-main: linear-gradient(
         35deg,
-        #7638fa,
-        #3e8dff,
-        var(--mynah-color-light),
-        var(--mynah-color-light),
-        #3e8dff,
-        #7638fa
+        var(--mynah-color-gradient-start),
+        var(--mynah-color-gradient-mid),
+        var(--mynah-color-gradient-end),
+        var(--mynah-color-gradient-start)
     );
 
     --mynah-color-button: var(--vscode-button-background);
