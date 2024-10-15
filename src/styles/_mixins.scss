@@ -7,6 +7,16 @@
     mask-size: 100% 100%;
 }
 
+@mixin gradient-border($gradient: var(--mynah-color-gradient-main)) {
+    background-clip: padding-box, border-box;
+    background-origin: border-box;
+    background-image: linear-gradient(var(--mynah-card-bg), var(--mynah-card-bg)), $gradient;
+    background-position: 0% bottom;
+    background-size: 200% 100%;
+    background-repeat: repeat-x;
+    border: var(--mynah-border-width) solid transparent;
+}
+
 /**
  * @param {string} $size - The size of the font.
  * @param {string} $weight - The weight of the font.

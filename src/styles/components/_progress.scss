@@ -1,3 +1,4 @@
+@import '../mixins';
 @import '../scss-variables';
 .mynah-progress-indicator {
     position: relative;
@@ -25,13 +26,8 @@
         box-sizing: border-box;
         gap: var(--mynah-sizing-2);
         overflow: hidden;
-        background-clip: padding-box, border-box;
-        background-origin: border-box;
-        background-image: linear-gradient(var(--mynah-card-bg), var(--mynah-card-bg)), var(--mynah-color-gradient-main);
-        background-position: 0% bottom;
-        background-size: 200% 100%;
-        background-repeat: repeat-x;
-        border: var(--mynah-border-width) solid transparent;
+        @include gradient-border();
+
         &[indeterminate='true'] {
             animation: horizontal-roll 1750ms linear infinite both;
         }
@@ -47,7 +43,7 @@
             background-clip: content-box, border-box;
             background-origin: border-box;
             height: auto;
-            background-color: var(--mynah-color-gradient-base-color);
+            background-color: var(--mynah-color-gradient-start);
             z-index: 1;
             opacity: 0.2;
             transition: var(--mynah-bottom-panel-transition);

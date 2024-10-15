@@ -561,12 +561,12 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           if (streamingMessageId != null) {
             mynahUI.updateChatAnswerWithMessageId(tabId, streamingMessageId, chatItem);
             mynahUI.updateStore(tabId, {
-              promptInputProgress: {
+              ...(optionalParts != null ? {promptInputProgress: {
                   status: 'info',
                   ...(percentage > 50 ? {text: 'Almost done...'} : {}),
                   valueText: `${parseInt(percentage.toString())}%`,
                   value: percentage,
-              }
+              }}: {})
             });
             return false;
           }
@@ -589,25 +589,27 @@ Use \`@\` to mention a file, folder, or method.`
               }
             }
           }) as Record<string, any>;
-          mynahUI.updateStore(tabId, {
-            promptInputProgress: {
-                status: 'success',
-                text: 'Completed...',
-                valueText: '',
-                value: 100,
-                actions: []
-            }
-          });
 
           mynahUI.updateStore(tabId, {
             loadingChat: false,
           });
-          setTimeout(()=>{
+          if(optionalParts != null){
             mynahUI.updateStore(tabId, {
-              promptInputDisabledState: false,
-              promptInputProgress: null
+              promptInputProgress: {
+                  status: 'success',
+                  text: 'Completed...',
+                  valueText: '',
+                  value: 100,
+                  actions: []
+              }
             });
-          },1500);
+            setTimeout(()=>{
+              mynahUI.updateStore(tabId, {
+                promptInputDisabledState: false,
+                promptInputProgress: null
+              });
+            },1500);
+          }
           Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails).map(key=>`${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
@@ -623,19 +625,21 @@ Use \`@\` to mention a file, folder, or method.`
           canBeVoted: true,
           messageId: streamingMessageId,
         });
-        mynahUI.updateStore(tabId, {
-          promptInputProgress: {
-              status: 'default',
-              text: 'Work in progress...',
-              value: -1,
-              actions: [{
-                id: 'cancel-running-task',
-                text: 'Cancel',
-                icon: MynahIcons.CANCEL,
-                disabled: false,
-              }]
-          }
-        });
+        if(optionalParts != null){
+          mynahUI.updateStore(tabId, {
+            promptInputProgress: {
+                status: 'default',
+                text: 'Work in progress...',
+                value: -1,
+                actions: [{
+                  id: 'cancel-running-task',
+                  text: 'Cancel',
+                  icon: MynahIcons.CANCEL,
+                  disabled: false,
+                }]
+            }
+          });
+        }
       });
   };
 
