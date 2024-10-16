@@ -1,0 +1,28 @@
+@import '../../scss-variables';
+@import '../../mixins';
+
+.mynah-chat-item-information-card {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--mynah-sizing-12);
+    border-top: 1px solid var(--mynah-color-border-default);
+    position: relative;
+    border-radius: var(--mynah-input-radius);
+    overflow: hidden;
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        background-image: radial-gradient(
+            var(--mynah-bg-gradient-start),
+            var(--mynah-bg-gradient-mid),
+            var(--mynah-bg-gradient-end)
+        );
+    }
+}

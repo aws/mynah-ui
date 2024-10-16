@@ -16,9 +16,9 @@
     border-radius: var(--mynah-card-radius);
     box-shadow: var(--mynah-shadow-card);
 
-    @for $i from 0 through 10 {
-        > .mynah-card-inner-order-#{$i * 10} {
-            order: $i * 10;
+    @for $i from 0 through 100 {
+        > .mynah-card-inner-order-#{$i} {
+            order: $i;
         }
     }
 

@@ -237,6 +237,17 @@ export interface ChatItemContent {
   buttons?: ChatItemButton[];
   formItems?: ChatItemFormItem[];
   footer?: ChatItemContent;
+  informationCard?: {
+    title?: string;
+    status?: {
+      status?: 'info' | 'success' | 'warning' | 'error';
+      icon?: MynahIcons;
+      body?: string;
+    };
+    description?: string;
+    icon?: MynahIcons;
+    content: ChatItemContent;
+  };
   codeBlockActions?: CodeBlockActions;
 }
 

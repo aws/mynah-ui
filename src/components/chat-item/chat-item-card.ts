@@ -36,6 +36,8 @@ export class ChatItemCard {
   private readonly updateStack: Array<Partial<ChatItem>> = [];
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
   private cardFooter: ExtendedHTMLElement | null = null;
+  private informationCardWrapper: ExtendedHTMLElement | null = null;
+  private informationCard: ChatItemCard | null = null;
   private cardIcon: Icon | null = null;
   private contentBody: ChatItemCardContent | null = null;
   private chatAvatar: ExtendedHTMLElement;
@@ -297,6 +299,36 @@ export class ChatItemCard {
         referenceSuggestionLabel,
       });
       this.card?.render.insertChild('beforeend', this.fileTreeWrapper.render);
+    }
+
+    /**
+     * Generate file tree if available
+     */
+    if (this.informationCardWrapper != null) {
+      this.informationCardWrapper.remove();
+      this.informationCardWrapper = null;
+    }
+    if (this.props.chatItem.informationCard !== undefined) {
+      this.informationCardWrapper = DomBuilder.getInstance().build({
+        type: 'div',
+        classNames: [ 'mynah-chat-item-information-card', 'mynah-card-inner-order-55' ],
+        children: [
+          // TODO fill title, description and icon
+        ]
+      });
+      this.card?.render.insertChild('beforeend', this.informationCardWrapper);
+
+      this.informationCard = new ChatItemCard({
+        tabId: this.props.tabId,
+        small: true,
+        inline: true,
+        chatItem: {
+          ...this.props.chatItem.informationCard.content,
+          type: ChatItemType.ANSWER,
+          messageId: this.props.chatItem.messageId
+        }
+      });
+      this.informationCardWrapper.insertChild('beforeend', this.informationCard.render);
     }
 
     /**

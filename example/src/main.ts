@@ -136,6 +136,17 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }));
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+
+        mynahUI.addChatItem(tabId, {
+          body: 'This is the parent content',
+          messageId: generateUID(),
+          type: ChatItemType.ANSWER,
+          informationCard: {
+            content: {
+              body: 'This is the inner card'
+            }
+          }
+        });
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
@@ -593,6 +604,9 @@ Use \`@\` to mention a file, folder, or method.`
           mynahUI.updateStore(tabId, {
             loadingChat: false,
           });
+          mynahUI.updateStore(tabId, {
+            promptInputDisabledState: false,
+          });
           if(optionalParts != null){
             mynahUI.updateStore(tabId, {
               promptInputProgress: {
@@ -605,7 +619,6 @@ Use \`@\` to mention a file, folder, or method.`
             });
             setTimeout(()=>{
               mynahUI.updateStore(tabId, {
-                promptInputDisabledState: false,
                 promptInputProgress: null
               });
             },1500);
