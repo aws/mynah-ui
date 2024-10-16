@@ -123,7 +123,7 @@ $error-color: #e60063;
     );
 
     @each $name, $color in $card-backgrounds {
-        --mynah-color-#{$name}: #{$color};
+        --mynah-#{$name}: #{$color};
     }
 
     // Shadows
