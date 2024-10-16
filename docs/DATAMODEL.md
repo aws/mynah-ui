@@ -1,10 +1,10 @@
 # MynahUI Data Model (with how the things appear on screen)
 
-There are few models for different items on the screen for mynah ui. Let's star from the top and go in detail one by one.
+There are a number of models for the various items on the screen for MynahUI. Let's start from the top and go in detail one-by-one.
 
 ## Tab Data Store
 
-All information you can set related with a tab. 
+All information you can set related to a tab. 
 
 ```typescript
 interface MynahUIDataModel {
@@ -60,6 +60,10 @@ interface MynahUIDataModel {
   * Prompt input field disabled state, set to true to disable it
   */
   promptInputDisabledState?: boolean;
+  /**
+  * Prompt input progress field
+  */
+  promptInputProgress?: ProgressField | null;
   /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
@@ -440,6 +444,46 @@ mynahUI.updateStore('tab-1', {
 
 ---
 
+### `promptInputProgress`
+
+This determines whether the progress bar shows up, and what its styling and progress value is. The `value` should be a number representing the progress, and the `valueText` is the text that shows right next to the regular `text` to indicate the progress in the bar. A number of `actions` can be added to dispatch events. Different statuses are available, namely: `default` | `info` | `success` | `warning` | `error`.
+
+**In progress:**
+```typescript
+mynahUI.updateStore('tab-1', {
+  promptInputProgress: {
+    status: 'default',
+    text: 'Work in progress...',
+    value: -1,
+    actions: [{
+      id: 'cancel-running-task',
+      text: 'Cancel',
+      icon: MynahIcons.CANCEL,
+      disabled: false,
+    }]
+  }
+});
+```
+
+**Completed:**
+```typescript
+mynahUI.updateStore('tab-1', {
+  promptInputProgress: {
+    status: 'success',
+    text: 'Completed...',
+    valueText: '',
+    value: 100,
+    actions: []
+  }
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/progress.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
 ### `selectedCodeSnippet`
 
 This is the attached code block text right under the prompt input field..
@@ -459,7 +503,7 @@ mynahUI.updateStore('tab-1', {
             'tab-1': {
                 isSelected: true,
                 .....`,
-})
+});
 ```
 
 <p align="center">
