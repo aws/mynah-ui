@@ -74,7 +74,7 @@ export const createMynahUI = (): MynahUI => {
     onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
       if (tabId === 'tab-1') {
         mynahUI.updateStore(tabId, {
-          tabCloseConfirmationMessage: `Working on "${prompt.prompt != null ? (prompt.prompt) : ''}"`,
+          tabCloseConfirmationMessage: `Working on "${prompt.prompt != null ? (prompt.prompt as string) : ''}"`,
         });
       }
       onChatPrompt(tabId, prompt);
@@ -142,7 +142,7 @@ export const createMynahUI = (): MynahUI => {
           mynahUI.addChatItem(tabId, {
             type: ChatItemType.PROMPT,
             messageId: generateUID(),
-            body: `**${(prompt.command != null ? prompt.command : '').replace('/', '')}**\n${(prompt.escapedPrompt != null ? prompt.escapedPrompt : '')}`,
+            body: `**${(prompt.command != null ? prompt.command as string : '').replace('/', '')}**\n${(prompt.escapedPrompt != null ? prompt.escapedPrompt as string : '')}`,
           });
           getGenerativeAIAnswer(tabId);
           break;

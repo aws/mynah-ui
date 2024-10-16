@@ -136,7 +136,7 @@
             }
 
             > .mynah-feedback-form-stars-container {
-                transition: var(--mynah-short-transition-rev);
+                transition: var(--mynah-short-rev-transition);
                 transform-origin: right bottom;
                 display: inline-flex;
                 flex-flow: row nowrap;

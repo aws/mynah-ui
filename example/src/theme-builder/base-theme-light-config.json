@@ -370,7 +370,7 @@
         "unit": "",
         "value": "var(--mynah-sizing-5)"
     },
-    "--mynah-card-radius-corner": {
+    "--mynah-card-corner-radius": {
         "type": "measurement",
         "description": "Border radius used on all Chat card edge bottom corner",
         "category": "radius",
@@ -424,7 +424,7 @@
         "description": "This is a transition animation used in several places",
         "value": "all 580ms cubic-bezier(0.35, 1, 0, 1)"
     },
-    "--mynah-short-transition-rev-opacity": {
+    "--mynah-short-rev-opacity-transition": {
         "type": "text",
         "category": "transition",
         "description": "This is a transition animation used in several places",

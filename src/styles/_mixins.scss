@@ -61,10 +61,52 @@
 }
 
 /**
- * @param {string} $name - The name of the transition.
- * @param {number} $duration - The duration of the transition in milliseconds.
- * @param {string} $timing-function - The timing function of the transition.
+ * @param {String} $name - The name of the CSS variable.
+ * @param {String} $property - The CSS property to transition.
+ * @param {Number} $duration - The duration in milliseconds.
+ * @param {String} $timing-function - The timing function (e.g., cubic-bezier).
  */
-@mixin mynah-transition($name, $duration, $timing-function) {
-    --mynah-#{$name}-transition: all #{$duration}ms #{$timing-function};
+@mixin mynah-transition-var($name, $property, $duration, $timing-function) {
+    :root {
+        --mynah-#{$name}-transition: #{$property} #{$duration}ms #{$timing-function};
+    }
+}
+
+/**
+ * @param {Number} $base - The base value used to generate sizing variables.
+ */
+@mixin mynah-sizing-vars($base) {
+    :root {
+        --mynah-sizing-half: calc(var(--mynah-sizing-base) / 2);
+
+        @for $i from 1 through 18 {
+            --mynah-sizing-#{$i}: calc(var(--mynah-sizing-base) * #{$i});
+        }
+    }
+}
+
+/**
+ * @param {String} $name - The name of the CSS variable.
+ * @param {String | Number} $value - The value to assign to the CSS variable.
+ */
+@mixin mynah-css-var($name, $value) {
+    :root {
+        #{$name}: #{$value};
+    }
+}
+
+/**
+ * @param {String} $type - The type of CSS variable to generate.
+ * @param {String} $prefix - The prefix of the CSS variable.
+ * @param {String} $key - The key of the CSS variable.
+ * @param {String | Number} $value - The value to assign to the CSS variable.
+ */
+@mixin mynah-generate-css-var($type, $prefix, $key, $value) {
+    @if $type == 'prefix' {
+        @include mynah-css-var(#{$mynah}-#{$prefix}-#{$key}, $value);
+    } @else if $type == 'radius' {
+        @include mynah-css-var(#{$mynah}-#{$key}-radius, $value);
+    } @else if $type == 'shadow' {
+        @include mynah-css-var(#{$mynah}-shadow-#{$key}, $value);
+    }
 }

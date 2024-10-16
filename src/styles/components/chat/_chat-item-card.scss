@@ -266,7 +266,7 @@
         > .mynah-card {
             padding: var(--mynah-sizing-4);
             background-color: var(--mynah-card-bg-alternate);
-            border-bottom-right-radius: var(--mynah-card-radius-corner);
+            border-bottom-right-radius: var(--mynah-card-corner-radius);
             &,
             > .mynah-card-body {
                 color: var(--mynah-color-text-alternate);
@@ -293,7 +293,7 @@
     &.mynah-chat-item-code-result,
     &.mynah-chat-item-answer-stream {
         > .mynah-card {
-            border-bottom-left-radius: var(--mynah-card-radius-corner);
+            border-bottom-left-radius: var(--mynah-card-corner-radius);
             max-height: 100%;
             flex: 1;
         }

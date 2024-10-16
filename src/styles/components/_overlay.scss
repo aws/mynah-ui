@@ -17,7 +17,7 @@
             width: 100%;
             height: 100%;
             background-color: var(--mynah-color-bg);
-            transition: var(--mynah-short-transition-rev-opacity);
+            transition: var(--mynah-short-rev-opacity-transition);
             opacity: 0.45;
         }
     }
@@ -50,7 +50,7 @@
             &:before {
                 content: '';
                 background-color: transparent;
-                transition: var(--mynah-short-transition-rev);
+                transition: var(--mynah-short-rev-transition);
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -79,7 +79,7 @@
                 border: var(--mynah-sizing-4);
                 background-color: var(--mynah-card-bg);
                 border-radius: inherit;
-                transition: var(--mynah-short-transition-rev);
+                transition: var(--mynah-short-rev-transition);
                 transition-delay: 20ms;
             }
         }
@@ -129,12 +129,12 @@
             position: relative;
             transform: translate3d(0, 0, 0) scale(0.85);
             transform-origin: var(--overlayInnerHorizontalOrigin) var(--overlayInnerVerticalOrigin);
-            transition: var(--mynah-short-transition-rev);
+            transition: var(--mynah-short-rev-transition);
             width: 100%;
         }
         &:before {
             transform: translate3d(0, 0, 0) scale(0.85);
-            transition: var(--mynah-short-transition-rev);
+            transition: var(--mynah-short-rev-transition);
         }
         > .mynah-overlay-inner-container,
         &:before {
