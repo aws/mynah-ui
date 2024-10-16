@@ -182,7 +182,7 @@
                     height: 100%;
                     border-radius: var(--mynah-card-radius);
                     opacity: 0;
-                    transition: var(--mynah-short-transition-rev);
+                    transition: var(--mynah-short-rev-transition);
                     z-index: 8000;
                     background-color: var(--mynah-color-alternate);
                 }
@@ -190,7 +190,7 @@
                 > .mynah-chat-attachment-delete-icon {
                     color: var(--mynah-color-alternate-reverse);
                     opacity: 0;
-                    transition: var(--mynah-short-transition-rev);
+                    transition: var(--mynah-short-rev-transition);
                     position: absolute;
                     left: 50%;
                     top: 50%;
@@ -261,7 +261,7 @@
             box-sizing: content-box;
             border-radius: inherit;
             box-sizing: border-box;
-            transition: var(--mynah-short-transition-rev);
+            transition: var(--mynah-short-rev-transition);
             pointer-events: none;
         }
         &:after {

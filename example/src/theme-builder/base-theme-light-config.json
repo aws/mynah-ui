@@ -418,7 +418,7 @@
         "description": "This is a transition animation used in several places",
         "value": "all 550ms cubic-bezier(0.85, 0.15, 0, 1)"
     },
-    "--mynah-short-transition-rev": {
+    "--mynah-short-rev-transition": {
         "type": "text",
         "category": "transition",
         "description": "This is a transition animation used in several places",
