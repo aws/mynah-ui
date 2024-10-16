@@ -79,4 +79,20 @@ describe('button', () => {
     testButtonElement.dispatchEvent(new Event('mouseenter'));
     expect(mockMouseOverHandler).toHaveBeenCalledTimes(1);
   });
+
+  it('data-label attribute', () => {
+    const mockOnClickHandler = jest.fn();
+    const testButton = new Button({
+      label: 'Test button',
+      onClick: mockOnClickHandler,
+    });
+    const testButton2 = new Button({
+      onClick: mockOnClickHandler,
+    });
+
+    expect(testButton.render.getAttribute('data-label')).toBe('Test button');
+    expect(testButton2.render.getAttribute('data-label')).toBeNull();
+    testButton.updateLabel('Updated label');
+    expect(testButton.render.getAttribute('data-label')).toBe('Updated label');
+  });
 });

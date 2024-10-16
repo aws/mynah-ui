@@ -63,6 +63,7 @@ class ButtonInternal extends ButtonAbstract {
       testId: props.testId,
       attributes: {
         ...(props.disabled === true ? { disabled: 'disabled' } : {}),
+        ...(Boolean(props.label) && typeof props.label === 'string' ? { 'data-label': props.label } : {}),
         tabindex: '0',
         ...props.attributes,
       },
@@ -152,6 +153,9 @@ class ButtonInternal extends ButtonAbstract {
     (this.render.querySelector('.mynah-button-label') as ExtendedHTMLElement).replaceWith(
       DomBuilder.getInstance().build(this.getButtonLabelDomBuilderObject(label)[0])
     );
+    if (typeof label === 'string') {
+      this.render.setAttribute('data-label', label);
+    }
   };
 
   public readonly setEnabled = (enabled: boolean): void => {
