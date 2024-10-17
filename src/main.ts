@@ -256,7 +256,11 @@ export class MynahUI {
     // Apply global fix for marked listitem content is not getting parsed.
     marked.use({
       renderer: {
-        listitem: (src) => `<li>${marked.parse(src, { breaks: false }) as string}</li>`
+        listitem: (item) => `
+<li>
+${item.task === true ? `<input ${item.checked === true ? 'checked' : ''} disabled type="checkbox">` : ''}
+${(item.task === true ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}
+</li>`
       },
     });
 
