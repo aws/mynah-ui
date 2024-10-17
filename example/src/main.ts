@@ -593,6 +593,9 @@ Use \`@\` to mention a file, folder, or method.`
           mynahUI.updateStore(tabId, {
             loadingChat: false,
           });
+          mynahUI.updateStore(tabId, {
+            promptInputDisabledState: false,
+          });
           if(optionalParts != null){
             mynahUI.updateStore(tabId, {
               promptInputProgress: {
@@ -605,7 +608,6 @@ Use \`@\` to mention a file, folder, or method.`
             });
             setTimeout(()=>{
               mynahUI.updateStore(tabId, {
-                promptInputDisabledState: false,
                 promptInputProgress: null
               });
             },1500);
