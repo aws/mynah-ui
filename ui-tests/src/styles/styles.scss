@@ -18,7 +18,7 @@ body {
 * {
     font-stretch: 100%;
     letter-spacing: normal;
-    text-rendering: optimizeSpeed;
+    text-rendering: optimizeLegibility !important;
     -webkit-font-smoothing: antialiased;
 }
 
