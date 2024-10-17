@@ -692,8 +692,10 @@ export class MynahUI {
    * @param eventId last action's user event ID passed from an event binded to mynahUI.
    * Without user intent you cannot switch to a different tab
    */
-  public selectTab = (tabId: string, eventId: string): void => {
-    if (eventId === this.lastEventId && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+  public selectTab = (tabId: string, eventId?: string): void => {
+    // TODO: until we find a way to confirm the events from the consumer as events,
+    // eventId === this.lastEventId: This check will be removed
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       MynahUITabsStore.getInstance().selectTab(tabId);
     }
   };
