@@ -5,6 +5,15 @@ export const DEFAULT_VIEWPORT = {
   height: 950
 };
 
+export const getOffsetHeight = (boxRect: {
+  width?: number;
+  height?: number;
+  x?: number;
+  y?: number;
+} | null): number => {
+  return boxRect != null ? (boxRect?.y ?? 0) + (boxRect?.height ?? 0) : 0;
+};
+
 export const waitForAnimationEnd = async (page: Page): Promise<any> => {
   return await Promise.race([
     new Promise((resolve) => setTimeout(resolve, 8000)),
