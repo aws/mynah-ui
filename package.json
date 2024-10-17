@@ -9,7 +9,10 @@
     "main": "./dist/main.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/aws/mynah-ui"
+        "url": "git+https://github.com/aws/mynah-ui.git"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.com/"
     },
     "scripts": {
         "clean": "npm run clean:dist && npm run clean:node",
@@ -30,7 +33,10 @@
         "api-docs": "npx typedoc src/main.ts --out ./api-docs",
         "api-doc-deploy": "npx typedoc src/main.ts --out ./example/dist/api-doc",
         "postinstall": "node postinstall.js",
-        "prepare": "npx husky"
+        "prepare": "npx husky",
+        "publish:npm": "npm publish --registry https://registry.npmjs.org/",
+        "publish:github": "npm publish --registry https://npm.pkg.github.com/",
+        "publish": "npm run publish:npm && npm run publish:github"
     },
     "dependencies": {
         "escape-html": "^1.0.3",
