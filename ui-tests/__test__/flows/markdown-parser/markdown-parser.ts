@@ -14,6 +14,13 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
       window.mynahUI.addChatItem(selectedTabId, {
         type: 'answer' as any,
         snapToTop: true,
+        codeReference: [ {
+          information: 'Hello Reference Tracker',
+          recommendationContentSpan: {
+            start: 466,
+            end: 475
+          }
+        } ],
         body
       });
     }
@@ -65,10 +72,27 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
   expect(await answerCard.evaluate(node => node.querySelectorAll('a[href="https://github.com/aws/mynah-ui"]')[1]?.innerHTML)).toBe('https://github.com/aws/mynah-ui');
   expect(await answerCard.evaluate(node => node.querySelector('img[src="https://placehold.co/600x400"]'))).toBeDefined();
 
+  // Table
+  expect(await answerCard.evaluate(node => node.querySelector('table > tbody > tr:nth-child(2) > td:nth-child(2)')?.innerHTML)).toBe('2');
+
   // Code blocks
   expect(await answerCard.evaluate(node => node.querySelectorAll('pre > code')[0]?.innerHTML)).toBe('inline code');
   expect(await answerCard.evaluate(node => node.querySelectorAll('pre')[2]?.nextElementSibling?.querySelector(':scope > span')?.innerHTML)).toBe('javascript');
   expect(await answerCard.evaluate(node => node.querySelectorAll('pre')[2]?.nextElementSibling?.querySelector(':scope > button')?.querySelector(':scope > span')?.innerHTML)).toBe('Copy');
+
+  // Reference highlight
+  expect(await answerCard.evaluate(node => node.querySelectorAll('pre')[1]?.querySelector(':scope > code > mark')?.innerHTML)).toBe('no syntax');
+
+  // Reference hover
+  const markPosition = await answerCard.evaluate(node => node.querySelectorAll('pre')[2]?.querySelector(':scope > code > mark')?.getBoundingClientRect());
+  if (markPosition != null) {
+    await page.mouse.move(markPosition?.top + 2, markPosition?.left + 2);
+    await waitForAnimationEnd(page);
+  }
+  await expect(await page.getByText('Hello Reference Tracker')).toBeDefined();
+  page.mouse.move(0, 0);
+  await waitForAnimationEnd(page);
+  await expect(await page.getByText('Hello Reference Tracker').isHidden()).toBeTruthy();
 
   if (skipScreenshots !== true) {
     await expect(await answerCard.screenshot()).toMatchImageSnapshot();
