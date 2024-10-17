@@ -263,6 +263,16 @@ export class ChatPromptInput {
           });
 
           this.quickPickOpen = true;
+
+          const titleElements = document.querySelectorAll('.mynah-chat-command-selector-group-title');
+          if (titleElements.length > 0) {
+            const observer = new IntersectionObserver(
+              ([ e ]) => e.target.classList.toggle('stuck', e.intersectionRatio < 1),
+              { threshold: [ 1 ] }
+            );
+
+            titleElements.forEach((element) => observer.observe(element));
+          }
         }
       }
     } else {
@@ -335,11 +345,20 @@ export class ChatPromptInput {
         }
 
         if (nextElementIndex !== -1) {
+          // Remove the active class from the previously selected command
           commandElements[lastActiveElement]?.classList.remove('target-command');
-          commandElements[nextElementIndex].classList.add('target-command');
-          if (commandElements[nextElementIndex].getAttribute('prompt') !== null) {
-            this.promptTextInput.updateTextInputValue(commandElements[nextElementIndex].getAttribute('prompt') as string);
+
+          // Add the active class to the new selected command
+          const selectedElement = commandElements[nextElementIndex];
+          selectedElement.classList.add('target-command');
+
+          // Update the input value with the selected command
+          if (selectedElement.getAttribute('prompt') !== null) {
+            this.promptTextInput.updateTextInputValue(selectedElement.getAttribute('prompt') as string);
           }
+
+          // Ensure the selected command is scrolled into view
+          selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       } else {
         if (this.quickPick != null) {
