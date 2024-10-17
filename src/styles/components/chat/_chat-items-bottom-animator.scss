@@ -1,5 +1,6 @@
 &:before {
     content: '';
+    display: none;
     pointer-events: none;
     position: absolute;
     overflow: hidden;
