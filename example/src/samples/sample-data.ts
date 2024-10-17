@@ -201,6 +201,10 @@ export const defaultFollowUps: ChatItem = {
                 command: Commands.FOLLOWUPS_AT_RIGHT,
             },
             {
+                pillText: 'Information card',
+                command: Commands.INFORMATION_CARD,
+            },
+            {
                 pillText: 'Some auto reply',
                 prompt: 'Some random auto reply here.',
             },
@@ -711,4 +715,15 @@ export const exampleDownloadFile: ChatItem = {
         rootFolderTitle: '',
         filePaths: ['Refactor_analysis_[id] .pdf'],
     },
+};
+
+export const exampleInformationCard: ChatItem = {
+    messageId: new Date().getTime().toString(),
+    type: ChatItemType.ANSWER,
+    body: '',
+    informationCard: {
+      content: {
+        body: 'This is the inner card'
+      }
+    }
 };

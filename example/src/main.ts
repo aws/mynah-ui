@@ -32,6 +32,7 @@ import {
   exampleCodeDiffApplied,
   sampleAllInOneList,
   sampleTableList,
+  exampleInformationCard,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -136,17 +137,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }));
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
-
-        mynahUI.addChatItem(tabId, {
-          body: 'This is the parent content',
-          messageId: generateUID(),
-          type: ChatItemType.ANSWER,
-          informationCard: {
-            content: {
-              body: 'This is the inner card'
-            }
-          }
-        });
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
@@ -470,6 +460,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
         case Commands.FOLLOWUPS_AT_RIGHT:
           mynahUI.addChatItem(tabId, exampleRichFollowups);
+          break;
+        case Commands.INFORMATION_CARD:
+          mynahUI.addChatItem(tabId, exampleInformationCard);
           break;
         case Commands.SHOW_CUSTOM_FORM:
           showCustomForm(tabId);
