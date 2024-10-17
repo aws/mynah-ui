@@ -68,7 +68,7 @@
             outline: none;
             overflow: hidden;
             > .mynah-source-link-expand-icon {
-                transition: var(--mynah-short-transition-rev);
+                transition: var(--mynah-short-rev-transition);
                 opacity: 0;
                 color: var(--mynah-color-text-weak);
                 font-size: var(--mynah-font-size-xsmall);
@@ -89,7 +89,7 @@
             position: relative;
             padding-bottom: var(--mynah-sizing-1);
             display: inline-block;
-            transition: var(--mynah-short-transition-rev);
+            transition: var(--mynah-short-rev-transition);
             &:after {
                 content: '';
                 position: relative;
@@ -101,7 +101,7 @@
                 border-radius: var(--mynah-sizing-half);
                 background-color: currentColor;
                 transform: translate3d(-30%, 0, 0);
-                transition: var(--mynah-short-transition-rev);
+                transition: var(--mynah-short-rev-transition);
                 opacity: 0;
             }
             &:hover {

@@ -15,4 +15,117 @@ $mynah-padding-sizes: (
     'large': 5,
 );
 
+/**
+ * Code block
+ */
 $mynah-code-blocks-wrap-under: 300px;
+
+/**
+ * Text colors
+ */
+$mynah-text-colors: (
+    'default': var(--vscode-foreground),
+    'alternate': var(--mynah-color-button-reverse),
+    'strong': var(--vscode-input-foreground),
+    'weak': var(--vscode-disabledForeground),
+    'link': var(--vscode-textLink-foreground),
+    'input': var(--vscode-input-foreground),
+);
+
+/**
+ * Colors
+ */
+$mynah-colors: (
+    'bg': var(--vscode-sideBar-background),
+    'tab-active': var(--vscode-tab-activeBackground, var(--vscode-editor-background, var(--mynah-card-bg))),
+    'light': rgba(0, 0, 0, 0.05),
+    'border-default': var(--vscode-panel-border, var(--vscode-tab-border, rgba(0, 0, 0, 0.1))),
+    'highlight': rgba(255, 179, 0, 0.25),
+    'highlight-text': #886411,
+    'toggle': var(--vscode-sideBar-background),
+    'toggle-reverse': rgba(0, 0, 0, 0.5),
+    'button': var(--vscode-button-background),
+    'button-reverse': var(--vscode-button-foreground),
+    'alternate': var(--vscode-button-secondaryBackground),
+    'alternate-reverse': var(--vscode-button-secondaryForeground),
+    'gradient-start': #7638fa,
+    'gradient-mid': #3e8dff,
+    'gradient-end': #8af3ff,
+);
+
+/**
+ * Syntax colors
+ */
+$mynah-syntax-colors: (
+    'bg': var(--vscode-terminal-dropBackground),
+    'variable': var(--vscode-debugTokenExpression-name),
+    'function': var(--vscode-gitDecoration-modifiedResourceForeground),
+    'operator': var(--vscode-debugTokenExpression-name),
+    'attr-value': var(--vscode-debugIcon-stepBackForeground),
+    'attr': var(--vscode-debugTokenExpression-string),
+    'property': var(--vscode-terminal-ansiCyan),
+    'comment': var(--vscode-debugConsole-sourceForeground),
+    'code': var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit)),
+);
+
+/**
+ * Syntax code block
+ */
+$mynah-syntax-code: (
+    'font-family': var(--vscode-editor-font-family),
+    'line-height': 1.5rem,
+    'font-size': var(--vscode-editor-font-size, var(--mynah-font-size-medium)),
+);
+
+/**
+ * Status colors
+ */
+$mynah-status-colors: (
+    'info': #0971d3,
+    'success': #037f03,
+    'warning': #b2911c,
+    'error': #d91515,
+);
+
+/**
+ * Font sizes
+ */
+$mynah-font-sizes: (
+    'xxsmall': 0.8rem,
+    'xsmall': 0.9rem,
+    'small': 1rem,
+    'medium': 1.125rem,
+    'large': 1.25rem,
+);
+
+/**
+ * Transitions
+ */
+$mynah-transitions: (
+    ('bottom-panel', (all, 850, cubic-bezier(0.25, 1, 0, 1))),
+    ('short-rev', (all, 580, cubic-bezier(0.35, 1, 0, 1))),
+    ('very-short', (all, 600, cubic-bezier(0.25, 1, 0, 1))),
+    ('very-long', (all, 1650, cubic-bezier(0.25, 1, 0, 1))),
+    ('short', (all, 550, cubic-bezier(0.85, 0.15, 0, 1))),
+    ('short-rev-opacity', (opacity, 750, cubic-bezier(0.35, 1, 0, 1))),
+    ('text-flow', (all, 800, cubic-bezier(0.35, 1.2, 0, 1)), (transform, 800, cubic-bezier(0.2, 1.05, 0, 1)))
+);
+
+/**
+ * Radii
+ */
+$mynah-radii: (
+    'card': var(--mynah-sizing-2),
+    'input': var(--mynah-sizing-1),
+    'card-corner': 0,
+    'button': var(--mynah-sizing-1),
+);
+
+/**
+ * Shadows
+ */
+$mynah-shadows: (
+    'button': none,
+    'card': none,
+    'overlay': 0 0px 15px -5px rgba(0, 0, 0, 0.4),
+);
