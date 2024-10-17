@@ -22,10 +22,9 @@ ___Bold and italic text___
   - Subitem 2
 
 
-1. Item 1
-2. Item 2
-   1. Subitem 1
-   2. Subitem 2
+1. [x] Task 1
+2. [ ] Task 2
+3. [ ] Task 3
 
 
 [mynah-ui](https://github.com/aws/mynah-ui)
@@ -60,11 +59,6 @@ const x;
 ***
 
 ___
-
-
-- [x] Task 1
-- [ ] Task 2
-- [ ] Task 3
 
 
 ~~Strikethrough text~~
