@@ -24,16 +24,23 @@ Mynah UI operates independently of any framework or UI library, enabling seamles
 * [Live Demo](https://aws.github.io/mynah-ui/)
 * [API Docs](https://aws.github.io/mynah-ui/api-doc/index.html)
 
+
 ### Setup, configuration and use
 
->[!TIP]
-> Local environment quick start
- ```console
- git clone git@github.com:aws/mynah-ui.git
- cd mynah-ui && npm install
- cd example && npm install
+To set up your local development environment quickly, run the following command:
+
+```bash
+npm run dev
 ```
-Now run `npm watch` in both the `mynah-ui` and the `example` directories, and open `mynah-ui/example/dist/index.html` in a browser of choice.
+
+This command will:
+1. **Clean**: Remove existing `dist` and `node_modules` directories to ensure you're working with a fresh environment.
+2. **Install**: Reinstall all necessary dependencies for both the main project and the example project.
+3. **Build**: Compile the project using Webpack in production mode.
+4. **Start Example**: Install dependencies and build the example project, then start the development server with `watch` mode enabled. The project will be served on `localhost:9000` using `live-server`.
+5. **Watch**: Start the main project in `watch` mode.
+After running this command, any changes you make will automatically rebuild and refresh your development environment, allowing you to work seamlessly.
+
 
 #### Guides and documentation
 Please refer to the following guides:
