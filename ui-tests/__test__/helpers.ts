@@ -5,7 +5,7 @@ export const DEFAULT_VIEWPORT = {
   height: 950
 };
 
-export const waitForAnimationEnd = async (page: Page, selector?: string): Promise<any> => {
+export const waitForAnimationEnd = async (page: Page): Promise<any> => {
   return await Promise.race([
     new Promise((resolve) => setTimeout(resolve, 8000)),
     page.evaluate(async () => {
@@ -15,7 +15,9 @@ export const waitForAnimationEnd = async (page: Page, selector?: string): Promis
           const allAnims = document.getAnimations();
           if (allAnims.find((anim) => anim.playState !== 'finished') == null || new Date().getTime() - startTime > 5000) {
             clearInterval(animationStateCheckInterval);
-            resolve();
+            setTimeout(() => {
+              resolve();
+            }, 150);
           }
         }, 200);
       });
