@@ -11,6 +11,7 @@ import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { renderCharacterCount } from './flows/render-character-count';
 import { progressIndicator } from './flows/prompt-progress-indicator';
+import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -72,5 +73,9 @@ describe('Open MynahUI', () => {
 
   it('should keep the content inside window boundaries', async () => {
     await checkContentInsideWindowBoundaries(page);
+  });
+
+  it('should parse markdown', async () => {
+    await parseMarkdown(page);
   });
 });
