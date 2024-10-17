@@ -64,6 +64,10 @@
                 display: inline-flex;
                 gap: var(--mynah-sizing-1);
                 align-items: center;
+
+                &-deleted {
+                    text-decoration: line-through;
+                }
             }
 
             .mynah-chat-item-tree-view-button-weak-title {

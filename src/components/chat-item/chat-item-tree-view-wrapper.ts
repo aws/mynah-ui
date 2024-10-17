@@ -75,7 +75,7 @@ export class ChatItemTreeViewWrapper {
                     },
                     {
                       type: 'span',
-                      children: [ `${(props.files?.length ?? 0) + (props.deletedFiles?.length ?? 0)} ${Config.getInstance().config.texts.files}` ]
+                      children: [ `${(props.files?.length ?? 0) + (props.deletedFiles?.length ?? 0)} ${(props.files?.length ?? 0) + (props.deletedFiles?.length ?? 0) > 1 ? Config.getInstance().config.texts.files : Config.getInstance().config.texts.file}` ]
                     },
                   ]
                 } ]
