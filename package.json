@@ -1,7 +1,7 @@
 {
     "name": "@aws/mynah-ui",
     "displayName": "AWS Mynah UI",
-    "version": "4.16.1-beta.1",
+    "version": "4.16.1",
     "description": "AWS Toolkit VSCode and Intellij IDE Extension Mynah UI",
     "publisher": "Amazon Web Services",
     "license": "Apache License 2.0",
@@ -35,7 +35,7 @@
     "dependencies": {
         "escape-html": "^1.0.3",
         "just-clone": "^6.2.0",
-        "marked": "^12.0.2",
+        "marked": "^14.1.3",
         "prismjs": "1.29.0",
         "sanitize-html": "^2.12.1",
         "unescape-html": "^1.1.0"

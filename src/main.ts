@@ -33,7 +33,7 @@ import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import { Config } from './helper/config';
-import { marked } from 'marked';
+import { marked, Tokens } from 'marked';
 import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
@@ -256,7 +256,11 @@ export class MynahUI {
     // Apply global fix for marked listitem content is not getting parsed.
     marked.use({
       renderer: {
-        listitem: (src) => `<li>${marked.parse(src, { breaks: false }) as string}</li>`
+        listitem: (item: Tokens.ListItem) => `
+<li>
+${item.task ? `<input ${item.checked === true ? 'checked' : ''} disabled type="checkbox">` : ''}
+${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}
+</li>`
       },
     });
 

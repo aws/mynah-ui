@@ -1,4 +1,4 @@
-# Heading 1
+export default `# Heading 1
 ## Heading 2
 ### Heading 3
 #### Heading 4
@@ -38,15 +38,15 @@ ___Bold and italic text___
 > This is a blockquote.
 
 
-`inline code`.
+\`inline code\`.
 
-```
+\`\`\`
 no syntax declared
-```
+\`\`\`
 
-```javascript
+\`\`\`javascript
 const x;
-```
+\`\`\`
 
 | left | center | right |
 | :----- | :-----: | -----: |
@@ -69,3 +69,4 @@ ___
 <summary>Summary</summary>
 Detail
 </details>
+` as string;

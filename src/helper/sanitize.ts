@@ -31,6 +31,7 @@ export const AllowedTags = [
   'i',
   'iframe',
   'img',
+  'input',
   'li',
   'map',
   'mark',
@@ -139,6 +140,27 @@ export const cleanHtml = (dirty: string): string => {
     allowedTags: [ ...AllowedTags ],
     allowedAttributes: {
       '*': [ ...AllowedAttributes ],
+      input: [ 'type', 'disabled', 'checked' ]
     },
+    transformTags: {
+      input: ((tagName, attribs) => {
+        // Only allow input if it's a checkbox and disabled
+        if (attribs.type === 'checkbox' && attribs.disabled != null) {
+          return {
+            tagName,
+            attribs: {
+              type: 'checkbox',
+              disabled: 'disabled',
+              checked: attribs.checked
+            }
+          };
+        }
+        // For all other inputs, remove the tag
+        return {
+          tagName: '',
+          attribs: {}
+        };
+      }) as sanitizeHtml.Transformer
+    }
   });
 };
