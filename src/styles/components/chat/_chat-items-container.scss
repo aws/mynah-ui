@@ -35,6 +35,7 @@
                 &:not(.mynah-chat-item-empty) {
                     &:before{
                         display: block;
+                        animation: horizontal-roll 1250ms linear infinite both;
                     }
                 }
             }
