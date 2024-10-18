@@ -115,7 +115,7 @@ export class PromptTextInput {
       } else {
         // Enable the input field and focus on it
         this.promptTextInput.removeAttribute('disabled');
-        if (Config.getInstance().config.autoFocus) {
+        if (Config.getInstance().config.autoFocus && document.hasFocus()) {
           this.promptTextInput.focus();
         }
       }
