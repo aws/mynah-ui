@@ -24,11 +24,12 @@ export const waitForAnimationEnd = async (page: Page): Promise<any> => {
           const allAnims = document.getAnimations();
           if (allAnims.find((anim) => anim.playState !== 'finished') == null || new Date().getTime() - startTime > 5000) {
             clearInterval(animationStateCheckInterval);
+            // Give a delay to make the render complete
             setTimeout(() => {
               resolve();
-            }, 150);
+            }, 50);
           }
-        }, 200);
+        }, 150);
       });
     }),
   ]);
