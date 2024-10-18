@@ -4,28 +4,36 @@ export const DEFAULT_VIEWPORT = {
   width: 500,
   height: 950
 };
-export async function waitForAnimationEnd (page: Page, selector?: string): Promise<void> {
-  await page.locator(selector ?? `${getSelector(testIds.chat.wrapper)}:not(.loading)`).evaluate(async (elm) => {
-    return await new Promise<void>((resolve) => {
-      if (elm != null) {
-        // Start delayed, for the not started animations yet
-        setTimeout(() => {
-          const animationStateCheckInterval: ReturnType<typeof setInterval> = setInterval(() => {
-            if (elm.getAnimations({ subtree: true })
-              .find((animation) => animation.playState === 'running') == null) {
-              clearInterval(animationStateCheckInterval);
-              setTimeout(() => {
-                resolve();
-              }, 500);
-            }
-          }, 200);
-        }, 1000);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
+
+export const getOffsetHeight = (boxRect: {
+  width?: number;
+  height?: number;
+  x?: number;
+  y?: number;
+} | null): number => {
+  return boxRect != null ? (boxRect?.y ?? 0) + (boxRect?.height ?? 0) : 0;
+};
+
+export const waitForAnimationEnd = async (page: Page): Promise<any> => {
+  return await Promise.race([
+    new Promise((resolve) => setTimeout(resolve, 8000)),
+    page.evaluate(async () => {
+      return await new Promise<void>((resolve) => {
+        const startTime = new Date().getTime();
+        const animationStateCheckInterval: ReturnType<typeof setInterval> = setInterval(() => {
+          const allAnims = document.getAnimations();
+          if (allAnims.find((anim) => anim.playState !== 'finished') == null || new Date().getTime() - startTime > 5000) {
+            clearInterval(animationStateCheckInterval);
+            // Give a delay to make the render complete
+            setTimeout(() => {
+              resolve();
+            }, 50);
+          }
+        }, 150);
+      });
+    }),
+  ]);
+};
 
 export async function justWait (duration: number): Promise<void> {
   return await new Promise<void>((resolve) => {

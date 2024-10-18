@@ -15,6 +15,7 @@
         padding-bottom: var(--mynah-sizing-14);
         > .mynah-chat-item-card.mynah-chat-item-answer-stream {
             &:first-child {
+                @import 'chat-items-bottom-animator';
                 > .mynah-card {
                     min-width: 100px;
                     min-height: var(--mynah-sizing-14);
@@ -32,7 +33,10 @@
                     }
                 }
                 &:not(.mynah-chat-item-empty) {
-                    @import 'chat-items-bottom-animator';
+                    &:before {
+                        display: block;
+                        animation: horizontal-roll 1250ms linear infinite both;
+                    }
                 }
             }
         }

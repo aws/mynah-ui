@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { cleanupElement, DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import {
   CodeBlockActions,
   OnCodeBlockActionFunction,
@@ -65,9 +65,7 @@ export class CardBody {
         ? this.props.processChildren === true
           ? this.props.children.map(node => {
             const processedNode = this.processNode(node as HTMLElement);
-            if (processedNode.querySelectorAll !== undefined) {
-              Array.from(processedNode.querySelectorAll('*:empty:not(img):not(br):not(hr)')).forEach(emptyElement => { emptyElement.remove(); });
-            }
+            cleanupElement(processedNode);
             return processedNode;
           })
           : this.props.children
@@ -79,6 +77,7 @@ export class CardBody {
       classNames: [ 'mynah-card-body', ...(this.props.classNames ?? []) ],
       children: this.props.childLocation === 'above-body' ? childList.reverse() : childList,
     });
+    cleanupElement(this.render);
 
     Array.from(this.render.querySelectorAll('mark[reference-tracker]')).forEach((highlightRangeElement) => {
       highlightRangeElement.addEventListener('mouseenter', (e) => {
@@ -298,9 +297,7 @@ export class CardBody {
           }).childNodes
         ).map(node => {
           const processedNode = this.processNode(node as HTMLElement);
-          if (processedNode.querySelectorAll !== undefined) {
-            Array.from(processedNode.querySelectorAll('*:empty:not(img):not(br):not(hr)')).forEach(emptyElement => { emptyElement.remove(); });
-          }
+          cleanupElement(processedNode);
           return processedNode;
         }))
       ];

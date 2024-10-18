@@ -1,16 +1,8 @@
 import { Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
-import { DEFAULT_VIEWPORT, getSelector, waitForAnimationEnd } from '../helpers';
+import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, waitForAnimationEnd } from '../helpers';
 import { clickToFollowup } from './click-followup';
 
-const getOffsetHeight = (boxRect: {
-  width?: number;
-  height?: number;
-  x?: number;
-  y?: number;
-} | null): number => {
-  return boxRect != null ? (boxRect?.y ?? 0) + (boxRect?.height ?? 0) : 0;
-};
 export const checkContentInsideWindowBoundaries = async (page: Page): Promise<void> => {
   await page.locator(`${getSelector(testIds.prompt.input)}`).clear();
 
