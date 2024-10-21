@@ -18,8 +18,9 @@ import sampleList4 from './sample-list-4.md';
 import SampleCode from './sample-code.md';
 import SampleDiff from './sample-diff.md';
 import SampleDiffApplied from './sample-diff-applied.md';
-import SampleAllInOne from './sample-all-in-one.md'
-import SampleTable from './sample-table.md'
+import SampleAllInOne from './sample-all-in-one.md';
+import SampleTable from './sample-table.md';
+import infoCardMd from './info-card.md'
 import { Commands } from '../commands';
 
 export const mynahUIQRImageBase64 =
@@ -71,13 +72,9 @@ export const sampleMarkdownList: Partial<ChatItem>[] = [
     { body: `${sampleList4 as string}` },
 ];
 
-export const sampleAllInOneList: Partial<ChatItem>[] = [
-    { body: `${SampleAllInOne as string}`},
-];
+export const sampleAllInOneList: Partial<ChatItem>[] = [{ body: `${SampleAllInOne as string}` }];
 
-export const sampleTableList: Partial<ChatItem>[] = [
-    { body: `${SampleTable as string}`},
-];
+export const sampleTableList: Partial<ChatItem>[] = [{ body: `${SampleTable as string}` }];
 
 export const exampleStreamParts: Partial<ChatItem>[] = [
     { body: `${md0 as string}` },
@@ -109,7 +106,8 @@ export const exampleStreamParts: Partial<ChatItem>[] = [
                     start: 1034,
                     end: 1409,
                 },
-                information: 'Reference code *under the Apache License 2.0 license* from repository **`@aws/mynah-ui`**.',
+                information:
+                    'Reference code *under the Apache License 2.0 license* from repository **`@aws/mynah-ui`**.',
             },
         ],
     },
@@ -266,7 +264,7 @@ export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
                 status: 'error',
                 label: 'File rejected',
                 icon: MynahIcons.CANCEL_CIRCLE,
-                description: exampleCodeDiff
+                description: exampleCodeDiff,
             },
         },
         actions: {
@@ -722,8 +720,11 @@ export const exampleInformationCard: ChatItem = {
     type: ChatItemType.ANSWER,
     body: '',
     informationCard: {
-      content: {
-        body: 'This is the inner card'
-      }
-    }
+        title: '/scan',
+        description: 'Included in your Q Developer subscription.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: infoCardMd as string
+        },
+    },
 };
