@@ -313,8 +313,37 @@ export class ChatItemCard {
         type: 'div',
         classNames: [ 'mynah-chat-item-information-card', 'mynah-card-inner-order-55' ],
         children: [
-          // TODO fill title, description and icon
-        ]
+          {
+            type: 'div',
+            classNames: [ 'mynah-chat-item-information-card-header-container' ],
+            children: [
+              ...(this.props.chatItem.informationCard.icon !== undefined
+                ? [
+                    new Icon({
+                      icon: this.props.chatItem.informationCard.icon
+                    }).render
+                  ]
+                : []),
+              {
+                type: 'div',
+                classNames: [ 'mynah-chat-item-information-card-header' ],
+                children: [
+                  {
+                    type: 'div',
+                    classNames: [ 'mynah-chat-item-information-card-title' ],
+                    children: [ this.props.chatItem.informationCard.title ?? '' ]
+                  },
+                  ...(this.props.chatItem.informationCard.description !== undefined
+                    ? [ {
+                        type: 'div',
+                        classNames: [ 'mynah-chat-item-information-card-description' ],
+                        children: [ this.props.chatItem.informationCard.description ]
+                      } ]
+                    : [])
+                ]
+              }
+            ]
+          } ]
       });
       this.card?.render.insertChild('beforeend', this.informationCardWrapper);
 
@@ -325,10 +354,23 @@ export class ChatItemCard {
         chatItem: {
           ...this.props.chatItem.informationCard.content,
           type: ChatItemType.ANSWER,
-          messageId: this.props.chatItem.messageId
+          messageId: this.props.chatItem.messageId,
         }
       });
       this.informationCardWrapper.insertChild('beforeend', this.informationCard.render);
+
+      const statusFooter = DomBuilder.getInstance().build({
+        type: 'div',
+        classNames: [ 'mynah-chat-item-information-card-footer' ],
+        children: [
+          {
+            type: 'div',
+            classNames: [ 'mynah-chat-item-information-card-footer-status' ],
+            children: [ this.props.chatItem.informationCard.status?.status ?? 'ads' ]
+          }
+        ]
+      });
+      this.informationCardWrapper.insertChild('beforeend', statusFooter);
     }
 
     /**
