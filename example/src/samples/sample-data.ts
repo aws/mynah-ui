@@ -1,4 +1,4 @@
-import { ChatItem, ChatItemBodyRenderer, ChatItemType, MynahIcons, SourceLink } from '@aws/mynah-ui';
+import { ChatItem, ChatItemType, generateUID, MynahIcons, SourceLink } from '@aws/mynah-ui';
 import md0 from './sample-0.md';
 import md1 from './sample-1.md';
 import md2 from './sample-2.md';
@@ -199,8 +199,8 @@ export const defaultFollowUps: ChatItem = {
                 command: Commands.FOLLOWUPS_AT_RIGHT,
             },
             {
-                pillText: 'Information card',
-                command: Commands.INFORMATION_CARD,
+                pillText: 'Information cards',
+                command: Commands.INFORMATION_CARDS,
             },
             {
                 pillText: 'Some auto reply',
@@ -716,9 +716,9 @@ export const exampleDownloadFile: ChatItem = {
 };
 
 export const exampleInformationCard: ChatItem = {
-    messageId: new Date().getTime().toString(),
+    messageId: generateUID(),
     type: ChatItemType.ANSWER,
-    body: '',
+    body: 'b',
     informationCard: {
         title: '/scan',
         description: 'Included in your Q Developer subscription.',
@@ -726,5 +726,62 @@ export const exampleInformationCard: ChatItem = {
         content: {
             body: infoCardMd as string
         },
+    },
+};
+
+export const exampleInformationCardWarning: ChatItem = {
+    messageId: generateUID(),
+    type: ChatItemType.ANSWER,
+    body: 'a',
+    informationCard: {
+        title: '/scan',
+        description: 'Included in your Q Developer subscription.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: infoCardMd as string
+        },
+        status: {
+            status: "warning",
+            icon: MynahIcons.WARNING,
+            body: "You have hit the usage limit for Q Agent Capabilities for this month. Contact your admin to enable usage overages or learn more about pro license limits."
+        }
+    },
+};
+
+export const exampleInformationCardError: ChatItem = {
+    messageId: generateUID(),
+    type: ChatItemType.ANSWER,
+    body: 's',
+    informationCard: {
+        title: '/scan',
+        description: 'Included in your Q Developer subscription.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: infoCardMd as string
+        },
+        status: {
+            status: "error",
+            icon: MynahIcons.ERROR,
+            body: "You have hit the usage limit for Q Agent Capabilities for this month. Contact your admin to enable usage overages or learn more about pro license limits."
+        }
+    },
+};
+
+export const exampleInformationCardSuccess: ChatItem = {
+    messageId: generateUID(),
+    type: ChatItemType.ANSWER,
+    body: 'd',
+    informationCard: {
+        title: '/scan',
+        description: 'Included in your Q Developer subscription.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: infoCardMd as string
+        },
+        status: {
+            status: "success",
+            icon: MynahIcons.THUMBS_UP,
+            body: "Successfully completed this task!"
+        }
     },
 };
