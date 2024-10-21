@@ -20,7 +20,6 @@ import SampleDiff from './sample-diff.md';
 import SampleDiffApplied from './sample-diff-applied.md';
 import SampleAllInOne from './sample-all-in-one.md';
 import SampleTable from './sample-table.md';
-import infoCardMd from './info-card.md'
 import { Commands } from '../commands';
 
 export const mynahUIQRImageBase64 =
@@ -719,11 +718,11 @@ export const exampleInformationCard: ChatItem = {
     messageId: generateUID(),
     type: ChatItemType.ANSWER,
     informationCard: {
-        title: '/scan',
-        description: 'Included in your Q Developer subscription.',
+        title: 'Information card',
+        description: 'With a description below the title.',
         icon: MynahIcons.BUG,
         content: {
-            body: infoCardMd as string
+            body: sampleList2 as string
         },
     },
 };
@@ -732,16 +731,16 @@ export const exampleInformationCardWarning: ChatItem = {
     messageId: generateUID(),
     type: ChatItemType.ANSWER,
     informationCard: {
-        title: '/scan',
-        description: 'Included in your Q Developer subscription.',
+        title: 'Information card',
+        description: 'With a description below the title and warning status.',
         icon: MynahIcons.BUG,
         content: {
-            body: infoCardMd as string
+            body: sampleList2 as string
         },
         status: {
             status: "warning",
             icon: MynahIcons.WARNING,
-            body: "You have hit the usage limit for Q Agent Capabilities for this month. Contact your admin to enable usage overages or learn more about pro license limits."
+            body: "You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits."
         }
     },
 };
@@ -750,16 +749,16 @@ export const exampleInformationCardError: ChatItem = {
     messageId: generateUID(),
     type: ChatItemType.ANSWER,
     informationCard: {
-        title: '/scan',
-        description: 'Included in your Q Developer subscription.',
+        title: 'Information card',
+        description: 'With a description below the title and error status.',
         icon: MynahIcons.BUG,
         content: {
-            body: infoCardMd as string
+            body: sampleList2 as string
         },
         status: {
             status: "error",
             icon: MynahIcons.ERROR,
-            body: "You have hit the usage limit for Q Agent Capabilities for this month. Contact your admin to enable usage overages or learn more about pro license limits."
+            body: "You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits."
         }
     },
 };
@@ -768,11 +767,11 @@ export const exampleInformationCardSuccess: ChatItem = {
     messageId: generateUID(),
     type: ChatItemType.ANSWER,
     informationCard: {
-        title: '/scan',
-        description: 'Included in your Q Developer subscription.',
+        title: 'Information card',
+        description: 'With a description below the title and success status.',
         icon: MynahIcons.BUG,
         content: {
-            body: infoCardMd as string
+            body: sampleList2 as string
         },
         status: {
             status: "success",

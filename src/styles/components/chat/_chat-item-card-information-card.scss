@@ -80,6 +80,7 @@
         position: relative;
         box-sizing: border-box;
         width: 100%;
+        max-width: 100%;
         flex-flow: row nowrap;
         align-items: flex-start;
         justify-content: flex-start;
@@ -87,7 +88,6 @@
         padding: var(--mynah-sizing-3);
         transition: var(--mynah-short-transition-rev);
         gap: var(--mynah-sizing-3);
-        // color: var(--mynah-color-gradient-alternate);
         border: 1px solid;
         border-radius: 0 0 var(--mynah-input-radius) var(--mynah-input-radius);
 
