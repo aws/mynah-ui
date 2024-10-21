@@ -309,9 +309,9 @@ export class ChatItemCard {
       this.informationCardWrapper = null;
     }
     if (this.props.chatItem.informationCard !== undefined) {
-      this.informationCardWrapper = DomBuilder.getInstance().build({
+      const mainContent = DomBuilder.getInstance().build({
         type: 'div',
-        classNames: [ 'mynah-chat-item-information-card', 'mynah-card-inner-order-55' ],
+        classNames: [ 'mynah-chat-item-information-card-main' ],
         children: [
           {
             type: 'div',
@@ -343,9 +343,17 @@ export class ChatItemCard {
                 ]
               }
             ]
-          } ]
+          }
+        ]
       });
-      this.card?.render.insertChild('beforeend', this.informationCardWrapper);
+
+      this.informationCardWrapper = DomBuilder.getInstance().build({
+        type: 'div',
+        classNames: [ 'mynah-chat-item-information-card', 'mynah-card-inner-order-55' ],
+        children: [
+          mainContent
+        ]
+      });
 
       this.informationCard = new ChatItemCard({
         tabId: this.props.tabId,
@@ -357,20 +365,35 @@ export class ChatItemCard {
           messageId: this.props.chatItem.messageId,
         }
       });
-      this.informationCardWrapper.insertChild('beforeend', this.informationCard.render);
+      mainContent.insertChild('beforeend', this.informationCard.render);
 
-      const statusFooter = DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-chat-item-information-card-footer' ],
-        children: [
-          {
-            type: 'div',
-            classNames: [ 'mynah-chat-item-information-card-footer-status' ],
-            children: [ this.props.chatItem.informationCard.status?.status ?? 'ads' ]
-          }
-        ]
-      });
-      this.informationCardWrapper.insertChild('beforeend', statusFooter);
+      if (this.props.chatItem.informationCard.status !== undefined) {
+        const statusFooter = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [
+            'mynah-chat-item-information-card-footer',
+            ...(this.props.chatItem.informationCard.status.status != null ? [ `status-${this.props.chatItem.informationCard.status.status}` ] : []),
+          ],
+          children: [
+            ...(this.props.chatItem.informationCard.status.icon !== undefined
+              ? [
+                  new Icon({
+                    icon: this.props.chatItem.informationCard.status.icon
+                  }).render
+                ]
+              : []),
+            ...(this.props.chatItem.informationCard.status.body !== undefined
+              ? [ {
+                  type: 'p',
+                  children: [ this.props.chatItem.informationCard.status.body ]
+                } ]
+              : [])
+          ]
+        });
+        this.informationCardWrapper.insertChild('beforeend', statusFooter);
+      }
+
+      this.card?.render.insertChild('beforeend', this.informationCardWrapper);
     }
 
     /**
