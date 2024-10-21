@@ -1,7 +1,7 @@
 {
     "name": "@aws/mynah-ui",
     "displayName": "AWS Mynah UI",
-    "version": "4.16.0",
+    "version": "4.16.1",
     "description": "AWS Toolkit VSCode and Intellij IDE Extension Mynah UI",
     "publisher": "Amazon Web Services",
     "license": "Apache License 2.0",
@@ -19,7 +19,9 @@
         "packdemo": "cd ./example && npm run pack",
         "watch": "webpack --config webpack.config.js --mode development --watch",
         "watch:example": "cd ./example && npm run watch",
-        "start:example": "cd ./example && npm install && npm run build && npm run dev",
+        "watch:web": "run-p watch watch:example serve:example",
+        "serve:example": "live-server --port=9000 example/dist",
+        "start:example": "cd ./example && npm install && npm run build && cd .. && npm run watch:web",
         "dev": "npm run clean && npm install && npm run build && npm run start:example",
         "lint-fix": "npx eslint \"./**\" --fix",
         "lint": "npx eslint \"./**\"",
@@ -29,13 +31,13 @@
         "tests:e2e": "cd ./ui-tests && npm install && npm run prepare && npm run e2e",
         "api-docs": "npx typedoc src/main.ts --out ./api-docs",
         "api-doc-deploy": "npx typedoc src/main.ts --out ./example/dist/api-doc",
-        "postinstall": "node postinstall.js",
+        "postinstall": "npm install -g live-server && node postinstall.js",
         "prepare": "npx husky"
     },
     "dependencies": {
         "escape-html": "^1.0.3",
         "just-clone": "^6.2.0",
-        "marked": "^12.0.2",
+        "marked": "^14.1.0",
         "prismjs": "1.29.0",
         "sanitize-html": "^2.12.1",
         "unescape-html": "^1.1.0"
