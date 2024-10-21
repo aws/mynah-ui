@@ -718,7 +718,6 @@ export const exampleDownloadFile: ChatItem = {
 export const exampleInformationCard: ChatItem = {
     messageId: generateUID(),
     type: ChatItemType.ANSWER,
-    body: 'b',
     informationCard: {
         title: '/scan',
         description: 'Included in your Q Developer subscription.',
@@ -732,7 +731,6 @@ export const exampleInformationCard: ChatItem = {
 export const exampleInformationCardWarning: ChatItem = {
     messageId: generateUID(),
     type: ChatItemType.ANSWER,
-    body: 'a',
     informationCard: {
         title: '/scan',
         description: 'Included in your Q Developer subscription.',
@@ -751,7 +749,6 @@ export const exampleInformationCardWarning: ChatItem = {
 export const exampleInformationCardError: ChatItem = {
     messageId: generateUID(),
     type: ChatItemType.ANSWER,
-    body: 's',
     informationCard: {
         title: '/scan',
         description: 'Included in your Q Developer subscription.',
@@ -770,7 +767,6 @@ export const exampleInformationCardError: ChatItem = {
 export const exampleInformationCardSuccess: ChatItem = {
     messageId: generateUID(),
     type: ChatItemType.ANSWER,
-    body: 'd',
     informationCard: {
         title: '/scan',
         description: 'Included in your Q Developer subscription.',

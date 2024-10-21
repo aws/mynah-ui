@@ -5,6 +5,7 @@ export const chatItemHasContent = (chatItem: Partial<ChatItem>): boolean => (
 chatItem.fileList != null ||
 chatItem.formItems != null ||
 chatItem.customRenderer != null ||
+chatItem.informationCard != null ||
 chatItem.buttons != null);
 
 export const copyToClipboard = async (
