@@ -4,15 +4,16 @@
     box-sizing: border-box;
     background-color: var(--mynah-card-bg);
     border-radius: var(--mynah-card-radius);
-    width: 100%;
     pointer-events: all;
     flex-flow: column nowrap;
     align-items: stretch;
     justify-content: flex-start;
     max-height: 80vh;
-    overflow-x: hidden;
-    padding: var(--mynah-sizing-4);
-    overflow-y: auto;
+    margin-top: var(--mynah-sizing-4);
+    padding: 0 var(--mynah-sizing-4) var(--mynah-sizing-4) var(--mynah-sizing-4);
+    overflow: hidden auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
     @include list-fader-bottom();
     > .mynah-chat-command-selector-group {
         display: flex;
@@ -22,15 +23,36 @@
         align-items: stretch;
         justify-content: flex-start;
         gap: var(--mynah-sizing-1);
-        font-size: var(--mynah-font-size-medium);
         > .mynah-chat-command-selector-group-title {
             margin: 0;
             color: var(--mynah-color-text-strong);
-            padding: 0 var(--mynah-sizing-3);
-            margin-bottom: var(--mynah-sizing-1);
-            position: relative;
-            border-radius: var(--mynah-input-radius);
+            padding: var(--mynah-sizing-3) var(--mynah-sizing-3) 0 var(--mynah-sizing-3);
+            margin-bottom: var(--mynah-sizing-3);
+            font-size: var(--mynah-font-size-large);
             overflow: hidden;
+            position: sticky;
+            top: -1px;
+            background-color: var(--mynah-card-bg);
+            z-index: 1;
+            outline: solid var(--mynah-sizing-4) var(--mynah-card-bg);
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: calc(var(--mynah-sizing-3) * -2);
+                left: calc(var(--mynah-sizing-3) * -2);
+                background-color: var(--mynah-card-bg);
+                z-index: -1;
+                right: calc(var(--mynah-sizing-3) * -2);
+                bottom: calc(var(--mynah-sizing-3) * -2);
+                padding: var(--mynah-sizing-3);
+            }
+
+            &.stuck {
+                box-shadow:
+                    0px calc(var(--mynah-sizing-4) + 3px) 0 var(--mynah-card-bg),
+                    0px calc(var(--mynah-sizing-4) + 4px) 0 rgba(0, 0, 0, 0.075);
+            }
         }
 
         & + .mynah-chat-command-selector-group {
@@ -44,7 +66,7 @@
             position: relative;
             box-sizing: border-box;
             width: 100%;
-            flex-flow: row nowrap;
+            flex-flow: column nowrap;
             align-items: flex-start;
             justify-content: flex-start;
             overflow: hidden;
@@ -53,8 +75,9 @@
             color: var(--mynah-color-text-default);
             border-radius: var(--mynah-input-radius);
             transition: var(--mynah-short-transition-rev);
-            gap: var(--mynah-sizing-3);
-
+            gap: var(--mynah-sizing-1);
+            scroll-snap-align: center;
+            scroll-snap-stop: always;
             &[disabled='true'] {
                 &::before {
                     border-color: transparent !important;
@@ -77,32 +100,16 @@
                     }
                 }
             }
-            > .mynah-ui-icon {
-                margin-top: var(--mynah-sizing-1);
+            > .mynah-chat-command-selector-command-name {
+                font-family: var(--mynah-font-family);
+                font-size: var(--mynah-font-size-medium);
+                font-weight: bold;
+                flex: 0 1 0%;
+            }
+            > .mynah-chat-command-selector-command-description {
                 font-size: var(--mynah-font-size-small);
                 color: var(--mynah-color-text-weak);
-            }
-
-            > .mynah-chat-command-selector-command-container {
-                flex: 1;
-                display: flex;
-                position: relative;
-                box-sizing: border-box;
-                flex-flow: column nowrap;
-                align-items: flex-start;
-                justify-content: flex-start;
-                overflow: hidden;
-                gap: var(--mynah-sizing-1);
-
-                > .mynah-chat-command-selector-command-name {
-                    font-family: var(--mynah-font-family);
-                    font-weight: bold;
-                    flex: 0 1 0%;
-                }
-                > .mynah-chat-command-selector-command-description {
-                    color: var(--mynah-color-text-weak);
-                    flex: 1 0 100%;
-                }
+                flex: 1 0 100%;
             }
         }
     }

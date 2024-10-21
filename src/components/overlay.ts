@@ -82,17 +82,25 @@ export class Overlay {
   private readonly innerContainer: ExtendedHTMLElement;
   private readonly guid = generateUID();
   private readonly onClose;
+  horizontalDirection: OverlayHorizontalDirection;
+  verticalDirection: OverlayVerticalDirection;
+  referenceElement: HTMLElement | ExtendedHTMLElement | undefined;
+  referencePoint: { top: number; left: number } | undefined;
+  stretchWidth: boolean;
 
   constructor (props: OverlayProps) {
-    const horizontalDirection = props.horizontalDirection ?? OverlayHorizontalDirection.TO_RIGHT;
-    const verticalDirection = props.verticalDirection ?? OverlayVerticalDirection.START_TO_BOTTOM;
+    this.horizontalDirection = props.horizontalDirection ?? OverlayHorizontalDirection.TO_RIGHT;
+    this.verticalDirection = props.verticalDirection ?? OverlayVerticalDirection.START_TO_BOTTOM;
+    this.referenceElement = props.referenceElement;
+    this.referencePoint = props.referencePoint;
+    this.stretchWidth = props.stretchWidth ?? false;
     this.onClose = props.onClose;
     const dimOutside = props.dimOutside !== false;
     const closeOnOutsideClick = props.closeOnOutsideClick !== false;
 
-    const calculatedTop = this.getCalculatedTop(verticalDirection, props.referenceElement, props.referencePoint);
-    const calculatedLeft = this.getCalculatedLeft(horizontalDirection, props.referenceElement, props.referencePoint);
-    const calculatedWidth = props.stretchWidth === true ? this.getCalculatedWidth(props.referenceElement) : 0;
+    const calculatedTop = this.getCalculatedTop();
+    const calculatedLeft = this.getCalculatedLeft();
+    const calculatedWidth = this.stretchWidth ? this.getCalculatedWidth() : 0;
 
     this.innerContainer = DomBuilder.getInstance().build({
       type: 'div',
@@ -102,7 +110,7 @@ export class Overlay {
 
     this.container = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-overlay-container', horizontalDirection, verticalDirection, props.background !== false ? 'background' : '' ],
+      classNames: [ 'mynah-overlay-container', this.horizontalDirection, this.verticalDirection, props.background !== false ? 'background' : '' ],
       attributes: {
         style: `top: ${calculatedTop}px; left: ${calculatedLeft}px; ${calculatedWidth !== 0 ? `width: ${calculatedWidth}px;` : ''}`,
       },
@@ -159,18 +167,34 @@ export class Overlay {
       this.container.style.left = `${effectiveLeft - (lastContainerRect.left + lastContainerRect.width + OVERLAY_MARGIN - winWidth)}px`;
     }
 
+    window.addEventListener('resize', this.calculatePosition);
+
     // we need to delay the class toggle
     // to avoid the skipping of the transition comes from css
     // for a known js-css relation problem
     setTimeout(() => {
       this.render.addClass('mynah-overlay-open');
-
+      this.calculatePosition();
       if (closeOnOutsideClick) {
         window.addEventListener('blur', this.windowBlurHandler.bind(this));
-        window.addEventListener('resize', this.windowBlurHandler.bind(this));
+        // window.addEventListener('resize', this.windowBlurHandler.bind(this));
       }
     }, 10);
   }
+
+  private readonly calculatePosition = (): void => {
+    const top = this.getCalculatedTop();
+    const left = this.getCalculatedLeft();
+    const width = this.getCalculatedWidth();
+
+    [
+      { prop: 'width', value: width },
+      { prop: 'top', value: top },
+      { prop: 'left', value: left }
+    ].forEach(({ prop, value }) => {
+      this.container.style.setProperty(prop, `${Math.round(value)}px`);
+    });
+  };
 
   close = (): void => {
     this.render.removeClass('mynah-overlay-open');
@@ -189,19 +213,15 @@ export class Overlay {
     window.removeEventListener('resize', this.windowBlurHandler.bind(this));
   };
 
-  private readonly getCalculatedLeft = (
-    horizontalDirection: OverlayHorizontalDirection,
-    referenceElement?: HTMLElement | ExtendedHTMLElement,
-    referencePoint?: { top?: number; left: number }
-  ): number => {
+  private readonly getCalculatedLeft = (): number => {
     const referenceRectangle =
-            referenceElement !== undefined
-              ? referenceElement.getBoundingClientRect()
-              : referencePoint !== undefined
-                ? { left: referencePoint.left, width: 0 }
+            this.referenceElement !== undefined
+              ? this.referenceElement.getBoundingClientRect()
+              : this.referencePoint !== undefined
+                ? { left: this.referencePoint.left, width: 0 }
                 : { left: 0, width: 0 };
 
-    switch (horizontalDirection.toString()) {
+    switch (this.horizontalDirection.toString()) {
       case OverlayHorizontalDirection.TO_RIGHT:
         return referenceRectangle.left + referenceRectangle.width + OVERLAY_MARGIN;
       case OverlayHorizontalDirection.START_TO_RIGHT:
@@ -217,27 +237,21 @@ export class Overlay {
     }
   };
 
-  private readonly getCalculatedWidth = (
-    referenceElement?: HTMLElement | ExtendedHTMLElement
-  ): number => {
-    return referenceElement !== undefined
-      ? referenceElement.getBoundingClientRect().width
+  private readonly getCalculatedWidth = (): number => {
+    return this.referenceElement !== undefined
+      ? this.referenceElement.getBoundingClientRect().width
       : 0;
   };
 
-  private readonly getCalculatedTop = (
-    verticalDirection: OverlayVerticalDirection,
-    referenceElement?: HTMLElement | ExtendedHTMLElement,
-    referencePoint?: { top: number; left?: number }
-  ): number => {
+  private readonly getCalculatedTop = (): number => {
     const referenceRectangle =
-            referenceElement !== undefined
-              ? referenceElement.getBoundingClientRect()
-              : referencePoint !== undefined
-                ? { top: referencePoint.top, height: 0 }
+            this.referenceElement !== undefined
+              ? this.referenceElement.getBoundingClientRect()
+              : this.referencePoint !== undefined
+                ? { top: this.referencePoint.top, height: 0 }
                 : { top: 0, height: 0 };
 
-    switch (verticalDirection.toString()) {
+    switch (this.verticalDirection.toString()) {
       case OverlayVerticalDirection.TO_BOTTOM:
         return referenceRectangle.top + referenceRectangle.height + OVERLAY_MARGIN;
       case OverlayVerticalDirection.START_TO_BOTTOM:
