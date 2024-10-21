@@ -94,15 +94,15 @@ Let's see what kind of custom properties you can set and how to set them?
 
     --mynah-card-radius: var(--mynah-sizing-2);
     --mynah-input-radius: var(--mynah-sizing-1);
-    --mynah-card-radius-corner: 0;
+    --mynah-card-corner-radius: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
 
     --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
     --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
     --mynah-very-long-transition: all 1650ms cubic-bezier(0.25, 1, 0, 1);
     --mynah-short-transition: all 550ms cubic-bezier(0.85, 0.15, 0, 1);
-    --mynah-short-transition-rev: all 580ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-short-transition-rev-opacity: opacity 750ms cubic-bezier(0.35, 1, 0, 1);
+    --mynah-short-rev-transition: all 580ms cubic-bezier(0.35, 1, 0, 1);
+    --mynah-short-rev-opacity-transition: opacity 750ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1.2, 0, 1),
         transform 800ms cubic-bezier(0.2, 1.05, 0, 1);
 }

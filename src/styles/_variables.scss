@@ -1,9 +1,67 @@
+@import 'scss-variables';
+
+@include mynah-sizing-vars(var(--mynah-sizing-base));
+
+$mynah-collections: (
+    'color-text': (
+        'prefix',
+        $mynah-text-colors,
+    ),
+    'color': (
+        'prefix',
+        $mynah-colors,
+    ),
+    'color-syntax': (
+        'prefix',
+        $mynah-syntax-colors,
+    ),
+    'syntax-code': (
+        'prefix',
+        $mynah-syntax-code,
+    ),
+    'color-status': (
+        'prefix',
+        $mynah-status-colors,
+    ),
+    'font-size': (
+        'prefix',
+        $mynah-font-sizes,
+    ),
+    'radius': (
+        'radius',
+        $mynah-radii,
+    ),
+    'shadow': (
+        'shadow',
+        $mynah-shadows,
+    ),
+);
+
+@each $prefix, $data in $mynah-collections {
+    $type: nth($data, 1);
+    $map: nth($data, 2);
+
+    @each $key, $value in $map {
+        @include mynah-generate-css-var($type, $prefix, $key, $value);
+    }
+}
+
+@each $transition in $mynah-transitions {
+    $name: nth($transition, 1);
+    @for $i from 2 through length($transition) {
+        $property: nth(nth($transition, $i), 1);
+        $duration: nth(nth($transition, $i), 2);
+        $timing-function: nth(nth($transition, $i), 3);
+
+        @include mynah-transition-var($name, $property, $duration, $timing-function);
+    }
+}
+
 :root {
     --mynah-font-family: var(--vscode-font-family), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
         'Amazon Ember', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: var(--vscode-font-size, 13px);
     font-family: var(--mynah-font-family, 'system-ui');
-    --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
 
     --mynah-max-width: 2560px;
     --mynah-sizing-base: 0.25rem;
@@ -11,41 +69,6 @@
 
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
-
-    --mynah-color-text-default: var(--vscode-foreground);
-    --mynah-color-text-alternate: var(--mynah-color-button-reverse);
-    --mynah-color-text-strong: var(--vscode-input-foreground);
-    --mynah-color-text-weak: var(--vscode-disabledForeground);
-    --mynah-color-text-link: var(--vscode-textLink-foreground);
-    --mynah-color-text-input: var(--vscode-input-foreground);
-
-    --mynah-color-bg: var(--vscode-sideBar-background);
-    --mynah-color-tab-active: var(--vscode-tab-activeBackground, var(--vscode-editor-background, var(--mynah-card-bg)));
-    --mynah-color-light: rgba(0, 0, 0, 0.05);
-    --mynah-color-border-default: var(--vscode-panel-border, var(--vscode-tab-border, rgba(0, 0, 0, 0.1)));
-    --mynah-color-highlight: rgba(255, 179, 0, 0.25);
-    --mynah-color-highlight-text: #886411;
-    --mynah-color-toggle: var(--vscode-sideBar-background);
-    --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
-
-    --mynah-color-syntax-bg: var(--vscode-terminal-dropBackground);
-    --mynah-color-syntax-variable: var(--vscode-debugTokenExpression-name);
-    --mynah-color-syntax-function: var(--vscode-gitDecoration-modifiedResourceForeground);
-    --mynah-color-syntax-operator: var(--vscode-debugTokenExpression-name);
-    --mynah-color-syntax-attr-value: var(--vscode-debugIcon-stepBackForeground);
-    --mynah-color-syntax-attr: var(--vscode-debugTokenExpression-string);
-    --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan);
-    --mynah-color-syntax-comment: var(--vscode-debugConsole-sourceForeground);
-    --mynah-color-syntax-code: var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit));
-
-    --mynah-color-status-info: #0971d3;
-    --mynah-color-status-success: #037f03;
-    --mynah-color-status-warning: #b2911c;
-    --mynah-color-status-error: #d91515;
-
-    --mynah-color-gradient-start: #7638fa;
-    --mynah-color-gradient-mid: #3e8dff;
-    --mynah-color-gradient-end: #8af3ff;
 
     --mynah-color-gradient-semi-transparent: linear-gradient(
         35deg,
@@ -64,38 +87,8 @@
         var(--mynah-color-gradient-start)
     );
 
-    --mynah-color-button: var(--vscode-button-background);
-    --mynah-color-button-reverse: var(--vscode-button-foreground);
-    --mynah-color-alternate: var(--vscode-button-secondaryBackground);
-    --mynah-color-alternate-reverse: var(--vscode-button-secondaryForeground);
     --mynah-card-bg: var(--vscode-editor-background);
     --mynah-card-bg-alternate: var(--mynah-color-button);
 
-    --mynah-shadow-button: none;
-    --mynah-shadow-card: none;
-    --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
-
-    --mynah-font-size-xxsmall: 0.8rem;
-    --mynah-font-size-xsmall: 0.9rem;
-    --mynah-font-size-small: 1rem;
-    --mynah-font-size-medium: 1.125rem;
-    --mynah-font-size-large: 1.25rem;
     --mynah-line-height: 1.5rem;
-
-    --mynah-syntax-code-line-height: 1.5rem;
-    --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
-
-    --mynah-card-radius: var(--mynah-sizing-2);
-    --mynah-input-radius: var(--mynah-sizing-1);
-    --mynah-card-radius-corner: 0;
-    --mynah-button-radius: var(--mynah-sizing-1);
-
-    --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-short-rev-transition: all 580ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-very-long-transition: all 1650ms cubic-bezier(0.25, 1, 0, 1);
-    --mynah-short-transition: all 550ms cubic-bezier(0.85, 0.15, 0, 1);
-    --mynah-short-transition-rev: all 580ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-short-transition-rev-opacity: opacity 750ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1.2, 0, 1), transform 800ms cubic-bezier(0.2, 1.05, 0, 1);
 }

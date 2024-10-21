@@ -52,7 +52,7 @@
             padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
             color: var(--mynah-color-text-default);
             border-radius: var(--mynah-input-radius);
-            transition: var(--mynah-short-transition-rev);
+            transition: var(--mynah-short-rev-transition);
             gap: var(--mynah-sizing-3);
 
             &[disabled='true'] {

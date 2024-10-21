@@ -19,6 +19,8 @@
         "packdemo": "cd ./example && npm run pack",
         "watch": "webpack --config webpack.config.js --mode development --watch",
         "watch:example": "cd ./example && npm run watch",
+        "watch:web": "run-p watch watch:example serve:example",
+        "serve:example": "live-server --port=9000 example/dist",
         "start:example": "cd ./example && npm install && npm run build && npm run dev",
         "dev": "npm run clean && npm install && npm run build && npm run start:example",
         "lint-fix": "npx eslint \"./**\" --fix",

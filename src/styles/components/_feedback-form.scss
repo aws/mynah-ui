@@ -58,7 +58,7 @@
 .mynah-feedback-form {
     pointer-events: all;
     box-sizing: border-box;
-    transition: var(--mynah-short-transition-rev);
+    transition: var(--mynah-short-rev-transition);
     transform: translate3d(0, 0, 0);
     display: flex;
     flex-flow: column;
