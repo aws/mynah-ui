@@ -184,11 +184,13 @@ export enum ChatItemType {
   CODE_RESULT = 'code-result',
 }
 
+export type Status = 'info' | 'success' | 'warning' | 'error';
+
 export interface ProgressField {
   /**
    * Prompt input progress status
    */
-  status?: 'default' | 'info' | 'success' | 'warning' | 'error';
+  status?: 'default' | Status;
   /**
   * Prompt input progress text
   */
@@ -208,7 +210,7 @@ export interface ProgressField {
 }
 
 export interface TreeNodeDetails {
-  status?: 'info' | 'success' | 'warning' | 'error';
+  status?: Status;
   icon?: MynahIcons;
   label?: string;
   description?: string;
@@ -240,7 +242,7 @@ export interface ChatItemContent {
   informationCard?: {
     title?: string;
     status?: {
-      status?: 'info' | 'success' | 'warning' | 'error';
+      status?: Status;
       icon?: MynahIcons;
       body?: string;
     };
@@ -257,7 +259,7 @@ export interface ChatItem extends ChatItemContent{
   snapToTop?: boolean;
   canBeVoted?: boolean;
   icon?: MynahIcons;
-  status?: 'info' | 'success' | 'warning' | 'error';
+  status?: Status;
 }
 
 export interface ChatItemFormItem {
@@ -285,7 +287,7 @@ export interface ChatItemAction extends ChatPrompt {
   pillText: string;
   disabled?: boolean;
   description?: string;
-  status?: 'primary' | 'info' | 'success' | 'warning' | 'error';
+  status?: 'primary' | Status;
   icon?: MynahIcons;
 }
 export interface ChatItemButton {
@@ -295,7 +297,7 @@ export interface ChatItemButton {
   id: string;
   disabled?: boolean;
   description?: string;
-  status?: 'primary' | 'info' | 'success' | 'warning' | 'error';
+  status?: 'primary' | Status;
   icon?: MynahIcons;
 }
 
@@ -304,7 +306,7 @@ export interface TabBarAction {
   id: string;
   disabled?: boolean;
   description?: string;
-  status?: 'info' | 'success' | 'warning' | 'error';
+  status?: Status;
   icon?: MynahIcons;
 }
 
@@ -317,7 +319,7 @@ export interface FileNodeAction {
   label?: string;
   disabled?: boolean;
   description?: string;
-  status?: 'info' | 'success' | 'warning' | 'error';
+  status?: Status;
   icon: MynahIcons;
 }
 
