@@ -420,6 +420,7 @@ export interface ConfigTexts {
   feedbackReportButtonLabel: string;
   codeSuggestions: string;
   clickFileToViewDiff: string;
+  file: string;
   files: string;
   changes: string;
   insertAtCursorLabel: string;

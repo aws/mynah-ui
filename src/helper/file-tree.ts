@@ -7,6 +7,7 @@ import { FileNodeAction, TreeNodeDetails } from '../static';
 import { Config } from './config';
 
 export type TreeNode = FolderNode | FileNode;
+
 export interface FileNode {
   name: string;
   type: 'file';
@@ -16,17 +17,25 @@ export interface FileNode {
   actions?: FileNodeAction[];
   details?: TreeNodeDetails;
 }
+
 export interface FolderNode {
   name: string;
   type: 'folder';
   details?: TreeNodeDetails;
+  deleted: boolean;
   children: Array<FolderNode | FileNode>;
 }
 
 /*
  * Converts a list of file Paths into a tree
  *
- * @input: The list of path in string format
+ * @param modifiedFilePaths List of modified file paths.
+ * @param deletedFilePaths List of deleted file paths.
+ * @param actions Optional actions to associate with file nodes.
+ * @param details Optional details to associate with file nodes.
+ * @param rootTitle Title for the root folder node.
+ * @returns TreeNode representing the root of the tree.
+ *
  * Example Input:
  *  modifiedFilePaths: [
  *   "project/src/hello.js",
@@ -58,48 +67,112 @@ export const fileListToTree = (
   deletedFilePaths: string[] = [],
   actions?: Record<string, FileNodeAction[]>,
   details?: Record<string, TreeNodeDetails>,
-  rootTitle?: string): TreeNode => {
-  return [ ...splitFilePaths(modifiedFilePaths, false), ...splitFilePaths(deletedFilePaths, true) ].reduce<TreeNode>(
-    (acc, { originalFilePath, filePath, deleted }) => {
-      // pointer to keep track of the current tree node
-      let currentNode = acc;
-      for (let i = 0; i < filePath.length; i++) {
-        const fileOrFolder = filePath[i];
-        // we can assume the leaf of each branch is a file. the LLM doesn't generate
-        // empty folder changes
-        if (i === filePath.length - 1) {
-          const filePathJoined = filePath.join('/');
-          // the parent of a file is always a folder
-          (currentNode as FolderNode).children.push({
-            type: 'file',
-            name: fileOrFolder,
-            filePath: filePathJoined,
-            deleted,
-            originalFilePath,
-            actions: actions !== undefined ? actions[originalFilePath] : undefined,
-            details: details !== undefined ? details[originalFilePath] : undefined,
-          });
-          break;
-        } else {
-          const oldItem = (currentNode as FolderNode).children.find(({ name }) => name === fileOrFolder);
-          if (oldItem != null) {
-            currentNode = oldItem;
-          } else {
-            // if the current fileOrFolder is not in the list, add it as a folder and move the pointer
-            const newItem: FolderNode = { name: fileOrFolder, type: 'folder', children: [] };
-            (currentNode as FolderNode).children.push(newItem);
-            currentNode = newItem;
-          }
-        }
+  rootTitle: string = Config.getInstance().config.texts.changes
+): TreeNode => {
+  const createFolderNode = (name: string): FolderNode => ({
+    name,
+    type: 'folder',
+    deleted: false,
+    children: []
+  });
+
+  const addFileNode = (
+    currentNode: FolderNode,
+    fileOrFolder: string,
+    filePath: string[],
+    originalFilePath: string,
+    deleted: boolean
+  ): void => {
+    currentNode.children.push({
+      type: 'file',
+      name: fileOrFolder,
+      filePath: filePath.join('/'),
+      deleted,
+      originalFilePath,
+      actions: actions?.[originalFilePath],
+      details: details?.[originalFilePath],
+    });
+  };
+
+  const findOrCreateFolderNode = (
+    currentNode: FolderNode,
+    fileOrFolder: string
+  ): FolderNode => {
+    let folderNode: FolderNode | undefined = currentNode.children.find(
+      (child) => child.name === fileOrFolder && child.type === 'folder'
+    ) as FolderNode;
+
+    if (folderNode === undefined) {
+      folderNode = createFolderNode(fileOrFolder);
+      currentNode.children.push(folderNode);
+    }
+
+    return folderNode;
+  };
+
+  const markFoldersAsDeletedIfApplicable = (node: FolderNode): boolean => {
+    if (node.children.length === 0) return node.deleted;
+
+    let allChildrenDeleted = true;
+
+    node.children.forEach((child) => {
+      if (child.type === 'folder') {
+        const childFolderDeleted = markFoldersAsDeletedIfApplicable(child);
+        if (!childFolderDeleted) allChildrenDeleted = false;
+      } else if (!child.deleted) {
+        allChildrenDeleted = false;
       }
-      return acc;
-    },
-    // Start off with a root folder called Changes
-    { name: rootTitle ?? Config.getInstance().config.texts.changes, type: 'folder', children: [] }
-  );
+    });
+
+    node.deleted = allChildrenDeleted;
+    return node.deleted;
+  };
+
+  const deduplicatedModifiedFiles = Array.from(new Set(modifiedFilePaths));
+  const deduplicatedDeletedFiles = Array.from(new Set(deletedFilePaths));
+
+  const tree = [ ...splitFilePaths(deduplicatedModifiedFiles, false), ...splitFilePaths(deduplicatedDeletedFiles, true) ]
+    .reduce<TreeNode>((acc, { originalFilePath, filePath, deleted }) => {
+    let currentNode = acc as FolderNode;
+
+    filePath.forEach((fileOrFolder, index) => {
+      const isLastItem = index === filePath.length - 1;
+
+      if (isLastItem) {
+        if (originalFilePath.endsWith('/')) {
+          findOrCreateFolderNode(currentNode, fileOrFolder);
+        } else {
+          addFileNode(currentNode, fileOrFolder, filePath, originalFilePath, deleted);
+        }
+      } else {
+        currentNode = findOrCreateFolderNode(currentNode, fileOrFolder);
+      }
+    });
+
+    return acc;
+  }, createFolderNode(rootTitle));
+
+  markFoldersAsDeletedIfApplicable(tree as FolderNode);
+
+  return tree;
 };
 
-const splitFilePaths = (paths: string[], deleted: boolean): Array<{ originalFilePath: string; filePath: string[]; deleted: boolean }> =>
-  paths
-    // split file path by folder. ignore dot folders
-    .map(filePath => ({ originalFilePath: filePath, filePath: filePath.split('/').filter(item => item !== undefined && item !== '.'), deleted }));
+/**
+ * Helper function to split file paths into parts and mark them as deleted if applicable.
+ *
+ * @param paths Array of file paths.
+ * @param deleted Boolean flag indicating if the file is deleted.
+ * @returns Array of split file paths with metadata.
+ */
+const splitFilePaths = (
+  paths: string[],
+  deleted: boolean
+): Array<{ originalFilePath: string; filePath: string[]; deleted: boolean }> =>
+  paths.map((filePath) => {
+    const cleanFilePath = filePath.startsWith('./') ? filePath.slice(2) : filePath;
+    return {
+      originalFilePath: filePath,
+      filePath: cleanFilePath.split('/').filter((part) => part !== undefined && part !== ''),
+      deleted,
+    };
+  });

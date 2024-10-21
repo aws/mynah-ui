@@ -73,7 +73,10 @@ export class ChatItemTreeView {
       classNames: [ 'mynah-chat-item-tree-view-button' ],
       label: DomBuilder.getInstance().build({
         type: 'div',
-        classNames: [ 'mynah-chat-item-tree-view-button-title' ],
+        classNames: [
+          'mynah-chat-item-tree-view-button-title',
+          this.node.deleted ? 'mynah-chat-item-tree-view-button-title-deleted' : '',
+        ],
         children: [
           new Icon({ icon: MynahIcons.FOLDER }).render,
           {
@@ -83,7 +86,7 @@ export class ChatItemTreeView {
           {
             type: 'span',
             classNames: [ 'mynah-chat-item-tree-view-button-weak-title' ],
-            children: [ `${this.node.children.length} ${Config.getInstance().config.texts.files}` ]
+            children: [ `(${this.node.children.length} ${this.node.children.length > 1 ? Config.getInstance().config.texts.files : Config.getInstance().config.texts.file})` ]
           }
         ]
       }),

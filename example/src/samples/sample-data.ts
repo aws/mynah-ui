@@ -212,8 +212,8 @@ export const exampleFileListChatItem: ChatItem = {
     type: ChatItemType.ANSWER,
     fileList: {
         rootFolderTitle: 'Changes',
-        filePaths: ['./package.json', './tsconfig.json', 'src/game.ts', 'tests/game.test.ts'],
-        deletedFiles: [],
+        filePaths: ['.github/workflow.yml', './package.json', './tsconfig.json', 'src/game.ts', 'tests/game.test.ts', 'tests/no-extension', 'tests/.eslintignore', 'deleted/file-added.js'],
+        deletedFiles: ['.github/removed-workflow.yml', 'deleted/folder/', 'deleted/file-removed.ts', 'deleted/folder/file-removed.ts', 'deleted/folder/file-removed.ts'],
         actions: {
             './package.json': [
                 {
