@@ -87,7 +87,7 @@
         padding: var(--mynah-sizing-3);
         transition: var(--mynah-short-transition-rev);
         gap: var(--mynah-sizing-3);
-        color: var(--mynah-color-gradient-alternate);
+        // color: var(--mynah-color-gradient-alternate);
         border: 1px solid;
         border-radius: 0 0 var(--mynah-input-radius) var(--mynah-input-radius);
 
@@ -105,6 +105,10 @@
             &.status-#{$status} {
                 border-color: var(--mynah-color-status-#{$status});
                 background-color: var(--mynah-color-status-#{$status}-bg);
+
+                .mynah-ui-icon {
+                    color: var(--mynah-color-status-#{$status});
+                }
             }
         }
     }

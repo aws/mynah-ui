@@ -43,10 +43,10 @@
     --mynah-color-status-warning: #b2911c;
     --mynah-color-status-error: #d91515;
 
-    --mynah-color-status-info-bg: rgba(9, 113, 211, 0.6);
-    --mynah-color-status-success-bg: rgba(3, 127, 3, 0.6);
-    --mynah-color-status-warning-bg: rgba(178, 145, 28, 0.6);
-    --mynah-color-status-error-bg: rgba(217, 21, 21, 0.6);
+    --mynah-color-status-info-bg: rgba(9, 113, 211, 0.15);
+    --mynah-color-status-success-bg: rgba(3, 127, 3, 0.15);
+    --mynah-color-status-warning-bg: rgba(178, 145, 28, 0.15);
+    --mynah-color-status-error-bg: rgba(217, 21, 21, 0.15);
 
     --mynah-color-gradient-alternate: #ffffff;
 
@@ -54,14 +54,14 @@
     --mynah-color-gradient-mid: #3e8dff;
     --mynah-color-gradient-end: #8af3ff;
 
-    --mynah-bg-gradient-start: #6e3bf1;
     --mynah-bg-gradient-mid: #538bf7;
-    --mynah-bg-gradient-end: #301673;
+    --mynah-bg-gradient-start: #301673;
+    --mynah-bg-gradient-end: #6e3bf1;
 
-    --mynah-bg-gradient: radial-gradient(100% 100% at 0% 0%, var(--mynah-bg-gradient-end) 0%, rgba(0, 0, 0, 0) 100%),
+    --mynah-bg-gradient: radial-gradient(100% 100% at 0% 0%, var(--mynah-bg-gradient-start) 0%, rgba(0, 0, 0, 0) 100%),
                     radial-gradient(100% 100% at 100% 100%, var(--mynah-bg-gradient-mid) 0%, rgba(0, 0, 0, 0) 100%),
-                    radial-gradient(97.99% 114.79% at 108.09% -8.09%, var(--mynah-bg-gradient-start) 0%, rgba(0, 0, 0, 0) 100%),
-                    var(--mynah-bg-gradient-start);
+                    radial-gradient(97.99% 114.79% at 108.09% -8.09%, var(--mynah-bg-gradient-end) 0%, rgba(0, 0, 0, 0) 100%),
+                    var(--mynah-bg-gradient-end);
 
     --mynah-color-gradient-semi-transparent: linear-gradient(
         35deg,
