@@ -12,6 +12,7 @@ import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { renderCharacterCount } from './flows/render-character-count';
 import { progressIndicator } from './flows/prompt-progress-indicator';
 import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
+import { renderInformationCard } from './flows/render-information-card';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -77,5 +78,9 @@ describe('Open MynahUI', () => {
 
   it('should parse markdown', async () => {
     await parseMarkdown(page);
+  });
+
+  it('should render information cards correctly', async () => {
+    await renderInformationCard(page);
   });
 });
