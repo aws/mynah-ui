@@ -716,6 +716,17 @@ interface ChatItemContent {
   buttons?: ChatItemButton[];
   formItems?: ChatItemFormItem[];
   footer?: ChatItemContent;
+  informationCard?: {
+    title?: string;
+    status?: {
+      status?: Status;
+      icon?: MynahIcons;
+      body?: string;
+    };
+    description?: string;
+    icon?: MynahIcons;
+    content: ChatItemContent;
+  };
   codeBlockActions?: CodeBlockActions;
 }
 
@@ -1558,6 +1569,44 @@ mynahUI.addChatItem(tabId, {
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `informationCard`
+
+Show a styled card for e.g. introducing or highlighting a particular feature.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+    messageId: generateUID(),
+    type: ChatItemType.ANSWER,
+    informationCard: {
+        title: 'Information card',
+        description: 'With a description below the title and success status.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: 'Some card body here'
+        },
+        status: {
+            status: 'success',
+            icon: MynahIcons.THUMBS_UP,
+            body: 'Successfully completed this task!'
+        }
+    },
+});
+```
+
+Information cards have a top section, including a title, description, and icon. The content of the card can be defined in the `content.body`. 
+
+A status can also be added to emphasize a particular state. The `status.status` supports either `success`, `warning`, or `error`. An icon and body message can also be defined.
+
+<p align="center">
+  <img src="./img/data-model/chatItems/information-card.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+<p align="center">
+  <img src="./img/data-model/chatItems/information-card-statuses.jpg" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
