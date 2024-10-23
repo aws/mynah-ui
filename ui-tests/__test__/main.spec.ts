@@ -72,15 +72,15 @@ describe('Open MynahUI', () => {
     await renderCharacterCount(page);
   });
 
+  it('should render information cards correctly', async () => {
+    await renderInformationCard(page);
+  });
+
   it('should keep the content inside window boundaries', async () => {
     await checkContentInsideWindowBoundaries(page);
   });
 
   it('should parse markdown', async () => {
     await parseMarkdown(page);
-  });
-
-  it('should render information cards correctly', async () => {
-    await renderInformationCard(page);
   });
 });

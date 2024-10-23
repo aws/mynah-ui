@@ -3,6 +3,7 @@ import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
 export const renderInformationCard = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
+  await page.locator(`${getSelector(testIds.prompt.input)}`).clear();
   await page.evaluate((body) => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
@@ -29,7 +30,6 @@ export const renderInformationCard = async (page: Page, skipScreenshots?: boolea
       });
     }
   });
-
   await waitForAnimationEnd(page);
 
   const answerCardSelector = `${getSelector(testIds.chatItem.type.answer)}`;
@@ -37,6 +37,6 @@ export const renderInformationCard = async (page: Page, skipScreenshots?: boolea
   await answerCard.scrollIntoViewIfNeeded();
 
   if (skipScreenshots !== true) {
-    await expect(await answerCard.screenshot()).toMatchImageSnapshot();
+    await expect(await page.screenshot()).toMatchImageSnapshot();
   }
 };
