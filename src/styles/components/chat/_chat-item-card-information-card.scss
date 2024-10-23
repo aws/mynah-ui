@@ -88,27 +88,35 @@
         padding: var(--mynah-sizing-3);
         transition: var(--mynah-short-transition-rev);
         gap: var(--mynah-sizing-3);
-        border: 1px solid;
+        border: 1px solid currentColor;
         border-radius: 0 0 var(--mynah-input-radius) var(--mynah-input-radius);
 
         > .mynah-ui-icon {
             font-size: var(--mynah-font-size-medium);
+            color: currentColor;
         }
 
         > p {
             flex: 1;
             font-size: var(--mynah-font-size-xsmall);
             margin: 0;
+            color: var(--mynah-color-text-default);
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: currentColor;
+            opacity: 10%;
         }
 
         @each $status in $mynah-statuses {
             &.status-#{$status} {
-                border-color: var(--mynah-color-status-#{$status});
-                background-color: var(--mynah-color-status-#{$status}-bg);
-
-                .mynah-ui-icon {
-                    color: var(--mynah-color-status-#{$status});
-                }
+                color: var(--mynah-color-status-#{$status});
             }
         }
     }
