@@ -22,6 +22,7 @@ import { chatItemHasContent } from '../../helper/chat-item';
 import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
 import testIds from '../../helper/test-ids';
+import { ChatItemInformationCard } from './chat-item-information-card';
 
 export interface ChatItemCardProps {
   tabId: string;
@@ -36,8 +37,7 @@ export class ChatItemCard {
   private readonly updateStack: Array<Partial<ChatItem>> = [];
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
   private cardFooter: ExtendedHTMLElement | null = null;
-  private informationCardWrapper: ExtendedHTMLElement | null = null;
-  private informationCard: ChatItemCard | null = null;
+  private informationCard: ChatItemInformationCard | null = null;
   private cardIcon: Icon | null = null;
   private contentBody: ChatItemCardContent | null = null;
   private chatAvatar: ExtendedHTMLElement;
@@ -304,96 +304,17 @@ export class ChatItemCard {
     /**
      * Generate information card if available
      */
-    if (this.informationCardWrapper != null) {
-      this.informationCardWrapper.remove();
-      this.informationCardWrapper = null;
+    if (this.informationCard != null) {
+      this.informationCard.render.remove();
+      this.informationCard = null;
     }
     if (this.props.chatItem.informationCard !== undefined) {
-      const mainContent = DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-chat-item-information-card-main' ],
-        children: [
-          {
-            type: 'div',
-            classNames: [ 'mynah-chat-item-information-card-header-container' ],
-            children: [
-              ...(this.props.chatItem.informationCard.icon !== undefined
-                ? [
-                    new Icon({
-                      icon: this.props.chatItem.informationCard.icon
-                    }).render
-                  ]
-                : []),
-              {
-                type: 'div',
-                classNames: [ 'mynah-chat-item-information-card-header' ],
-                children: [
-                  {
-                    type: 'div',
-                    classNames: [ 'mynah-chat-item-information-card-title' ],
-                    children: [ this.props.chatItem.informationCard.title ?? '' ]
-                  },
-                  ...(this.props.chatItem.informationCard.description !== undefined
-                    ? [ {
-                        type: 'div',
-                        classNames: [ 'mynah-chat-item-information-card-description' ],
-                        children: [ this.props.chatItem.informationCard.description ]
-                      } ]
-                    : [])
-                ]
-              }
-            ]
-          }
-        ]
-      });
-
-      this.informationCardWrapper = DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-chat-item-information-card', 'mynah-card-inner-order-55' ],
-        children: [
-          mainContent
-        ]
-      });
-
-      this.informationCard = new ChatItemCard({
+      this.informationCard = new ChatItemInformationCard({
         tabId: this.props.tabId,
-        small: true,
-        inline: true,
-        chatItem: {
-          ...this.props.chatItem.informationCard.content,
-          type: ChatItemType.ANSWER,
-          messageId: this.props.chatItem.messageId,
-        }
+        messageId: this.props.chatItem.messageId,
+        informationCard: this.props.chatItem.informationCard
       });
-      mainContent.insertChild('beforeend', this.informationCard.render);
-
-      if (this.props.chatItem.informationCard.status !== undefined) {
-        const statusFooter = DomBuilder.getInstance().build({
-          type: 'div',
-          classNames: [
-            'mynah-chat-item-information-card-footer',
-            ...(this.props.chatItem.informationCard.status.status != null ? [ `status-${this.props.chatItem.informationCard.status.status}` ] : []),
-          ],
-          children: [
-            ...(this.props.chatItem.informationCard.status.icon !== undefined
-              ? [
-                  new Icon({
-                    icon: this.props.chatItem.informationCard.status.icon
-                  }).render
-                ]
-              : []),
-            ...(this.props.chatItem.informationCard.status.body !== undefined
-              ? [ {
-                  type: 'p',
-                  children: [ this.props.chatItem.informationCard.status.body ]
-                } ]
-              : [])
-          ]
-        });
-        this.informationCardWrapper.insertChild('beforeend', statusFooter);
-      }
-
-      this.card?.render.insertChild('beforeend', this.informationCardWrapper);
+      this.card?.render.insertChild('beforeend', this.informationCard.render);
     }
 
     /**
