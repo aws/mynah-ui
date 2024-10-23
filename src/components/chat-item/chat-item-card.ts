@@ -302,7 +302,7 @@ export class ChatItemCard {
     }
 
     /**
-     * Generate file tree if available
+     * Generate information card if available
      */
     if (this.informationCardWrapper != null) {
       this.informationCardWrapper.remove();
