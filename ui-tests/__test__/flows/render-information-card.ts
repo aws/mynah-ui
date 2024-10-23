@@ -1,5 +1,5 @@
 import { Page } from 'playwright/test';
-import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, waitForAnimationEnd } from '../helpers';
+import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
 export const renderInformationCard = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
@@ -34,14 +34,6 @@ export const renderInformationCard = async (page: Page, skipScreenshots?: boolea
 
   const answerCardSelector = `${getSelector(testIds.chatItem.type.answer)}`;
   const answerCard = await page.waitForSelector(answerCardSelector);
-  const newViewportHeight = getOffsetHeight(await answerCard.boundingBox()) ?? 1000;
-
-  // Update viewport size
-  await page.setViewportSize({
-    width: DEFAULT_VIEWPORT.width,
-    // Chromium doesn't accept float numbers for the viewport, has to be converted to int
-    height: Math.ceil(newViewportHeight) + 300
-  });
   await answerCard.scrollIntoViewIfNeeded();
 
   if (skipScreenshots !== true) {
