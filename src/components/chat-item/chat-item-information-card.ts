@@ -20,12 +20,9 @@ export interface ChatItemInformationCardProps {
 }
 
 export class ChatItemInformationCard {
-  private readonly props: ChatItemInformationCardProps;
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemInformationCardProps) {
-    this.props = props;
-
     const mainContent = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-information-card-main' ],
