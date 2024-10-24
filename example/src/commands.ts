@@ -14,6 +14,7 @@ export enum Commands {
     IMAGE_IN_CARD = '/card-with-image-inside',
     CUSTOM_RENDERER_CARDS = '/cards-with-custom-renderers',
     FOLLOWUPS_AT_RIGHT = '/followups-at-right',
+    INFORMATION_CARDS = '/information-cards',
 
     NOTIFY = '/show-notification',
     CLEAR = '/clear',

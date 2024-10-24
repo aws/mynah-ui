@@ -6,6 +6,10 @@ import { clickToFollowup } from './click-followup';
 export const checkContentInsideWindowBoundaries = async (page: Page): Promise<void> => {
   await page.locator(`${getSelector(testIds.prompt.input)}`).clear();
 
+  // Close & open new tab
+  await page.locator(`${getSelector(testIds.tabBar.tabOptionCloseButton)}`).click();
+  await page.locator(`${getSelector(testIds.tabBar.tabAddButton)}`).click();
+
   await page.mouse.move(0, 0);
   const footerPanel = await page.waitForSelector(`${getSelector(testIds.prompt.footerInfo)}`);
   expect(footerPanel).toBeDefined();

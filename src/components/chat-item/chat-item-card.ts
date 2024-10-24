@@ -22,6 +22,7 @@ import { chatItemHasContent } from '../../helper/chat-item';
 import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
 import testIds from '../../helper/test-ids';
+import { ChatItemInformationCard } from './chat-item-information-card';
 
 export interface ChatItemCardProps {
   tabId: string;
@@ -36,6 +37,7 @@ export class ChatItemCard {
   private readonly updateStack: Array<Partial<ChatItem>> = [];
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
   private cardFooter: ExtendedHTMLElement | null = null;
+  private informationCard: ChatItemInformationCard | null = null;
   private cardIcon: Icon | null = null;
   private contentBody: ChatItemCardContent | null = null;
   private chatAvatar: ExtendedHTMLElement;
@@ -297,6 +299,22 @@ export class ChatItemCard {
         referenceSuggestionLabel,
       });
       this.card?.render.insertChild('beforeend', this.fileTreeWrapper.render);
+    }
+
+    /**
+     * Generate information card if available
+     */
+    if (this.informationCard != null) {
+      this.informationCard.render.remove();
+      this.informationCard = null;
+    }
+    if (this.props.chatItem.informationCard !== undefined) {
+      this.informationCard = new ChatItemInformationCard({
+        tabId: this.props.tabId,
+        messageId: this.props.chatItem.messageId,
+        informationCard: this.props.chatItem.informationCard
+      });
+      this.card?.render.insertChild('beforeend', this.informationCard.render);
     }
 
     /**

@@ -32,6 +32,10 @@ import {
   exampleCodeDiffApplied,
   sampleAllInOneList,
   sampleTableList,
+  exampleInformationCard,
+  exampleInformationCardError,
+  exampleInformationCardWarning,
+  exampleInformationCardSuccess,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -459,6 +463,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
         case Commands.FOLLOWUPS_AT_RIGHT:
           mynahUI.addChatItem(tabId, exampleRichFollowups);
+          break;
+        case Commands.INFORMATION_CARDS:
+          mynahUI.addChatItem(tabId, exampleInformationCard);
+          mynahUI.addChatItem(tabId, exampleInformationCardWarning);
+          mynahUI.addChatItem(tabId, exampleInformationCardError);
+          mynahUI.addChatItem(tabId, exampleInformationCardSuccess);
+          mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.SHOW_CUSTOM_FORM:
           showCustomForm(tabId);

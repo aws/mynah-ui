@@ -1,4 +1,4 @@
-import { ChatItem, ChatItemBodyRenderer, ChatItemType, MynahIcons, SourceLink } from '@aws/mynah-ui';
+import { ChatItem, ChatItemType, generateUID, MynahIcons, SourceLink } from '@aws/mynah-ui';
 import md0 from './sample-0.md';
 import md1 from './sample-1.md';
 import md2 from './sample-2.md';
@@ -18,8 +18,8 @@ import sampleList4 from './sample-list-4.md';
 import SampleCode from './sample-code.md';
 import SampleDiff from './sample-diff.md';
 import SampleDiffApplied from './sample-diff-applied.md';
-import SampleAllInOne from './sample-all-in-one.md'
-import SampleTable from './sample-table.md'
+import SampleAllInOne from './sample-all-in-one.md';
+import SampleTable from './sample-table.md';
 import { Commands } from '../commands';
 
 export const mynahUIQRImageBase64 =
@@ -71,13 +71,9 @@ export const sampleMarkdownList: Partial<ChatItem>[] = [
     { body: `${sampleList4 as string}` },
 ];
 
-export const sampleAllInOneList: Partial<ChatItem>[] = [
-    { body: `${SampleAllInOne as string}`},
-];
+export const sampleAllInOneList: Partial<ChatItem>[] = [{ body: `${SampleAllInOne as string}` }];
 
-export const sampleTableList: Partial<ChatItem>[] = [
-    { body: `${SampleTable as string}`},
-];
+export const sampleTableList: Partial<ChatItem>[] = [{ body: `${SampleTable as string}` }];
 
 export const exampleStreamParts: Partial<ChatItem>[] = [
     { body: `${md0 as string}` },
@@ -109,7 +105,8 @@ export const exampleStreamParts: Partial<ChatItem>[] = [
                     start: 1034,
                     end: 1409,
                 },
-                information: 'Reference code *under the Apache License 2.0 license* from repository **`@aws/mynah-ui`**.',
+                information:
+                    'Reference code *under the Apache License 2.0 license* from repository **`@aws/mynah-ui`**.',
             },
         ],
     },
@@ -201,6 +198,10 @@ export const defaultFollowUps: ChatItem = {
                 command: Commands.FOLLOWUPS_AT_RIGHT,
             },
             {
+                pillText: 'Information cards',
+                command: Commands.INFORMATION_CARDS,
+            },
+            {
                 pillText: 'Some auto reply',
                 prompt: 'Some random auto reply here.',
             },
@@ -262,7 +263,7 @@ export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
                 status: 'error',
                 label: 'File rejected',
                 icon: MynahIcons.CANCEL_CIRCLE,
-                description: exampleCodeDiff
+                description: exampleCodeDiff,
             },
         },
         actions: {
@@ -710,5 +711,72 @@ export const exampleDownloadFile: ChatItem = {
         fileTreeTitle: 'Report',
         rootFolderTitle: '',
         filePaths: ['Refactor_analysis_[id] .pdf'],
+    },
+};
+
+export const exampleInformationCard: ChatItem = {
+    messageId: generateUID(),
+    type: ChatItemType.ANSWER,
+    informationCard: {
+        title: 'Information card',
+        description: 'With a description below the title.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: sampleList2 as string
+        },
+    },
+};
+
+export const exampleInformationCardWarning: ChatItem = {
+    messageId: generateUID(),
+    type: ChatItemType.ANSWER,
+    informationCard: {
+        title: 'Information card',
+        description: 'With a description below the title and warning status.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: sampleList2 as string
+        },
+        status: {
+            status: "warning",
+            icon: MynahIcons.WARNING,
+            body: "You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits."
+        }
+    },
+};
+
+export const exampleInformationCardError: ChatItem = {
+    messageId: generateUID(),
+    type: ChatItemType.ANSWER,
+    informationCard: {
+        title: 'Information card',
+        description: 'With a description below the title and error status.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: sampleList2 as string
+        },
+        status: {
+            status: "error",
+            icon: MynahIcons.ERROR,
+            body: "You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits."
+        }
+    },
+};
+
+export const exampleInformationCardSuccess: ChatItem = {
+    messageId: generateUID(),
+    type: ChatItemType.ANSWER,
+    informationCard: {
+        title: 'Information card',
+        description: 'With a description below the title and success status.',
+        icon: MynahIcons.BUG,
+        content: {
+            body: sampleList2 as string
+        },
+        status: {
+            status: "success",
+            icon: MynahIcons.THUMBS_UP,
+            body: "Successfully completed this task!"
+        }
     },
 };
