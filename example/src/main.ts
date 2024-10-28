@@ -33,9 +33,6 @@ import {
   sampleAllInOneList,
   sampleTableList,
   exampleInformationCard,
-  exampleInformationCardError,
-  exampleInformationCardWarning,
-  exampleInformationCardSuccess,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -465,10 +462,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.addChatItem(tabId, exampleRichFollowups);
           break;
         case Commands.INFORMATION_CARDS:
-          mynahUI.addChatItem(tabId, exampleInformationCard);
-          mynahUI.addChatItem(tabId, exampleInformationCardWarning);
-          mynahUI.addChatItem(tabId, exampleInformationCardError);
-          mynahUI.addChatItem(tabId, exampleInformationCardSuccess);
+          mynahUI.addChatItem(tabId, exampleInformationCard(null, null));
+          mynahUI.addChatItem(tabId, exampleInformationCard('warning', 'You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits.'));
+          mynahUI.addChatItem(tabId, exampleInformationCard('error', 'You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits.'));
+          mynahUI.addChatItem(tabId, exampleInformationCard('success', 'Successfully completed this task!'));
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.SHOW_CUSTOM_FORM:

@@ -80,7 +80,7 @@ export class ChatItemInformationCard {
       }
     }).render);
 
-    if (props.informationCard.status !== undefined) {
+    if (props.informationCard.status?.status !== undefined) {
       const statusFooter = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [

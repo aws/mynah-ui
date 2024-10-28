@@ -1,4 +1,4 @@
-import { ChatItem, ChatItemType, generateUID, MynahIcons, SourceLink } from '@aws/mynah-ui';
+import { ChatItem, ChatItemType, generateUID, MynahIcons, SourceLink, Status } from '@aws/mynah-ui';
 import md0 from './sample-0.md';
 import md1 from './sample-1.md';
 import md2 from './sample-2.md';
@@ -714,69 +714,22 @@ export const exampleDownloadFile: ChatItem = {
     },
 };
 
-export const exampleInformationCard: ChatItem = {
-    messageId: generateUID(),
-    type: ChatItemType.ANSWER,
-    informationCard: {
-        title: 'Information card',
-        description: 'With a description below the title.',
-        icon: MynahIcons.BUG,
-        content: {
-            body: sampleList2 as string
+export const exampleInformationCard = (statusType: null | Status, statusBody: string | null) => {
+    return {
+        messageId: generateUID(),
+        type: ChatItemType.ANSWER,
+        informationCard: {
+            title: 'Information card',
+            description: 'With a description below the title.',
+            icon: MynahIcons.BUG,
+            content: {
+                body: sampleList2 as string
+            },
+            status: statusType === null || statusBody === null ? {} : {
+                status: statusType,
+                icon: statusType === 'warning' ? MynahIcons.WARNING : statusType === 'error' ? MynahIcons.ERROR : MynahIcons.THUMBS_UP,
+                body: statusBody
+            }
         },
-    },
-};
-
-export const exampleInformationCardWarning: ChatItem = {
-    messageId: generateUID(),
-    type: ChatItemType.ANSWER,
-    informationCard: {
-        title: 'Information card',
-        description: 'With a description below the title and warning status.',
-        icon: MynahIcons.BUG,
-        content: {
-            body: sampleList2 as string
-        },
-        status: {
-            status: "warning",
-            icon: MynahIcons.WARNING,
-            body: "You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits."
-        }
-    },
-};
-
-export const exampleInformationCardError: ChatItem = {
-    messageId: generateUID(),
-    type: ChatItemType.ANSWER,
-    informationCard: {
-        title: 'Information card',
-        description: 'With a description below the title and error status.',
-        icon: MynahIcons.BUG,
-        content: {
-            body: sampleList2 as string
-        },
-        status: {
-            status: "error",
-            icon: MynahIcons.ERROR,
-            body: "You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits."
-        }
-    },
-};
-
-export const exampleInformationCardSuccess: ChatItem = {
-    messageId: generateUID(),
-    type: ChatItemType.ANSWER,
-    informationCard: {
-        title: 'Information card',
-        description: 'With a description below the title and success status.',
-        icon: MynahIcons.BUG,
-        content: {
-            body: sampleList2 as string
-        },
-        status: {
-            status: "success",
-            icon: MynahIcons.THUMBS_UP,
-            body: "Successfully completed this task!"
-        }
-    },
-};
+    };
+}
