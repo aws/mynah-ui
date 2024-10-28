@@ -5,6 +5,7 @@ import { ChatItemCard } from './chat-item-card';
 
 export interface ChatItemInformationCardProps {
   tabId: string;
+  testId?: string;
   messageId: string | undefined;
   informationCard: {
     title?: string;
