@@ -250,6 +250,9 @@ export interface ChatItemContent {
     icon?: MynahIcons;
     content: ChatItemContent;
   };
+  tabbedCard?: {
+    tabs: string[];
+  };
   codeBlockActions?: CodeBlockActions;
 }
 

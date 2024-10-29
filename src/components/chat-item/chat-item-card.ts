@@ -23,6 +23,7 @@ import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
 import testIds from '../../helper/test-ids';
 import { ChatItemInformationCard } from './chat-item-information-card';
+import { ChatItemTabbedCard } from './chat-item-tabbed-card';
 
 export interface ChatItemCardProps {
   tabId: string;
@@ -38,6 +39,7 @@ export class ChatItemCard {
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
   private cardFooter: ExtendedHTMLElement | null = null;
   private informationCard: ChatItemInformationCard | null = null;
+  private tabbedCard: ChatItemTabbedCard | null = null;
   private cardIcon: Icon | null = null;
   private contentBody: ChatItemCardContent | null = null;
   private chatAvatar: ExtendedHTMLElement;
@@ -356,6 +358,22 @@ export class ChatItemCard {
         },
       });
       this.card?.render.insertChild('beforeend', this.chatButtons.render);
+    }
+
+    /**
+     * Generate tabbed card if available
+     */
+    if (this.tabbedCard != null) {
+      this.tabbedCard.render.remove();
+      this.tabbedCard = null;
+    }
+    if (this.props.chatItem.tabbedCard !== undefined) {
+      this.tabbedCard = new ChatItemTabbedCard({
+        tabId: this.props.tabId,
+        messageId: this.props.chatItem.messageId,
+        tabbedCard: this.props.chatItem.tabbedCard
+      });
+      this.card?.render.insertChild('beforeend', this.tabbedCard.render);
     }
 
     /**
