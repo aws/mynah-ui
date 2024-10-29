@@ -38,6 +38,8 @@ import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
+import { ChatItemCard } from './components/chat-item/chat-item-card';
+import { MynahIcons } from './main';
 
 export { generateUID } from './helper/guid';
 export {
@@ -324,7 +326,35 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         children: [
           this.tabsWrapper ?? '',
           ...(Config.getInstance().config.maxTabs > 1 ? [ new NoTabs().render ] : []),
-          this.tabContentsWrapper
+          // this.tabContentsWrapper,
+          new ChatItemCard({
+            chatItem: {
+              type: ChatItemType.ANSWER,
+              body: '### Feature Development\nGenerate code across files with a task description.',
+              buttons: [
+                {
+                  id: 'quick-start',
+                  text: 'Quick start with \'**/dev**\'',
+                  icon: MynahIcons.RIGHT_OPEN
+                }
+              ],
+              tabbedCard: {
+                tabs: [
+                  {
+                    value: 'overview',
+                    label: 'Overview',
+                    icon: MynahIcons.COMMENT,
+                    content: {
+                      body: 'Overview content'
+                    }
+                  },
+                  { value: 'examples', label: 'Examples', icon: MynahIcons.PLAY, content: { body: 'Examples content' } }
+                ],
+                selectedValue: 'overview'
+              }
+            },
+            tabId: MynahUITabsStore.getInstance().getSelectedTabId(),
+          }).render
         ]
       },
       'afterbegin'

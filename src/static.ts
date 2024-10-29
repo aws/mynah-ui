@@ -16,6 +16,7 @@ import {
   TextInputAbstract,
   TextAreaProps,
   TextAreaAbstract,
+  ToggleOption,
 } from './main';
 
 export interface QuickActionCommand {
@@ -251,7 +252,10 @@ export interface ChatItemContent {
     content: ChatItemContent;
   };
   tabbedCard?: {
-    tabs: string[];
+    tabs: Array<ToggleOption & {
+      content: ChatItemContent;
+    }>;
+    selectedValue?: string;
   };
   codeBlockActions?: CodeBlockActions;
 }

@@ -1,9 +1,8 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemContent } from '../../static';
-import { CardBody } from '../card/card-body';
-import { MynahIcons } from '../icon';
-import { Toggle } from '../toggle';
-import '../../styles/components/card/_chat-item-tabbed-card.scss';
+import { ChatItemContent, ChatItemType } from '../../static';
+import { Toggle, ToggleOption } from '../toggle';
+import '../../styles/components/chat/_chat-item-card-tabbed-card.scss';
+import { ChatItemCard } from './chat-item-card';
 
 export interface ChatItemTabbedCardProps {
   tabId: string;
@@ -12,24 +11,44 @@ export interface ChatItemTabbedCardProps {
 }
 
 export class ChatItemTabbedCard {
+  contentCard: ChatItemCard;
   render: ExtendedHTMLElement;
+  props: ChatItemTabbedCardProps;
 
   constructor (props: ChatItemTabbedCardProps) {
-    const body = new CardBody({
-      classNames: [ 'mynah-tabbed-card-body' ],
-      body: 'test'
-    });
+    this.props = props;
     const toggleGroup = new Toggle({
-      options: props.tabbedCard.tabs.map((tab) => {
-        return {
-          label: tab,
-          value: tab,
-          icon: MynahIcons.CODE_BLOCK
-        };
-      }),
+      options: props.tabbedCard.tabs,
       direction: 'horizontal',
-      name: 'testToggle',
-      value: props.tabbedCard.tabs[0],
+      name: `tabbed-card-toggle-${props.messageId ?? props.tabId}`,
+      value: props.tabbedCard.selectedValue ?? props.tabbedCard.tabs[0].value,
+      onChange: (value) => {
+        // this.contentCard.render.update();
+      }
+    });
+
+    this.contentCard = new ChatItemCard({
+      tabId: props.tabId,
+      small: true,
+      inline: true,
+      chatItem: {
+        type: ChatItemType.ANSWER,
+        messageId: props.messageId,
+        body: toggleGroup.getValue() as string
+      }
+    });
+
+    this.contentCard = new ChatItemCard({
+      tabId: props.tabId,
+      small: true,
+      inline: true,
+      chatItem: {
+        type: ChatItemType.ANSWER,
+        messageId: props.messageId,
+        informationCard: {
+          content: this.getTabFromValue(toggleGroup.getValue() as string)?.content ?? {}
+        }
+      }
     });
 
     this.render = DomBuilder.getInstance().build({
@@ -40,7 +59,7 @@ export class ChatItemTabbedCard {
           type: 'div',
           classNames: [ 'mynah-tabbed-card-content' ],
           children: [
-            body.render
+            this.contentCard.render
           ]
         },
         {
@@ -53,4 +72,8 @@ export class ChatItemTabbedCard {
       ]
     });
   }
+
+  private readonly getTabFromValue = (value: string): ToggleOption & {content: ChatItemContent} | undefined => {
+    return this.props.tabbedCard.tabs.find((tab) => tab.value === value);
+  };
 }
