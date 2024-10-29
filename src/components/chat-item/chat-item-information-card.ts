@@ -2,6 +2,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItemContent, ChatItemType, Status } from '../../static';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
+import '../../styles/components/chat/_chat-item-card-information-card.scss';
 
 export interface ChatItemInformationCardProps {
   tabId: string;
@@ -26,40 +27,44 @@ export class ChatItemInformationCard {
     const mainContent = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-information-card-main' ],
+      children: []
+    });
+
+    const header = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-item-information-card-header-container' ],
       children: [
+        ...(props.informationCard.icon !== undefined
+          ? [
+              new Icon({
+                icon: props.informationCard.icon
+              }).render
+            ]
+          : []),
         {
           type: 'div',
-          classNames: [ 'mynah-chat-item-information-card-header-container' ],
+          classNames: [ 'mynah-chat-item-information-card-header' ],
           children: [
-            ...(props.informationCard.icon !== undefined
-              ? [
-                  new Icon({
-                    icon: props.informationCard.icon
-                  }).render
-                ]
-              : []),
             {
               type: 'div',
-              classNames: [ 'mynah-chat-item-information-card-header' ],
-              children: [
-                {
+              classNames: [ 'mynah-chat-item-information-card-title' ],
+              children: [ props.informationCard.title ?? '' ]
+            },
+            ...(props.informationCard.description !== undefined
+              ? [ {
                   type: 'div',
-                  classNames: [ 'mynah-chat-item-information-card-title' ],
-                  children: [ props.informationCard.title ?? '' ]
-                },
-                ...(props.informationCard.description !== undefined
-                  ? [ {
-                      type: 'div',
-                      classNames: [ 'mynah-chat-item-information-card-description' ],
-                      children: [ props.informationCard.description ]
-                    } ]
-                  : [])
-              ]
-            }
+                  classNames: [ 'mynah-chat-item-information-card-description' ],
+                  children: [ props.informationCard.description ]
+                } ]
+              : [])
           ]
         }
       ]
     });
+
+    if (props.informationCard.title !== undefined || props.informationCard.description !== undefined || props.informationCard.icon !== undefined) {
+      mainContent.insertChild('beforeend', header);
+    }
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
