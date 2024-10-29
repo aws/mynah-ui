@@ -1,22 +1,13 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemContent, ChatItemType, Status } from '../../static';
-import { Icon, MynahIcons } from '../icon';
+import { ChatItemContent, ChatItemType } from '../../static';
+import { Icon } from '../icon';
 import { ChatItemCard } from './chat-item-card';
 
 export interface ChatItemInformationCardProps {
   tabId: string;
+  testId?: string;
   messageId: string | undefined;
-  informationCard: {
-    title?: string;
-    status?: {
-      status?: Status;
-      icon?: MynahIcons;
-      body?: string;
-    };
-    description?: string;
-    icon?: MynahIcons;
-    content: ChatItemContent;
-  };
+  informationCard: Required<ChatItemContent>['informationCard'];
 }
 
 export class ChatItemInformationCard {
@@ -80,7 +71,7 @@ export class ChatItemInformationCard {
       }
     }).render);
 
-    if (props.informationCard.status !== undefined) {
+    if (props.informationCard.status?.status !== undefined) {
       const statusFooter = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [
