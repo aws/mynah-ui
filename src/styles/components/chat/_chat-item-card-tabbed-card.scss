@@ -1,5 +1,3 @@
-@import '../../mixins';
-
 .mynah-tabbed-card-wrapper {
     display: flex;
     flex-flow: column nowrap;
@@ -9,9 +7,24 @@
     width: 100%;
     gap: var(--mynah-sizing-3);
 
-    > .mynah-tabbed-card-content {
+    > .mynah-tabbed-card-contents {
         width: 100%;
         box-sizing: border-box;
+        background: var(--mynah-bg-gradient);
+        padding: var(--mynah-sizing-2);
+        border-radius: var(--mynah-input-radius);
+
+        > .mynah-chat-item-card {
+            border: none;
+            border-radius: inherit;
+            >.mynah-card{
+                border-radius: inherit;
+            }
+            .mynah-chat-item-information-card-main {
+                border: none;
+                border-radius: 0;
+            }
+        }
     }
 
     > .mynah-tabbed-card-tabs {

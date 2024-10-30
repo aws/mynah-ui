@@ -218,17 +218,17 @@ export interface TreeNodeDetails {
 }
 
 export interface ChatItemContent {
-  body?: string;
-  customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
+  body?: string | null;
+  customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
     text?: string;
     options?: ChatItemAction[];
-  };
+  } | null;
   relatedContent?: {
     title?: string;
     content: SourceLink[];
-  };
-  codeReference?: ReferenceTrackerInformation[];
+  } | null;
+  codeReference?: ReferenceTrackerInformation[] | null;
   fileList?: {
     fileTreeTitle?: string;
     rootFolderTitle?: string;
@@ -236,10 +236,10 @@ export interface ChatItemContent {
     deletedFiles?: string[];
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
-  };
-  buttons?: ChatItemButton[];
-  formItems?: ChatItemFormItem[];
-  footer?: ChatItemContent;
+  } | null;
+  buttons?: ChatItemButton[] | null;
+  formItems?: ChatItemFormItem[] | null;
+  footer?: ChatItemContent | null;
   informationCard?: {
     title?: string;
     status?: {
@@ -250,14 +250,11 @@ export interface ChatItemContent {
     description?: string;
     icon?: MynahIcons;
     content: ChatItemContent;
-  };
-  tabbedCard?: {
-    tabs: Array<ToggleOption & {
-      content: ChatItemContent;
-    }>;
-    selectedValue?: string;
-  };
-  codeBlockActions?: CodeBlockActions;
+  } | null;
+  tabbedContent?: Array<ToggleOption & {
+    content: ChatItemContent;
+  }> | null;
+  codeBlockActions?: CodeBlockActions | null;
 }
 
 export interface ChatItem extends ChatItemContent{
