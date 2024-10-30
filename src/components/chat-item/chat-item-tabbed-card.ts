@@ -3,6 +3,7 @@ import { ChatItemContent, ChatItemType } from '../../static';
 import { Toggle, ToggleOption } from '../toggle';
 import '../../styles/components/chat/_chat-item-card-tabbed-card.scss';
 import { ChatItemCard } from './chat-item-card';
+import testIds from '../../helper/test-ids';
 
 export interface ChatItemTabbedCardProps {
   tabId: string;
@@ -11,7 +12,7 @@ export interface ChatItemTabbedCardProps {
 }
 
 export class ChatItemTabbedCard {
-  contentCard: ChatItemCard;
+  contentCards: Map<ToggleOption, ChatItemCard>;
   render: ExtendedHTMLElement;
   props: ChatItemTabbedCardProps;
 
@@ -21,34 +22,31 @@ export class ChatItemTabbedCard {
       options: props.tabbedCard.tabs,
       direction: 'horizontal',
       name: `tabbed-card-toggle-${props.messageId ?? props.tabId}`,
-      value: props.tabbedCard.selectedValue ?? props.tabbedCard.tabs[0].value,
+      value: props.tabbedCard.tabs.filter((tab) => tab.selected)[0].value,
+      testId: testIds.chatItem.tabbedCard.tabs,
       onChange: (value) => {
-        // this.contentCard.render.update();
+        // this.contentCards.forEach((card) => card.render.addClass('hidden'));
+        // this.contentCards.get(this.getTabFromValue(value))?.render.removeClass('hidden');
       }
     });
 
-    this.contentCard = new ChatItemCard({
-      tabId: props.tabId,
-      small: true,
-      inline: true,
-      chatItem: {
-        type: ChatItemType.ANSWER,
-        messageId: props.messageId,
-        body: toggleGroup.getValue() as string
-      }
-    });
-
-    this.contentCard = new ChatItemCard({
-      tabId: props.tabId,
-      small: true,
-      inline: true,
-      chatItem: {
-        type: ChatItemType.ANSWER,
-        messageId: props.messageId,
-        informationCard: {
-          content: this.getTabFromValue(toggleGroup.getValue() as string)?.content ?? {}
+    this.contentCards = new Map<ToggleOption, ChatItemCard>();
+    props.tabbedCard.tabs.forEach((tab) => {
+      const card = new ChatItemCard({
+        tabId: props.tabId,
+        inline: true,
+        chatItem: {
+          type: ChatItemType.ANSWER,
+          messageId: props.messageId,
+          informationCard: {
+            content: tab.content
+          }
         }
+      });
+      if (!(tab.selected ?? false)) {
+        card.render.addClass('hidden');
       }
+      this.contentCards.set(tab, card);
     });
 
     this.render = DomBuilder.getInstance().build({
@@ -57,10 +55,8 @@ export class ChatItemTabbedCard {
       children: [
         {
           type: 'div',
-          classNames: [ 'mynah-tabbed-card-content' ],
-          children: [
-            this.contentCard.render
-          ]
+          classNames: [ 'mynah-tabbed-card-contents' ],
+          children: Array.from(this.contentCards.values()).map(card => card.render)
         },
         {
           type: 'div',
@@ -73,7 +69,7 @@ export class ChatItemTabbedCard {
     });
   }
 
-  private readonly getTabFromValue = (value: string): ToggleOption & {content: ChatItemContent} | undefined => {
-    return this.props.tabbedCard.tabs.find((tab) => tab.value === value);
+  private readonly getTabFromValue = (value: string): ToggleOption => {
+    return this.props.tabbedCard.tabs.find((tab) => tab.value === value) ?? this.props.tabbedCard.tabs[0];
   };
 }
