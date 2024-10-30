@@ -1,10 +1,9 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItemContent, ChatItemType } from '../../static';
 import { Toggle } from '../toggle';
-import '../../styles/components/chat/_chat-item-card-tabbed-card.scss';
 import { ChatItemCard } from './chat-item-card';
 import testIds from '../../helper/test-ids';
-import { emptyChatItemContent } from '../../helper/chat-item';
+import '../../styles/components/chat/_chat-item-card-tabbed-card.scss';
 
 export interface ChatItemTabbedCardProps {
   tabId: string;
@@ -14,7 +13,6 @@ export interface ChatItemTabbedCardProps {
 
 export class ChatItemTabbedCard {
   contentCard: ChatItemCard;
-
   render: ExtendedHTMLElement;
   props: ChatItemTabbedCardProps;
 
@@ -28,12 +26,10 @@ export class ChatItemTabbedCard {
       testId: testIds.chatItem.tabbedCard.tabs,
       onChange: (value) => {
         console.log(value, this.getTabContentFromValue(value));
+        this.contentCard.reset();
         this.contentCard.updateCardStack({
-          ...emptyChatItemContent,
           ...this.getTabContentFromValue(value)
         });
-        // this.contentCards.forEach((card) => card.render.addClass('hidden'));
-        // this.contentCards.get(this.getTabFromValue(value))?.render.removeClass('hidden');
       }
     });
 

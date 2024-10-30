@@ -18,7 +18,7 @@ import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
 import { CONTAINER_GAP } from './chat-wrapper';
-import { chatItemHasContent } from '../../helper/chat-item';
+import { chatItemHasContent, emptyChatItemContent } from '../../helper/chat-item';
 import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
 import testIds from '../../helper/test-ids';
@@ -186,7 +186,7 @@ export class ChatItemCard {
      * Generate card icon if available
      */
     if (this.props.chatItem.icon !== undefined) {
-      if (this.cardIcon !== null) {
+      if (this.cardIcon != null) {
         this.cardIcon.render.remove();
         this.cardIcon = null;
       } else {
@@ -203,7 +203,7 @@ export class ChatItemCard {
         body: this.props.chatItem.body ?? '',
         classNames: [ 'mynah-card-inner-order-20' ],
         renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
-        codeReference: this.props.chatItem.codeReference,
+        codeReference: this.props.chatItem.codeReference ?? undefined,
         onAnimationStateChange: (isAnimating) => {
           if (isAnimating) {
             this.render?.addClass('typewriter-animating');
@@ -224,7 +224,7 @@ export class ChatItemCard {
             : [],
         contentProperties: bodyEvents,
       };
-      if (this.contentBody !== null) {
+      if (this.contentBody != null) {
         this.contentBody.updateCardStack(updatedCardContentBodyProps);
       } else {
         this.contentBody = new ChatItemCardContent(updatedCardContentBodyProps);
@@ -235,7 +235,7 @@ export class ChatItemCard {
     /**
      * Generate customRenderer if available
      */
-    if (this.customRendererWrapper !== null) {
+    if (this.customRendererWrapper != null) {
       this.customRendererWrapper.render.remove();
       this.customRendererWrapper = null;
     }
@@ -264,11 +264,11 @@ export class ChatItemCard {
     /**
        * Generate form items if available
       */
-    if (this.chatFormItems !== null) {
+    if (this.chatFormItems != null) {
       this.chatFormItems.render.remove();
       this.chatFormItems = null;
     }
-    if (this.props.chatItem.formItems !== undefined) {
+    if (this.props.chatItem.formItems != null) {
       this.chatFormItems = new ChatItemFormItemsWrapper({
         classNames: [ 'mynah-card-inner-order-40' ],
         tabId: this.props.tabId,
@@ -284,7 +284,7 @@ export class ChatItemCard {
       this.fileTreeWrapper.render.remove();
       this.fileTreeWrapper = null;
     }
-    if (this.props.chatItem.fileList !== undefined) {
+    if (this.props.chatItem.fileList != null) {
       const { filePaths = [], deletedFiles = [], actions, details } = this.props.chatItem.fileList;
       const referenceSuggestionLabel = this.props.chatItem.body ?? '';
       this.fileTreeWrapper = new ChatItemTreeViewWrapper({
@@ -310,7 +310,7 @@ export class ChatItemCard {
       this.informationCard.render.remove();
       this.informationCard = null;
     }
-    if (this.props.chatItem.informationCard !== undefined) {
+    if (this.props.chatItem.informationCard != null) {
       this.informationCard = new ChatItemInformationCard({
         tabId: this.props.tabId,
         messageId: this.props.chatItem.messageId,
@@ -322,11 +322,11 @@ export class ChatItemCard {
     /**
      * Generate buttons if available
      */
-    if (this.chatButtons !== null) {
+    if (this.chatButtons != null) {
       this.chatButtons.render.remove();
       this.chatButtons = null;
     }
-    if (this.props.chatItem.buttons !== undefined) {
+    if (this.props.chatItem.buttons != null) {
       this.chatButtons = new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
         classNames: [ 'mynah-card-inner-order-60' ],
@@ -367,11 +367,11 @@ export class ChatItemCard {
       this.tabbedCard.render.remove();
       this.tabbedCard = null;
     }
-    if (this.props.chatItem.tabbedCard !== undefined) {
+    if (this.props.chatItem.tabbedContent != null) {
       this.tabbedCard = new ChatItemTabbedCard({
         tabId: this.props.tabId,
         messageId: this.props.chatItem.messageId,
-        tabbedCard: this.props.chatItem.tabbedCard
+        tabbedCard: this.props.chatItem.tabbedContent
       });
       this.card?.render.insertChild('beforeend', this.tabbedCard.render);
     }
@@ -379,7 +379,7 @@ export class ChatItemCard {
     /**
      * Clear footer block
      */
-    if (this.cardFooter !== null) {
+    if (this.cardFooter != null) {
       this.cardFooter.remove();
       this.cardFooter = null;
     }
@@ -390,11 +390,11 @@ export class ChatItemCard {
       /**
        * Generate footer if available
        */
-      if (this.footer !== null) {
+      if (this.footer != null) {
         this.footer.render.remove();
         this.footer = null;
       }
-      if (this.props.chatItem.footer !== undefined) {
+      if (this.props.chatItem.footer != null) {
         this.footer = new ChatItemCard({
           tabId: this.props.tabId,
           small: true,
@@ -503,6 +503,12 @@ export class ChatItemCard {
   public readonly updateCardStack = (updateWith: Partial<ChatItem>): void => {
     this.updateStack.push(updateWith);
     this.updateCard();
+  };
+
+  public readonly reset = (): void => {
+    this.updateCardStack({
+      ...emptyChatItemContent,
+    });
   };
 
   public readonly getRenderDetails = (): CardRenderDetails => {
