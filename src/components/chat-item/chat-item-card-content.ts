@@ -10,11 +10,11 @@ import { generateUID } from '../../helper/guid';
 
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardContentProps {
-  body?: string;
+  body?: string | null;
   testId?: string;
   renderAsStream?: boolean;
   classNames?: string[];
-  codeReference?: ReferenceTrackerInformation[];
+  codeReference?: ReferenceTrackerInformation[] | null;
   onAnimationStateChange?: (isAnimating: boolean) => void;
   contentProperties?: {
     codeBlockActions?: CodeBlockActions;
