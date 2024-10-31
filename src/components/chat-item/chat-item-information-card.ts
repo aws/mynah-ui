@@ -8,7 +8,7 @@ export interface ChatItemInformationCardProps {
   tabId: string;
   testId?: string;
   messageId: string | undefined;
-  informationCard: Required<ChatItemContent>['informationCard'];
+  informationCard: NonNullable<Required<ChatItemContent>['informationCard']>;
 }
 
 export class ChatItemInformationCard {

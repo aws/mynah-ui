@@ -314,7 +314,7 @@ export class ChatItemCard {
       this.informationCard = new ChatItemInformationCard({
         tabId: this.props.tabId,
         messageId: this.props.chatItem.messageId,
-        informationCard: this.props.chatItem.informationCard
+        informationCard: this.props.chatItem.informationCard ?? {}
       });
       this.card?.render.insertChild('beforeend', this.informationCard.render);
     }
