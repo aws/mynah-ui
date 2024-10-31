@@ -12,6 +12,10 @@
     - Screenshots
 -->
 
+## Tests
+- [ ] I have tested this change on VSCode
+- [ ] I have tested this change on JetBrains
+
 ## License
 
 By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license.
