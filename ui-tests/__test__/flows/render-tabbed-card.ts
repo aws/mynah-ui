@@ -32,6 +32,7 @@ export const renderTabbedCard = async (page: Page, skipScreenshots?: boolean): P
             value: 'overview',
             label: 'Overview',
             icon: 'comment' as any,
+            selected: true,
             content: {
               body: 'Overview content'
             }
@@ -40,6 +41,7 @@ export const renderTabbedCard = async (page: Page, skipScreenshots?: boolean): P
             value: 'examples',
             label: 'Examples',
             icon: 'play' as any,
+            selected: false,
             content: {
               body: 'Examples content'
             }
