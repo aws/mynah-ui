@@ -17,6 +17,9 @@
         > .mynah-chat-item-card {
             border: none;
             border-radius: inherit;
+            margin: 0 !important;
+            padding: 0 !important;
+
             > .mynah-card {
                 border-radius: inherit;
             }
