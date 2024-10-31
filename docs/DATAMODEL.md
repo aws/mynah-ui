@@ -694,17 +694,17 @@ type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAc
 
 // ################################# 
 interface ChatItemContent {
-  body?: string;
-  customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[];
+  body?: string | null;
+  customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
     text?: string;
     options?: ChatItemAction[];
-  };
+  } | null;
   relatedContent?: {
     title?: string;
     content: SourceLink[];
-  };
-  codeReference?: ReferenceTrackerInformation[];
+  } | null;
+  codeReference?: ReferenceTrackerInformation[] | null;
   fileList?: {
     fileTreeTitle?: string;
     rootFolderTitle?: string;
@@ -712,10 +712,10 @@ interface ChatItemContent {
     deletedFiles?: string[];
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
-  };
-  buttons?: ChatItemButton[];
-  formItems?: ChatItemFormItem[];
-  footer?: ChatItemContent;
+  } | null;
+  buttons?: ChatItemButton[] | null;
+  formItems?: ChatItemFormItem[] | null;
+  footer?: ChatItemContent | null;
   informationCard?: {
     title?: string;
     status?: {
@@ -726,8 +726,11 @@ interface ChatItemContent {
     description?: string;
     icon?: MynahIcons;
     content: ChatItemContent;
-  };
-  codeBlockActions?: CodeBlockActions;
+  } | null;
+  tabbedContent?: Array<ToggleOption & {
+    content: ChatItemContent;
+  }> | null;
+  codeBlockActions?: CodeBlockActions | null;
 }
 
 interface ChatItem extends ChatItemContent{
@@ -1607,6 +1610,45 @@ A status can also be added to emphasize a particular state. The `status.status` 
 
 <p align="center">
   <img src="./img/data-model/chatItems/information-card-statuses.jpg" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `tabbedContent`
+
+Show a card with switchable content based on navigation tabs.
+
+```typescript
+mynahUI.addChatItem(selectedTabId, {
+  messageId: generateUID(),
+  type: ChatItemType.ANSWER,
+  tabbedContent: [
+    {
+      value: 'overview',
+      label: 'Overview',
+      icon: MynahIcons.COMMENT,
+      selected: true,
+      content: {
+        body: 'Overview content'
+      }
+    },
+    {
+      value: 'examples',
+      label: 'Examples',
+      icon: MynahIcons.PLAY,
+      selected: false,
+      content: {
+        body: 'Examples content'
+      }
+    }
+  ]
+});
+```
+
+Define a unique identifier for each tab in the `value` prop, and add a label and icon. Determine which tab is selected by default by using the `selected` boolean. The content is a `ChatItemContent`, which is the content shown when the tab is selected.
+
+<p align="center">
+  <img src="./img/data-model/chatItems/tabbed-card.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

@@ -2,12 +2,13 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItemContent, ChatItemType } from '../../static';
 import { Icon } from '../icon';
 import { ChatItemCard } from './chat-item-card';
+import '../../styles/components/chat/_chat-item-card-information-card.scss';
 
 export interface ChatItemInformationCardProps {
   tabId: string;
   testId?: string;
   messageId: string | undefined;
-  informationCard: Required<ChatItemContent>['informationCard'];
+  informationCard: NonNullable<Required<ChatItemContent>['informationCard']>;
 }
 
 export class ChatItemInformationCard {
@@ -17,40 +18,44 @@ export class ChatItemInformationCard {
     const mainContent = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-information-card-main' ],
+      children: []
+    });
+
+    const header = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-item-information-card-header-container' ],
       children: [
+        ...(props.informationCard.icon != null
+          ? [
+              new Icon({
+                icon: props.informationCard.icon
+              }).render
+            ]
+          : []),
         {
           type: 'div',
-          classNames: [ 'mynah-chat-item-information-card-header-container' ],
+          classNames: [ 'mynah-chat-item-information-card-header' ],
           children: [
-            ...(props.informationCard.icon !== undefined
-              ? [
-                  new Icon({
-                    icon: props.informationCard.icon
-                  }).render
-                ]
-              : []),
             {
               type: 'div',
-              classNames: [ 'mynah-chat-item-information-card-header' ],
-              children: [
-                {
+              classNames: [ 'mynah-chat-item-information-card-title' ],
+              children: [ props.informationCard.title ?? '' ]
+            },
+            ...(props.informationCard.description != null
+              ? [ {
                   type: 'div',
-                  classNames: [ 'mynah-chat-item-information-card-title' ],
-                  children: [ props.informationCard.title ?? '' ]
-                },
-                ...(props.informationCard.description !== undefined
-                  ? [ {
-                      type: 'div',
-                      classNames: [ 'mynah-chat-item-information-card-description' ],
-                      children: [ props.informationCard.description ]
-                    } ]
-                  : [])
-              ]
-            }
+                  classNames: [ 'mynah-chat-item-information-card-description' ],
+                  children: [ props.informationCard.description ]
+                } ]
+              : [])
           ]
         }
       ]
     });
+
+    if (props.informationCard.title != null || props.informationCard.description != null || props.informationCard.icon != null) {
+      mainContent.insertChild('beforeend', header);
+    }
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -71,7 +76,7 @@ export class ChatItemInformationCard {
       }
     }).render);
 
-    if (props.informationCard.status?.status !== undefined) {
+    if (props.informationCard.status != null) {
       const statusFooter = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [
@@ -79,14 +84,14 @@ export class ChatItemInformationCard {
           ...(props.informationCard.status.status != null ? [ `status-${props.informationCard.status.status}` ] : []),
         ],
         children: [
-          ...(props.informationCard.status.icon !== undefined
+          ...(props.informationCard.status.icon != null
             ? [
                 new Icon({
                   icon: props.informationCard.status.icon
                 }).render
               ]
             : []),
-          ...(props.informationCard.status.body !== undefined
+          ...(props.informationCard.status.body != null
             ? [ {
                 type: 'p',
                 children: [ props.informationCard.status.body ]

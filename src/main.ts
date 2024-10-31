@@ -38,7 +38,6 @@ import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
-
 export { generateUID } from './helper/guid';
 export {
   ChatItemBodyRenderer,
@@ -324,7 +323,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         children: [
           this.tabsWrapper ?? '',
           ...(Config.getInstance().config.maxTabs > 1 ? [ new NoTabs().render ] : []),
-          this.tabContentsWrapper
+          this.tabContentsWrapper,
         ]
       },
       'afterbegin'

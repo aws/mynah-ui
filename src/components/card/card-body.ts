@@ -39,7 +39,7 @@ export interface CardBodyProps {
   testId?: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   childLocation?: 'above-body' | 'below-body';
-  highlightRangeWithTooltip?: ReferenceTrackerInformation[];
+  highlightRangeWithTooltip?: ReferenceTrackerInformation[] | null;
   codeBlockActions?: CodeBlockActions;
   useParts?: boolean;
   codeBlockStartIndex?: number;
@@ -269,8 +269,8 @@ export class CardBody {
   private readonly getContentBodyChildren = (props: CardBodyProps): Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject> => {
     if (props.body != null && props.body.trim() !== '') {
       let incomingBody = props.body;
-      if (props.body !== undefined && props.highlightRangeWithTooltip !== undefined && props.highlightRangeWithTooltip.length > 0) {
-        props.highlightRangeWithTooltip.forEach((highlightRangeWithTooltip, index) => {
+      if (props.body !== undefined && props.highlightRangeWithTooltip !== undefined && (props.highlightRangeWithTooltip?.length ?? -1) > 0) {
+        props.highlightRangeWithTooltip?.forEach((highlightRangeWithTooltip, index) => {
           if (incomingBody !== undefined && highlightRangeWithTooltip.recommendationContentSpan !== undefined) {
             const generatedStartMarkup = `${highlightersWithTooltip.start.markupStart}${highlightersWithTooltip.start.markupAttributes(index.toString())}${highlightersWithTooltip.start.markupEnd}`;
             let calculatedStartIndex = (highlightRangeWithTooltip.recommendationContentSpan.start + (index * (generatedStartMarkup.length + highlightersWithTooltip.end.markup.length)));

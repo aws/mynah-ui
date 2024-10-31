@@ -13,7 +13,7 @@ import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 export interface ChatItemButtonsWrapperProps {
   tabId?: string;
   classNames?: string[];
-  buttons: ChatItemButton[];
+  buttons: ChatItemButton[] | null;
   formItems?: ChatItemFormItemsWrapper | null;
   onActionClick?: (action: ChatItemButton, e?: Event) => void;
 }
@@ -31,7 +31,7 @@ export class ChatItemButtonsWrapper {
       type: 'div',
       testId: testIds.chatItem.buttons.wrapper,
       classNames: [ 'mynah-chat-item-buttons-container', ...(this.props.classNames ?? []) ],
-      children: this.props.buttons.map(chatActionAction => {
+      children: this.props.buttons?.map(chatActionAction => {
         const actionItem = new Button({
           testId: testIds.chatItem.buttons.button,
           label: chatActionAction.text,
