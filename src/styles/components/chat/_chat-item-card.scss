@@ -271,6 +271,10 @@
             > .mynah-card-body {
                 color: var(--mynah-color-text-alternate);
                 overflow-wrap: break-word;
+
+                a {
+                    color: var(--mynah-color-text-link-alternate);
+                }
             }
         }
         .mynah-chat-item-card-related-content > .mynah-card {
