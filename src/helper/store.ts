@@ -15,6 +15,7 @@ export class EmptyMynahUIDataModel {
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
       tabTitle: Config.getInstance().config.texts.mainTitle,
+      tabBackground: false,
       loadingChat: false,
       tabCloseConfirmationCloseButton: null,
       tabCloseConfirmationKeepButton: null,
@@ -24,6 +25,9 @@ export class EmptyMynahUIDataModel {
       quickActionCommands: [],
       contextCommands: [],
       promptInputPlaceholder: '',
+      promptInputText: '',
+      promptInputLabel: '',
+      promptInputVisible: true,
       promptInputInfo: '',
       promptInputStickyCard: null,
       promptInputDisabledState: false,
@@ -31,6 +35,8 @@ export class EmptyMynahUIDataModel {
       chatItems: [],
       selectedCodeSnippet: '',
       tabBarButtons: [],
+      compactMode: false,
+      tabHeaderDetails: null,
       ...defaults
     };
   }

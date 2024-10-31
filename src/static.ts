@@ -39,6 +39,10 @@ export interface MynahUIDataModel {
    * */
   tabTitle?: string;
   /**
+   * Tab title
+   * */
+  tabBackground?: boolean;
+  /**
    * If tab is running an action (loadingChat = true) this markdown will be shown before close in a popup
    */
   tabCloseConfirmationMessage?: string | null;
@@ -75,6 +79,18 @@ export interface MynahUIDataModel {
   */
   promptInputPlaceholder?: string;
   /**
+  * Prompt input text
+  */
+  promptInputText?: string;
+  /**
+    * Label to be shown on top of the prompt input
+    */
+  promptInputLabel?: string | null;
+  /**
+    * Label to be shown on top of the prompt input
+    */
+  promptInputVisible?: boolean;
+  /**
   * Info block to be shown under prompt input
   */
   promptInputInfo?: string;
@@ -102,6 +118,14 @@ export interface MynahUIDataModel {
    * Tab bar buttons next to the tab items
    */
   tabBarButtons?: TabBarMainAction[];
+  /**
+   * Tab content compact mode which keeps everything in the middle
+   */
+  compactMode?: boolean;
+  /**
+   * Tab content header details, only visibile when showTabHeaderDetails is set to 'true'
+   */
+  tabHeaderDetails?: TabHeaderDetails | null;
 }
 
 export interface MynahUITabStoreTab {
@@ -215,6 +239,7 @@ export interface TreeNodeDetails {
   icon?: MynahIcons;
   label?: string;
   description?: string;
+  clickable?: boolean;
 }
 
 export interface ChatItemContent {
@@ -263,6 +288,7 @@ export interface ChatItem extends ChatItemContent{
   snapToTop?: boolean;
   canBeVoted?: boolean;
   icon?: MynahIcons;
+  hoverEffect?: boolean;
   status?: Status;
 }
 
@@ -301,7 +327,8 @@ export interface ChatItemButton {
   id: string;
   disabled?: boolean;
   description?: string;
-  status?: 'primary' | Status;
+  status?: 'main' | 'primary' | 'clear' | Status;
+  flash?: 'infinite' | 'once';
   icon?: MynahIcons;
 }
 
@@ -418,12 +445,19 @@ export enum NotificationType {
   ERROR = MynahIcons.ERROR,
 }
 
+export interface TabHeaderDetails {
+  icon?: MynahIcons;
+  title?: string;
+  description?: string;
+}
+
 export interface CodeBlockAction {
   id: 'copy' | 'insert-to-cursor' | string;
   label: string;
   description?: string;
   icon?: MynahIcons;
   data?: any;
+  flash?: 'infinite' | 'once';
   acceptedLanguages?: string[];
 }
 export type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAction | undefined | null>;

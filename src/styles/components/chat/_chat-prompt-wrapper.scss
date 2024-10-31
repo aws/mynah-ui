@@ -1,7 +1,24 @@
 > .mynah-chat-prompt-wrapper {
     display: block;
     padding: var(--mynah-sizing-4);
+    &.hidden {
+        display: none;
+        &,
+        & * {
+            pointer-events: none;
+        }
+    }
 
+    > .mynah-chat-prompt-input-label {
+        transition: var(--mynah-short-transition);
+        padding: var(--mynah-sizing-2) 0;
+        box-sizing: border-box;
+        max-width: 100%;
+        overflow: hidden;
+        &:empty {
+            padding: 0;
+        }
+    }
     > .mynah-chat-prompt {
         display: flex;
         flex-flow: column nowrap;
@@ -10,7 +27,7 @@
         border: inset var(--mynah-border-width) solid transparent;
         background-color: var(--mynah-card-bg);
         border-radius: var(--mynah-card-radius);
-        padding: var(--mynah-sizing-4);
+        padding: var(--mynah-sizing-4) var(--mynah-sizing-3) var(--mynah-sizing-4) var(--mynah-sizing-3);
         position: relative;
 
         > .mynah-chat-prompt-input-wrapper {
@@ -287,6 +304,8 @@
         padding-top: 0;
         margin-top: calc(-1 * var(--mynah-sizing-2));
         flex-basis: fit-content;
+        flex-shrink: 0;
+        flex-grow: 0;
     }
 }
 
@@ -312,6 +331,7 @@
     overflow: hidden;
     padding: var(--mynah-sizing-4);
     text-align: center;
+    flex-shrink: 0;
 
     &,
     & * {

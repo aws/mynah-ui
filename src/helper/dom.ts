@@ -15,7 +15,7 @@ import { AllowedTagsInCustomRenderer, AllowedAttributesInCustomRenderer } from '
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 export const DS: typeof document.querySelectorAll = document.querySelectorAll.bind(document);
 
-type GenericEvents = Extract<keyof GlobalEventHandlersEventMap, string>;
+export type GenericEvents = Extract<keyof GlobalEventHandlersEventMap, string>;
 export type DomBuilderEventHandler = (event?: any) => any;
 export interface DomBuilderEventHandlerWithOptions {
   handler: DomBuilderEventHandler;

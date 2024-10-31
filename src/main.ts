@@ -38,6 +38,8 @@ import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
+import { MynahUIBackgroundImporter } from './components/background/background-importer';
+
 export { generateUID } from './helper/guid';
 export {
   ChatItemBodyRenderer,
@@ -252,6 +254,7 @@ export class MynahUI {
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
+    MynahUIBackgroundImporter.getInstance();
     // Apply global fix for marked listitem content is not getting parsed.
     marked.use({
       renderer: {

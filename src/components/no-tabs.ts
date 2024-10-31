@@ -46,6 +46,7 @@ export class NoTabs {
                   MynahUITabsStore.getInstance().addTab();
                 }
               },
+              status: 'main',
               icon: new Icon({ icon: MynahIcons.PLUS }).render,
               label: Config.getInstance().config.texts.openNewTab
             }).render

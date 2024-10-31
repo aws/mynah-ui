@@ -21,3 +21,49 @@
         transform: rotate(360deg);
     }
 }
+
+@keyframes flash-main {
+    0% {
+        filter: brightness(0.925);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        transform: scale(1);
+    }
+    10% {
+        filter: brightness(1.09);
+        box-shadow: 0px 0px 12px -10px currentColor;
+    }
+    20% {
+        filter: brightness(1.09);
+        box-shadow: 0px 0px 12px -10px currentColor;
+    }
+    40% {
+        filter: brightness(0.925);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        transform: scale(1);
+    }
+    100% {
+        filter: brightness(0.925);
+    }
+}
+@keyframes flash-pseudo {
+    0% {
+        transform: translate3d(-100%, 0, 0);
+        opacity: 0;
+    }
+    10% {
+        transform: translate3d(0%, 0, 0);
+        opacity: 0.25;
+    }
+    20% {
+        transform: translate3d(0%, 0, 0);
+        opacity: 0.25;
+    }
+    40% {
+        transform: translate3d(110%, 0, 0);
+        opacity: 0;
+    }
+    100% {
+        transform: translate3d(110%, 0, 0);
+        opacity: 0;
+    }
+}

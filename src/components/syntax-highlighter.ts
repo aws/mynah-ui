@@ -206,8 +206,23 @@ export class SyntaxHighlighter {
             label: validAction.label,
             attributes: { title: validAction.description ?? '' },
             primary: false,
+            classNames: [
+              ...(props.codeBlockActions?.[actionId]?.flash != null ? [ 'mynah-button-flash-by-parent-focus', `animate-${props.codeBlockActions?.[actionId]?.flash ?? 'infinite'}` ] : [ '' ])
+            ],
+            ...(props.codeBlockActions?.[actionId]?.flash != null
+              ? {
+                  onHover: (e) => {
+                    if (e.target != null) {
+                      (e.target as HTMLButtonElement).classList.remove('mynah-button-flash-by-parent-focus');
+                    }
+                  }
+                }
+              : {}),
             onClick: e => {
               cancelEvent(e);
+              if (e.target != null) {
+                (e.target as HTMLButtonElement).classList.remove('mynah-button-flash-by-parent-focus');
+              }
               const selectedCode = this.getSelectedCode();
               if (this.props?.onCodeBlockAction !== undefined) {
                 this.props.onCodeBlockAction(

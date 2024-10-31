@@ -24,31 +24,36 @@ export interface ChatItemTreeFileProps {
 const PREVIEW_DELAY = 250;
 export class ChatItemTreeFile {
   render: ExtendedHTMLElement;
+  private readonly props: ChatItemTreeFileProps;
   private fileTooltip: Overlay | null;
   private fileTooltipTimeout: ReturnType<typeof setTimeout>;
   constructor (props: ChatItemTreeFileProps) {
+    this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.chatItem.fileTree.file,
       classNames: [
         'mynah-chat-item-tree-view-file-item',
         'mynah-button', 'mynah-button-secondary',
-        props.details?.status !== undefined ? `mynah-chat-item-tree-view-file-item-status-${props.details?.status}` : '',
+        this.props.details?.clickable === false ? 'mynah-chat-item-tree-view-not-clickable' : '',
+        this.props.details?.status != null ? `mynah-chat-item-tree-view-file-item-status-${this.props.details?.status}` : '',
       ],
       events: {
         click: () => {
           this.hideTooltip();
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
-            tabId: props.tabId,
-            messageId: props.messageId,
-            filePath: props.originalFilePath,
-            deleted: props.deleted,
-          });
+          if (this.props.details?.clickable !== false) {
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
+              tabId: this.props.tabId,
+              messageId: this.props.messageId,
+              filePath: this.props.originalFilePath,
+              deleted: this.props.deleted,
+            });
+          }
         },
-        ...(props.details?.description != null
+        ...(this.props.details?.description != null
           ? {
               mouseenter: (e: MouseEvent) => {
-                const tooltipText = marked(props.details?.description ?? '', { breaks: true }) as string;
+                const tooltipText = marked(this.props.details?.description ?? '', { breaks: true }) as string;
                 this.showTooltip(tooltipText, OverlayVerticalDirection.CENTER, OverlayHorizontalDirection.TO_RIGHT);
               },
               mouseout: this.hideTooltip
@@ -56,46 +61,46 @@ export class ChatItemTreeFile {
           : {})
       },
       children: [
-        ...(props.icon != null && props.details?.icon == null
+        ...(this.props.icon != null && this.props.details?.icon == null
           ? [ {
               type: 'span',
               classNames: [ 'mynah-chat-single-file-icon' ],
-              children: [ new Icon({ icon: props.icon }).render ]
+              children: [ new Icon({ icon: this.props.icon }).render ]
             } ]
           : []),
         {
           type: 'div',
           classNames: [
             'mynah-chat-item-tree-view-file-item-title',
-            props.deleted === true ? 'mynah-chat-item-tree-view-file-item-deleted' : '',
+            this.props.deleted === true ? 'mynah-chat-item-tree-view-file-item-deleted' : '',
           ],
           children: [
-            new Icon({ icon: props.details?.icon ?? MynahIcons.FILE }).render,
+            new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE }).render,
             {
               type: 'span',
-              children: [ props.fileName ]
+              children: [ this.props.fileName ]
             } ]
         },
         {
           type: 'div',
           classNames: [ 'mynah-chat-item-tree-view-file-item-details' ],
-          children: props.details != null
+          children: this.props.details != null
             ? [
-                ...(props.details.label !== undefined
+                ...(this.props.details.label != null
                   ? [ {
                       type: 'span',
                       classNames: [ 'mynah-chat-item-tree-view-file-item-details-text' ],
-                      children: [ props.details.label ]
+                      children: [ this.props.details.label ]
                     } ]
                   : []),
               ]
             : []
         },
-        ...(props.actions !== undefined
+        ...(this.props.actions !== undefined
           ? [ {
               type: 'div',
               classNames: [ 'mynah-chat-item-tree-view-file-item-actions' ],
-              children: props.actions.map((action: FileNodeAction) => new Button({
+              children: this.props.actions.map((action: FileNodeAction) => new Button({
                 testId: testIds.chatItem.fileTree.fileAction,
                 icon: new Icon({ icon: action.icon }).render,
                 ...(action.label !== undefined ? { label: action.label } : {}),
@@ -108,9 +113,9 @@ export class ChatItemTreeFile {
                   cancelEvent(e);
                   this.hideTooltip();
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_ACTION_CLICK, {
-                    tabId: props.tabId,
-                    messageId: props.messageId,
-                    filePath: props.originalFilePath,
+                    tabId: this.props.tabId,
+                    messageId: this.props.messageId,
+                    filePath: this.props.originalFilePath,
                     actionName: action.name,
                   });
                 },

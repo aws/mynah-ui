@@ -7,7 +7,7 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { CardRenderDetails, ChatItem, ChatItemType, PromptAttachmentType } from '../../static';
+import { CardRenderDetails, ChatItem, ChatItemType, PromptAttachmentType, TabHeaderDetails } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
@@ -16,6 +16,7 @@ import { ChatPromptInputInfo } from './chat-prompt-input-info';
 import { ChatPromptInputStickyCard } from './chat-prompt-input-sticky-card';
 import '../../styles/components/chat/_chat-wrapper.scss';
 import testIds from '../../helper/test-ids';
+import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -28,15 +29,22 @@ export class ChatWrapper {
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInputElement: ExtendedHTMLElement;
   private readonly promptInput: ChatPromptInput;
+  private readonly footerSpacer: ExtendedHTMLElement;
   private readonly promptInfo: ExtendedHTMLElement;
   private readonly promptStickyCard: ExtendedHTMLElement;
+  private tabHeaderDetails: ExtendedHTMLElement;
+  private tabModeSwitchTimeout: ReturnType<typeof setTimeout> | null;
   private lastStreamingChatItemCard: ChatItemCard | null;
   private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
     this.props = props;
-    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('chatItems', (chatItems: ChatItem[]) => {
+    this.footerSpacer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-wrapper-footer-spacer' ]
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (this.chatItemsContainer.children.length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(0);
@@ -68,6 +76,67 @@ export class ChatWrapper {
       }
     });
 
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'tabHeaderDetails', (tabHeaderDetails: TabHeaderDetails) => {
+      this.render.addClass('tab-mode-switch-animation');
+      if (this.tabModeSwitchTimeout != null) {
+        clearTimeout(this.tabModeSwitchTimeout);
+      }
+      this.tabModeSwitchTimeout = setTimeout(() => {
+        this.render.removeClass('tab-mode-switch-animation');
+        this.tabModeSwitchTimeout = null;
+        if (tabHeaderDetails == null) {
+          this.tabHeaderDetails.clear();
+        }
+      }, 750);
+
+      if (tabHeaderDetails != null) {
+        // Update view
+        const newDetails = new TitleDescriptionWithIcon({
+          testIds: {
+            icon: testIds.chat.headerIcon,
+            title: testIds.chat.headerTitle,
+            description: testIds.chat.headerDescription
+          },
+          classNames: [ 'mynah-ui-tab-header-details' ],
+          ...tabHeaderDetails
+        }).render;
+        if (this.tabHeaderDetails != null) {
+          this.tabHeaderDetails.replaceWith(newDetails);
+        } else {
+          this.tabHeaderDetails = newDetails;
+        }
+
+        this.render.addClass('show-tab-header-details');
+      } else {
+        this.render.removeClass('show-tab-header-details');
+      }
+    });
+
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'compactMode', (compactMode: boolean) => {
+      this.render.addClass('tab-mode-switch-animation');
+      if (this.tabModeSwitchTimeout != null) {
+        clearTimeout(this.tabModeSwitchTimeout);
+      }
+      this.tabModeSwitchTimeout = setTimeout(() => {
+        this.render.removeClass('tab-mode-switch-animation');
+        this.tabModeSwitchTimeout = null;
+      }, 750);
+
+      if (compactMode) {
+        this.render.addClass('compact-mode');
+      } else {
+        this.render.removeClass('compact-mode');
+      }
+    });
+
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'tabBackground', (tabBackground: boolean) => {
+      if (tabBackground) {
+        this.render.addClass('with-background');
+      } else {
+        this.render.removeClass('with-background');
+      }
+    });
+
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'cancelButtonWhenLoading', (showCancelButton: boolean) => {
       if (showCancelButton) {
         this.intermediateBlockContainer.removeClass('hidden');
@@ -83,6 +152,11 @@ export class ChatWrapper {
       persistent: true,
       children: [],
     });
+
+    this.tabHeaderDetails = new TitleDescriptionWithIcon({
+      classNames: [ 'mynah-ui-tab-header-details' ],
+      ...MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('tabHeaderDetails')
+    }).render;
 
     this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
     this.promptStickyCard = new ChatPromptInputStickyCard({ tabId: this.props.tabId }).render;
@@ -115,7 +189,11 @@ export class ChatWrapper {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.chat.wrapper,
-      classNames: [ 'mynah-chat-wrapper' ],
+      classNames: [ 'mynah-chat-wrapper',
+        MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('tabHeaderDetails') != null ? 'show-tab-header-details' : '',
+        MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('compactMode') === true ? 'compact-mode' : '',
+        MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('tabBackground') === true ? 'with-background' : ''
+      ],
       attributes: {
         'mynah-tab-id': this.props.tabId,
       },
@@ -131,10 +209,12 @@ export class ChatWrapper {
               pointer-events: none !important;
             }` ],
         },
+        this.tabHeaderDetails,
         this.chatItemsContainer,
         this.intermediateBlockContainer,
         this.promptStickyCard,
         this.promptInputElement,
+        this.footerSpacer,
         this.promptInfo
       ]
     });

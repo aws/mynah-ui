@@ -68,6 +68,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           icon: MynahIcons.ELLIPSIS,
           items: [
             {
+              id: 'new-welcome-screen',
+              text: 'Welcome screen',
+              icon: MynahIcons.Q,
+            },
+            {
               id: 'custom-data-check',
               text: 'Custom check',
               icon: MynahIcons.MAGIC,
@@ -95,10 +100,38 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       'tab-1': {
         isSelected: true,
         store: {
-          tabCloseConfirmationMessage: 'Only this tab has a different message than others!',
           ...mynahUIDefaults.store,
-          ...initialData,
-          showChatAvatars,
+          tabTitle: 'Welcome to Q',
+          tabBackground: true,
+          promptInputInfo: mynahUIDefaults.store?.promptInputInfo,
+          chatItems: [{
+            type: ChatItemType.ANSWER,
+            icon: MynahIcons.ASTERISK,
+            messageId: 'new-welcome-card',
+            body: `#### Work on a task with Q Developer Agents
+_Generate code, scan for issues, and more._`,
+            buttons: [
+              {
+                id: 'explore',
+                disabled: false,
+                text: 'Explore',
+              },
+              {
+                id: 'quick-start',
+                text: 'Quick start',
+                disabled: false,
+                status: 'main',
+              }
+            ]
+          }],
+          promptInputLabel: 'Or, start a chat',
+          promptInputPlaceholder: 'Type your question',
+          compactMode: true,
+          tabHeaderDetails: {
+            title: "Hi, I'm Amazon Q.",
+            description: 'Where would you like to start?',
+            icon: MynahIcons.Q
+          },
         },
       },
     },
@@ -119,6 +152,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             'accept-diff': {
               id: 'accept-diff',
               label: 'Accept Diff',
+              flash: 'infinite',
               icon: MynahIcons.OK_CIRCLED,
               acceptedLanguages: ['diff-typescript'],
               data: {
@@ -135,8 +169,41 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         Object.keys(mynahUI.getAllTabs()).forEach(tabIdFromStore=>mynahUI.updateStore(tabIdFromStore, {
           showChatAvatars: showChatAvatars
         }));
-      } else if (buttonId === 'custom-data-check') {
+      } else if (buttonId === 'new-welcome-screen') {
         // Use for custom temporary checks
+        mynahUI.updateStore('', {
+          ...mynahUIDefaults.store,
+          tabTitle: 'Welcome screen!',
+          tabBackground: true,
+          chatItems: [{
+            type: ChatItemType.ANSWER,
+            icon: MynahIcons.ASTERISK,
+            messageId: 'new-welcome-card',
+            body: `#### Work on a task with Q Developer Agents
+_Generate code, scan for issues, and more._`,
+            buttons: [
+              {
+                id: 'explore',
+                disabled: false,
+                text: 'Explore',
+              },
+              {
+                id: 'quick-start',
+                text: 'Quick start',
+                disabled: false,
+                status: 'main',
+              }
+            ]
+          }],
+          promptInputLabel: 'Or, start a chat',
+          promptInputPlaceholder: 'Type your question',
+          compactMode: true,
+          tabHeaderDetails: {
+            title: "Hi, I'm Amazon Q.",
+            description: 'Where would you like to start?',
+            icon: MynahIcons.Q
+          },
+        });
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
@@ -206,6 +273,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           tabCloseConfirmationMessage: `Working on "${prompt.prompt}"`,
         });
       }
+      if(mynahUI.getAllTabs()[tabId].store?.compactMode){
+        mynahUI.updateStore(tabId, {
+          compactMode: false,
+          tabHeaderDetails: null,
+          ...mynahUIDefaults.store,
+          chatItems: [],
+          tabBackground: false,
+          promptInputLabel: null,
+        });
+      }
       onChatPrompt(tabId, prompt);
     },
     onStopChatResponse: (tabId: string) => {
@@ -240,6 +317,140 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       }
     },
     onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
+      if (action.id === 'quick-start') {
+        mynahUI.updateStore(tabId, { 
+          tabHeaderDetails: null,
+          compactMode: false,
+          tabBackground: false,
+          promptInputText: '/with-pro',
+          promptInputLabel: null,
+          chatItems: []
+        });
+      }
+      if (action.id === 'explore') {
+        // mynahUI.updateStore(tabId, {chatItems: []});
+        mynahUI.updateStore('', { 
+          tabBackground: false,
+          compactMode: false,
+          tabTitle: 'Explore Agents',
+          promptInputVisible: false,
+          tabHeaderDetails: {
+            icon: MynahIcons.ASTERISK,
+            title: 'Amazon Q Developer Agents',
+            description: 'Software development'
+          },
+          chatItems: [
+            {
+              type: ChatItemType.ANSWER,
+              hoverEffect: true,
+              body: `### Feature development
+Generate code across files with a task description.
+`,
+              icon: MynahIcons.CODE_BLOCK,
+              footer: {
+                body: 'THE TABBED CONTENT WILL COME HERE!'
+              },
+              buttons: [
+                {
+                  status: 'clear',
+                  id: 'user-guide-dev',
+                  disabled: false,
+                  text: 'Read user guide'
+                },
+                {
+                  status: 'main',
+                  disabled: false,
+                  flash: 'once',
+                  icon: MynahIcons.RIGHT_OPEN,
+                  id: 'quick-start-dev',
+                  text: `Quick start with **/dev**`
+                }
+              ]
+            },
+            {
+              type: ChatItemType.ANSWER,
+              hoverEffect: true,
+              body: `### Scan
+Identify and fix code issues before committing.
+`,
+              icon: MynahIcons.BUG,
+              footer: {
+                body: 'THE TABBED CONTENT WILL COME HERE!'
+              },
+              buttons: [
+                {
+                  status: 'clear',
+                  id: 'user-guide-scan',
+                  disabled: false,
+                  text: 'Read user guide'
+                },
+                {
+                  status: 'primary',
+                  disabled: false,
+                  icon: MynahIcons.RIGHT_OPEN,
+                  flash: 'once',
+                  id: 'quick-start-scan',
+                  text: `Quick start with **/scan**`
+                }
+              ]
+            },
+            {
+              type: ChatItemType.ANSWER,
+              hoverEffect: true,
+              body: `### Unit Test Generation
+Generate unit tests for selected code (supports python & java).
+`,
+              icon: MynahIcons.CODE_BLOCK,
+              footer: {
+                body: 'THE TABBED CONTENT WILL COME HERE!'
+              },
+              buttons: [
+                {
+                  status: 'clear',
+                  id: 'user-guide-test',
+                  disabled: false,
+                  text: 'Read user guide'
+                },
+                {
+                  status: 'info',
+                  disabled: false,
+                  icon: MynahIcons.RIGHT_OPEN,
+                  flash: "infinite",
+                  id: 'quick-start-test',
+                  text: `Quick start with **/test**`
+                }
+              ]
+            },
+            {
+              type: ChatItemType.ANSWER,
+              hoverEffect: true,
+              body: `### Transform
+Transform your java project from an old version to a new one.
+`,
+              icon: MynahIcons.TRANSFORM,
+              footer: {
+                body: 'THE TABBED CONTENT WILL COME HERE!'
+              },
+              buttons: [
+                {
+                  status: 'clear',
+                  id: 'user-guide-transform',
+                  disabled: false,
+                  text: 'Read user guide'
+                },
+                {
+                  status: 'info',
+                  disabled: false,
+                  icon: MynahIcons.RIGHT_OPEN,
+                  flash: 'infinite',
+                  id: 'quick-start-transform',
+                  text: `Quick start with **/transform**`
+                }
+              ]
+            },
+          ]
+        });
+      }
       if (messageId === 'sticky-card') {
         mynahUI.updateStore(tabId, { promptInputStickyCard: null });
       }
@@ -499,11 +710,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
       }
     } else {
-      mynahUI.addChatItem(tabId, {
-        type: ChatItemType.PROMPT,
-        messageId: new Date().getTime().toString(),
-        body: `${prompt.escapedPrompt as string}`,
-      });
+      if(prompt != null){
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.PROMPT,
+          messageId: new Date().getTime().toString(),
+          body: `${prompt.escapedPrompt as string}`,
+        });
+      }
       getGenerativeAIAnswer(tabId);
     }
   };
@@ -590,6 +803,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 details: {
                   './src/index.ts': {
                     icon: MynahIcons.FILE,
+                    clickable: false,
                     description: `Files used for this response: **index.ts**
 Use \`@\` to mention a file, folder, or method.`
                   }

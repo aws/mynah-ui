@@ -38,11 +38,26 @@ export class ChatItemButtonsWrapper {
           icon: chatActionAction.icon != null ? new Icon({ icon: chatActionAction.icon }).render : undefined,
           primary: chatActionAction.status === 'primary',
           border: chatActionAction.status !== 'primary',
+          classNames: [
+            ...(chatActionAction.flash != null ? [ 'mynah-button-flash-by-parent-focus', `animate-${chatActionAction.flash}` ] : [ '' ])
+          ],
+          ...(chatActionAction.flash != null
+            ? {
+                onHover: (e) => {
+                  if (e.target != null) {
+                    (e.target as HTMLButtonElement).classList.remove('mynah-button-flash-by-parent-focus');
+                  }
+                }
+              }
+            : {}),
           attributes: {
             'action-id': chatActionAction.id
           },
           status: chatActionAction.status,
           onClick: (e) => {
+            if (e.target != null) {
+              (e.target as HTMLButtonElement).classList.remove('mynah-button-flash-by-parent-focus');
+            }
             if (props.formItems != null) {
               props.formItems.disableAll();
             }
