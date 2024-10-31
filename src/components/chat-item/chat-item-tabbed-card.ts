@@ -9,6 +9,7 @@ export interface ChatItemTabbedCardProps {
   tabId: string;
   messageId: string | undefined;
   tabbedCard: NonNullable<Required<ChatItemContent>['tabbedContent']>;
+  classNames?: string[];
 }
 
 export class ChatItemTabbedCard {
@@ -45,7 +46,7 @@ export class ChatItemTabbedCard {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-tabbed-card-wrapper', 'mynah-card-inner-order-65' ],
+      classNames: [ 'mynah-tabbed-card-wrapper', ...props.classNames ?? '' ],
       children: [
         {
           type: 'div',

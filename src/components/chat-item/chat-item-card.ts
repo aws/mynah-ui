@@ -371,7 +371,8 @@ export class ChatItemCard {
       this.tabbedCard = new ChatItemTabbedCard({
         tabId: this.props.tabId,
         messageId: this.props.chatItem.messageId,
-        tabbedCard: this.props.chatItem.tabbedContent
+        tabbedCard: this.props.chatItem.tabbedContent,
+        classNames: [ 'mynah-card-inner-order-55' ]
       });
       this.card?.render.insertChild('beforeend', this.tabbedCard.render);
     }
