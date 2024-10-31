@@ -34,7 +34,7 @@ export class ChatItemInformationCard {
       type: 'div',
       classNames: [ 'mynah-chat-item-information-card-header-container' ],
       children: [
-        ...(props.informationCard.icon !== undefined
+        ...(props.informationCard.icon != null
           ? [
               new Icon({
                 icon: props.informationCard.icon
@@ -50,7 +50,7 @@ export class ChatItemInformationCard {
               classNames: [ 'mynah-chat-item-information-card-title' ],
               children: [ props.informationCard.title ?? '' ]
             },
-            ...(props.informationCard.description !== undefined
+            ...(props.informationCard.description != null
               ? [ {
                   type: 'div',
                   classNames: [ 'mynah-chat-item-information-card-description' ],
@@ -62,7 +62,7 @@ export class ChatItemInformationCard {
       ]
     });
 
-    if (props.informationCard.title !== undefined || props.informationCard.description !== undefined || props.informationCard.icon !== undefined) {
+    if (props.informationCard.title != null || props.informationCard.description != null || props.informationCard.icon != null) {
       mainContent.insertChild('beforeend', header);
     }
 
@@ -85,7 +85,7 @@ export class ChatItemInformationCard {
       }
     }).render);
 
-    if (props.informationCard.status !== undefined) {
+    if (props.informationCard.status != null) {
       const statusFooter = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [
@@ -93,14 +93,14 @@ export class ChatItemInformationCard {
           ...(props.informationCard.status.status != null ? [ `status-${props.informationCard.status.status}` ] : []),
         ],
         children: [
-          ...(props.informationCard.status.icon !== undefined
+          ...(props.informationCard.status.icon != null
             ? [
                 new Icon({
                   icon: props.informationCard.status.icon
                 }).render
               ]
             : []),
-          ...(props.informationCard.status.body !== undefined
+          ...(props.informationCard.status.body != null
             ? [ {
                 type: 'p',
                 children: [ props.informationCard.status.body ]
