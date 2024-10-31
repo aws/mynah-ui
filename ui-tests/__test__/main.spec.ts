@@ -13,6 +13,7 @@ import { renderCharacterCount } from './flows/render-character-count';
 import { progressIndicator } from './flows/prompt-progress-indicator';
 import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
 import { renderInformationCard } from './flows/render-information-card';
+import { renderTabbedCard } from './flows/render-tabbed-card';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -74,6 +75,10 @@ describe('Open MynahUI', () => {
 
   it('should render information cards correctly', async () => {
     await renderInformationCard(page);
+  });
+
+  it('should render tabbed cards correctly', async () => {
+    await renderTabbedCard(page);
   });
 
   it('should keep the content inside window boundaries', async () => {
