@@ -16,7 +16,7 @@
     --mynah-color-text-alternate: var(--mynah-color-button-reverse);
     --mynah-color-text-strong: var(--vscode-input-foreground);
     --mynah-color-text-weak: var(--vscode-disabledForeground);
-    --mynah-color-text-link: var(--vscode-textLink-foreground);
+    --mynah-color-text-link: var(--vscode-textLink-foreground, var(--vscode-textLink-activeForeground, #0000ff));
     --mynah-color-text-input: var(--vscode-input-foreground);
 
     --mynah-color-bg: var(--vscode-sideBar-background);
