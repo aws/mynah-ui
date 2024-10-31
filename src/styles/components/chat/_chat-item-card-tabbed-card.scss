@@ -16,12 +16,12 @@
         background-color: var(--mynah-color-syntax-bg);
         &:before {
             content: '';
-            background-image: linear-gradient(180deg, var(--mynah-color-gradient-start), rgba(0,0,0,0));
+            background-image: linear-gradient(180deg, var(--mynah-color-gradient-start), rgba(0, 0, 0, 0));
             background-repeat: no-repeat;
             background-size: 100% 100%;
             background-position: center top;
             z-index: 1;
-            opacity: .75;
+            opacity: 0.75;
             pointer-events: none;
             position: absolute;
             top: 0;
