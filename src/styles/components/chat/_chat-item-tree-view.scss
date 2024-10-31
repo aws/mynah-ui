@@ -55,6 +55,7 @@
             flex-flow: column nowrap;
             justify-content: flex-start;
             align-items: flex-start;
+            gap: var(--mynah-sizing-half);
 
             > .mynah-chat-item-tree-view-button {
                 gap: var(--mynah-sizing-1);

@@ -160,6 +160,7 @@ export enum MynahEventNames {
   CHAT_ITEM_ADD = 'chatItemAdd',
   FOLLOW_UP_CLICKED = 'followUpClicked',
   BODY_ACTION_CLICKED = 'bodyActionClicked',
+  TABBED_CONTENT_SWITCH = 'tabbedContentSwitch',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   FILE_CLICK = 'fileClick',

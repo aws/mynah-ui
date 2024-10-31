@@ -32,11 +32,11 @@
         filter: brightness(1.09);
         box-shadow: 0px 0px 12px -10px currentColor;
     }
-    20% {
+    15% {
         filter: brightness(1.09);
         box-shadow: 0px 0px 12px -10px currentColor;
     }
-    40% {
+    35% {
         filter: brightness(0.925);
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
         transform: scale(1);
@@ -54,11 +54,11 @@
         transform: translate3d(0%, 0, 0);
         opacity: 0.25;
     }
-    20% {
+    15% {
         transform: translate3d(0%, 0, 0);
         opacity: 0.25;
     }
-    40% {
+    35% {
         transform: translate3d(110%, 0, 0);
         opacity: 0;
     }

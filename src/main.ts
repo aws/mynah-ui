@@ -131,6 +131,11 @@ export interface MynahUIProps {
       formItemValues?: Record<string, string>;
     },
     eventId?: string) => void;
+  onTabbedContentTabChange?: (
+    tabId: string,
+    messageId: string,
+    contentTabId: string,
+    eventId?: string) => void;
   onTabChange?: (
     tabId: string,
     eventId?: string) => void;
@@ -414,6 +419,16 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           text: data.actionText,
           formItemValues: data.formItemValues
         }, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TABBED_CONTENT_SWITCH, (data: {
+      tabId: string;
+      messageId: string;
+      contentTabId: string;
+    }) => {
+      if (this.props.onTabbedContentTabChange != null) {
+        this.props.onTabbedContentTabChange(data.tabId, data.messageId, data.contentTabId);
       }
     });
 

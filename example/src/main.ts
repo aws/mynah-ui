@@ -33,6 +33,9 @@ import {
   sampleAllInOneList,
   sampleTableList,
   exampleInformationCard,
+  exploreTabData,
+  qAgentQuickActions,
+  welcomeScreenTabData,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -101,38 +104,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         isSelected: true,
         store: {
           ...mynahUIDefaults.store,
-          tabTitle: 'Welcome to Q',
-          tabBackground: true,
-          promptInputInfo: mynahUIDefaults.store?.promptInputInfo,
-          chatItems: [{
-            type: ChatItemType.ANSWER,
-            icon: MynahIcons.ASTERISK,
-            messageId: 'new-welcome-card',
-            body: `#### Work on a task with Q Developer Agents
-_Generate code, scan for issues, and more._`,
-            buttons: [
-              {
-                id: 'explore',
-                disabled: false,
-                text: 'Explore',
-              },
-              {
-                id: 'quick-start',
-                text: 'Quick start',
-                disabled: false,
-                status: 'main',
-              }
-            ]
-          }],
-          promptInputLabel: 'Or, start a chat',
-          promptInputPlaceholder: 'Type your question',
-          compactMode: true,
-          tabHeaderDetails: {
-            title: "Hi, I'm Amazon Q.",
-            description: 'Where would you like to start?',
-            icon: MynahIcons.Q
-          },
-        },
+          ...welcomeScreenTabData.store
+        }
       },
     },
     onFocusStateChanged: (focusState:boolean) => {
@@ -173,36 +146,7 @@ _Generate code, scan for issues, and more._`,
         // Use for custom temporary checks
         mynahUI.updateStore('', {
           ...mynahUIDefaults.store,
-          tabTitle: 'Welcome screen!',
-          tabBackground: true,
-          chatItems: [{
-            type: ChatItemType.ANSWER,
-            icon: MynahIcons.ASTERISK,
-            messageId: 'new-welcome-card',
-            body: `#### Work on a task with Q Developer Agents
-_Generate code, scan for issues, and more._`,
-            buttons: [
-              {
-                id: 'explore',
-                disabled: false,
-                text: 'Explore',
-              },
-              {
-                id: 'quick-start',
-                text: 'Quick start',
-                disabled: false,
-                status: 'main',
-              }
-            ]
-          }],
-          promptInputLabel: 'Or, start a chat',
-          promptInputPlaceholder: 'Type your question',
-          compactMode: true,
-          tabHeaderDetails: {
-            title: "Hi, I'm Amazon Q.",
-            description: 'Where would you like to start?',
-            icon: MynahIcons.Q
-          },
+          ...welcomeScreenTabData.store
         });
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
@@ -295,11 +239,31 @@ _Generate code, scan for issues, and more._`,
     onFollowUpClicked: (tabId: string, messageId: string, followUp: ChatItemAction) => {
       Log(`Followup click: <b>${followUp.pillText}</b>`);
       if (followUp.prompt != null || followUp.command != null) {
-        onChatPrompt(tabId, {
-          command: followUp.command,
-          prompt: followUp.prompt,
-          escapedPrompt: followUp.escapedPrompt ?? followUp.prompt,
-        });
+        if(followUp.command === Commands.REPLACE_FOLLOWUPS) {
+
+          mynahUI.addChatItem(tabId, {
+            type: ChatItemType.ANSWER,
+            messageId: 'my-message-id',
+            body: 'Hello',
+          });
+
+          setTimeout(()=>{
+            mynahUI.updateChatAnswerWithMessageId(tabId, 'my-message-id', {
+              followUp: exampleRichFollowups.followUp
+            });
+            setTimeout(()=>{
+              mynahUI.updateChatAnswerWithMessageId(tabId, 'my-message-id', {
+                followUp: defaultFollowUps.followUp,
+              })
+            },1500)
+          },1500);
+        } else {
+          onChatPrompt(tabId, {
+            command: followUp.command,
+            prompt: followUp.prompt,
+            escapedPrompt: followUp.escapedPrompt ?? followUp.prompt,
+          });
+        }
       }
     },
     onChatPromptProgressActionButtonClicked: (tabId: string, action) => {
@@ -316,140 +280,34 @@ _Generate code, scan for issues, and more._`,
         Log(`Stop generating code: <b>${tabId}</b>`);        
       }
     },
+    onTabbedContentTabChange: (tabId: string, messageId: string, contentTabId: string) =>{
+      Log(`Tabbed content tab changed on tab <b>${tabId}</b>:<br/>
+        Message Id: <b>${messageId}</b><br/>
+        Content tabId: <b>${contentTabId}</b><br/>
+        `);
+    },
     onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
       if (action.id === 'quick-start') {
         mynahUI.updateStore(tabId, { 
           tabHeaderDetails: null,
           compactMode: false,
           tabBackground: false,
-          promptInputText: '/with-pro',
+          promptInputText: '/dev',
           promptInputLabel: null,
           chatItems: []
         });
       }
       if (action.id === 'explore') {
         // mynahUI.updateStore(tabId, {chatItems: []});
-        mynahUI.updateStore('', { 
-          tabBackground: false,
-          compactMode: false,
-          tabTitle: 'Explore Agents',
-          promptInputVisible: false,
-          tabHeaderDetails: {
-            icon: MynahIcons.ASTERISK,
-            title: 'Amazon Q Developer Agents',
-            description: 'Software development'
-          },
-          chatItems: [
-            {
-              type: ChatItemType.ANSWER,
-              hoverEffect: true,
-              body: `### Feature development
-Generate code across files with a task description.
-`,
-              icon: MynahIcons.CODE_BLOCK,
-              footer: {
-                body: 'THE TABBED CONTENT WILL COME HERE!'
-              },
-              buttons: [
-                {
-                  status: 'clear',
-                  id: 'user-guide-dev',
-                  disabled: false,
-                  text: 'Read user guide'
-                },
-                {
-                  status: 'main',
-                  disabled: false,
-                  flash: 'once',
-                  icon: MynahIcons.RIGHT_OPEN,
-                  id: 'quick-start-dev',
-                  text: `Quick start with **/dev**`
-                }
-              ]
-            },
-            {
-              type: ChatItemType.ANSWER,
-              hoverEffect: true,
-              body: `### Scan
-Identify and fix code issues before committing.
-`,
-              icon: MynahIcons.BUG,
-              footer: {
-                body: 'THE TABBED CONTENT WILL COME HERE!'
-              },
-              buttons: [
-                {
-                  status: 'clear',
-                  id: 'user-guide-scan',
-                  disabled: false,
-                  text: 'Read user guide'
-                },
-                {
-                  status: 'primary',
-                  disabled: false,
-                  icon: MynahIcons.RIGHT_OPEN,
-                  flash: 'once',
-                  id: 'quick-start-scan',
-                  text: `Quick start with **/scan**`
-                }
-              ]
-            },
-            {
-              type: ChatItemType.ANSWER,
-              hoverEffect: true,
-              body: `### Unit Test Generation
-Generate unit tests for selected code (supports python & java).
-`,
-              icon: MynahIcons.CODE_BLOCK,
-              footer: {
-                body: 'THE TABBED CONTENT WILL COME HERE!'
-              },
-              buttons: [
-                {
-                  status: 'clear',
-                  id: 'user-guide-test',
-                  disabled: false,
-                  text: 'Read user guide'
-                },
-                {
-                  status: 'info',
-                  disabled: false,
-                  icon: MynahIcons.RIGHT_OPEN,
-                  flash: "infinite",
-                  id: 'quick-start-test',
-                  text: `Quick start with **/test**`
-                }
-              ]
-            },
-            {
-              type: ChatItemType.ANSWER,
-              hoverEffect: true,
-              body: `### Transform
-Transform your java project from an old version to a new one.
-`,
-              icon: MynahIcons.TRANSFORM,
-              footer: {
-                body: 'THE TABBED CONTENT WILL COME HERE!'
-              },
-              buttons: [
-                {
-                  status: 'clear',
-                  id: 'user-guide-transform',
-                  disabled: false,
-                  text: 'Read user guide'
-                },
-                {
-                  status: 'info',
-                  disabled: false,
-                  icon: MynahIcons.RIGHT_OPEN,
-                  flash: 'infinite',
-                  id: 'quick-start-transform',
-                  text: `Quick start with **/transform**`
-                }
-              ]
-            },
-          ]
-        });
+        mynahUI.updateStore('', exploreTabData);
+      }
+      if (action.id.match('quick-start-')){
+          mynahUI.updateStore('',{
+            ...mynahUIDefaults.store,
+            chatItems: [],
+            promptInputText: `/${action.id.replace('quick-start-', '')}`,
+            quickActionCommands: qAgentQuickActions
+          })
       }
       if (messageId === 'sticky-card') {
         mynahUI.updateStore(tabId, { promptInputStickyCard: null });
@@ -673,7 +531,7 @@ Transform your java project from an old version to a new one.
           mynahUI.addChatItem(tabId, exampleRichFollowups);
           break;
         case Commands.INFORMATION_CARDS:
-          mynahUI.addChatItem(tabId, exampleInformationCard(null, null));
+          mynahUI.addChatItem(tabId, exampleInformationCard(null, null, true));
           mynahUI.addChatItem(tabId, exampleInformationCard('warning', 'You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits.'));
           mynahUI.addChatItem(tabId, exampleInformationCard('error', 'You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits.'));
           mynahUI.addChatItem(tabId, exampleInformationCard('success', 'Successfully completed this task!'));

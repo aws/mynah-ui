@@ -8,6 +8,7 @@ export interface ChatItemInformationCardProps {
   tabId: string;
   testId?: string;
   messageId: string | undefined;
+  classNames?: string[];
   informationCard: NonNullable<Required<ChatItemContent>['informationCard']>;
 }
 
@@ -59,7 +60,7 @@ export class ChatItemInformationCard {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-chat-item-information-card', 'mynah-card-inner-order-55' ],
+      classNames: [ 'mynah-chat-item-information-card', ...(props.classNames ?? []), Object.keys(props.informationCard.status ?? {}).length > 0 ? 'has-footer' : '' ],
       children: [
         mainContent
       ]

@@ -10,18 +10,43 @@
     > .mynah-tabbed-card-contents {
         width: 100%;
         box-sizing: border-box;
-        background: var(--mynah-bg-gradient);
-        padding: var(--mynah-sizing-2);
-        border-radius: var(--mynah-input-radius);
+        padding: var(--mynah-sizing-3);
+        border-radius: var(--mynah-card-radius);
+        position: relative;
+        background-color: var(--mynah-color-syntax-bg);
+        &:before {
+            content: '';
+            background-image: linear-gradient(180deg, var(--mynah-color-gradient-start), rgba(0,0,0,0));
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-position: center top;
+            z-index: 1;
+            opacity: .75;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+        }
 
         > .mynah-chat-item-card {
             border: none;
             border-radius: inherit;
             margin: 0 !important;
             padding: 0 !important;
+            border: none !important;
+            z-index: 10;
 
             > .mynah-card {
-                border-radius: inherit;
+                border-radius: var(--mynah-input-radius) !important;
+                padding: var(--mynah-sizing-2);
+                box-shadow: none;
+                border: none;
+                > div {
+                    padding: 0;
+                }
             }
             .mynah-chat-item-information-card-main {
                 border: none;

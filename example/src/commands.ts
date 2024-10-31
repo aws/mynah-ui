@@ -3,6 +3,7 @@ export enum Commands {
     COMMAND_WITH_PROMPT = '/with-prompt',
     SHOW_STICKY_CARD = '/show-sticky-card',
 
+    REPLACE_FOLLOWUPS = '/replace-followups',
     STATUS_CARDS = '/cards-with-status-colors',
     FORM_CARD = '/card-with-a-form',
     CARD_WITH_MARKDOWN_LIST = '/card-with-markdown-list',

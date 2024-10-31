@@ -137,7 +137,7 @@ export class ChatPromptInput {
         this.promptTextInput.clear();
         this.promptTextInput.updateTextInputValue(promptInputText);
         setTimeout(() => {
-          this.handleInputFocus();
+          this.promptTextInput.focus(-1);
         }, 750);
       }
     });
