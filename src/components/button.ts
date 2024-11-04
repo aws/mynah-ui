@@ -78,7 +78,9 @@ class ButtonInternal extends ButtonAbstract {
         ...props.additionalEvents,
         click: (e) => {
           this.hideTooltip();
-          props.onClick(e);
+          if (this.props.disabled !== true) {
+            props.onClick(e);
+          }
         },
         mouseover: (e) => {
           cancelEvent(e);
@@ -166,6 +168,7 @@ class ButtonInternal extends ButtonAbstract {
   };
 
   public readonly setEnabled = (enabled: boolean): void => {
+    this.props.disabled = !enabled;
     if (enabled) {
       this.render.removeAttribute('disabled');
     } else {

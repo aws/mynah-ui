@@ -8,6 +8,7 @@ import testIds from '../../helper/test-ids';
 import { ChatItemButton } from '../../static';
 import { Button } from '../button';
 import { Icon } from '../icon';
+import { OverlayHorizontalDirection } from '../overlay';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 
 export interface ChatItemButtonsWrapperProps {
@@ -35,6 +36,8 @@ export class ChatItemButtonsWrapper {
         const actionItem = new Button({
           testId: testIds.chatItem.buttons.button,
           label: chatActionAction.text,
+          tooltip: chatActionAction.description,
+          tooltipHorizontalDirection: OverlayHorizontalDirection.CENTER,
           icon: chatActionAction.icon != null ? new Icon({ icon: chatActionAction.icon }).render : undefined,
           primary: chatActionAction.status === 'primary',
           border: chatActionAction.status !== 'primary',
