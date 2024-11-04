@@ -92,11 +92,7 @@ export class ChatWrapper {
       if (tabHeaderDetails != null) {
         // Update view
         const newDetails = new TitleDescriptionWithIcon({
-          testIds: {
-            icon: testIds.chat.headerIcon,
-            title: testIds.chat.headerTitle,
-            description: testIds.chat.headerDescription
-          },
+          testId: testIds.chat.header,
           classNames: [ 'mynah-ui-tab-header-details' ],
           ...tabHeaderDetails
         }).render;
