@@ -13,6 +13,10 @@ interface MynahUIDataModel {
    * */
   tabTitle?: string;
   /**
+   * Tab title
+   * */
+  tabBackground?: boolean;
+  /**
    * If tab is running an action (loadingChat = true) this markdown will be shown before close in a popup
    */
   tabCloseConfirmationMessage?: string | null;
@@ -49,6 +53,18 @@ interface MynahUIDataModel {
   */
   promptInputPlaceholder?: string;
   /**
+  * Prompt input text
+  */
+  promptInputText?: string;
+  /**
+    * Label to be shown on top of the prompt input
+    */
+  promptInputLabel?: string | null;
+  /**
+    * Label to be shown on top of the prompt input
+    */
+  promptInputVisible?: boolean;
+  /**
   * Info block to be shown under prompt input
   */
   promptInputInfo?: string;
@@ -57,7 +73,7 @@ interface MynahUIDataModel {
   */
   promptInputStickyCard?: Partial<ChatItem> | null;
   /**
-  * Prompt input field disabled state, set to true to disable it
+  * Prompt input field disabled state, set to tru to disable it
   */
   promptInputDisabledState?: boolean;
   /**
@@ -76,6 +92,14 @@ interface MynahUIDataModel {
    * Tab bar buttons next to the tab items
    */
   tabBarButtons?: TabBarMainAction[];
+  /**
+   * Tab content compact mode which keeps everything in the middle
+   */
+  compactMode?: boolean;
+  /**
+   * Tab content header details, only visibile when showTabHeaderDetails is set to 'true'
+   */
+  tabHeaderDetails?: TabHeaderDetails | null;
 }
 ```
 
@@ -100,11 +124,28 @@ mynahUI.updateStore('tab-1', {
 })
 ```
 
+### `tabBackground` (default: `false`)
+Shows or hides the gradient background on the tab.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabBackground: true
+})
+```
+
 
 ### 
 
 <p align="center">
-  <img src="./img/data-model/tabStore/tabTitle.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/tabStore/tabBackground.png" alt="tabBackground" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -347,6 +388,79 @@ mynahUI.updateStore('tab-1', {
 
 ---
 
+### `promptInputText` (default: `''`)
+
+This is the text inside the prompt input. You can set it anytime, but be careful, it will override what is already written in the text input. 
+A nice trick to use it is to open the quick actions command picker too. If you send `"/"` or `"/some-matching-text"` it will open the quick actions command selector automatically and also filter the list with the following text if given.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    promptInputText: '/dev'
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptInputText.png" alt="Prompt input text" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `promptInputLabel` (default: `''`)
+
+This is label for the prompt input text.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    promptInputLabel: 'Prompt input text label'
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptInputLabel.png" alt="prompt input label" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `promptInputVisible` (default: `true`)
+
+This is a control point for the visibility of the prompt input field. Unlike the `showPromptField` in [global CONFIG](./CONFIG.md#showpromptfield) it allows you to change the visibility of the prompt input field for each individual tab on runtime.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    promptInputVisible: false,
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptInputVisible.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
 ### `promptInputInfo` (default: `''`)
 
 This is a info field under the bottom of the prompt input field, like a footer text
@@ -564,6 +678,64 @@ mynahUI.updateStore('tab-1', {
 
 ---
 
+### `compactMode`
+
+You can enable/disable compact mode. In compact mode, there will be more paddings from every edge. In addition to the paddings, the chat content will be middle placed (15% more pushed from the bottom) instead of being stretched to the available height. However, it will not exceed the available height for its own space.
+While doing the transition for the compact mode switch, there is also a nice and smooth animation.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    compactMode: true,
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/compactMode.png" alt="compactMode" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `tabHeaderDetails` (default: `null`)
+
+There is a chance to add a detailed header on top of the tab content. Which can have an icon, title and the description.
+**NOTE:** When you give `tabHeaderDetails` it will also adjust the alignment of the chat items to top. So until the content section reaches the max height available, they'll start to be ordered from top to bottom. Which means that it will also take space as their available content height. This will make the prompt field also moves up under the content. If the content height is more than available space, prompt input will still fit under the bottom of the screen.
+
+**NOTE:** When you provide `tabHeaderDetails` it will also make the chat cards width stretch to full available width of the screen. So they'll not get their width depending on their content and up to 90%. Instead, it will always be 100%.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabHeaderDetails: {
+      icon: MynahIcons.Q,
+      title: "Welcome to Q Developer",
+      description: "What kind of questions you have?"
+    },
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/tabHeaderDetails.png" alt="tabHeaderDetails" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <br />
+  <img src="./img/data-model/tabStore/tabHeaderDetails2.png" alt="tabHeaderDetails 2" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
 ### `chatItems` (default: `[]`)
 
 This is holding the chat items. If you provide it through the `defaults` or inside a tab item in the initial `tabs` property in the [Constructor properties](./PROPERTIES.md) you can give the whole set.
@@ -654,6 +826,7 @@ interface TreeNodeDetails {
   icon?: MynahIcons;
   label?: string;
   description?: string; // Markdown tooltip
+  clickable?: boolean; // can it be clicked? (Default: true)
 }
 
 interface SourceLink {
@@ -688,6 +861,7 @@ interface CodeBlockAction {
   description?: string;
   icon?: MynahIcons;
   data?: any;
+  flash?: 'infinite' | 'once';
   acceptedLanguages?: string[];
 }
 type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAction | undefined | null>;
@@ -739,6 +913,7 @@ interface ChatItem extends ChatItemContent{
   snapToTop?: boolean;
   canBeVoted?: boolean;
   icon?: MynahIcons;
+  hoverEffect?: boolean;
   status?: 'info' | 'success' | 'warning' | 'error';
 }
 // ################################# 
@@ -1338,6 +1513,31 @@ mynahUI.addChatItem('tab-1', {
 });
 ```
 
+
+## `hoverEffect`
+It gives you the option to put a hover effect on the card when it is hovered. It will also show the cursor as a pointer. It will make the card pop more than the others when user hovers to that card by adding a shadow and slight upwards movement.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    type: ChatItemType.ANSWER,
+    ...
+    hoverEffect: true,
+    ...
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/hoverEffect.png" alt="hoverEffect" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
 ---
 
 ## `canBeVoted`
@@ -1378,6 +1578,9 @@ With this parameter, you can add per chatitem code block actions to the code blo
 
 ### Note
 If you want to show that action only for certain coding languages, you can set the array for `acceptedLanguages` parameter. Keep in mind that it will check an exact mathc. If the incoming language is same with one of the acceptedLanguages list, it will show the action.
+
+#### flash
+You can also make the code block actions flash once or foverer when user hovers the the containing card. Until user hovers to the action itself, whenever they hover to the card it will flash the code block action. It you set it to `once` it will only flash once for every hover to the container card, if you set it to `infinite` it will keep flashing forever every 3 seconds until user hovers to the action itself. Whe user hovers to the action, it will not flash again.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -1549,7 +1752,8 @@ mynahUI.addChatItem(tabId, {
         status: 'error',
         label: "Change rejected",
         icon: MynahIcons.REVERT,
-        description: 'Markdown tooltip to show'
+        description: 'Markdown tooltip to show',
+        clickable: true; // or false if you want to make the file not clickabke
       }
     }
   },
@@ -1569,6 +1773,8 @@ mynahUI.addChatItem(tabId, {
 **NOTE 1:** Actions will be shown only when you hover to the file.
 
 **NOTE 2:** You can add actions and details for each file (**but not for folders**). Beware that you need to add those actions for each specific file as a map which **the key needs to be the path of the file**.
+
+**NOTE 3:** In case you want to show one single file (or folder by giving it a folder icon) and not make it clickable, use the `details` section with the file name and set the `clickable` to `false`.
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
@@ -1668,7 +1874,8 @@ interface ChatItemButton {
   id: string; // id of the button, since when they are clicked they all call the same property onInBodyButtonClicked
   disabled?: boolean; // in any case if you want to make the button disabled (mandatory check will discard this)
   description?: string; // A text to be shown inside a tooltip and it can be markdown
-  status?: 'info' | 'success' | 'warning' | 'error'; // 4 color status for the buttons
+  status?: 'main' | 'primary' | 'clear' | Status;
+  flash?: 'infinite' | 'once'; // Flashes the card
   icon?: MynahIcons; // in case if you want to put an icon to the button.
 }
 ```
@@ -1689,30 +1896,71 @@ mynahUI.addChatItem(tabId, {
     messageId: new Date().getTime().toString(),
     body: `This is a card with actions inside!`,
     buttons: [
-    {
-        text: 'Action 1',
-        id: 'action-1',
-        status: 'info',
-        icon: MynahIcons.CHAT
-    },
-    {
-        text: 'Action 2',
-        description: 'This action will not remove the card!',
-        id: 'action-2',
-        keepCardAfterClick: false, // So when this button is clicked, it will remove the whole card.
-    },
-    {
-        text: 'Action 3',
-        description: 'This is disabled for some reason!',
-        id: 'action-3',
-        disabled: true,
-    },
-    ],
+          {
+              text: 'Action 1',
+              id: 'action-1',
+              status: 'info',
+              icon: MynahIcons.CHAT
+          },
+          {
+              text: 'Action 2',
+              description: 'This action will not remove the card!',
+              id: 'action-2',
+              keepCardAfterClick: false, // So when this button is clicked, it will remove the whole card.
+          },
+          {
+              text: 'Action 3',
+              description: 'This is disabled for some reason!',
+              id: 'action-3',
+              disabled: true,
+          },
+          {
+              text: 'Primary',
+              description: 'This is colored!',
+              id: 'action-3',
+              status: 'primary',
+          },
+          {
+              text: 'Main',
+              description: 'This is more colored!',
+              id: 'action-3',
+              status: 'main',
+          },
+          {
+              text: 'Clear',
+              description: 'This is clear!',
+              id: 'action-3',
+              status: 'clear',
+          },
+      ],
 });
 ```
 
 <p align="center">
   <img src="./img/data-model/chatItems/actions.png" alt="buttons" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+#### Button flash
+
+You can also make the button flash once or foverer when user hovers the the containing card. Until user hovers to the button itself, whenever they hover to the card it will flash the button. It you set it to `once` it will only flash once for every hover to the container card, if you set it to `infinite` it will keep flashing forever every 3 seconds until user hovers to the button itself. Whe user hovers to the button, it will not flash again.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    ...
+    buttons: [
+    {
+        ...
+        flash: 'infinite',
+        ...
+    },
+    ...,
+    ],
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/buttonFlash.png" alt="button flash" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

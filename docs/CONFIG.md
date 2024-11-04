@@ -321,6 +321,9 @@ With this parameter, you can add global code block actions to the code blocks. B
 ### Note
 If you want to show that action only for certain coding languages, you can set the array for `acceptedLanguages` parameter. Keep in mind that it will check an exact mathc. If the incoming language is same with one of the acceptedLanguages list, it will show the action.
 
+#### flash
+You can also make the code block actions flash once or foverer when user hovers the the containing card. Until user hovers to the action itself, whenever they hover to the card it will flash the code block action. It you set it to `once` it will only flash once for every hover to the container card, if you set it to `infinite` it will keep flashing forever every 3 seconds until user hovers to the action itself. Whe user hovers to the action, it will not flash again.
+
 #### By default, we add `copy` and `insert to cursor position` ones:
 
 ```typescript
