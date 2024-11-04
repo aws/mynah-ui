@@ -42,7 +42,7 @@
     }
     &[disabled='disabled'] {
         opacity: 0.25 !important;
-        pointer-events: none;
+        cursor: default;
     }
     &.mynah-button-secondary {
         background-color: rgba(0, 0, 0, 0);
