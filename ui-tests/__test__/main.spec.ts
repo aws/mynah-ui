@@ -14,6 +14,7 @@ import { progressIndicator } from './flows/prompt-progress-indicator';
 import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
 import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
+import { welcomeMode } from './flows/welcome-mode';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -39,6 +40,10 @@ describe('Open MynahUI', () => {
 
   it('should render initial data', async () => {
     await initRender(page);
+  });
+
+  it('should render welcome structure', async () => {
+    await welcomeMode(page);
   });
 
   it('should show progress indicator', async () => {
