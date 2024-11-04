@@ -10,11 +10,6 @@ import '../styles/components/_title-description-icon.scss';
 
 interface TitleDescriptionWithIconProps {
   title?: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
-  testIds?: {
-    icon?: string;
-    title?: string;
-    description?: string;
-  };
   description?: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
   icon?: MynahIcons;
   testId?: string;
@@ -33,7 +28,7 @@ export class TitleDescriptionWithIcon {
         ...(this.props.icon !== undefined
           ? [ {
               type: 'div',
-              testId: props.testIds?.icon,
+              testId: `${props.testId ?? ''}-icon`,
               classNames: [ 'mynah-ui-title-description-icon-icon' ],
               children: [ new Icon({
                 icon: this.props.icon
@@ -43,7 +38,7 @@ export class TitleDescriptionWithIcon {
         ...(this.props.title !== undefined
           ? [ {
               type: 'div',
-              testId: props.testIds?.title,
+              testId: `${props.testId ?? ''}-title`,
               classNames: [ 'mynah-ui-title-description-icon-title' ],
               children: [ this.props.title ]
             } ]
@@ -51,7 +46,7 @@ export class TitleDescriptionWithIcon {
         ...(this.props.description !== undefined
           ? [ {
               type: 'div',
-              testId: props.testIds?.description,
+              testId: `${props.testId ?? ''}-description`,
               classNames: [ 'mynah-ui-title-description-icon-description' ],
               children: [ this.props.description ]
             } ]

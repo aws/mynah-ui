@@ -65,7 +65,7 @@
         }
     }
     &.status-main {
-        color: #ffffff;
+        color: var(--mynah-color-gradient-alternate);
         background-image: var(--mynah-color-gradient-main-half);
         background-repeat: no-repeat;
         background-size: 105% 105%;

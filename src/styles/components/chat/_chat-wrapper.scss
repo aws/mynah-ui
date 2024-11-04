@@ -131,6 +131,9 @@
         > .mynah-ui-title-description-icon-description {
             font-size: calc(2 * var(--mynah-font-size-xxsmall));
         }
+        &:empty {
+            display: none;
+        }
     }
 
     // Background

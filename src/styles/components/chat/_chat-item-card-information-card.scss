@@ -13,68 +13,40 @@
         width: 100%;
         height: fit-content;
 
-        @include gradient-border();
+        background-image: var(--mynah-color-gradient-main-half);
+        background-repeat: no-repeat;
+        background-size: 105% 105%;
+        background-position: center center;
+        border: var(--mynah-border-width) solid rgba(0, 0, 0, 0);
 
         > .mynah-ui-chat-item-inline-card {
             background-color: var(--mynah-color-bg);
-            padding: var(--mynah-sizing-3);
+            padding: var(--mynah-sizing-3) !important;
             box-sizing: border-box;
-            margin: 0;
+            margin: 0 !important;
+            transition: none !important;
+            border: none !important;
         }
 
         > .mynah-chat-item-information-card-header-container {
-            display: flex;
-            position: relative;
-            box-sizing: border-box;
-            width: 100%;
-            flex-flow: row nowrap;
-            align-items: flex-start;
-            justify-content: flex-start;
-            overflow: hidden;
             padding: var(--mynah-sizing-3);
-            transition: var(--mynah-short-transition-rev);
-            gap: var(--mynah-sizing-3);
             color: var(--mynah-color-gradient-alternate);
 
-            &::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                box-sizing: border-box;
-                background: var(--mynah-bg-gradient);
-            }
-
-            > .mynah-ui-icon {
-                margin-top: var(--mynah-sizing-1);
+            > .mynah-ui-title-description-icon-icon {
                 font-size: var(--mynah-font-size-large);
             }
-
-            > .mynah-chat-item-information-card-header {
-                flex: 1;
-                display: flex;
-                position: relative;
-                box-sizing: border-box;
-                flex-flow: column nowrap;
-                align-items: flex-start;
-                justify-content: flex-start;
-                gap: var(--mynah-sizing-1);
-
-                > .mynah-chat-item-information-card-title {
-                    font-weight: bold;
-                    flex: 0 1 0%;
-                }
-                > .mynah-chat-item-information-card-description {
-                    flex: 1 0 100%;
-                    font-size: var(--mynah-font-size-xxsmall);
-                }
+            > .mynah-ui-title-description-icon-title {
+                font-weight: bold;
             }
         }
     }
 
+    .mynah-chat-item-information-card-footer:empty {
+        display: none;
+    }
+
     &.has-footer {
+        padding-bottom: 0;
         .mynah-chat-item-information-card-footer {
             display: flex;
             position: relative;
@@ -86,24 +58,16 @@
             justify-content: flex-start;
             overflow: hidden;
             padding: var(--mynah-sizing-3);
-            transition: var(--mynah-short-transition-rev);
             gap: var(--mynah-sizing-3);
             border: 1px solid currentColor;
             border-radius: 0 0 var(--mynah-input-radius) var(--mynah-input-radius);
+
             &:empty {
                 display: none;
             }
 
-            > .mynah-ui-icon {
-                font-size: var(--mynah-font-size-medium);
-                color: currentColor;
-            }
-
-            > p {
-                flex: 1;
-                font-size: var(--mynah-font-size-xsmall);
-                margin: 0;
-                color: var(--mynah-color-text-default);
+            > .mynah-ui-title-description-icon-description {
+                font-size: var(--mynah-font-size-small);
             }
 
             &::before {
@@ -115,6 +79,7 @@
                 height: 100%;
                 background-color: currentColor;
                 opacity: 10%;
+                pointer-events: none;
             }
 
             @each $status in $mynah-statuses {
@@ -126,7 +91,7 @@
         > .mynah-chat-item-information-card-main {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
-            border-bottom: 0;
+            border-bottom: none !important;
         }
     }
 }
