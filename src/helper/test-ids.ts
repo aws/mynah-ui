@@ -25,9 +25,7 @@ export default {
     chatItemsContainer: 'chat-chat-items-container',
     middleBlockWrapper: 'chat-middle-block-wrapper',
     stopButton: 'chat-middle-block-stop-button',
-    headerTitle: 'chat-wrapper-header-title',
-    headerDescription: 'chat-wrapper-header-description',
-    headerIcon: 'chat-wrapper-header-icon',
+    header: 'chat-wrapper-header-details',
   },
   chatItem: {
     type: {

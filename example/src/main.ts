@@ -142,8 +142,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         Object.keys(mynahUI.getAllTabs()).forEach(tabIdFromStore=>mynahUI.updateStore(tabIdFromStore, {
           showChatAvatars: showChatAvatars
         }));
-      } else if (buttonId === 'new-welcome-screen') {
+      } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+      } else if (buttonId === 'new-welcome-screen') {
         mynahUI.updateStore('', {
           ...mynahUIDefaults.store,
           ...welcomeScreenTabData.store
