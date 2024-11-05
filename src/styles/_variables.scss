@@ -48,10 +48,13 @@
     --mynah-color-gradient-start: #7638fa;
     --mynah-color-gradient-mid: #3e8dff;
     --mynah-color-gradient-end: #8af3ff;
+    color: #DA8AF7;
 
     --mynah-bg-gradient-mid: #538bf7;
     --mynah-bg-gradient-start: #301673;
     --mynah-bg-gradient-end: #6e3bf1;
+    --mynah-bg-gradient-next: #DA8AF7;
+    --mynah-bg-gradient-prev: #0096FA;
 
     --mynah-bg-gradient: radial-gradient(100% 100% at 0% 0%, var(--mynah-bg-gradient-start) 0%, rgba(0, 0, 0, 0) 100%),
         radial-gradient(100% 100% at 100% 100%, var(--mynah-bg-gradient-mid) 0%, rgba(0, 0, 0, 0) 100%),

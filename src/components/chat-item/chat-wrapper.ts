@@ -17,6 +17,7 @@ import { ChatPromptInputStickyCard } from './chat-prompt-input-sticky-card';
 import '../../styles/components/chat/_chat-wrapper.scss';
 import testIds from '../../helper/test-ids';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
+import { GradientBackground } from '../background';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -30,6 +31,7 @@ export class ChatWrapper {
   private readonly promptInputElement: ExtendedHTMLElement;
   private readonly promptInput: ChatPromptInput;
   private readonly footerSpacer: ExtendedHTMLElement;
+  private readonly headerSpacer: ExtendedHTMLElement;
   private readonly promptInfo: ExtendedHTMLElement;
   private readonly promptStickyCard: ExtendedHTMLElement;
   private tabHeaderDetails: ExtendedHTMLElement;
@@ -43,6 +45,10 @@ export class ChatWrapper {
     this.footerSpacer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-wrapper-footer-spacer' ]
+    });
+    this.headerSpacer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-wrapper-header-spacer' ]
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
@@ -205,6 +211,8 @@ export class ChatWrapper {
               pointer-events: none !important;
             }` ],
         },
+        (new GradientBackground()).render,
+        this.headerSpacer,
         this.tabHeaderDetails,
         this.chatItemsContainer,
         this.intermediateBlockContainer,
