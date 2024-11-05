@@ -53,7 +53,6 @@ export const welcomeMode = async (page: Page, skipScreenshots?: boolean): Promis
   }, newTabId);
   await waitForAnimationEnd(page);
   const chatWrapperClasses = await (await page.waitForSelector(chatWrapperSelector)).evaluate(el => Array.from(el.classList));
-  console.log(chatWrapperClasses);
   expect(chatWrapperClasses).toContain('with-background');
 
   expect(await page.waitForSelector(getSelector(testIds.prompt.label))).toBeDefined();
