@@ -299,7 +299,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       }
       if (action.id === 'explore') {
-        // mynahUI.updateStore(tabId, {chatItems: []});
         mynahUI.updateStore('', exploreTabData);
       }
       if (action.id.match('quick-start-')){

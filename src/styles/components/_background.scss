@@ -11,7 +11,7 @@
     background-repeat: no-repeat;
     background-position: bottom center;
     background-size: cover;
-    opacity: 0.6;
+    opacity: 1;
     pointer-events: none;
 
     display: flex;
@@ -25,13 +25,12 @@
     &:after {
         content: '';
         position: absolute;
-        left: -200px;
-        right: -200px;
-        top: 0;
+        left: 0;
         bottom: 0;
-        width: auto;
+        top: 0;
+        width: 100%;
         height: auto;
-        filter: blur(30px);
+        top: 0;
         background-repeat: no-repeat;
         background-position: bottom center;
         background-size: cover;
@@ -40,29 +39,25 @@
     &:before {
         background-image: linear-gradient(
             to bottom,
-            var(--mynah-color-bg) 0px,
-            var(--mynah-color-bg) 150px,
-            var(--mynah-color-bg) 55%,
-            transparent 75%,
+            var(--mynah-color-bg) 0,
+            var(--mynah-color-bg) 40%,
             transparent 100%
         );
-        top: -150px;
+        mask-image: linear-gradient(to top, transparent 0%, black 50%);
+        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 50%);
     }
     &:after {
-        background-image: linear-gradient(
-            to top,
-            var(--mynah-color-bg) 0px,
-            var(--mynah-color-bg) 150px,
-            var(--mynah-color-bg) 200px,
-            transparent 300px,
-            transparent 100%
-        );
-        bottom: -150px;
+        top: initial;
+        height: 400px;
+        background-image: linear-gradient(to top, var(--mynah-color-bg) 40px, transparent 100%);
+        mask-image: linear-gradient(to bottom, transparent 0, black 100%);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 100%);
     }
 
     > svg {
-        background-color: var(--mynah-color-bg);
-        min-width: 100%;
+        min-width: 100vw;
         z-index: 5;
+        min-height: 200vw;
+        opacity: 0.75;
     }
 }
