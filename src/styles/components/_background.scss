@@ -19,6 +19,7 @@
     align-items: flex-end;
     overflow: hidden;
     z-index: 0;
+    background-color: var(--mynah-color-bg);
 
     &:before,
     &:after {
@@ -42,8 +43,8 @@
             var(--mynah-color-bg) 0px,
             var(--mynah-color-bg) 150px,
             var(--mynah-color-bg) 55%,
-            rgba(0, 0, 0, 0) 75%,
-            rgba(0, 0, 0, 0) 100%
+            transparent 75%,
+            transparent 100%
         );
         top: -150px;
     }
@@ -53,13 +54,14 @@
             var(--mynah-color-bg) 0px,
             var(--mynah-color-bg) 150px,
             var(--mynah-color-bg) 200px,
-            rgba(0, 0, 0, 0) 300px,
-            rgba(0, 0, 0, 0) 100%
+            transparent 300px,
+            transparent 100%
         );
         bottom: -150px;
     }
 
     > svg {
+        background-color: var(--mynah-color-bg);
         min-width: 100%;
         z-index: 5;
     }
