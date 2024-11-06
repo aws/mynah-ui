@@ -331,6 +331,7 @@ export interface ChatItemButton {
   status?: 'main' | 'primary' | 'clear' | Status;
   flash?: 'infinite' | 'once';
   icon?: MynahIcons;
+  position?: 'inside' | 'outside';
 }
 
 export interface TabBarAction {
