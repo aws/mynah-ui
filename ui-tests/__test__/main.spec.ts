@@ -15,6 +15,7 @@ import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
 import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
+import { renderButtons } from './flows/render-buttons';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -24,7 +25,7 @@ describe('Open MynahUI', () => {
       allowSizeMismatch: true,
       failureThresholdType: 'percent',
       storeReceivedOnFailure: true,
-      customSnapshotsDir: `./__test__/__image_snapshots__/${browserName}`
+      customSnapshotsDir: `./__test__/__image_snapshots__/${browserName as string}`
     });
 
     expect.extend({ toMatchImageSnapshot });
@@ -84,6 +85,10 @@ describe('Open MynahUI', () => {
 
   it('should render tabbed cards correctly', async () => {
     await renderTabbedCard(page);
+  });
+
+  it('should render buttons on cards correctly', async () => {
+    await renderButtons(page);
   });
 
   it('should keep the content inside window boundaries', async () => {
