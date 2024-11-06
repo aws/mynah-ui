@@ -38,6 +38,7 @@ import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
+
 export { generateUID } from './helper/guid';
 export {
   ChatItemBodyRenderer,
@@ -128,6 +129,11 @@ export interface MynahUIProps {
       text?: string;
       formItemValues?: Record<string, string>;
     },
+    eventId?: string) => void;
+  onTabbedContentTabChange?: (
+    tabId: string,
+    messageId: string,
+    contentTabId: string,
     eventId?: string) => void;
   onTabChange?: (
     tabId: string,
@@ -411,6 +417,16 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           text: data.actionText,
           formItemValues: data.formItemValues
         }, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TABBED_CONTENT_SWITCH, (data: {
+      tabId: string;
+      messageId: string;
+      contentTabId: string;
+    }) => {
+      if (this.props.onTabbedContentTabChange != null) {
+        this.props.onTabbedContentTabChange(data.tabId, data.messageId, data.contentTabId);
       }
     });
 

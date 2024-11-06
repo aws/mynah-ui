@@ -1,9 +1,11 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemContent, ChatItemType } from '../../static';
-import { Toggle } from '../toggle';
+import { ChatItemContent, ChatItemType, MynahEventNames } from '../../static';
+import { Toggle, ToggleOption } from '../toggle';
 import { ChatItemCard } from './chat-item-card';
 import testIds from '../../helper/test-ids';
 import '../../styles/components/chat/_chat-item-card-tabbed-card.scss';
+import { emptyChatItemContent } from '../../helper/chat-item';
+import { MynahUIGlobalEvents } from '../../helper/events';
 
 export interface ChatItemTabbedCardProps {
   tabId: string;
@@ -23,18 +25,23 @@ export class ChatItemTabbedCard {
       options: props.tabbedCard,
       direction: 'horizontal',
       name: `tabbed-card-toggle-${props.messageId ?? props.tabId}`,
-      value: props.tabbedCard.filter((tab) => tab.selected)[0].value,
+      value: this.getTabOfSelectedOrGivenValue().value,
       testId: testIds.chatItem.tabbedCard.tabs,
       onChange: (value) => {
-        console.log(value, this.getTabContentFromValue(value));
-        this.contentCard.reset();
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TABBED_CONTENT_SWITCH, {
+          tabId: this.props.tabId,
+          messageId: this.props.messageId,
+          contentTabId: value,
+        });
+        this.contentCard.clearContent();
         this.contentCard.updateCardStack({
-          ...this.getTabContentFromValue(value)
+          ...emptyChatItemContent,
+          ...this.getTabOfSelectedOrGivenValue(value).content
         });
       }
     });
 
-    const selectedTabContent = props.tabbedCard.filter((tab) => tab.selected)[0]?.content ?? props.tabbedCard[0].content;
+    const selectedTabContent = (props.tabbedCard.find((tab) => tab.selected) ?? props.tabbedCard[0])?.content;
     this.contentCard = new ChatItemCard({
       tabId: props.tabId,
       chatItem: {
@@ -64,7 +71,9 @@ export class ChatItemTabbedCard {
     });
   }
 
-  private readonly getTabContentFromValue = (value: string): ChatItemContent => {
-    return this.props.tabbedCard.find((tab) => tab.value === value)?.content ?? this.props.tabbedCard[0].content;
+  private readonly getTabOfSelectedOrGivenValue = (value?: string): (ToggleOption & {
+    content: ChatItemContent;
+  }) => {
+    return this.props.tabbedCard.find((tab) => value != null ? tab.value === value : tab.selected) ?? this.props.tabbedCard[0];
   };
 }

@@ -55,6 +55,7 @@
             flex-flow: column nowrap;
             justify-content: flex-start;
             align-items: flex-start;
+            gap: var(--mynah-sizing-half);
 
             > .mynah-chat-item-tree-view-button {
                 gap: var(--mynah-sizing-1);
@@ -95,6 +96,18 @@
             min-height: auto;
             height: auto;
             margin: 0;
+            &.mynah-chat-item-tree-view-not-clickable {
+                cursor: default;
+                &:active,
+                &:focus-visible,
+                &:hover {
+                    filter: brightness(0.95);
+                    &:after {
+                        transform: translate3d(-7%, 0, 0);
+                        opacity: 0;
+                    }
+                }
+            }
 
             > .mynah-chat-item-tree-view-file-item-actions {
                 z-index: 150;

@@ -4,7 +4,14 @@
  */
 
 import { marked } from 'marked';
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
+import {
+  DomBuilder,
+  DomBuilderEventHandler,
+  DomBuilderEventHandlerWithOptions,
+  DomBuilderObject,
+  ExtendedHTMLElement,
+  GenericEvents
+} from '../helper/dom';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Card } from './card/card';
 import { CardBody } from './card/card-body';
@@ -27,9 +34,10 @@ export interface ButtonProps {
   disabled?: boolean;
   primary?: boolean;
   border?: boolean;
-  status?: 'primary' | 'info' | 'success' | 'warning' | 'error';
-  additionalEvents?: Record<string, (event?: any) => any>;
+  status?: 'main' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'clear';
+  additionalEvents?: Partial<Record<GenericEvents, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions>>;
   onClick: (e: Event) => void;
+  onHover?: (e: Event) => void;
 }
 export abstract class ButtonAbstract {
   render: ExtendedHTMLElement;
@@ -70,10 +78,15 @@ class ButtonInternal extends ButtonAbstract {
         ...props.additionalEvents,
         click: (e) => {
           this.hideTooltip();
-          props.onClick(e);
+          if (this.props.disabled !== true) {
+            props.onClick(e);
+          }
         },
         mouseover: (e) => {
           cancelEvent(e);
+          if (this.props.onHover != null) {
+            this.props.onHover(e);
+          }
           const textContentSpan: HTMLSpanElement | null = this.render.querySelector('.mynah-button-label');
           let tooltipText;
           if (props.label != null && typeof props.label === 'string' && textContentSpan != null && textContentSpan.offsetWidth < textContentSpan.scrollWidth) {
@@ -155,6 +168,7 @@ class ButtonInternal extends ButtonAbstract {
   };
 
   public readonly setEnabled = (enabled: boolean): void => {
+    this.props.disabled = !enabled;
     if (enabled) {
       this.render.removeAttribute('disabled');
     } else {

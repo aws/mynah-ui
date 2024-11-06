@@ -8,6 +8,7 @@ import testIds from '../../helper/test-ids';
 import { ChatItemButton } from '../../static';
 import { Button } from '../button';
 import { Icon } from '../icon';
+import { OverlayHorizontalDirection } from '../overlay';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 
 export interface ChatItemButtonsWrapperProps {
@@ -35,14 +36,31 @@ export class ChatItemButtonsWrapper {
         const actionItem = new Button({
           testId: testIds.chatItem.buttons.button,
           label: chatActionAction.text,
+          tooltip: chatActionAction.description,
+          tooltipHorizontalDirection: OverlayHorizontalDirection.CENTER,
           icon: chatActionAction.icon != null ? new Icon({ icon: chatActionAction.icon }).render : undefined,
           primary: chatActionAction.status === 'primary',
           border: chatActionAction.status !== 'primary',
+          classNames: [
+            ...(chatActionAction.flash != null ? [ 'mynah-button-flash-by-parent-focus', `animate-${chatActionAction.flash}` ] : [ '' ])
+          ],
+          ...(chatActionAction.flash != null
+            ? {
+                onHover: (e) => {
+                  if (e.target != null) {
+                    (e.target as HTMLButtonElement).classList.remove('mynah-button-flash-by-parent-focus');
+                  }
+                }
+              }
+            : {}),
           attributes: {
             'action-id': chatActionAction.id
           },
           status: chatActionAction.status,
           onClick: (e) => {
+            if (e.target != null) {
+              (e.target as HTMLButtonElement).classList.remove('mynah-button-flash-by-parent-focus');
+            }
             if (props.formItems != null) {
               props.formItems.disableAll();
             }

@@ -141,9 +141,9 @@ export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
       {
         type: ChatItemType.ANSWER,
         body: WelcomeMessage,
-        messageId: 'welcome-message'
+        messageId: 'welcome-message',
+        followUp: defaultFollowUps.followUp
       },
-      defaultFollowUps
     ],
     quickActionCommands: QuickActionCommands,
     contextCommands: [

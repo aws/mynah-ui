@@ -14,4 +14,11 @@
     > span {
         display: none;
     }
+
+    // Specific colorful Q icon
+    &.mynah-ui-icon-q {
+        background-image: var(--mynah-ui-icon-q);
+        background-size: cover;
+        background-color: transparent;
+    }
 }

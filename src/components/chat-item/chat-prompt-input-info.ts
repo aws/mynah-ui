@@ -26,28 +26,36 @@ export class ChatPromptInputInfo {
         }
       } ]
     });
-    MynahUITabsStore.getInstance().addListenerToDataStore(props.tabId, 'promptInputInfo', (newInfo) => {
-      this.render.update({
-        children: [
-          new CardBody({
-            onLinkClick: this.linkClick,
-            body: MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo') ?? ''
-          }).render
-        ]
-      });
+    MynahUITabsStore.getInstance().addListenerToDataStore(props.tabId, 'promptInputInfo', (newInfo: string) => {
+      if (newInfo != null && newInfo.trim() !== '') {
+        this.render.update({
+          children: [
+            new CardBody({
+              testId: testIds.prompt.footerInfoBody,
+              onLinkClick: this.linkClick,
+              body: newInfo ?? ''
+            }).render
+          ]
+        });
+      } else {
+        this.render.clear();
+      }
     });
 
+    const footerInfo = MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo');
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.footerInfo,
       classNames: [ 'mynah-chat-prompt-input-info' ],
-      children: [
-        new CardBody({
-          testId: testIds.prompt.footerInfoBody,
-          onLinkClick: this.linkClick,
-          body: MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo') ?? ''
-        }).render
-      ]
+      children: footerInfo != null && footerInfo.trim() !== ''
+        ? [
+            new CardBody({
+              testId: testIds.prompt.footerInfoBody,
+              onLinkClick: this.linkClick,
+              body: MynahUITabsStore.getInstance().getTabDataStore(props.tabId)?.getValue('promptInputInfo') ?? ''
+            }).render
+          ]
+        : []
     });
   }
 

@@ -44,6 +44,7 @@ export class ChatPromptInput {
   private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
   private readonly chatPrompt: ExtendedHTMLElement;
+  private promptTextInputLabel: ExtendedHTMLElement;
   private remainingCharsOverlay: Overlay;
   private quickPickTriggerIndex: number;
   private quickPickType: 'quick-action' | 'context';
@@ -79,6 +80,10 @@ export class ChatPromptInput {
         this.remainingCharsOverlay?.close();
       }
     });
+    const initText = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputText');
+    if (initText != null && initText.trim() !== '') {
+      this.promptTextInput.updateTextInputValue(initText);
+    }
     this.sendButton = new PromptInputSendButton({
       tabId: this.props.tabId,
       onClick: () => {
@@ -127,11 +132,41 @@ export class ChatPromptInput {
       ]
     });
 
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputText', (promptInputText: string) => {
+      if (this.promptTextInput.getTextInputValue() !== promptInputText) {
+        this.promptTextInput.clear();
+        this.promptTextInput.updateTextInputValue(promptInputText);
+        setTimeout(() => {
+          this.promptTextInput.focus(-1);
+        }, 750);
+      }
+    });
+
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputLabel', (promptInputLabel: string) => {
+      const newDetails = this.getPromptInputTextLabel(promptInputLabel);
+      if (this.promptTextInputLabel != null) {
+        this.promptTextInputLabel.replaceWith(newDetails);
+      } else {
+        this.promptTextInputLabel = newDetails;
+      }
+    });
+
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputVisible', (promptInputVisible?: boolean) => {
+      if (promptInputVisible === false) {
+        this.render.addClass('hidden');
+      } else {
+        this.render.removeClass('hidden');
+      }
+    });
+
+    this.promptTextInputLabel = this.getPromptInputTextLabel(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputLabel'));
+
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.wrapper,
-      classNames: [ 'mynah-chat-prompt-wrapper' ],
+      classNames: [ 'mynah-chat-prompt-wrapper', MynahUITabsStore.getInstance().getTabDataStore(props.tabId).getValue('promptInputVisible') === false ? 'hidden' : '' ],
       children: [
+        this.promptTextInputLabel,
         this.chatPrompt
       ],
     });
@@ -525,26 +560,6 @@ export class ChatPromptInput {
     this.promptTextInput.focus(this.quickPickTriggerIndex + contextCommand.command.length + 1);
   };
 
-  public readonly clearTextArea = (keepAttachment?: boolean): void => {
-    this.selectedCommand = '';
-    this.promptTextInput.clear();
-    this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT());
-    this.promptTextInputCommand.setCommand('');
-    if (keepAttachment !== true) {
-      this.attachmentWrapper.clear();
-      this.promptAttachment.clear();
-    }
-    this.updateAvailableCharactersIndicator();
-  };
-
-  public readonly addAttachment = (attachmentContent: string, type?: PromptAttachmentType): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_ATTACHMENT, {
-      textToAdd: attachmentContent,
-      tabId: this.props.tabId,
-      type
-    });
-  };
-
   private readonly sendPrompt = (): void => {
     const quickPickItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
     const currentInputValue = this.promptTextInput.getTextInputValue();
@@ -591,5 +606,38 @@ export class ChatPromptInput {
       this.clearTextArea();
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, promptData);
     }
+  };
+
+  private readonly getPromptInputTextLabel = (promptInputLabel?: string): ExtendedHTMLElement => DomBuilder.getInstance().build({
+    type: 'div',
+    testId: testIds.prompt.label,
+    classNames: [ 'mynah-chat-prompt-input-label' ],
+    children: promptInputLabel != null && promptInputLabel.trim() !== ''
+      ? [
+          new CardBody({
+            body: promptInputLabel
+          }).render
+        ]
+      : []
+  });
+
+  public readonly clearTextArea = (keepAttachment?: boolean): void => {
+    this.selectedCommand = '';
+    this.promptTextInput.clear();
+    this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT());
+    this.promptTextInputCommand.setCommand('');
+    if (keepAttachment !== true) {
+      this.attachmentWrapper.clear();
+      this.promptAttachment.clear();
+    }
+    this.updateAvailableCharactersIndicator();
+  };
+
+  public readonly addAttachment = (attachmentContent: string, type?: PromptAttachmentType): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_ATTACHMENT, {
+      textToAdd: attachmentContent,
+      tabId: this.props.tabId,
+      type
+    });
   };
 }

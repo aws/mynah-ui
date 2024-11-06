@@ -33,6 +33,8 @@ body.mynah-ui-root {
         max-width: inherit;
         display: block;
         height: inherit;
+        // Flexbox fix
+        min-height: 0;
         flex: 1;
 
         &:first-child {

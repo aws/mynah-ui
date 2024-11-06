@@ -53,6 +53,8 @@
     --mynah-bg-gradient-mid: #538bf7;
     --mynah-bg-gradient-start: #301673;
     --mynah-bg-gradient-end: #6e3bf1;
+    --mynah-bg-gradient-next: #da8af7;
+    --mynah-bg-gradient-prev: #0096fa;
 
     --mynah-bg-gradient: radial-gradient(100% 100% at 0% 0%, var(--mynah-bg-gradient-start) 0%, rgba(0, 0, 0, 0) 100%),
         radial-gradient(100% 100% at 100% 100%, var(--mynah-bg-gradient-mid) 0%, rgba(0, 0, 0, 0) 100%),
@@ -75,6 +77,11 @@
         var(--mynah-color-gradient-end),
         var(--mynah-color-gradient-start)
     );
+    --mynah-color-gradient-main-half: linear-gradient(
+        90deg,
+        var(--mynah-color-gradient-start),
+        var(--mynah-color-gradient-mid)
+    );
 
     --mynah-color-button: var(--vscode-button-background);
     --mynah-color-button-reverse: var(--vscode-button-foreground);
@@ -85,6 +92,7 @@
 
     --mynah-shadow-button: none;
     --mynah-shadow-card: none;
+    --mynah-shadow-card-hover: 0 40px 25px -15px rgba(0, 0, 0, 0.35);
     --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
 
     --mynah-font-size-xxsmall: 0.8rem;
@@ -92,6 +100,8 @@
     --mynah-font-size-small: 1rem;
     --mynah-font-size-medium: 1.125rem;
     --mynah-font-size-large: 1.25rem;
+    --mynah-font-size-xlarge: 1.4rem;
+    --mynah-font-size-xxlarge: 1.6rem;
     --mynah-line-height: 1.5rem;
 
     --mynah-syntax-code-line-height: 1.5rem;
@@ -102,6 +112,7 @@
     --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
 
+    --mynah-main-wrapper-transition: all 650ms cubic-bezier(0.83, 0, 0.17, 1);
     --mynah-bottom-panel-transition: all 850ms cubic-bezier(0.25, 1, 0, 1);
     --mynah-short-rev-transition: all 580ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-very-short-transition: all 600ms cubic-bezier(0.25, 1, 0, 1);
@@ -109,5 +120,5 @@
     --mynah-short-transition: all 550ms cubic-bezier(0.85, 0.15, 0, 1);
     --mynah-short-transition-rev: all 580ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-short-transition-rev-opacity: opacity 750ms cubic-bezier(0.35, 1, 0, 1);
-    --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1.2, 0, 1), transform 800ms cubic-bezier(0.2, 1.05, 0, 1);
+    --mynah-text-flow-transition: all 800ms cubic-bezier(0.35, 1, 0, 1), transform 800ms cubic-bezier(0.25, 1, 0, 1);
 }

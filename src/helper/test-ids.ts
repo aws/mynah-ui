@@ -18,12 +18,14 @@ export default {
     footerInfoBody: 'prompt-input-footer-info-body',
     stickyCard: 'prompt-input-sticky-card',
     progress: 'prompt-input-progress-wrapper',
+    label: 'prompt-input-label',
   },
   chat: {
     wrapper: 'chat-wrapper',
     chatItemsContainer: 'chat-chat-items-container',
     middleBlockWrapper: 'chat-middle-block-wrapper',
     stopButton: 'chat-middle-block-stop-button',
+    header: 'chat-wrapper-header-details',
   },
   chatItem: {
     type: {

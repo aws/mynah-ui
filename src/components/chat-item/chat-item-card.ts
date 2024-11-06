@@ -18,7 +18,7 @@ import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
 import { CONTAINER_GAP } from './chat-wrapper';
-import { chatItemHasContent, emptyChatItemContent } from '../../helper/chat-item';
+import { chatItemHasContent } from '../../helper/chat-item';
 import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
 import testIds from '../../helper/test-ids';
@@ -123,6 +123,7 @@ export class ChatItemCard {
 
   private readonly getCardClasses = (): string[] => {
     return [
+      ...(this.props.chatItem.hoverEffect !== undefined ? [ 'mynah-chat-item-hover-effect' ] : []),
       ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
       ...(this.props.inline === true ? [ 'mynah-ui-chat-item-inline-card' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),
@@ -314,6 +315,7 @@ export class ChatItemCard {
       this.informationCard = new ChatItemInformationCard({
         tabId: this.props.tabId,
         messageId: this.props.chatItem.messageId,
+        classNames: [ 'mynah-card-inner-order-55' ],
         informationCard: this.props.chatItem.informationCard ?? {}
       });
       this.card?.render.insertChild('beforeend', this.informationCard.render);
@@ -506,10 +508,33 @@ export class ChatItemCard {
     this.updateCard();
   };
 
-  public readonly reset = (): void => {
-    this.updateCardStack({
-      ...emptyChatItemContent,
-    });
+  public readonly clearContent = (): void => {
+    this.contentBody?.render.remove();
+    this.contentBody = null;
+
+    this.chatButtons?.render.remove();
+    this.chatButtons = null;
+
+    this.customRendererWrapper?.render.remove();
+    this.customRendererWrapper = null;
+
+    this.fileTreeWrapper?.render.remove();
+    this.fileTreeWrapper = null;
+
+    this.followUps?.render.remove();
+    this.followUps = null;
+
+    this.cardFooter?.remove();
+    this.cardFooter = null;
+
+    this.chatFormItems?.render.remove();
+    this.chatFormItems = null;
+
+    this.informationCard?.render.remove();
+    this.informationCard = null;
+
+    this.tabbedCard?.render.remove();
+    this.tabbedCard = null;
   };
 
   public readonly getRenderDetails = (): CardRenderDetails => {

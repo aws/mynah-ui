@@ -1,4 +1,12 @@
-import { ChatItem, ChatItemType, generateUID, MynahIcons, SourceLink, Status } from '@aws/mynah-ui';
+import { ChatItem, 
+    ChatItemContent, 
+    ChatItemType, 
+    generateUID, 
+    MynahIcons, 
+    MynahUIDataModel, 
+    MynahUITabStoreTab, 
+    SourceLink, 
+    Status } from '@aws/mynah-ui';
 import md0 from './sample-0.md';
 import md1 from './sample-1.md';
 import md2 from './sample-2.md';
@@ -116,6 +124,231 @@ export const exampleCodeBlockToInsert = SampleCode;
 export const exampleCodeDiff = SampleDiff;
 export const exampleCodeDiffApplied = SampleDiffApplied;
 
+export const tabbedData: ChatItemContent['tabbedContent'] = [
+    {
+        label: 'Overview',
+        value: 'overview',
+        icon: MynahIcons.COMMENT,
+        content:{
+        fileList: {
+            fileTreeTitle: 'Suggestions',
+            filePaths: ['fruits/oranges.py', 'fruits/apples.py'],
+            details: {
+            'fruits/oranges.py': {
+                clickable: false,
+                icon: MynahIcons.PLUS,
+                status: 'success'
+            },
+            'fruits/apples.py': {
+                clickable: false,
+                icon: MynahIcons.MINUS,
+                status: 'error'
+            }
+            }
+        }
+        }
+    },
+    {
+        label: 'Examples',
+        value: 'examples',
+        icon: MynahIcons.PLAY,
+        content:{
+            body: `**Here are some examples you can find:**`,
+            customRenderer: `<img aspect-ratio src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_REV_SQ.8c88ac215fe4e441dc42865dd6962ed4f444a90d.png" alt="Powered by AWS">`
+        }
+    }
+];
+
+export const exploreTabData:MynahUIDataModel = { 
+    tabBackground: false,
+    compactMode: false,
+    tabTitle: 'Explore Agents',
+    promptInputVisible: false,
+    tabHeaderDetails: {
+      icon: MynahIcons.ASTERISK,
+      title: 'Amazon Q Developer Agents',
+      description: 'Software development'
+    },
+    chatItems: [
+      {
+        type: ChatItemType.ANSWER,
+        snapToTop: true,
+        hoverEffect: true,
+        body: `### Feature development
+Generate code across files with a task description.
+`,
+        icon: MynahIcons.CODE_BLOCK,
+        footer: {
+          tabbedContent: tabbedData
+        },
+        buttons: [
+          {
+            status: 'clear',
+            id: 'user-guide-dev',
+            disabled: false,
+            text: 'Read user guide'
+          },
+          {
+            status: 'main',
+            disabled: false,
+            flash: 'once',
+            icon: MynahIcons.RIGHT_OPEN,
+            id: 'quick-start-dev',
+            text: `Quick start with **/dev**`
+          }
+        ]
+      },
+      {
+        type: ChatItemType.ANSWER,
+        hoverEffect: true,
+        body: `### Scan
+Identify and fix code issues before committing.
+`,
+        icon: MynahIcons.BUG,
+        footer: {
+          tabbedContent: tabbedData
+        },
+        buttons: [
+          {
+            status: 'clear',
+            id: 'user-guide-scan',
+            disabled: false,
+            text: 'Read user guide'
+          },
+          {
+            status: 'primary',
+            disabled: false,
+            icon: MynahIcons.RIGHT_OPEN,
+            flash: 'once',
+            id: 'quick-start-scan',
+            text: `Quick start with **/scan**`
+          }
+        ]
+      },
+      {
+        type: ChatItemType.ANSWER,
+        hoverEffect: true,
+        body: `### Unit Test Generation
+Generate unit tests for selected code (supports python & java).
+`,
+        icon: MynahIcons.CHECK_LIST,
+        footer: {
+          tabbedContent: tabbedData
+        },
+        buttons: [
+          {
+            status: 'clear',
+            id: 'user-guide-test',
+            disabled: false,
+            text: 'Read user guide'
+          },
+          {
+            disabled: false,
+            icon: MynahIcons.RIGHT_OPEN,
+            flash: "infinite",
+            id: 'quick-start-test',
+            text: `Quick start with **/test**`
+          }
+        ]
+      },
+      {
+        type: ChatItemType.ANSWER,
+        hoverEffect: true,
+        body: `### Transform
+Transform your java project from an old version to a new one.
+`,
+        icon: MynahIcons.TRANSFORM,
+        footer: {
+          tabbedContent: tabbedData
+        },
+        buttons: [
+          {
+            status: 'clear',
+            id: 'user-guide-transform',
+            disabled: false,
+            text: 'Read user guide'
+          },
+          {
+            disabled: false,
+            icon: MynahIcons.RIGHT_OPEN,
+            flash: 'infinite',
+            id: 'quick-start-transform',
+            text: `Quick start with **/transform**`
+          }
+        ]
+      },
+    ]
+};
+
+export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
+    {
+      groupName: 'Amazon Q Agents',
+      commands: [
+        {
+          command: '/dev',
+          icon: MynahIcons.CODE_BLOCK,
+          description: 'Generate code across files with a task description.',
+          placeholder: 'Type your question'
+        },
+        {
+            command: '/scan',
+            icon: MynahIcons.BUG,
+            description: 'Identify and fix code issues before committing',
+            placeholder: 'Type your question'
+        },
+        {
+            command: '/test',
+            icon: MynahIcons.CHECK_LIST,
+            description: 'Generate unit tests for selected code (supports python & java)',
+            placeholder: 'Type your question'
+        },
+        {
+            command: '/transform',
+            icon: MynahIcons.TRANSFORM,
+            description: 'Transform your java project',
+            placeholder: 'Type your question'
+        },
+      ]
+    }
+];
+
+export const welcomeScreenTabData:MynahUITabStoreTab = {
+    isSelected: true,
+    store: {
+      quickActionCommands: qAgentQuickActions,
+      tabTitle: 'Welcome to Q',
+      tabBackground: true,
+      chatItems: [{
+        type: ChatItemType.ANSWER,
+        icon: MynahIcons.ASTERISK,
+        messageId: 'new-welcome-card',
+        body: `#### Work on a task with Q Developer Agents
+_Generate code, scan for issues, and more._`,
+        buttons: [
+          {
+            id: 'explore',
+            disabled: false,
+            text: 'Explore',
+          },
+          {
+            id: 'quick-start',
+            text: 'Quick start',
+            disabled: false,
+            status: 'main',
+          }
+        ]
+      }],
+      promptInputLabel: 'Or, start a chat',
+      promptInputPlaceholder: 'Type your question',
+      compactMode: true,
+      tabHeaderDetails: {
+        title: "Hi, I'm Amazon Q.",
+        description: 'Where would you like to start?',
+        icon: MynahIcons.Q
+      },
+    },
+};
+
 export const exampleRichFollowups: ChatItem = {
     type: ChatItemType.SYSTEM_PROMPT,
     messageId: new Date().getTime().toString(),
@@ -153,6 +386,10 @@ export const defaultFollowUps: ChatItem = {
     followUp: {
         text: 'Example card types',
         options: [
+            {
+                command: Commands.REPLACE_FOLLOWUPS,
+                pillText: 'Replace followups',
+            },
             {
                 command: Commands.STATUS_CARDS,
                 pillText: 'Cards with status',
@@ -714,9 +951,10 @@ export const exampleDownloadFile: ChatItem = {
     },
 };
 
-export const exampleInformationCard = (statusType: null | Status, statusBody: string | null) => {
+export const exampleInformationCard = (statusType: null | Status, statusBody: string | null, snap?:boolean):ChatItem => {
     return {
         messageId: generateUID(),
+        snapToTop: snap === true,
         type: ChatItemType.ANSWER,
         informationCard: {
             title: 'Information card',

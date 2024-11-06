@@ -33,6 +33,9 @@ import {
   sampleAllInOneList,
   sampleTableList,
   exampleInformationCard,
+  exploreTabData,
+  qAgentQuickActions,
+  welcomeScreenTabData,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -68,6 +71,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           icon: MynahIcons.ELLIPSIS,
           items: [
             {
+              id: 'new-welcome-screen',
+              text: 'Welcome screen',
+              icon: MynahIcons.Q,
+            },
+            {
               id: 'custom-data-check',
               text: 'Custom check',
               icon: MynahIcons.MAGIC,
@@ -95,11 +103,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       'tab-1': {
         isSelected: true,
         store: {
-          tabCloseConfirmationMessage: 'Only this tab has a different message than others!',
           ...mynahUIDefaults.store,
-          ...initialData,
-          showChatAvatars,
-        },
+          ...welcomeScreenTabData.store
+        }
       },
     },
     onFocusStateChanged: (focusState:boolean) => {
@@ -119,6 +125,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             'accept-diff': {
               id: 'accept-diff',
               label: 'Accept Diff',
+              flash: 'infinite',
               icon: MynahIcons.OK_CIRCLED,
               acceptedLanguages: ['diff-typescript'],
               data: {
@@ -137,6 +144,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }));
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+      } else if (buttonId === 'new-welcome-screen') {
+        mynahUI.updateStore('', {
+          ...mynahUIDefaults.store,
+          ...welcomeScreenTabData.store
+        });
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
@@ -206,6 +218,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           tabCloseConfirmationMessage: `Working on "${prompt.prompt}"`,
         });
       }
+      if(mynahUI.getAllTabs()[tabId].store?.compactMode){
+        mynahUI.updateStore(tabId, {
+          compactMode: false,
+          tabHeaderDetails: null,
+          ...mynahUIDefaults.store,
+          chatItems: [],
+          tabBackground: false,
+          promptInputLabel: null,
+        });
+      }
       onChatPrompt(tabId, prompt);
     },
     onStopChatResponse: (tabId: string) => {
@@ -218,11 +240,31 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onFollowUpClicked: (tabId: string, messageId: string, followUp: ChatItemAction) => {
       Log(`Followup click: <b>${followUp.pillText}</b>`);
       if (followUp.prompt != null || followUp.command != null) {
-        onChatPrompt(tabId, {
-          command: followUp.command,
-          prompt: followUp.prompt,
-          escapedPrompt: followUp.escapedPrompt ?? followUp.prompt,
-        });
+        if(followUp.command === Commands.REPLACE_FOLLOWUPS) {
+
+          mynahUI.addChatItem(tabId, {
+            type: ChatItemType.ANSWER,
+            messageId: 'my-message-id',
+            body: 'Hello',
+          });
+
+          setTimeout(()=>{
+            mynahUI.updateChatAnswerWithMessageId(tabId, 'my-message-id', {
+              followUp: exampleRichFollowups.followUp
+            });
+            setTimeout(()=>{
+              mynahUI.updateChatAnswerWithMessageId(tabId, 'my-message-id', {
+                followUp: defaultFollowUps.followUp,
+              })
+            },1500)
+          },1500);
+        } else {
+          onChatPrompt(tabId, {
+            command: followUp.command,
+            prompt: followUp.prompt,
+            escapedPrompt: followUp.escapedPrompt ?? followUp.prompt,
+          });
+        }
       }
     },
     onChatPromptProgressActionButtonClicked: (tabId: string, action) => {
@@ -239,7 +281,34 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         Log(`Stop generating code: <b>${tabId}</b>`);        
       }
     },
+    onTabbedContentTabChange: (tabId: string, messageId: string, contentTabId: string) =>{
+      Log(`Tabbed content tab changed on tab <b>${tabId}</b>:<br/>
+        Message Id: <b>${messageId}</b><br/>
+        Content tabId: <b>${contentTabId}</b><br/>
+        `);
+    },
     onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
+      if (action.id === 'quick-start') {
+        mynahUI.updateStore(tabId, { 
+          tabHeaderDetails: null,
+          compactMode: false,
+          tabBackground: false,
+          promptInputText: '/dev',
+          promptInputLabel: null,
+          chatItems: []
+        });
+      }
+      if (action.id === 'explore') {
+        mynahUI.updateStore('', exploreTabData);
+      }
+      if (action.id.match('quick-start-')){
+          mynahUI.updateStore('',{
+            ...mynahUIDefaults.store,
+            chatItems: [],
+            promptInputText: `/${action.id.replace('quick-start-', '')}`,
+            quickActionCommands: qAgentQuickActions
+          })
+      }
       if (messageId === 'sticky-card') {
         mynahUI.updateStore(tabId, { promptInputStickyCard: null });
       }
@@ -462,7 +531,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.addChatItem(tabId, exampleRichFollowups);
           break;
         case Commands.INFORMATION_CARDS:
-          mynahUI.addChatItem(tabId, exampleInformationCard(null, null));
+          mynahUI.addChatItem(tabId, exampleInformationCard(null, null, true));
           mynahUI.addChatItem(tabId, exampleInformationCard('warning', 'You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits.'));
           mynahUI.addChatItem(tabId, exampleInformationCard('error', 'You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits.'));
           mynahUI.addChatItem(tabId, exampleInformationCard('success', 'Successfully completed this task!'));
@@ -499,11 +568,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
       }
     } else {
-      mynahUI.addChatItem(tabId, {
-        type: ChatItemType.PROMPT,
-        messageId: new Date().getTime().toString(),
-        body: `${prompt.escapedPrompt as string}`,
-      });
+      if(prompt != null){
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.PROMPT,
+          messageId: new Date().getTime().toString(),
+          body: `${prompt.escapedPrompt as string}`,
+        });
+      }
       getGenerativeAIAnswer(tabId);
     }
   };
@@ -590,6 +661,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 details: {
                   './src/index.ts': {
                     icon: MynahIcons.FILE,
+                    clickable: false,
                     description: `Files used for this response: **index.ts**
 Use \`@\` to mention a file, folder, or method.`
                   }
