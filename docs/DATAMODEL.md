@@ -1877,6 +1877,7 @@ interface ChatItemButton {
   status?: 'main' | 'primary' | 'clear' | Status;
   flash?: 'infinite' | 'once'; // Flashes the card
   icon?: MynahIcons; // in case if you want to put an icon to the button.
+  position?: 'inside' | 'outside'; // Whether the button shows up inside or oustide a card, default is 'inside'
 }
 ```
 
@@ -1938,6 +1939,37 @@ mynahUI.addChatItem(tabId, {
 
 <p align="center">
   <img src="./img/data-model/chatItems/actions.png" alt="buttons" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+#### Outside buttons
+You can make buttons appear after the container chat card. A common usage for this use case is to add confirmation and rejection buttons to a particular card.
+
+```typescript
+export const exampleConfirmationButtons: ChatItem = {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: 'Do you wish to continue?',
+    buttons: [
+        {
+            id: 'confirmation-buttons-cancel',
+            text: `Cancel`,
+            status: 'error',
+            icon: MynahIcons.CANCEL_CIRCLE,
+            position: 'outside'
+        },
+        {
+            id: 'confirmation-buttons-confirm',
+            text: `Confirm`,
+            status: 'success',
+            icon: MynahIcons.OK_CIRCLED,
+            position: 'outside'
+        },
+    ]
+}
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/confirmationButtons.png" alt="confirmation buttons" style="max-width:250px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 #### Button flash
