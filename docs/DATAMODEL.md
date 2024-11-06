@@ -1945,27 +1945,27 @@ mynahUI.addChatItem(tabId, {
 You can make buttons appear after the container chat card. A common usage for this use case is to add confirmation and rejection buttons to a particular card.
 
 ```typescript
-export const exampleConfirmationButtons: ChatItem = {
+mynahUI.addChatItem(tabId, {
     type: ChatItemType.ANSWER,
     messageId: new Date().getTime().toString(),
     body: 'Do you wish to continue?',
     buttons: [
         {
             id: 'confirmation-buttons-cancel',
-            text: `Cancel`,
+            text: 'Cancel',
             status: 'error',
             icon: MynahIcons.CANCEL_CIRCLE,
             position: 'outside'
         },
         {
             id: 'confirmation-buttons-confirm',
-            text: `Confirm`,
+            text: 'Confirm',
             status: 'success',
             icon: MynahIcons.OK_CIRCLED,
             position: 'outside'
         },
     ]
-}
+});
 ```
 
 <p align="center">
