@@ -15,7 +15,7 @@ import { ChatItemRelevanceVote } from './chat-item-relevance-vote';
 import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { Config } from '../../helper/config';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
-import { ChatItemButtonsWrapper } from './chat-item-buttons';
+import { ChatItemButtonsWrapper, ChatItemButtonsWrapperProps } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
 import { CONTAINER_GAP } from './chat-wrapper';
 import { chatItemHasContent } from '../../helper/chat-item';
@@ -45,7 +45,8 @@ export class ChatItemCard {
   private chatAvatar: ExtendedHTMLElement;
   private chatFormItems: ChatItemFormItemsWrapper | null = null;
   private customRendererWrapper: CardBody | null = null;
-  private chatButtons: ChatItemButtonsWrapper | null = null;
+  private chatButtonsInside: ChatItemButtonsWrapper | null = null;
+  private chatButtonsOutside: ChatItemButtonsWrapper | null = null;
   private fileTreeWrapper: ChatItemTreeViewWrapper | null = null;
   private followUps: ChatItemFollowUpContainer | null = null;
   private votes: ChatItemRelevanceVote | null = null;
@@ -106,6 +107,7 @@ export class ChatItemCard {
       children: [
         ...(this.canShowAvatar() && MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
         ...(this.card != null ? [ this.card?.render ] : []),
+        ...(this.chatButtonsOutside != null ? [ this.chatButtonsOutside?.render ] : []),
         ...(this.props.chatItem.followUp?.text !== undefined ? [ new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render ] : [])
       ],
     });
@@ -324,16 +326,23 @@ export class ChatItemCard {
     /**
      * Generate buttons if available
      */
-    if (this.chatButtons != null) {
-      this.chatButtons.render.remove();
-      this.chatButtons = null;
+    if (this.chatButtonsInside != null) {
+      this.chatButtonsInside.render.remove();
+      this.chatButtonsInside = null;
+    }
+    if (this.chatButtonsOutside != null) {
+      this.chatButtonsOutside.render.remove();
+      this.chatButtonsOutside = null;
     }
     if (this.props.chatItem.buttons != null) {
-      this.chatButtons = new ChatItemButtonsWrapper({
+      const insideButtons = this.props.chatItem.buttons.filter((button) => button.position == null || button.position === 'inside');
+      const outsideButtons = this.props.chatItem.buttons.filter((button) => button.position === 'outside');
+
+      const chatButtonProps: ChatItemButtonsWrapperProps = {
         tabId: this.props.tabId,
         classNames: [ 'mynah-card-inner-order-60' ],
         formItems: this.chatFormItems,
-        buttons: this.props.chatItem.buttons,
+        buttons: [],
         onActionClick: action => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
@@ -358,8 +367,16 @@ export class ChatItemCard {
             }
           }
         },
-      });
-      this.card?.render.insertChild('beforeend', this.chatButtons.render);
+      };
+
+      if (insideButtons.length > 0) {
+        this.chatButtonsInside = new ChatItemButtonsWrapper({ ...chatButtonProps, buttons: insideButtons });
+        this.card?.render.insertChild('beforeend', this.chatButtonsInside.render);
+      }
+      if (outsideButtons.length > 0) {
+        this.chatButtonsOutside = new ChatItemButtonsWrapper({ ...chatButtonProps, buttons: outsideButtons });
+        this.render?.insertChild('beforeend', this.chatButtonsOutside.render);
+      }
     }
 
     /**
@@ -512,8 +529,8 @@ export class ChatItemCard {
     this.contentBody?.render.remove();
     this.contentBody = null;
 
-    this.chatButtons?.render.remove();
-    this.chatButtons = null;
+    this.chatButtonsInside?.render.remove();
+    this.chatButtonsInside = null;
 
     this.customRendererWrapper?.render.remove();
     this.customRendererWrapper = null;
