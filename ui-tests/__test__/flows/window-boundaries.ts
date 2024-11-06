@@ -2,13 +2,12 @@ import { Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
 import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, waitForAnimationEnd } from '../helpers';
 import { clickToFollowup } from './click-followup';
+import { closeTab } from './close-tab';
+import { openNewTab } from './open-new-tab';
 
 export const checkContentInsideWindowBoundaries = async (page: Page): Promise<void> => {
-  await page.locator(`${getSelector(testIds.prompt.input)}`).clear();
-
-  // Close & open new tab
-  await page.locator(`${getSelector(testIds.tabBar.tabOptionCloseButton)}`).click();
-  await page.locator(`${getSelector(testIds.tabBar.tabAddButton)}`).click();
+  await closeTab(page, false, true);
+  await openNewTab(page, false, true);
 
   await page.mouse.move(0, 0);
   const footerPanel = await page.waitForSelector(`${getSelector(testIds.prompt.footerInfo)}`);

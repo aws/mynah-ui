@@ -1,13 +1,12 @@
 import { Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
+import { closeTab } from './close-tab';
+import { openNewTab } from './open-new-tab';
 
 export const renderTabbedCard = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await page.locator(`${getSelector(testIds.prompt.input)}`).clear();
-
-  // Close & open new tab
-  await page.locator(`${getSelector(testIds.tabBar.tabOptionCloseButton)}`).click();
-  await page.locator(`${getSelector(testIds.tabBar.tabAddButton)}`).click();
+  await closeTab(page, false, true);
+  await openNewTab(page, false, true);
 
   await page.evaluate((body) => {
     const selectedTabId = window.mynahUI.getSelectedTabId();

@@ -1,8 +1,13 @@
 import { Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
+import { closeTab } from './close-tab';
+import { openNewTab } from './open-new-tab';
 
 export const progressIndicator = async (page: Page): Promise<void> => {
+  await closeTab(page, false, true);
+  await openNewTab(page, false, true);
+
   const progressSelector = getSelector(testIds.prompt.progress);
   await page.evaluate(() => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
