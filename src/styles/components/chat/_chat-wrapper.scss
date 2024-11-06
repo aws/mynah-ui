@@ -136,7 +136,7 @@
         }
         > .mynah-ui-title-description-icon-title,
         > .mynah-ui-title-description-icon-description {
-            font-size: calc(2 * var(--mynah-font-size-xxsmall));
+            font-size: var(--mynah-font-size-xxlarge);
         }
         &:empty {
             display: none;
