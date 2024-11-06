@@ -439,6 +439,10 @@ export const defaultFollowUps: ChatItem = {
                 command: Commands.INFORMATION_CARDS,
             },
             {
+                pillText: 'Confirmation buttons',
+                command: Commands.CONFIRMATION_BUTTONS,
+            },
+            {
                 pillText: 'Some auto reply',
                 prompt: 'Some random auto reply here.',
             },
@@ -971,3 +975,26 @@ export const exampleInformationCard = (statusType: null | Status, statusBody: st
         },
     };
 }
+
+export const exampleConfirmationButtons: ChatItem = {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: 'This example shows some buttons with the `position` prop set to `outside`. Now we can use them to, for example, ask for confirmation! Does that make sense?',
+    buttons: [
+        {
+            id: 'confirmation-buttons-cancel',
+            text: `Cancel`,
+            status: 'error',
+            icon: MynahIcons.CANCEL_CIRCLE,
+            position: 'outside'
+        },
+        {
+            id: 'confirmation-buttons-confirm',
+            text: `Confirm`,
+            status: 'success',
+            icon: MynahIcons.OK_CIRCLED,
+            position: 'outside'
+        },
+    ]
+}
+ 
