@@ -25,7 +25,7 @@ export const welcomeMode = async (page: Page, skipScreenshots?: boolean): Promis
   }, welcomeCardId);
 
   await page.mouse.move(0, 0);
-  const chatWrapperSelector = `${getSelector(testIds.chat.wrapper)}[mynah-tab-id="${newTabId as string}"]`;
+  const chatWrapperSelector = `${getSelector(testIds.chat.wrapper)}[mynah-tab-id="${newTabId}"]`;
   const chatWrapper = await page.waitForSelector(chatWrapperSelector);
   expect(chatWrapper).toBeDefined();
 

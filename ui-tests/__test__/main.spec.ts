@@ -25,7 +25,7 @@ describe('Open MynahUI', () => {
       allowSizeMismatch: true,
       failureThresholdType: 'percent',
       storeReceivedOnFailure: true,
-      customSnapshotsDir: `./__test__/__image_snapshots__/${browserName as string}`
+      customSnapshotsDir: `./__test__/__image_snapshots__/${browserName}`
     });
 
     expect.extend({ toMatchImageSnapshot });
