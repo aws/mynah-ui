@@ -43,8 +43,8 @@
             var(--mynah-color-bg) 40%,
             transparent 100%
         );
-        mask-image: linear-gradient(to top, transparent 0%, black 50%);
-        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 50%);
+        mask-image: linear-gradient(to top, transparent 0%, black 35%, black 100%);
+        -webkit-mask-image: linear-gradient(to top, transparent 0%, black 35%, black 100%);
     }
     &:after {
         top: initial;
