@@ -242,10 +242,11 @@
                 max-width: 100%;
                 overflow: hidden;
                 z-index: 10;
-                flex-shrink: 0;
+                flex-shrink: 1;
 
-                > i {
+                > .mynah-ui-icon {
                     opacity: 0.75;
+                    flex-shrink: 0;
                 }
 
                 > span {
