@@ -170,35 +170,5 @@
             color: inherit;
             cursor: help;
         }
-
-        .amzn-mynah-search-result-highlight {
-            background-color: var(--mynah-color-highlight);
-            color: var(--mynah-color-highlight-text);
-        }
-
-        .amzn-mynah-search-result-ellipsis {
-            display: inline-block;
-            position: relative;
-            padding-left: var(--mynah-sizing-2);
-            margin-top: var(--mynah-sizing-1);
-            margin-bottom: var(--mynah-sizing-1);
-            font-size: calc(1em + var(--mynah-sizing-1)) !important;
-            user-select: none;
-            cursor: default;
-            height: var(--mynah-sizing-7);
-
-            &:before {
-                pointer-events: none;
-                content: '';
-                width: calc(1em + var(--mynah-sizing-2));
-                height: calc(1em + var(--mynah-sizing-2));
-                position: absolute;
-                left: 0;
-                top: 0;
-                background-color: currentColor;
-                opacity: 0.1;
-                border-radius: var(--mynah-sizing-1);
-            }
-        }
     }
 }

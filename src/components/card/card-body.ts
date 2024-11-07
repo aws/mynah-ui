@@ -136,7 +136,6 @@ export class CardBody {
         const highlighter = new SyntaxHighlighter({
           codeStringWithMarkup: unescapeHTML(codeString),
           language: snippetLanguage?.trim() !== '' ? snippetLanguage : '',
-          keepHighlights: true,
           codeBlockActions: !isBlockCode
             ? undefined
             : {

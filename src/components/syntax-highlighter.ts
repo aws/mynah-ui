@@ -43,10 +43,10 @@ import { Icon } from './icon';
 import { cancelEvent } from '../helper/events';
 import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
-import unescapeHTML from 'unescape-html';
 import '../styles/components/_syntax-highlighter.scss';
 import { copyToClipboard } from '../helper/chat-item';
 import testIds from '../helper/test-ids';
+import unescapeHTML from 'unescape-html';
 
 const IMPORTED_LANGS = [
   'markup',
@@ -98,32 +98,9 @@ const IMPORTED_LANGS = [
 ];
 const DEFAULT_LANG = 'clike';
 
-// they'll be used to replaced within the code, so making them unique is a must
-export const highlighters = {
-  start: {
-    markup: '<span class="amzn-mynah-search-result-highlight">',
-    textReplacement: '__mynahhighlighterstart__',
-  },
-  end: {
-    markup: '</span>',
-    textReplacement: '__mynahhighlighterend__',
-  },
-};
-export const ellipsis = {
-  start: {
-    markup: '<span class="amzn-mynah-search-result-ellipsis">',
-    textReplacement: '__mynahcodeellipsisstart__',
-  },
-  end: {
-    markup: '</span>',
-    textReplacement: '__mynahcodeellipsisend__',
-  },
-};
-
 export interface SyntaxHighlighterProps {
   codeStringWithMarkup: string;
   language?: string;
-  keepHighlights?: boolean;
   showLineNumbers?: boolean;
   block?: boolean;
   startingLineNumber?: number;
@@ -141,17 +118,8 @@ export class SyntaxHighlighter {
   constructor (props: SyntaxHighlighterProps) {
     this.props = props;
 
-    let codeMarkup = unescapeHTML(props.codeStringWithMarkup);
-    // Replacing the incoming markups with keyword matching static texts
-    if (props.keepHighlights === true) {
-      codeMarkup = codeMarkup
-        .replace(new RegExp(highlighters.start.markup, 'g'), highlighters.start.textReplacement)
-        .replace(new RegExp(highlighters.end.markup, 'g'), highlighters.end.textReplacement)
-        .replace(new RegExp(ellipsis.start.markup, 'g'), ellipsis.start.textReplacement)
-        .replace(new RegExp(ellipsis.end.markup, 'g'), ellipsis.end.textReplacement);
-    }
-
-    let escapedCodeBlock = escapeHTML(codeMarkup);
+    // To ensure we are not leaving anything unescaped before escaping i.e to prevent double escaping
+    let escapedCodeBlock = escapeHTML(unescapeHTML(props.codeStringWithMarkup));
 
     // Convert reference tracker escaped markups back to original incoming from the parent
     escapedCodeBlock = escapedCodeBlock
@@ -186,15 +154,6 @@ export class SyntaxHighlighter {
       }
     });
     highlightElement(preElement);
-
-    // replacing back the keyword matchings for incoming highlights to markup for highlighting code
-    if (props.keepHighlights === true) {
-      preElement.innerHTML = preElement.innerHTML
-        .replace(new RegExp(highlighters.start.textReplacement, 'g'), highlighters.start.markup)
-        .replace(new RegExp(highlighters.end.textReplacement, 'g'), highlighters.end.markup)
-        .replace(new RegExp(ellipsis.start.textReplacement, 'g'), ellipsis.start.markup)
-        .replace(new RegExp(ellipsis.end.textReplacement, 'g'), ellipsis.end.markup);
-    }
 
     if (props.codeBlockActions != null) {
       Object.keys(props.codeBlockActions).forEach((actionId: string) => {
