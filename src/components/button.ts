@@ -19,6 +19,7 @@ import { Config } from '../helper/config';
 import { cancelEvent } from '../helper/events';
 import escapeHTML from 'escape-html';
 import '../styles/components/_button.scss';
+import unescapeHTML from 'unescape-html';
 
 const TOOLTIP_DELAY = 350;
 export interface ButtonProps {
@@ -119,7 +120,7 @@ class ButtonInternal extends ButtonAbstract {
       if (typeof label !== 'string') {
         return [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ label ] } ];
       } else {
-        return [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: marked.parseInline(escapeHTML(label)) as string } ];
+        return [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: marked.parseInline(unescapeHTML(escapeHTML(label))) as string } ];
       }
     }
     return [];

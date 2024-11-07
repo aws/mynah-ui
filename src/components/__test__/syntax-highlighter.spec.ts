@@ -5,7 +5,6 @@ describe('syntax-highlighter', () => {
     const testSyntaxHighlighter = new SyntaxHighlighter({
       codeStringWithMarkup: 'alert("hello");\n',
       language: 'js',
-      keepHighlights: true,
       block: true,
     });
 
@@ -18,7 +17,6 @@ describe('syntax-highlighter', () => {
     const testSyntaxHighlighter = new SyntaxHighlighter({
       codeStringWithMarkup: 'alert("hello");\n',
       language: 'typescript',
-      keepHighlights: true,
       codeBlockActions: {
         copy: {
           id: 'copy',
