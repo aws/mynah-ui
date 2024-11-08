@@ -228,8 +228,8 @@ Identify and fix code issues before committing.
       {
         type: ChatItemType.ANSWER,
         hoverEffect: true,
-        body: `### Unit Test Generation
-Generate unit tests for selected code (supports python & java).
+        body: `### Generation
+Generate code for selected codebase (supports python & java).
 `,
         icon: MynahIcons.CHECK_LIST,
         footer: {
@@ -238,7 +238,7 @@ Generate unit tests for selected code (supports python & java).
         buttons: [
           {
             status: 'clear',
-            id: 'user-guide-test',
+            id: 'user-guide-generate',
             disabled: false,
             text: 'Read user guide'
           },
@@ -246,8 +246,8 @@ Generate unit tests for selected code (supports python & java).
             disabled: false,
             icon: MynahIcons.RIGHT_OPEN,
             flash: "infinite",
-            id: 'quick-start-test',
-            text: `Quick start with **/test**`
+            id: 'quick-start-generate',
+            text: `Quick start with **/generate**`
           }
         ]
       },
@@ -297,9 +297,9 @@ export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
             placeholder: 'Type your question'
         },
         {
-            command: '/test',
+            command: '/generate',
             icon: MynahIcons.CHECK_LIST,
-            description: 'Generate unit tests for selected code (supports python & java)',
+            description: 'Generate code for selected codebase (supports python & java)',
             placeholder: 'Type your question'
         },
         {
