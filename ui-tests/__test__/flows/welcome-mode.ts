@@ -63,10 +63,7 @@ export const welcomeMode = async (page: Page, skipScreenshots?: boolean): Promis
 
   if (skipScreenshots !== true) {
     // snap
-    // TODO: Reduced threshold because of the background image problem.
-    expect(await page.screenshot()).toMatchImageSnapshot({
-      failureThreshold: 0.75
-    });
+    expect(await page.screenshot()).toMatchImageSnapshot({});
   }
 
   await closeTab(page, false, true);
