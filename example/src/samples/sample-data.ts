@@ -201,8 +201,8 @@ Generate code across files with a task description.
       {
         type: ChatItemType.ANSWER,
         hoverEffect: true,
-        body: `### Scan
-Identify and fix code issues before committing.
+        body: `### Write
+Automatically write code and commit it.
 `,
         icon: MynahIcons.BUG,
         footer: {
@@ -211,7 +211,7 @@ Identify and fix code issues before committing.
         buttons: [
           {
             status: 'clear',
-            id: 'user-guide-scan',
+            id: 'user-guide-write',
             disabled: false,
             text: 'Read user guide'
           },
@@ -220,16 +220,16 @@ Identify and fix code issues before committing.
             disabled: false,
             icon: MynahIcons.RIGHT_OPEN,
             flash: 'once',
-            id: 'quick-start-scan',
-            text: `Quick start with **/scan**`
+            id: 'quick-start-write',
+            text: `Quick start with **/write**`
           }
         ]
       },
       {
         type: ChatItemType.ANSWER,
         hoverEffect: true,
-        body: `### Unit Test Generation
-Generate unit tests for selected code (supports python & java).
+        body: `### Generation
+Generate code for selected codebase (supports python & java).
 `,
         icon: MynahIcons.CHECK_LIST,
         footer: {
@@ -238,7 +238,7 @@ Generate unit tests for selected code (supports python & java).
         buttons: [
           {
             status: 'clear',
-            id: 'user-guide-test',
+            id: 'user-guide-generate',
             disabled: false,
             text: 'Read user guide'
           },
@@ -246,8 +246,8 @@ Generate unit tests for selected code (supports python & java).
             disabled: false,
             icon: MynahIcons.RIGHT_OPEN,
             flash: "infinite",
-            id: 'quick-start-test',
-            text: `Quick start with **/test**`
+            id: 'quick-start-generate',
+            text: `Quick start with **/generate**`
           }
         ]
       },
@@ -291,15 +291,15 @@ export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
           placeholder: 'Type your question'
         },
         {
-            command: '/scan',
+            command: '/write',
             icon: MynahIcons.BUG,
-            description: 'Identify and fix code issues before committing',
+            description: 'Automatically write code and commit it',
             placeholder: 'Type your question'
         },
         {
-            command: '/test',
+            command: '/generate',
             icon: MynahIcons.CHECK_LIST,
-            description: 'Generate unit tests for selected code (supports python & java)',
+            description: 'Generate code for selected codebase (supports python & java)',
             placeholder: 'Type your question'
         },
         {
