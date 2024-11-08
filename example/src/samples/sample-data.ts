@@ -201,8 +201,8 @@ Generate code across files with a task description.
       {
         type: ChatItemType.ANSWER,
         hoverEffect: true,
-        body: `### Scan
-Identify and fix code issues before committing.
+        body: `### Write
+Automatically write code and commit it.
 `,
         icon: MynahIcons.BUG,
         footer: {
@@ -211,7 +211,7 @@ Identify and fix code issues before committing.
         buttons: [
           {
             status: 'clear',
-            id: 'user-guide-scan',
+            id: 'user-guide-write',
             disabled: false,
             text: 'Read user guide'
           },
@@ -220,8 +220,8 @@ Identify and fix code issues before committing.
             disabled: false,
             icon: MynahIcons.RIGHT_OPEN,
             flash: 'once',
-            id: 'quick-start-scan',
-            text: `Quick start with **/scan**`
+            id: 'quick-start-write',
+            text: `Quick start with **/write**`
           }
         ]
       },
@@ -291,9 +291,9 @@ export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
           placeholder: 'Type your question'
         },
         {
-            command: '/scan',
+            command: '/write',
             icon: MynahIcons.BUG,
-            description: 'Identify and fix code issues before committing',
+            description: 'Automatically write code and commit it',
             placeholder: 'Type your question'
         },
         {
