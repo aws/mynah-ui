@@ -554,7 +554,7 @@ export class ChatPromptInput {
     } else {
       this.promptTextInputCommand.setCommand(this.selectedCommand);
       // TODO: get this from config
-      this.promptTextInput.updateTextInputPlaceholder('Press enter to send.');
+      this.promptTextInput.updateTextInputPlaceholder(Config.getInstance().config.texts.commandConfirmation);
       this.promptTextInput.updateTextInputMaxLength(0);
       this.render.addClass('awaits-confirmation');
     }

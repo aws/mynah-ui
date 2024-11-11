@@ -492,6 +492,7 @@ export interface ConfigTexts {
   tabCloseConfirmationCloseButton: string;
   noTabsOpen: string;
   openNewTab: string;
+  commandConfirmation: string;
 };
 
 type PickMatching<T, V> = {
