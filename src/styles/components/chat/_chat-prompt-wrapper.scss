@@ -300,6 +300,10 @@
         }
     }
 
+    &.awaits-confirmation .mynah-chat-prompt-input {
+        caret-color: transparent !important;
+    }
+
     &:not(.hidden) + .mynah-chat-wrapper-footer-spacer + .mynah-chat-prompt-input-info {
         padding-top: 0;
     }

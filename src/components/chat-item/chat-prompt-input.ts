@@ -76,6 +76,16 @@ export class ChatPromptInput {
         this.handleInputFocus();
       },
       onBlur: () => {
+        if (this.render.hasClass('awaits-confirmation')) {
+          this.promptTextInputCommand.setCommand('');
+          this.selectedCommand = '';
+          this.promptTextInput.updateTextInputPlaceholder(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'));
+          this.promptTextInput.updateTextInputMaxLength(Config.getInstance().config.maxUserInput);
+          if (Config.getInstance().config.autoFocus) {
+            this.promptTextInput.focus();
+          }
+          this.render.removeClass('awaits-confirmation');
+        }
         this.render.removeClass('input-has-focus');
         this.remainingCharsOverlay?.close();
       }
@@ -542,7 +552,11 @@ export class ChatPromptInput {
       this.promptTextInputCommand.setCommand(this.selectedCommand);
       this.promptTextInput.updateTextInputPlaceholder(quickActionCommand.placeholder);
     } else {
-      this.sendPrompt();
+      this.promptTextInputCommand.setCommand(this.selectedCommand);
+      // TODO: get this from config
+      this.promptTextInput.updateTextInputPlaceholder('Press enter to send.');
+      this.promptTextInput.updateTextInputMaxLength(0);
+      this.render.addClass('awaits-confirmation');
     }
     this.quickPick.close();
     if (Config.getInstance().config.autoFocus) {
