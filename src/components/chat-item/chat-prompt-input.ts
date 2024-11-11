@@ -250,6 +250,9 @@ export class ChatPromptInput {
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
+    if (e.key === KeyMap.ESCAPE && this.render.hasClass('awaits-confirmation')) {
+      this.promptTextInput.blur();
+    }
     if (!this.quickPickOpen) {
       const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
       const allQuickPickContextItems = quickPickContextItems.flatMap(cntxGroup => cntxGroup.commands.map(cmd => cmd.command));
