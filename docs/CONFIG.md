@@ -35,6 +35,7 @@ interface ConfigModel {
         tabCloseConfirmationCloseButton?: string;
         noTabsOpen: string; // Supports markdown
         openNewTab: string;
+        commandConfirmation: string;
     };
     // Options to show up on the overlay feedback form
     // after user clicks to downvote on a chat item
@@ -198,6 +199,13 @@ Default tab title text if it is not set through store data for that tab.
 ## noTabsOpen, openNewTab
 <p align="center">
   <img src="./img/texts/noTabsOpen.png" alt="noTabsOpen" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## commandConfirmation
+<p align="center">
+  <img src="./img/texts/commandConfirmation.png" alt="commandConfirmation" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
