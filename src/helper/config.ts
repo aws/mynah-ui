@@ -77,7 +77,8 @@ const configDefaults: ConfigFullModel = {
     tabCloseConfirmationCloseButton: 'Close tab',
     tabCloseConfirmationKeepButton: 'Keep tab',
     noTabsOpen: '### Open a tab to chat with Q',
-    openNewTab: 'New tab'
+    openNewTab: 'New tab',
+    commandConfirmation: 'Press enter to continue'
   },
 };
 export class Config {

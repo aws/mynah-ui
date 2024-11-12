@@ -76,6 +76,16 @@ export class ChatPromptInput {
         this.handleInputFocus();
       },
       onBlur: () => {
+        if (this.render.hasClass('awaits-confirmation')) {
+          this.promptTextInputCommand.setCommand('');
+          this.selectedCommand = '';
+          this.promptTextInput.updateTextInputPlaceholder(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputPlaceholder'));
+          this.promptTextInput.updateTextInputMaxLength(Config.getInstance().config.maxUserInput);
+          if (Config.getInstance().config.autoFocus) {
+            this.promptTextInput.focus();
+          }
+          this.render.removeClass('awaits-confirmation');
+        }
         this.render.removeClass('input-has-focus');
         this.remainingCharsOverlay?.close();
       }
@@ -240,6 +250,9 @@ export class ChatPromptInput {
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
+    if (e.key === KeyMap.ESCAPE && this.render.hasClass('awaits-confirmation')) {
+      this.promptTextInput.blur();
+    }
     if (!this.quickPickOpen) {
       const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
       const allQuickPickContextItems = quickPickContextItems.flatMap(cntxGroup => cntxGroup.commands.map(cmd => cmd.command));
@@ -542,7 +555,10 @@ export class ChatPromptInput {
       this.promptTextInputCommand.setCommand(this.selectedCommand);
       this.promptTextInput.updateTextInputPlaceholder(quickActionCommand.placeholder);
     } else {
-      this.sendPrompt();
+      this.promptTextInputCommand.setCommand(this.selectedCommand);
+      this.promptTextInput.updateTextInputPlaceholder(Config.getInstance().config.texts.commandConfirmation);
+      this.promptTextInput.updateTextInputMaxLength(0);
+      this.render.addClass('awaits-confirmation');
     }
     this.quickPick.close();
     if (Config.getInstance().config.autoFocus) {

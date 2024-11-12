@@ -259,6 +259,10 @@ export class PromptTextInput {
     }
   };
 
+  public readonly blur = (): void => {
+    this.promptTextInput.blur();
+  };
+
   public readonly getTextInputValue = (): string => {
     return this.promptTextInput.value;
   };
