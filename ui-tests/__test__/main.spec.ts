@@ -118,7 +118,7 @@ describe('Open MynahUI', () => {
 
   describe('Context selector', () => {
     it('should render the context selector', async () => {
-      await renderContextSelector(page);
+      await renderCommandSelector(page, 'context');
     });
   });
 });
