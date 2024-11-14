@@ -2,17 +2,28 @@ import { Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
-export const renderCommandSelector = async (page: Page, mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
-  // Type a '/' character
+export const closeQuickPicksByBlur = async (page: Page, mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
+  // Clear the input
   const input = await page.locator(`${getSelector(testIds.prompt.input)}`);
-  await input.focus();
+  await input.clear();
+  await waitForAnimationEnd(page);
+
+  // Press '/' in the input
   await input.press(mode === 'context' ? '@' : '/');
   await waitForAnimationEnd(page);
 
-  // Check that the command selector is opened, and visible
+  // Find the command selector
   const commandSelector = await page.locator(`${getSelector(testIds.prompt.quickPicksWrapper)}`).nth(-1);
   expect(commandSelector).toBeDefined();
   expect(await commandSelector.isVisible()).toBeTruthy();
+
+  // Click out of the input
+  await page.mouse.click(100, 400);
+  await waitForAnimationEnd(page);
+
+  // Now the command selector should be closed, but the input should still remain intact
+  expect(await commandSelector.isVisible()).toBeFalsy();
+  expect(await input.inputValue()).toBe(mode === 'context' ? '@' : '/');
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();

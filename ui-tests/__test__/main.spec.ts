@@ -9,10 +9,9 @@ import path from 'path';
 // import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
-import { renderContextSelector } from './flows/context-selector/render-context-selector';
-import { renderCommandSelector } from './flows/command-selector/render-command-selector';
-import { closeCommandSelectorByEscape } from './flows/command-selector/close-command-selector-escape';
-import { closeCommandSelectorByBlur } from './flows/command-selector/close-command-selector-blur';
+import { renderQuickPicks } from './flows/quick-picks/render-quick-picks';
+import { closeQuickPicksByEscape } from './flows/quick-picks/close-quick-picks-escape';
+import { closeQuickPicksByBlur } from './flows/quick-picks/close-quick-picks-blur';
 // import { renderCharacterCount } from './flows/render-character-count';
 // import { progressIndicator } from './flows/prompt-progress-indicator';
 // import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
@@ -106,19 +105,25 @@ describe('Open MynahUI', () => {
 
   describe('Quick command selector', () => {
     it('should render the quick command selector', async () => {
-      await renderCommandSelector(page);
+      await renderQuickPicks(page);
     });
-    it('should close the quick command selector by blur', async () => {
-      await closeCommandSelectorByBlur(page);
+    it('should close the quick command selector by clicking outside', async () => {
+      await closeQuickPicksByBlur(page);
     });
     it('should close the quick command selector by pressing escape', async () => {
-      await closeCommandSelectorByEscape(page);
+      await closeQuickPicksByEscape(page);
     });
   });
 
   describe('Context selector', () => {
     it('should render the context selector', async () => {
-      await renderCommandSelector(page, 'context');
+      await renderQuickPicks(page, 'context');
+    });
+    it('should close the context selector by clicking outside', async () => {
+      await closeQuickPicksByBlur(page, 'context');
+    });
+    it('should close the context selector by pressing escape', async () => {
+      await closeQuickPicksByEscape(page, 'context');
     });
   });
 });

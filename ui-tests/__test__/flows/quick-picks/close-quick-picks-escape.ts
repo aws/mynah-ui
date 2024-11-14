@@ -2,14 +2,14 @@ import { Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
-export const closeCommandSelectorByEscape = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
+export const closeQuickPicksByEscape = async (page: Page, mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
   // Clear the input
   const input = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await input.clear();
   await waitForAnimationEnd(page);
 
   // Press '/' in the input
-  await input.press('/');
+  await input.press(mode === 'context' ? '@' : '/');
   await waitForAnimationEnd(page);
 
   // Find the command selector
@@ -21,9 +21,9 @@ export const closeCommandSelectorByEscape = async (page: Page, skipScreenshots?:
   await input.press('Escape');
   await waitForAnimationEnd(page);
 
-  // Now the command selector should be closed, and the input should be emptied
+  // Now the command selector should be closed, and the input should be emptied (or @ for context)
   expect(await commandSelector.isVisible()).toBeFalsy();
-  expect(await input.inputValue()).toBe('');
+  expect(await input.inputValue()).toBe(mode === 'context' ? '@' : '');
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();
