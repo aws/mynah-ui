@@ -15,6 +15,10 @@ export const quickActionCommands: QuickActionCommandGroup[] = [
       {
         command: Commands.CLEAR,
         description: 'Clear all chat.',
+      },
+      {
+        command: Commands.DEV,
+        description: 'Generate code.',
       }
     ],
   },
