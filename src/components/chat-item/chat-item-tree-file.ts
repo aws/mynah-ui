@@ -50,15 +50,26 @@ export class ChatItemTreeFile {
             });
           }
         },
-        ...(this.props.details?.description != null
-          ? {
-              mouseenter: (e: MouseEvent) => {
-                const tooltipText = marked(this.props.details?.description ?? '', { breaks: true }) as string;
-                this.showTooltip(tooltipText, OverlayVerticalDirection.CENTER, OverlayHorizontalDirection.TO_RIGHT);
-              },
-              mouseout: this.hideTooltip
+        mouseover: (e) => {
+          cancelEvent(e);
+          const textContentSpan: HTMLSpanElement | null = this.render.querySelector('.mynah-chat-item-tree-view-file-item-title-text');
+          let tooltipText;
+          if (textContentSpan != null && textContentSpan.offsetWidth < textContentSpan.scrollWidth) {
+            tooltipText = marked(this.props.fileName, { breaks: true }) as string;
+          }
+          if (this.props.details?.description != null) {
+            if (tooltipText != null) {
+              tooltipText += '\n\n';
+            } else {
+              tooltipText = '';
             }
-          : {})
+            tooltipText += marked(this.props.details?.description ?? '', { breaks: true }) as string;
+          }
+          if (tooltipText != null) {
+            this.showTooltip(tooltipText);
+          }
+        },
+        mouseleave: this.hideTooltip
       },
       children: [
         ...(this.props.icon != null && this.props.details?.icon == null
@@ -78,6 +89,7 @@ export class ChatItemTreeFile {
             new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE }).render,
             {
               type: 'span',
+              classNames: [ 'mynah-chat-item-tree-view-file-item-title-text' ],
               children: [ this.props.fileName ]
             } ]
         },
