@@ -2,7 +2,7 @@ import { Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
-export const closeQuickPicksByEscape = async (page: Page, mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
+export const closeQuickPicks = async (page: Page, method: 'blur' | 'escape', mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
   // Clear the input
   const input = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await input.clear();
@@ -17,13 +17,17 @@ export const closeQuickPicksByEscape = async (page: Page, mode?: 'command' | 'co
   expect(commandSelector).toBeDefined();
   expect(await commandSelector.isVisible()).toBeTruthy();
 
-  // Click out of the input
-  await input.press('Escape');
+  // Either click outside to blur, or press escape
+  if (method === 'blur') {
+    await page.mouse.click(100, 400);
+  } else {
+    await input.press('Escape');
+  }
   await waitForAnimationEnd(page);
 
-  // Now the command selector should be closed, and the input should be emptied (or @ for context)
+  // Now the command selector should be closed, but the input should still remain intact
   expect(await commandSelector.isVisible()).toBeFalsy();
-  expect(await input.inputValue()).toBe(mode === 'context' ? '@' : '');
+  expect(await input.inputValue()).toBe(mode === 'context' ? '@' : method === 'blur' ? '/' : '');
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();

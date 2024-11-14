@@ -3,12 +3,12 @@ import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
 export const filterQuickPicks = async (page: Page, mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
-// Clear the input
+  // Clear the input
   const input = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await input.clear();
   await waitForAnimationEnd(page);
 
-  // Type a '/' character
+  // Type a '/' character, followed by a first character
   await input.press(mode === 'context' ? '@' : '/');
   await input.press(mode === 'context' ? 'w' : 'h');
   await waitForAnimationEnd(page);
@@ -21,6 +21,8 @@ export const filterQuickPicks = async (page: Page, mode?: 'command' | 'context',
   // Check that there is only one suggestion
   const quickPickItem = await page.locator(`${getSelector(testIds.prompt.quickPickItem)}`);
   expect(await quickPickItem.count()).toBe(1);
+
+  // Check that the suggestions are what we expect from the first character
   const innerTexts = (await quickPickItem.allInnerTexts());
   expect(innerTexts[0]).toContain(mode === 'context' ? '@workspace' : '/help');
   expect(innerTexts[0]).not.toContain(mode === 'context' ? '@file' : '/clear');
