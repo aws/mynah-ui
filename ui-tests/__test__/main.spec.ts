@@ -12,6 +12,7 @@ import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { renderQuickPicks } from './flows/quick-picks/render-quick-picks';
 import { closeQuickPicksByEscape } from './flows/quick-picks/close-quick-picks-escape';
 import { closeQuickPicksByBlur } from './flows/quick-picks/close-quick-picks-blur';
+import { filterQuickPicks } from './flows/quick-picks/filter-quick-picks';
 // import { renderCharacterCount } from './flows/render-character-count';
 // import { progressIndicator } from './flows/prompt-progress-indicator';
 // import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
@@ -113,6 +114,9 @@ describe('Open MynahUI', () => {
     it('should close the quick command selector by pressing escape', async () => {
       await closeQuickPicksByEscape(page);
     });
+    it('should filter quick command selector list', async () => {
+      await filterQuickPicks(page);
+    });
   });
 
   describe('Context selector', () => {
@@ -124,6 +128,9 @@ describe('Open MynahUI', () => {
     });
     it('should close the context selector by pressing escape', async () => {
       await closeQuickPicksByEscape(page, 'context');
+    });
+    it('should filter context selector list', async () => {
+      await filterQuickPicks(page, 'context');
     });
   });
 });

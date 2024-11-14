@@ -8,7 +8,6 @@ import md4 from './stream-4.md';
 export enum Commands {
   HELP = '/help',
   CLEAR = '/clear',
-  DEV = '/dev'
 }
 
 export const welcomeMessage = `### MynahUI
