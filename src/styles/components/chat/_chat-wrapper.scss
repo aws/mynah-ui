@@ -12,7 +12,6 @@
 
     position: relative;
     width: inherit;
-    min-width: inherit;
     max-width: inherit;
     height: 100%;
     flex: 1 0 100%;
@@ -25,7 +24,6 @@
     box-sizing: border-box;
     > div[class^='mynah-chat'] {
         width: inherit;
-        min-width: inherit;
         max-width: inherit;
         box-sizing: border-box;
         padding-left: var(--mynah-sizing-4);
