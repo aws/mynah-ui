@@ -37,6 +37,8 @@ import {
   qAgentQuickActions,
   welcomeScreenTabData,
   exampleConfirmationButtons,
+  exampleButtons,
+  exampleStatusButtons,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -539,7 +541,12 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.CONFIRMATION_BUTTONS:
-          mynahUI.addChatItem(tabId, exampleConfirmationButtons)
+          mynahUI.addChatItem(tabId, exampleConfirmationButtons);
+          mynahUI.addChatItem(tabId, defaultFollowUps);
+          break;
+        case Commands.BUTTONS:
+          mynahUI.addChatItem(tabId, exampleButtons);
+          mynahUI.addChatItem(tabId, exampleStatusButtons);
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.SHOW_CUSTOM_FORM:
