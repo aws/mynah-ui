@@ -16,7 +16,7 @@
     outline: none;
     overflow: hidden;
     position: relative;
-    transform: translate3d(0, 0, 0) scale(1.00001);
+    transform: translateZ(0px);
     padding: var(--mynah-sizing-2);
     gap: var(--mynah-sizing-1);
     filter: brightness(0.925);
