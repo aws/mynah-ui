@@ -27,6 +27,10 @@ export const contextCommands: QuickActionCommandGroup[] = [
       {
         command: '@workspace',
         description: 'Reference all code in workspace.'
+      },
+      {
+        command: '@file',
+        description: 'Reference the code in the current file.'
       }
     ]
   }

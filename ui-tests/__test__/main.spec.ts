@@ -9,6 +9,10 @@ import { openNewTab } from './flows/open-new-tab';
 import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
+import { renderQuickPicks } from './flows/quick-picks/render-quick-picks';
+import { closeQuickPicks } from './flows/quick-picks/close-quick-picks';
+import { filterQuickPicks } from './flows/quick-picks/filter-quick-picks';
+import { selectQuickPicks } from './flows/quick-picks/select-quick-picks';
 import { renderCharacterCount } from './flows/render-character-count';
 import { progressIndicator } from './flows/prompt-progress-indicator';
 import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
@@ -85,6 +89,60 @@ describe('Open MynahUI', () => {
 
   it('should render tabbed cards correctly', async () => {
     await renderTabbedCard(page);
+  });
+
+  describe('Quick command selector', () => {
+    it('should render the quick command selector', async () => {
+      await renderQuickPicks(page);
+    });
+    it('should close the quick command selector by clicking outside', async () => {
+      await closeQuickPicks(page, 'blur');
+    });
+    it('should close the quick command selector by pressing escape', async () => {
+      await closeQuickPicks(page, 'escape');
+    });
+    it('should filter quick command selector list', async () => {
+      await filterQuickPicks(page);
+    });
+    it('should select quick command selector item by clicking', async () => {
+      await selectQuickPicks(page, 'click');
+    });
+    it('should select quick command selector item with tab', async () => {
+      await selectQuickPicks(page, 'Tab');
+    });
+    it('should select quick command selector item with space', async () => {
+      await selectQuickPicks(page, 'Space');
+    });
+    it('should select quick command selector item with enter', async () => {
+      await selectQuickPicks(page, 'Enter');
+    });
+  });
+
+  describe('Context selector', () => {
+    it('should render the context selector', async () => {
+      await renderQuickPicks(page, 'context');
+    });
+    it('should close the context selector by clicking outside', async () => {
+      await closeQuickPicks(page, 'blur', 'context');
+    });
+    it('should close the context selector by pressing escape', async () => {
+      await closeQuickPicks(page, 'escape', 'context');
+    });
+    it('should filter context selector list', async () => {
+      await filterQuickPicks(page, 'context');
+    });
+    it('should select context selector item by clicking', async () => {
+      await selectQuickPicks(page, 'click', 'context');
+    });
+    it('should select context selector item with tab', async () => {
+      await selectQuickPicks(page, 'Tab', 'context');
+    });
+    it('should select context selector item with space', async () => {
+      await selectQuickPicks(page, 'Space', 'context');
+    });
+    it('should select context selector item with enter', async () => {
+      await selectQuickPicks(page, 'Enter', 'context');
+    });
   });
 
   it('should render buttons on cards correctly', async () => {
