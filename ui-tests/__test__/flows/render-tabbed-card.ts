@@ -61,11 +61,11 @@ export const renderTabbedCard = async (page: Page, skipScreenshots?: boolean): P
   }
 
   // Change selected item, check for content change
-  // const locator = await page.locator(`${getSelector(`${testIds.chatItem.tabbedCard.tabs}-option`)}`).getByLabel('playExamples');
-  // await locator.check({ force: true });
-  // await waitForAnimationEnd(page);
+  const locator = await page.locator(`${getSelector(`${testIds.chatItem.tabbedCard.tabs}-option-wrapper`)}`).last();
+  await locator.click();
+  await waitForAnimationEnd(page);
 
-  // if (skipScreenshots !== true) {
-  //   await expect(await page.screenshot()).toMatchImageSnapshot();
-  // }
+  if (skipScreenshots !== true) {
+    await expect(await page.screenshot()).toMatchImageSnapshot();
+  }
 };
