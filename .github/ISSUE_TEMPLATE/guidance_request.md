@@ -1,7 +1,7 @@
 ---
 name: Ask a question
 about: Ask for guidance, "how to", or other questions
-labels: guidance
+labels: question
 ---
 
 ## System details
