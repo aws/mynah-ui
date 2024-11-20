@@ -48,8 +48,8 @@ Please refer to the following guides:
 * [Startup guide](./docs/STARTUP.md)
 * [Constructor properties](./docs/PROPERTIES.md)
 * [Configuration](./docs/CONFIG.md)
-* [Usage](./docs/USAGE.md)
 * [Data model](./docs/DATAMODEL.md)
+* [Usage](./docs/USAGE.md)
 * [Styling](./docs/STYLING.md)
 * [Developer guidelines (contribution)](./docs/DEVELOPER.md)
 

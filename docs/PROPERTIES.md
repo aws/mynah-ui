@@ -149,7 +149,7 @@ export interface MynahUIProps {
 _Let's deep dive into each property you can set._
 
 ### But before that, what is `eventId`?
-You may notice that a wast majority of the event functions have `eventId` property. We're sending a unique `eventId` **for all real intended user actions** like clicks, prompts or tab related actions. 
+You may notice that a vast majority of the event functions have `eventId` property. We're sending a unique `eventId` **for all real intended user actions** like clicks, prompts or tab related actions. 
 It is mandatory to send it as an argument for some functions like `mynahUI.selectTab`.You need to send the incoming `eventId` from the connected event function to change a tab programmatically. Because without a user intent, you cannot change a tab. 
 
 And those kind of functions **will only work** with the last `eventId`. So you cannot store an id and send it after several different user actions. 
