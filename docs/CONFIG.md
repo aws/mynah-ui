@@ -113,7 +113,7 @@ const mynahUI = new MynahUI({
 
 # `texts`
 All static texts will be shown on UI. 
-Please take a look at each image to identify which text blongs to which item on UI.
+Please take a look at each image to identify which text belongs to which item on UI.
 
 ## mainTitle
 Default tab title text if it is not set through store data for that tab.
