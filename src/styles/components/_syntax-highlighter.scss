@@ -187,15 +187,15 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             &.prolog,
             &.doctype,
             &.cdata {
-                color: var(--mynah-color-syntax-comment); 
+                color: var(--mynah-color-syntax-comment);
                 font-style: italic;
             }
-        
+
             &.keyword {
                 color: var(--mynah-color-syntax-keyword);
                 font-style: italic;
             }
-        
+
             &.string,
             &.char,
             &.attr-value,
@@ -206,7 +206,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             &.symbol {
                 color: var(--mynah-color-syntax-string);
             }
-        
+
             &.number,
             &.integer,
             &.float {
@@ -216,45 +216,45 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             &.namespace {
                 opacity: 0.7;
             }
-        
+
             &.boolean {
                 color: var(--mynah-color-syntax-boolean);
             }
-        
+
             &.function {
                 color: var(--mynah-color-syntax-function);
             }
-        
+
             &.class-name {
                 color: var(--mynah-color-syntax-class-name);
             }
-        
+
             &.operator,
             &.punctuation,
             &.url {
                 color: var(--mynah-color-syntax-operator);
             }
-        
+
             &.important,
             &.variable,
             &.parameter {
                 color: var(--mynah-color-syntax-variable);
             }
-        
+
             &.constant,
             &.property {
                 color: var(--mynah-color-syntax-property);
             }
-        
+
             &.regex {
                 color: var(--mynah-color-syntax-regex);
             }
-            
+
             &.important,
             &.bold {
                 font-weight: bold;
             }
-        
+
             &.italic {
                 font-style: italic;
             }
