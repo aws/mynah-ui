@@ -20,6 +20,7 @@ import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
 import { renderButtons } from './flows/render-buttons';
+import { hoverOverLink } from './flows/link-hover-preview';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -143,6 +144,10 @@ describe('Open MynahUI', () => {
     it('should select context selector item with enter', async () => {
       await selectQuickPicks(page, 'Enter', 'context');
     });
+  });
+
+  it.only('should show link preview in tooltip on link hover', async () => {
+    await hoverOverLink(page);
   });
 
   it('should render buttons on cards correctly', async () => {
