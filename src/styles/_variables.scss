@@ -30,14 +30,18 @@
     --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
 
     --mynah-color-syntax-bg: var(--vscode-terminal-dropBackground);
-    --mynah-color-syntax-variable: var(--vscode-debugTokenExpression-name);
+    --mynah-color-syntax-variable: var(--vscode-terminal-ansiYellow);
     --mynah-color-syntax-function: var(--vscode-gitDecoration-modifiedResourceForeground);
-    --mynah-color-syntax-operator: var(--vscode-debugTokenExpression-name);
-    --mynah-color-syntax-attr-value: var(--vscode-debugIcon-stepBackForeground);
-    --mynah-color-syntax-attr: var(--vscode-debugTokenExpression-string);
+    --mynah-color-syntax-operator: var(--vscode-terminal-foreground);
     --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan);
     --mynah-color-syntax-comment: var(--vscode-debugConsole-sourceForeground);
     --mynah-color-syntax-code: var(--vscode-editor-foreground, var(--mynah-color-text-default, inherit));
+    --mynah-color-syntax-keyword: var(--vscode-debugTokenExpression-name);
+    --mynah-color-syntax-string: var(--vscode-debugTokenExpression-string);
+    --mynah-color-syntax-boolean: var(--vscode-debugTokenExpression-boolean);
+    --mynah-color-syntax-number: var(--vscode-debugTokenExpression-number);
+    --mynah-color-syntax-regex: var(--vscode-terminal-ansiMagenta);
+    --mynah-color-syntax-class-name: var(--vscode-terminal-ansiYellow);
 
     --mynah-color-status-info: #0971d3;
     --mynah-color-status-success: #037f03;
