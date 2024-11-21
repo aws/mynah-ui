@@ -182,77 +182,87 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             background: #b3d4fc;
         }
 
-        .token.comment,
-        .token.prolog,
-        .token.doctype,
-        .token.cdata {
-            color: var(--mynah-color-syntax-comment);
+        .token {
+            &.comment,
+            &.prolog,
+            &.doctype,
+            &.cdata {
+                color: var(--mynah-color-syntax-comment); 
+                font-style: italic;
+            }
+        
+            &.keyword {
+                color: var(--mynah-color-syntax-keyword);
+                font-style: italic;
+            }
+        
+            &.string,
+            &.char,
+            &.attr-value,
+            &.builtin,
+            &.deleted,
+            &.inserted,
+            &.tag,
+            &.symbol {
+                color: var(--mynah-color-syntax-string);
+            }
+        
+            &.number,
+            &.integer,
+            &.float {
+                color: var(--mynah-color-syntax-number);
+            }
+
+            &.namespace {
+                opacity: 0.7;
+            }
+        
+            &.boolean {
+                color: var(--mynah-color-syntax-boolean);
+            }
+        
+            &.function {
+                color: var(--mynah-color-syntax-function);
+            }
+        
+            &.class-name {
+                color: var(--mynah-color-syntax-class-name);
+            }
+        
+            &.operator,
+            &.punctuation,
+            &.url {
+                color: var(--mynah-color-syntax-operator);
+            }
+        
+            &.important,
+            &.variable,
+            &.parameter {
+                color: var(--mynah-color-syntax-variable);
+            }
+        
+            &.constant,
+            &.property {
+                color: var(--mynah-color-syntax-property);
+            }
+        
+            &.regex {
+                color: var(--mynah-color-syntax-regex);
+            }
+            
+            &.important,
+            &.bold {
+                font-weight: bold;
+            }
+        
+            &.italic {
+                font-style: italic;
+            }
         }
 
-        .token.punctuation {
-            color: currentColor;
-        }
-
-        .token.namespace {
-            opacity: 0.7;
-        }
-
-        .token.property,
-        .token.tag,
-        .token.boolean,
-        .token.number,
-        .token.constant,
-        .token.symbol,
-        .token.inserted {
-            color: var(--mynah-color-syntax-property);
-        }
-
-        .token.selector,
-        .token.attr-name,
-        .token.string,
-        .token.char,
-        .token.builtin,
-        .token.deleted {
-            color: var(--mynah-color-syntax-attr);
-        }
-
-        .token.operator,
-        .token.entity,
-        .token.url,
         .language-css .token.string,
         .style .token.string {
             color: var(--mynah-color-syntax-operator);
-        }
-
-        .token.atrule,
-        .token.attr-value,
-        .token.class-name,
-        .token.keyword {
-            color: var(--mynah-color-syntax-attr-value);
-        }
-
-        .token.function {
-            color: var(--mynah-color-syntax-function);
-            font-weight: 500;
-        }
-
-        .token.regex,
-        .token.important,
-        .token.variable {
-            color: var(--mynah-color-syntax-variable);
-            font-weight: 500;
-        }
-
-        .token.important,
-        .token.bold {
-            font-weight: bold;
-        }
-        .token.italic {
-            font-style: italic;
-        }
-
-        .token.entity {
-            cursor: help;
         }
 
         &.line-numbers {
