@@ -4,6 +4,7 @@
 @import 'dark';
 @import 'favicons';
 @import 'scrollbars';
+@import 'splash-loader';
 @import './components/main-container';
 :root {
     --mynah-sizing-half: calc(var(--mynah-sizing-base) / 2);

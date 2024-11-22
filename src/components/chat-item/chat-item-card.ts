@@ -24,6 +24,7 @@ import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-
 import testIds from '../../helper/test-ids';
 import { ChatItemInformationCard } from './chat-item-information-card';
 import { ChatItemTabbedCard } from './chat-item-tabbed-card';
+import { Spinner } from '../spinner/spinner';
 
 export interface ChatItemCardProps {
   tabId: string;
@@ -65,12 +66,15 @@ export class ChatItemCard {
         }
       });
     if (this.props.chatItem.type === ChatItemType.ANSWER_STREAM) {
-      this.initialSpinner = [ DomBuilder.getInstance().build({
-        type: 'div',
-        persistent: true,
-        classNames: [ 'mynah-chat-items-spinner' ],
-        children: [ { type: 'span' }, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
-      }) ];
+      this.initialSpinner = [
+        DomBuilder.getInstance().build({
+          type: 'div',
+          persistent: true,
+          classNames: [ 'mynah-chat-items-spinner' ],
+          children: [ new Spinner().render, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
+        }),
+
+      ];
     }
     this.cardFooter = this.getCardFooter();
     this.card = new Card({
