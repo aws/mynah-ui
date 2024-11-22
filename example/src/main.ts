@@ -39,6 +39,7 @@ import {
   exampleConfirmationButtons,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
+import unescapeHTML from 'unescape-html';
 import './styles/styles.scss';
 import { ThemeBuilder } from './theme-builder/theme-builder';
 import { Commands } from './commands';
@@ -229,6 +230,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           promptInputLabel: null,
         });
       }
+      // reset navigation index when sending a new prompt
+      mynahUI.updateStore(tabId, {
+        navigationIndexChatPrompts: -1,
+      })
+
       onChatPrompt(tabId, prompt);
     },
     onStopChatResponse: (tabId: string) => {
@@ -388,6 +394,63 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`Link inside prompt info field clicked: <b>${link}</b>`);
     },
     upDownArrowKeyPress(tabId: string, direction: 'up' | 'down') {  
+      // reset promptInputText and any possible attachment/commands from previous prompts
+      mynahUI.updateStore(tabId, {
+        promptInputText: '',
+      });
+      mynahUI.clearPrompt(tabId);
+
+      const tab = mynahUI.getAllTabs()[tabId];
+
+      if (!tab?.store?.chatItems) { return; }
+
+      const chatPrompts = tab.store.chatItems.filter(item => item.type === ChatItemType.PROMPT);   
+  
+      if (!chatPrompts.length) { return; }
+
+      let navigationIndex = tab.store.navigationIndexChatPrompts === -1 ? chatPrompts.length : (tab.store.navigationIndexChatPrompts ?? chatPrompts.length);  
+    
+      if (direction === 'up') {
+          navigationIndex = Math.max(0, navigationIndex - 1);
+      } else if (direction === 'down') {
+          navigationIndex = Math.min(chatPrompts.length, navigationIndex + 1);
+      } else {
+          Log(`direction ${direction} does not exist`);
+          return;
+      }
+  
+      // If we've reached the end (newest message), reset to empty state
+      if (navigationIndex === chatPrompts.length) {
+          mynahUI.updateStore(tabId, {
+            navigationIndexChatPrompts: -1
+          });
+          return;
+      } else {
+          // check if any quick action command was present at the currently indexed prompt
+          const currentCommand = chatPrompts[navigationIndex].quickActionCommand;
+          if (currentCommand && currentCommand.trim() !== '') {
+            mynahUI.addCommandToUserPrompt(tabId, currentCommand)
+          }
+          // retrieves the text given as input by the user at the currently indexed prompt
+          const promptInputText = unescapeHTML(chatPrompts[navigationIndex].inputText ?? '');
+
+          // Update promptInputText with the combined text
+          mynahUI.updateStore(tabId, {
+              promptInputText: promptInputText,
+              navigationIndexChatPrompts: navigationIndex
+          });
+          
+          // check if any codeSnippet was present at the currently indexed prompt
+          let codeSnippet = unescapeHTML(chatPrompts[navigationIndex].codeSnippet ?? '');
+          if (codeSnippet && codeSnippet.trim() !== '') {
+            codeSnippet = codeSnippet
+            .replace(/~~~~~~~~~~/, '') 
+            .replace(/~~~~~~~~~~$/, '')
+            .trim();
+            mynahUI.addToUserPrompt(tabId, codeSnippet, 'code');
+          }
+      }
+  }
   });
 
   const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {
@@ -561,6 +624,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             type: ChatItemType.PROMPT,
             messageId: new Date().getTime().toString(),
             body: `${Commands.COMMAND_WITH_PROMPT} => ${realPromptText}`,
+            inputText: prompt.inputText,
+            codeSnippet: prompt.attachmentContent,
+            quickActionCommand: prompt.command
           });
           getGenerativeAIAnswer(tabId);
           break;
@@ -569,6 +635,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             type: ChatItemType.PROMPT,
             messageId: new Date().getTime().toString(),
             body: `**${prompt.command.replace('/', '')}**\n${prompt.escapedPrompt as string}`,
+            inputText: prompt.inputText,
+            codeSnippet: prompt.attachmentContent,
+            quickActionCommand: prompt.command
           });
           getGenerativeAIAnswer(tabId);
           break;
@@ -579,6 +648,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           type: ChatItemType.PROMPT,
           messageId: new Date().getTime().toString(),
           body: `${prompt.escapedPrompt as string}`,
+          inputText: prompt.inputText,
+          codeSnippet: prompt.attachmentContent,
+          quickActionCommand: prompt.command
         });
       }
       getGenerativeAIAnswer(tabId);

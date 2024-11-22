@@ -351,4 +351,12 @@ export class ChatWrapper {
   public addAttachmentToPrompt = (textToAdd: string, type?: PromptAttachmentType): void => {
     this.promptInput.addAttachment(textToAdd, type);
   };
+
+  public addCommandToPrompt = (quickActionCommand: string): void => {
+    this.promptInput.addCommand(quickActionCommand);
+  };
+
+  public clearTextArea = (): void => {
+    this.promptInput.clearTextArea();
+  }
 }

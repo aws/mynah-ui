@@ -643,6 +643,19 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     }
   };
 
+  public addCommandToUserPrompt = (tabId: string, command: string): void => {
+    if (Config.getInstance().config.showPromptField && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      this.chatWrappers[tabId].addCommandToPrompt(command)
+    }
+  };
+
+  public clearPrompt = (tabId: string): void => {
+    if (Config.getInstance().config.showPromptField && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      this.chatWrappers[tabId].clearTextArea()
+    }
+  };
+
+  
   /**
    * Adds a new item to the chat window
    * @param tabId Corresponding tab ID.

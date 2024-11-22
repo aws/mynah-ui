@@ -319,7 +319,7 @@ export class ChatPromptInput {
             MynahEventNames.UP_DOWN_ARROW_KEY_PRESS, 
             { tabId: this.props.tabId, direction: direction }
         );
-      }
+     }
     } else {
       const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
       if (blockedKeys.includes(e.key)) {
@@ -616,12 +616,17 @@ export class ChatPromptInput {
         return `**${match}**`;
       }));
 
+      const escapedInputText = escapeHTML(currentInputValue);
+      const escapedAttachmentContent = escapeHTML(attachmentContent);
+
       const promptData: {tabId: string; prompt: ChatPrompt} = {
         tabId: this.props.tabId,
         prompt: {
           prompt: promptText,
-          escapedPrompt,
-          context,
+          escapedPrompt: escapedPrompt,
+          context: context,
+          attachmentContent: escapedAttachmentContent,
+          inputText: escapedInputText,     
           ...(selectedCommand !== '' ? { command: selectedCommand } : {}),
         }
       };
@@ -662,4 +667,9 @@ export class ChatPromptInput {
       type
     });
   };
+
+  public readonly addCommand = (quickActionCommand: string): void => {
+    this.selectedCommand = quickActionCommand;
+    this.promptTextInputCommand.setCommand(this.selectedCommand);
+  }  
 }
