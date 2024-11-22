@@ -13,12 +13,14 @@
     background-size: cover;
     opacity: 0;
     display: flex;
+    flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
     overflow: hidden;
     z-index: 1000;
     background-color: var(--mynah-color-bg);
     z-index: 1000000000;
+    gap: var(--mynah-sizing-6);
     &,
     & * {
         pointer-events: none;
@@ -39,6 +41,12 @@
         }
     }
 
+    > .mynah-ui-splash-loader-text {
+        &:empty {
+            display: none;
+        }
+        font-size: var(--mynah-font-size-large);
+    }
     > .mynah-ui-spinner-container {
         width: min(30vw, 30vh, 200px);
         height: min(30vw, 30vh, 200px);

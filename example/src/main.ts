@@ -51,7 +51,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   let showChatAvatars: boolean = false;
 
   const mynahUI = new MynahUI({
-    splashScreenInitialStatus: true,
+    splashScreenInitialStatus: {
+      visible: true,
+      text: 'Initializing'
+    },
     rootSelector: '#amzn-mynah-website-wrapper',
     defaults: {
       store: {
@@ -152,7 +155,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           showChatAvatars: showChatAvatars
         }));
       } else if (buttonId === 'splash-loader') {
-        mynahUI.toggleSplashLoader(true);
+        mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
         setTimeout(()=>{
           mynahUI.toggleSplashLoader(false);
         }, 10000);
@@ -404,7 +407,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
 
   setTimeout(()=>{
     mynahUI.toggleSplashLoader(false);
-  }, 5000)
+  }, 2750)
 
   const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {
     if (prompt.command !== undefined && prompt.command.trim() !== '') {

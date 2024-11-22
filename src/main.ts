@@ -89,7 +89,10 @@ export { default as MynahUITestIds } from './helper/test-ids';
 export interface MynahUIProps {
   rootSelector?: string;
   defaults?: MynahUITabStoreTab;
-  splashScreenInitialStatus?: boolean;
+  splashScreenInitialStatus?: {
+    visible: boolean;
+    text: string;
+  };
   tabs?: MynahUITabStoreModel;
   config?: Partial<ConfigModel>;
   onShowMoreWebResultsClick?: (
@@ -255,6 +258,7 @@ export class MynahUI {
   private lastEventId: string = '';
   private readonly props: MynahUIProps;
   private readonly splashLoader: ExtendedHTMLElement;
+  private readonly splashLoaderText: ExtendedHTMLElement;
   private readonly tabsWrapper: ExtendedHTMLElement;
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
@@ -277,14 +281,21 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     DomBuilder.getInstance(props.rootSelector);
     MynahUITabsStore.getInstance(this.props.tabs, this.props.defaults);
     MynahUIGlobalEvents.getInstance();
+
+    this.splashLoaderText = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-ui-splash-loader-text' ],
+      innerHTML: marked.parse(this.props.splashScreenInitialStatus?.text ?? '', { breaks: true }) as string,
+    });
     this.splashLoader = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-ui-splash-loader-wrapper' ],
       children: [
-        new Spinner().render
+        new Spinner().render,
+        this.splashLoaderText
       ]
     });
-    if (this.props.splashScreenInitialStatus === true) {
+    if (this.props.splashScreenInitialStatus?.visible === true) {
       this.splashLoader.addClass('visible');
     }
 
@@ -778,11 +789,17 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   /**
    * Toggles the visibility of the splash loader screen
    */
-  public toggleSplashLoader = (visible: boolean): void => {
+  public toggleSplashLoader = (visible: boolean, text?: string): void => {
     if (visible) {
       this.splashLoader.addClass('visible');
     } else {
       this.splashLoader.removeClass('visible');
+    }
+
+    if (text != null) {
+      this.splashLoaderText.update({
+        innerHTML: marked.parse(text, { breaks: true }) as string
+      });
     }
   };
 
