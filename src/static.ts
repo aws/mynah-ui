@@ -99,7 +99,7 @@ export interface MynahUIDataModel {
   */
   promptInputStickyCard?: Partial<ChatItem> | null;
   /**
-  * Prompt input field disabled state, set to tru to disable it
+  * Prompt input field disabled state, set to true to disable it
   */
   promptInputDisabledState?: boolean;
   /**
