@@ -9,6 +9,10 @@
         }
     }
 
+    &.awaits-confirmation .mynah-chat-prompt-input {
+        caret-color: transparent !important;
+    }
+
     > .mynah-chat-prompt-input-label {
         transition: var(--mynah-short-transition);
         padding: var(--mynah-sizing-2) 0;
