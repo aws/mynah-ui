@@ -37,6 +37,7 @@ export class EmptyMynahUIDataModel {
       tabBarButtons: [],
       compactMode: false,
       tabHeaderDetails: null,
+      navigationIndexChatPrompts: -1,
       ...defaults
     };
   }

@@ -126,6 +126,10 @@ export interface MynahUIDataModel {
    * Tab content header details, only visibile when showTabHeaderDetails is set to 'true'
    */
   tabHeaderDetails?: TabHeaderDetails | null;
+  /**
+   * The navigation index for the chat prompts list for the up/down arrow key navigation
+   */
+  navigationIndexChatPrompts?: number;
 }
 
 export interface MynahUITabStoreTab {
@@ -246,6 +250,9 @@ export interface TreeNodeDetails {
 
 export interface ChatItemContent {
   body?: string | null;
+  inputText?: string | null;
+  codeSnippet?: string | null;
+  quickActionCommand?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
     text?: string;
@@ -312,6 +319,8 @@ export interface ChatPrompt {
   escapedPrompt?: string;
   command?: string;
   context?: string[];
+  attachmentContent?: string;
+  inputText?: string;
 }
 
 export interface ChatItemAction extends ChatPrompt {
