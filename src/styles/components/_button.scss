@@ -24,7 +24,7 @@
     line-height: var(--mynah-line-height);
     margin-top: var(--mynah-border-width);
     margin-bottom: var(--mynah-border-width);
-    &:after {
+    &::after {
         content: '';
         pointer-events: none;
         transition: var(--mynah-very-short-transition);
@@ -34,7 +34,6 @@
         left: 0;
         width: 100%;
         height: 100%;
-        filter: brightness(1.35) saturate(0.75);
         opacity: 0;
         border-radius: inherit;
         background-color: currentColor;
@@ -51,17 +50,31 @@
         &.mynah-button-border {
             border: var(--mynah-border-width) solid currentColor !important;
         }
+        box-shadow: none;
         @each $status in $mynah-statuses {
             &.status-#{$status} {
-                color: var(--mynah-color-status-#{$status}) !important;
+                &::before {
+                    content: '';
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    background-color: var(--mynah-color-status-#{$status});
+                    opacity: 0.08;
+                }
+                &::after {
+                    color: var(--mynah-color-status-#{$status});
+                }
+                border: var(--mynah-border-width) solid var(--mynah-color-status-#{$status}) !important;
             }
         }
-        box-shadow: none;
     }
     &.status-clear {
         &,
         &.mynah-button-border {
             border-color: transparent !important;
+        }
+        &::before {
+            background-color: rgba(0, 0, 0, 0) !important;
         }
     }
     &.status-main {
@@ -75,10 +88,13 @@
         }
     }
     &:active,
-    &:focus-visible,
+    &:focus-visible {
+        &::before {
+            opacity: 0.6 !important;
+        }
+    }
     &:hover {
-        filter: brightness(1);
-        &:after {
+        &::after {
             transform: translate3d(0%, 0, 0);
             opacity: 0.15;
         }

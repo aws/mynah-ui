@@ -17,6 +17,7 @@ export enum Commands {
     FOLLOWUPS_AT_RIGHT = '/followups-at-right',
     INFORMATION_CARDS = '/information-cards',
     CONFIRMATION_BUTTONS = '/confirmation-buttons',
+    BUTTONS = '/buttons',
 
     NOTIFY = '/show-notification',
     CLEAR = '/clear',
