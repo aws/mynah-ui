@@ -250,6 +250,7 @@ export class ChatPromptInput {
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
+    const navigationalKeys = [ KeyMap.ARROW_UP, KeyMap.ARROW_DOWN ] as string[];
     if (e.key === KeyMap.ESCAPE && this.render.hasClass('awaits-confirmation')) {
       this.promptTextInput.blur();
     }
@@ -312,10 +313,15 @@ export class ChatPromptInput {
 
           this.quickPickOpen = true;
         }
+      } else if (navigationalKeys.includes(e.key)) {
+        const direction = e.key === KeyMap.ARROW_UP ? 'up' : 'down';
+        MynahUIGlobalEvents.getInstance().dispatch(
+            MynahEventNames.UP_DOWN_ARROW_KEY_PRESS, 
+            { tabId: this.props.tabId, direction: direction }
+        );
       }
     } else {
       const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
-      const navigationalKeys = [ KeyMap.ARROW_UP, KeyMap.ARROW_DOWN ] as string[];
       if (blockedKeys.includes(e.key)) {
         e.preventDefault();
         if (e.key === KeyMap.ESCAPE) {

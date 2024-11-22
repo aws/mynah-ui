@@ -387,6 +387,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onInfoLinkClick: (tabId, link, mouseEvent) => {
       Log(`Link inside prompt info field clicked: <b>${link}</b>`);
     },
+    upDownArrowKeyPress(tabId: string, direction: 'up' | 'down') {  
   });
 
   const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {

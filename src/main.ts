@@ -246,6 +246,10 @@ export interface MynahUIProps {
     tabId: string,
     buttonId: string,
     eventId?: string) => void;
+  upDownArrowKeyPress?: (
+    tabId: string,
+    direction: 'up' | 'down',
+    eventId?: string) => void;
 }
 
 export class MynahUI {
@@ -624,6 +628,13 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         this.props.onTabBarButtonClick(data.tabId, data.buttonId, this.getUserEventId());
       }
     });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UP_DOWN_ARROW_KEY_PRESS, (data) => {
+      if (this.props.upDownArrowKeyPress !== undefined) {
+        this.props.upDownArrowKeyPress(data.tabId, data.direction, this.getUserEventId());
+      }
+    });
+
   };
 
   public addToUserPrompt = (tabId: string, attachmentContent: string, type?: PromptAttachmentType): void => {
