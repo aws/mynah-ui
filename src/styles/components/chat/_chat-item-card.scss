@@ -154,6 +154,9 @@
                 margin: 0;
                 border: none;
                 flex: 0;
+                > .mynah-card.padding-none {
+                    padding-right: calc(1px + var(--mynah-border-width));
+                }
             }
         }
     }
