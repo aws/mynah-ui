@@ -1,0 +1,52 @@
+@import './scss-variables';
+.mynah-ui-splash-loader-wrapper {
+    transition: var(--mynah-short-rev-transition);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    background-size: cover;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    z-index: 1000;
+    background-color: var(--mynah-color-bg);
+    z-index: 1000000000;
+    &,
+    & * {
+        pointer-events: none;
+    }
+
+    &.visible {
+        opacity: 1;
+        &,
+        & * {
+            pointer-events: all;
+            cursor: wait;
+        }
+    }
+    &:not(.visible) {
+        *,
+        *:before {
+            animation: none !important;
+        }
+    }
+
+    > .mynah-ui-spinner-container {
+        width: min(30vw, 30vh, 200px);
+        height: min(30vw, 30vh, 200px);
+        > .mynah-ui-spinner-logo-part.backdrop {
+            filter: blur(30px);
+        }
+        > .mynah-ui-spinner-logo-part.semi-backdrop::before {
+            filter: blur(30px);
+        }
+    }
+}

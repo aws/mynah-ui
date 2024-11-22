@@ -200,7 +200,7 @@ describe('dom', () => {
         'afterbegin'
       );
 
-      expect(domBuilder.getPortal('testPortal').id).toBe('#wrapper1');
+      expect(domBuilder.getPortal('testPortal')?.id).toBe('#wrapper1');
     });
 
     it('removePortal', () => {

@@ -27,10 +27,6 @@
                 &.mynah-chat-item-empty {
                     .mynah-chat-items-spinner {
                         display: inline-flex;
-                        > span {
-                            // Spinner's size should remain the same
-                            flex: 0 0 auto;
-                        }
                     }
                 }
                 &:not(.mynah-chat-item-empty) {
