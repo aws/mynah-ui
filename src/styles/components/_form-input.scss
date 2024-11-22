@@ -186,7 +186,7 @@
 }
 .mynah-chat-item-buttons-container {
     display: flex;
-    flex-flow: row-reverse wrap;
+    flex-flow: row-reverse wrap-reverse;
     gap: var(--mynah-sizing-2);
     overflow: hidden;
     padding-top: var(--mynah-sizing-1);
