@@ -358,5 +358,5 @@ export class ChatWrapper {
 
   public clearTextArea = (): void => {
     this.promptInput.clearTextArea();
-  }
+  };
 }

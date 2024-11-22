@@ -634,7 +634,6 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         this.props.upDownArrowKeyPress(data.tabId, data.direction, this.getUserEventId());
       }
     });
-
   };
 
   public addToUserPrompt = (tabId: string, attachmentContent: string, type?: PromptAttachmentType): void => {
@@ -645,17 +644,16 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
 
   public addCommandToUserPrompt = (tabId: string, command: string): void => {
     if (Config.getInstance().config.showPromptField && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      this.chatWrappers[tabId].addCommandToPrompt(command)
+      this.chatWrappers[tabId].addCommandToPrompt(command);
     }
   };
 
   public clearPrompt = (tabId: string): void => {
     if (Config.getInstance().config.showPromptField && MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      this.chatWrappers[tabId].clearTextArea()
+      this.chatWrappers[tabId].clearTextArea();
     }
   };
 
-  
   /**
    * Adds a new item to the chat window
    * @param tabId Corresponding tab ID.

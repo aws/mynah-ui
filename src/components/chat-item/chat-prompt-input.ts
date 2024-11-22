@@ -316,10 +316,10 @@ export class ChatPromptInput {
       } else if (navigationalKeys.includes(e.key)) {
         const direction = e.key === KeyMap.ARROW_UP ? 'up' : 'down';
         MynahUIGlobalEvents.getInstance().dispatch(
-            MynahEventNames.UP_DOWN_ARROW_KEY_PRESS, 
-            { tabId: this.props.tabId, direction: direction }
+          MynahEventNames.UP_DOWN_ARROW_KEY_PRESS,
+          { tabId: this.props.tabId, direction }
         );
-     }
+      }
     } else {
       const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
       if (blockedKeys.includes(e.key)) {
@@ -623,10 +623,10 @@ export class ChatPromptInput {
         tabId: this.props.tabId,
         prompt: {
           prompt: promptText,
-          escapedPrompt: escapedPrompt,
-          context: context,
+          escapedPrompt,
+          context,
           attachmentContent: escapedAttachmentContent,
-          inputText: escapedInputText,     
+          inputText: escapedInputText,
           ...(selectedCommand !== '' ? { command: selectedCommand } : {}),
         }
       };
@@ -671,5 +671,5 @@ export class ChatPromptInput {
   public readonly addCommand = (quickActionCommand: string): void => {
     this.selectedCommand = quickActionCommand;
     this.promptTextInputCommand.setCommand(this.selectedCommand);
-  }  
+  };
 }
