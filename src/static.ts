@@ -129,7 +129,7 @@ export interface MynahUIDataModel {
   /**
    * The navigation index for the chat prompts list for the up/down arrow key navigation
    */
-  navigationIndexChatPrompts?: number;
+  upDownKeyNavigationIndex?: number;
 }
 
 export interface MynahUITabStoreTab {

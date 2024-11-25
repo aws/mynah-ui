@@ -353,7 +353,7 @@ export class ChatWrapper {
   };
 
   public addCommandToPrompt = (quickActionCommand: string): void => {
-    this.promptInput.addCommand(quickActionCommand);
+    this.promptInput.setCommand(quickActionCommand);
   };
 
   public clearTextArea = (): void => {

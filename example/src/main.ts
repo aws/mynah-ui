@@ -232,7 +232,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       }
       // reset navigation index when sending a new prompt
       mynahUI.updateStore(tabId, {
-        navigationIndexChatPrompts: -1,
+        upDownKeyNavigationIndex: -1,
       })
 
       onChatPrompt(tabId, prompt);
@@ -393,36 +393,33 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onInfoLinkClick: (tabId, link, mouseEvent) => {
       Log(`Link inside prompt info field clicked: <b>${link}</b>`);
     },
-    upDownArrowKeyPress(tabId: string, direction: 'up' | 'down') {  
+    onUpDownArrowKeyPress(tabId: string, direction: 'up' | 'down') {  
       // reset promptInputText and any possible attachment/commands from previous prompts
       mynahUI.updateStore(tabId, {
         promptInputText: '',
       });
       mynahUI.clearPrompt(tabId);
 
-      const tab = mynahUI.getAllTabs()[tabId];
+      const currentTab = mynahUI.getAllTabs()[tabId];
 
-      if (!tab?.store?.chatItems) { return; }
+      if (!currentTab?.store?.chatItems) { return; }
 
-      const chatPrompts = tab.store.chatItems.filter(item => item.type === ChatItemType.PROMPT);   
+      const chatPrompts = currentTab.store.chatItems.filter(item => item.type === ChatItemType.PROMPT);   
   
       if (!chatPrompts.length) { return; }
 
-      let navigationIndex = tab.store.navigationIndexChatPrompts === -1 ? chatPrompts.length : (tab.store.navigationIndexChatPrompts ?? chatPrompts.length);  
+      let navigationIndex = currentTab.store.upDownKeyNavigationIndex === -1 ? chatPrompts.length : (currentTab.store.upDownKeyNavigationIndex ?? chatPrompts.length);  
     
       if (direction === 'up') {
           navigationIndex = Math.max(0, navigationIndex - 1);
       } else if (direction === 'down') {
           navigationIndex = Math.min(chatPrompts.length, navigationIndex + 1);
-      } else {
-          Log(`direction ${direction} does not exist`);
-          return;
       }
   
       // If we've reached the end (newest message), reset to empty state
       if (navigationIndex === chatPrompts.length) {
           mynahUI.updateStore(tabId, {
-            navigationIndexChatPrompts: -1
+            upDownKeyNavigationIndex: -1
           });
           return;
       } else {
@@ -437,7 +434,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           // Update promptInputText with the combined text
           mynahUI.updateStore(tabId, {
               promptInputText: promptInputText,
-              navigationIndexChatPrompts: navigationIndex
+              upDownKeyNavigationIndex: navigationIndex
           });
           
           // check if any codeSnippet was present at the currently indexed prompt

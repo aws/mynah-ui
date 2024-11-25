@@ -668,7 +668,7 @@ export class ChatPromptInput {
     });
   };
 
-  public readonly addCommand = (quickActionCommand: string): void => {
+  public readonly setCommand = (quickActionCommand: string): void => {
     this.selectedCommand = quickActionCommand;
     this.promptTextInputCommand.setCommand(this.selectedCommand);
   };

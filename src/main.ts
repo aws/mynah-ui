@@ -246,7 +246,7 @@ export interface MynahUIProps {
     tabId: string,
     buttonId: string,
     eventId?: string) => void;
-  upDownArrowKeyPress?: (
+  onUpDownArrowKeyPress?: (
     tabId: string,
     direction: 'up' | 'down',
     eventId?: string) => void;
@@ -630,8 +630,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UP_DOWN_ARROW_KEY_PRESS, (data) => {
-      if (this.props.upDownArrowKeyPress !== undefined) {
-        this.props.upDownArrowKeyPress(data.tabId, data.direction, this.getUserEventId());
+      if (this.props.onUpDownArrowKeyPress !== undefined) {
+        this.props.onUpDownArrowKeyPress(data.tabId, data.direction, this.getUserEventId());
       }
     });
   };
