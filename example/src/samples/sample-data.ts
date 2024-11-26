@@ -159,7 +159,7 @@ export const tabbedData: ChatItemContent['tabbedContent'] = [
     }
 ];
 
-export const exploreTabData:MynahUIDataModel = { 
+export const exploreTabData: MynahUIDataModel = { 
     tabBackground: false,
     compactMode: false,
     tabTitle: 'Explore Agents',
@@ -441,6 +441,10 @@ export const defaultFollowUps: ChatItem = {
             {
                 pillText: 'Confirmation buttons',
                 command: Commands.CONFIRMATION_BUTTONS,
+            },
+            {
+                pillText: 'Buttons',
+                command: Commands.BUTTONS,
             },
             {
                 pillText: 'Some auto reply',
@@ -996,5 +1000,81 @@ export const exampleConfirmationButtons: ChatItem = {
             position: 'outside'
         },
     ]
+}
+
+export const exampleButtons: ChatItem = {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: 'This is a card with actions inside!',
+    buttons: [
+        {
+            text: 'With Icon',
+            id: 'action-1',
+            status: 'info',
+            icon: MynahIcons.CHAT
+        },
+        {
+            text: 'Default',
+            description: 'This has no status set!',
+            id: 'action-2',
+        },
+        {
+            text: 'Disabled',
+            description: 'This is disabled for some reason!',
+            id: 'action-3',
+            disabled: true,
+        },
+        {
+            text: 'Primary',
+            description: 'This is colored!',
+            id: 'action-3',
+            status: 'primary',
+        },
+        {
+            text: 'Main',
+            description: 'This is more colored!',
+            id: 'action-3',
+            status: 'main',
+        },
+        {
+            text: 'Clear',
+            description: 'This is clear!',
+            id: 'action-3',
+            status: 'clear',
+        },
+    ],
+}
+
+export const exampleStatusButtons: ChatItem = {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: 'These are buttons with statuses',
+    buttons: [
+        {
+            text: 'Proceed',
+            id: 'proceed',
+            icon: MynahIcons.OK,
+            status: 'success',
+            flash: 'infinite'
+        },
+        {
+            text: 'Caution',
+            id: 'caution',
+            icon: MynahIcons.WARNING,
+            status: 'warning'
+        },
+        {
+            text: 'Cancel',
+            id: 'cancel',
+            icon: MynahIcons.CANCEL,
+            status: 'error'
+        },
+        {
+            text: 'Change Folder',
+            id: 'change-folder',
+            icon: MynahIcons.REFRESH,
+            status: 'info'
+        },
+    ],
 }
  

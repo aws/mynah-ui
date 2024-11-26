@@ -37,6 +37,8 @@ import {
   qAgentQuickActions,
   welcomeScreenTabData,
   exampleConfirmationButtons,
+  exampleButtons,
+  exampleStatusButtons,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -49,6 +51,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   let showChatAvatars: boolean = false;
 
   const mynahUI = new MynahUI({
+    splashScreenInitialStatus: {
+      visible: true,
+      text: 'Initializing'
+    },
     rootSelector: '#amzn-mynah-website-wrapper',
     defaults: {
       store: {
@@ -75,6 +81,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               id: 'new-welcome-screen',
               text: 'Welcome screen',
               icon: MynahIcons.Q,
+            },
+            {
+              id: 'splash-loader',
+              text: 'Show splash loader',
+              icon: MynahIcons.PAUSE,
             },
             {
               id: 'custom-data-check',
@@ -143,6 +154,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         Object.keys(mynahUI.getAllTabs()).forEach(tabIdFromStore=>mynahUI.updateStore(tabIdFromStore, {
           showChatAvatars: showChatAvatars
         }));
+      } else if (buttonId === 'splash-loader') {
+        mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
+        setTimeout(()=>{
+          mynahUI.toggleSplashLoader(false);
+        }, 10000);
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
       } else if (buttonId === 'new-welcome-screen') {
@@ -389,6 +405,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     },
   });
 
+  setTimeout(()=>{
+    mynahUI.toggleSplashLoader(false);
+  }, 2750)
+
   const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {
     if (prompt.command !== undefined && prompt.command.trim() !== '') {
       switch (prompt.command) {
@@ -539,7 +559,12 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.CONFIRMATION_BUTTONS:
-          mynahUI.addChatItem(tabId, exampleConfirmationButtons)
+          mynahUI.addChatItem(tabId, exampleConfirmationButtons);
+          mynahUI.addChatItem(tabId, defaultFollowUps);
+          break;
+        case Commands.BUTTONS:
+          mynahUI.addChatItem(tabId, exampleButtons);
+          mynahUI.addChatItem(tabId, exampleStatusButtons);
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.SHOW_CUSTOM_FORM:

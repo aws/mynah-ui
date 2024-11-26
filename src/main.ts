@@ -38,6 +38,7 @@ import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
+import { Spinner } from './components/spinner/spinner';
 
 export { generateUID } from './helper/guid';
 export {
@@ -88,6 +89,10 @@ export { default as MynahUITestIds } from './helper/test-ids';
 export interface MynahUIProps {
   rootSelector?: string;
   defaults?: MynahUITabStoreTab;
+  splashScreenInitialStatus?: {
+    visible: boolean;
+    text: string;
+  };
   tabs?: MynahUITabStoreModel;
   config?: Partial<ConfigModel>;
   onShowMoreWebResultsClick?: (
@@ -252,6 +257,8 @@ export class MynahUI {
   private readonly render: ExtendedHTMLElement;
   private lastEventId: string = '';
   private readonly props: MynahUIProps;
+  private readonly splashLoader: ExtendedHTMLElement;
+  private readonly splashLoaderText: ExtendedHTMLElement;
   private readonly tabsWrapper: ExtendedHTMLElement;
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
@@ -274,6 +281,23 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     DomBuilder.getInstance(props.rootSelector);
     MynahUITabsStore.getInstance(this.props.tabs, this.props.defaults);
     MynahUIGlobalEvents.getInstance();
+
+    this.splashLoaderText = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-ui-splash-loader-text' ],
+      innerHTML: marked.parse(this.props.splashScreenInitialStatus?.text ?? '', { breaks: true }) as string,
+    });
+    this.splashLoader = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-ui-splash-loader-wrapper' ],
+      children: [
+        new Spinner().render,
+        this.splashLoaderText
+      ]
+    });
+    if (this.props.splashScreenInitialStatus?.visible === true) {
+      this.splashLoader.addClass('visible');
+    }
 
     const initTabs = MynahUITabsStore.getInstance().getAllTabs();
     this.tabContentsWrapper = DomBuilder.getInstance().build({
@@ -330,6 +354,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           this.tabsWrapper ?? '',
           ...(Config.getInstance().config.maxTabs > 1 ? [ new NoTabs().render ] : []),
           this.tabContentsWrapper,
+          this.splashLoader
         ]
       },
       'afterbegin'
@@ -760,6 +785,23 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    * @returns string selectedTabId or undefined
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
+
+  /**
+   * Toggles the visibility of the splash loader screen
+   */
+  public toggleSplashLoader = (visible: boolean, text?: string): void => {
+    if (visible) {
+      this.splashLoader.addClass('visible');
+    } else {
+      this.splashLoader.removeClass('visible');
+    }
+
+    if (text != null) {
+      this.splashLoaderText.update({
+        innerHTML: marked.parse(text, { breaks: true }) as string
+      });
+    }
+  };
 
   /**
    * Simply creates and shows a notification

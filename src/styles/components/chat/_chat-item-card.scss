@@ -109,36 +109,7 @@
             align-items: center;
             transition: var(--mynah-very-short-transition);
             display: flex;
-            > span {
-                position: relative;
-                display: inline-block;
-                width: var(--mynah-sizing-5);
-                height: var(--mynah-sizing-5);
-                border: var(--mynah-sizing-half) solid rgba(0, 0, 0, 0);
-                border-radius: 50%;
-                border-top-color: var(--mynah-color-button);
-                animation: spinner-spin 1s ease-in-out infinite;
-                transform-origin: center center;
-                overflow: visible;
-                &:before {
-                    position: absolute;
-                    content: '';
-                    top: calc(-1 * var(--mynah-sizing-half));
-                    left: calc(-1 * var(--mynah-sizing-half));
-                    right: calc(-1 * var(--mynah-sizing-half));
-                    bottom: calc(-1 * var(--mynah-sizing-half));
-                    width: auto;
-                    height: auto;
-                    aspect-ratio: 1; // Just to make sure that the spinner is a circle
-                    border: var(--mynah-sizing-half) solid var(--mynah-color-button);
-                    border-radius: 50%;
-                    opacity: 0.15;
-                    box-sizing: border-box;
-                }
-            }
-            > div {
-                opacity: 1;
-            }
+            flex-flow: row nowrap;
         }
         > .mynah-card-body {
             padding: calc(2 * var(--mynah-border-width));
@@ -183,6 +154,9 @@
                 margin: 0;
                 border: none;
                 flex: 0;
+                > .mynah-card.padding-none {
+                    padding-right: calc(1px + var(--mynah-border-width));
+                }
             }
         }
     }

@@ -22,6 +22,23 @@
     }
 }
 
+@keyframes spinner-spin-delayed {
+    90% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+@keyframes spinner-spin-delayed-reverse {
+    90% {
+        transform: rotate(-360deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
 @keyframes flash-main {
     0% {
         filter: brightness(0.925);
@@ -65,5 +82,16 @@
     100% {
         transform: translate3d(110%, 0, 0);
         opacity: 0;
+    }
+}
+@keyframes opacity {
+    45% {
+        opacity: 0.85;
+    }
+    55% {
+        opacity: 0.85;
+    }
+    90% {
+        opacity: 0.25;
     }
 }

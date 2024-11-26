@@ -9,6 +9,10 @@
         }
     }
 
+    &.awaits-confirmation .mynah-chat-prompt-input {
+        caret-color: transparent !important;
+    }
+
     > .mynah-chat-prompt-input-label {
         transition: var(--mynah-short-transition);
         padding: var(--mynah-sizing-2) 0;
@@ -154,6 +158,19 @@
                     overflow: visible;
                     > .mynah-chat-prompt-button {
                         background-color: transparent;
+                        border: none !important;
+                        &:not(:hover, :focus, :active) {
+                            &::before {
+                                background-color: transparent;
+                            }
+                        }
+                        &:hover,
+                        &:focus,
+                        &:active {
+                            &::before {
+                                opacity: 0.25 !important;
+                            }
+                        }
                         width: var(--mynah-sizing-9);
                         height: var(--mynah-sizing-9);
                         min-width: var(--mynah-sizing-9);

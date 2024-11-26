@@ -346,7 +346,17 @@ export class ChatPromptInput {
               this.handleContextCommandSelection({ command });
             }
           } else {
-            this.handleQuickActionCommandSelection(commandToSend);
+            switch (e.key) {
+              case KeyMap.SPACE:
+                this.handleQuickActionCommandSelection(commandToSend, 'space');
+                break;
+              case KeyMap.TAB:
+                this.handleQuickActionCommandSelection(commandToSend, 'tab');
+                break;
+              case KeyMap.ENTER:
+                this.handleQuickActionCommandSelection(commandToSend, 'enter');
+                break;
+            }
           }
         }
       } else if (navigationalKeys.includes(e.key)) {
@@ -508,7 +518,7 @@ export class ChatPromptInput {
                       if (this.quickPickType === 'context') {
                         this.handleContextCommandSelection(quickPickCommand);
                       } else {
-                        this.handleQuickActionCommandSelection(quickPickCommand);
+                        this.handleQuickActionCommandSelection(quickPickCommand, 'click');
                       }
                     }
                   }
@@ -548,12 +558,14 @@ export class ChatPromptInput {
     });
   };
 
-  private readonly handleQuickActionCommandSelection = (quickActionCommand: QuickActionCommand): void => {
+  private readonly handleQuickActionCommandSelection = (quickActionCommand: QuickActionCommand, method: 'enter' | 'tab' | 'space' | 'click'): void => {
     this.selectedCommand = quickActionCommand.command;
     this.promptTextInput.updateTextInputValue('');
     if (quickActionCommand.placeholder !== undefined) {
       this.promptTextInputCommand.setCommand(this.selectedCommand);
       this.promptTextInput.updateTextInputPlaceholder(quickActionCommand.placeholder);
+    } else if (method === 'enter' || method === 'click') {
+      this.sendPrompt();
     } else {
       this.promptTextInputCommand.setCommand(this.selectedCommand);
       this.promptTextInput.updateTextInputPlaceholder(Config.getInstance().config.texts.commandConfirmation);

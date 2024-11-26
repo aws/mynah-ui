@@ -58,7 +58,7 @@ So if it reached to the max number of tabs can be opened, it will return undefin
 ```typescript
 const mynahUI = new MynahUI({...});
 
-const newTabId: sring | undefined = mynahUI.updateStore('', {
+const newTabId: string | undefined = mynahUI.updateStore('', {
   tabTitle: 'My new tab!'
 });
 if(typeof newTabId !== string){
@@ -424,7 +424,7 @@ And when user sends the prompt attached code will be appended to the bottom.
 
 ## Getting all tabs with their store data (`getAllTabs`)
 
-You can get all tabs and their latest updated store data. Do not use this function to handle the data. This function aims to help you wit your test scenarios which you can grab the data and do your comparisons.
+You can get all tabs and their latest updated store data. Do not use this function to handle the data. This function aims to help you with your test scenarios which you can grab the data and do your comparisons.
 
 ```typescript
 mynahUI.getAllTabs();

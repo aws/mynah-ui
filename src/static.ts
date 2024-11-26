@@ -263,6 +263,9 @@ export interface ChatItemContent {
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
   } | null;
+  /**
+   * @deprecated starting from version v5.0.0, it will no longer render the buttons in a reversed order, but rather in the order of the array.
+   */
   buttons?: ChatItemButton[] | null;
   formItems?: ChatItemFormItem[] | null;
   footer?: ChatItemContent | null;

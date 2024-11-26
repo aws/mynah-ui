@@ -254,7 +254,7 @@ Ok, now it is getting better but let's also add some icons. For the answer's we 
 
 Assuming that you alread find your `svg` file which is the only supported type for `mynah-ui` because of the responsive design concerns. Then navigate to folder `src/components/icon/icons` and rename your file to match the pattern with others, no spaces allowed.
 
-And then open the `icon-imporer.ts` placed in one parent folder and add your import and name with the same pattern with others.
+And then open the `icon-importer.ts` placed in one parent folder and add your import and name with the same pattern with others.
 
 ```typescript
 // ICONS
