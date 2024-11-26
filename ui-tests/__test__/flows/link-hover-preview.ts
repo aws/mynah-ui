@@ -4,7 +4,7 @@ import testIds from '../../../src/helper/test-ids';
 import { closeTab } from './close-tab';
 import { openNewTab } from './open-new-tab';
 
-export const hoverOverLink = async (page: Page): Promise<void> => {
+export const hoverOverLink = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await closeTab(page, false, true);
   await openNewTab(page, false, true);
 
@@ -39,20 +39,26 @@ clamato nescisse.`,
   }, mockSource);
   await waitForAnimationEnd(page);
 
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  if (skipScreenshots !== true) {
+    expect(await page.screenshot()).toMatchImageSnapshot();
+  }
 
   const linkWrapperLocator = page.locator(getSelector(testIds.chatItem.relatedLinks.linkWrapper));
   await linkWrapperLocator.hover();
   await waitForAnimationEnd(page);
 
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  if (skipScreenshots !== true) {
+    expect(await page.screenshot()).toMatchImageSnapshot();
+  }
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlay)).count()).toEqual(1);
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlayCard)).count()).toEqual(1);
 
   page.mouse.move(0, 0);
   await waitForAnimationEnd(page);
 
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  if (skipScreenshots !== true) {
+    expect(await page.screenshot()).toMatchImageSnapshot();
+  }
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlay)).count()).toEqual(0);
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlayCard)).count()).toEqual(0);
 };

@@ -4,7 +4,7 @@ import { openNewTab } from '../open-new-tab';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
-export const renderFileDetails = async (page: Page): Promise<void> => {
+export const renderFileDetails = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await closeTab(page, false, true);
   await openNewTab(page, false, true);
 
@@ -47,5 +47,7 @@ export const renderFileDetails = async (page: Page): Promise<void> => {
   const fileWrapperLocator = page.locator(getSelector(testIds.chatItem.fileTree.wrapper));
 
   expect(await fileWrapperLocator.count()).toEqual(1);
-  expect(await fileWrapperLocator.screenshot()).toMatchImageSnapshot();
+  if (skipScreenshots !== true) {
+    expect(await fileWrapperLocator.screenshot()).toMatchImageSnapshot();
+  }
 };
