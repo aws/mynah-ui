@@ -8,8 +8,7 @@
     bottom: 0;
     width: auto;
     height: auto;
-    background-repeat: no-repeat;
-    background-position: bottom center;
+    background: var(--mynah-color-bg) no-repeat bottom center;
     background-size: cover;
     opacity: 0;
     display: flex;
@@ -17,8 +16,6 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    z-index: 1000;
-    background-color: var(--mynah-color-bg);
     z-index: 1000000000;
     gap: var(--mynah-sizing-6);
     &,
