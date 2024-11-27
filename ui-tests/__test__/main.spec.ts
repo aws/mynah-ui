@@ -20,12 +20,12 @@ import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
 import { renderButtons } from './flows/render-buttons';
-// import { hoverOverLink } from './flows/link-hover-preview';
-// import { showFileTree } from './flows/file-tree/show-file-tree';
-// import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
-// import { showFileTooltip } from './flows/file-tree/show-file-tooltip';
-// import { triggerFileActions } from './flows/file-tree/trigger-file-action';
-// import { renderFileDetails } from './flows/file-tree/render-file-details';
+import { hoverOverLink } from './flows/link-hover-preview';
+import { showFileTree } from './flows/file-tree/show-file-tree';
+import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
+import { showFileTooltip } from './flows/file-tree/show-file-tooltip';
+import { triggerFileActions } from './flows/file-tree/trigger-file-action';
+import { renderFileDetails } from './flows/file-tree/render-file-details';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -151,8 +151,7 @@ describe('Open MynahUI', () => {
     });
   });
 
-  // TODO: Needs to be refined, those are failing randomly
-  /* describe('File tree', () => {
+  describe('File tree', () => {
     it('should show file tree', async () => {
       await showFileTree(page);
     });
@@ -172,12 +171,11 @@ describe('Open MynahUI', () => {
     it('should render file appearance based on its details', async () => {
       await renderFileDetails(page);
     });
-  }); */
+  });
 
-  // TODO: Needs to be refined, those are failing randomly
-  /* it('should show link preview in tooltip on link hover', async () => {
+  it('should show link preview in tooltip on link hover', async () => {
     await hoverOverLink(page);
-  }); */
+  });
 
   it('should render buttons on cards correctly', async () => {
     await renderButtons(page);
