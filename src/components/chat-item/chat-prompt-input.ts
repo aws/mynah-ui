@@ -323,16 +323,15 @@ export class ChatPromptInput {
           this.quickPickOpen = true;
         }
       } else if (navigationalKeys.includes(e.key)) {
-        const direction = e.key === KeyMap.ARROW_UP ? 'up' : 'down';
         this.clearTextArea();
 
         if (this.userPromptHistoryIndex === -1) {
           this.userPromptHistoryIndex = this.userPromptHistory.length;
         }
 
-        if (direction === 'up') {
+        if (e.key === KeyMap.ARROW_UP) {
           this.userPromptHistoryIndex = Math.max(0, this.userPromptHistoryIndex - 1);
-        } else if (direction === 'down') {
+        } else if (e.key === KeyMap.ARROW_DOWN) {
           this.userPromptHistoryIndex = Math.min(this.userPromptHistory.length, this.userPromptHistoryIndex + 1);
         }
 
@@ -349,10 +348,6 @@ export class ChatPromptInput {
               .trim();
             this.promptAttachment.updateAttachment(codeAttachment, 'code');
           }
-
-          const promptLength = this.promptTextInput.getTextInputValue().trim().length + (typeof codeAttachment === 'string' ? codeAttachment.length : 0);
-          this.promptTextInput.updateTextInputMaxLength(Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT() - promptLength)));
-          this.updateAvailableCharactersIndicator();
 
           // When code is attached, focus to the input with a delay
           // Delay is necessary for the render updates
