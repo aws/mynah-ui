@@ -126,29 +126,6 @@ export const exampleCodeDiffApplied = SampleDiffApplied;
 
 export const tabbedData: ChatItemContent['tabbedContent'] = [
     {
-        label: 'Overview',
-        value: 'overview',
-        icon: MynahIcons.COMMENT,
-        content:{
-        fileList: {
-            fileTreeTitle: 'Suggestions',
-            filePaths: ['fruits/oranges.py', 'fruits/apples.py'],
-            details: {
-            'fruits/oranges.py': {
-                clickable: false,
-                icon: MynahIcons.PLUS,
-                status: 'success'
-            },
-            'fruits/apples.py': {
-                clickable: false,
-                icon: MynahIcons.MINUS,
-                status: 'error'
-            }
-            }
-        }
-        }
-    },
-    {
         label: 'Examples',
         value: 'examples',
         icon: MynahIcons.PLAY,
