@@ -34,6 +34,12 @@ export const INPUT_LENGTH_WARNING_THRESHOLD = (): number => {
 export interface ChatPromptInputProps {
   tabId: string;
 }
+
+interface UserPrompt {
+  inputText: string;
+  codeAttachment: string;
+}
+
 export class ChatPromptInput {
   render: ExtendedHTMLElement;
   private readonly props: ChatPromptInputProps;
@@ -54,6 +60,8 @@ export class ChatPromptInput {
   private quickPick: Overlay;
   private quickPickOpen: boolean = false;
   private selectedCommand: string = '';
+  private readonly userPromptHistory: UserPrompt[] = [];
+  private userPromptHistoryIndex: number = -1;
   constructor (props: ChatPromptInputProps) {
     this.props = props;
     this.promptTextInputCommand = new ChatPromptInputCommand({
@@ -250,6 +258,8 @@ export class ChatPromptInput {
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
+    const navigationalKeys = [ KeyMap.ARROW_UP, KeyMap.ARROW_DOWN ] as string[];
+
     if (e.key === KeyMap.ESCAPE && this.render.hasClass('awaits-confirmation')) {
       this.promptTextInput.blur();
     }
@@ -312,10 +322,47 @@ export class ChatPromptInput {
 
           this.quickPickOpen = true;
         }
+      } else if (navigationalKeys.includes(e.key)) {
+        const direction = e.key === KeyMap.ARROW_UP ? 'up' : 'down';
+        this.clearTextArea();
+
+        if (this.userPromptHistoryIndex === -1) {
+          this.userPromptHistoryIndex = this.userPromptHistory.length;
+        }
+
+        if (direction === 'up') {
+          this.userPromptHistoryIndex = Math.max(0, this.userPromptHistoryIndex - 1);
+        } else if (direction === 'down') {
+          this.userPromptHistoryIndex = Math.min(this.userPromptHistory.length, this.userPromptHistoryIndex + 1);
+        }
+
+        if (this.userPromptHistoryIndex === this.userPromptHistory.length) {
+          this.promptTextInput.updateTextInputValue('');
+        } else {
+          this.promptTextInput.updateTextInputValue(this.userPromptHistory[this.userPromptHistoryIndex].inputText);
+          // use the addAttachment function
+          let codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment;
+          if (typeof codeAttachment === 'string' && codeAttachment.trim().length > 0) {
+            codeAttachment = codeAttachment
+              .replace(/~~~~~~~~~~/, '')
+              .replace(/~~~~~~~~~~$/, '')
+              .trim();
+            this.promptAttachment.updateAttachment(codeAttachment, 'code');
+          }
+
+          const promptLength = this.promptTextInput.getTextInputValue().trim().length + (typeof codeAttachment === 'string' ? codeAttachment.length : 0);
+          this.promptTextInput.updateTextInputMaxLength(Math.max(MAX_USER_INPUT_THRESHOLD, (MAX_USER_INPUT() - promptLength)));
+          this.updateAvailableCharactersIndicator();
+
+          // When code is attached, focus to the input with a delay
+          // Delay is necessary for the render updates
+          setTimeout(() => {
+            this.promptTextInput.focus(-1);
+          }, 100);
+        }
       }
     } else {
       const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
-      const navigationalKeys = [ KeyMap.ARROW_UP, KeyMap.ARROW_DOWN ] as string[];
       if (blockedKeys.includes(e.key)) {
         e.preventDefault();
         if (e.key === KeyMap.ESCAPE) {
@@ -632,6 +679,14 @@ export class ChatPromptInput {
         }
       };
       this.clearTextArea();
+
+      if (currentInputValue !== '') {
+        this.userPromptHistory.push({
+          inputText: currentInputValue,
+          codeAttachment: attachmentContent,
+        });
+      }
+      this.userPromptHistoryIndex = -1;
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, promptData);
     }
   };
