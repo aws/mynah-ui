@@ -20,6 +20,12 @@ import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
 import { renderButtons } from './flows/render-buttons';
+import { hoverOverLink } from './flows/link-hover-preview';
+import { showFileTree } from './flows/file-tree/show-file-tree';
+import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
+import { showFileTooltip } from './flows/file-tree/show-file-tooltip';
+import { triggerFileActions } from './flows/file-tree/trigger-file-action';
+import { renderFileDetails } from './flows/file-tree/render-file-details';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -143,6 +149,32 @@ describe('Open MynahUI', () => {
     it('should select context selector item with enter', async () => {
       await selectQuickPicks(page, 'Enter', 'context');
     });
+  });
+
+  describe('File tree', () => {
+    it('should show file tree', async () => {
+      await showFileTree(page);
+    });
+
+    it('should collapse and expand file in folders', async () => {
+      await collapseExpandFileTree(page);
+    });
+
+    it('should show tooltip with file description on hover', async () => {
+      await showFileTooltip(page);
+    });
+
+    it('should trigger default or sub action on click', async () => {
+      await triggerFileActions(page);
+    });
+
+    it('should render file appearance based on its details', async () => {
+      await renderFileDetails(page);
+    });
+  });
+
+  it('should show link preview in tooltip on link hover', async () => {
+    await hoverOverLink(page);
   });
 
   it('should render buttons on cards correctly', async () => {
