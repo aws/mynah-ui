@@ -84,6 +84,7 @@ export class ThemeBuilder {
         uploadThemeConfigFilePicker.setAttribute('accept', '.mynahuitc');
         uploadThemeConfigFilePicker.classList.add('hidden');
         uploadThemeConfigFilePicker.classList.add('config-operation');
+        uploadThemeConfigFilePicker.classList.add('fill-state-always');
         uploadThemeConfigFilePicker.addEventListener('change', async () => {
             const file = uploadThemeConfigFilePicker.files?.item(0);
             if (file) {
@@ -104,6 +105,7 @@ export class ThemeBuilder {
         downloadThemeConfigButton.innerHTML = '<span>Download Config</span>';
         downloadThemeConfigButton.classList.add('mynah-button');
         downloadThemeConfigButton.classList.add('config-operation');
+        downloadThemeConfigButton.classList.add('fill-state-always');
         downloadThemeConfigButton.addEventListener('click', () => {
             download('mynah-ui-theme.mynahuitc', JSON.stringify(this.currentConfig));
         });
@@ -112,6 +114,7 @@ export class ThemeBuilder {
         resetThemeConfigButton.innerHTML = '<span>Reset</span>';
         resetThemeConfigButton.classList.add('mynah-button');
         resetThemeConfigButton.classList.add('config-operation');
+        resetThemeConfigButton.classList.add('fill-state-always');
         resetThemeConfigButton.addEventListener('click', () => {
             this.currentConfig = structuredClone(this.baseThemeType === 'light' ? BaseConfigLight : BaseConfigDark) as any;
             this.inputsWrapper.innerHTML = '';
@@ -123,6 +126,7 @@ export class ThemeBuilder {
         uploadThemeConfigButton.innerHTML = '<span>Upload Config</span>';
         uploadThemeConfigButton.classList.add('mynah-button');
         uploadThemeConfigButton.classList.add('config-operation');
+        uploadThemeConfigButton.classList.add('fill-state-always');
         uploadThemeConfigButton.addEventListener('click', () => {
             uploadThemeConfigFilePicker.click();
         });
@@ -131,6 +135,7 @@ export class ThemeBuilder {
         downloadThemeButton.innerHTML = '<span>Download Theme (CSS)</span>';
         downloadThemeButton.classList.add('mynah-button');
         downloadThemeButton.classList.add('config-operation');
+        downloadThemeButton.classList.add('fill-state-always');
         downloadThemeButton.addEventListener('click', () => {
             download(
                 'mynah-ui-theme.css',

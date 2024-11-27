@@ -25,6 +25,8 @@ mynahUI.getSelectedTabId(...);
 mynahUI.getAllTabs(...);
 mynahUI.notify(...);
 mynahUI.showCustomForm(...);
+mynahUI.updateTabDefaults(...);
+mynahUI.toggleSplashLoader(...);
 ```
 
 <p><br/></p>
@@ -500,3 +502,38 @@ mynahUI.showCustomForm(
 </p>
 
 To see the form item objects structure and the buttons structure, please go take a look to [DATAMODEL / formItems](./DATAMODEL.md#formItems) and [DATAMODEL / buttons](./DATAMODEL.md#buttons) ** because the structure of the items are identical. **
+
+
+
+<p><br/></p>
+
+# Update tab defaults (`updateTabDefaults`)
+
+You can use this method by providing the same value for the construcor property (`defaults`) to update the tab default values. **Do not foget that it will not effect anything in an already created tab**.
+
+```typescript
+mynahUI.updateTabDefaults({store: {
+  chatItems: [
+    {
+      ...,
+      body: 'Hello!',
+      ...
+    }
+  ]
+}});
+```
+<p align="center">
+</br>
+</p>
+
+
+# Show splash screen spinner (`toggleSplashLoader`)
+
+You can enable or disable window wide splash screen spinner with or without text.
+
+```typescript
+mynahUI.toggleSplashLoader(true, 'Initializing');
+```
+<p align="center">
+  <img src="./img/splashLoader.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>

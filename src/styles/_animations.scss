@@ -46,11 +46,10 @@
         transform: scale(1);
     }
     10% {
-        filter: brightness(1.09);
         box-shadow: 0px 0px 12px -10px currentColor;
     }
     15% {
-        filter: brightness(1.09);
+        filter: brightness(1.25);
         box-shadow: 0px 0px 12px -10px currentColor;
     }
     35% {
