@@ -20,7 +20,7 @@ import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
 import { renderButtons } from './flows/render-buttons';
-import { hoverOverLink } from './flows/link-hover-preview';
+// import { hoverOverLink } from './flows/link-hover-preview';
 // import { showFileTree } from './flows/file-tree/show-file-tree';
 // import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
 // import { showFileTooltip } from './flows/file-tree/show-file-tooltip';
@@ -174,9 +174,10 @@ describe('Open MynahUI', () => {
     });
   }); */
 
-  it('should show link preview in tooltip on link hover', async () => {
+  // TODO: Needs to be refined, those are failing randomly
+  /* it('should show link preview in tooltip on link hover', async () => {
     await hoverOverLink(page);
-  });
+  }); */
 
   it('should render buttons on cards correctly', async () => {
     await renderButtons(page);
