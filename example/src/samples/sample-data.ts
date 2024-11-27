@@ -190,7 +190,7 @@ Generate code across files with a task description.
           },
           {
             status: 'main',
-            disabled: false,
+            fillState: 'hover',
             flash: 'once',
             icon: MynahIcons.RIGHT_OPEN,
             id: 'quick-start-dev',
@@ -216,9 +216,10 @@ Automatically write code and commit it.
             text: 'Read user guide'
           },
           {
-            status: 'primary',
             disabled: false,
             icon: MynahIcons.RIGHT_OPEN,
+            status: 'main',
+            fillState: 'hover',
             flash: 'once',
             id: 'quick-start-write',
             text: `Quick start with **/write**`
@@ -245,7 +246,9 @@ Generate code for selected codebase (supports python & java).
           {
             disabled: false,
             icon: MynahIcons.RIGHT_OPEN,
-            flash: "infinite",
+            status: 'main',
+            fillState: 'hover',
+            flash: 'once',
             id: 'quick-start-generate',
             text: `Quick start with **/generate**`
           }
@@ -271,7 +274,9 @@ Transform your java project from an old version to a new one.
           {
             disabled: false,
             icon: MynahIcons.RIGHT_OPEN,
-            flash: 'infinite',
+            status: 'main',
+            fillState: 'hover',
+            flash: 'once',
             id: 'quick-start-transform',
             text: `Quick start with **/transform**`
           }
@@ -1025,10 +1030,24 @@ export const exampleButtons: ChatItem = {
             disabled: true,
         },
         {
+            text: 'Primary hover (with flash)',
+            fillState: 'hover',
+            id: 'action-3',
+            flash: 'infinite',
+            status: 'primary',
+        },
+        {
             text: 'Primary',
             description: 'This is colored!',
             id: 'action-3',
             status: 'primary',
+        },
+        {
+            text: 'Main hover (with flash)',
+            fillState: 'hover',
+            id: 'action-3',
+            flash: 'infinite',
+            status: 'main',
         },
         {
             text: 'Main',
@@ -1071,6 +1090,48 @@ export const exampleStatusButtons: ChatItem = {
         },
         {
             text: 'Change Folder',
+            id: 'change-folder',
+            icon: MynahIcons.REFRESH,
+            status: 'info'
+        },
+        {
+            text: 'Change Folder',
+            id: 'change-folder',
+            icon: MynahIcons.REFRESH,
+            status: 'info'
+        },
+        
+
+        // External buttons
+        {
+            text: 'Proceed',
+            id: 'proceed',
+            fillState: 'hover',
+            position: 'outside',
+            icon: MynahIcons.OK,
+            status: 'success',
+            flash: 'infinite'
+        },
+        {
+            text: 'Caution',
+            fillState: 'hover',
+            position: 'outside',
+            id: 'caution',
+            icon: MynahIcons.WARNING,
+            status: 'warning'
+        },
+        {
+            text: 'Cancel',
+            fillState: 'hover',
+            position: 'outside',
+            id: 'cancel',
+            icon: MynahIcons.CANCEL,
+            status: 'error'
+        },
+        {
+            text: 'Change Folder',
+            fillState: 'hover',
+            position: 'outside',
             id: 'change-folder',
             icon: MynahIcons.REFRESH,
             status: 'info'

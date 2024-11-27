@@ -1876,6 +1876,7 @@ interface ChatItemButton {
   description?: string; // A text to be shown inside a tooltip and it can be markdown
   status?: 'main' | 'primary' | 'clear' | Status;
   flash?: 'infinite' | 'once'; // Flashes the card
+  fillState?: 'hover' | 'always'; // background is filled always or only when hover
   icon?: MynahIcons; // in case if you want to put an icon to the button.
   position?: 'inside' | 'outside'; // Whether the button shows up inside or oustide a card, default is 'inside'
 }
@@ -1993,6 +1994,30 @@ mynahUI.addChatItem(tabId, {
 
 <p align="center">
   <img src="./img/data-model/chatItems/buttonFlash.png" alt="button flash" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+#### Button fillState
+
+You can make the filled buttons filled always or filled only on hover.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    ...
+    buttons: [
+    {
+        ...
+        fillState: 'hover',
+        ...
+    },
+    ...,
+    ],
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/fillState.png" alt="button fill when hover" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/chatItems/fillState-hover.png" alt="button fill when hover (on hover)" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

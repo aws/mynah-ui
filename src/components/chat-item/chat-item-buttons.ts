@@ -36,6 +36,7 @@ export class ChatItemButtonsWrapper {
         const actionItem = new Button({
           testId: testIds.chatItem.buttons.button,
           label: chatActionAction.text,
+          fillState: chatActionAction.fillState,
           tooltip: chatActionAction.description,
           tooltipHorizontalDirection: OverlayHorizontalDirection.CENTER,
           icon: chatActionAction.icon != null ? new Icon({ icon: chatActionAction.icon }).render : undefined,
