@@ -9,7 +9,7 @@ module.exports = {
             use: {
                 trace: 'on-first-retry',
             },
-            browsers: ['chromium'],
+            browsers: ['webkit', 'chromium'],
             launchOptions: {
                 headless: isHeadless,
             },
