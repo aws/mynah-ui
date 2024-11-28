@@ -22,13 +22,17 @@ import 'prismjs/components/prism-markdown.min';
 import 'prismjs/components/prism-mongodb.min';
 import 'prismjs/components/prism-c.min';
 import 'prismjs/components/prism-bash.min';
+import 'prismjs/components/prism-go.min';
 import 'prismjs/components/prism-csharp.min';
 import 'prismjs/components/prism-objectivec.min';
 import 'prismjs/components/prism-python.min';
 import 'prismjs/components/prism-regex.min';
+import 'prismjs/components/prism-swift.min';
 import 'prismjs/components/prism-scala.min';
 import 'prismjs/components/prism-scss.min';
 import 'prismjs/components/prism-less.min';
+import 'prismjs/components/prism-ruby.min';
+import 'prismjs/components/prism-rust.min';
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
 import 'prismjs/plugins/diff-highlight/prism-diff-highlight.min';
@@ -48,7 +52,7 @@ import { copyToClipboard } from '../helper/chat-item';
 import testIds from '../helper/test-ids';
 import unescapeHTML from 'unescape-html';
 
-const IMPORTED_LANGS = [
+const langs = [
   'markup',
   'xml',
   'css',
@@ -61,6 +65,7 @@ const IMPORTED_LANGS = [
   'lua',
   'java',
   'json',
+  'go',
   'markdown',
   'mongodb',
   'c',
@@ -69,33 +74,15 @@ const IMPORTED_LANGS = [
   'objectivec',
   'python',
   'regex',
+  'swift',
   'scala',
   'scss',
   'less',
-  'diff-markup',
-  'diff-xml',
-  'diff-css',
-  'diff-clike',
-  'diff-diff',
-  'diff-javascript',
-  'diff-typescript',
-  'diff-jsx',
-  'diff-tsx',
-  'diff-lua',
-  'diff-java',
-  'diff-json',
-  'diff-markdown',
-  'diff-mongodb',
-  'diff-c',
-  'diff-bash',
-  'diff-csharp',
-  'diff-objectivec',
-  'diff-python',
-  'diff-regex',
-  'diff-scala',
-  'diff-scss',
-  'diff-less',
+  'ruby',
+  'rust',
 ];
+
+const IMPORTED_LANGS = [ ...langs, ...(langs.map(lang => `diff-${lang}`)) ];
 const DEFAULT_LANG = 'clike';
 
 export interface SyntaxHighlighterProps {

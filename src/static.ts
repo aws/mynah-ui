@@ -333,6 +333,7 @@ export interface ChatItemButton {
   description?: string;
   status?: 'main' | 'primary' | 'clear' | Status;
   flash?: 'infinite' | 'once';
+  fillState?: 'hover' | 'always';
   icon?: MynahIcons;
   position?: 'inside' | 'outside';
 }

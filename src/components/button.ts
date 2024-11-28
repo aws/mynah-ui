@@ -36,6 +36,7 @@ export interface ButtonProps {
   primary?: boolean;
   border?: boolean;
   status?: 'main' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'clear';
+  fillState?: 'hover' | 'always';
   additionalEvents?: Partial<Record<GenericEvents, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions>>;
   onClick: (e: Event) => void;
   onHover?: (e: Event) => void;
@@ -66,6 +67,7 @@ class ButtonInternal extends ButtonAbstract {
         'mynah-button',
         ...(props.primary === false ? [ 'mynah-button-secondary' ] : []),
         ...(props.border === true ? [ 'mynah-button-border' ] : []),
+        ...([ `fill-state-${props.fillState ?? 'always'}` ]),
         ...(props.status != null ? [ `status-${props.status}` ] : []),
         ...(props.classNames !== undefined ? props.classNames : []),
       ],

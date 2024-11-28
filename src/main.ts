@@ -772,6 +772,14 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   /**
+   * Updates defaults of the tab store
+   * @param defaults MynahUITabStoreTab
+   */
+  public updateTabDefaults = (defaults: MynahUITabStoreTab): void => {
+    MynahUITabsStore.getInstance().updateTabDefaults(defaults);
+  };
+
+  /**
    * This function returns the selected tab id if there is any, otherwise returns undefined
    * @returns string selectedTabId or undefined
    */

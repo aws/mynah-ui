@@ -5,7 +5,7 @@
     position: relative;
     max-width: 90%;
     min-width: 1%;
-    transition: var(--mynah-text-flow-transition);
+    transition: var(--mynah-very-short-transition);
     transform: translate3d(0, min(50%, 25vh), 0) scale(0.95, 1.25);
     opacity: 0;
     transform-origin: center bottom;
@@ -37,28 +37,8 @@
 
     &.mynah-chat-item-hover-effect:hover {
         cursor: pointer;
-        transform: translate3d(0, calc(-1 * var(--mynah-sizing-1)), 0);
         > .mynah-card {
             box-shadow: var(--mynah-shadow-card-hover);
-        }
-    }
-
-    &:hover {
-        .mynah-button.mynah-button-flash-by-parent-focus:not(:hover) {
-            &,
-            &:after {
-                animation: flash-main 3s cubic-bezier(0.75, 0, 0.25, 1) infinite forwards;
-            }
-            animation-name: flash-main;
-            &:after {
-                animation-name: flash-pseudo;
-            }
-            &.animate-once {
-                &,
-                &:after {
-                    animation-iteration-count: 1;
-                }
-            }
         }
     }
 

@@ -60,13 +60,15 @@ export class ChatItemTabbedCard {
           classNames: [ 'mynah-tabbed-card-contents' ],
           children: [ this.contentCard.render ]
         },
-        {
-          type: 'div',
-          classNames: [ 'mynah-tabbed-card-tabs' ],
-          children: [
-            toggleGroup.render
-          ]
-        }
+        ...(props.tabbedCard.length > 1
+          ? [ {
+              type: 'div',
+              classNames: [ 'mynah-tabbed-card-tabs' ],
+              children: [
+                toggleGroup.render
+              ]
+            } ]
+          : [])
       ]
     });
   }

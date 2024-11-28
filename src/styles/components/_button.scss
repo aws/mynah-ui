@@ -3,9 +3,6 @@
     border: none;
     min-width: var(--mynah-sizing-8);
     border-radius: var(--mynah-button-radius);
-    background-color: var(--mynah-color-button);
-    color: var(--mynah-color-button-reverse);
-    box-shadow: var(--mynah-shadow-button);
     font-family: var(--mynah-font-family);
     font-size: var(--mynah-font-size-medium) !important;
     cursor: pointer;
@@ -24,6 +21,16 @@
     line-height: var(--mynah-line-height);
     margin-top: var(--mynah-border-width);
     margin-bottom: var(--mynah-border-width);
+    background-color: transparent;
+    color: inherit;
+    &:not(.mynah-button-secondary) {
+        &.fill-state-always,
+        &.fill-state-hover:hover {
+            box-shadow: var(--mynah-shadow-button);
+            color: var(--mynah-color-button-reverse);
+            background-color: var(--mynah-color-button);
+        }
+    }
     &::after {
         content: '';
         pointer-events: none;
@@ -58,8 +65,13 @@
                     position: absolute;
                     width: 100%;
                     height: 100%;
-                    background-color: var(--mynah-color-status-#{$status});
                     opacity: 0.08;
+                }
+                &.fill-state-always,
+                &.fill-state-hover:hover {
+                    &::before {
+                        background-color: var(--mynah-color-status-#{$status});
+                    }
                 }
                 &::after {
                     color: var(--mynah-color-status-#{$status});
@@ -78,13 +90,29 @@
         }
     }
     &.status-main {
-        color: var(--mynah-color-gradient-alternate);
-        background-image: var(--mynah-color-gradient-main-half);
-        background-repeat: no-repeat;
-        background-size: 105% 105%;
-        background-position: center center;
-        &.mynah-button-border {
-            border: none !important;
+        &::before {
+            transition: inherit;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            background-image: var(--mynah-color-gradient-main-half);
+            background-repeat: no-repeat;
+            background-size: 105% 105%;
+            background-position: center center;
+        }
+        &.fill-state-hover {
+            border: var(--mynah-border-width) solid currentColor;
+        }
+        .mynah-chat-item-card:hover &.mynah-button-flash-by-parent-focus:not(:hover),
+        &.fill-state-always,
+        &.fill-state-hover:hover {
+            border-color: rgba(0, 0, 0, 0) !important;
+            color: var(--mynah-color-gradient-alternate);
+            &::before {
+                opacity: 1;
+            }
         }
     }
     &:active,
@@ -106,12 +134,30 @@
     }
     > span {
         white-space: nowrap;
-        transition: var(--mynah-very-long-transition);
+        transition: inherit;
         overflow: hidden;
         box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
         margin-right: var(--mynah-sizing-1);
         margin-left: var(--mynah-sizing-1);
+        z-index: 100;
+    }
+
+    .mynah-chat-item-card:hover &.mynah-button-flash-by-parent-focus:not(:hover) {
+        &,
+        &:after {
+            animation: flash-main 3.25s cubic-bezier(0.75, 0, 0.25, 1) infinite both;
+        }
+        animation-name: flash-main;
+        &:after {
+            animation-name: flash-pseudo;
+        }
+        &.animate-once {
+            &,
+            &:after {
+                animation-iteration-count: 1;
+            }
+        }
     }
 }

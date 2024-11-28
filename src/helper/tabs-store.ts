@@ -36,9 +36,9 @@ export class MynahUITabsStore {
     selectedTabChange: {}
   };
 
-  private readonly tabDefaults: MynahUITabStoreTab = {};
   private readonly tabsStore: Required<MynahUITabStoreModel> = {};
   private readonly tabsDataStore: Record<string, MynahUIDataStore> = {};
+  private tabDefaults: MynahUITabStoreTab = {};
 
   private constructor (initialData?: MynahUITabStoreModel, defaults?: MynahUITabStoreTab) {
     this.tabsStore = Object.assign(this.tabsStore, initialData);
@@ -227,4 +227,17 @@ export class MynahUITabsStore {
    * @returns tabs length
    */
   public tabsLength = (): number => Object.keys(this.tabsStore).length;
+
+  /**
+   * Updates defaults of the tab store
+   * @param defaults MynahUITabStoreTab
+   */
+  public updateTabDefaults = (defaults: MynahUITabStoreTab): void => {
+    this.tabDefaults = {
+      store: {
+        ...this.tabDefaults.store,
+        ...defaults.store
+      }
+    };
+  };
 }
