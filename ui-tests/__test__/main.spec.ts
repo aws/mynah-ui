@@ -26,10 +26,13 @@ import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
 import { showFileTooltip } from './flows/file-tree/show-file-tooltip';
 import { triggerFileActions } from './flows/file-tree/trigger-file-action';
 import { renderFileDetails } from './flows/file-tree/render-file-details';
+import { renderFormElements } from './flows/form/render-form-elements';
+import { disableForm } from './flows/form/disable-form';
+import { removeForm } from './flows/form/remove-form';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
-    const browserName = await (await browser.browserType()).name();
+    const browserName = browser.browserType().name();
     const toMatchImageSnapshot = configureToMatchImageSnapshot({
       failureThreshold: 0.1,
       allowSizeMismatch: true,
@@ -69,20 +72,22 @@ describe('Open MynahUI', () => {
     await clickToFollowup(page);
   });
 
-  it('should close the tab', async () => {
-    await closeTab(page);
-  });
+  describe('Tabs', () => {
+    it('should close the tab', async () => {
+      await closeTab(page);
+    });
 
-  it('should open a new the tab', async () => {
-    await openNewTab(page);
-  });
+    it('should open a new the tab', async () => {
+      await openNewTab(page);
+    });
 
-  it('should close the tab with middle click', async () => {
-    await closeTab(page, true, true);
-  });
+    it('should close the tab with middle click', async () => {
+      await closeTab(page, true, true);
+    });
 
-  it('should open a new tab with double click', async () => {
-    await openNewTab(page, true, true);
+    it('should open a new tab with double click', async () => {
+      await openNewTab(page, true, true);
+    });
   });
 
   it('should render character limit counter', async () => {
@@ -179,6 +184,18 @@ describe('Open MynahUI', () => {
 
   it('should render buttons on cards correctly', async () => {
     await renderButtons(page);
+  });
+
+  describe('Forms', () => {
+    it('should render form elements correctly', async () => {
+      await renderFormElements(page);
+    });
+    it('should disable forms on submit', async () => {
+      await disableForm(page);
+    });
+    it('should remove form card when canceled', async () => {
+      await removeForm(page);
+    });
   });
 
   it('should keep the content inside window boundaries', async () => {
