@@ -34,6 +34,12 @@ export const INPUT_LENGTH_WARNING_THRESHOLD = (): number => {
 export interface ChatPromptInputProps {
   tabId: string;
 }
+
+interface UserPrompt {
+  inputText: string;
+  codeAttachment: string;
+}
+
 export class ChatPromptInput {
   render: ExtendedHTMLElement;
   private readonly props: ChatPromptInputProps;
@@ -54,6 +60,8 @@ export class ChatPromptInput {
   private quickPick: Overlay;
   private quickPickOpen: boolean = false;
   private selectedCommand: string = '';
+  private readonly userPromptHistory: UserPrompt[] = [];
+  private userPromptHistoryIndex: number = -1;
   constructor (props: ChatPromptInputProps) {
     this.props = props;
     this.promptTextInputCommand = new ChatPromptInputCommand({
@@ -250,6 +258,8 @@ export class ChatPromptInput {
   };
 
   private readonly handleInputKeydown = (e: KeyboardEvent): void => {
+    const navigationalKeys = [ KeyMap.ARROW_UP, KeyMap.ARROW_DOWN ] as string[];
+
     if (e.key === KeyMap.ESCAPE && this.render.hasClass('awaits-confirmation')) {
       this.promptTextInput.blur();
     }
@@ -312,10 +322,39 @@ export class ChatPromptInput {
 
           this.quickPickOpen = true;
         }
+      } else if (navigationalKeys.includes(e.key)) {
+        this.clearTextArea();
+
+        if (this.userPromptHistoryIndex === -1) {
+          this.userPromptHistoryIndex = this.userPromptHistory.length;
+        }
+
+        if (e.key === KeyMap.ARROW_UP) {
+          this.userPromptHistoryIndex = Math.max(0, this.userPromptHistoryIndex - 1);
+        } else if (e.key === KeyMap.ARROW_DOWN) {
+          this.userPromptHistoryIndex = Math.min(this.userPromptHistory.length, this.userPromptHistoryIndex + 1);
+        }
+
+        if (this.userPromptHistoryIndex === this.userPromptHistory.length) {
+          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+            promptInputText: '',
+          });
+        } else {
+          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+            promptInputText: this.userPromptHistory[this.userPromptHistoryIndex].inputText,
+          });
+          let codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment;
+          if (typeof codeAttachment === 'string' && codeAttachment.trim().length > 0) {
+            codeAttachment = codeAttachment
+              .replace(/~~~~~~~~~~/, '')
+              .replace(/~~~~~~~~~~$/, '')
+              .trim();
+            this.addAttachment(codeAttachment, 'code');
+          }
+        }
       }
     } else {
       const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
-      const navigationalKeys = [ KeyMap.ARROW_UP, KeyMap.ARROW_DOWN ] as string[];
       if (blockedKeys.includes(e.key)) {
         e.preventDefault();
         if (e.key === KeyMap.ESCAPE) {
@@ -632,6 +671,14 @@ export class ChatPromptInput {
         }
       };
       this.clearTextArea();
+
+      if (currentInputValue !== '') {
+        this.userPromptHistory.push({
+          inputText: currentInputValue,
+          codeAttachment: attachmentContent,
+        });
+      }
+      this.userPromptHistoryIndex = -1;
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, promptData);
     }
   };
@@ -650,6 +697,9 @@ export class ChatPromptInput {
   });
 
   public readonly clearTextArea = (keepAttachment?: boolean): void => {
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+      promptInputText: '',
+    });
     this.selectedCommand = '';
     this.promptTextInput.clear();
     this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT());
