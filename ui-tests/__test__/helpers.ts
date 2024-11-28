@@ -16,20 +16,20 @@ export const getOffsetHeight = (boxRect: {
 
 export const waitForAnimationEnd = async (page: Page): Promise<any> => {
   return await Promise.race([
-    new Promise((resolve) => setTimeout(resolve, 8000)),
+    new Promise((resolve) => setTimeout(resolve, 10000)),
     page.evaluate(async () => {
       return await new Promise<void>((resolve) => {
         const startTime = new Date().getTime();
         const animationStateCheckInterval: ReturnType<typeof setInterval> = setInterval(() => {
           const allAnims = document.getAnimations();
-          if (allAnims.find((anim) => anim.playState !== 'finished') == null || new Date().getTime() - startTime > 5000) {
+          if (allAnims.find((anim) => anim.playState !== 'finished') == null || new Date().getTime() - startTime > 6000) {
             clearInterval(animationStateCheckInterval);
             // Give a delay to make the render complete
             setTimeout(() => {
               resolve();
-            }, 50);
+            }, 250);
           }
-        }, 150);
+        }, 350);
       });
     }),
   ]);
