@@ -20,6 +20,9 @@ import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
 import { renderButtons } from './flows/render-buttons';
+import { navigatePromptsDown } from './flows/navigate-prompts/navigatePromptsDown';
+import { navigatePromptsUp } from './flows/navigate-prompts/navigatePromptsUp';
+import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigatePromptsToEmpty';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -155,5 +158,18 @@ describe('Open MynahUI', () => {
 
   it('should parse markdown', async () => {
     await parseMarkdown(page);
+  });
+
+  describe('Prompt navigation', () => {
+    it('should navigate up to previous prompt', async () => {
+      await navigatePromptsUp(page);
+    });
+    it('should navigate down to next prompt', async () => {
+      await navigatePromptsDown(page);
+    },
+    20000);
+    it('should navigate down to current empty prompt', async () => {
+      await navigatePromptsToEmpty(page);
+    });
   });
 });
