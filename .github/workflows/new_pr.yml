@@ -1,13 +1,12 @@
 name: Check Lint, Tests and Build
 on:
-  pull_request_target:
+  pull_request:
     branches: [main, feature/*, fix/*]
 jobs:
   build:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-        if: github.event_name == 'pull_request_target'
         with:
             fetch-depth: 20
       - uses: actions/setup-node@v4
