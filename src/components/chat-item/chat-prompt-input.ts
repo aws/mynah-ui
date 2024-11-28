@@ -336,24 +336,21 @@ export class ChatPromptInput {
         }
 
         if (this.userPromptHistoryIndex === this.userPromptHistory.length) {
-          this.promptTextInput.updateTextInputValue('');
+          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+            promptInputText: '',
+          });
         } else {
-          this.promptTextInput.updateTextInputValue(this.userPromptHistory[this.userPromptHistoryIndex].inputText);
-          // use the addAttachment function
+          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+            promptInputText: this.userPromptHistory[this.userPromptHistoryIndex].inputText,
+          });
           let codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment;
           if (typeof codeAttachment === 'string' && codeAttachment.trim().length > 0) {
             codeAttachment = codeAttachment
               .replace(/~~~~~~~~~~/, '')
               .replace(/~~~~~~~~~~$/, '')
               .trim();
-            this.promptAttachment.updateAttachment(codeAttachment, 'code');
+            this.addAttachment(codeAttachment, 'code');
           }
-
-          // When code is attached, focus to the input with a delay
-          // Delay is necessary for the render updates
-          setTimeout(() => {
-            this.promptTextInput.focus(-1);
-          }, 100);
         }
       }
     } else {
@@ -700,6 +697,9 @@ export class ChatPromptInput {
   });
 
   public readonly clearTextArea = (keepAttachment?: boolean): void => {
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+      promptInputText: '',
+    });
     this.selectedCommand = '';
     this.promptTextInput.clear();
     this.promptTextInput.updateTextInputMaxLength(MAX_USER_INPUT());
