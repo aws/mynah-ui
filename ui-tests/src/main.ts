@@ -101,10 +101,18 @@ export const createMynahUI = (): MynahUI => {
       //
     },
     onFileClick: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => {
-      //
+      mynahUI.addChatItem(tabId, {
+        type: ChatItemType.ANSWER,
+        messageId: generateUID(),
+        body: `file ${filePath} clicked`,
+      });
     },
     onFileActionClick: (tabId, messageId, filePath, actionName) => {
-      //
+      mynahUI.addChatItem(tabId, {
+        type: ChatItemType.ANSWER,
+        messageId: generateUID(),
+        body: `file ${filePath} action button ${actionName} clicked`,
+      });
     },
     onCustomFormAction: (tabId, action) => {
       //
