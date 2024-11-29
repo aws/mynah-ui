@@ -9,7 +9,7 @@
         "strict": true,
         "resolveJsonModule": true,
         "typeRoots": ["./node_modules/@types"],
-        "strictPropertyInitialization": false
+        "strictPropertyInitialization": false,
     },
-    "exclude": ["build", "out", "node_modules", ".vscode-test"]
+    "exclude": ["build", "out", "node_modules", ".vscode-test"],
 }

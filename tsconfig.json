@@ -13,7 +13,7 @@
         "skipLibCheck": true,
         "preserveConstEnums": true,
         "typeRoots": ["./node_modules/@types"],
-        "strictPropertyInitialization": false
+        "strictPropertyInitialization": false,
     },
-    "exclude": ["dist", "node_modules", "docs", "example", "ui-tests"]
+    "exclude": ["dist", "node_modules", "docs", "example", "ui-tests"],
 }

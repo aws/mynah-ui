@@ -9,6 +9,6 @@
         "strict": true,
         "resolveJsonModule": true,
         "typeRoots": ["./node_modules/@types"],
-        "strictPropertyInitialization": false
-    }
+        "strictPropertyInitialization": false,
+    },
 }
