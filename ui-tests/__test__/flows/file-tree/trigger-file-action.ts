@@ -27,4 +27,13 @@ export const triggerFileActions = async (page: Page, skipScreenshots?: boolean):
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();
   }
+
+  // Click on a file action button to trigger sub action
+  await fileActionLocator.nth(1).click();
+  await page.mouse.move(0, 0);
+  await waitForAnimationEnd(page);
+
+  if (skipScreenshots !== true) {
+    expect(await page.screenshot()).toMatchImageSnapshot();
+  }
 };
