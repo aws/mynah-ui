@@ -355,11 +355,21 @@ export class ChatPromptInput {
           });
           codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment ?? '';
         }
-        if (codeAttachment.trim().length > 0) {
-          codeAttachment = codeAttachment
-            .replace(/~~~~~~~~~~/, '')
-            .replace(/~~~~~~~~~~$/, '')
-            .trim();
+        codeAttachment = codeAttachment.trim();
+        if (codeAttachment.length > 0) {
+          // the way we mark code in our example mynah client
+          if (codeAttachment.startsWith('~~~~~~~~~~') && codeAttachment.endsWith('~~~~~~~~~~')) {
+            codeAttachment = codeAttachment
+              .replace(/^~~~~~~~~~~/, '')
+              .replace(/~~~~~~~~~~$/, '')
+              .trim();
+          } else if (codeAttachment.startsWith('```') && codeAttachment.endsWith('```')) {
+            // the way code is marked in VScode and JetBrains extensions
+            codeAttachment = codeAttachment
+              .replace(/^```/, '')
+              .replace(/```$/, '')
+              .trim();
+          }
           this.addAttachment(codeAttachment, 'code');
         }
       }
