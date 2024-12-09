@@ -346,14 +346,14 @@ export class ChatPromptInput {
         let codeAttachment = '';
         if (this.userPromptHistoryIndex === this.userPromptHistory.length) {
           MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-            promptInputText: this.lastUnsentUserPrompt.inputText,
+            promptInputText: this.lastUnsentUserPrompt.inputText ?? '',
           });
-          codeAttachment = this.lastUnsentUserPrompt.codeAttachment;
+          codeAttachment = this.lastUnsentUserPrompt.codeAttachment ?? '';
         } else {
           MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
             promptInputText: this.userPromptHistory[this.userPromptHistoryIndex].inputText,
           });
-          codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment;
+          codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment ?? '';
         }
         if (codeAttachment.trim().length > 0) {
           codeAttachment = codeAttachment
