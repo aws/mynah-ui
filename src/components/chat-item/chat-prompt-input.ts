@@ -62,6 +62,7 @@ export class ChatPromptInput {
   private selectedCommand: string = '';
   private readonly userPromptHistory: UserPrompt[] = [];
   private userPromptHistoryIndex: number = -1;
+  private lastUnsentUserPrompt: UserPrompt;
   constructor (props: ChatPromptInputProps) {
     this.props = props;
     this.promptTextInputCommand = new ChatPromptInputCommand({
@@ -323,6 +324,13 @@ export class ChatPromptInput {
           this.quickPickOpen = true;
         }
       } else if (navigationalKeys.includes(e.key)) {
+        if (this.userPromptHistoryIndex === -1 || this.userPromptHistoryIndex === this.userPromptHistory.length) {
+          this.lastUnsentUserPrompt = {
+            inputText: this.promptTextInput.getTextInputValue(),
+            codeAttachment: this.promptAttachment?.lastAttachmentContent ?? '',
+          };
+        }
+
         this.clearTextArea();
 
         if (this.userPromptHistoryIndex === -1) {
@@ -335,22 +343,24 @@ export class ChatPromptInput {
           this.userPromptHistoryIndex = Math.min(this.userPromptHistory.length, this.userPromptHistoryIndex + 1);
         }
 
+        let codeAttachment = '';
         if (this.userPromptHistoryIndex === this.userPromptHistory.length) {
           MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-            promptInputText: '',
+            promptInputText: this.lastUnsentUserPrompt.inputText,
           });
+          codeAttachment = this.lastUnsentUserPrompt.codeAttachment;
         } else {
           MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
             promptInputText: this.userPromptHistory[this.userPromptHistoryIndex].inputText,
           });
-          let codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment;
-          if (typeof codeAttachment === 'string' && codeAttachment.trim().length > 0) {
-            codeAttachment = codeAttachment
-              .replace(/~~~~~~~~~~/, '')
-              .replace(/~~~~~~~~~~$/, '')
-              .trim();
-            this.addAttachment(codeAttachment, 'code');
-          }
+          codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment;
+        }
+        if (codeAttachment.trim().length > 0) {
+          codeAttachment = codeAttachment
+            .replace(/~~~~~~~~~~/, '')
+            .replace(/~~~~~~~~~~$/, '')
+            .trim();
+          this.addAttachment(codeAttachment, 'code');
         }
       }
     } else {
@@ -675,9 +685,15 @@ export class ChatPromptInput {
       if (currentInputValue !== '') {
         this.userPromptHistory.push({
           inputText: currentInputValue,
-          codeAttachment: attachmentContent,
+          codeAttachment: attachmentContent ?? '',
         });
       }
+
+      this.lastUnsentUserPrompt = {
+        inputText: '',
+        codeAttachment: '',
+      };
+
       this.userPromptHistoryIndex = -1;
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_PROMPT, promptData);
     }
