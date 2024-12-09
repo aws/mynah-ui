@@ -355,11 +355,20 @@ export class ChatPromptInput {
           });
           codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment ?? '';
         }
-        if (codeAttachment.trim().length > 0) {
-          codeAttachment = codeAttachment
-            .replace(/~~~~~~~~~~/, '')
-            .replace(/~~~~~~~~~~$/, '')
-            .trim();
+        codeAttachment = codeAttachment.trim();
+        if (codeAttachment.length > 0) {
+          // our example
+          if (codeAttachment.startsWith('~~~~~~~~~~') && codeAttachment.endsWith('~~~~~~~~~~')) {
+            codeAttachment = codeAttachment
+              .replace(/^~~~~~~~~~~/, '')
+              .replace(/~~~~~~~~~~$/, '')
+              .trim();
+          } else if (codeAttachment.startsWith('```') && codeAttachment.endsWith('```')) {
+            codeAttachment = codeAttachment
+              .replace(/^```/, '')
+              .replace(/```$/, '')
+              .trim();
+          }
           this.addAttachment(codeAttachment, 'code');
         }
       }
