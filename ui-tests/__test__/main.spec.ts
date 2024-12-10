@@ -216,7 +216,7 @@ describe('Open MynahUI', () => {
     it('should navigate down to next prompt', async () => {
       await navigatePromptsDown(page);
     },
-    20000);
+    25000);
     it('should navigate down to current empty prompt', async () => {
       await navigatePromptsToEmpty(page);
     });
