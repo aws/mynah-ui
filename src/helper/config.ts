@@ -82,7 +82,7 @@ const configDefaults: ConfigFullModel = {
   },
 };
 export class Config {
-  private static instance: Config;
+  private static instance: Config | undefined;
   public config: ConfigFullModel;
   private constructor (config?: Partial<ConfigModel>) {
     this.config = {
@@ -127,4 +127,8 @@ export class Config {
 
     return Config.instance;
   }
+
+  public destroy = (): void => {
+    Config.instance = undefined;
+  };
 }

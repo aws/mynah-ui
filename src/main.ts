@@ -867,6 +867,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   public destroy = (): void => {
+    Config.getInstance().destroy();
     MynahUITabsStore.getInstance().destroy();
     MynahUIGlobalEvents.getInstance().destroy();
     DomBuilder.getInstance().destroy();
