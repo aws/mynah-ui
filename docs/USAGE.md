@@ -27,6 +27,7 @@ mynahUI.notify(...);
 mynahUI.showCustomForm(...);
 mynahUI.updateTabDefaults(...);
 mynahUI.toggleSplashLoader(...);
+mynahUI.destroy();
 ```
 
 <p><br/></p>
@@ -537,3 +538,11 @@ mynahUI.toggleSplashLoader(true, 'Initializing');
 <p align="center">
   <img src="./img/splashLoader.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+# Destroy Mynah UI State (`destroy`)
+
+You can use this method to tear down the existing mynah ui state. This is useful if you want to run several tests on fresh instances of Mynah UI
+
+```typescript
+mynahUI.destroy()
+```

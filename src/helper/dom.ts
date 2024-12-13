@@ -76,7 +76,7 @@ export interface ExtendedHTMLElement extends HTMLInputElement {
 }
 
 export class DomBuilder {
-  private static instance: DomBuilder;
+  private static instance: DomBuilder | undefined;
   private rootFocus: boolean;
   root: ExtendedHTMLElement;
   private portals: Record<string, ExtendedHTMLElement> = {};
@@ -338,6 +338,10 @@ export class DomBuilder {
         delete this.portals[portalName];
       }
     });
+  };
+
+  destroy = (): void => {
+    DomBuilder.instance = undefined;
   };
 }
 
