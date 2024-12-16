@@ -32,6 +32,9 @@ import { renderFileDetails } from './flows/file-tree/render-file-details';
 import { renderFormElements } from './flows/form/render-form-elements';
 import { disableForm } from './flows/form/disable-form';
 import { removeForm } from './flows/form/remove-form';
+import { stayOnCurrentPrompt } from './flows/navigate-prompts/stay-on-current-prompt';
+import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
+import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -219,6 +222,18 @@ describe('Open MynahUI', () => {
     25000);
     it('should navigate down to current empty prompt', async () => {
       await navigatePromptsToEmpty(page);
+    });
+
+    it('should stay on current prompt', async () => {
+      await stayOnCurrentPrompt(page);
+    });
+
+    it('should navigate back to current prompt', async () => {
+      await navigateBackToCurrentPrompt(page);
+    });
+
+    it('should navigate back to current prompt with code attachment', async () => {
+      await navigateBackToCurrentPromptWithCodeAttachment(page);
     });
   });
 });
