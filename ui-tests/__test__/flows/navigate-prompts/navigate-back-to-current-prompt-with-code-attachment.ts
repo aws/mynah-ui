@@ -24,14 +24,13 @@ export const navigateBackToCurrentPromptWithCodeAttachment = async (page: Page, 
   });
   await waitForAnimationEnd(page);
 
-  let promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
-  promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
-
+  // we add .trim() because webpack test was failing otherwise, as it adds a \n at the end, like 'This is an unsent code attachment\n'
   const codeAttachmentContent = (await page.locator(`${getSelector(testIds.prompt.attachment)}`).innerText()).trim();
   expect(codeAttachmentContent).toBe('This is an unsent code attachment');
 

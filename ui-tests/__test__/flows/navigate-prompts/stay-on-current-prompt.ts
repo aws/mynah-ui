@@ -12,11 +12,10 @@ export const stayOnCurrentPrompt = async (page: Page, skipScreenshots?: boolean)
   await page.locator(`${getSelector(testIds.prompt.input)}`).fill('This is the first unsent user prompt');
   await waitForAnimationEnd(page);
 
-  let promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
-  promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 

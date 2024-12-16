@@ -16,14 +16,13 @@ export const navigatePromptsDown = async (page: Page, skipScreenshots?: boolean)
   await page.locator(`${getSelector(testIds.prompt.send)}`).click();
   await waitForAnimationEnd(page);
 
-  let promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
-  promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 

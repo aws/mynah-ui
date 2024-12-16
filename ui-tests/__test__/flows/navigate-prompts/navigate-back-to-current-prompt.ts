@@ -17,11 +17,10 @@ export const navigateBackToCurrentPrompt = async (page: Page, skipScreenshots?: 
   await page.locator(`${getSelector(testIds.prompt.input)}`).fill('This is the second unsent user prompt');
   await waitForAnimationEnd(page);
 
-  let promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
-  promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 
