@@ -541,8 +541,8 @@ mynahUI.toggleSplashLoader(true, 'Initializing');
 
 # Destroy Mynah UI State (`destroy`)
 
-You can use this method to tear down the existing mynah ui state. This is useful if you want to run several tests on fresh instances of Mynah UI
+You can use this method to tear down the existing Mynah UI state. This is useful if you want to run several tests on fresh instances of Mynah UI.
 
 ```typescript
-mynahUI.destroy()
+mynahUI.destroy();
 ```
