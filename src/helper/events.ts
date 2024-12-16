@@ -14,7 +14,7 @@ export const cancelEvent = (event: Event): boolean => {
 };
 
 export class MynahUIGlobalEvents {
-  private static instance: MynahUIGlobalEvents;
+  private static instance: MynahUIGlobalEvents | undefined;
   private readonly listeners: Record<MynahEventNames, Record<string, (value?: any) => void>>;
 
   private constructor () {
@@ -65,5 +65,9 @@ export class MynahUIGlobalEvents {
         this.listeners[eventKey][listenerId](data);
       });
     }
+  };
+
+  public destroy = (): void => {
+    MynahUIGlobalEvents.instance = undefined;
   };
 }

@@ -28,7 +28,7 @@ export class EmptyMynahUITabsStoreModel {
   }
 }
 export class MynahUITabsStore {
-  private static instance: MynahUITabsStore;
+  private static instance: MynahUITabsStore | undefined;
   private readonly subscriptions: TabStoreSubscription = {
     add: {},
     remove: {},
@@ -239,5 +239,9 @@ export class MynahUITabsStore {
         ...defaults.store
       }
     };
+  };
+
+  public destroy = (): void => {
+    MynahUITabsStore.instance = undefined;
   };
 }
