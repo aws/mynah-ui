@@ -37,6 +37,10 @@ import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-b
 import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
 
 describe('Open MynahUI', () => {
+  beforeEach(async () => {
+    await page.setViewportSize(DEFAULT_VIEWPORT);
+  });
+
   beforeAll(async () => {
     const browserName = browser.browserType().name();
     const toMatchImageSnapshot = configureToMatchImageSnapshot({
