@@ -324,6 +324,26 @@ export class ChatPromptInput {
           this.quickPickOpen = true;
         }
       } else if (navigationalKeys.includes(e.key)) {
+        const inputText = this.promptTextInput.getTextInputValue();
+        const cursorPosition = this.promptTextInput.getCursorPos();
+
+        const textBeforeCursor = inputText.substring(0, cursorPosition);
+        const textAfterCursor = inputText.substring(cursorPosition);
+
+        // Check if cursor is on the first line
+        const isFirstLine = !textBeforeCursor.includes('\n');
+
+        // Check if cursor is on the last line
+        const isLastLine = !textAfterCursor.includes('\n');
+
+        // Only allow up/down arrow navigation when user reaches the end of multiline input
+        if (e.key === KeyMap.ARROW_UP && !isFirstLine) {
+          return;
+        }
+        if (e.key === KeyMap.ARROW_DOWN && !isLastLine) {
+          return;
+        }
+
         if (this.userPromptHistoryIndex === -1 || this.userPromptHistoryIndex === this.userPromptHistory.length) {
           this.lastUnsentUserPrompt = {
             inputText: this.promptTextInput.getTextInputValue(),
