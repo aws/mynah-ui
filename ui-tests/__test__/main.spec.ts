@@ -32,6 +32,9 @@ import { renderFileDetails } from './flows/file-tree/render-file-details';
 import { renderFormElements } from './flows/form/render-form-elements';
 import { disableForm } from './flows/form/disable-form';
 import { removeForm } from './flows/form/remove-form';
+import { renderFeedbackForm } from './flows/feedback-form/render-feedback-form';
+import { renderUpvoteResult } from './flows/feedback-form/render-upvote-result';
+import { renderDownvoteResult } from './flows/feedback-form/render-downvote-result';
 
 describe('Open MynahUI', () => {
   beforeAll(async () => {
@@ -219,6 +222,18 @@ describe('Open MynahUI', () => {
     25000);
     it('should navigate down to current empty prompt', async () => {
       await navigatePromptsToEmpty(page);
+    });
+  });
+
+  describe('Feedback form', () => {
+    it('should render feedback form', async () => {
+      await renderFeedbackForm(page);
+    });
+    it('should render upvote results', async () => {
+      await renderUpvoteResult(page);
+    });
+    it('should render downvote results', async () => {
+      await renderDownvoteResult(page);
     });
   });
 });
