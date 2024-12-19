@@ -20,9 +20,9 @@ import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
 import { renderButtons } from './flows/render-buttons';
-import { navigatePromptsDown } from './flows/navigate-prompts/navigatePromptsDown';
-import { navigatePromptsUp } from './flows/navigate-prompts/navigatePromptsUp';
-import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigatePromptsToEmpty';
+import { navigatePromptsDown } from './flows/navigate-prompts/navigate-prompts-down';
+import { navigatePromptsUp } from './flows/navigate-prompts/navigate-prompts-up';
+import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigate-prompts-to-empty';
 import { hoverOverLink } from './flows/link-hover-preview';
 import { showFileTree } from './flows/file-tree/show-file-tree';
 import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
@@ -38,8 +38,15 @@ import { renderDownvoteResult } from './flows/feedback-form/render-downvote-resu
 import { renderFeedbackForm } from './flows/feedback-form/render-feedback-form';
 import { cancelFeedbackForm } from './flows/feedback-form/cancel-feedback-form';
 import { submitFeedbackForm } from './flows/feedback-form/submit-feedback-form';
+import { stayOnCurrentPrompt } from './flows/navigate-prompts/stay-on-current-prompt';
+import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
+import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
 
 describe('Open MynahUI', () => {
+  beforeEach(async () => {
+    await page.setViewportSize(DEFAULT_VIEWPORT);
+  });
+
   beforeAll(async () => {
     const browserName = browser.browserType().name();
     const toMatchImageSnapshot = configureToMatchImageSnapshot({
@@ -225,6 +232,18 @@ describe('Open MynahUI', () => {
     25000);
     it('should navigate down to current empty prompt', async () => {
       await navigatePromptsToEmpty(page);
+    });
+
+    it('should stay on current prompt', async () => {
+      await stayOnCurrentPrompt(page);
+    });
+
+    it('should navigate back to current prompt', async () => {
+      await navigateBackToCurrentPrompt(page);
+    });
+
+    it('should navigate back to current prompt with code attachment', async () => {
+      await navigateBackToCurrentPromptWithCodeAttachment(page);
     });
   });
 
