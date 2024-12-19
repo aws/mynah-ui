@@ -2,7 +2,7 @@ import { Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
-export const renderFeedbackForm = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
+export const submitFeedbackForm = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await page.evaluate(() => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
@@ -29,16 +29,10 @@ export const renderFeedbackForm = async (page: Page, skipScreenshots?: boolean):
   await reportButton.click();
   await waitForAnimationEnd(page);
 
-  const commentInput = page.locator(getSelector(testIds.feedbackForm.comment));
-  expect(commentInput).toBeDefined();
-  await commentInput.fill('This is some feedback comment');
-  await waitForAnimationEnd(page);
-
   const submitButton = page.locator(getSelector(testIds.feedbackForm.submitButton));
   expect(submitButton).toBeDefined();
-
-  const cancelButton = page.locator(getSelector(testIds.feedbackForm.cancelButton));
-  expect(cancelButton).toBeDefined();
+  await submitButton.click();
+  await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();
