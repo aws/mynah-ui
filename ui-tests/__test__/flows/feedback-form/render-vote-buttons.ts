@@ -10,10 +10,6 @@ export const renderVoteButtons = async (page: Page, skipScreenshots?: boolean): 
   await page.evaluate((body) => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
-      window.mynahUI.updateStore(selectedTabId, {
-        chatItems: [],
-      });
-
       window.mynahUI.addChatItem(selectedTabId, {
         type: 'answer' as any,
         snapToTop: true,
