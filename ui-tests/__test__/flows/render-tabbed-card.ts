@@ -52,7 +52,7 @@ export const renderTabbedCard = async (page: Page, skipScreenshots?: boolean): P
   });
   await waitForAnimationEnd(page);
 
-  const answerCardSelector = `${getSelector(testIds.chatItem.type.answer)}`;
+  const answerCardSelector = getSelector(testIds.chatItem.type.answer);
   const answerCard = await page.waitForSelector(answerCardSelector);
   await answerCard.scrollIntoViewIfNeeded();
 
@@ -61,7 +61,7 @@ export const renderTabbedCard = async (page: Page, skipScreenshots?: boolean): P
   }
 
   // Change selected item, check for content change
-  const locator = await page.locator(`${getSelector(`${testIds.chatItem.tabbedCard.tabs}-option-wrapper`)}`).last();
+  const locator = await page.locator(getSelector(`${testIds.chatItem.tabbedCard.tabs}-option-wrapper`)).last();
   await locator.click();
   await waitForAnimationEnd(page);
 

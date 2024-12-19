@@ -27,7 +27,7 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
   }, allMarkdown);
   await waitForAnimationEnd(page);
 
-  const answerCardSelector = `${getSelector(testIds.chatItem.type.answer)}`;
+  const answerCardSelector = getSelector(testIds.chatItem.type.answer);
   const answerCard = await page.waitForSelector(answerCardSelector);
   const newViewportHeight = getOffsetHeight(await answerCard.boundingBox()) ?? 1000;
 
@@ -89,12 +89,12 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
     await page.mouse.move(markPosition?.top + 2, markPosition?.left + 2);
     await waitForAnimationEnd(page);
   }
-  await expect(await page.getByText('Hello Reference Tracker')).toBeDefined();
+  expect(page.getByText('Hello Reference Tracker')).toBeDefined();
   page.mouse.move(0, 0);
   await waitForAnimationEnd(page);
-  await expect(await page.getByText('Hello Reference Tracker').isHidden()).toBeTruthy();
+  expect(await page.getByText('Hello Reference Tracker').isHidden()).toBeTruthy();
 
   if (skipScreenshots !== true) {
-    await expect(await answerCard.screenshot()).toMatchImageSnapshot();
+    expect(await answerCard.screenshot()).toMatchImageSnapshot();
   }
 };

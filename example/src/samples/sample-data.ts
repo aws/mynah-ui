@@ -1116,3 +1116,9 @@ export const exampleStatusButtons: ChatItem = {
     ],
 }
  
+export const exampleVoteChatItem: ChatItem = {
+    messageId: new Date().getTime().toString(),
+    type: ChatItemType.ANSWER,
+    canBeVoted: true,
+    body: 'This chat item can be voted.',
+};

@@ -8,7 +8,7 @@ export const renderInformationCard = async (page: Page, skipScreenshots?: boolea
   await closeTab(page, false, true);
   await openNewTab(page, false, true);
 
-  await page.evaluate((body) => {
+  await page.evaluate(() => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
       window.mynahUI.updateStore(selectedTabId, {
@@ -36,11 +36,11 @@ export const renderInformationCard = async (page: Page, skipScreenshots?: boolea
   });
   await waitForAnimationEnd(page);
 
-  const answerCardSelector = `${getSelector(testIds.chatItem.type.answer)}`;
+  const answerCardSelector = getSelector(testIds.chatItem.type.answer);
   const answerCard = await page.waitForSelector(answerCardSelector);
   await answerCard.scrollIntoViewIfNeeded();
 
   if (skipScreenshots !== true) {
-    await expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchImageSnapshot();
   }
 };

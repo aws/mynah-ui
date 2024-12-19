@@ -83,16 +83,16 @@ export const renderButtons = async (page: Page, skipScreenshots?: boolean): Prom
   });
   await waitForAnimationEnd(page);
 
-  const answerCardSelector = `${getSelector(testIds.chatItem.type.answer)}`;
-  const locator1 = await page.locator(answerCardSelector).nth(0);
+  const answerCardSelector = getSelector(testIds.chatItem.type.answer);
+  const locator1 = page.locator(answerCardSelector).nth(0);
   await locator1.scrollIntoViewIfNeeded();
   if (skipScreenshots !== true) {
-    await expect(await locator1.screenshot()).toMatchImageSnapshot();
+    expect(await locator1.screenshot()).toMatchImageSnapshot();
   }
 
-  const locator2 = await page.locator(answerCardSelector).nth(1);
+  const locator2 = page.locator(answerCardSelector).nth(1);
   await locator2.scrollIntoViewIfNeeded();
   if (skipScreenshots !== true) {
-    await expect(await locator2.screenshot()).toMatchImageSnapshot();
+    expect(await locator2.screenshot()).toMatchImageSnapshot();
   }
 };

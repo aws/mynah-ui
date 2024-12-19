@@ -28,6 +28,7 @@ export class ChatItemRelevanceVote {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-card-votes-wrapper', ...(this.props.classNames ?? []) ],
+      testId: testIds.chatItem.vote.wrapper,
       children: [
         {
           type: 'div',
