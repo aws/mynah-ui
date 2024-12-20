@@ -1,17 +1,4 @@
-@import '../scss-variables';
-
-pre.diff-highlight > code .token.deleted:not(.prefix),
-pre > code.diff-highlight .token.deleted:not(.prefix) {
-    background-color: rgba(255, 0, 0, 0.1);
-    color: inherit;
-    display: block;
-}
-pre.diff-highlight > code .token.inserted:not(.prefix),
-pre > code.diff-highlight .token.inserted:not(.prefix) {
-    background-color: rgba(0, 255, 128, 0.1);
-    color: inherit;
-    display: block;
-}
+@import '../../scss-variables';
 
 .mynah-syntax-highlighter {
     display: flex;
@@ -182,89 +169,6 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             background: #b3d4fc;
         }
 
-        .token {
-            &.comment,
-            &.prolog,
-            &.doctype,
-            &.cdata {
-                color: var(--mynah-color-syntax-comment);
-                font-style: italic;
-            }
-
-            &.keyword {
-                color: var(--mynah-color-syntax-keyword);
-                font-style: italic;
-            }
-
-            &.string,
-            &.char,
-            &.attr-value,
-            &.builtin,
-            &.deleted,
-            &.inserted,
-            &.tag,
-            &.symbol {
-                color: var(--mynah-color-syntax-string);
-            }
-
-            &.number,
-            &.integer,
-            &.float {
-                color: var(--mynah-color-syntax-number);
-            }
-
-            &.namespace {
-                opacity: 0.7;
-            }
-
-            &.boolean {
-                color: var(--mynah-color-syntax-boolean);
-            }
-
-            &.function {
-                color: var(--mynah-color-syntax-function);
-            }
-
-            &.class-name {
-                color: var(--mynah-color-syntax-class-name);
-            }
-
-            &.operator,
-            &.punctuation,
-            &.url {
-                color: var(--mynah-color-syntax-operator);
-            }
-
-            &.important,
-            &.variable,
-            &.parameter {
-                color: var(--mynah-color-syntax-variable);
-            }
-
-            &.constant,
-            &.property {
-                color: var(--mynah-color-syntax-property);
-            }
-
-            &.regex {
-                color: var(--mynah-color-syntax-regex);
-            }
-
-            &.important,
-            &.bold {
-                font-weight: bold;
-            }
-
-            &.italic {
-                font-style: italic;
-            }
-        }
-
-        .language-css .token.string,
-        .style .token.string {
-            color: var(--mynah-color-syntax-operator);
-        }
-
         &.line-numbers {
             position: relative;
             padding-left: 3.8em;
@@ -306,6 +210,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
     border-radius: var(--mynah-card-radius);
     border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     padding: var(--mynah-sizing-5);
+    
     .mynah-card-body {
         > p:first-child:last-of-type,
         > p p:first-child {

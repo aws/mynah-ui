@@ -30,39 +30,56 @@
     --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
 
     --mynah-color-syntax-bg: var(--vscode-terminal-dropBackground);
-    --mynah-color-syntax-variable: var(
-        --vscode-gitDecoration-modifiedResourceForeground,
-        var(--vscode-debugTokenExpression-name)
-    );
-    --mynah-color-syntax-function: var(
-        --vscode-debugTokenExpression-boolean,
-        var(--vscode-gitDecoration-modifiedResourceForeground)
-    );
-    --mynah-color-syntax-operator: var(
-        --vscode-terminal-foreground,
-        var(--vscode-debugTokenExpression-name, var(--mynah-color-text-default))
-    );
-    --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan, var(--mynah-bg-gradient-mid));
-    --mynah-color-syntax-comment: var(--vscode-debugConsole-sourceForeground, var(--mynah-color-text-weak));
-    --mynah-color-syntax-code: var(--vscode-editor-foreground, var(--mynah-color-text-default));
-    --mynah-color-syntax-keyword: var(--vscode-debugTokenExpression-name, var(--mynah-color-status-info));
-    --mynah-color-syntax-string: var(--vscode-debugTokenExpression-string, var(--mynah-bg-gradient-next));
-    --mynah-color-syntax-boolean: var(
-        --vscode-debugTokenExpression-boolean,
-        var(--vscode-debugTokenExpression-string, var(--mynah-bg-gradient-next))
-    );
-    --mynah-color-syntax-number: var(
-        --vscode-debugTokenExpression-number,
-        var(--vscode-debugTokenExpression-string, var(--mynah-bg-gradient-next))
-    );
-    --mynah-color-syntax-regex: var(
-        --vscode-terminal-ansiMagenta,
-        var(--vscode-debugTokenExpression-string, var(--mynah-bg-gradient-next))
-    );
-    --mynah-color-syntax-class-name: var(
-        --vscode-gitDecoration-modifiedResourceForeground,
-        var(--mynah-bg-gradient-mid)
-    );
+
+    // TODO: replace
+
+    // --mynah-color-syntax-variable: var(
+    //     --vscode-gitDecoration-modifiedResourceForeground,
+    //     var(--vscode-debugTokenExpression-name)
+    // );
+    // --mynah-color-syntax-function: var(
+    //     --vscode-debugTokenExpression-boolean,
+    //     var(--vscode-gitDecoration-modifiedResourceForeground)
+    // );
+    // --mynah-color-syntax-operator: var(
+    //     --vscode-terminal-foreground,
+    //     var(--vscode-debugTokenExpression-name, var(--mynah-color-text-default))
+    // );
+    // --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan, var(--mynah-bg-gradient-mid));
+    // --mynah-color-syntax-comment: var(--vscode-debugConsole-sourceForeground, var(--mynah-color-text-weak));
+    // --mynah-color-syntax-code: var(--vscode-editor-foreground, var(--mynah-color-text-default));
+    // --mynah-color-syntax-keyword: var(--vscode-debugTokenExpression-name, var(--mynah-color-status-info));
+    // --mynah-color-syntax-string: var(--vscode-debugTokenExpression-string, var(--mynah-bg-gradient-next));
+    // --mynah-color-syntax-boolean: var(
+    //     --vscode-debugTokenExpression-boolean,
+    //     var(--vscode-debugTokenExpression-string, var(--mynah-bg-gradient-next))
+    // );
+    // --mynah-color-syntax-number: var(
+    //     --vscode-debugTokenExpression-number,
+    //     var(--vscode-debugTokenExpression-string, var(--mynah-bg-gradient-next))
+    // );
+    // --mynah-color-syntax-regex: var(
+    //     --vscode-terminal-ansiMagenta,
+    //     var(--vscode-debugTokenExpression-string, var(--mynah-bg-gradient-next))
+    // );
+    // --mynah-color-syntax-class-name: var(
+    //     --vscode-gitDecoration-modifiedResourceForeground,
+    //     var(--mynah-bg-gradient-mid)
+    // );
+
+    --mynah-color-syntax-new-main: #383a42;
+    --mynah-color-syntax-new-deletion: rgba(255, 0, 0, 0.1);
+    --mynah-color-syntax-new-addition: rgba(0, 255, 128, 0.1);
+    --mynah-color-syntax-new-keyword: #a626a4;
+    --mynah-color-syntax-new-comment: #a0a1a7;
+    --mynah-color-syntax-new-section: #e45649;
+    --mynah-color-syntax-new-literal: #0184bb;
+    --mynah-color-syntax-new-string: #50a14f;
+    --mynah-color-syntax-new-variable: #986801;
+    --mynah-color-syntax-new-class: #c18401;
+    --mynah-color-syntax-new-symbol: #4078f2;
+
+    // END TODO
 
     --mynah-color-status-info: #0971d3;
     --mynah-color-status-success: #037f03;
