@@ -8,8 +8,8 @@ export const navigateBackToCurrentPromptWithCodeAttachment = async (page: Page, 
   await closeTab(page, false, true);
   await openNewTab(page, false, true);
 
-  await page.locator(`${getSelector(testIds.prompt.input)}`).fill('This is the first user prompt');
-  await page.locator(`${getSelector(testIds.prompt.send)}`).click();
+  await page.locator(getSelector(testIds.prompt.input)).fill('This is the first user prompt');
+  await page.locator(getSelector(testIds.prompt.send)).click();
   await waitForAnimationEnd(page);
 
   await page.evaluate(() => {
@@ -24,14 +24,14 @@ export const navigateBackToCurrentPromptWithCodeAttachment = async (page: Page, 
   });
   await waitForAnimationEnd(page);
 
-  const promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const promptInput = page.locator(getSelector(testIds.prompt.input));
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
   // we add .trim() because webpack test was failing otherwise, as it adds a \n at the end, like 'This is an unsent code attachment\n'
-  const codeAttachmentContent = (await page.locator(`${getSelector(testIds.prompt.attachment)}`).innerText()).trim();
+  const codeAttachmentContent = (await page.locator(getSelector(testIds.prompt.attachment)).innerText()).trim();
   expect(codeAttachmentContent).toBe('This is an unsent code attachment');
 
   if (skipScreenshots !== true) {

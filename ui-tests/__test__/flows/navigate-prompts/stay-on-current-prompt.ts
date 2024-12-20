@@ -9,10 +9,10 @@ export const stayOnCurrentPrompt = async (page: Page, skipScreenshots?: boolean)
   await openNewTab(page, false, true);
 
   // Write prompt without sending it
-  await page.locator(`${getSelector(testIds.prompt.input)}`).fill('This is the first unsent user prompt');
+  await page.locator(getSelector(testIds.prompt.input)).fill('This is the first unsent user prompt');
   await waitForAnimationEnd(page);
 
-  const promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const promptInput = page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 

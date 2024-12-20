@@ -8,14 +8,14 @@ export const renderCharacterCount = async (page: Page, skipScreenshots?: boolean
   await closeTab(page, false, true);
   await openNewTab(page, false, true);
 
-  const characterCounter = await page.locator(`${getSelector(testIds.prompt.remainingCharsIndicator)}`);
+  const characterCounter = page.locator(getSelector(testIds.prompt.remainingCharsIndicator));
   expect(characterCounter).toBeDefined();
 
   // Check if the element is not visible initially
   expect(await characterCounter.evaluate(isVisible)).toBe(false);
 
   // Fill the input with 3500 characters
-  await page.locator(`${getSelector(testIds.prompt.input)}`).fill('z'.repeat(3500));
+  await page.locator(getSelector(testIds.prompt.input)).fill('z'.repeat(3500));
   expect(characterCounter).toBeDefined();
 
   // Check if the element is visible after filling the input

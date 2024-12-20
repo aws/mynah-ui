@@ -10,7 +10,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   await openNewTab(page, false, true);
 
   await page.mouse.move(0, 0);
-  const footerPanel = await page.waitForSelector(`${getSelector(testIds.prompt.footerInfo)}`);
+  const footerPanel = await page.waitForSelector(getSelector(testIds.prompt.footerInfo));
   expect(footerPanel).toBeDefined();
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 

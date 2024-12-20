@@ -4,7 +4,7 @@ import testIds from '../../../../src/helper/test-ids';
 
 export const closeQuickPicks = async (page: Page, method: 'blur' | 'escape', mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
   // Clear the input
-  const input = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const input = page.locator(getSelector(testIds.prompt.input));
   await input.clear();
   await waitForAnimationEnd(page);
 
@@ -13,7 +13,7 @@ export const closeQuickPicks = async (page: Page, method: 'blur' | 'escape', mod
   await waitForAnimationEnd(page);
 
   // Find the command selector
-  const commandSelector = await page.locator(`${getSelector(testIds.prompt.quickPicksWrapper)}`).nth(-1);
+  const commandSelector = await page.locator(getSelector(testIds.prompt.quickPicksWrapper)).nth(-1);
   expect(commandSelector).toBeDefined();
   expect(await commandSelector.isVisible()).toBeTruthy();
 

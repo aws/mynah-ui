@@ -23,4 +23,5 @@ export enum Commands {
     CLEAR = '/clear',
     CLEAR_LOGS = '/clear-logs',
     SHOW_CUSTOM_FORM = '/show-custom-form',
+    VOTE = '/vote'
 }

@@ -39,6 +39,7 @@ import {
   exampleConfirmationButtons,
   exampleButtons,
   exampleStatusButtons,
+  exampleVoteChatItem,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -439,6 +440,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
         case Commands.FORM_CARD:
           mynahUI.addChatItem(tabId, exampleFormChatItem);
+          mynahUI.addChatItem(tabId, defaultFollowUps);
+          break;
+        case Commands.VOTE:
+          mynahUI.addChatItem(tabId, exampleVoteChatItem);
           mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.CARD_WITH_MARKDOWN_LIST:
