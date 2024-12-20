@@ -4,38 +4,6 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
-import { highlightElement } from 'prismjs';
-
-import 'prismjs/components/prism-markup.min';
-import 'prismjs/components/prism-xml-doc.min';
-import 'prismjs/components/prism-css.min';
-import 'prismjs/components/prism-clike.min';
-import 'prismjs/components/prism-javascript.min';
-import 'prismjs/components/prism-typescript.min';
-import 'prismjs/components/prism-jsx.min';
-import 'prismjs/components/prism-diff.min';
-import 'prismjs/components/prism-tsx.min';
-import 'prismjs/components/prism-lua.min';
-import 'prismjs/components/prism-java.min';
-import 'prismjs/components/prism-json.min';
-import 'prismjs/components/prism-markdown.min';
-import 'prismjs/components/prism-mongodb.min';
-import 'prismjs/components/prism-c.min';
-import 'prismjs/components/prism-bash.min';
-import 'prismjs/components/prism-go.min';
-import 'prismjs/components/prism-csharp.min';
-import 'prismjs/components/prism-objectivec.min';
-import 'prismjs/components/prism-python.min';
-import 'prismjs/components/prism-regex.min';
-import 'prismjs/components/prism-swift.min';
-import 'prismjs/components/prism-scala.min';
-import 'prismjs/components/prism-scss.min';
-import 'prismjs/components/prism-less.min';
-import 'prismjs/components/prism-ruby.min';
-import 'prismjs/components/prism-rust.min';
-import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
-import 'prismjs/plugins/keep-markup/prism-keep-markup.js';
-import 'prismjs/plugins/diff-highlight/prism-diff-highlight.min';
 
 import {
   CodeBlockActions,
@@ -47,43 +15,13 @@ import { Icon } from './icon';
 import { cancelEvent } from '../helper/events';
 import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
-import '../styles/components/_syntax-highlighter.scss';
 import { copyToClipboard } from '../helper/chat-item';
 import testIds from '../helper/test-ids';
 import unescapeHTML from 'unescape-html';
-
-const langs = [
-  'markup',
-  'xml',
-  'css',
-  'clike',
-  'diff',
-  'javascript',
-  'typescript',
-  'jsx',
-  'tsx',
-  'lua',
-  'java',
-  'json',
-  'go',
-  'markdown',
-  'mongodb',
-  'c',
-  'bash',
-  'csharp',
-  'objectivec',
-  'python',
-  'regex',
-  'swift',
-  'scala',
-  'scss',
-  'less',
-  'ruby',
-  'rust',
-];
-
-const IMPORTED_LANGS = [ ...langs, ...(langs.map(lang => `diff-${lang}`)) ];
-const DEFAULT_LANG = 'clike';
+import hljs from 'highlight.js';
+import '../styles/components/syntax/_syntax-highlighter.scss';
+import '../styles/components/syntax/_syntax-theme.scss';
+import { mergeHTMLPlugin } from '../helper/merge-html-plugin';
 
 export interface SyntaxHighlighterProps {
   codeStringWithMarkup: string;
@@ -105,6 +43,9 @@ export class SyntaxHighlighter {
   constructor (props: SyntaxHighlighterProps) {
     this.props = props;
 
+    hljs.addPlugin(mergeHTMLPlugin);
+    hljs.configure({ ignoreUnescapedHTML: true });
+
     // To ensure we are not leaving anything unescaped before escaping i.e to prevent double escaping
     let escapedCodeBlock = escapeHTML(unescapeHTML(props.codeStringWithMarkup));
 
@@ -114,19 +55,30 @@ export class SyntaxHighlighter {
       .replace(new RegExp(escapeHTML(highlightersWithTooltip.start.markupEnd), 'g'), highlightersWithTooltip.start.markupEnd)
       .replace(new RegExp(escapeHTML(highlightersWithTooltip.end.markup), 'g'), highlightersWithTooltip.end.markup);
 
+    const codeElement = DomBuilder.getInstance().build({
+      type: 'code',
+      classNames: [
+        ...(props.language !== undefined ? [ `language-${props.language.replace('diff-', '')}` ] : [ (props.block ?? false) ? '' : 'language-plaintext' ]),
+        ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
+      ],
+      innerHTML: escapedCodeBlock
+    });
+    hljs.highlightElement(codeElement);
+
+    // Overlay another code element for diffs, as highlight.js doesn't allow multiple language styles
+    const diffOverlay = DomBuilder.getInstance().build({
+      type: 'code',
+      classNames: [ 'diff', 'language-diff' ],
+      innerHTML: escapedCodeBlock
+    });
+    hljs.highlightElement(diffOverlay);
+
     const preElement = DomBuilder.getInstance().build({
       type: 'pre',
       testId: testIds.chatItem.syntaxHighlighter.codeBlock,
-      classNames: [ 'keep-markup',
-          `language-${props.language !== undefined && IMPORTED_LANGS.includes(props.language) ? props.language : DEFAULT_LANG}`,
-          ...(((props.language?.match('diff')) != null) ? [ 'diff-highlight' ] : []),
-          ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
-      ],
       children: [
-        {
-          type: 'code',
-          innerHTML: escapedCodeBlock,
-        }
+        codeElement,
+        ((props.language?.match('diff')) != null) ? diffOverlay : ''
       ],
       events: {
         copy: (e) => {
@@ -140,7 +92,6 @@ export class SyntaxHighlighter {
         }
       }
     });
-    highlightElement(preElement);
 
     if (props.codeBlockActions != null) {
       Object.keys(props.codeBlockActions).forEach((actionId: string) => {
