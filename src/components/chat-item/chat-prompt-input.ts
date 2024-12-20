@@ -327,6 +327,7 @@ export class ChatPromptInput {
         const inputText = this.promptTextInput.getTextInputValue();
         const cursorPosition = this.promptTextInput.getCursorPos();
 
+        // Get the text before / after the cursor
         const textBeforeCursor = inputText.substring(0, cursorPosition);
         const textAfterCursor = inputText.substring(cursorPosition);
 
