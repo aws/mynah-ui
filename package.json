@@ -22,7 +22,7 @@
         "watch:web": "run-p watch watch:example serve:example",
         "serve:example": "live-server --port=9000 example/dist",
         "start:example": "cd ./example && npm install && npm run build && cd .. && npm run watch:web",
-        "dev": "npm run clean && npm install && npm run build && npm run start:example",
+        "dev": "npm ci && npm run build && cd ./ui-tests && npm install && cd .. && npm run start:example",
         "lint-fix": "npx eslint \"./**\" --fix",
         "lint": "npx eslint \"./**\"",
         "format:check": "npx prettier --check .",
