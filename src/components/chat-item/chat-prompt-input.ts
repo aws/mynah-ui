@@ -296,7 +296,7 @@ export class ChatPromptInput {
         this.sendPrompt();
       } else if (
         (this.selectedCommand === '' && e.key === KeyMap.SLASH && this.promptTextInput.getTextInputValue() === '') ||
-        (e.key === KeyMap.AT)
+        (e.key === KeyMap.AT && this.promptTextInput.promptTextInputMaxLength > 0)
       ) {
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
         this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;
