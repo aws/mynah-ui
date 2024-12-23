@@ -44,6 +44,7 @@
     },
     "peerDependencies": {
         "escape-html": "^1.0.3",
+        "highlight.js": "^11.11.0",
         "just-clone": "^6.2.0",
         "marked": "^12.0.2",
         "sanitize-html": "^2.12.1",
