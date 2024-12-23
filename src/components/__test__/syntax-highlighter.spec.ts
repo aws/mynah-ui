@@ -9,7 +9,7 @@ describe('syntax-highlighter', () => {
     });
 
     expect(testSyntaxHighlighter.render.outerHTML.replace('\n', '')).toBe(
-      '<div class="mynah-syntax-highlighter"><pre class="keep-markup language-clike"><span class="token function"></span><code><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">"hello"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><div class="mynah-syntax-highlighter-copy-buttons"></div></div>'
+      '<div class="mynah-syntax-highlighter"><pre><code class="language-js hljs language-javascript" data-highlighted="yes"><span class="hljs-title function_">alert</span>(<span class="hljs-string">"hello"</span>);</code></pre><div class="mynah-syntax-highlighter-copy-buttons"></div></div>'
     );
   });
 
