@@ -270,7 +270,6 @@ export class MynahUI {
       renderer: {
         listitem: (text: string, task: boolean, checked: boolean) => `
 <li>
-${task ? `<input ${checked ? 'checked' : ''} disabled type="checkbox">` : ''}
 ${(task ? marked.parseInline : marked.parse)(text, { breaks: false }) as string}
 </li>`
       },
