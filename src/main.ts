@@ -33,7 +33,7 @@ import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import { Config } from './helper/config';
-import { marked, Tokens } from 'marked';
+import { marked } from 'marked';
 import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
@@ -270,7 +270,7 @@ export class MynahUI {
       renderer: {
         listitem: (text: string, task: boolean, checked: boolean) => `
 <li>
-${task ? `<input ${checked === true ? 'checked' : ''} disabled type="checkbox">` : ''}
+${task ? `<input ${checked ? 'checked' : ''} disabled type="checkbox">` : ''}
 ${(task ? marked.parseInline : marked.parse)(text, { breaks: false }) as string}
 </li>`
       },
