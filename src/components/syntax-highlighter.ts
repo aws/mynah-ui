@@ -35,6 +35,8 @@ export interface SyntaxHighlighterProps {
   onCodeBlockAction?: OnCodeBlockActionFunction;
 }
 
+const DEFAULT_LANGUAGE = 'c';
+
 export class SyntaxHighlighter {
   private readonly props?: SyntaxHighlighterProps;
   private readonly codeBlockButtons: ExtendedHTMLElement[] = [];
@@ -58,7 +60,7 @@ export class SyntaxHighlighter {
     const codeElement = DomBuilder.getInstance().build({
       type: 'code',
       classNames: [
-        ...(props.language !== undefined ? [ `language-${props.language.replace('diff-', '')}` ] : [ (props.block ?? false) ? '' : 'language-plaintext' ]),
+        ...(props.language !== undefined ? [ `language-${props.language.replace('diff-', '')}` ] : [ (props.block ?? false) ? DEFAULT_LANGUAGE : 'language-plaintext' ]),
         ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
       ],
       innerHTML: escapedCodeBlock
