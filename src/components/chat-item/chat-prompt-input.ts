@@ -331,15 +331,16 @@ export class ChatPromptInput {
           };
         }
 
-        this.clearTextArea();
-
         if (this.userPromptHistoryIndex === -1) {
           this.userPromptHistoryIndex = this.userPromptHistory.length;
         }
 
-        if (e.key === KeyMap.ARROW_UP) {
+        const cursorLine = this.promptTextInput.getCursorLine();
+        if (e.key === KeyMap.ARROW_UP && cursorLine.cursorLine <= 1) {
+          // Check if the cursor is on the first line or not
           this.userPromptHistoryIndex = Math.max(0, this.userPromptHistoryIndex - 1);
-        } else if (e.key === KeyMap.ARROW_DOWN) {
+        } else if (e.key === KeyMap.ARROW_DOWN && cursorLine.cursorLine >= cursorLine.totalLines) {
+          // Check if the cursor is on the last line or not
           this.userPromptHistoryIndex = Math.min(this.userPromptHistory.length, this.userPromptHistoryIndex + 1);
         }
 
