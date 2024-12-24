@@ -188,13 +188,13 @@
                 color: var(--mynah-color-syntax-comment);
                 font-style: italic;
             }
-    
+
             .hljs-doctag,
             .hljs-keyword,
             .hljs-formula {
                 color: var(--mynah-color-syntax-keyword);
             }
-    
+
             .hljs-section,
             .hljs-name,
             .hljs-selector-tag,
@@ -202,18 +202,19 @@
             .hljs-title.function_ {
                 color: var(--mynah-color-syntax-function);
             }
-    
-            .hljs-literal, .hljs-property {
+
+            .hljs-literal,
+            .hljs-property {
                 color: var(--mynah-color-syntax-property);
             }
-    
+
             .hljs-string,
             .hljs-regexp,
             .hljs-attribute,
             .hljs-meta .hljs-string {
                 color: var(--mynah-color-syntax-string);
             }
-    
+
             .hljs-attr,
             .hljs-variable,
             .hljs-template-variable,
@@ -224,7 +225,7 @@
             .hljs-number {
                 color: var(--mynah-color-syntax-variable);
             }
-    
+
             .hljs-symbol,
             .hljs-bullet,
             .hljs-link,
@@ -233,21 +234,21 @@
             .hljs-title {
                 color: var(--mynah-color-syntax-operator);
             }
-    
+
             .hljs-built_in,
             .hljs-title.class_,
             .hljs-class .hljs-title {
                 color: var(--mynah-color-syntax-class-name);
             }
-    
+
             .hljs-emphasis {
                 font-style: italic;
             }
-    
+
             .hljs-strong {
                 font-weight: bold;
             }
-    
+
             .hljs-link {
                 text-decoration: underline;
             }
