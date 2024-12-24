@@ -218,7 +218,7 @@ describe('Open MynahUI', () => {
     await checkContentInsideWindowBoundaries(page);
   });
 
-  it.only('should parse markdown', async () => {
+  it('should parse markdown', async () => {
     await parseMarkdown(page);
   });
 
