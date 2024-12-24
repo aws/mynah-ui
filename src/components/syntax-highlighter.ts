@@ -19,8 +19,7 @@ import { copyToClipboard } from '../helper/chat-item';
 import testIds from '../helper/test-ids';
 import unescapeHTML from 'unescape-html';
 import hljs from 'highlight.js';
-import '../styles/components/syntax/_syntax-highlighter.scss';
-import '../styles/components/syntax/_syntax-theme.scss';
+import '../styles/components/_syntax-highlighter.scss';
 import { mergeHTMLPlugin } from '../helper/merge-html-plugin';
 
 export interface SyntaxHighlighterProps {
