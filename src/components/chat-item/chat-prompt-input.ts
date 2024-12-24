@@ -679,7 +679,7 @@ export class ChatPromptInput {
           context.push(match);
         }
         return `**${match}**`;
-      }));
+      })).replace(/\\/g, '\\\\');
 
       const promptData: {tabId: string; prompt: ChatPrompt} = {
         tabId: this.props.tabId,
