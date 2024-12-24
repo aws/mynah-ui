@@ -1,18 +1,5 @@
 @import '../scss-variables';
 
-pre.diff-highlight > code .token.deleted:not(.prefix),
-pre > code.diff-highlight .token.deleted:not(.prefix) {
-    background-color: rgba(255, 0, 0, 0.1);
-    color: inherit;
-    display: block;
-}
-pre.diff-highlight > code .token.inserted:not(.prefix),
-pre > code.diff-highlight .token.inserted:not(.prefix) {
-    background-color: rgba(0, 255, 128, 0.1);
-    color: inherit;
-    display: block;
-}
-
 .mynah-syntax-highlighter {
     display: flex;
     flex-flow: column nowrap;
@@ -176,93 +163,101 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
             }
         }
 
-        > code::selection,
-        &::selection {
-            text-shadow: none;
-            background: #b3d4fc;
+        .diff {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: var(--mynah-sizing-2);
+            background-color: transparent;
+            color: transparent !important;
+
+            .hljs-deletion {
+                background-color: var(--mynah-color-syntax-deletion);
+            }
+
+            .hljs-addition {
+                background-color: var(--mynah-color-syntax-addition);
+            }
         }
 
-        .token {
-            &.comment,
-            &.prolog,
-            &.doctype,
-            &.cdata {
+        .hljs {
+            color: var(--mynah-color-syntax-code);
+
+            .hljs-comment,
+            .hljs-quote {
                 color: var(--mynah-color-syntax-comment);
                 font-style: italic;
             }
 
-            &.keyword {
+            .hljs-doctag,
+            .hljs-keyword,
+            .hljs-formula {
                 color: var(--mynah-color-syntax-keyword);
-                font-style: italic;
             }
 
-            &.string,
-            &.char,
-            &.attr-value,
-            &.builtin,
-            &.deleted,
-            &.inserted,
-            &.tag,
-            &.symbol {
-                color: var(--mynah-color-syntax-string);
-            }
-
-            &.number,
-            &.integer,
-            &.float {
-                color: var(--mynah-color-syntax-number);
-            }
-
-            &.namespace {
-                opacity: 0.7;
-            }
-
-            &.boolean {
-                color: var(--mynah-color-syntax-boolean);
-            }
-
-            &.function {
+            .hljs-section,
+            .hljs-name,
+            .hljs-selector-tag,
+            .hljs-subst,
+            .hljs-title.function_ {
                 color: var(--mynah-color-syntax-function);
             }
 
-            &.class-name {
-                color: var(--mynah-color-syntax-class-name);
-            }
-
-            &.operator,
-            &.punctuation,
-            &.url {
-                color: var(--mynah-color-syntax-operator);
-            }
-
-            &.important,
-            &.variable,
-            &.parameter {
-                color: var(--mynah-color-syntax-variable);
-            }
-
-            &.constant,
-            &.property {
+            .hljs-literal,
+            .hljs-property {
                 color: var(--mynah-color-syntax-property);
             }
 
-            &.regex {
-                color: var(--mynah-color-syntax-regex);
+            .hljs-string,
+            .hljs-regexp,
+            .hljs-attribute,
+            .hljs-meta .hljs-string {
+                color: var(--mynah-color-syntax-string);
             }
 
-            &.important,
-            &.bold {
+            .hljs-attr,
+            .hljs-variable,
+            .hljs-template-variable,
+            .hljs-type,
+            .hljs-selector-class,
+            .hljs-selector-attr,
+            .hljs-selector-pseudo,
+            .hljs-number {
+                color: var(--mynah-color-syntax-variable);
+            }
+
+            .hljs-symbol,
+            .hljs-bullet,
+            .hljs-link,
+            .hljs-meta,
+            .hljs-selector-id,
+            .hljs-title {
+                color: var(--mynah-color-syntax-operator);
+            }
+
+            .hljs-built_in,
+            .hljs-title.class_,
+            .hljs-class .hljs-title {
+                color: var(--mynah-color-syntax-class-name);
+            }
+
+            .hljs-emphasis {
+                font-style: italic;
+            }
+
+            .hljs-strong {
                 font-weight: bold;
             }
 
-            &.italic {
-                font-style: italic;
+            .hljs-link {
+                text-decoration: underline;
             }
         }
 
-        .language-css .token.string,
-        .style .token.string {
-            color: var(--mynah-color-syntax-operator);
+        > code::selection,
+        &::selection {
+            text-shadow: none;
+            background: #b3d4fc;
         }
 
         &.line-numbers {
@@ -306,6 +301,7 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
     border-radius: var(--mynah-card-radius);
     border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     padding: var(--mynah-sizing-5);
+
     .mynah-card-body {
         > p:first-child:last-of-type,
         > p p:first-child {
