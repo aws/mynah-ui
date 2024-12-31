@@ -127,6 +127,11 @@
                     color: rgba(0, 0, 0, 0);
                     position: relative;
                     z-index: 150;
+                    > span.cursor {
+                        max-width: 0;
+                        line-height: inherit;
+                        display: inline;
+                    }
                     > span.context {
                         position: relative;
                         color: var(--mynah-color-button-reverse);
