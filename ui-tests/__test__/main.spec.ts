@@ -41,6 +41,7 @@ import { submitFeedbackForm } from './flows/feedback-form/submit-feedback-form';
 import { stayOnCurrentPrompt } from './flows/navigate-prompts/stay-on-current-prompt';
 import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
 import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
+import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 
 describe('Open MynahUI', () => {
   beforeEach(async () => {
@@ -232,6 +233,9 @@ describe('Open MynahUI', () => {
     25000);
     it('should navigate down to current empty prompt', async () => {
       await navigatePromptsToEmpty(page);
+    });
+    it('should navigate up/down only if on first/last line', async () => {
+      await navigatePromptsFirstLastLineCheck(page);
     });
 
     it('should stay on current prompt', async () => {
