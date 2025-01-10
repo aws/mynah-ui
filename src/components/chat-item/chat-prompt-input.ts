@@ -346,14 +346,10 @@ export class ChatPromptInput {
 
         let codeAttachment = '';
         if (this.userPromptHistoryIndex === this.userPromptHistory.length) {
-          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-            promptInputText: this.lastUnsentUserPrompt.inputText ?? '',
-          });
+          this.promptTextInput.updateTextInputValue(this.lastUnsentUserPrompt.inputText ?? '');
           codeAttachment = this.lastUnsentUserPrompt.codeAttachment ?? '';
         } else {
-          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-            promptInputText: this.userPromptHistory[this.userPromptHistoryIndex].inputText,
-          });
+          this.promptTextInput.updateTextInputValue(this.userPromptHistory[this.userPromptHistoryIndex].inputText);
           codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment ?? '';
         }
         codeAttachment = codeAttachment.trim();
@@ -371,7 +367,9 @@ export class ChatPromptInput {
               .replace(/```$/, '')
               .trim();
           }
-          this.addAttachment(codeAttachment, 'code');
+          this.promptAttachment.updateAttachment(codeAttachment, 'code');
+        } else {
+          this.promptAttachment.clear();
         }
       }
     } else {
