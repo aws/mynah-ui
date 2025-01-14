@@ -229,10 +229,10 @@ export class ChatItemCard {
                 }).render,
               ]
             : [],
-        contentProperties: bodyEvents,
+        contentEvents: bodyEvents,
       };
       if (this.contentBody != null) {
-        this.contentBody.updateCardStack(updatedCardContentBodyProps);
+        this.contentBody.update(updatedCardContentBodyProps);
       } else {
         this.contentBody = new ChatItemCardContent(updatedCardContentBodyProps);
         this.card?.render.insertChild('beforeend', this.contentBody.render);

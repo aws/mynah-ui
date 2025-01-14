@@ -2,7 +2,8 @@
  * Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { getBindableValue, isBindable, MakePropsBindable } from '../../helper/bindable';
+import { DomBuilder, DomBuilderEventHandler, DomBuilderEventHandlerWithOptions, ExtendedHTMLElement, GenericEvents } from '../../helper/dom';
 import { EngagementType } from '../../static';
 import '../../styles/components/card/_card.scss';
 
@@ -16,11 +17,18 @@ const ENGAGEMENT_DURATION_LIMIT = 3000;
  */
 const ENGAGEMENT_MIN_SELECTION_DISTANCE = 6;
 const ENGAGEMENT_MIN_CLICK_DURATION = 300;
-export interface CardProps extends Partial<DomBuilderObject> {
+interface CardPropsBindable {
+  classNames?: string[];
+  testId?: string;
+  attributes?: Record<string, string>;
   border?: boolean;
   background?: boolean;
   padding?: 'small' | 'medium' | 'large' | 'none';
   children?: Array<HTMLElement | ExtendedHTMLElement | string>;
+  events?: Partial<Record<GenericEvents, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions>>;
+}
+
+export interface CardProps extends MakePropsBindable<CardPropsBindable>{
   onCardEngaged?: (engagement: {
     engagementDurationTillTrigger: number;
     engagementType: EngagementType;
@@ -33,86 +41,98 @@ export interface CardProps extends Partial<DomBuilderObject> {
 }
 export class Card {
   render: ExtendedHTMLElement;
-  private readonly props: CardProps;
+  private props: CardProps;
   private engagementStartTime: number = -1;
   private totalMouseDistanceTraveled: { x: number; y: number } = { x: 0, y: 0 };
   private previousMousePosition!: { x: number; y: number };
   private mouseDownInfo!: { x: number; y: number; time: number };
   constructor (props: CardProps) {
     this.props = props;
+    Object.entries(this.props).forEach(([ key, value ]) => {
+      if (isBindable(value)) {
+        value.subscribe((newVal) => {
+          this.update({
+            [key]: newVal
+          });
+        });
+      }
+    });
+
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      testId: this.props.testId,
-      classNames: [
-        'mynah-card',
-        `padding-${props.padding ?? 'large'}`,
-        props.border !== false ? 'border' : '',
-        props.background !== false ? 'background' : '',
-        ...(props.classNames ?? [])
-      ],
-      persistent: props.persistent,
-      innerHTML: props.innerHTML,
+      testId: getBindableValue(this.props.testId),
+      classNames: this.getClassList(),
       children: [
-        ...(props.children ?? []),
+        ...(getBindableValue(this.props.children) ?? []),
       ],
       events: {
-        ...props.events,
-        ...(props.onCardEngaged !== undefined
-          ? {
-              mouseenter: e => {
-                if (this.engagementStartTime === -1) {
-                  this.engagementStartTime = new Date().getTime();
-                  this.previousMousePosition = { x: e.clientX, y: e.clientY };
-                  this.totalMouseDistanceTraveled = { x: 0, y: 0 };
-                }
-              },
-              mousemove: e => {
-                if (this.engagementStartTime === -1) {
-                  this.engagementStartTime = new Date().getTime();
-                }
-                this.totalMouseDistanceTraveled = {
-                  x:
-                          this.totalMouseDistanceTraveled.x +
-                          Math.abs(e.clientX - this.previousMousePosition.x),
-                  y:
-                          this.totalMouseDistanceTraveled.y +
-                          Math.abs(e.clientY - this.previousMousePosition.y),
-                };
-                this.previousMousePosition = { x: e.clientX, y: e.clientY };
-              },
-              mousedown: e => {
-                this.mouseDownInfo = { x: e.clientX, y: e.clientY, time: new Date().getTime() };
-              },
-              mouseup: e => {
-                const mouseUpInfo = { x: e.clientX, y: e.clientY, time: new Date().getTime() };
-                if (
-                  this.mouseDownInfo !== undefined &&
-                      (Math.abs(this.mouseDownInfo.x - mouseUpInfo.x) > ENGAGEMENT_MIN_SELECTION_DISTANCE ||
-                          Math.abs(this.mouseDownInfo.y - mouseUpInfo.y) >
-                          ENGAGEMENT_MIN_SELECTION_DISTANCE) &&
-                      mouseUpInfo.time - this.mouseDownInfo.time > ENGAGEMENT_MIN_CLICK_DURATION
-                ) {
-                  this.handleEngagement({
-                    x: Math.abs(this.mouseDownInfo.x - mouseUpInfo.x),
-                    y: Math.abs(this.mouseDownInfo.y - mouseUpInfo.y),
-                    selectedText: window?.getSelection()?.toString(),
-                  });
-                }
-              },
-              mouseleave: () => {
-                const engagementEndTime = new Date().getTime();
-                if (this.engagementStartTime !== -1 && engagementEndTime - this.engagementStartTime > ENGAGEMENT_DURATION_LIMIT) {
-                  this.handleEngagement();
-                } else {
-                  this.resetEngagement();
-                }
-              },
-            }
+        ...getBindableValue(this.props.events),
+        ...(this.props.onCardEngaged !== undefined
+          ? this.getEngagementEvents()
           : {})
       },
-      attributes: props.attributes
+      attributes: getBindableValue(this.props.attributes)
     });
   }
+
+  private readonly getEngagementEvents = (): Partial<Record<GenericEvents, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions>> => ({
+    mouseenter: e => {
+      if (this.engagementStartTime === -1) {
+        this.engagementStartTime = new Date().getTime();
+        this.previousMousePosition = { x: e.clientX, y: e.clientY };
+        this.totalMouseDistanceTraveled = { x: 0, y: 0 };
+      }
+    },
+    mousemove: e => {
+      if (this.engagementStartTime === -1) {
+        this.engagementStartTime = new Date().getTime();
+      }
+      this.totalMouseDistanceTraveled = {
+        x:
+                this.totalMouseDistanceTraveled.x +
+                Math.abs(e.clientX - this.previousMousePosition.x),
+        y:
+                this.totalMouseDistanceTraveled.y +
+                Math.abs(e.clientY - this.previousMousePosition.y),
+      };
+      this.previousMousePosition = { x: e.clientX, y: e.clientY };
+    },
+    mousedown: e => {
+      this.mouseDownInfo = { x: e.clientX, y: e.clientY, time: new Date().getTime() };
+    },
+    mouseup: e => {
+      const mouseUpInfo = { x: e.clientX, y: e.clientY, time: new Date().getTime() };
+      if (
+        this.mouseDownInfo !== undefined &&
+            (Math.abs(this.mouseDownInfo.x - mouseUpInfo.x) > ENGAGEMENT_MIN_SELECTION_DISTANCE ||
+                Math.abs(this.mouseDownInfo.y - mouseUpInfo.y) >
+                ENGAGEMENT_MIN_SELECTION_DISTANCE) &&
+            mouseUpInfo.time - this.mouseDownInfo.time > ENGAGEMENT_MIN_CLICK_DURATION
+      ) {
+        this.handleEngagement({
+          x: Math.abs(this.mouseDownInfo.x - mouseUpInfo.x),
+          y: Math.abs(this.mouseDownInfo.y - mouseUpInfo.y),
+          selectedText: window?.getSelection()?.toString(),
+        });
+      }
+    },
+    mouseleave: () => {
+      const engagementEndTime = new Date().getTime();
+      if (this.engagementStartTime !== -1 && engagementEndTime - this.engagementStartTime > ENGAGEMENT_DURATION_LIMIT) {
+        this.handleEngagement();
+      } else {
+        this.resetEngagement();
+      }
+    },
+  });
+
+  private readonly getClassList = (): string[] => ([
+    'mynah-card',
+    `padding-${getBindableValue(this.props.padding) ?? 'large'}`,
+    getBindableValue(this.props.border) !== false ? 'border' : '',
+    getBindableValue(this.props.background) !== false ? 'background' : '',
+    ...(getBindableValue(this.props.classNames) ?? [])
+  ]);
 
   private readonly resetEngagement = (): void => {
     this.engagementStartTime = -1;
@@ -139,5 +159,68 @@ export class Card {
       });
     }
     this.resetEngagement();
+  };
+
+  public readonly update = (newProps: Partial<CardProps>): void => {
+    let updateClassList = false;
+    Object.keys(newProps).forEach((propKey) => {
+      const key = propKey as keyof CardProps;
+      if (key === 'events') {
+        this.render.update({
+          events: {
+            ...(getBindableValue(newProps.events) ?? {}),
+            ...(this.props.onCardEngaged !== undefined
+              ? this.getEngagementEvents()
+              : {})
+          }
+        });
+      }
+
+      if (key === 'attributes') {
+        if (getBindableValue(newProps.attributes) != null) {
+          this.render.update({
+            attributes: getBindableValue(newProps.attributes)
+          });
+        } else if (getBindableValue(this.props.attributes) != null) {
+          const resetAttributes = {};
+          Object.assign(resetAttributes, Object.fromEntries(
+            Object.keys(getBindableValue(this.props.attributes) ?? {}).map(key => [ key, undefined ])
+          ));
+          this.render.update({
+            attributes: resetAttributes
+          });
+        }
+      }
+
+      if (key === 'testId') {
+        this.render.update({ testId: getBindableValue(newProps.testId) });
+      }
+
+      if (key === 'children') {
+        this.render.clear();
+        if (getBindableValue(newProps.children) != null) {
+          this.render.update({
+            children: [
+              ...(getBindableValue(newProps.children) ?? []),
+            ],
+          });
+        }
+      }
+
+      if (key === 'classNames' || key === 'border' || key === 'background' || key === 'padding') {
+        updateClassList = true;
+      }
+    });
+
+    this.props = {
+      ...this.props,
+      ...newProps
+    };
+
+    if (updateClassList) {
+      this.render.update({
+        classNames: this.getClassList(),
+      });
+    }
   };
 }

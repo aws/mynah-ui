@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { DomBuilder, DomBuilderObject, DomBuilderObjectFilled, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIIconImporter } from './icon/icon-importer';
 import '../styles/components/_icon.scss';
+import { getBindableValue, isBindable, MakePropsBindable } from '../helper/bindable';
 
 export enum MynahIcons {
   Q = 'q',
@@ -69,28 +70,57 @@ export enum MynahIcons {
   TRANSFORM = 'transform',
 }
 
-export interface IconProps {
+interface IconPropsBindable {
   icon: MynahIcons;
   classNames?: string[];
 }
+
+export interface IconProps extends MakePropsBindable<IconPropsBindable> {}
+
 export class Icon {
   render: ExtendedHTMLElement;
+  private props: IconProps;
   constructor (props: IconProps) {
+    this.props = props;
+    Object.entries(this.props).forEach(([ key, value ]) => {
+      if (isBindable(value)) {
+        value.subscribe((newVal) => {
+          this.update({
+            [key]: newVal
+          });
+        });
+      }
+    });
+
     MynahUIIconImporter.getInstance();
     this.render = DomBuilder.getInstance().build({
       type: 'i',
-      classNames: [
-        'mynah-ui-icon',
-                `mynah-ui-icon-${props.icon}`,
-                ...(props.classNames !== undefined ? props.classNames : []),
-      ],
-      children: [ {
-        type: 'span',
-        attributes: {
-          'aria-hidden': 'true'
-        },
-        children: [ props.icon ]
-      } ]
+      ...this.getIconDomBuilderContent() as Partial<DomBuilderObject>
     });
   }
+
+  private readonly getIconDomBuilderContent = (): DomBuilderObjectFilled => ({
+    classNames: [
+      'mynah-ui-icon',
+      `mynah-ui-icon-${getBindableValue(this.props.icon) ?? ''}`,
+      ...(getBindableValue(this.props.classNames) ?? []),
+    ],
+    children: [ {
+      type: 'span',
+      attributes: {
+        'aria-hidden': 'true'
+      },
+      children: [ getBindableValue(this.props.icon) ?? '' ]
+    } ]
+  });
+
+  public readonly update = (newProps: Partial<IconProps>): void => {
+    this.props = {
+      ...this.props,
+      ...newProps
+    };
+    this.render.update({
+      ...this.getIconDomBuilderContent()
+    });
+  };
 }

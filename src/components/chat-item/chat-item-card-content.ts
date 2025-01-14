@@ -4,54 +4,68 @@
  */
 
 import { DomBuilderObject, ExtendedHTMLElement, getTypewriterPartsCss } from '../../helper/dom';
-import { CardRenderDetails, ChatItem, CodeBlockActions, OnCodeBlockActionFunction, OnCopiedToClipboardFunction, ReferenceTrackerInformation } from '../../static';
+import { CardRenderDetails, CodeBlockActions, OnCodeBlockActionFunction, OnCopiedToClipboardFunction, ReferenceTrackerInformation } from '../../static';
 import { CardBody } from '../card/card-body';
 import { generateUID } from '../../helper/guid';
+import { getBindableValue, isBindable, MakePropsBindable } from '../../helper/bindable';
 
 const TYPEWRITER_STACK_TIME = 500;
-export interface ChatItemCardContentProps {
-  body?: string | null;
+interface ChatItemCardContentPropsBindable {
+  body?: string;
   testId?: string;
   renderAsStream?: boolean;
   classNames?: string[];
   codeReference?: ReferenceTrackerInformation[] | null;
+  children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
+  codeBlockActions?: CodeBlockActions;
+}
+export interface ChatItemCardContentProps extends MakePropsBindable<ChatItemCardContentPropsBindable>{
   onAnimationStateChange?: (isAnimating: boolean) => void;
-  contentProperties?: {
-    codeBlockActions?: CodeBlockActions;
+  contentEvents?: {
     onLinkClick?: (url: string, e: MouseEvent) => void;
     onCopiedToClipboard?: OnCopiedToClipboardFunction;
     onCodeBlockAction?: OnCodeBlockActionFunction;
   };
-  children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
 }
 export class ChatItemCardContent {
   private props: ChatItemCardContentProps;
   render: ExtendedHTMLElement;
   contentBody: CardBody | null = null;
-  private readonly updateStack: Array<Partial<ChatItem>> = [];
+  private readonly updateStack: Array<Partial<ChatItemCardContentProps>> = [];
   private typewriterItemIndex: number = 0;
   private readonly typewriterId: string = `typewriter-card-${generateUID()}`;
   private lastAnimationDuration: number = 0;
   private updateTimer: ReturnType<typeof setTimeout> | undefined;
   constructor (props: ChatItemCardContentProps) {
     this.props = props;
+    Object.entries(this.props).forEach(([ key, value ]) => {
+      if (isBindable(value)) {
+        value.subscribe((newVal) => {
+          this.update({
+            [key]: newVal
+          });
+        });
+      }
+    });
+
     this.contentBody = this.getCardContent();
     this.render = this.contentBody.render;
 
-    if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '') {
-      this.updateCardStack({});
+    if ((getBindableValue(this.props.renderAsStream) ?? false) && (getBindableValue(this.props.body) ?? '').trim() !== '') {
+      this.update({});
     }
   }
 
   private readonly getCardContent = (): CardBody => {
     return new CardBody({
-      body: this.props.body ?? '',
-      testId: this.props.testId,
-      useParts: this.props.renderAsStream,
-      classNames: [ this.typewriterId, ...(this.props.classNames ?? []) ],
-      highlightRangeWithTooltip: this.props.codeReference,
-      children: this.props.children,
-      ...this.props.contentProperties,
+      body: getBindableValue(this.props.body) ?? '',
+      testId: getBindableValue(this.props.testId),
+      useParts: getBindableValue(this.props.renderAsStream),
+      classNames: [ this.typewriterId, ...(getBindableValue(this.props.classNames) ?? []) ],
+      highlightRangeWithTooltip: getBindableValue(this.props.codeReference),
+      children: getBindableValue(this.props.children),
+      ...this.props.contentEvents,
+      codeBlockActions: getBindableValue(this.props.codeBlockActions)
     });
   };
 
@@ -102,8 +116,8 @@ export class ChatItemCardContent {
     }
   };
 
-  public readonly updateCardStack = (updateWith: Partial<ChatItemCardContentProps>): void => {
-    this.updateStack.push(updateWith);
+  public readonly update = (newProps: Partial<ChatItemCardContentProps>): void => {
+    this.updateStack.push(newProps);
     this.updateCard();
   };
 

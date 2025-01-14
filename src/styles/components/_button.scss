@@ -127,21 +127,35 @@
             opacity: 0.15;
         }
     }
-    &.mynah-icon-button {
-        width: var(--mynah-sizing-10);
-        height: var(--mynah-sizing-10);
-        border-radius: 0;
+    > .mynah-button {
+        &-label-wrapper,
+        &-icon-wrapper,
+        &-child-wrapper {
+            padding: 0;
+            margin: 0;
+            z-index: 100;
+            white-space: nowrap;
+            transition: inherit;
+            box-sizing: border-box;
+            overflow: hidden;
+            &:empty {
+                display: none;
+            }
+        }
     }
-    > span {
+    > .mynah-button-icon-wrapper {
+        display: inline-flex;
+    }
+    > .mynah-button-label-wrapper > span {
         white-space: nowrap;
         transition: inherit;
-        overflow: hidden;
         box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
         margin-right: var(--mynah-sizing-1);
         margin-left: var(--mynah-sizing-1);
-        z-index: 100;
+        display: inline-block;
+        max-width: 100%;
     }
 
     .mynah-chat-item-card:hover &.mynah-button-flash-by-parent-focus:not(:hover) {

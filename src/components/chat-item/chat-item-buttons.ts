@@ -72,7 +72,7 @@ export class ChatItemButtonsWrapper {
           }
         });
         if (chatActionAction.disabled === true) {
-          actionItem.setEnabled(false);
+          actionItem.update({ disabled: true });
         }
         this.actions[chatActionAction.id] = {
           data: chatActionAction,
@@ -92,7 +92,7 @@ export class ChatItemButtonsWrapper {
   private readonly handleValidationChange = (isFormValid: boolean): void => {
     Object.keys(this.actions).forEach(chatActionId => {
       if (this.actions[chatActionId].data.waitMandatoryFormItems !== false) {
-        this.actions[chatActionId].element.setEnabled(isFormValid);
+        this.actions[chatActionId].element.update({ disabled: !isFormValid });
       }
     });
   };
@@ -100,7 +100,7 @@ export class ChatItemButtonsWrapper {
   private readonly disableAll = (): void => {
     Object.keys(this.actions).forEach(chatActionId => {
       if (this.actions[chatActionId].data.disabled !== false) {
-        this.actions[chatActionId].element.setEnabled(false);
+        this.actions[chatActionId].element.update({ disabled: true });
       }
     });
   };

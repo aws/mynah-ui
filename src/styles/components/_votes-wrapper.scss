@@ -9,7 +9,7 @@
     > span.mynah-feedback-thanks {
         overflow: hidden;
     }
-    > .mynah-button > span {
+    > .mynah-button > .mynah-label-wrapper > .mynah-button-label {
         padding: 0;
         font-size: var(--mynah-font-size-small);
         color: var(--mynah-color-text-link);

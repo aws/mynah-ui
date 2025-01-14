@@ -44,7 +44,7 @@ export interface DomBuilderObject extends GenericDomBuilderAttributes{
 export interface DomBuilderObjectFilled {
   attributes?: Record<string, string | undefined>;
   classNames?: string[];
-  events?: Record<string, (event?: any) => any>;
+  events?: Partial<Record<GenericEvents, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions>> | undefined;
   children?: Array<string | DomBuilderObject | HTMLElement | ExtendedHTMLElement>;
   innerHTML?: string | undefined;
   testId?: string;
@@ -287,7 +287,11 @@ export class DomBuilder {
           );
         }
         if (domBuilderObject.events !== undefined && domBuilderObject.events[eventName] !== undefined) {
-          domToUpdate.addEventListener(eventName, domBuilderObject.events[eventName]);
+          domToUpdate.addEventListener(
+            eventName,
+            (domBuilderObject.events[eventName] as DomBuilderEventHandlerWithOptions).handler,
+            (domBuilderObject.events[eventName] as DomBuilderEventHandlerWithOptions).options ?? undefined
+          );
         }
       });
 
@@ -307,7 +311,13 @@ export class DomBuilder {
         domToUpdate.innerHTML = domBuilderObject.innerHTML;
       } else if (domBuilderObject.children !== undefined && domBuilderObject.children.length > 0) {
         domToUpdate.clear();
-        domToUpdate.insertChild('beforeend', domBuilderObject.children);
+        domBuilderObject.children.forEach(child => {
+          if (child instanceof HTMLElement) {
+            domToUpdate.insertChild('beforeend', child);
+          } else {
+            domToUpdate.insertChild('beforeend', DomBuilder.getInstance().build(child as DomBuilderObject));
+          }
+        });
       }
 
       domToUpdate.builderObject = { ...EmptyDomBuilderObject, ...domBuilderObject } as DomBuilderObject;

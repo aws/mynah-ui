@@ -53,7 +53,8 @@ export {
   ToggleOption
 } from './components/toggle';
 export {
-  MynahIcons
+  MynahIcons,
+  Icon
 } from './components/icon';
 export {
   DomBuilder,
@@ -61,7 +62,11 @@ export {
   ExtendedHTMLElement,
 } from './helper/dom';
 export {
+  Button,
   ButtonProps,
+  ButtonFillState,
+  ButtonEvents,
+  ButtonStatus,
   ButtonAbstract
 } from './components/button';
 export {
@@ -84,6 +89,9 @@ export {
   ChatItemCardContent,
   ChatItemCardContentProps
 } from './components/chat-item/chat-item-card-content';
+export { Card } from './components/card/card';
+export { ChatItemCardContent as CardContent } from './components/chat-item/chat-item-card-content';
+export { bindable, Bindable } from './helper/bindable';
 export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {

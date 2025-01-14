@@ -27,13 +27,11 @@
     border-radius: inherit;
     button {
         pointer-events: all;
-        > .mynah-button-label {
+        > .mynah-button-label-wrapper > .mynah-button-label {
             padding: 0;
         }
-        > i {
-            & + .mynah-button-label {
-                padding-left: var(--mynah-sizing-1);
-            }
+        > .mynah-button-icon-wrapper:not(:empty) + .mynah-button-label-wrapper > .mynah-button-label {
+            padding-left: var(--mynah-sizing-1);
         }
     }
 }
