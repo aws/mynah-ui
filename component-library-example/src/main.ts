@@ -88,7 +88,7 @@ export const initialize = (): void => {
           ]
         },
 
-        // Component(s) with a class instance
+        // Component(s) with class instances
         new Card({
           border: false,
           background: false,
