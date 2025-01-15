@@ -1,4 +1,14 @@
-import { bindable, Button, ButtonStatus, Card, CardContent, DomBuilder, Icon, MynahIcons } from '@aws/mynah-ui';
+import {
+  bindable,
+  Button,
+  ButtonStatus,
+  Card,
+  CardContent,
+  DomBuilder,
+  Icon,
+  MynahIcons,
+  UIBuilder
+} from '@aws/mynah-ui';
 import './styles/styles.scss';
 
 export const initialize = (): void => {
@@ -59,20 +69,47 @@ export const initialize = (): void => {
                 setTimeout(() => {
                   icon.value = MynahIcons.CURSOR_INSERT;
                   status.value = 'info';
-                }, 5000);
+                }, 1500);
               }
+            }).render,
+          ]
+        },
+        {
+          type: 'div',
+          children: [
+            new Card({
+              children: [
+                'Just an icon with the same bindable `icon` prop connected.',
+                new Icon({
+                  icon
+                }).render
+              ]
             }).render
           ]
         },
+
+        // Component(s) with a class instance
         new Card({
+          border: false,
+          background: false,
+          padding: 'none',
           children: [
-            new Icon({
-              icon
-            }).render,
             new CardContent({
               renderAsStream: true,
               body,
             }).render,
+          ]
+        }).render,
+
+        // Component(s) with UIBuilder
+        UIBuilder({
+          type: 'container',
+          children: [
+            {
+              type: 'content',
+              subType: 'streamable',
+              body,
+            }
           ]
         }).render
       ]

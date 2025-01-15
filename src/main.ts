@@ -27,6 +27,7 @@ import {
   CardRenderDetails,
   PromptAttachmentType,
 } from './static';
+
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
 import { ChatWrapper } from './components/chat-item/chat-wrapper';
@@ -92,6 +93,7 @@ export {
 export { Card } from './components/card/card';
 export { ChatItemCardContent as CardContent } from './components/chat-item/chat-item-card-content';
 export { bindable, Bindable } from './helper/bindable';
+export { UIBuilder } from './helper/ui-builder';
 export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {
