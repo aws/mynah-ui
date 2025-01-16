@@ -88,7 +88,7 @@ export class DomBuilder {
     this.root.addClass('mynah-ui-root');
     this.rootFocus = this.root.matches(':focus') ?? false;
     this.attachRootFocusListeners();
-    if (typeof ResizeObserver !== 'undefined') {
+    if (ResizeObserver != null) {
       this.resizeObserver = new ResizeObserver((entry) => {
         MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ROOT_RESIZE, { clientRect: this.root.getBoundingClientRect() });
       });
