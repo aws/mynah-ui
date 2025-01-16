@@ -7,7 +7,7 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { CardRenderDetails, ChatItem, ChatItemType, PromptAttachmentType, TabHeaderDetails } from '../../static';
+import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames, PromptAttachmentType, TabHeaderDetails } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
@@ -18,6 +18,7 @@ import '../../styles/components/chat/_chat-wrapper.scss';
 import testIds from '../../helper/test-ids';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { GradientBackground } from '../background';
+import { MynahUIGlobalEvents } from '../../helper/events';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -39,6 +40,8 @@ export class ChatWrapper {
   private lastStreamingChatItemCard: ChatItemCard | null;
   private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
+  private scrollPos: number = 0;
+  private restoreScrollAfterResize: boolean = false;
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
     this.props = props;
@@ -74,6 +77,32 @@ export class ChatWrapper {
         this.allRenderedChatItems = {};
       }
     });
+
+    MynahUITabsStore.getInstance().addListener('selectedTabChange', (selectedTabId) => {
+      if (this.props.tabId === selectedTabId) {
+        setTimeout(() => {
+          this.chatItemsContainer.scrollTop = this.scrollPos;
+        }, 10);
+      }
+    });
+    MynahUITabsStore.getInstance().addListener('beforeTabChange', (selectedTabId) => {
+      if (this.props.tabId !== selectedTabId) {
+        this.scrollPos = this.chatItemsContainer.scrollTop;
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_RESIZE, (clientRect: ReturnType<HTMLElement['getBoundingClientRect']>) => {
+      if ((clientRect.height < 10 || clientRect.width < 10) && this.props.tabId === MynahUITabsStore.getInstance().getSelectedTabId()) {
+        this.restoreScrollAfterResize = true;
+        this.scrollPos = this.chatItemsContainer.scrollTop;
+      } else if (!this.restoreScrollAfterResize) {
+        this.restoreScrollAfterResize = false;
+        setTimeout(() => {
+          this.chatItemsContainer.scrollTop = this.scrollPos;
+        }, 10);
+      }
+    });
+
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'loadingChat', (loadingChat: boolean) => {
       if (loadingChat) {
         this.render.addClass('loading');

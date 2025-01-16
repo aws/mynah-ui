@@ -171,6 +171,7 @@ export enum MynahEventNames {
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
+  ROOT_RESIZE = 'rootResize',
 };
 
 export enum MynahPortalNames {
