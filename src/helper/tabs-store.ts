@@ -105,8 +105,6 @@ export class MynahUITabsStore {
     if (this.tabsStore[tabId] !== undefined) {
       if (tabData?.isSelected === true && this.getSelectedTabId() !== tabId) {
         this.selectTab(tabId);
-        // this.deselectAllTabs();
-        // this.informSubscribers('selectedTabChange', tabId);
       }
       this.tabsStore[tabId] = { ...this.tabsStore[tabId], ...tabData };
       if (tabData?.store !== undefined) {
