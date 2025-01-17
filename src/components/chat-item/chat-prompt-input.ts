@@ -400,7 +400,7 @@ export class ChatPromptInput {
               this.handleContextCommandSelection(commandToSend);
             } else {
               // Otherwise pass the given text by user
-              const command = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0] ?? '';
+              const command = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
               this.handleContextCommandSelection({ command });
             }
           } else {
@@ -467,7 +467,7 @@ export class ChatPromptInput {
               [ ...this.quickPickItemGroups ].forEach((quickPickGroup: QuickActionCommandGroup) => {
                 const newQuickPickCommandGroup = { ...quickPickGroup };
                 try {
-                  const searchTerm = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0];
+                  const searchTerm = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
                   const promptRegex = new RegExp(searchTerm ?? '', 'gi');
                   newQuickPickCommandGroup.commands = newQuickPickCommandGroup.commands.filter(command =>
                     command.command.match(promptRegex)

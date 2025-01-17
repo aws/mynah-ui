@@ -78,6 +78,8 @@ export interface ExtendedHTMLElement extends HTMLInputElement {
 export class DomBuilder {
   private static instance: DomBuilder | undefined;
   private rootFocus: boolean;
+  private readonly resizeObserver: ResizeObserver;
+  private rootBox: DOMRect;
   root: ExtendedHTMLElement;
   private portals: Record<string, ExtendedHTMLElement> = {};
 
@@ -87,6 +89,19 @@ export class DomBuilder {
     this.root.addClass('mynah-ui-root');
     this.rootFocus = this.root.matches(':focus') ?? false;
     this.attachRootFocusListeners();
+    if (ResizeObserver != null) {
+      this.rootBox = this.root.getBoundingClientRect();
+      this.resizeObserver = new ResizeObserver((entry) => {
+        const incomingRootBox = this.root.getBoundingClientRect();
+        // Known issue of ResizeObserver, triggers twice for each size change.
+        // Check if size was really changed then trigger
+        if (this.rootBox.height !== incomingRootBox.height || this.rootBox.width !== incomingRootBox.width) {
+          this.rootBox = incomingRootBox;
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ROOT_RESIZE, { clientRect: this.rootBox });
+        }
+      });
+      this.resizeObserver.observe(this.root);
+    }
   }
 
   private readonly attachRootFocusListeners = (): void => {
@@ -126,10 +141,12 @@ export class DomBuilder {
   }
 
   setRoot = (rootSelector?: string): void => {
+    this.resizeObserver.unobserve(this.root);
     this.root.removeEventListener('focus', this.onRootFocus);
     window.removeEventListener('blur', this.onRootBlur);
     this.root = this.extendDomFunctionality((DS(rootSelector ?? 'body')[0] ?? document.body) as HTMLElement);
     this.attachRootFocusListeners();
+    this.resizeObserver.observe(this.root);
   };
 
   addClass = function (this: ExtendedHTMLElement, className: string): ExtendedHTMLElement {
