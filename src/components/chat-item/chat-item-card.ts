@@ -31,6 +31,7 @@ export interface ChatItemCardProps {
   chatItem: ChatItem;
   inline?: boolean;
   small?: boolean;
+  onAnimationStateChange?: (isAnimating: boolean) => void;
 }
 export class ChatItemCard {
   readonly props: ChatItemCardProps;
@@ -216,6 +217,7 @@ export class ChatItemCard {
             this.render?.addClass('typewriter-animating');
           } else {
             this.render?.removeClass('typewriter-animating');
+            this.props.onAnimationStateChange?.(isAnimating);
           }
         },
         children:

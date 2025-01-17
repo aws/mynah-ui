@@ -79,6 +79,7 @@ export class DomBuilder {
   private static instance: DomBuilder | undefined;
   private rootFocus: boolean;
   private readonly resizeObserver: ResizeObserver;
+  private rootBox: DOMRect;
   root: ExtendedHTMLElement;
   private portals: Record<string, ExtendedHTMLElement> = {};
 
@@ -89,8 +90,15 @@ export class DomBuilder {
     this.rootFocus = this.root.matches(':focus') ?? false;
     this.attachRootFocusListeners();
     if (ResizeObserver != null) {
+      this.rootBox = this.root.getBoundingClientRect();
       this.resizeObserver = new ResizeObserver((entry) => {
-        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ROOT_RESIZE, { clientRect: this.root.getBoundingClientRect() });
+        const incomingRootBox = this.root.getBoundingClientRect();
+        // Known issue of ResizeObserver, triggers twice for each size change.
+        // Check if size was really changed then trigger
+        if (this.rootBox.height !== incomingRootBox.height || this.rootBox.width !== incomingRootBox.width) {
+          this.rootBox = incomingRootBox;
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ROOT_RESIZE, { clientRect: this.rootBox });
+        }
       });
       this.resizeObserver.observe(this.root);
     }

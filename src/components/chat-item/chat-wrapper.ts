@@ -91,11 +91,10 @@ export class ChatWrapper {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_RESIZE, (clientRect: ReturnType<HTMLElement['getBoundingClientRect']>) => {
-      if ((clientRect.height < 10 || clientRect.width < 10) && this.props.tabId === MynahUITabsStore.getInstance().getSelectedTabId()) {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_RESIZE, (data: {clientRect: DOMRect}) => {
+      if (!this.restoreScrollAfterResize && (data.clientRect.height < 10 || data.clientRect.width < 10) && this.props.tabId === MynahUITabsStore.getInstance().getSelectedTabId()) {
         this.restoreScrollAfterResize = true;
-        this.scrollPos = this.chatItemsContainer.scrollTop;
-      } else if (!this.restoreScrollAfterResize) {
+      } else if (this.restoreScrollAfterResize) {
         this.restoreScrollAfterResize = false;
         setTimeout(() => {
           this.chatItemsContainer.scrollTop = this.scrollPos;
@@ -182,6 +181,11 @@ export class ChatWrapper {
       classNames: [ 'mynah-chat-items-container' ],
       persistent: true,
       children: [],
+      events: {
+        wheel: () => {
+          this.scrollPos = this.chatItemsContainer.scrollTop;
+        }
+      }
     });
 
     this.tabHeaderDetails = new TitleDescriptionWithIcon({
@@ -271,6 +275,11 @@ export class ChatWrapper {
     this.removeEmptyCardsAndFollowups();
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
     const chatItemCard = new ChatItemCard({
+      onAnimationStateChange: (isAnimating) => {
+        if (!isAnimating) {
+          this.scrollPos = this.chatItemsContainer.scrollTop;
+        }
+      },
       tabId: this.props.tabId,
       chatItem: {
         ...chatItem,
@@ -300,6 +309,8 @@ export class ChatWrapper {
       // Only if it is a PROMPT
       this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight + 500;
     }
+
+    this.scrollPos = this.chatItemsContainer.scrollTop;
   };
 
   private readonly checkLastAnswerStreamChange = (updateWith: Partial<ChatItem>): void => {
