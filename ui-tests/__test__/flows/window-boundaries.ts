@@ -1,6 +1,6 @@
 import { Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
-import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, waitForAnimationEnd } from '../helpers';
+import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, justWait, waitForAnimationEnd } from '../helpers';
 import { clickToFollowup } from './click-followup';
 import { closeTab } from './close-tab';
 import { openNewTab } from './open-new-tab';
@@ -10,6 +10,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   await openNewTab(page, false, true);
 
   await page.mouse.move(0, 0);
+  const chatItemsContainer = await page.waitForSelector(getSelector(testIds.chat.chatItemsContainer));
   const footerPanel = await page.waitForSelector(getSelector(testIds.prompt.footerInfo));
   expect(footerPanel).toBeDefined();
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
@@ -63,6 +64,8 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   // Check if the footer element exceeds from bottom
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 
+  justWait(500);
+  await chatItemsContainer.evaluate(node => { node.scrollTop = 0; });
   // Snap
   expect(await page.screenshot()).toMatchImageSnapshot();
 };
