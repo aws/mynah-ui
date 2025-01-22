@@ -1,6 +1,6 @@
 # MynahUI Architecture
 
-## How the Consumer and MynahUI works together?
+## How do the Consumer and MynahUI work together?
 
 Before how it works, it is better to clarify how to make it work. To consume MynahUI, there is only one single requirement, `npm` access. Adding `@aws/mynah-ui` to the `package.json` dependencies will allow the consumer to grab the desired version of MynahUI and allow them to create an instance of it to be rendered in the desired dom element.
 
@@ -27,13 +27,13 @@ As we can clarify from the flow, MynahUI expects data from the consumer app and 
 
 
 
-## How MynahUI works under the hood?
+## How does MynahUI work under the hood?
 ![image](https://github.com/user-attachments/assets/f9ea537f-6db7-4249-b347-f46812646e7e)
 
 MynahUI relies on three core structures, the **Data Store**, **Global Event Handler** and **Dom Builder**.  The combination of these 3 basically drives the MynahUI structure.
 
 
-#### Let’s breakdown the **Data Store**:
+#### Let’s break down the **Data Store**:
 
 The data store consists of 2 parts. The main data store holds all the current data for the tabs. Since MynahUI supports multiple tabs, each tab has its own data. And the second block in the data store is the data for each tab. 
 
@@ -47,7 +47,7 @@ Here’s an overview of what it looks like:
 
 
 
-#### Let’s breakdown the Global Event Handler:
+#### Let’s break down the Global Event Handler:
 
 The global event handler can be used by any component, to listen or fire a non data related event happened through the system. And more importantly, they can also fire events to inform the subscribers.
 For example, when a tab gets focus (basically being selected) it fires an event through the global event system which is called `TAB_FOCUS`. And if there is any subscriber to that event, their attached handler function will be called. 
@@ -55,7 +55,7 @@ For example, when a tab gets focus (basically being selected) it fires an event 
 ![image](https://github.com/user-attachments/assets/ea9157da-0030-4d85-8ede-4cbe918d6512)
 
 
-#### Let’s breakdown the DomBuilder:
+#### Let’s break down the DomBuilder:
 
 DomBuilder is at the heart of the rendering part of MynahUI. Basically, every single UI (HTML) element is being generated from the DomBuilder. It helps to manage dom manipulation from one single space. For example when you need to add some specific attribute to any dom generated in the MynahUI, it will be handled from this **singleton** class.
 
@@ -71,7 +71,7 @@ To clarify how all those structures work together, **a simplified flow can be sh
 
 
 
-### How components work?
+### How do components work?
 
 Components are using the DomBuilder to build up their HTML elements. Or, they can also use other components as well.
 Each component should have their `render`, which should also be just an HTMLElement or an ExtendedHTMLElement which is the output of the DomBuilder.
