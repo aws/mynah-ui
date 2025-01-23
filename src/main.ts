@@ -39,6 +39,7 @@ import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
+import unescapeHTML from 'unescape-html';
 
 export { generateUID } from './helper/guid';
 export {
@@ -272,7 +273,31 @@ export class MynahUI {
 <li>
 ${item.task ? `<input ${item.checked === true ? 'checked' : ''} disabled type="checkbox">` : ''}
 ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}
-</li>`
+</li>`,
+        link: (item) => {
+          // As an additional check, not linkify the pure text links, but keep the []() formatted links
+          let prot;
+          try {
+            prot = decodeURIComponent(unescapeHTML(item.href))
+              .replace(/[^\w:]/g, '')
+              .toLowerCase();
+          } catch (e) {
+            return '';
+          }
+          if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
+            return '';
+          }
+
+          if (item.href === item.text && item.title == null) {
+            return item.href;
+          }
+          let out = '<a href="' + item.href + '"';
+          if (item.title != null) {
+            out += ' title="' + item.title + '"';
+          }
+          out += '>' + item.text + '</a>';
+          return out;
+        }
       },
     });
 
@@ -663,6 +688,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    * @param answer ChatItem object.
    */
   public addChatItem = (tabId: string, chatItem: ChatItem): void => {
+    console.log(chatItem);
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ADD, { tabId, chatItem });
       MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
@@ -680,6 +706,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    * @param updateWith ChatItem object to update with.
    */
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
+    console.log(updateWith);
     if (MynahUITabsStore.getInstance().getTab(tabId) != null) {
       if (this.chatWrappers[tabId].getLastStreamingMessageId() != null) {
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
