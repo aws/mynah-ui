@@ -288,7 +288,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
             return '';
           }
 
-          if (item.href === item.text && item.title == null) {
+          if (item.href === item.text && !!item.title) {
             return item.href;
           }
           let out = '<a href="' + item.href + '"';
