@@ -288,6 +288,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
             return '';
           }
 
+          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           if (item.href === item.text && !!item.title) {
             return item.href;
           }
