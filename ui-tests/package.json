@@ -7,9 +7,8 @@
         "clean": "rm -rf build dist node_modules",
         "prepare": "webpack --config webpack.config.js --mode development",
         "e2e": "npm run prepare && jest --detectOpenHandles --config=./jest.config.js",
-        "e2e:chromium": "npm run prepare && ts-node run-browser-tests.ts",
-        "e2e:webkit": "npm run prepare && BROWSER=webkit ts-node run-browser-tests.ts",
-        "postinstall": "npx playwright install webkit chromium --with-deps"
+        "postinstall": "npx playwright install webkit chromium --with-deps",
+        "trace": "npx playwright show-trace trace.zip"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../"
