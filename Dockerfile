@@ -13,4 +13,4 @@ RUN npm run build
 RUN cd ./ui-tests && npm ci && npm run prepare
 
 # Default command to run the tests
-CMD ["npm", "run", "tests:e2e:docker"]
+CMD ["npm", "run", "docker:internal"]
