@@ -7,7 +7,7 @@ module.exports = {
     testEnvironmentOptions: {
         'jest-playwright': {
             use: {
-                trace: 'on-first-retry',
+                trace: 'retain-on-failure',
             },
             browsers: ['webkit', 'chromium'],
             launchOptions: {
