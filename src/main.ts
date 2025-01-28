@@ -274,7 +274,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
 </li>`,
         link: (token) => {
           const pattern = /^\[([^\]]+)\]\(([^)]+)\)$/;
-          // Expect raw only in format [TEXT](URL)
+          // Expect raw formatted only in [TEXT](URL)
           if (!pattern.test(token.raw)) {
             return token.href;
           }
