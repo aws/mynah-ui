@@ -39,7 +39,6 @@ import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
-import unescapeHTML from 'unescape-html';
 
 export { generateUID } from './helper/guid';
 export {
@@ -269,35 +268,17 @@ export class MynahUI {
     // Apply global fix for marked listitem content is not getting parsed.
     marked.use({
       renderer: {
-        listitem: (item: Tokens.ListItem) => `
-<li>
+        listitem: (item: Tokens.ListItem) => `<li>
 ${item.task ? `<input ${item.checked === true ? 'checked' : ''} disabled type="checkbox">` : ''}
 ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}
 </li>`,
-        link: (item) => {
-          // As an additional check, not linkify the pure text links, but keep the []() formatted links
-          let prot;
-          try {
-            prot = decodeURIComponent(unescapeHTML(item.href))
-              .replace(/[^\w:]/g, '')
-              .toLowerCase();
-          } catch (e) {
-            return '';
+        link: (token) => {
+          const pattern = /^\[([^\]]+)\]\(([^)]+)\)$/;
+          // Expect raw only in format [TEXT](URL)
+          if (!pattern.test(token.raw)) {
+            return token.href;
           }
-          if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-            return '';
-          }
-
-          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-          if (item.href === item.text && !!item.title) {
-            return item.href;
-          }
-          let out = '<a href="' + item.href + '"';
-          if (item.title != null) {
-            out += ' title="' + item.title + '"';
-          }
-          out += '>' + item.text + '</a>';
-          return out;
+          return `<a href="${token.href}" target="_blank" title="${token.title ?? token.text}">${token.text}</a>`;
         }
       },
     });
