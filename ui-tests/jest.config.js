@@ -13,6 +13,9 @@ module.exports = {
             launchOptions: {
                 headless: isHeadless,
             },
+            reporters: [
+                ['junit', { outputFile: 'test-results/junit/results.xml' }]
+            ],
         },
     },
     transform: { '^.+\\.ts?$': 'ts-jest' },
