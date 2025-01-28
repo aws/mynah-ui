@@ -670,7 +670,6 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    * @param answer ChatItem object.
    */
   public addChatItem = (tabId: string, chatItem: ChatItem): void => {
-    console.log(chatItem);
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ADD, { tabId, chatItem });
       MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
@@ -688,7 +687,6 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    * @param updateWith ChatItem object to update with.
    */
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
-    console.log(updateWith);
     if (MynahUITabsStore.getInstance().getTab(tabId) != null) {
       if (this.chatWrappers[tabId].getLastStreamingMessageId() != null) {
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
