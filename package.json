@@ -28,7 +28,7 @@
         "format:check": "npx prettier --check .",
         "format:write": "npx prettier --write .",
         "tests:unit": "jest",
-        "tests:e2e": "docker build -t mynahui-test-image . && docker run --name e2e-test-container mynahui-test-image",
+        "tests:e2e": "docker build -t flarechatui-e2e-image . && docker run --name flarechatui-e2e-container flarechatui-e2e-image",
         "tests:e2e:docker": "cd ./ui-tests && npm run e2e",
         "tests:e2e:trace": "cd ./ui-tests && npm run trace",
         "api-docs": "npx typedoc src/main.ts --out ./api-docs",
