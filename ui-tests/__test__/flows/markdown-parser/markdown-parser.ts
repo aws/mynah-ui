@@ -67,9 +67,9 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
   expect(await answerCard.evaluate(node => node.querySelector('ol > li:first-child > input[checked][disabled][type="checkbox"]'))).toBeDefined();
 
   // Anchors and IMG
-  expect(await answerCard.evaluate(node => node.querySelectorAll('a[href="https://github.com/aws/mynah-ui"]').length)).toBe(2);
+  // We're not expecting any link except [TEXT](URL) format, we should have only 1 link.
+  expect(await answerCard.evaluate(node => node.querySelectorAll('a[href="https://github.com/aws/mynah-ui"]').length)).toBe(1);
   expect(await answerCard.evaluate(node => node.querySelectorAll('a[href="https://github.com/aws/mynah-ui"]')[0]?.innerHTML)).toBe('mynah-ui');
-  expect(await answerCard.evaluate(node => node.querySelectorAll('a[href="https://github.com/aws/mynah-ui"]')[1]?.innerHTML)).toBe('https://github.com/aws/mynah-ui');
   expect(await answerCard.evaluate(node => node.querySelector('img[src="https://placehold.co/600x400"]'))).toBeDefined();
 
   // Table
