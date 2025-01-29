@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import { closeTab } from '../close-tab';
@@ -12,17 +12,17 @@ export const navigatePromptsToEmpty = async (page: Page, skipScreenshots?: boole
   await page.locator(`${getSelector(testIds.prompt.send)}`).click();
   await waitForAnimationEnd(page);
 
-  let promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  let promptInput = page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
-  promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  promptInput = page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 
   expect(await promptInput.inputValue()).toBe('');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

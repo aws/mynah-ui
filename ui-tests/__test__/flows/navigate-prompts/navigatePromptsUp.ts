@@ -1,5 +1,5 @@
 // navigatePromptsUp.ts
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import { closeTab } from '../close-tab';
@@ -13,13 +13,13 @@ export const navigatePromptsUp = async (page: Page, skipScreenshots?: boolean): 
   await page.locator(`${getSelector(testIds.prompt.send)}`).click();
   await waitForAnimationEnd(page);
 
-  const promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const promptInput = page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
   expect(await promptInput.inputValue()).toBe('This is the first user prompt');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

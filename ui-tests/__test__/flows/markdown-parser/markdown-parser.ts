@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import allMarkdown from './all-markdown-tags';
@@ -89,12 +89,12 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
     await page.mouse.move(markPosition?.top + 2, markPosition?.left + 2);
     await waitForAnimationEnd(page);
   }
-  await expect(await page.getByText('Hello Reference Tracker')).toBeDefined();
+  expect(page.getByText('Hello Reference Tracker')).toBeDefined();
   page.mouse.move(0, 0);
   await waitForAnimationEnd(page);
-  await expect(await page.getByText('Hello Reference Tracker').isHidden()).toBeTruthy();
+  expect(await page.getByText('Hello Reference Tracker').isHidden()).toBeTruthy();
 
   if (skipScreenshots !== true) {
-    await expect(await answerCard.screenshot()).toMatchImageSnapshot();
+    expect(await answerCard.screenshot()).toMatchSnapshot();
   }
 };

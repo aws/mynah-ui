@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 import { closeTab } from './close-tab';
@@ -27,7 +27,7 @@ export const progressIndicator = async (page: Page): Promise<void> => {
   await waitForAnimationEnd(page);
 
   // snap
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchSnapshot();
 
   // Remove the progress indicator
   await page.evaluate(() => {

@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import { closeTab } from '../close-tab';
@@ -16,7 +16,7 @@ export const navigatePromptsDown = async (page: Page, skipScreenshots?: boolean)
   await page.locator(`${getSelector(testIds.prompt.send)}`).click();
   await waitForAnimationEnd(page);
 
-  let promptInput = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  let promptInput = page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
@@ -30,6 +30,6 @@ export const navigatePromptsDown = async (page: Page, skipScreenshots?: boolean)
   expect(await promptInput.inputValue()).toBe('This is the second user prompt');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

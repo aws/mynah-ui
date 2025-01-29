@@ -1,9 +1,9 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
 import { getSelector } from '../helpers';
 
 export const closeTab = async (page: Page, withDblClick?: boolean, skipScreenshots?: boolean): Promise<void> => {
-  const firstTab = await page.locator(`${getSelector(testIds.tabBar.tabOptionWrapper)}:nth-child(1)`);
+  const firstTab = page.locator(`${getSelector(testIds.tabBar.tabOptionWrapper)}:nth-child(1)`);
   expect(firstTab).toBeDefined();
 
   if (withDblClick !== true) {
@@ -15,6 +15,6 @@ export const closeTab = async (page: Page, withDblClick?: boolean, skipScreensho
 
   if (skipScreenshots !== true) {
     // No tabs snap
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

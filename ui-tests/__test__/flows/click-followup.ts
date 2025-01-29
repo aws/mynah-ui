@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
@@ -14,6 +14,6 @@ export const clickToFollowup = async (page: Page, skipScreenshots?: boolean): Pr
 
   if (skipScreenshots !== true) {
     const chatItemsContainer = await page.waitForSelector(`${getSelector(testIds.chat.chatItemsContainer)}`);
-    expect(await chatItemsContainer.screenshot()).toMatchImageSnapshot();
+    expect(await chatItemsContainer.screenshot()).toMatchSnapshot();
   }
 };

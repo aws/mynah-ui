@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
 import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, waitForAnimationEnd } from '../helpers';
 import { clickToFollowup } from './click-followup';
@@ -21,7 +21,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 
   // Snap
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchSnapshot();
 
   // Scroll to top to the init message
   await (await page.waitForSelector(`${getSelector(testIds.chatItem.type.answer)}[messageid="welcome-message"]`)).scrollIntoViewIfNeeded();
@@ -43,7 +43,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 
   // Snap
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchSnapshot();
 
   // Set viewport size to
   await page.setViewportSize({
@@ -64,5 +64,5 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 
   // Snap
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchSnapshot();
 };

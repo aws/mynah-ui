@@ -1,10 +1,10 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
 export const filterQuickPicks = async (page: Page, mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
   // Clear the input
-  const input = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const input = page.locator(`${getSelector(testIds.prompt.input)}`);
   await input.clear();
   await waitForAnimationEnd(page);
 
@@ -14,12 +14,12 @@ export const filterQuickPicks = async (page: Page, mode?: 'command' | 'context',
   await waitForAnimationEnd(page);
 
   // Check that the command selector is opened, and visible
-  const commandSelector = await page.locator(`${getSelector(testIds.prompt.quickPicksWrapper)}`).nth(-1);
+  const commandSelector = page.locator(`${getSelector(testIds.prompt.quickPicksWrapper)}`).nth(-1);
   expect(commandSelector).toBeDefined();
   expect(await commandSelector.isVisible()).toBeTruthy();
 
   // Check that there is only one suggestion
-  const quickPickItem = await page.locator(`${getSelector(testIds.prompt.quickPickItem)}`);
+  const quickPickItem = page.locator(`${getSelector(testIds.prompt.quickPickItem)}`);
   expect(await quickPickItem.count()).toBe(1);
 
   // Check that the suggestions are what we expect from the first character
@@ -28,6 +28,6 @@ export const filterQuickPicks = async (page: Page, mode?: 'command' | 'context',
   expect(innerTexts[0]).not.toContain(mode === 'context' ? '@file' : '/clear');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

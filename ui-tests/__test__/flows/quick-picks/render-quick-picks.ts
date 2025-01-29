@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import { closeTab } from '../close-tab';
@@ -9,7 +9,7 @@ export const renderQuickPicks = async (page: Page, mode?: 'command' | 'context',
   await openNewTab(page, false, true);
 
   // Clear the input
-  const input = await page.locator(`${getSelector(testIds.prompt.input)}`);
+  const input = page.locator(`${getSelector(testIds.prompt.input)}`);
   await input.clear();
   await waitForAnimationEnd(page);
 
@@ -18,11 +18,11 @@ export const renderQuickPicks = async (page: Page, mode?: 'command' | 'context',
   await waitForAnimationEnd(page);
 
   // Check that the command selector is opened, and visible
-  const commandSelector = await page.locator(`${getSelector(testIds.prompt.quickPicksWrapper)}`).nth(-1);
+  const commandSelector = page.locator(`${getSelector(testIds.prompt.quickPicksWrapper)}`).nth(-1);
   expect(commandSelector).toBeDefined();
   expect(await commandSelector.isVisible()).toBeTruthy();
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };
