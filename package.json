@@ -30,7 +30,7 @@
         "docker:build": "docker build -t flarechatui-e2e-image .",
         "docker:run": "npm run docker:clean || true && docker run --name flarechatui-e2e-container flarechatui-e2e-image",
         "docker:internal": "cd ./ui-tests && npm run e2e",
-        "docker:inspect": "docker export $(docker ps -a -q -f name=flarechatui-e2e-container) | tar -xvf - app/ui-tests/__test__/__image_snapshots__ app/ui-tests/test-results && mv app/ui-tests ./e2e-results",
+        "docker:inspect": "docker export $(docker ps -a -q -f name=flarechatui-e2e-container) | tar -xvf - app/ui-tests/__test__/__image_snapshots__ app/ui-tests/__test__/__reports__ && mv app/ui-tests/__test__ ./e2e-results",
         "docker:clean": "docker rm -f flarechatui-e2e-container",
         "tests:unit": "jest",
         "tests:e2e": "npm run docker:build && npm run docker:run",

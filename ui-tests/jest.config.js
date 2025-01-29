@@ -6,20 +6,24 @@ module.exports = {
     preset: 'jest-playwright-preset',
     testEnvironmentOptions: {
         'jest-playwright': {
-            use: {
-                trace: 'retain-on-failure',
-            },
             browsers: ['webkit', 'chromium'],
             launchOptions: {
                 headless: isHeadless,
             },
-            reporters: [
-                ['junit', { outputFile: 'test-results/junit/results.xml' }]
-            ],
         },
     },
     transform: { '^.+\\.ts?$': 'ts-jest' },
     testMatch: ['**/?(*.)+(spec|test).[t]s'],
     testPathIgnorePatterns: ['/node_modules/', 'dist', 'src'],
     testTimeout: 15000,
+    reporters: [
+        'default',
+        [
+            'jest-junit',
+            {
+                outputDirectory: './__test__/__reports__',
+                outputName: 'junit.xml',
+            },
+        ],
+    ],
 };
