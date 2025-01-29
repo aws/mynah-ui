@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, isVisible } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 import { closeTab } from './close-tab';
@@ -25,6 +25,6 @@ export const renderCharacterCount = async (page: Page, skipScreenshots?: boolean
   expect(await characterCounter.innerText()).toBe('3500/4000');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

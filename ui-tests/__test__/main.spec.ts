@@ -1,13 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference types="jest-playwright-preset" />
+import { test } from '@playwright/test';
 import path from 'path';
 import { initRender } from './flows/init-render';
 import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
 import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
-import { DEFAULT_VIEWPORT, justWait } from './helpers';
-import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
+import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { renderQuickPicks } from './flows/quick-picks/render-quick-picks';
 import { closeQuickPicks } from './flows/quick-picks/close-quick-picks';
 import { filterQuickPicks } from './flows/quick-picks/filter-quick-picks';
@@ -48,253 +46,233 @@ import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navi
 import { renderHeaders } from './flows/headers';
 import { renderAndDismissCard } from './flows/dismissible-cards';
 
-describe('Open MynahUI', () => {
-  beforeEach(async () => {
-    await page.setViewportSize(DEFAULT_VIEWPORT);
-  });
-
-  beforeAll(async () => {
-    const browserName = browser.browserType().name();
-    const toMatchImageSnapshot = configureToMatchImageSnapshot({
-      failureThreshold: 0.03,
-      allowSizeMismatch: true,
-      failureThresholdType: 'percent',
-      storeReceivedOnFailure: true,
-      customSnapshotsDir: `./__test__/__image_snapshots__/${String(browserName)}`
-    });
-
-    expect.extend({ toMatchImageSnapshot });
+test.describe('Open MynahUI', () => {
+  test.beforeEach(async ({ page }) => {
     const htmlFilePath: string = path.join(__dirname, '../dist/index.html');
     const fileUrl = `file://${htmlFilePath}`;
-    await page.setViewportSize(DEFAULT_VIEWPORT);
     await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
   });
 
-  afterAll(async () => {
-    await browser.close();
-  });
-
-  it('should render initial data', async () => {
+  test('should render initial data', async ({ page }) => {
     await initRender(page);
   });
 
-  it('should render welcome structure', async () => {
+  test.only('should render welcome structure', async ({ page }) => {
     await welcomeMode(page);
   });
 
-  it('should show prompt options', async () => {
+  test('should show prompt options', async () => {
     await promptOptions(page);
   });
 
-  it('should show progress indicator', async () => {
+  test('should show progress indicator', async () => {
     await progressIndicator(page);
   });
 
-  it('should render user prompt', async () => {
+  test('should render user prompt', async ({ page }) => {
     await renderUserPrompt(page);
   });
 
-  it('should render new card when followup click', async () => {
+  test('should render new card when followup click', async ({ page }) => {
     await clickToFollowup(page);
   });
 
-  describe('Tabs', () => {
-    it('should close the tab', async () => {
+  test.describe('Tabs', () => {
+    test('should close the tab', async ({ page }) => {
       await closeTab(page);
     });
 
-    it('should open a new the tab', async () => {
+    test('should open a new the tab', async ({ page }) => {
       await openNewTab(page);
     });
 
-    it('should close the tab with middle click', async () => {
+    test('should close the tab with middle click', async ({ page }) => {
       await closeTab(page, true, true);
     });
 
-    it('should open a new tab with double click', async () => {
+    test('should open a new tab with double click', async ({ page }) => {
       await openNewTab(page, true, true);
     });
   });
 
-  it('should render character limit counter', async () => {
+  test('should render character limit counter', async ({ page }) => {
     await renderCharacterCount(page);
   });
 
-  it('should render information cards correctly', async () => {
+  test('should render information cards correctly', async ({ page }) => {
     await renderInformationCard(page);
   });
 
-  it('should render tabbed cards correctly', async () => {
+  test('should render tabbed cards correctly', async ({ page }) => {
     await renderTabbedCard(page);
   });
 
-  describe('Quick command selector', () => {
-    it('should render the quick command selector', async () => {
+  test.describe('Quick command selector', () => {
+    test('should render the quick command selector', async ({ page }) => {
       await renderQuickPicks(page);
     });
-    it('should close the quick command selector by clicking outside', async () => {
+    test('should close the quick command selector by clicking outside', async ({ page }) => {
       await closeQuickPicks(page, 'blur');
     });
-    it('should close the quick command selector by pressing escape', async () => {
+    test('should close the quick command selector by pressing escape', async ({ page }) => {
       await closeQuickPicks(page, 'escape');
     });
-    it('should filter quick command selector list', async () => {
+    test('should filter quick command selector list', async ({ page }) => {
       await filterQuickPicks(page);
     });
-    it('should select quick command selector item by clicking', async () => {
+    test('should select quick command selector item by clicking', async ({ page }) => {
       await selectQuickPicks(page, 'click');
     });
-    it('should select quick command selector item with tab', async () => {
+    test('should select quick command selector item with tab', async ({ page }) => {
       await selectQuickPicks(page, 'Tab');
     });
-    it('should select quick command selector item with space', async () => {
+    test('should select quick command selector item with space', async ({ page }) => {
       await selectQuickPicks(page, 'Space');
     });
-    it('should select quick command selector item with enter', async () => {
+    test('should select quick command selector item with enter', async ({ page }) => {
       await selectQuickPicks(page, 'Enter');
     });
   });
 
-  describe('Context selector', () => {
-    it('should render the context selector', async () => {
+  test.describe('Context selector', () => {
+    test('should render the context selector', async ({ page }) => {
       await renderQuickPicks(page, 'context');
     });
-    it('should close the context selector by clicking outside', async () => {
+    test('should close the context selector by clicking outside', async ({ page }) => {
       await closeQuickPicks(page, 'blur', 'context');
     });
-    it('should close the context selector by pressing escape', async () => {
+    test('should close the context selector by pressing escape', async ({ page }) => {
       await closeQuickPicks(page, 'escape', 'context');
     });
-    it('should filter context selector list', async () => {
+    test('should filter context selector list', async ({ page }) => {
       await filterQuickPicks(page, 'context');
     });
-    it('should select context selector item by clicking', async () => {
+    test('should select context selector item by clicking', async ({ page }) => {
       await selectQuickPicks(page, 'click', 'context');
     });
-    it('should select context selector item with tab', async () => {
+    test('should select context selector item with tab', async ({ page }) => {
       await selectQuickPicks(page, 'Tab', 'context');
     });
-    it('should select context selector item with space', async () => {
+    test('should select context selector item with space', async ({ page }) => {
       await selectQuickPicks(page, 'Space', 'context');
     });
-    it('should select context selector item with enter', async () => {
+    test('should select context selector item with enter', async ({ page }) => {
       await selectQuickPicks(page, 'Enter', 'context');
     });
   });
 
-  describe('File tree', () => {
-    it('should show file tree', async () => {
+  test.describe('File tree', () => {
+    test('should show file tree', async ({ page }) => {
       await showFileTree(page);
     });
 
-    it('should collapse and expand file in folders', async () => {
+    test('should collapse and expand file in folders', async ({ page }) => {
       await collapseExpandFileTree(page);
     });
 
-    it('should show tooltip with file description on hover', async () => {
+    test('should show tooltip with file description on hover', async ({ page }) => {
       await showFileTooltip(page);
     });
 
-    it('should trigger default or sub action on click', async () => {
+    test('should trigger default or sub action on click', async ({ page }) => {
       await triggerFileActions(page);
     });
 
-    it('should render file appearance based on its details', async () => {
+    test('should render file appearance based on its details', async ({ page }) => {
       await renderFileDetails(page);
     });
   });
 
-  it('should show link preview in tooltip on link hover', async () => {
+  test('should show link preview in tooltip on link hover', async ({ page }) => {
     await hoverOverLink(page);
   });
 
-  it('should render buttons on cards correctly', async () => {
+  test('should render buttons on cards correctly', async ({ page }) => {
     await renderButtons(page);
   });
 
-  it('should render (custom) icons correctly', async () => {
+  test('should render (custom) icons correctly', async () => {
     await renderIcons(page);
   });
 
-  it('should render muted cards correctly', async () => {
+  test('should render muted cards correctly', async () => {
     await renderMutedCards(page);
   });
 
-  it('should render card headers correctly', async () => {
+  test('should render card headers correctly', async () => {
     await renderHeaders(page);
   });
 
-  it('should render and remove dismissible cards', async () => {
+  test('should render and remove dismissible cards', async () => {
     await renderAndDismissCard(page);
   });
 
-  describe('Forms', () => {
-    it('should render form elements correctly', async () => {
+  test.describe('Forms', () => {
+    test('should render form elements correctly', async ({ page }) => {
       await renderFormElements(page);
     });
-    it('should disable forms on submit', async () => {
+    test('should disable forms on submit', async ({ page }) => {
       await disableForm(page);
     });
-    it('should remove form card when canceled', async () => {
+    test('should remove form card when canceled', async ({ page }) => {
       await removeForm(page);
     });
   });
 
-  it('should keep the content inside window boundaries', async () => {
+  test('should keep the content inside window boundaries', async ({ page }) => {
     await checkContentInsideWindowBoundaries(page);
   });
 
-  it('should parse markdown', async () => {
+  test('should parse markdown', async ({ page }) => {
     await parseMarkdown(page);
   });
 
-  describe('Prompt navigation', () => {
-    it('should navigate up to previous prompt', async () => {
+  test.describe('Prompt navigation', () => {
+    test('should navigate up to previous prompt', async ({ page }) => {
       await navigatePromptsUp(page);
     });
-    it('should navigate down to next prompt', async () => {
+    test('should navigate down to next prompt', async ({ page }) => {
       await navigatePromptsDown(page);
-    },
-    25000);
-    it('should navigate down to current empty prompt', async () => {
+    });
+    test('should navigate down to current empty prompt', async ({ page }) => {
       await navigatePromptsToEmpty(page);
     });
 
-    it.skip('should navigate up/down only if on first/last line', async () => {
+    test.skip('should navigate up/down only if on first/last line', async () => {
       await navigatePromptsFirstLastLineCheck(page);
     });
 
-    it('should stay on current prompt', async () => {
+    test('should stay on current prompt', async () => {
       await stayOnCurrentPrompt(page);
     });
 
-    it.skip('should navigate back to current prompt', async () => {
+    test.skip('should navigate back to current prompt', async () => {
       await navigateBackToCurrentPrompt(page);
     });
 
-    it('should navigate back to current prompt with code attachment', async () => {
+    test('should navigate back to current prompt with code attachment', async () => {
       await navigateBackToCurrentPromptWithCodeAttachment(page);
-    }, 25000);
+    });
   });
 
-  describe('Feedback form', () => {
-    it('should render vote buttons', async () => {
+  test.describe('Feedback form', () => {
+    test('should render vote buttons', async () => {
       await renderVoteButtons(page);
     });
-    it('should render upvote results', async () => {
+    test('should render upvote results', async () => {
       await renderUpvoteResult(page);
     });
-    it('should render downvote results', async () => {
+    test('should render downvote results', async () => {
       await renderDownvoteResult(page);
     });
-    it('should render feedback form', async () => {
+    test('should render feedback form', async () => {
       await renderFeedbackForm(page);
     });
-    it('should cancel feedback form', async () => {
+    test('should cancel feedback form', async () => {
       await justWait(200);
       await cancelFeedbackForm(page);
     });
-    it('should submit feedback form', async () => {
+    test('should submit feedback form', async () => {
       await justWait(200);
       await submitFeedbackForm(page);
     });

@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
@@ -28,7 +28,7 @@ export const closeQuickPicks = async (page: Page, method: 'blur' | 'escape', mod
   expect(await input.innerText()).toBe(mode === 'context' ? '@' : method === 'blur' ? '/' : '');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 
   if (mode === 'context') {

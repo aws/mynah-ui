@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 import { closeTab } from './close-tab';
@@ -40,7 +40,7 @@ clamato nescisse.`,
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 
   const linkWrapperLocator = page.locator(getSelector(testIds.chatItem.relatedLinks.linkWrapper));
@@ -49,7 +49,7 @@ clamato nescisse.`,
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlay)).count()).toEqual(1);
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlayCard)).count()).toEqual(1);
@@ -58,7 +58,7 @@ clamato nescisse.`,
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlay)).count()).toEqual(0);
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlayCard)).count()).toEqual(0);

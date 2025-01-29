@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
@@ -9,5 +9,5 @@ export const initRender = async (page: Page): Promise<void> => {
 
   expect(welcomeCard).toBeDefined();
 
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchSnapshot();
 };

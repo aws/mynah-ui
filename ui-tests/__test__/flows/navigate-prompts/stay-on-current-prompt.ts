@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import { closeTab } from '../close-tab';
@@ -12,16 +12,17 @@ export const stayOnCurrentPrompt = async (page: Page, skipScreenshots?: boolean)
   await page.locator(getSelector(testIds.prompt.input)).fill('This is the first unsent user prompt');
   await waitForAnimationEnd(page);
 
-  const promptInput = page.locator(`${getSelector(testIds.prompt.input)}`);
+  let promptInput = page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
+  promptInput = page.locator(`${getSelector(testIds.prompt.input)}`);
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 
   expect(await promptInput.innerText()).toBe('This is the first unsent user prompt');
 
   if (skipScreenshots !== true) {
-    expect(await promptInput.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };
