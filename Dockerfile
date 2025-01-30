@@ -8,9 +8,9 @@ WORKDIR /app
 COPY . .
 
 # Install dependencies and build MynahUI
-RUN npm ci
+RUN npm install
 RUN npm run build
-RUN cd ./ui-tests && npm ci && npm run prepare
+RUN cd ./ui-tests && npm install && npm run prepare
 
 # Default command to run the tests
 CMD ["npm", "run", "docker:internal"]
