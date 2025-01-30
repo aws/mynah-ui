@@ -11,3 +11,4 @@ package-lock.json
 .gitcommit
 .vscode
 __reports__/
+e2e-results/

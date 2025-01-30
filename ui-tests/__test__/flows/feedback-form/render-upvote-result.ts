@@ -1,9 +1,9 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
 export const renderUpvoteResult = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await page.evaluate((body) => {
+  await page.evaluate(() => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
       window.mynahUI.updateStore(selectedTabId, {
@@ -26,6 +26,6 @@ export const renderUpvoteResult = async (page: Page, skipScreenshots?: boolean):
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

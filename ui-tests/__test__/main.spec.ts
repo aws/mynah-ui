@@ -5,7 +5,6 @@ import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
 import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
-import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { renderQuickPicks } from './flows/quick-picks/render-quick-picks';
 import { closeQuickPicks } from './flows/quick-picks/close-quick-picks';
 import { filterQuickPicks } from './flows/quick-picks/filter-quick-picks';
@@ -61,11 +60,11 @@ test.describe('Open MynahUI', () => {
     await welcomeMode(page);
   });
 
-  test('should show prompt options', async () => {
+  test('should show prompt options', async ({ page }) => {
     await promptOptions(page);
   });
 
-  test('should show progress indicator', async () => {
+  test('should show progress indicator', async ({ page }) => {
     await progressIndicator(page);
   });
 
@@ -191,19 +190,19 @@ test.describe('Open MynahUI', () => {
     await renderButtons(page);
   });
 
-  test('should render (custom) icons correctly', async () => {
+  test('should render (custom) icons correctly', async ({ page }) => {
     await renderIcons(page);
   });
 
-  test('should render muted cards correctly', async () => {
+  test('should render muted cards correctly', async ({ page }) => {
     await renderMutedCards(page);
   });
 
-  test('should render card headers correctly', async () => {
+  test('should render card headers correctly', async ({ page }) => {
     await renderHeaders(page);
   });
 
-  test('should render and remove dismissible cards', async () => {
+  test('should render and remove dismissible cards', async ({ page }) => {
     await renderAndDismissCard(page);
   });
 
@@ -237,43 +236,40 @@ test.describe('Open MynahUI', () => {
     test('should navigate down to current empty prompt', async ({ page }) => {
       await navigatePromptsToEmpty(page);
     });
-
-    test.skip('should navigate up/down only if on first/last line', async () => {
+    test('should navigate up/down only if on first/last line', async ({ page }) => {
       await navigatePromptsFirstLastLineCheck(page);
     });
 
-    test('should stay on current prompt', async () => {
+    test('should stay on current prompt', async ({ page }) => {
       await stayOnCurrentPrompt(page);
     });
 
-    test.skip('should navigate back to current prompt', async () => {
+    test('should navigate back to current prompt', async ({ page }) => {
       await navigateBackToCurrentPrompt(page);
     });
 
-    test('should navigate back to current prompt with code attachment', async () => {
+    test('should navigate back to current prompt with code attachment', async ({ page }) => {
       await navigateBackToCurrentPromptWithCodeAttachment(page);
     });
   });
 
   test.describe('Feedback form', () => {
-    test('should render vote buttons', async () => {
+    test('should render vote buttons', async ({ page }) => {
       await renderVoteButtons(page);
     });
-    test('should render upvote results', async () => {
+    test('should render upvote results', async ({ page }) => {
       await renderUpvoteResult(page);
     });
-    test('should render downvote results', async () => {
+    test('should render downvote results', async ({ page }) => {
       await renderDownvoteResult(page);
     });
-    test('should render feedback form', async () => {
+    test('should render feedback form', async ({ page }) => {
       await renderFeedbackForm(page);
     });
-    test('should cancel feedback form', async () => {
-      await justWait(200);
+    test('should cancel feedback form', async ({ page }) => {
       await cancelFeedbackForm(page);
     });
-    test('should submit feedback form', async () => {
-      await justWait(200);
+    test('should submit feedback form', async ({ page }) => {
       await submitFeedbackForm(page);
     });
   });

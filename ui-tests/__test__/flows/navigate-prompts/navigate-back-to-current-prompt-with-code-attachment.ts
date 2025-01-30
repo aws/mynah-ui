@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, justWait, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import { closeTab } from '../close-tab';
@@ -44,6 +44,6 @@ export const navigateBackToCurrentPromptWithCodeAttachment = async (page: Page, 
 
   if (skipScreenshots !== true) {
     const wrapper = page.locator(getSelector(testIds.prompt.wrapper));
-    expect(await wrapper.screenshot()).toMatchImageSnapshot();
+    expect(await wrapper.screenshot()).toMatchSnapshot();
   }
 };

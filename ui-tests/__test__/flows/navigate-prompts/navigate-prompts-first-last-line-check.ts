@@ -1,13 +1,8 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, justWait, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
-import { closeTab } from '../close-tab';
-import { openNewTab } from '../open-new-tab';
 
 export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
   const firstPrompt = 'This is the first user prompt';
   const secondPrompt = 'This is the second user prompt.\nIt spans two separate lines.';
 
