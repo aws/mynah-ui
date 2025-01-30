@@ -8,8 +8,8 @@ export default defineConfig({
   testMatch: [ '**/?(*.)+(spec|test).[t]s' ],
   testIgnore: [ '/node_modules/', 'dist', 'src' ],
   timeout: 15000,
-  snapshotDir: './__test__/__screenshots__',
-  outputDir: './__test__/__reports__',
+  snapshotDir: './__results__/__snapshots__',
+  outputDir: './__results__/__reports__',
   snapshotPathTemplate: '{snapshotDir}{/projectName}/{testName}/{arg}{ext}',
   use: {
     headless: isHeadless,
@@ -31,6 +31,6 @@ export default defineConfig({
   ],
   reporter: [
     [ 'list' ],
-    [ 'junit', { outputFile: './__test__/__reports__/junit.xml' } ],
+    [ 'junit', { outputFile: './__results__/__reports__/junit.xml' } ],
   ],
 });
