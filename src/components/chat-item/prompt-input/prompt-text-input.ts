@@ -9,6 +9,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { Card } from '../../card/card';
 import { CardBody } from '../../card/card-body';
 import testIds from '../../../helper/test-ids';
+import { generateUID } from '../../../main';
 
 export interface PromptTextInputProps {
   tabId: string;
@@ -143,7 +144,7 @@ export class PromptTextInput {
   private readonly updatePromptTextInputSizer = (placeHolder?: {
     index?: number;
     text?: string;
-  }): void => {
+  }, addCursor?: boolean): void => {
     if (this.promptInputOverlay !== null) {
       this.promptInputOverlay.close();
       this.promptInputOverlay = null;
@@ -153,7 +154,14 @@ export class PromptTextInput {
     } else {
       this.render.addClass('no-text');
     }
-    let visualisationValue = escapeHTML(this.promptTextInput.value);
+    let currentValue = this.promptTextInput.value;
+    const cursorId = generateUID();
+
+    // Injecting a temporary cursor item to find the location of it
+    if (addCursor === true) {
+      currentValue = `${this.promptTextInput.value.substring(0, this.getCursorPos())}[CURSOR_${cursorId}]${this.promptTextInput.value.substring(this.getCursorPos())}`;
+    }
+    let visualisationValue = escapeHTML(currentValue);
     if (this.props.contextReplacement === true) {
       visualisationValue = `${visualisationValue.replace(/@\S*/gi, (match) => {
         if ((this.props.contextItems == null) || !this.props.contextItems.includes(match)) {
@@ -161,6 +169,11 @@ export class PromptTextInput {
         }
         return `<span class="context">${match}</span>`;
       })}&nbsp`;
+    }
+
+    // Add cursor html element to find the position of it
+    if (addCursor === true) {
+      visualisationValue = visualisationValue.replace(`[CURSOR_${cursorId}]`, '<span class="cursor"></span>');
     }
     // HTML br element, which gives a new line, will not work without a content if it is placed at the end of the parent node
     // If it doesn't take effect, first new line step won't work with shift+enter
@@ -294,5 +307,21 @@ export class PromptTextInput {
 
   public readonly updateContextItems = (contextItems: string[]): void => {
     this.props.contextItems = contextItems;
+  };
+
+  public readonly getCursorLine = (): {cursorLine: number; totalLines: number} => {
+    const lineHeight = parseFloat(window.getComputedStyle(this.promptTextInputSizer, null).getPropertyValue('line-height'));
+    const totalLines = Math.floor(this.promptTextInputSizer.scrollHeight / lineHeight);
+    let cursorLine = -1;
+    this.updatePromptTextInputSizer(undefined, true);
+    const cursorElm = this.promptTextInputSizer.querySelector('span.cursor');
+    if (cursorElm != null) {
+      // find the cursor line position depending on line height
+      cursorLine = Math.floor(((cursorElm as HTMLSpanElement).offsetTop + ((cursorElm as HTMLSpanElement).offsetHeight)) / lineHeight);
+    }
+    return {
+      cursorLine,
+      totalLines
+    };
   };
 }

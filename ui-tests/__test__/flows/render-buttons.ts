@@ -90,7 +90,7 @@ export const renderButtons = async (page: Page, skipScreenshots?: boolean): Prom
     expect(await locator1.screenshot()).toMatchSnapshot();
   }
 
-  const locator2 = await page.locator(answerCardSelector).nth(1);
+  const locator2 = page.locator(answerCardSelector).nth(1);
   await locator2.scrollIntoViewIfNeeded();
   if (skipScreenshots !== true) {
     expect(await locator2.screenshot()).toMatchSnapshot();

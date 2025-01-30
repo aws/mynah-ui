@@ -296,7 +296,7 @@ export class ChatPromptInput {
         this.sendPrompt();
       } else if (
         (this.selectedCommand === '' && e.key === KeyMap.SLASH && this.promptTextInput.getTextInputValue() === '') ||
-        (e.key === KeyMap.AT)
+        (e.key === KeyMap.AT && this.promptTextInput.promptTextInputMaxLength > 0)
       ) {
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
         this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;
@@ -331,28 +331,25 @@ export class ChatPromptInput {
           };
         }
 
-        this.clearTextArea();
-
         if (this.userPromptHistoryIndex === -1) {
           this.userPromptHistoryIndex = this.userPromptHistory.length;
         }
 
-        if (e.key === KeyMap.ARROW_UP) {
+        const cursorLine = this.promptTextInput.getCursorLine();
+        if (e.key === KeyMap.ARROW_UP && cursorLine.cursorLine <= 1) {
+          // Check if the cursor is on the first line or not
           this.userPromptHistoryIndex = Math.max(0, this.userPromptHistoryIndex - 1);
-        } else if (e.key === KeyMap.ARROW_DOWN) {
+        } else if (e.key === KeyMap.ARROW_DOWN && cursorLine.cursorLine >= cursorLine.totalLines) {
+          // Check if the cursor is on the last line or not
           this.userPromptHistoryIndex = Math.min(this.userPromptHistory.length, this.userPromptHistoryIndex + 1);
         }
 
         let codeAttachment = '';
         if (this.userPromptHistoryIndex === this.userPromptHistory.length) {
-          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-            promptInputText: this.lastUnsentUserPrompt.inputText ?? '',
-          });
+          this.promptTextInput.updateTextInputValue(this.lastUnsentUserPrompt.inputText ?? '');
           codeAttachment = this.lastUnsentUserPrompt.codeAttachment ?? '';
         } else {
-          MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
-            promptInputText: this.userPromptHistory[this.userPromptHistoryIndex].inputText,
-          });
+          this.promptTextInput.updateTextInputValue(this.userPromptHistory[this.userPromptHistoryIndex].inputText);
           codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment ?? '';
         }
         codeAttachment = codeAttachment.trim();
@@ -370,7 +367,9 @@ export class ChatPromptInput {
               .replace(/```$/, '')
               .trim();
           }
-          this.addAttachment(codeAttachment, 'code');
+          this.promptAttachment.updateAttachment(codeAttachment, 'code');
+        } else {
+          this.promptAttachment.clear();
         }
       }
     } else {
@@ -401,7 +400,7 @@ export class ChatPromptInput {
               this.handleContextCommandSelection(commandToSend);
             } else {
               // Otherwise pass the given text by user
-              const command = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0] ?? '';
+              const command = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
               this.handleContextCommandSelection({ command });
             }
           } else {
@@ -468,7 +467,7 @@ export class ChatPromptInput {
               [ ...this.quickPickItemGroups ].forEach((quickPickGroup: QuickActionCommandGroup) => {
                 const newQuickPickCommandGroup = { ...quickPickGroup };
                 try {
-                  const searchTerm = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0];
+                  const searchTerm = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
                   const promptRegex = new RegExp(searchTerm ?? '', 'gi');
                   newQuickPickCommandGroup.commands = newQuickPickCommandGroup.commands.filter(command =>
                     command.command.match(promptRegex)

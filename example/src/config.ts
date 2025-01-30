@@ -64,6 +64,11 @@ export const QuickActionCommands:QuickActionCommandGroup[] = [
         description: 'ChatItem card with a complex markdown list inside.',
       },
       {
+        command: Commands.VOTE,
+        icon: MynahIcons.THUMBS_UP,
+        description: 'ChatItem card which can be voted',
+      },
+      {
         command: Commands.CARD_WITH_ALL_MARKDOWN_TAGS,
         icon: MynahIcons.HELP,
         description: 'ChatItem card with a markdown file with all markdown tags',

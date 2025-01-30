@@ -36,7 +36,7 @@ export const renderInformationCard = async (page: Page, skipScreenshots?: boolea
   });
   await waitForAnimationEnd(page);
 
-  const answerCardSelector = `${getSelector(testIds.chatItem.type.answer)}`;
+  const answerCardSelector = getSelector(testIds.chatItem.type.answer);
   const answerCard = await page.waitForSelector(answerCardSelector);
   await answerCard.scrollIntoViewIfNeeded();
 

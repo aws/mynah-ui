@@ -17,9 +17,9 @@ import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
 import { renderButtons } from './flows/render-buttons';
-import { navigatePromptsDown } from './flows/navigate-prompts/navigatePromptsDown';
-import { navigatePromptsUp } from './flows/navigate-prompts/navigatePromptsUp';
-import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigatePromptsToEmpty';
+import { navigatePromptsDown } from './flows/navigate-prompts/navigate-prompts-down';
+import { navigatePromptsUp } from './flows/navigate-prompts/navigate-prompts-up';
+import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigate-prompts-to-empty';
 import { hoverOverLink } from './flows/link-hover-preview';
 import { showFileTree } from './flows/file-tree/show-file-tree';
 import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
@@ -29,6 +29,16 @@ import { renderFileDetails } from './flows/file-tree/render-file-details';
 import { renderFormElements } from './flows/form/render-form-elements';
 import { disableForm } from './flows/form/disable-form';
 import { removeForm } from './flows/form/remove-form';
+import { renderVoteButtons } from './flows/feedback-form/render-vote-buttons';
+import { renderUpvoteResult } from './flows/feedback-form/render-upvote-result';
+import { renderDownvoteResult } from './flows/feedback-form/render-downvote-result';
+import { renderFeedbackForm } from './flows/feedback-form/render-feedback-form';
+import { cancelFeedbackForm } from './flows/feedback-form/cancel-feedback-form';
+import { submitFeedbackForm } from './flows/feedback-form/submit-feedback-form';
+import { stayOnCurrentPrompt } from './flows/navigate-prompts/stay-on-current-prompt';
+import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
+import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
+import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 
 test.describe('Open MynahUI', () => {
   test.beforeEach(async ({ page }) => {
@@ -200,6 +210,42 @@ test.describe('Open MynahUI', () => {
     });
     test('should navigate down to current empty prompt', async ({ page }) => {
       await navigatePromptsToEmpty(page);
+    });
+    it('should navigate up/down only if on first/last line', async () => {
+      await navigatePromptsFirstLastLineCheck(page);
+    });
+
+    it('should stay on current prompt', async () => {
+      await stayOnCurrentPrompt(page);
+    });
+
+    it('should navigate back to current prompt', async () => {
+      await navigateBackToCurrentPrompt(page);
+    });
+
+    it('should navigate back to current prompt with code attachment', async () => {
+      await navigateBackToCurrentPromptWithCodeAttachment(page);
+    });
+  });
+
+  describe('Feedback form', () => {
+    it('should render vote buttons', async () => {
+      await renderVoteButtons(page);
+    });
+    it('should render upvote results', async () => {
+      await renderUpvoteResult(page);
+    });
+    it('should render downvote results', async () => {
+      await renderDownvoteResult(page);
+    });
+    it('should render feedback form', async () => {
+      await renderFeedbackForm(page);
+    });
+    it('should cancel feedback form', async () => {
+      await cancelFeedbackForm(page);
+    });
+    it('should submit feedback form', async () => {
+      await submitFeedbackForm(page);
     });
   });
 });
