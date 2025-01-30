@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import { closeTab } from '../close-tab';
@@ -22,6 +22,6 @@ export const stayOnCurrentPrompt = async (page: Page, skipScreenshots?: boolean)
   expect(await promptInput.inputValue()).toBe('This is the first unsent user prompt');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

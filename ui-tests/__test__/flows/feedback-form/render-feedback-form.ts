@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
@@ -41,6 +41,6 @@ export const renderFeedbackForm = async (page: Page, skipScreenshots?: boolean):
   expect(cancelButton).toBeDefined();
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

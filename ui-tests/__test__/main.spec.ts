@@ -211,40 +211,40 @@ test.describe('Open MynahUI', () => {
     test('should navigate down to current empty prompt', async ({ page }) => {
       await navigatePromptsToEmpty(page);
     });
-    it('should navigate up/down only if on first/last line', async () => {
+    test('should navigate up/down only if on first/last line', async ({ page }) => {
       await navigatePromptsFirstLastLineCheck(page);
     });
 
-    it('should stay on current prompt', async () => {
+    test('should stay on current prompt', async ({ page }) => {
       await stayOnCurrentPrompt(page);
     });
 
-    it('should navigate back to current prompt', async () => {
+    test('should navigate back to current prompt', async ({ page }) => {
       await navigateBackToCurrentPrompt(page);
     });
 
-    it('should navigate back to current prompt with code attachment', async () => {
+    test('should navigate back to current prompt with code attachment', async ({ page }) => {
       await navigateBackToCurrentPromptWithCodeAttachment(page);
     });
   });
 
-  describe('Feedback form', () => {
-    it('should render vote buttons', async () => {
+  test.describe('Feedback form', () => {
+    test('should render vote buttons', async ({ page }) => {
       await renderVoteButtons(page);
     });
-    it('should render upvote results', async () => {
+    test('should render upvote results', async ({ page }) => {
       await renderUpvoteResult(page);
     });
-    it('should render downvote results', async () => {
+    test('should render downvote results', async ({ page }) => {
       await renderDownvoteResult(page);
     });
-    it('should render feedback form', async () => {
+    test('should render feedback form', async ({ page }) => {
       await renderFeedbackForm(page);
     });
-    it('should cancel feedback form', async () => {
+    test('should cancel feedback form', async ({ page }) => {
       await cancelFeedbackForm(page);
     });
-    it('should submit feedback form', async () => {
+    test('should submit feedback form', async ({ page }) => {
       await submitFeedbackForm(page);
     });
   });
