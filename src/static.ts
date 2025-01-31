@@ -152,6 +152,7 @@ export enum MynahEventNames {
   CARD_VOTE = 'cardVote',
   SOURCE_LINK_CLICK = 'sourceLinkClick',
   INFO_LINK_CLICK = 'infoLinkClick',
+  FORM_LINK_CLICK = 'formLinkClick',
   LINK_CLICK = 'linkClick',
   CHAT_ITEM_ENGAGEMENT = 'chatItemEngagement',
   COPY_CODE_TO_CLIPBOARD = 'copyCodeToClipboard',
@@ -472,6 +473,7 @@ export type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, Code
 export interface ConfigTexts {
   mainTitle: string;
   feedbackFormTitle: string;
+  feedbackFormDescription: string;
   feedbackFormOptionsLabel: string;
   feedbackFormCommentLabel: string;
   feedbackThanks: string;

@@ -140,4 +140,10 @@
         gap: var(--mynah-sizing-1);
         box-sizing: border-box;
     }
+    > .mynah-feedback-form-description {
+        pointer-events: all;
+        &:empty {
+            display: none;
+        }
+    }
 }

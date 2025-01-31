@@ -55,6 +55,7 @@ const configDefaults: ConfigFullModel = {
     copy: 'Copy',
     insertAtCursorLabel: 'Insert at cursor',
     feedbackFormTitle: 'Report an issue',
+    feedbackFormDescription: '',
     feedbackFormOptionsLabel: 'What type of issue would you like to report?',
     feedbackFormCommentLabel: 'Description of issue (optional):',
     feedbackThanks: 'Thanks!',
