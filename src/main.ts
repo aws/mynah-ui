@@ -214,6 +214,10 @@ export interface MynahUIProps {
     link: string,
     mouseEvent?: MouseEvent,
     eventId?: string) => void;
+  onFormLinkClick?: (
+    link: string,
+    mouseEvent?: MouseEvent,
+    eventId?: string) => void;
   onSendFeedback?: (
     tabId: string,
     feedbackPayload: FeedbackPayload,
@@ -575,6 +579,15 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         this.props.onLinkClick(
           MynahUITabsStore.getInstance().getSelectedTabId(),
           data.messageId,
+          data.link,
+          data.event,
+          this.getUserEventId()
+        );
+      }
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_LINK_CLICK, (data) => {
+      if (this.props.onFormLinkClick !== undefined) {
+        this.props.onFormLinkClick(
           data.link,
           data.event,
           this.getUserEventId()

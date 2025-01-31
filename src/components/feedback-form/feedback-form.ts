@@ -14,6 +14,7 @@ import { Select } from '../form-items/select';
 import { CustomFormWrapper } from './custom-form';
 import '../../styles/components/_feedback-form.scss';
 import testIds from '../../helper/test-ids';
+import { CardBody } from '../card/card-body';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;
@@ -116,7 +117,13 @@ export class FeedbackForm {
     this.feedbackFormContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-feedback-form' ],
-      events: { click: cancelEvent },
+      events: {
+        click: (e) => {
+          if (e.target != null && !(e.target as HTMLElement).classList.contains('mynah-ui-clickable-item')) {
+            cancelEvent(e);
+          }
+        }
+      },
       children: [
         {
           type: 'div',
@@ -136,6 +143,22 @@ export class FeedbackForm {
               icon: new Icon({ icon: MynahIcons.CANCEL }).render
             }).render
           ]
+        },
+        {
+          type: 'div',
+          classNames: [ 'mynah-feedback-form-description' ],
+          testId: testIds.feedbackForm.description,
+          children: [ Config.getInstance().config.texts.feedbackFormDescription !== ''
+            ? new CardBody({
+              body: Config.getInstance().config.texts.feedbackFormDescription,
+              onLinkClick: (link, event) => {
+                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_LINK_CLICK, {
+                  link,
+                  event,
+                });
+              },
+            }).render
+            : '' ]
         },
         this.feedbackOptionsWrapper.render,
         {
