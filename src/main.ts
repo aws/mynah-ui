@@ -277,7 +277,7 @@ ${item.task ? `<input ${item.checked === true ? 'checked' : ''} disabled type="c
 ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}
 </li>`,
         link: (token) => {
-          const pattern = /^\[([^\]]+)\]\(([^)]+)\)$/;
+          const pattern = /^\[(?:\[([^\]]+)\]|([^\]]+))\]\(([^)]+)\)$/;
           // Expect raw formatted only in [TEXT](URL)
           if (!pattern.test(token.raw)) {
             return token.href;
