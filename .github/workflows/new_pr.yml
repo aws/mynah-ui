@@ -1,4 +1,4 @@
-name: Check Lint, Tests and Build
+name: E2E Testing
 on:
   pull_request:
     branches: [main, feature/*, fix/*]
@@ -7,7 +7,7 @@ jobs:
   notify:
     if: github.event.pull_request.draft == false
     name: Slack notification
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Post message
         uses: slackapi/slack-github-action@v1.25.0
@@ -21,22 +21,64 @@ jobs:
               "link": ${{ toJson(github.event.pull_request.html_url) }},
               "repository": "FlareChatUI" 
             }
-  build:
-    runs-on: macos-latest
+  e2e:
+    # Prevents the workflow running from snapshot updates committed by the bot
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-            fetch-depth: 20
-      - uses: actions/setup-node@v4
+      # Checkout the PR branch
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Set up Node
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
-      - name: Install
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Run Unit tests
-        run: npm run tests:unit
-      - name: Run Lint
+
+      # Run the linter
+      - name: Run linter
         run: npm run lint
+
+      # Build and run Docker image
+      - name: Build and run E2E tests Docker Image
+        run: npm run tests:e2e
+        continue-on-error: true
+
+      # Extract test results from Docker container
+      - name: Extract test results from Docker container
+        if: ${{ !failure() }}
+        run: npm run docker:inspect:override
+          
+      # Upload an artifact of all the results
+      - name: Upload E2E results
+        uses: actions/upload-artifact@v4
+        if: ${{ !failure() }}
+        with:
+          name: snapshots
+          path: ./ui-tests/__test__/__results__
+          retention-days: 30
+
+      # Replace branch content with snapshots produced by Docker
+      - name: Replace Snapshots in PR Branch
+        if: ${{ !failure() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ./ui-tests/__test__/__results__/__snapshots__
+          git commit -m "[Docker] Update E2E image snapshots"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Report test results using JUnit XML
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: ${{ !cancelled() }}
+        with:
+          name: E2E Tests
+          path: ./ui-tests/__test__/__results__/__reports__/junit.xml
+          reporter: junit
+          fail-on-error: false
