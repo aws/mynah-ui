@@ -2,6 +2,7 @@ name: E2E Testing
 on:
   pull_request:
     branches: [main]
+    types: [review_requested, ready_for_review]
 jobs:
   notify:
     name: Slack notification
