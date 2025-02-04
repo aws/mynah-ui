@@ -39,7 +39,7 @@ import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
-import { serializeMarkdown } from './helper/serialize-chat';
+import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 
 export { generateUID } from './helper/guid';
 export {
@@ -737,8 +737,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     if (fileType === 'markdown') {
       return serializeMarkdown(tabId);
     }
-    return '';
-    // return exportHtml(tabId);
+    return serializeHtml(tabId);
   };
 
   /**
