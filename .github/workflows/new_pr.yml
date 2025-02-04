@@ -5,9 +5,9 @@ on:
     types: [opened, reopened, ready_for_review, synchronize]
 jobs:
   notify:
+    if: !github.event.pull_request.draft
     name: Slack notification
     runs-on: [ubuntu-latest]
-    if: !github.event.pull_request.draft
     steps:
       - name: Post message
         uses: slackapi/slack-github-action@v1.25.0
