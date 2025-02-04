@@ -2,6 +2,7 @@ name: Check Lint, Tests and Build
 on:
   pull_request:
     branches: [main, feature/*, fix/*]
+    types: [review_requested, ready_for_review]
 jobs:
   notify:
     name: Slack notification
