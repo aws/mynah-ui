@@ -102,6 +102,7 @@ export default {
   feedbackForm: {
     wrapper: 'feedback-form-wrapper',
     title: 'feedback-form-title',
+    description: 'feedback-form-description',
     optionsSelectWrapper: 'feedback-form-options-select-wrapper',
     optionsSelect: 'feedback-form-options-select',
     comment: 'feedback-form-comment-text-area',

@@ -102,6 +102,10 @@ export interface MynahUIProps {
     link: string,
     mouseEvent?: MouseEvent,
     eventId?: string) => void;
+  onFormLinkClick?: (
+    link: string,
+    mouseEvent?: MouseEvent,
+    eventId?: string) => void;
   onInfoLinkClick?: (
     tabId: string,
     link: string,
@@ -741,6 +745,30 @@ onLinkClick?: (
       console.log(`link: ${link}`);
       // mouseEvent.preventDefault();
     };
+...
+```
+---
+
+### `onFormLinkClick`
+
+This event will be fired when user clicks a link inside the description field on feedback or custom forms. It will pass `link`, for the clicked link and the `mouseEvent` and the to check userIntent the `eventId`.
+
+**Note:** For example, JetBrains JCEF WebView opens the links in a new browser view of its own. However to prevent this action and navigate to user's own preferred browser to open the links, you may want to cancel the default behaviour and run your own function to open the OS default browser.
+
+
+<p align="center">
+  <img src="./img/onFormLinkClick.png" alt="onFormLinkClick" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onFormLinkClick?: (
+    link: string,
+    mouseEvent?: MouseEvent):void => {
+      console.log(`Sent from Form`);
+      console.log(`link: ${link}`);
+      // mouseEvent.preventDefault();
+    }
 ...
 ```
 ---

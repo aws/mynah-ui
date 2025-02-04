@@ -68,6 +68,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       maxTabsTooltipDuration: 5000,
       noMoreTabsTooltip: 'You can only open five conversation tabs at a time.',
       autoFocus: true,
+      texts: {
+        feedbackFormDescription: '_Feedback is anonymous. For issue updates, please contact us on [GitHub](https://github.com/aws/mynah-ui/issues)._'
+      },
       tabBarButtons: [
         {
           id: 'clear',
@@ -397,6 +400,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         Log(`Open diff viewer clicked`);
       }
       Log(`Link inside body clicked: <b>${link}</b>`);
+    },
+    onFormLinkClick: (link, mouseEvent) => {
+      Log(`Link inside form clicked: <b>${link}</b>`);
     },
     onSourceLinkClick: (tabId, messageId, link, mouseEvent) => {
       Log(`Link in sources clicked: <b>${link}</b>`);

@@ -12,6 +12,7 @@ interface ConfigModel {
     texts: {
         mainTitle?: string;
         feedbackFormTitle?: string;
+        feedbackFormDescription?: string;
         feedbackFormOptionsLabel?: string;
         feedbackFormCommentLabel?: string;
         feedbackThanks?: string;
@@ -124,7 +125,7 @@ Default tab title text if it is not set through store data for that tab.
 
 ---
 
-## feedbackFormTitle, feedbackFormOptionsLabel, feedbackFormCommentLabel, submit, cancel
+## feedbackFormTitle, feedbackFormDescription, feedbackFormOptionsLabel, feedbackFormCommentLabel, submit, cancel
 <p align="center">
   <img src="./img/texts/feedbackForm.png" alt="feedbackForm" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
