@@ -2,8 +2,10 @@ name: Check Lint, Tests and Build
 on:
   pull_request:
     branches: [main, feature/*, fix/*]
+    types: [opened, reopened, ready_for_review, synchronize]
 jobs:
   notify:
+    if: github.event.pull_request.draft == false
     name: Slack notification
     runs-on: [ubuntu-latest]
     steps:
