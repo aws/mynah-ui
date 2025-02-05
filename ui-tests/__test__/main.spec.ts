@@ -130,9 +130,21 @@ test.describe('Open MynahUI', () => {
     await checkContentInsideWindowBoundaries(page);
   });
 
-  // test('should parse markdown', async ({ page }) => {
-  //   await parseMarkdown(page);
-  // });
+  test('should parse markdown', async ({ page }) => {
+    await parseMarkdown(page);
+  });
+
+  test.describe('Forms', () => {
+    test('should render form elements correctly', async ({ page }) => {
+      await renderFormElements(page);
+    });
+    test('should disable forms on submit', async ({ page }) => {
+      await disableForm(page);
+    });
+    test('should remove form card when canceled', async ({ page }) => {
+      await removeForm(page);
+    });
+  });
 
   // test.describe('Tabs', () => {
   //   test('should close the tab', async ({ page }) => {
@@ -225,18 +237,6 @@ test.describe('Open MynahUI', () => {
 
   //   test('should render file appearance based on its details', async ({ page }) => {
   //     await renderFileDetails(page);
-  //   });
-  // });
-
-  // test.describe('Forms', () => {
-  //   test('should render form elements correctly', async ({ page }) => {
-  //     await renderFormElements(page);
-  //   });
-  //   test('should disable forms on submit', async ({ page }) => {
-  //     await disableForm(page);
-  //   });
-  //   test('should remove form card when canceled', async ({ page }) => {
-  //     await removeForm(page);
   //   });
   // });
 
