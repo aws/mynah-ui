@@ -13,7 +13,7 @@ export const closeQuickPicks = async (page: Page, method: 'blur' | 'escape', mod
   await waitForAnimationEnd(page);
 
   // Find the command selector
-  const commandSelector = await page.locator(getSelector(testIds.prompt.quickPicksWrapper)).nth(-1);
+  const commandSelector = page.locator(getSelector(testIds.prompt.quickPicksWrapper)).nth(-1);
   expect(commandSelector).toBeDefined();
   expect(await commandSelector.isVisible()).toBeTruthy();
 
