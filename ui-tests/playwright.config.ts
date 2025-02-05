@@ -11,6 +11,7 @@ export default defineConfig({
   snapshotDir: './__results__/__snapshots__',
   outputDir: './__results__/__reports__',
   snapshotPathTemplate: '{snapshotDir}{/projectName}/{testName}/{arg}{ext}',
+  fullyParallel: true,
   use: {
     headless: isHeadless,
     trace: 'retain-on-failure', // Capture trace only on failure
