@@ -24,7 +24,7 @@ export const serializeHtml = (tabId: string): string => {
   // Get all relevant styles from the document
   const styleSheets = Array.from(document.styleSheets);
   const relevantStyles = styleSheets
-    .filter(sheet => {
+    .map(sheet => {
       try {
         const rules = Array.from(sheet.cssRules);
         rules.forEach(rule => {
@@ -38,15 +38,8 @@ export const serializeHtml = (tabId: string): string => {
             }
           }
         });
-      } catch (e) {
-        console.warn('Could not read stylesheet rules', e);
-        return false;
-      }
-      return true;
-    })
-    .map(sheet => {
-      try {
-        return Array.from(sheet.cssRules)
+        rules.push();
+        return Array.from(rules)
           .map(rule => rule.cssText)
           .join('\n');
       } catch (e) {
@@ -64,7 +57,7 @@ export const serializeHtml = (tabId: string): string => {
         </style>
       </head>
       <body>
-      <div class="mynah-chat-wrapper">
+      <div class="mynah-chat-wrapper" style="max-width: 500px; overflow: scroll; margin: auto; border: 1px solid gray;">
         <div class="mynah-chat-items-container">${chatItemCardDivs ?? ''}</div>
         </div>
       </body>
