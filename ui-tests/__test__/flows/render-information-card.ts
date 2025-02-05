@@ -1,13 +1,8 @@
 import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
-import { openNewTab } from './open-new-tab';
-import { closeTab } from './close-tab';
 
 export const renderInformationCard = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
   await page.evaluate(() => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {

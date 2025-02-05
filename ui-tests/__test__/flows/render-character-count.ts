@@ -1,13 +1,8 @@
 import { expect, Page } from 'playwright/test';
 import { getSelector, isVisible } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
-import { closeTab } from './close-tab';
-import { openNewTab } from './open-new-tab';
 
 export const renderCharacterCount = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
   const characterCounter = page.locator(getSelector(testIds.prompt.remainingCharsIndicator));
   expect(characterCounter).toBeDefined();
 
