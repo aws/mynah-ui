@@ -17,30 +17,37 @@ export const serializeMarkdown = (tabId: string): string => {
  */
 export const serializeHtml = (tabId: string): string => {
   const chatItemCardDivs = MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.filter(chatItem => (chatItem.body != null) && chatItem.body.trim() !== '').map(chatItem => new ChatItemCard({
-    chatItem,
+    chatItem: {
+      type: chatItem.type,
+      body: chatItem.body,
+      messageId: chatItem.messageId,
+      status: chatItem.status,
+      icon: chatItem.icon,
+      snapToTop: chatItem.snapToTop,
+    },
     tabId,
-  }).render.outerHTML).join('\n');
+  }).render.outerHTML).reverse().join('\n');
 
   // Get all relevant styles from the document
   const styleSheets = Array.from(document.styleSheets);
   const relevantStyles = styleSheets
     .map(sheet => {
       try {
-        const rules = Array.from(sheet.cssRules);
-        rules.forEach(rule => {
-          if (rule instanceof CSSStyleRule) {
-            if (rule.selectorText === '.mynah-chat-wrapper') {
-              rule.style.display = 'block';
+        return Array.from(sheet.cssRules)
+          .map(rule => {
+            let ruleText = rule.cssText;
+
+            if (rule instanceof CSSStyleRule) {
+              if (rule.selectorText === '.mynah-chat-wrapper') {
+                ruleText = `.mynah-chat-wrapper { display: block !important; ${rule.style.cssText} }`;
+              }
+              if (rule.selectorText.includes('.mynah-chat-item-card')) {
+                ruleText = rule.cssText.replace('opacity: 0', 'opacity: 1').replace('transform: translate3d(0px, min(50%, 25vh), 0px) scale(0.95, 1.25)', 'transform: none');
+              }
             }
-            if (rule.selectorText.includes('.mynah-chat-item-card')) {
-              rule.style.opacity = '1';
-              rule.style.transform = 'none';
-            }
-          }
-        });
-        rules.push();
-        return Array.from(rules)
-          .map(rule => rule.cssText)
+
+            return ruleText;
+          })
           .join('\n');
       } catch (e) {
         console.warn('Could not read stylesheet rules', e);
@@ -53,7 +60,7 @@ export const serializeHtml = (tabId: string): string => {
     <html>
       <head>
         <style>
-        ${relevantStyles}
+          ${relevantStyles}
         </style>
       </head>
       <body>
