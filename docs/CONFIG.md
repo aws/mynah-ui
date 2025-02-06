@@ -47,6 +47,7 @@ interface ConfigModel {
     }>;
     tabBarButtons?: TabBarMainAction[]; // Tab bar buttons will be shown on the right of the tab
     maxUserInput: number; // max number of chars for the input field
+    persistConversations: boolean, // whether to save conversations, by default in localStorage
     userInputLengthWarningThreshold: number; // The amount of characters in the input field necessary for the character limit warning to show
     codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on code blocks system wide
     codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on code blocks system wide
@@ -312,6 +313,13 @@ Max number of chars user can insert into the prompt field. But, as might know yo
 **So beware that if you want 4000 chars exact, you need to give 4096 to the config.**
 
 default: `4096`
+
+---
+
+# `persistConversations`
+Whether data of tabs should be persisted so that it can be loaded later. If disabled, the `MynahUI.save()` function will have no effect. When enabled, the `MynahUI.save()` function will either save to localStorage by default under the `mynah-ui-storage` key, or use custom saving behavior defined with the `onSave()` callback.
+
+default: `false`
 
 ---
 

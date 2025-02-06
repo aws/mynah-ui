@@ -526,6 +526,7 @@ export interface ConfigOptions {
   showPromptField: boolean;
   autoFocus: boolean;
   maxUserInput: number;
+  persistConversations?: boolean;
   userInputLengthWarningThreshold: number;
   codeBlockActions?: CodeBlockActions;
   codeInsertToCursorEnabled?: boolean;

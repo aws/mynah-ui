@@ -820,6 +820,9 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    * If not, the default saving behavior of saving to localStorage will be enforced.
    */
   public save = (): void => {
+    if (!((this.props.config?.persistConversations) ?? false)) {
+      return;
+    }
     const tabs = this.getAllTabs();
     if (this.props.onSave !== undefined) {
       this.props.onSave(tabs);

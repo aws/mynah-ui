@@ -16,6 +16,7 @@ const configDefaults: ConfigFullModel = {
   maxTabs: 1000,
   userInputLengthWarningThreshold: 3500,
   maxUserInput: 4096,
+  persistConversations: false,
   showPromptField: true,
   autoFocus: true,
   tabBarButtons: [],
