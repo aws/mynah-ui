@@ -815,9 +815,18 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
 
+  /**
+   * Calls the onSave callback if it is defined.
+   * If not, the default saving behavior of saving to localStorage will be enforced.
+   */
   public save = (): void => {
     const tabs = this.getAllTabs();
-    this.props.onSave?.(tabs);
+    if (this.props.onSave !== undefined) {
+      this.props.onSave(tabs);
+    } else {
+      // By default, save to localStorage
+      localStorage.setItem('mynah-ui-storage', JSON.stringify(tabs));
+    }
   };
 
   /**

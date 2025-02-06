@@ -11,6 +11,7 @@ export interface MynahUIProps {
     messageId: string,
     eventId?: string) => void;
   onReady?: () => void;
+  onSave?: (tabsData: MynahUITabStoreModel) => void;
   onFocusStateChanged?: (focusState: boolean) => void;
   onVote?: (
     tabId: string,
@@ -306,13 +307,29 @@ onReady: () => {
 
 ### `onFocusStateChanged`
 
-This event will be fired whenever user targets to MynahUI or wents away.
+This event will be fired whenever user targets to MynahUI or went away.
 
 ```typescript
 ...
 onFocusStateChanged: (focusState: boolean) => {
       console.log(`MynahUI is ${focusState ? 'focused' : 'not focused'}.`);
     };
+...
+```
+
+---
+
+### `onSave`
+
+This callback should be defined to override the default saving behavior for conversation persistance.
+By default, calling `MynahUI.save()` will save the tabsData to localStorage with the `mynah-ui-storage` key, as demonstrated below.
+
+```typescript
+...
+onSave: (tabsData: MynahUITabStoreModel) => {
+      console.log('Saving MynahUI!');
+      localStorage.setItem('mynah-ui-storage', JSON.stringify(tabsData));
+    },
 ...
 ```
 
