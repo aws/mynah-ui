@@ -100,6 +100,7 @@ export interface MynahUIProps {
     messageId: string,
     eventId?: string) => void;
   onReady?: () => void;
+  onSave?: (tabsData: MynahUITabStoreModel) => void;
   onFocusStateChanged?: (focusState: boolean) => void;
   onVote?: (
     tabId: string,
@@ -420,7 +421,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   private readonly addGlobalListeners = (): void => {
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: {tabId: string; prompt: ChatPrompt}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: { tabId: string; prompt: ChatPrompt }) => {
       if (this.props.onChatPrompt !== undefined) {
         this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
       }
@@ -479,7 +480,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, (data: {messageId: string}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, (data: { messageId: string }) => {
       if (this.props.onShowMoreWebResultsClick !== undefined) {
         this.props.onShowMoreWebResultsClick(
           MynahUITabsStore.getInstance().getSelectedTabId(),
@@ -616,13 +617,13 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, (data: {tabId: string}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, (data: { tabId: string }) => {
       if (this.props.onResetStore !== undefined) {
         this.props.onResetStore(data.tabId);
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_FOCUS, (data: {focusState: boolean}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_FOCUS, (data: { focusState: boolean }) => {
       this.props.onFocusStateChanged?.(data.focusState);
     });
 
@@ -813,6 +814,11 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    * @returns string selectedTabId or undefined
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
+
+  public save = (): void => {
+    const tabs = this.getAllTabs();
+    this.props.onSave?.(tabs);
+  };
 
   /**
    * Toggles the visibility of the splash loader screen

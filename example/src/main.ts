@@ -12,6 +12,7 @@ import {
   ChatItem,
   MynahIcons,
   generateUID,
+  MynahUITabStoreModel,
 } from '@aws/mynah-ui';
 import { mynahUIDefaults } from './config';
 import { Log, LogClear } from './logger';
@@ -50,6 +51,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   const connector = new Connector();
   let streamingMessageId: string | null;
   let showChatAvatars: boolean = false;
+
+  const persistedData = localStorage.getItem('mynah-ui-storage')
 
   const mynahUI = new MynahUI({
     splashScreenInitialStatus: {
@@ -111,11 +114,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               icon: MynahIcons.CURSOR_INSERT,
               text: 'Insert code!',
             },
+            {
+              id: 'save',
+              icon: MynahIcons.ROCKET,
+              text: 'Save',
+            },
           ],
         },
       ],
     },
-    tabs: {
+    tabs: persistedData ? JSON.parse(persistedData) : {
       'tab-1': {
         isSelected: true,
         store: {
@@ -124,7 +132,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }
       },
     },
-    onFocusStateChanged: (focusState:boolean) => {
+    onSave: (tabsData: MynahUITabStoreModel) => {
+      Log('MynahUI save event triggered');
+      localStorage.setItem('mynah-ui-storage', JSON.stringify(tabsData))
+    },
+    onFocusStateChanged: (focusState: boolean) => {
       Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
     },
     onTabBarButtonClick: (tabId: string, buttonId: string) => {
@@ -170,6 +182,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           ...mynahUIDefaults.store,
           ...welcomeScreenTabData.store
         });
+      } else if (buttonId === 'save') {
+        mynahUI.save();
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
