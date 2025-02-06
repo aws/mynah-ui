@@ -323,6 +323,21 @@ default: `false`
 
 ---
 
+# `autoSave`
+Whether to run the `MynahUI.save()` function by default on a couple of predefined events:
+- Whenever a new tab is created
+- Whenever a tab is closed
+- Whenever a tab is selected
+- Whenever any chatItem is added to a chat
+
+This will ensure a very basic saving behavior, but is not optimized nor specialized for custom saving implementations. You can extend the default saving behavior by adding `mynahUI.save()` to specified event handlers in the `MynahUI` constructor.
+
+**Note: if `persistConversations` is set to false, `autoSave` naturally also does not have any effect.**
+
+default: `false`
+
+---
+
 ## `codeInsertToCursorEnabled` and `codeCopyToClipboardEnabled` (default: true)
 These two parameters allow you to make copy and insert buttons disabled system wide. If you want to disable it specifically for a message you can do it through `ChatItem` object. Please see [DATAMODEL Documentation](./DATAMODEL.md#codeinserttocursorenabled-and-codecopytoclipboardenabled-default-true).
 

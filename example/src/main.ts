@@ -69,6 +69,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     config: {
       maxTabs: 5,
       persistConversations: true,
+      autoSave: true,
       maxTabsTooltipDuration: 5000,
       noMoreTabsTooltip: 'You can only open five conversation tabs at a time.',
       autoFocus: true,
@@ -430,6 +431,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   setTimeout(()=>{
     mynahUI.toggleSplashLoader(false);
   }, 2750)
+
+  const onTest = () => {
+    mynahUI.save()
+  }
 
   const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {
     if (prompt.command !== undefined && prompt.command.trim() !== '') {

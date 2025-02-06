@@ -527,6 +527,7 @@ export interface ConfigOptions {
   autoFocus: boolean;
   maxUserInput: number;
   persistConversations?: boolean;
+  autoSave?: boolean;
   userInputLengthWarningThreshold: number;
   codeBlockActions?: CodeBlockActions;
   codeInsertToCursorEnabled?: boolean;

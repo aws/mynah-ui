@@ -341,6 +341,9 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           if (this.props.onTabChange !== undefined) {
             this.props.onTabChange(selectedTabId, this.getUserEventId());
           }
+          if ((this.props.config?.autoSave) ?? false) {
+            this.save();
+          }
         },
         maxTabsTooltipDuration: Config.getInstance().config.maxTabsTooltipDuration,
         noMoreTabsTooltip: Config.getInstance().config.noMoreTabsTooltip,
@@ -388,6 +391,9 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       if (this.props.onTabAdd !== undefined) {
         this.props.onTabAdd(tabId, this.getUserEventId());
       }
+      if ((this.props.config?.autoSave) ?? false) {
+        this.save();
+      }
     });
     MynahUITabsStore.getInstance().addListener('remove', (tabId: string) => {
       this.chatWrappers[tabId].render.remove();
@@ -395,6 +401,9 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       delete this.chatWrappers[tabId];
       if (this.props.onTabRemove !== undefined) {
         this.props.onTabRemove(tabId, this.getUserEventId());
+      }
+      if ((this.props.config?.autoSave) ?? false) {
+        this.save();
       }
     });
 
@@ -692,6 +701,10 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           chatItem
         ]
       });
+
+      if ((this.props.config?.autoSave) ?? false) {
+        this.save();
+      }
     }
   };
 
