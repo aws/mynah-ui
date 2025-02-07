@@ -8,6 +8,7 @@ import { Config } from './config';
 import { MynahUIGlobalEvents } from './events';
 import { generateUID } from './guid';
 import clone from 'just-clone';
+import { addRouteToCommandGroups } from './quick-pick-data-handler';
 
 const PrimitiveObjectTypes = [ 'string', 'number', 'boolean' ];
 export class EmptyMynahUIDataModel {
@@ -49,6 +50,9 @@ export class MynahUIDataStore {
 
   constructor (tabId: string, initialData?: MynahUIDataModel) {
     this.tabId = tabId;
+    if (initialData?.contextCommands != null) {
+      initialData.contextCommands = addRouteToCommandGroups(initialData.contextCommands, []);
+    }
     this.store = Object.assign(this.store, initialData);
     this.subscriptions = Object.create({});
     (Object.keys(this.store) as Array<keyof MynahUIDataModel>).forEach((storeKey) => {
@@ -124,6 +128,9 @@ export class MynahUIDataStore {
           }
         });
       });
+    }
+    if (data.contextCommands != null) {
+      data.contextCommands = addRouteToCommandGroups(data.contextCommands, []);
     }
     this.store = Object.assign(clone(this.store), data);
   };

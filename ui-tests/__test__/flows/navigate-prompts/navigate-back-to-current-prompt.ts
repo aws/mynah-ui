@@ -24,7 +24,7 @@ export const navigateBackToCurrentPrompt = async (page: Page, skipScreenshots?: 
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 
-  expect(await promptInput.inputValue()).toBe('This is the second unsent user prompt');
+  expect(await promptInput.innerText()).toBe('This is the second unsent user prompt');
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();

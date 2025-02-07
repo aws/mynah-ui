@@ -73,7 +73,7 @@
 
             > .mynah-chat-prompt-input-inner-wrapper {
                 display: block;
-                width: 100%;
+                flex: 1;
                 position: relative;
                 align-self: center;
                 overflow: hidden;
@@ -93,40 +93,33 @@
                     white-space: pre-wrap;
                     word-break: normal;
                     overflow-wrap: break-word;
+                    padding: 0 0 2px 2px;
+                    overflow-x: hidden;
+                    display: block;
+                    box-sizing: border-box;
+                    min-height: var(--mynah-line-height);
 
-                    &:placeholder-shown {
+                    &[disabled] {
+                        pointer-events: none;
+                    }
+
+                    &.empty {
                         text-overflow: ellipsis;
+                        &::before {
+                            content: attr(placeholder);
+                            pointer-events: none;
+                            text-overflow: ellipsis;
+                            position: absolute;
+                            z-index: 0;
+                            font-weight: inherit;
+                            font-size: inherit;
+                            color: var(--mynah-color-text-weak);
+                            max-width: 100%;
+                            white-space: nowrap;
+                            overflow: hidden;
+                        }
                     }
 
-                    &::placeholder {
-                        color: var(--mynah-color-text-weak);
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        overflow: hidden;
-                    }
-
-                    &:not(.mynah-chat-prompt-input-sizer) {
-                        position: absolute;
-                        height: auto;
-                        width: auto;
-                        top: 0;
-                        right: 0;
-                        bottom: 0;
-                        left: 0;
-                        padding: 0;
-                        z-index: 100;
-                    }
-                }
-
-                > .mynah-chat-prompt-input-sizer {
-                    display: inline-block;
-                    width: 100%;
-                    opacity: 1;
-                    pointer-events: none;
-                    overflow: auto;
-                    color: rgba(0, 0, 0, 0);
-                    position: relative;
-                    z-index: 150;
                     > span.cursor {
                         max-width: 0;
                         line-height: inherit;
@@ -140,15 +133,16 @@
                         white-space: nowrap;
                         overflow-wrap: break-word;
                         z-index: 1000;
+                        cursor: pointer;
                         &:before {
                             content: '';
                             position: absolute;
-                            left: -1px;
-                            right: -1px;
+                            left: -2px;
+                            right: -2px;
                             width: auto;
-                            height: 100%;
+                            height: calc(100% + 1px);
                             background-color: var(--mynah-color-button);
-                            border-radius: inherit;
+                            border-radius: var(--mynah-input-radius);
                             z-index: -1;
                         }
                     }

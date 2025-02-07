@@ -21,14 +21,23 @@ import {
 
 export interface QuickActionCommand {
   command: string;
+  label?: string;
   disabled?: boolean;
   icon?: MynahIcons;
   description?: string;
   placeholder?: string;
+  children?: QuickActionCommandGroup[];
+  route?: string[];
+}
+export interface QuickActionCommandInternal extends QuickActionCommand {
+  route?: string[];
 }
 export interface QuickActionCommandGroup {
   groupName?: string;
   commands: QuickActionCommand[];
+}
+export interface QuickActionCommandGroupInternal extends QuickActionCommandGroup {
+  commands: QuickActionCommandInternal[];
 }
 /**
  * data store model to update the mynah ui partially or fully
@@ -315,7 +324,7 @@ export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
-  context?: string[];
+  context?: string[] | string[][];
 }
 
 export interface ChatItemAction extends ChatPrompt {

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { Connector } from './connector';
+import { Connector, INITIAL_STREAM_DELAY } from './connector';
 import {
   MynahUI,
   MynahUIDataModel,
@@ -112,6 +112,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               text: 'Insert code!',
             },
             {
+              id: 'save-session',
+              icon: MynahIcons.DEPLOY,
+              text: 'Save session',
+            },
+            {
+              id: 'remove-saved-session',
+              icon: MynahIcons.REVERT,
+              text: 'Remove saved session',
+            },
+            {
               id: 'export-chat-md',
               icon: MynahIcons.EXTERNAL,
               text: 'Export chat (md)',
@@ -125,7 +135,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         },
       ],
     },
-    tabs: {
+    tabs: JSON.parse(localStorage.getItem('mynah-ui-storage') as string) ?? {
       'tab-1': {
         isSelected: true,
         store: {
@@ -175,6 +185,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+      } else if (buttonId === 'save-session') {
+        localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
+      } else if (buttonId === 'remove-saved-session') {
+        localStorage.removeItem('mynah-ui-storage');
+        window.location.reload();
       } else if (buttonId === 'new-welcome-screen') {
         mynahUI.updateStore('', {
           ...mynahUIDefaults.store,
@@ -271,7 +286,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>
-      context: <b>${(prompt.context??[]).join('</b>, <b>')}`);
+      context: <b>[${(prompt.context??[]).join(']</b>, <b>[')}]`);
       if (tabId === 'tab-1') {
         mynahUI.updateStore(tabId, {
           tabCloseConfirmationMessage: `Working on "${prompt.prompt}"`,
@@ -452,7 +467,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
 
   setTimeout(()=>{
     mynahUI.toggleSplashLoader(false);
-  }, 2750)
+  }, INITIAL_STREAM_DELAY)
 
   const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {
     if (prompt.command !== undefined && prompt.command.trim() !== '') {

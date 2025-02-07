@@ -27,7 +27,7 @@ export const closeQuickPicks = async (page: Page, method: 'blur' | 'escape', mod
 
   // Now the command selector should be closed, but the input should still remain intact
   expect(await commandSelector.isVisible()).toBeFalsy();
-  expect(await input.inputValue()).toBe(mode === 'context' ? '@' : method === 'blur' ? '/' : '');
+  expect(await input.innerText()).toBe(mode === 'context' ? '@' : method === 'blur' ? '/' : '');
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();

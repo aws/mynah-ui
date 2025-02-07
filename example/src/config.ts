@@ -153,30 +153,134 @@ export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
     quickActionCommands: QuickActionCommands,
     contextCommands: [
       {
-        groupName: 'Mention code',
         commands:[
           {
-            command: '@ws',
-            description: '(BETA) Reference all code in workspace.'
+            command: '@workspace',
+            icon: MynahIcons.ASTERISK,
+            placeholder: 'Yes, you selected workspace :P',
+            description: 'Reference all code in workspace.'
           },
           {
-            command: '@folder',
-            placeholder: 'mention a specific folder',
+            command: 'folder',
+            icon: MynahIcons.FOLDER,
+            children: [
+              {
+                groupName: 'Folders',
+                commands: [
+                  {
+                    command: 'src',
+                    icon: MynahIcons.FOLDER,
+                    children: [
+                      {
+                        groupName: 'src/',
+                        commands: [
+                          {
+                            command: 'index.ts',
+                            icon: MynahIcons.FILE,
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    command: 'main',
+                    description: './src/',
+                    icon: MynahIcons.FOLDER,
+                  },
+                  {
+                    command: 'components',
+                    description: './src/',
+                    icon: MynahIcons.FOLDER,
+                  },
+                  {
+                    command: 'helper',
+                    description: './src/',
+                    icon: MynahIcons.FOLDER,
+                  },
+                  {
+                    command: 'src',
+                    description: './example/',
+                    icon: MynahIcons.FOLDER,
+                  }
+                ]
+              }
+            ],
+            placeholder: 'Mention a specific folder',
             description: 'All files within a specific folder'
           },
           {
-            command: '@file',
-            placeholder: 'mention a specific file',
+            command: 'file',
+            icon: MynahIcons.FILE,
+            children: [
+              {
+                groupName: 'Files',
+                commands: [
+                  {
+                    command: 'main.ts',
+                    description: './src/',
+                    icon: MynahIcons.FILE,
+                  },
+                  {
+                    command: 'button.ts',
+                    description: './src/components/',
+                    icon: MynahIcons.FILE,
+                  },
+                  {
+                    command: 'dom.ts',
+                    description: './src/helper/',
+                    icon: MynahIcons.FILE,
+                  },
+                  {
+                    command: '_dark.scss',
+                    description: './src/styles/',
+                    icon: MynahIcons.FILE,
+                  }
+                ]
+              }
+            ],
+            placeholder: 'Mention a specific file',
             description: 'Reference a specific file'
+            
           },
           {
-            command: '@code',
-            placeholder: 'mention a specific file/folder, or leave blank for full project',
+            command: 'symbols',
+            icon: MynahIcons.CODE_BLOCK,
+            children: [
+              {
+                groupName: 'Symbols',
+                commands: [
+                  {
+                    command: 'DomBuilder',
+                    icon: MynahIcons.CODE_BLOCK,
+                    description: 'The DomGeneration function in dom.ts file'
+                  }
+                ]
+              }
+            ],
+            placeholder: 'Select a symbol',
             description: 'After that mention a specific file/folder, or leave blank for full project'
           },
           {
-            command: '@gitlab',
-            description: 'Ask about data in gitlab account'
+            command: 'prompts',
+            icon: MynahIcons.CURSOR_INSERT,
+            description: 'Saved prompts, to reuse them in your current prompt',
+            children: [
+              {
+                groupName: 'Prompts',
+                commands: [
+                  {
+                    command: 'python_expert',
+                    icon: MynahIcons.CURSOR_INSERT,
+                    description: 'Expert on python stuff'
+                  },
+                  {
+                    command: 'javascript_expert',
+                    icon: MynahIcons.CURSOR_INSERT,
+                    description: 'Expert on Javascript and typescript'
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

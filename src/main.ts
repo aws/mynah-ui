@@ -827,6 +827,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
 
+  public getTabData = (tabId: string): any => MynahUITabsStore.getInstance().getTabDataStore(tabId);
+
   /**
    * Toggles the visibility of the splash loader screen
    */
