@@ -287,7 +287,7 @@ export class PromptTextInput {
   };
 
   public readonly getTextInputValue = (): string => {
-    return this.promptTextInput.innerText.trim();
+    return (this.promptTextInput.innerText ?? '').trim();
   };
 
   public readonly updateTextInputValue = (value: string): void => {
