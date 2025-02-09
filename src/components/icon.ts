@@ -69,8 +69,10 @@ export enum MynahIcons {
   TRANSFORM = 'transform',
 }
 
+export type MynahIconsType = `${MynahIcons}`;
+
 export interface IconProps {
-  icon: MynahIcons;
+  icon: MynahIcons | MynahIconsType;
   classNames?: string[];
 }
 export class Icon {

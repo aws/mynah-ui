@@ -1,6 +1,6 @@
 import {
   ChatItemType,
-  MynahIcons,
+  MynahIcons
 } from '@aws/mynah-ui';
 import { defaultFollowUps } from './samples/sample-data';
 import { Commands } from './commands';
@@ -155,7 +155,7 @@ export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
       {
         commands:[
           {
-            command: '@workspace',
+            command: 'workspace',
             icon: MynahIcons.ASTERISK,
             placeholder: 'Yes, you selected workspace :P',
             description: 'Reference all code in workspace.'
@@ -262,20 +262,27 @@ export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
           },
           {
             command: 'prompts',
-            icon: MynahIcons.CURSOR_INSERT,
+            icon: MynahIcons.CHAT,
             description: 'Saved prompts, to reuse them in your current prompt',
             children: [
               {
                 groupName: 'Prompts',
+                actions: [
+                  {
+                    id: 'add-new-prompt',
+                    icon: 'plus',
+                    description: 'Add new prompt'
+                  }
+                ],
                 commands: [
                   {
                     command: 'python_expert',
-                    icon: MynahIcons.CURSOR_INSERT,
+                    icon: MynahIcons.CHAT,
                     description: 'Expert on python stuff'
                   },
                   {
                     command: 'javascript_expert',
-                    icon: MynahIcons.CURSOR_INSERT,
+                    icon: MynahIcons.CHAT,
                     description: 'Expert on Javascript and typescript'
                   }
                 ]

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MynahIcons } from './components/icon';
+import { MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
 import {
   SelectAbstract,
@@ -23,7 +23,7 @@ export interface QuickActionCommand {
   command: string;
   label?: string;
   disabled?: boolean;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   description?: string;
   placeholder?: string;
   children?: QuickActionCommandGroup[];
@@ -34,6 +34,7 @@ export interface QuickActionCommandInternal extends QuickActionCommand {
 }
 export interface QuickActionCommandGroup {
   groupName?: string;
+  actions?: Action[];
   commands: QuickActionCommand[];
 }
 export interface QuickActionCommandGroupInternal extends QuickActionCommandGroup {
@@ -170,6 +171,7 @@ export enum MynahEventNames {
   CHAT_ITEM_ADD = 'chatItemAdd',
   FOLLOW_UP_CLICKED = 'followUpClicked',
   BODY_ACTION_CLICKED = 'bodyActionClicked',
+  QUICK_COMMAND_GROUP_ACTION_CLICK = 'quickCommandGroupActionClicked',
   TABBED_CONTENT_SWITCH = 'tabbedContentSwitch',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
@@ -248,7 +250,7 @@ export interface ProgressField {
 
 export interface TreeNodeDetails {
   status?: Status;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   label?: string;
   description?: string;
   clickable?: boolean;
@@ -284,11 +286,11 @@ export interface ChatItemContent {
     title?: string;
     status?: {
       status?: Status;
-      icon?: MynahIcons;
+      icon?: MynahIcons | MynahIconsType;
       body?: string;
     };
     description?: string;
-    icon?: MynahIcons;
+    icon?: MynahIcons | MynahIconsType;
     content: ChatItemContent;
   } | null;
   tabbedContent?: Array<ToggleOption & {
@@ -302,7 +304,7 @@ export interface ChatItem extends ChatItemContent{
   messageId?: string;
   snapToTop?: boolean;
   canBeVoted?: boolean;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   hoverEffect?: boolean;
   status?: Status;
 }
@@ -333,30 +335,25 @@ export interface ChatItemAction extends ChatPrompt {
   disabled?: boolean;
   description?: string;
   status?: 'primary' | Status;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
 }
-export interface ChatItemButton {
+export interface ChatItemButton extends Omit<Action, 'status'> {
   keepCardAfterClick?: boolean;
   waitMandatoryFormItems?: boolean;
-  text: string;
-  id: string;
-  disabled?: boolean;
-  description?: string;
   status?: 'main' | 'primary' | 'clear' | Status;
   flash?: 'infinite' | 'once';
   fillState?: 'hover' | 'always';
-  icon?: MynahIcons;
   position?: 'inside' | 'outside';
 }
-
-export interface TabBarAction {
+export interface Action {
   text?: string;
   id: string;
   disabled?: boolean;
   description?: string;
   status?: Status;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
 }
+export interface TabBarAction extends Action {}
 
 export interface TabBarMainAction extends TabBarAction {
   items?: TabBarAction[];
@@ -368,7 +365,7 @@ export interface FileNodeAction {
   disabled?: boolean;
   description?: string;
   status?: Status;
-  icon: MynahIcons;
+  icon: MynahIcons | MynahIconsType;
 }
 
 export enum KeyMap {
@@ -463,7 +460,7 @@ export enum NotificationType {
 }
 
 export interface TabHeaderDetails {
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   title?: string;
   description?: string;
 }
@@ -472,7 +469,7 @@ export interface CodeBlockAction {
   id: 'copy' | 'insert-to-cursor' | string;
   label: string;
   description?: string;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   data?: any;
   flash?: 'infinite' | 'once';
   acceptedLanguages?: string[];

@@ -217,6 +217,17 @@ export class PromptTextInput {
     }
   };
 
+  private readonly moveCursorToEnd = (): void => {
+    const range = document.createRange();
+    range.selectNodeContents(this.promptTextInput);
+    range.collapse(false);
+    const selection = window.getSelection();
+    if (selection != null) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  };
+
   public readonly insertContextItem = (contextItem: QuickActionCommand, position: number): void => {
     const contextSpanElement = DomBuilder.getInstance().build({
       type: 'span',
@@ -279,6 +290,7 @@ export class PromptTextInput {
     if (Config.getInstance().config.autoFocus) {
       this.promptTextInput.focus();
     }
+    this.moveCursorToEnd();
   };
 
   public readonly blur = (): void => {

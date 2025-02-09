@@ -54,7 +54,8 @@ export {
   ToggleOption
 } from './components/toggle';
 export {
-  MynahIcons
+  MynahIcons,
+  MynahIconsType
 } from './components/icon';
 export {
   DomBuilder,
@@ -256,6 +257,13 @@ export interface MynahUIProps {
     tabId: string,
     buttonId: string,
     eventId?: string) => void;
+  onQuickCommandGroupActionClick?: (
+    tabId: string,
+    action: {
+      id: string;
+    },
+    eventId?: string) => void;
+
 }
 
 export class MynahUI {
@@ -453,6 +461,17 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           id: data.actionId,
           text: data.actionText,
           formItemValues: data.formItemValues
+        }, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, (data: {
+      tabId: string;
+      actionId: string;
+    }) => {
+      if (this.props.onQuickCommandGroupActionClick !== undefined) {
+        this.props.onQuickCommandGroupActionClick(data.tabId, {
+          id: data.actionId,
         }, this.getUserEventId());
       }
     });

@@ -31,6 +31,17 @@
             position: relative;
             border-radius: var(--mynah-input-radius);
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            > .mynah-card-body {
+                flex: 1;
+            }
+            > .mynah-chat-item-buttons-container > .mynah-button {
+                max-width: var(--mynah-sizing-6);
+                height: var(--mynah-sizing-6);
+                min-width: var(--mynah-sizing-6);
+                padding: var(--mynah-sizing-1);
+            }
         }
 
         & + .mynah-chat-command-selector-group {

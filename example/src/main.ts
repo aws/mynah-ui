@@ -400,6 +400,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       }
       `);
     },
+    onQuickCommandGroupActionClick: (tabId: string, action) => {
+      Log(`Quick command group action clicked in tab <b>${tabId}</b>:<br/>
+      Action Id: <b>${action.id}</b><br/>
+      `);
+    },
     onVote: (tabId: string, messageId: string, vote: RelevancyVoteType) => {
       Log(`Message <b>${messageId}</b> is <b>${vote}d</b>.`);
     },

@@ -19,6 +19,7 @@ import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
 import { Icon } from '../icon';
 import { filterQuickPickItems } from '../../helper/quick-pick-data-handler';
+import { ChatItemButtonsWrapper } from './chat-item-buttons';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -527,9 +528,26 @@ export class ChatPromptInput {
                   type: 'div',
                   testId: testIds.prompt.quickPicksGroupTitle,
                   classNames: [ 'mynah-chat-command-selector-group-title' ],
-                  children: [ new CardBody({
-                    body: quickPickGroup.groupName
-                  }).render ]
+                  children: [
+                    new CardBody({
+                      body: quickPickGroup.groupName
+                    }).render,
+                    new ChatItemButtonsWrapper({
+                      buttons: (quickPickGroup.actions ?? []).map(action => ({
+                        id: action.id,
+                        status: action.status,
+                        icon: action.icon,
+                        text: action.text,
+                        disabled: false
+                      })),
+                      onActionClick: (action, event) => {
+                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, {
+                          tabId: this.props.tabId,
+                          actionId: action.id
+                        });
+                      }
+                    }).render
+                  ]
                 }) ]
               : []),
             ...(quickPickGroup.commands.map(quickPickCommand => {
