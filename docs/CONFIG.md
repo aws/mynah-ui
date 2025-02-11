@@ -320,6 +320,9 @@ default: `4096`
 # `persistConversations`
 Whether data of tabs should be persisted so that it can be loaded later. If disabled, the `MynahUI.save()` function will have no effect. When enabled, the `MynahUI.save()` function will either save to localStorage by default under the `mynah-ui-storage` key, or use custom saving behavior defined with the `onSave()` callback.
 
+> [!NOTE]
+> Make sure to take into account how different IDE windows e.g. could conflict by saving to the same location, causing possibly unexpected saving behavior.
+
 default: `false`
 
 ---
