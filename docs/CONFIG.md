@@ -48,6 +48,7 @@ interface ConfigModel {
     tabBarButtons?: TabBarMainAction[]; // Tab bar buttons will be shown on the right of the tab
     maxUserInput: number; // max number of chars for the input field
     persistConversations: boolean, // whether to save conversations, by default in localStorage
+    autoSave: boolean, // whether to automatically trigger the save() function on tab creation / deletion / selection, and chatItem adding
     userInputLengthWarningThreshold: number; // The amount of characters in the input field necessary for the character limit warning to show
     codeInsertToCursorEnabled?: boolean; // show or hide copy buttons on code blocks system wide
     codeCopyToClipboardEnabled?: boolean; // show or hide insert to cursor buttons on code blocks system wide
