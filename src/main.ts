@@ -39,6 +39,7 @@ import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
+import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 
 export { generateUID } from './helper/guid';
 export {
@@ -739,6 +740,18 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, updateWith);
     }
+  };
+
+  /**
+   * Serialize all (non-empty) chat messages in a tab into a string
+   * @param tabId Corresponding tab ID.
+   * @param format Whether to serialize to markdown or HTML format
+   */
+  public serializeChat = (tabId: string, format: 'markdown' | 'html'): string => {
+    if (format === 'markdown') {
+      return serializeMarkdown(tabId);
+    }
+    return serializeHtml(tabId);
   };
 
   /**

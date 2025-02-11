@@ -121,6 +121,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               icon: MynahIcons.ROCKET,
               text: 'Save',
             },
+            {
+              id: 'export-chat-md',
+              icon: MynahIcons.EXTERNAL,
+              text: 'Export chat (md)',
+            },
+            {
+              id: 'export-chat-html',
+              icon: MynahIcons.EXTERNAL,
+              text: 'Export chat (html)',
+            },
           ],
         },
       ],
@@ -186,6 +196,34 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       } else if (buttonId === 'save') {
         mynahUI.save();
+      } else if (buttonId === 'export-chat-md') {
+        const serializedChat = mynahUI.serializeChat(tabId, 'markdown')
+        const blob = new Blob([serializedChat], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = 'exported-chat.md';
+        link.href = url;
+        link.click();
+
+        mynahUI.notify({
+          type: NotificationType.SUCCESS,
+          title: 'Chat exported',
+          content: 'The file will be downloaded.',
+        });
+      } else if (buttonId === 'export-chat-html') {
+        const serializedChat = mynahUI.serializeChat(tabId, 'html')
+        const blob = new Blob([serializedChat], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = 'exported-chat.html';
+        link.href = url;
+        link.click();
+
+        mynahUI.notify({
+          type: NotificationType.SUCCESS,
+          title: 'Chat exported',
+          content: 'The file will be downloaded.',
+        });
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
