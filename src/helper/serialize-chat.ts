@@ -44,6 +44,9 @@ export const serializeHtml = (tabId: string): string => {
               if (rule.selectorText.includes('.mynah-chat-item-card')) {
                 ruleText = rule.cssText.replace('opacity: 0', 'opacity: 1').replace('transform: translate3d(0px, min(50%, 25vh), 0px) scale(0.95, 1.25)', 'transform: none');
               }
+              if (rule.selectorText.includes('.mynah-syntax-highlighter-copy-buttons')) {
+                ruleText = rule.cssText.replace('display: flex', 'display: none');
+              }
             }
 
             return ruleText;
