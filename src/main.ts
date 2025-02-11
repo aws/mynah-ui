@@ -731,10 +731,10 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   /**
    * Serialize all (non-empty) chat messages in a tab into a string
    * @param tabId Corresponding tab ID.
-   * @param fileType Whether to serialize to markdown or HTML format
+   * @param format Whether to serialize to markdown or HTML format
    */
-  public serializeChat = (tabId: string, fileType: 'markdown' | 'html'): string => {
-    if (fileType === 'markdown') {
+  public serializeChat = (tabId: string, format: 'markdown' | 'html'): string => {
+    if (format === 'markdown') {
       return serializeMarkdown(tabId);
     }
     return serializeHtml(tabId);
