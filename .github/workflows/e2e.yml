@@ -24,7 +24,7 @@ jobs:
 
           # Build
           - name: Build
-            run: npm run build && cd ./ui-tests && npm run install && npm run build && cd ..
+            run: npm run build && cd ./ui-tests && npm install && npm run build && cd ..
 
             # Run the linter
           - name: Run linter
