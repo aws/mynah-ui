@@ -33,6 +33,7 @@ jobs:
           # Build and run Docker image
           - name: Build and run E2E tests Docker Image
             run: npm run tests:e2e
+            continue-on-error: true
     
           # Extract test results from Docker container
           - name: Extract test results from Docker container
