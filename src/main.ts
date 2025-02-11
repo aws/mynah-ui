@@ -39,6 +39,7 @@ import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
+import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 
 export { generateUID } from './helper/guid';
 export {
@@ -420,7 +421,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   private readonly addGlobalListeners = (): void => {
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: {tabId: string; prompt: ChatPrompt}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: { tabId: string; prompt: ChatPrompt }) => {
       if (this.props.onChatPrompt !== undefined) {
         this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
       }
@@ -479,7 +480,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, (data: {messageId: string}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, (data: { messageId: string }) => {
       if (this.props.onShowMoreWebResultsClick !== undefined) {
         this.props.onShowMoreWebResultsClick(
           MynahUITabsStore.getInstance().getSelectedTabId(),
@@ -616,13 +617,13 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, (data: {tabId: string}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, (data: { tabId: string }) => {
       if (this.props.onResetStore !== undefined) {
         this.props.onResetStore(data.tabId);
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_FOCUS, (data: {focusState: boolean}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_FOCUS, (data: { focusState: boolean }) => {
       this.props.onFocusStateChanged?.(data.focusState);
     });
 
@@ -725,6 +726,18 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
       this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, updateWith);
     }
+  };
+
+  /**
+   * Serialize all (non-empty) chat messages in a tab into a string
+   * @param tabId Corresponding tab ID.
+   * @param format Whether to serialize to markdown or HTML format
+   */
+  public serializeChat = (tabId: string, format: 'markdown' | 'html'): string => {
+    if (format === 'markdown') {
+      return serializeMarkdown(tabId);
+    }
+    return serializeHtml(tabId);
   };
 
   /**
