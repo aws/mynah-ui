@@ -64,7 +64,7 @@ export const serializeHtml = (tabId: string): string => {
         </style>
       </head>
       <body>
-      <div class="mynah-chat-wrapper" style="max-width: 500px; overflow: scroll; margin: auto; border: 1px solid gray;">
+      <div class="mynah-chat-wrapper" style="max-width: 600px; overflow-y: scroll; margin: auto; border: 1px solid gray;">
         <div class="mynah-chat-items-container">${chatItemCardDivs ?? ''}</div>
         </div>
       </body>
