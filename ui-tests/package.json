@@ -6,7 +6,7 @@
     "scripts": {
         "clean": "rm -rf build dist node_modules",
         "prepare": "webpack --config webpack.config.js --mode development",
-        "e2e": "npm run prepare && playwright test",
+        "e2e": "npm run prepare && playwright test --workers=6",
         "postinstall": "npx playwright install webkit chromium --with-deps",
         "trace": "npx playwright show-trace"
     },
