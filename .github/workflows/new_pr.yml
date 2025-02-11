@@ -56,7 +56,6 @@ jobs:
       # Upload an artifact of all the results
       - name: Upload E2E results
         uses: actions/upload-artifact@v4
-        if: ${{ !failure() }}
         with:
           name: snapshots
           path: ./ui-tests/__test__/__results__
