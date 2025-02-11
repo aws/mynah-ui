@@ -271,6 +271,7 @@ export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
                   {
                     id: 'add-new-prompt',
                     icon: 'plus',
+                    text: 'Add',
                     description: 'Add new prompt'
                   }
                 ],
