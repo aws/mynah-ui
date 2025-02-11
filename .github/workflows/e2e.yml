@@ -1,0 +1,66 @@
+name: Run E2E Tests
+on: workflow_call
+jobs:
+    e2e:
+        # Prevents the workflow running from snapshot updates committed by the bot
+        if: github.actor != 'github-actions[bot]'
+        runs-on: ubuntu-latest
+        steps:
+          # Checkout the PR branch
+          - name: Checkout Code
+            uses: actions/checkout@v4
+    
+          # Set up Node
+          - name: Set up Node
+            uses: actions/setup-node@v4
+            with:
+              node-version: '20.x'
+              registry-url: 'https://registry.npmjs.org'
+              scope: '@aws'
+    
+          # Install
+          - name: Install NPM packages
+            run: npm ci
+
+          # Run the linter
+          - name: Run linter
+            run: npm run lint
+    
+          # Build and run Docker image
+          - name: Build and run E2E tests Docker Image
+            run: npm run tests:e2e
+    
+          # Extract test results from Docker container
+          - name: Extract test results from Docker container
+            if: ${{ !failure() }}
+            run: npm run docker:inspect:override
+              
+          # Upload an artifact of all the results
+          - name: Upload E2E results
+            uses: actions/upload-artifact@v4
+            with:
+              name: snapshots
+              path: ./ui-tests/__test__/__results__
+              retention-days: 30
+    
+          # Replace branch content with snapshots produced by Docker
+          - name: Replace Snapshots in PR Branch
+            if: ${{ !failure() }}
+            run: |
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git add ./ui-tests/__test__/__results__/__snapshots__
+              git commit -m "[Docker] Update E2E image snapshots"
+              git push
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+          # Report test results using JUnit XML
+          - name: Publish Test Results
+            uses: dorny/test-reporter@v1
+            if: ${{ !cancelled() }}
+            with:
+              name: E2E Tests
+              path: ./ui-tests/__test__/__results__/__reports__/junit.xml
+              reporter: junit
+              fail-on-error: false
