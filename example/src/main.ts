@@ -470,10 +470,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     mynahUI.toggleSplashLoader(false);
   }, 2750)
 
-  const onTest = () => {
-    mynahUI.save()
-  }
-
   const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {
     if (prompt.command !== undefined && prompt.command.trim() !== '') {
       switch (prompt.command) {
