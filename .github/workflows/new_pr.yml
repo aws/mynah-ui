@@ -8,7 +8,6 @@ jobs:
     if: github.event.pull_request.draft == false
     name: Slack notification
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
     steps:
       - name: Post message
         uses: slackapi/slack-github-action@v1.25.0
