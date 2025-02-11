@@ -24,12 +24,12 @@ jobs:
 
           # Build
           - name: Build
-            run: npm run build
+            run: npm run build && cd ./ui-tests && npm run install && npm run build && cd ..
 
-          # Run the linter
+            # Run the linter
           - name: Run linter
             run: npm run lint
-    
+
           # Build and run Docker image
           - name: Build and run E2E tests Docker Image
             run: npm run tests:e2e
