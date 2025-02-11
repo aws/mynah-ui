@@ -1,48 +1,25 @@
-name: Check Lint, Tests and Build
+name: New PR created
 on:
   pull_request:
-    branches: [main, feature/*, fix/*]
+    branches: [main]
     types: [opened, reopened, ready_for_review, synchronize]
 jobs:
-  notify:
-    if: github.event.pull_request.draft == false
-    name: Slack notification
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Post message
-        uses: slackapi/slack-github-action@v1.25.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          payload: |
-            {
-              "title": ${{ toJson(github.event.pull_request.title) }},
-              "author": ${{ toJson(github.event.pull_request.user.login) }},
-              "link": ${{ toJson(github.event.pull_request.html_url) }},
-              "repository": "FlareChatUI" 
-            }
-  build:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-            fetch-depth: 20
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@aws'
-      - name: Install
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Run Unit and E2E tests
-        run: npm run tests:unit && npm run tests:e2e
-      - name: Run Lint
-        run: npm run lint
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: test-snapshots
-          path: ./ui-tests/__test__/__image_snapshots__
-          retention-days: 30
+  # notify:
+  #   if: github.event.pull_request.draft == false
+  #   name: Slack notification
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Post message
+  #       uses: slackapi/slack-github-action@v1.25.0
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #       with:
+  #         payload: |
+  #           {
+  #             "title": ${{ toJson(github.event.pull_request.title) }},
+  #             "author": ${{ toJson(github.event.pull_request.user.login) }},
+  #             "link": ${{ toJson(github.event.pull_request.html_url) }},
+  #             "repository": "FlareChatUI" 
+  #           }
+  e2e:
+    uses: ./.github/workflows/e2e.yml

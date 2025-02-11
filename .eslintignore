@@ -18,3 +18,5 @@ out
 LICENSE
 THIRD-PARTY-LICENSES
 NOTICE
+Dockerfile
+e2e-results
