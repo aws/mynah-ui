@@ -22,6 +22,10 @@ jobs:
           - name: Install NPM packages
             run: npm ci
 
+          # Build
+          - name: Build
+            run: npm run build
+
           # Run the linter
           - name: Run linter
             run: npm run lint
