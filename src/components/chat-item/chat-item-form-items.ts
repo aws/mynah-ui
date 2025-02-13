@@ -6,7 +6,8 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import testIds from '../../helper/test-ids';
-import { ChatItem, ChatItemFormItem } from '../../static';
+import { isMandatoryItemValid, isTextualFormItemValid } from '../../helper/validator';
+import { ChatItem, ChatItemFormItem, TextBasedFormItem } from '../../static';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
 import { Stars } from '../form-items/stars';
@@ -47,7 +48,7 @@ export class ChatItemFormItemsWrapper {
             ]
           });
           // Since the field is mandatory, default the selected value to the first option
-          if (chatItemOption.value === undefined) {
+          if (chatItemOption.type === 'select' && chatItemOption.value === undefined) {
             chatItemOption.value = chatItemOption.options?.[0]?.value;
           }
         }
@@ -81,6 +82,7 @@ export class ChatItemFormItemsWrapper {
               testId: testIds.chatItem.chatItemForm.itemTextArea,
               label,
               value,
+              validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
               ...(this.getValidationHandler(chatItemOption))
             });
@@ -90,6 +92,7 @@ export class ChatItemFormItemsWrapper {
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
               value,
+              validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
               ...(this.getValidationHandler(chatItemOption))
             });
@@ -99,6 +102,7 @@ export class ChatItemFormItemsWrapper {
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
               value,
+              validationPatterns: chatItemOption.validationPatterns,
               type: 'number',
               placeholder: chatItemOption.placeholder,
               ...(this.getValidationHandler(chatItemOption))
@@ -109,6 +113,7 @@ export class ChatItemFormItemsWrapper {
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
               value,
+              validationPatterns: chatItemOption.validationPatterns,
               type: 'email',
               placeholder: chatItemOption.placeholder,
               ...(this.getValidationHandler(chatItemOption))
@@ -138,16 +143,30 @@ export class ChatItemFormItemsWrapper {
   }
 
   private readonly getValidationHandler = (chatItemOption: ChatItemFormItem): Object => {
-    if (chatItemOption.mandatory === true) {
-      this.validationItems[chatItemOption.id] = chatItemOption.value !== undefined && chatItemOption.value !== '';
+    if (chatItemOption.mandatory === true ||
+      ([ 'textarea', 'textinput', 'numericinput', 'email' ].includes(chatItemOption.type) && (chatItemOption as TextBasedFormItem).validationPatterns != null)) {
+      // Set initial validation status
+      this.validationItems[chatItemOption.id] = this.isItemValid(chatItemOption.value ?? '', chatItemOption);
       return {
         onChange: (value: string | number) => {
-          this.validationItems[chatItemOption.id] = value !== undefined && value !== '';
+          this.validationItems[chatItemOption.id] = this.isItemValid(value.toString(), chatItemOption);
           this.isFormValid();
         }
       };
     }
     return {};
+  };
+
+  private readonly isItemValid = (value: string, chatItemOption: ChatItemFormItem): boolean => {
+    let validationState = true;
+    if (chatItemOption.mandatory === true) {
+      validationState = isMandatoryItemValid(value ?? '');
+    }
+    if (((chatItemOption.type === 'textarea' || chatItemOption.type === 'textinput') && chatItemOption.validationPatterns != null)) {
+      validationState = validationState && isTextualFormItemValid(value ?? '', chatItemOption.validationPatterns ?? { patterns: [] }).isValid;
+    }
+
+    return validationState;
   };
 
   isFormValid = (): boolean => {

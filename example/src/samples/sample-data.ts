@@ -571,7 +571,17 @@ _To send the form, mandatory items should be filled._`,
             id: 'name',
             type: 'textinput',
             mandatory: true,
-            title: `Name`,
+            title: `Name (should contain "amazonq" or "aws" in the string)`,
+            validationPatterns: {
+                operator: 'and',
+                patterns: [{
+                    pattern: 'amazonq',
+                    errorMessage: 'Should contain amazonq!'
+                },{
+                    pattern: 'aws',
+                    errorMessage: 'Should contain aws!'
+                }]
+            },
             placeholder: 'Name and Surname',
         },
         {
@@ -594,7 +604,16 @@ _To send the form, mandatory items should be filled._`,
         {
             id: 'description',
             type: 'textarea',
-            title: `Any other things you would like to share?`,
+            title: `Any other things you would like to share? (should contain one of "amazonq" or "aws", capital or not)`,
+            validationPatterns: {
+                operator: 'or',
+                genericValidationErrorMessage: 'Should contain one of "amazonq" or "aws"',
+                patterns: [{
+                    pattern: /amazonq/gi
+                },{
+                    pattern: /aws/gi
+                }]
+            },
             placeholder: 'Write your feelings about our tool',
         },
     ],

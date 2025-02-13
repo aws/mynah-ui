@@ -134,13 +134,22 @@
                         overflow-wrap: break-word;
                         z-index: 1000;
                         cursor: pointer;
+                        padding: 0.1em 0.25em 0.1em 0.25em;
+                        display: inline-flex;
+                        flex-flow: row nowrap;
+                        justify-content: center;
+                        align-items: center;
+                        gap: var(--mynah-sizing-half);
+                        font-size: 0.9em;
                         &:before {
                             content: '';
                             position: absolute;
-                            left: -2px;
-                            right: -2px;
+                            left: 0;
+                            right: 0;
+                            top: 0;
+                            bottom: 0;
                             width: auto;
-                            height: calc(100% + 1px);
+                            height: calc(100%);
                             background-color: var(--mynah-color-button);
                             border-radius: var(--mynah-input-radius);
                             z-index: -1;

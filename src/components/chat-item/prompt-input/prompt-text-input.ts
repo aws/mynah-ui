@@ -8,6 +8,8 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { Card } from '../../card/card';
 import { CardBody } from '../../card/card-body';
 import testIds from '../../../helper/test-ids';
+import { generateUID } from '../../../main';
+import { Icon } from '../../icon';
 
 export interface PromptTextInputProps {
   tabId: string;
@@ -25,6 +27,7 @@ export class PromptTextInput {
   private readonly promptTextInput: ExtendedHTMLElement;
   private promptInputOverlay: Overlay | null = null;
   private keydownSupport: boolean = true;
+  private readonly selectedContext: Record<string, QuickActionCommand> = {};
   constructor (props: PromptTextInputProps) {
     this.props = props;
     this.promptTextInputMaxLength = props.initMaxLength;
@@ -229,12 +232,17 @@ export class PromptTextInput {
   };
 
   public readonly insertContextItem = (contextItem: QuickActionCommand, position: number): void => {
+    const temporaryId = generateUID();
+    this.selectedContext[temporaryId] = contextItem;
     const contextSpanElement = DomBuilder.getInstance().build({
       type: 'span',
-      children: [ `@${contextItem.command.replace(/^@?(.*)$/, '$1')}` ],
+      children: [
+        ...(contextItem.icon != null ? [ new Icon({ icon: contextItem.icon }).render ] : []),
+        `${contextItem.command.replace(/^@?(.*)$/, '$1')}`
+      ],
       classNames: [ 'context' ],
       attributes: {
-        route: JSON.stringify(contextItem.route),
+        'context-tmp-id': temporaryId,
         contenteditable: 'false'
       }
     });
@@ -384,9 +392,9 @@ export class PromptTextInput {
     };
   };
 
-  public readonly getUsedContext = (): string[][] => {
+  public readonly getUsedContext = (): QuickActionCommand[] => {
     return Array.from(this.promptTextInput.querySelectorAll('span.context')).map((context) => {
-      return JSON.parse(context.getAttribute('route') ?? '[]');
+      return this.selectedContext[context.getAttribute('context-tmp-id') ?? ''] ?? {};
     });
   };
 }

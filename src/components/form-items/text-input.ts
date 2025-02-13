@@ -5,6 +5,8 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { isTextualFormItemValid } from '../../helper/validator';
+import { ValidationPattern } from '../../static';
 import '../../styles/components/_form-input.scss';
 
 export interface TextInputProps {
@@ -13,6 +15,10 @@ export interface TextInputProps {
   label?: HTMLElement | ExtendedHTMLElement | string;
   placeholder?: string;
   type?: 'text' | 'number' | 'email';
+  validationPatterns?: {
+    operator?: 'and' | 'or';
+    patterns: ValidationPattern[];
+  };
   value?: string;
   onChange?: (value: string) => void;
   testId?: string;
@@ -23,17 +29,25 @@ export abstract class TextInputAbstract {
   setValue = (value: string): void => {};
   getValue = (): string => '';
   setEnabled = (enabled: boolean): void => {};
+  checkValidation = (): void => {};
 }
-
 export class TextInputInternal extends TextInputAbstract {
   private readonly inputElement: ExtendedHTMLElement;
+  private readonly validationErrorBlock: ExtendedHTMLElement;
+  private readonly props: TextInputProps;
+  private readyToValidate: boolean = false;
   render: ExtendedHTMLElement;
   constructor (props: TextInputProps) {
     super();
+    this.props = props;
+    this.validationErrorBlock = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-form-input-validation-error-block' ],
+    });
     this.inputElement = DomBuilder.getInstance().build({
       type: 'input',
-      testId: props.testId,
-      classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
+      testId: this.props.testId,
+      classNames: [ 'mynah-form-input', ...(this.props.classNames ?? []) ],
       attributes: {
         type: props.type ?? 'text',
         ...(props.placeholder !== undefined
@@ -43,10 +57,15 @@ export class TextInputInternal extends TextInputAbstract {
           : {})
       },
       events: {
+        blur: (e) => {
+          this.readyToValidate = true;
+          this.checkValidation();
+        },
         keyup: (e) => {
-          if (props.onChange !== undefined) {
-            props.onChange((e.currentTarget as HTMLSelectElement).value);
+          if (this.props.onChange !== undefined) {
+            this.props.onChange((e.currentTarget as HTMLInputElement).value);
           }
+          this.checkValidation();
         }
       },
     });
@@ -67,7 +86,8 @@ export class TextInputInternal extends TextInputAbstract {
           children: [
             this.inputElement,
           ]
-        }
+        },
+        this.validationErrorBlock
       ]
     });
   }
@@ -87,6 +107,18 @@ export class TextInputInternal extends TextInputAbstract {
       this.inputElement.setAttribute('disabled', 'disabled');
     }
   };
+
+  checkValidation = (): void => {
+    const validationStatus = isTextualFormItemValid(this.inputElement.value, this.props.validationPatterns ?? { patterns: [] });
+    if (this.readyToValidate && validationStatus.validationErrors.length > 0) {
+      this.inputElement.addClass('validation-error');
+      this.validationErrorBlock.update({ children: validationStatus.validationErrors.map(message => DomBuilder.getInstance().build({ type: 'span', children: [ message ] })) });
+    } else {
+      this.readyToValidate = false;
+      this.validationErrorBlock.clear();
+      this.inputElement.removeClass('validation-error');
+    }
+  };
 }
 
 export class TextInput extends TextInputAbstract {
@@ -100,4 +132,5 @@ export class TextInput extends TextInputAbstract {
   setValue = (value: string): void => {};
   getValue = (): string => '';
   setEnabled = (enabled: boolean): void => {};
+  checkValidation = (): void => {};
 }

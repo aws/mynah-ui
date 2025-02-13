@@ -21,6 +21,7 @@ import {
 
 export interface QuickActionCommand {
   command: string;
+  id?: string;
   label?: string;
   disabled?: boolean;
   icon?: MynahIcons | MynahIconsType;
@@ -29,16 +30,10 @@ export interface QuickActionCommand {
   children?: QuickActionCommandGroup[];
   route?: string[];
 }
-export interface QuickActionCommandInternal extends QuickActionCommand {
-  route?: string[];
-}
 export interface QuickActionCommandGroup {
   groupName?: string;
   actions?: Action[];
   commands: QuickActionCommand[];
-}
-export interface QuickActionCommandGroupInternal extends QuickActionCommandGroup {
-  commands: QuickActionCommandInternal[];
 }
 /**
  * data store model to update the mynah ui partially or fully
@@ -309,24 +304,51 @@ export interface ChatItem extends ChatItemContent{
   status?: Status;
 }
 
-export interface ChatItemFormItem {
+export interface ValidationPattern {
+  pattern: string | RegExp;
+  errorMessage?: string;
+}
+
+interface BaseFormItem {
   id: string;
-  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup' | 'email';
   mandatory?: boolean;
   title?: string;
   placeholder?: string;
   value?: string;
+}
+
+export type TextBasedFormItem = BaseFormItem & {
+  type: 'textarea' | 'textinput' | 'numericinput' | 'email';
+  validationPatterns?: {
+    operator?: 'and' | 'or';
+    genericValidationErrorMessage?: string;
+    patterns: ValidationPattern[];
+  };
+};
+
+type SelectFormItem = BaseFormItem & {
+  type: 'select';
+  options: Array<{
+    value: string;
+    label: string;
+  }>;
+};
+
+type OtherFormItem = BaseFormItem & {
+  type: 'stars' | 'radiogroup';
   options?: Array<{
     value: string;
     label: string;
   }>;
-}
+};
+
+export type ChatItemFormItem = TextBasedFormItem | SelectFormItem | OtherFormItem;
 
 export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
-  context?: string[] | string[][];
+  context?: string[] | QuickActionCommand[];
 }
 
 export interface ChatItemAction extends ChatPrompt {

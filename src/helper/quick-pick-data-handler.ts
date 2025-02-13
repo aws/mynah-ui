@@ -1,12 +1,12 @@
-import { QuickActionCommandGroupInternal } from '../static';
+import { QuickActionCommandGroup } from '../static';
 
-export const filterQuickPickItems = (commands: QuickActionCommandGroupInternal[], searchTerm: string): QuickActionCommandGroupInternal[] => {
+export const filterQuickPickItems = (commands: QuickActionCommandGroup[], searchTerm: string): QuickActionCommandGroup[] => {
   if (searchTerm.trim() === '') {
     return commands;
   }
 
-  const filteredQuickPickItemGroups: QuickActionCommandGroupInternal[] = [];
-  commands.forEach((quickPickGroup: QuickActionCommandGroupInternal) => {
+  const filteredQuickPickItemGroups: QuickActionCommandGroup[] = [];
+  commands.forEach((quickPickGroup: QuickActionCommandGroup) => {
     const newQuickPickCommandGroup = { ...quickPickGroup };
     try {
       const promptRegex = new RegExp(searchTerm ?? '', 'gi');
@@ -28,27 +28,4 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroupInternal[]
     }
   });
   return filteredQuickPickItemGroups;
-};
-
-export const addRouteToCommandGroups = (
-  commandGroups: QuickActionCommandGroupInternal[],
-  parentRoute: string[] = []
-): QuickActionCommandGroupInternal[] => {
-  return commandGroups.map(group => {
-    const updatedGroup = { ...group };
-    updatedGroup.commands = group.commands.map(command => {
-      const updatedCommand = { ...command };
-      const currentRoute = [ ...parentRoute, command.command ];
-      updatedCommand.route = currentRoute;
-
-      // If the command has children, recurse
-      if ((updatedCommand.children != null) && updatedCommand.children.length > 0) {
-        updatedCommand.children = addRouteToCommandGroups(updatedCommand.children, currentRoute);
-      }
-
-      return updatedCommand;
-    });
-
-    return updatedGroup;
-  });
 };
