@@ -12,6 +12,8 @@ export interface ChatItemTreeViewProps {
   depth?: number;
   tabId: string;
   messageId: string;
+  hideFileCount?: boolean;
+  collapsedByDefault?: boolean;
 }
 
 export class ChatItemTreeView {
@@ -20,13 +22,15 @@ export class ChatItemTreeView {
   private readonly depth: number;
   private readonly tabId: string;
   private readonly messageId: string;
+  private readonly hideFileCount: boolean;
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemTreeViewProps) {
     this.node = props.node;
     this.tabId = props.tabId;
     this.messageId = props.messageId;
-    this.isOpen = true;
+    this.hideFileCount = props.hideFileCount ?? false;
+    this.isOpen = !(props.collapsedByDefault ?? false);
     this.depth = props.depth ?? 0;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -57,7 +61,7 @@ export class ChatItemTreeView {
         DomBuilder.getInstance().build({
           type: 'div',
           classNames: [ 'mynah-chat-item-pull-request-item' ],
-          children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, messageId: this.messageId }).render ],
+          children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, hideFileCount: this.hideFileCount, messageId: this.messageId }).render ],
         })
       )
       : [];
@@ -80,11 +84,13 @@ export class ChatItemTreeView {
             type: 'span',
             children: [ this.node.name ]
           },
-          {
-            type: 'span',
-            classNames: [ 'mynah-chat-item-tree-view-button-weak-title' ],
-            children: [ `${this.node.children.length} ${Config.getInstance().config.texts.files}` ]
-          }
+          ...(this.hideFileCount
+            ? []
+            : [ {
+                type: 'span',
+                classNames: [ 'mynah-chat-item-tree-view-button-weak-title' ],
+                children: [ `${this.node.children.length} ${Config.getInstance().config.texts.files}` ]
+              } ])
         ]
       }),
       primary: false,
