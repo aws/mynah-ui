@@ -868,6 +868,7 @@ type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAc
 
 // ################################# 
 interface ChatItemContent {
+  header?: ChatItemContent | null;
   body?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
@@ -1071,6 +1072,43 @@ mynahUI.addChatItem('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/chatItems/systemPrompt.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `header`
+With this parameter, you can add a `ChatItem` at the top of a ChatItem, before the body, but still within the card itself.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  body: `SOME CONTENT`,
+  header: {
+    fileList: { // For example, want to show which file is used to generate that answer
+      rootFolderTitle: undefined,
+      fileTreeTitle: '',
+      filePaths: ['./src/index.ts'],
+      details: {
+        './src/index.ts': {
+          icon: MynahIcons.FILE,
+          description: `SOME DESCRIPTION.`
+        }
+      }
+    }
+  }
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/header.png" alt="header" style="max-width:600px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

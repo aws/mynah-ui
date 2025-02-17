@@ -139,6 +139,24 @@
                 }
             }
         }
+
+        > .mynah-chat-item-card-header {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: var(--mynah-sizing-3);
+            border-bottom: 1px solid var(--mynah-color-border-default);
+            > .mynah-ui-chat-item-small-card {
+                padding: 0;
+                margin: 0;
+                border: none;
+                flex: 0;
+                > .mynah-card.padding-none {
+                    padding-right: calc(1px + var(--mynah-border-width));
+                }
+            }
+        }
     }
 
     > .mynah-chat-item-followup-question {
