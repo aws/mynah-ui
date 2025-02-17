@@ -23,6 +23,8 @@ export interface ChatItemTreeViewWrapperProps {
   deletedFiles: string[];
   actions?: Record<string, FileNodeAction[]>;
   details?: Record<string, TreeNodeDetails>;
+  hideFileCount?: boolean;
+  collapsedByDefault?: boolean;
   referenceSuggestionLabel: string;
   references: ReferenceTrackerInformation[];
 }
@@ -52,6 +54,8 @@ export class ChatItemTreeViewWrapper {
         messageId: props.messageId,
         tabId: props.tabId,
         node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle),
+        hideFileCount: props.hideFileCount,
+        collapsedByDefault: props.collapsedByDefault
       }).render;
 
     this.render = DomBuilder.getInstance().build({
