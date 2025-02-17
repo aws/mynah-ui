@@ -146,7 +146,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
       {
         type: ChatItemType.ANSWER,
         body: WelcomeMessage,
-        header: {
+        footer: {
           fileList: {
             rootFolderTitle: undefined,
             fileTreeTitle: '',
