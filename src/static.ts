@@ -252,6 +252,7 @@ export interface TreeNodeDetails {
 }
 
 export interface ChatItemContent {
+  header?: ChatItemContent | null;
   body?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {

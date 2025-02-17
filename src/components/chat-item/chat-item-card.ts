@@ -40,6 +40,7 @@ export class ChatItemCard {
   private readonly updateStack: Array<Partial<ChatItem>> = [];
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
   private cardFooter: ExtendedHTMLElement | null = null;
+  private cardHeader: ExtendedHTMLElement | null = null;
   private informationCard: ChatItemInformationCard | null = null;
   private tabbedCard: ChatItemTabbedCard | null = null;
   private cardIcon: Icon | null = null;
@@ -53,6 +54,7 @@ export class ChatItemCard {
   private followUps: ChatItemFollowUpContainer | null = null;
   private votes: ChatItemRelevanceVote | null = null;
   private footer: ChatItemCard | null = null;
+  private header: ChatItemCard | null = null;
   constructor (props: ChatItemCardProps) {
     this.props = props;
     this.chatAvatar = this.getChatAvatar();
@@ -77,6 +79,7 @@ export class ChatItemCard {
 
       ];
     }
+    this.cardHeader = this.getCardHeader();
     this.cardFooter = this.getCardFooter();
     this.card = new Card({
       testId: testIds.chatItem.card,
@@ -98,6 +101,13 @@ export class ChatItemCard {
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-card-footer', 'mynah-card-inner-order-70' ]
+    });
+  };
+
+  private readonly getCardHeader = (): ExtendedHTMLElement => {
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-item-card-header', 'mynah-card-inner-order-5' ]
     });
   };
 
@@ -188,6 +198,39 @@ export class ChatItemCard {
 
     if (chatItemHasContent(this.props.chatItem)) {
       this.initialSpinner?.[0]?.remove();
+    }
+
+    /**
+     * Clear header block
+     */
+    if (this.cardHeader != null) {
+      this.cardHeader.remove();
+      this.cardHeader = null;
+    }
+    if (this.props.chatItem.header != null) {
+      this.cardHeader = this.getCardHeader();
+      this.card?.render.insertChild('beforeend', this.cardHeader);
+
+      /**
+       * Generate header if available
+       */
+      if (this.header != null) {
+        this.header.render.remove();
+        this.header = null;
+      }
+      if (this.props.chatItem.header != null) {
+        this.header = new ChatItemCard({
+          tabId: this.props.tabId,
+          small: true,
+          inline: true,
+          chatItem: {
+            ...this.props.chatItem.header,
+            type: ChatItemType.ANSWER,
+            messageId: this.props.chatItem.messageId
+          }
+        });
+        this.cardHeader.insertChild('beforeend', this.header.render);
+      }
     }
 
     /**
@@ -532,6 +575,9 @@ export class ChatItemCard {
   };
 
   public readonly clearContent = (): void => {
+    this.cardHeader?.remove();
+    this.cardHeader = null;
+
     this.contentBody?.render.remove();
     this.contentBody = null;
 

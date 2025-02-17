@@ -115,6 +115,13 @@
                         flex: 1;
                     }
                 }
+                > .mynah-card > .mynah-chat-item-card-header {
+                    padding-bottom: 0;
+                    border-bottom: none;
+                    > .mynah-ui-chat-item-small-card {
+                        flex: 1;
+                    }
+                }
             }
         }
     }

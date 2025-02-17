@@ -11,7 +11,7 @@ In this example web app which uses mynah-ui as its renderer, we're simulating it
 *To see more examples about the possible content types, interactions or various component types, you can type \`/\` to open the quick actions list panel.*
 `;
 
-export const QuickActionCommands:QuickActionCommandGroup[] = [
+export const QuickActionCommands: QuickActionCommandGroup[] = [
   {
     groupName: 'Examples of **Prompt input field** items',
     commands: [
@@ -137,7 +137,7 @@ export const QuickActionCommands:QuickActionCommandGroup[] = [
   },
 ];
 
-export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
+export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
   store: {
     tabTitle: 'Chat',
     cancelButtonWhenLoading: true,
@@ -146,6 +146,21 @@ export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
       {
         type: ChatItemType.ANSWER,
         body: WelcomeMessage,
+        header: {
+          fileList: {
+            rootFolderTitle: undefined,
+            fileTreeTitle: '',
+            filePaths: ['./src/index.ts'],
+            details: {
+              './src/index.ts': {
+                icon: MynahIcons.FILE,
+                clickable: false,
+                description: `Files used for this response: **index.ts**
+        Use \`@\` to mention a file, folder, or method.`
+              }
+            }
+          }
+        },
         messageId: 'welcome-message',
         followUp: defaultFollowUps.followUp
       },
@@ -153,7 +168,7 @@ export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
     quickActionCommands: QuickActionCommands,
     contextCommands: [
       {
-        commands:[
+        commands: [
           {
             command: 'workspace',
             icon: MynahIcons.ASTERISK,
@@ -240,7 +255,7 @@ export const mynahUIDefaults:Partial<MynahUITabStoreTab> = {
             ],
             placeholder: 'Mention a specific file',
             description: 'Reference a specific file'
-            
+
           },
           {
             command: 'symbols',
