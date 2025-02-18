@@ -568,6 +568,7 @@ _To send the form, mandatory items should be filled._`,
             title: `Email`,
             description: 'Your email will be used to get back to you',
             placeholder: 'email',
+            checkModifierEnterKeyPress: true
         },
         {
             id: 'name',
