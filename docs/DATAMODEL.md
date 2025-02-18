@@ -2076,6 +2076,7 @@ interface ChatItemFormItem {
   type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup'; // type (see below for each of them)
   mandatory?: boolean; // If it is set to true, buttons in the same card with waitMandatoryFormItems set to true will wait them to be filled
   title?: string; // Label of the input
+  description?: string; // The description, showing under the input field itself
   placeholder?: string; // Placeholder for input, but only applicable to textarea, textinput and numericinput
   value?: string; // Initial value of the item. All types of form items will get and return string values, conversion of the value type is up to you
   options?: Array<{ // Only applicable to select and radiogroup types

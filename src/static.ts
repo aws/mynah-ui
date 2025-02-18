@@ -319,6 +319,7 @@ interface BaseFormItem {
   title?: string;
   placeholder?: string;
   value?: string;
+  description?: string;
 }
 
 export type TextBasedFormItem = BaseFormItem & {

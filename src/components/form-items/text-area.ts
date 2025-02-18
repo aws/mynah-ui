@@ -13,6 +13,7 @@ export interface TextAreaProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  description?: ExtendedHTMLElement;
   placeholder?: string;
   validationPatterns?: {
     operator?: 'and' | 'or';
@@ -83,6 +84,7 @@ export class TextAreaInternal extends TextAreaAbstract {
             this.inputElement,
           ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         this.validationErrorBlock
       ]
     });

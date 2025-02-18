@@ -52,6 +52,17 @@ export class ChatItemFormItemsWrapper {
             chatItemOption.value = chatItemOption.options?.[0]?.value;
           }
         }
+        let description;
+        if (chatItemOption.description !== undefined) {
+          description = DomBuilder.getInstance().build({
+            type: 'span',
+            testId: testIds.chatItem.chatItemForm.description,
+            classNames: [ 'mynah-ui-form-item-description' ],
+            children: [
+              chatItemOption.description,
+            ]
+          });
+        }
         const value = chatItemOption.value?.toString();
         switch (chatItemOption.type) {
           case 'select':
@@ -59,6 +70,7 @@ export class ChatItemFormItemsWrapper {
               wrapperTestId: testIds.chatItem.chatItemForm.itemSelectWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemSelect,
               label,
+              description,
               value,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
@@ -71,6 +83,7 @@ export class ChatItemFormItemsWrapper {
               wrapperTestId: testIds.chatItem.chatItemForm.itemRadioWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemRadio,
               label,
+              description,
               value,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
@@ -81,6 +94,7 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextArea({
               testId: testIds.chatItem.chatItemForm.itemTextArea,
               label,
+              description,
               value,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
@@ -91,6 +105,7 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              description,
               value,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
@@ -101,6 +116,7 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              description,
               value,
               validationPatterns: chatItemOption.validationPatterns,
               type: 'number',
@@ -112,6 +128,7 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              description,
               value,
               validationPatterns: chatItemOption.validationPatterns,
               type: 'email',
@@ -124,6 +141,7 @@ export class ChatItemFormItemsWrapper {
               wrapperTestId: testIds.chatItem.chatItemForm.itemStarsWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemStars,
               label,
+              description,
               value,
               ...(this.getValidationHandler(chatItemOption))
             });

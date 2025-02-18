@@ -13,6 +13,7 @@ export interface TextInputProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  description?: ExtendedHTMLElement;
   placeholder?: string;
   type?: 'text' | 'number' | 'email';
   validationPatterns?: {
@@ -87,6 +88,7 @@ export class TextInputInternal extends TextInputAbstract {
             this.inputElement,
           ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         this.validationErrorBlock
       ]
     });

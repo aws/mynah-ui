@@ -27,6 +27,10 @@
             }
         }
     }
+    .mynah-ui-form-item-description {
+        font-size: var(--mynah-font-size-small);
+        color: var(--mynah-color-text-weak);
+    }
     .mynah-form-input-container {
         position: relative;
         display: flex;
