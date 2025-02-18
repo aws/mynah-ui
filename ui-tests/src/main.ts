@@ -50,6 +50,9 @@ export const createMynahUI = (): MynahUI => {
     onTabAdd: (tabId: string) => {
       //
     },
+    onContextSelected: (contextItem) => {
+      return true;
+    },
     onBeforeTabRemove: (tabId: string): boolean => {
       return (mynahUI.getAllTabs()[tabId].store?.loadingChat === false);
     },

@@ -524,9 +524,7 @@ export class ChatPromptInput {
     }
   };
 
-  private readonly handleContextCommandSelection = (
-    contextCommand: QuickActionCommand,
-    route?: []): void => {
+  private readonly handleContextCommandSelection = (contextCommand: QuickActionCommand): void => {
     // Check if the selected command has children
     const children = this.quickPickItemGroups
       .flatMap(group => group.commands)
@@ -538,10 +536,19 @@ export class ChatPromptInput {
         this.getQuickPickItemGroups(children)
       ]);
     } else {
-      this.promptTextInput.insertContextItem({
-        ...contextCommand,
-      }, this.quickPickTriggerIndex);
       this.quickPick.close();
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_SELECTED, {
+        contextItem: contextCommand,
+        promptInputCallback: (insert: boolean) => {
+          if (insert) {
+            this.promptTextInput.insertContextItem({
+              ...contextCommand,
+            }, this.quickPickTriggerIndex);
+          } else {
+            this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
+          }
+        }
+      });
     }
   };
 

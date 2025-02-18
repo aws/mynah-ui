@@ -26,6 +26,7 @@ import {
   ChatItemType,
   CardRenderDetails,
   PromptAttachmentType,
+  QuickActionCommand,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -148,6 +149,9 @@ export interface MynahUIProps {
   onTabAdd?: (
     tabId: string,
     eventId?: string) => void;
+  onContextSelected?: (
+    contextItem: QuickActionCommand,
+  ) => boolean;
   onTabRemove?: (
     tabId: string,
     eventId?: string) => void;
@@ -447,6 +451,13 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           data.followUpOption,
           this.getUserEventId());
       }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_SELECTED, (data: {
+      contextItem: QuickActionCommand;
+      promptInputCallback: (insert: boolean) => void;
+    }) => {
+      data.promptInputCallback(this.props.onContextSelected === undefined || this.props.onContextSelected(data.contextItem));
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.BODY_ACTION_CLICKED, (data: {

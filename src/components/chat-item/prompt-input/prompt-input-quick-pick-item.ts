@@ -54,7 +54,15 @@ export class PromptInputQuickPickItem {
                 } ]
               : [])
           ]
-        }
+        },
+        ...((this.props.quickPickItem.children != null) && this.props.quickPickItem.children.length > 0
+          ? [
+              new Icon({
+                icon: 'right-open',
+                classNames: [ 'mynah-chat-command-selector-command-arrow-icon' ]
+              }).render
+            ]
+          : [])
       ]
     });
   }

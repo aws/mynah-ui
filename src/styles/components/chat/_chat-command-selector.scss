@@ -93,6 +93,10 @@
                 color: var(--mynah-color-text-default);
             }
 
+            &:not(:hover):not(.target-command) > .mynah-chat-command-selector-command-arrow-icon {
+                display: none;
+            }
+
             > .mynah-chat-command-selector-command-container {
                 flex: 1;
                 display: flex;

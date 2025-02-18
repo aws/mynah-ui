@@ -179,6 +179,7 @@ export enum MynahEventNames {
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
   ROOT_RESIZE = 'rootResize',
+  CONTEXT_SELECTED = 'contextSelected'
 };
 
 export enum MynahPortalNames {
