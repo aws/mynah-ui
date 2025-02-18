@@ -2079,6 +2079,7 @@ interface ChatItemFormItem {
   description?: string; // The description, showing under the input field itself
   placeholder?: string; // Placeholder for input, but only applicable to textarea, textinput and numericinput
   value?: string; // Initial value of the item. All types of form items will get and return string values, conversion of the value type is up to you
+  checkModifierEnterKeyPress?: boolean; // Only applicable to textual inputs: whether the onFormModifierEnterPress event can be triggered from this input field
   options?: Array<{ // Only applicable to select and radiogroup types
     value: string;
     label: string;
@@ -2165,6 +2166,7 @@ mynahUI.addChatItem(tabId, {
             mandatory: true,
             title: `Email`,
             placeholder: 'email',
+            checkModifierEnterKeyPress: true
         },
         {
             id: 'name',
