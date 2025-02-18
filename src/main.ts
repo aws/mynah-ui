@@ -151,6 +151,8 @@ export interface MynahUIProps {
     eventId?: string) => void;
   onContextSelected?: (
     contextItem: QuickActionCommand,
+    tabId: string,
+    eventId?: string
   ) => boolean;
   onTabRemove?: (
     tabId: string,
@@ -227,6 +229,10 @@ export interface MynahUIProps {
   onSendFeedback?: (
     tabId: string,
     feedbackPayload: FeedbackPayload,
+    eventId?: string) => void;
+  onFormModifierEnterPress?: (
+    formData: Record<string, string>,
+    tabId: string,
     eventId?: string) => void;
   onCustomFormAction?: (
     tabId: string,
@@ -455,9 +461,19 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_SELECTED, (data: {
       contextItem: QuickActionCommand;
+      tabId: string;
       promptInputCallback: (insert: boolean) => void;
     }) => {
-      data.promptInputCallback(this.props.onContextSelected === undefined || this.props.onContextSelected(data.contextItem));
+      data.promptInputCallback(this.props.onContextSelected === undefined || this.props.onContextSelected(data.contextItem, data.tabId, this.getUserEventId()));
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, (data: {
+      formData: Record<string, string>;
+      tabId: string;
+    }) => {
+      if (this.props.onFormModifierEnterPress !== undefined) {
+        this.props.onFormModifierEnterPress(data.formData, data.tabId, this.getUserEventId());
+      }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.BODY_ACTION_CLICKED, (data: {

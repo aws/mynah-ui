@@ -14,6 +14,7 @@ export interface TextInputProps {
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
+  fireModifierAndEnterKeyPress?: () => void;
   placeholder?: string;
   type?: 'text' | 'number' | 'email';
   validationPatterns?: {
@@ -67,6 +68,11 @@ export class TextInputInternal extends TextInputAbstract {
             this.props.onChange((e.currentTarget as HTMLInputElement).value);
           }
           this.checkValidation();
+        },
+        keydown: (e: KeyboardEvent) => {
+          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            this.props.fireModifierAndEnterKeyPress?.();
+          }
         }
       },
     });
