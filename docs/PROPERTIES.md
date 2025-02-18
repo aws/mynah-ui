@@ -45,6 +45,9 @@ export interface MynahUIProps {
   onTabAdd?: (
     tabId: string,
     eventId?: string) => void;
+  onContextSelected?: (
+    contextItem: QuickActionCommand,
+  ) => boolean;
   onTabRemove?: (
     tabId: string,
     eventId?: string) => void;
@@ -507,6 +510,26 @@ This event will be fired when user clicks the add tab button or double clicks to
 onTabAdd?: (tabId: string):void => {
       console.log(`New tabId: ${tabId}`);
     };
+...
+```
+
+---
+
+### `onContextSelected`
+
+This event will be fired whenever a user selects an item from the context (`@`) list either using mouse click or keyboard actions. It is only triggered for items without children, i.e. only leaves in the tree. The data of the selected context item can be accessed through the `contextItem`. This event handler expects a boolean return:
+- Returning `true` indicates that the context item should be added to the prompt input text.
+- Returning `false` indicates that nothing should be added to the prompt input, and the triggering string should be cleared. E.g. if a user types `@wor` and presses tab on the `@workspace` action, the `@wor` would be removed from the prompt input and no context item will be added.
+
+```typescript
+...
+onContextSelected(contextItem: QuickActionCommand) {
+  if (contextItem.command === 'add_prompt') {
+    Log('Custom context action triggered for adding a prompt!')
+    return false;
+  }
+  return true;
+},
 ...
 ```
 

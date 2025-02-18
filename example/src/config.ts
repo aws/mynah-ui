@@ -300,6 +300,11 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     command: 'javascript_expert',
                     icon: MynahIcons.CHAT,
                     description: 'Expert on Javascript and typescript'
+                  },
+                  {
+                    command: 'add_prompt',
+                    icon: MynahIcons.PLUS,
+                    description: 'Add a new prompt'
                   }
                 ]
               }
