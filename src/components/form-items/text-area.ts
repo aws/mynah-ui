@@ -13,6 +13,8 @@ export interface TextAreaProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  description?: ExtendedHTMLElement;
+  fireModifierAndEnterKeyPress?: () => void;
   placeholder?: string;
   validationPatterns?: {
     operator?: 'and' | 'or';
@@ -62,6 +64,11 @@ export class TextAreaInternal extends TextAreaAbstract {
             this.props.onChange((e.currentTarget as HTMLTextAreaElement).value);
           }
           this.checkValidation();
+        },
+        keydown: (e: KeyboardEvent) => {
+          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            this.props.fireModifierAndEnterKeyPress?.();
+          }
         }
       },
     });
@@ -83,6 +90,7 @@ export class TextAreaInternal extends TextAreaAbstract {
             this.inputElement,
           ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         this.validationErrorBlock
       ]
     });

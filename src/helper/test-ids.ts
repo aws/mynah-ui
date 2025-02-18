@@ -59,6 +59,7 @@ export default {
     chatItemForm: {
       wrapper: 'chat-item-form-wrapper',
       title: 'chat-item-form-title',
+      description: 'chat-item-form-description',
       itemSelectWrapper: 'chat-item-form-item-select-wrapper',
       itemSelect: 'chat-item-form-item-select',
       itemRadioWrapper: 'chat-item-form-item-radio-wrapper',

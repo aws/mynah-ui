@@ -118,6 +118,10 @@ export interface MynahUIProps {
     tabId: string,
     feedbackPayload: FeedbackPayload,
     eventId?: string) => void;
+  onFormModifierEnterPress?: (
+    formData: Record<string, string>,
+    tabId: string,
+    eventId?: string) => void;
   onCustomFormAction?: (
     tabId: string,
     action: {
@@ -849,6 +853,26 @@ onSendFeedback?: (
     };
 ...
 ```
+
+---
+
+### `onFormModifierEnterPress`
+
+This event will be fired when the user presses the modifier key (`cmd` on macOS, and `ctrl` on Windows / Linux) and the `enter` key at the same time, while focused on a textual form input field. The event will only be triggered for input fields that have set `checkModifierEnterKeyPress: true`, and it will only be triggered if the form is valid and can be submitted. An example use case for this would be submitting the form through a keyboard hotkey action.
+
+```typescript
+...
+onFormModifierEnterPress?: (
+    formData: Record<string, string>,
+    tabId: string,
+    eventId?: string): void => {
+      console.log(`Form modifier enter pressed on tab <b>${tabId}</b>:<br/>
+      Form data: <b>${JSON.stringify(formData)}</b><br/>
+      `);
+    },
+...
+```
+
 ---
 
 ### `onCustomFormAction`

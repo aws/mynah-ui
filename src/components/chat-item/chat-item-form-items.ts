@@ -5,9 +5,10 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { MynahUIGlobalEvents } from '../../helper/events';
 import testIds from '../../helper/test-ids';
 import { isMandatoryItemValid, isTextualFormItemValid } from '../../helper/validator';
-import { ChatItem, ChatItemFormItem, TextBasedFormItem } from '../../static';
+import { ChatItem, ChatItemFormItem, MynahEventNames, TextBasedFormItem } from '../../static';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
 import { Stars } from '../form-items/stars';
@@ -52,6 +53,22 @@ export class ChatItemFormItemsWrapper {
             chatItemOption.value = chatItemOption.options?.[0]?.value;
           }
         }
+        let description;
+        if (chatItemOption.description !== undefined) {
+          description = DomBuilder.getInstance().build({
+            type: 'span',
+            testId: testIds.chatItem.chatItemForm.description,
+            classNames: [ 'mynah-ui-form-item-description' ],
+            children: [
+              chatItemOption.description,
+            ]
+          });
+        }
+        const fireModifierAndEnterKeyPress = (): void => {
+          if ((chatItemOption as TextBasedFormItem).checkModifierEnterKeyPress === true && this.isFormValid()) {
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, { formData: this.getAllValues(), tabId: props.tabId });
+          }
+        };
         const value = chatItemOption.value?.toString();
         switch (chatItemOption.type) {
           case 'select':
@@ -59,6 +76,7 @@ export class ChatItemFormItemsWrapper {
               wrapperTestId: testIds.chatItem.chatItemForm.itemSelectWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemSelect,
               label,
+              description,
               value,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
@@ -71,6 +89,7 @@ export class ChatItemFormItemsWrapper {
               wrapperTestId: testIds.chatItem.chatItemForm.itemRadioWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemRadio,
               label,
+              description,
               value,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
@@ -81,6 +100,8 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextArea({
               testId: testIds.chatItem.chatItemForm.itemTextArea,
               label,
+              description,
+              fireModifierAndEnterKeyPress,
               value,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
@@ -91,6 +112,8 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              description,
+              fireModifierAndEnterKeyPress,
               value,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
@@ -101,6 +124,8 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              description,
+              fireModifierAndEnterKeyPress,
               value,
               validationPatterns: chatItemOption.validationPatterns,
               type: 'number',
@@ -112,6 +137,8 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              description,
+              fireModifierAndEnterKeyPress,
               value,
               validationPatterns: chatItemOption.validationPatterns,
               type: 'email',
@@ -124,6 +151,7 @@ export class ChatItemFormItemsWrapper {
               wrapperTestId: testIds.chatItem.chatItemForm.itemStarsWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemStars,
               label,
+              description,
               value,
               ...(this.getValidationHandler(chatItemOption))
             });

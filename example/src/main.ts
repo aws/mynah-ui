@@ -435,6 +435,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
       }
     },
+    onFormModifierEnterPress(formData, tabId) {
+      Log(`Form modifier enter pressed on tab <b>${tabId}</b>:<br/>
+      Form data: <b>${JSON.stringify(formData)}</b><br/>
+      `);
+    },
     onCustomFormAction: (tabId, action) => {
       Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>

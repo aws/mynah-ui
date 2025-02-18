@@ -516,6 +516,7 @@ _To send the form, mandatory items should be filled._`,
             id: 'expertise-area',
             type: 'select',
             title: `Area of expertise`,
+            description: 'Select your area of expertise',
             options: [
                 {
                     label: 'Frontend',
@@ -565,7 +566,9 @@ _To send the form, mandatory items should be filled._`,
             type: 'email',
             mandatory: true,
             title: `Email`,
+            description: 'Your email will be used to get back to you',
             placeholder: 'email',
+            checkModifierEnterKeyPress: true
         },
         {
             id: 'name',

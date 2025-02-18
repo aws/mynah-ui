@@ -539,6 +539,7 @@ export class ChatPromptInput {
       this.quickPick.close();
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_SELECTED, {
         contextItem: contextCommand,
+        tabId: this.props.tabId,
         promptInputCallback: (insert: boolean) => {
           if (insert) {
             this.promptTextInput.insertContextItem({

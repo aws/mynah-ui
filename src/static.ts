@@ -174,6 +174,7 @@ export enum MynahEventNames {
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
+  FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
   ADD_ATTACHMENT = 'addAttachment',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
@@ -319,10 +320,12 @@ interface BaseFormItem {
   title?: string;
   placeholder?: string;
   value?: string;
+  description?: string;
 }
 
 export type TextBasedFormItem = BaseFormItem & {
   type: 'textarea' | 'textinput' | 'numericinput' | 'email';
+  checkModifierEnterKeyPress?: boolean;
   validationPatterns?: {
     operator?: 'and' | 'or';
     genericValidationErrorMessage?: string;
