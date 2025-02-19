@@ -28,14 +28,13 @@ export const isTextualFormItemValid = (value: string, validationPatterns: {
       return prevValidation || isCurrentPatternValid;
     }, validationPatterns.operator === 'and');
   }
+  // Don't invalidate if the field is empty and non mandatory
+  isValid = isValid || ((value === undefined || value.trim() === '') && (mandatory !== true));
   if (isValid) {
     validationErrors = [];
   } else if (validationErrors.length === 0 && validationPatterns.genericValidationErrorMessage != null) {
     validationErrors.push(validationPatterns.genericValidationErrorMessage);
   }
-
-  // Don't invalidate if the field is empty and non mandatory
-  isValid = isValid || ((value === undefined || value.trim() === '') && (mandatory !== true));
   return { isValid, validationErrors };
 };
 
@@ -45,10 +44,10 @@ export const checkTextElementValidation = (inputElement: ExtendedHTMLElement, va
   operator?: 'and' | 'or';
   patterns: ValidationPattern[];
 } | undefined, validationErrorBlock: ExtendedHTMLElement, readyToValidate: boolean, mandatory?: boolean): void => {
-  const validationStatus = isTextualFormItemValid(inputElement.value, validationPatterns ?? { patterns: [] }, mandatory);
-  if (readyToValidate && validationStatus.validationErrors.length > 0 && !validationStatus.isValid) {
+  const { isValid, validationErrors } = isTextualFormItemValid(inputElement.value, validationPatterns ?? { patterns: [] }, mandatory);
+  if (readyToValidate && validationErrors.length > 0 && !isValid) {
     inputElement.addClass('validation-error');
-    validationErrorBlock.update({ children: validationStatus.validationErrors.map(message => DomBuilder.getInstance().build({ type: 'span', children: [ message ] })) });
+    validationErrorBlock.update({ children: validationErrors.map(message => DomBuilder.getInstance().build({ type: 'span', children: [ message ] })) });
   } else {
     readyToValidate = false;
     validationErrorBlock.clear();
