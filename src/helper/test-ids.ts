@@ -9,6 +9,7 @@ export default {
     input: 'prompt-input-textarea',
     inputWrapper: 'prompt-input-input-wrapper',
     remainingCharsIndicator: 'prompt-input-remaining-chars-indicator',
+    contextTooltip: 'prompt-input-context-tooltip',
     selectedCommand: 'prompt-input-selected-command',
     quickPicksWrapper: 'prompt-input-quick-picks-wrapper',
     quickPicksGroup: 'prompt-input-quick-picks-group',

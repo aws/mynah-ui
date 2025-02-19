@@ -11,6 +11,8 @@ import testIds from '../../../helper/test-ids';
 import { generateUID } from '../../../main';
 import { Icon } from '../../icon';
 
+const PREVIEW_DELAY = 500;
+
 export interface PromptTextInputProps {
   tabId: string;
   initMaxLength: number;
@@ -28,6 +30,9 @@ export class PromptTextInput {
   private promptInputOverlay: Overlay | null = null;
   private keydownSupport: boolean = true;
   private readonly selectedContext: Record<string, QuickActionCommand> = {};
+  private contextTooltip: Overlay | null;
+  private contextTooltipTimeout: ReturnType<typeof setTimeout>;
+
   constructor (props: PromptTextInputProps) {
     this.props = props;
     this.promptTextInputMaxLength = props.initMaxLength;
@@ -231,6 +236,65 @@ export class PromptTextInput {
     }
   };
 
+  private readonly showContextTooltip = (e: MouseEvent, contextItem: QuickActionCommand): void => {
+    clearTimeout(this.contextTooltipTimeout);
+    this.contextTooltipTimeout = setTimeout(() => {
+      const elm: HTMLElement = e.target as HTMLElement;
+      this.contextTooltip = new Overlay({
+        testId: testIds.prompt.contextTooltip,
+        background: true,
+        closeOnOutsideClick: false,
+        referenceElement: elm,
+        dimOutside: false,
+        removeOtherOverlays: true,
+        verticalDirection: OverlayVerticalDirection.TO_TOP,
+        horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+        children: [
+          DomBuilder.getInstance().build({
+            type: 'div',
+            testId: testIds.prompt.contextTooltip,
+            classNames: [ 'mynah-chat-prompt-context-tooltip' ],
+            children: [
+              ...(contextItem.icon !== undefined
+                ? [
+                    new Icon({
+                      icon: contextItem.icon
+                    }).render
+                  ]
+                : []),
+              {
+                type: 'div',
+                classNames: [ 'mynah-chat-prompt-context-tooltip-container' ],
+                children: [
+                  {
+                    type: 'div',
+                    classNames: [ 'mynah-chat-prompt-context-tooltip-name' ],
+                    children: [ contextItem.command ]
+                  },
+                  ...(contextItem.description !== undefined
+                    ? [ {
+                        type: 'div',
+                        classNames: [ 'mynah-chat-prompt-context-tooltip-description' ],
+                        children: [ contextItem.description ]
+                      } ]
+                    : [])
+                ]
+              }
+            ]
+          })
+        ],
+      });
+    }, PREVIEW_DELAY);
+  };
+
+  private readonly hideContextTooltip = (): void => {
+    clearTimeout(this.contextTooltipTimeout);
+    if (this.contextTooltip !== null) {
+      this.contextTooltip.close();
+      this.contextTooltip = null;
+    }
+  };
+
   public readonly insertContextItem = (contextItem: QuickActionCommand, position: number): void => {
     const temporaryId = generateUID();
     this.selectedContext[temporaryId] = contextItem;
@@ -244,6 +308,12 @@ export class PromptTextInput {
       attributes: {
         'context-tmp-id': temporaryId,
         contenteditable: 'false'
+      },
+      events: {
+        mouseenter: (e) => {
+          this.showContextTooltip(e, contextItem);
+        },
+        mouseleave: this.hideContextTooltip,
       }
     });
     this.insertElementToGivenPosition(contextSpanElement, position, this.getCursorPos());
@@ -373,7 +443,7 @@ export class PromptTextInput {
     this.checkIsEmpty();
   };
 
-  public readonly getCursorLine = (): {cursorLine: number; totalLines: number} => {
+  public readonly getCursorLine = (): { cursorLine: number; totalLines: number } => {
     const lineHeight = parseFloat(window.getComputedStyle(this.promptTextInput, null).getPropertyValue('line-height'));
     const totalLines = Math.floor(this.promptTextInput.scrollHeight / lineHeight);
     let cursorLine = -1;
