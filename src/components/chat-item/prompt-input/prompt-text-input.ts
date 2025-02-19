@@ -290,7 +290,7 @@ export class PromptTextInput {
   private readonly hideContextTooltip = (): void => {
     clearTimeout(this.contextTooltipTimeout);
     if (this.contextTooltip !== null) {
-      this.contextTooltip?.close();
+      this.contextTooltip.close();
       this.contextTooltip = null;
     }
   };
