@@ -5,7 +5,7 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { isTextualFormItemValid } from '../../helper/validator';
+import { checkTextElementValidation } from '../../helper/validator';
 import { ValidationPattern } from '../../static';
 import '../../styles/components/_form-input.scss';
 
@@ -14,6 +14,7 @@ export interface TextAreaProps {
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
+  mandatory?: boolean;
   fireModifierAndEnterKeyPress?: () => void;
   placeholder?: string;
   validationPatterns?: {
@@ -112,17 +113,7 @@ export class TextAreaInternal extends TextAreaAbstract {
     }
   };
 
-  checkValidation = (): void => {
-    const validationStatus = isTextualFormItemValid(this.inputElement.value, this.props.validationPatterns ?? { patterns: [] });
-    if (this.readyToValidate && validationStatus.validationErrors.length > 0) {
-      this.inputElement.addClass('validation-error');
-      this.validationErrorBlock.update({ children: validationStatus.validationErrors.map(message => DomBuilder.getInstance().build({ type: 'span', children: [ message ] })) });
-    } else {
-      this.readyToValidate = false;
-      this.validationErrorBlock.clear();
-      this.inputElement.removeClass('validation-error');
-    }
-  };
+  checkValidation = (): void => checkTextElementValidation(this.inputElement, this.props.validationPatterns, this.validationErrorBlock, this.readyToValidate, this.props.mandatory);
 }
 
 export class TextArea extends TextAreaAbstract {

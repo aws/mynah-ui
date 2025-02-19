@@ -574,7 +574,7 @@ _To send the form, mandatory items should be filled._`,
             id: 'name',
             type: 'textinput',
             mandatory: true,
-            title: `Name (should contain "amazonq" or "aws" in the string)`,
+            title: `Name (should contain "amazonq" and "aws" in the string)`,
             validationPatterns: {
                 operator: 'and',
                 patterns: [{
