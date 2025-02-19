@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { DomBuilder, ExtendedHTMLElement } from '../main';
 import { ValidationPattern } from '../static';
 
 export const isTextualFormItemValid = (value: string, validationPatterns: {
   operator?: 'and' | 'or';
   genericValidationErrorMessage?: string;
   patterns: ValidationPattern[];
-}): {
+}, mandatory?: boolean): {
   isValid: boolean;
   validationErrors: string[];
 } => {
@@ -27,6 +28,8 @@ export const isTextualFormItemValid = (value: string, validationPatterns: {
       return prevValidation || isCurrentPatternValid;
     }, validationPatterns.operator === 'and');
   }
+  // Don't invalidate if the field is empty and non mandatory
+  isValid = isValid || ((value === undefined || value.trim() === '') && (mandatory !== true));
   if (isValid) {
     validationErrors = [];
   } else if (validationErrors.length === 0 && validationPatterns.genericValidationErrorMessage != null) {
@@ -36,3 +39,18 @@ export const isTextualFormItemValid = (value: string, validationPatterns: {
 };
 
 export const isMandatoryItemValid = (value: string): boolean => value !== undefined && value.trim() !== '';
+
+export const checkTextElementValidation = (inputElement: ExtendedHTMLElement, validationPatterns: {
+  operator?: 'and' | 'or';
+  patterns: ValidationPattern[];
+} | undefined, validationErrorBlock: ExtendedHTMLElement, readyToValidate: boolean, mandatory?: boolean): void => {
+  const { isValid, validationErrors } = isTextualFormItemValid(inputElement.value, validationPatterns ?? { patterns: [] }, mandatory);
+  if (readyToValidate && validationErrors.length > 0 && !isValid) {
+    inputElement.addClass('validation-error');
+    validationErrorBlock.update({ children: validationErrors.map(message => DomBuilder.getInstance().build({ type: 'span', children: [ message ] })) });
+  } else {
+    readyToValidate = false;
+    validationErrorBlock.clear();
+    inputElement.removeClass('validation-error');
+  }
+};

@@ -103,6 +103,7 @@ export class ChatItemFormItemsWrapper {
               description,
               fireModifierAndEnterKeyPress,
               value,
+              mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
               ...(this.getValidationHandler(chatItemOption))
@@ -115,6 +116,7 @@ export class ChatItemFormItemsWrapper {
               description,
               fireModifierAndEnterKeyPress,
               value,
+              mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
               ...(this.getValidationHandler(chatItemOption))
@@ -127,6 +129,7 @@ export class ChatItemFormItemsWrapper {
               description,
               fireModifierAndEnterKeyPress,
               value,
+              mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
               type: 'number',
               placeholder: chatItemOption.placeholder,
@@ -140,6 +143,7 @@ export class ChatItemFormItemsWrapper {
               description,
               fireModifierAndEnterKeyPress,
               value,
+              mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
               type: 'email',
               placeholder: chatItemOption.placeholder,
@@ -191,7 +195,7 @@ export class ChatItemFormItemsWrapper {
       validationState = isMandatoryItemValid(value ?? '');
     }
     if (((chatItemOption.type === 'textarea' || chatItemOption.type === 'textinput') && chatItemOption.validationPatterns != null)) {
-      validationState = validationState && isTextualFormItemValid(value ?? '', chatItemOption.validationPatterns ?? { patterns: [] }).isValid;
+      validationState = validationState && isTextualFormItemValid(value ?? '', chatItemOption.validationPatterns ?? { patterns: [] }, chatItemOption.mandatory).isValid;
     }
 
     return validationState;
