@@ -885,6 +885,7 @@ interface ChatItemContent {
     rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
+    flatList?: boolean;
     collapsedByDefault?: boolean;
     hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;
@@ -1774,6 +1775,7 @@ mynahUI.addChatItem(tabId, {
     // rootFolderTitle: "Custom root folder title";
     // collapsedByDefault: true // Collapse the root folder by default
     // hideFileCount: true // Hide the file counter next to folders
+    // flatList: true // Enable to generate a flat list with one parent folder and no sub folders
     actions: {
       'src/App.tsx': [
         {
@@ -1817,6 +1819,8 @@ mynahUI.addChatItem(tabId, {
 **NOTE 2:** You can add actions and details for each file (**but not for folders**). Beware that you need to add those actions for each specific file as a map which **the key needs to be the path of the file**.
 
 **NOTE 3:** In case you want to show one single file (or folder by giving it a folder icon) and not make it clickable, use the `details` section with the file name and set the `clickable` to `false`.
+
+**NOTE 4:** In case you want a flat list, where all subfolders are not rendered but just all the files, you can pass `true` to the `flatList` prop.
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">

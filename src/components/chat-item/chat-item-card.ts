@@ -337,7 +337,7 @@ export class ChatItemCard {
       this.fileTreeWrapper = null;
     }
     if (this.props.chatItem.fileList != null) {
-      const { filePaths = [], deletedFiles = [], actions, details } = this.props.chatItem.fileList;
+      const { filePaths = [], deletedFiles = [], actions, details, flatList } = this.props.chatItem.fileList;
       const referenceSuggestionLabel = this.props.chatItem.body ?? '';
       this.fileTreeWrapper = new ChatItemTreeViewWrapper({
         tabId: this.props.tabId,
@@ -349,6 +349,7 @@ export class ChatItemCard {
         collapsedByDefault: this.props.chatItem.fileList.collapsedByDefault ?? false,
         files: filePaths,
         deletedFiles,
+        flatList,
         actions,
         details,
         references: this.props.chatItem.codeReference ?? [],

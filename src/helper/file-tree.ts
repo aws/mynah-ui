@@ -58,18 +58,56 @@ export const fileListToTree = (
   deletedFilePaths: string[] = [],
   actions?: Record<string, FileNodeAction[]>,
   details?: Record<string, TreeNodeDetails>,
-  rootTitle?: string): TreeNode => {
+  rootTitle?: string,
+  flatList: boolean = false): TreeNode => {
+  if (flatList) {
+    // For flat list, create a single folder with all files
+    const rootNode: FolderNode = {
+      name: rootTitle ?? Config.getInstance().config.texts.changes,
+      type: 'folder',
+      children: []
+    };
+
+    // Process modified files
+    modifiedFilePaths.forEach(filePath => {
+      const fileName = filePath.split('/').pop() ?? filePath;
+      rootNode.children.push({
+        type: 'file',
+        name: fileName,
+        filePath,
+        originalFilePath: filePath,
+        deleted: false,
+        actions: actions !== undefined ? actions[filePath] : undefined,
+        details: details !== undefined ? details[filePath] : undefined,
+      });
+    });
+
+    // Process deleted files
+    deletedFilePaths.forEach(filePath => {
+      const fileName = filePath.split('/').pop() ?? filePath;
+      rootNode.children.push({
+        type: 'file',
+        name: fileName,
+        filePath,
+        originalFilePath: filePath,
+        deleted: true,
+        actions: actions !== undefined ? actions[filePath] : undefined,
+        details: details !== undefined ? details[filePath] : undefined,
+      });
+    });
+
+    return rootNode;
+  }
+
+  // Original hierarchical tree logic
   return [ ...splitFilePaths(modifiedFilePaths, false), ...splitFilePaths(deletedFilePaths, true) ].reduce<TreeNode>(
     (acc, { originalFilePath, filePath, deleted }) => {
-      // pointer to keep track of the current tree node
+      // ... existing code ...
       let currentNode = acc;
       for (let i = 0; i < filePath.length; i++) {
         const fileOrFolder = filePath[i];
-        // we can assume the leaf of each branch is a file. the LLM doesn't generate
-        // empty folder changes
         if (i === filePath.length - 1) {
           const filePathJoined = filePath.join('/');
-          // the parent of a file is always a folder
           (currentNode as FolderNode).children.push({
             type: 'file',
             name: fileOrFolder,
@@ -85,7 +123,6 @@ export const fileListToTree = (
           if (oldItem != null) {
             currentNode = oldItem;
           } else {
-            // if the current fileOrFolder is not in the list, add it as a folder and move the pointer
             const newItem: FolderNode = { name: fileOrFolder, type: 'folder', children: [] };
             (currentNode as FolderNode).children.push(newItem);
             currentNode = newItem;
@@ -94,7 +131,6 @@ export const fileListToTree = (
       }
       return acc;
     },
-    // Start off with a root folder called Changes
     { name: rootTitle ?? Config.getInstance().config.texts.changes, type: 'folder', children: [] }
   );
 };

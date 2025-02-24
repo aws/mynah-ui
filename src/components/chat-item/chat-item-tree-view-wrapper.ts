@@ -21,6 +21,7 @@ export interface ChatItemTreeViewWrapperProps {
   classNames?: string[];
   rootTitle?: string;
   deletedFiles: string[];
+  flatList?: boolean;
   actions?: Record<string, FileNodeAction[]>;
   details?: Record<string, TreeNodeDetails>;
   hideFileCount?: boolean;
@@ -53,7 +54,7 @@ export class ChatItemTreeViewWrapper {
       : new ChatItemTreeView({
         messageId: props.messageId,
         tabId: props.tabId,
-        node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle),
+        node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle, props.flatList),
         hideFileCount: props.hideFileCount,
         collapsedByDefault: props.collapsedByDefault
       }).render;
