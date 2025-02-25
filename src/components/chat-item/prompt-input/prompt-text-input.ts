@@ -67,6 +67,7 @@ export class PromptTextInput {
           } else {
             this.keydownSupport = false;
           }
+          this.hideContextTooltip();
         },
         input: (e: KeyboardEvent) => {
           if (this.props.onInput !== undefined) {
@@ -288,7 +289,9 @@ export class PromptTextInput {
   };
 
   private readonly hideContextTooltip = (): void => {
-    clearTimeout(this.contextTooltipTimeout);
+    if (this.contextTooltipTimeout !== null) {
+      clearTimeout(this.contextTooltipTimeout);
+    }
     if (this.contextTooltip !== null) {
       this.contextTooltip.close();
       this.contextTooltip = null;
