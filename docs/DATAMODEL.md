@@ -885,7 +885,7 @@ interface ChatItemContent {
     rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
-    collapsedByDefault?: boolean;
+    collapsed?: boolean;
     hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
@@ -1772,7 +1772,7 @@ mynahUI.addChatItem(tabId, {
     deletedFiles: ['src/devfile.yaml'],
     // fileTreeTitle: "Custom file tree card title";
     // rootFolderTitle: "Custom root folder title";
-    // collapsedByDefault: true // Collapse the root folder by default
+    // collapsed: true // Collapse the root folder by default
     // hideFileCount: true // Hide the file counter next to folders
     actions: {
       'src/App.tsx': [
