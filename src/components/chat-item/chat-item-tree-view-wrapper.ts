@@ -54,9 +54,10 @@ export class ChatItemTreeViewWrapper {
       : new ChatItemTreeView({
         messageId: props.messageId,
         tabId: props.tabId,
-        node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle, props.flatList),
+        node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle),
         hideFileCount: props.hideFileCount,
-        collapsedByDefault: props.collapsedByDefault
+        collapsedByDefault: props.collapsedByDefault,
+        flatList: props.flatList
       }).render;
 
     this.render = DomBuilder.getInstance().build({

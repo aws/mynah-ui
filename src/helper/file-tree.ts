@@ -58,51 +58,9 @@ export const fileListToTree = (
   deletedFilePaths: string[] = [],
   actions?: Record<string, FileNodeAction[]>,
   details?: Record<string, TreeNodeDetails>,
-  rootTitle?: string,
-  flatList: boolean = false): TreeNode => {
-  if (flatList) {
-    // For flat list, create a single folder with all files
-    const rootNode: FolderNode = {
-      name: rootTitle ?? Config.getInstance().config.texts.changes,
-      type: 'folder',
-      children: []
-    };
-
-    // Process modified files
-    modifiedFilePaths.forEach(filePath => {
-      const fileName = filePath.split('/').pop() ?? filePath;
-      rootNode.children.push({
-        type: 'file',
-        name: fileName,
-        filePath,
-        originalFilePath: filePath,
-        deleted: false,
-        actions: actions !== undefined ? actions[filePath] : undefined,
-        details: details !== undefined ? details[filePath] : undefined,
-      });
-    });
-
-    // Process deleted files
-    deletedFilePaths.forEach(filePath => {
-      const fileName = filePath.split('/').pop() ?? filePath;
-      rootNode.children.push({
-        type: 'file',
-        name: fileName,
-        filePath,
-        originalFilePath: filePath,
-        deleted: true,
-        actions: actions !== undefined ? actions[filePath] : undefined,
-        details: details !== undefined ? details[filePath] : undefined,
-      });
-    });
-
-    return rootNode;
-  }
-
-  // Original hierarchical tree logic
+  rootTitle?: string): TreeNode => {
   return [ ...splitFilePaths(modifiedFilePaths, false), ...splitFilePaths(deletedFilePaths, true) ].reduce<TreeNode>(
     (acc, { originalFilePath, filePath, deleted }) => {
-      // ... existing code ...
       let currentNode = acc;
       for (let i = 0; i < filePath.length; i++) {
         const fileOrFolder = filePath[i];

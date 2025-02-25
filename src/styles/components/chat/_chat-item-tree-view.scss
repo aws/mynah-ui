@@ -57,8 +57,16 @@
 
             > .mynah-chat-item-tree-view-button {
                 gap: var(--mynah-sizing-1);
-                & ~ .mynah-chat-item-pull-request-item {
+                & ~ .mynah-chat-item-pull-request-item:not(.flat-list),
+                &.root ~ .mynah-chat-item-pull-request-item {
                     padding-left: var(--mynah-sizing-5);
+                }
+            }
+
+            &.mynah-chat-tree-view-folder-open.flat-list,
+            &.mynah-chat-tree-view-folder-closed.flat-list {
+                .mynah-chat-item-tree-view-button:not(.root) {
+                    display: none;
                 }
             }
 
