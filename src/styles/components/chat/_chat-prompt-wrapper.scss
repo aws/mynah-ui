@@ -97,7 +97,7 @@
                     overflow-x: hidden;
                     display: block;
                     box-sizing: border-box;
-                    min-height: calc(var(--mynah-line-height) * 5 / 2);
+                    min-height: calc(var(--mynah-line-height) * 3);
 
                     &[disabled] {
                         pointer-events: none;
