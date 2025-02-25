@@ -60,7 +60,7 @@ export class ChatItemTreeView {
       ? this.node.children.map(childNode =>
         DomBuilder.getInstance().build({
           type: 'div',
-          classNames: [ 'mynah-chat-item-pull-request-item' ],
+          classNames: [ 'mynah-chat-item-folder-child' ],
           children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, hideFileCount: this.hideFileCount, messageId: this.messageId }).render ],
         })
       )
@@ -74,7 +74,7 @@ export class ChatItemTreeView {
     const folderItem = new Button({
       testId: testIds.chatItem.fileTree.folder,
       icon: new Icon({ icon: this.isOpen ? MynahIcons.DOWN_OPEN : MynahIcons.RIGHT_OPEN }).render,
-      classNames: [ 'mynah-chat-item-tree-view-button' ],
+      classNames: [ 'mynah-chat-item-tree-view-button', this.depth === 0 ? 'mynah-chat-item-tree-view-root' : '' ],
       label: DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-tree-view-button-title' ],
