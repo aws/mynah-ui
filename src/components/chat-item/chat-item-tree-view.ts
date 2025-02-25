@@ -14,7 +14,6 @@ export interface ChatItemTreeViewProps {
   messageId: string;
   hideFileCount?: boolean;
   collapsedByDefault?: boolean;
-  flatList?: boolean;
 }
 
 export class ChatItemTreeView {
@@ -24,7 +23,6 @@ export class ChatItemTreeView {
   private readonly tabId: string;
   private readonly messageId: string;
   private readonly hideFileCount: boolean;
-  private readonly flatList: boolean;
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemTreeViewProps) {
@@ -33,7 +31,6 @@ export class ChatItemTreeView {
     this.messageId = props.messageId;
     this.hideFileCount = props.hideFileCount ?? false;
     this.isOpen = !(props.collapsedByDefault ?? false);
-    this.flatList = props.flatList ?? false;
     this.depth = props.depth ?? 0;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -45,7 +42,6 @@ export class ChatItemTreeView {
   getClassNames (): string[] {
     return [
       'mynah-chat-item-tree-view',
-      this.flatList ? 'flat-list' : '',
       this.node.type === 'file' ? 'mynah-chat-tree-view-file' : `mynah-chat-tree-view-folder-${this.isOpen ? 'open' : 'closed'}`,
     ];
   }
@@ -64,8 +60,8 @@ export class ChatItemTreeView {
       ? this.node.children.map(childNode =>
         DomBuilder.getInstance().build({
           type: 'div',
-          classNames: [ 'mynah-chat-item-folder-child', this.flatList ? 'flat-list' : '' ],
-          children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, hideFileCount: this.hideFileCount, messageId: this.messageId, flatList: this.flatList }).render ],
+          classNames: [ 'mynah-chat-item-folder-child' ],
+          children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, hideFileCount: this.hideFileCount, messageId: this.messageId }).render ],
         })
       )
       : [];
@@ -78,7 +74,7 @@ export class ChatItemTreeView {
     const folderItem = new Button({
       testId: testIds.chatItem.fileTree.folder,
       icon: new Icon({ icon: this.isOpen ? MynahIcons.DOWN_OPEN : MynahIcons.RIGHT_OPEN }).render,
-      classNames: [ 'mynah-chat-item-tree-view-button', this.depth === 0 ? 'root' : '' ],
+      classNames: [ 'mynah-chat-item-tree-view-button', this.depth === 0 ? 'mynah-chat-item-tree-view-root' : '' ],
       label: DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-tree-view-button-title' ],
