@@ -57,8 +57,8 @@
 
             > .mynah-chat-item-tree-view-button {
                 gap: var(--mynah-sizing-1);
-                & ~ .mynah-chat-item-pull-request-item:not(.flat-list),
-                &.root ~ .mynah-chat-item-pull-request-item {
+                & ~ .mynah-chat-item-folder-child:not(.flat-list),
+                &.root ~ .mynah-chat-item-folder-child {
                     padding-left: var(--mynah-sizing-5);
                 }
             }
@@ -80,7 +80,7 @@
                 opacity: 0.65;
             }
 
-            .mynah-chat-item-pull-request-item {
+            .mynah-chat-item-folder-child {
                 box-sizing: border-box;
             }
         }

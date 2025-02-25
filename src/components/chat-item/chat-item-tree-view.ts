@@ -64,7 +64,7 @@ export class ChatItemTreeView {
       ? this.node.children.map(childNode =>
         DomBuilder.getInstance().build({
           type: 'div',
-          classNames: [ 'mynah-chat-item-pull-request-item', this.flatList ? 'flat-list' : '' ],
+          classNames: [ 'mynah-chat-item-folder-child', this.flatList ? 'flat-list' : '' ],
           children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, hideFileCount: this.hideFileCount, messageId: this.messageId, flatList: this.flatList }).render ],
         })
       )
