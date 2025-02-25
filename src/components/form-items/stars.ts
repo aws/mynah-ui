@@ -12,6 +12,7 @@ export interface StarsProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  description?: ExtendedHTMLElement;
   value?: string;
   onChange?: (value: string) => void;
   initStar?: StarValues;
@@ -75,7 +76,8 @@ export class Stars {
               ]
             },
           ]
-        }
+        },
+        ...[ props.description !== undefined ? props.description : '' ]
       ]
     });
   }

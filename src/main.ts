@@ -26,6 +26,7 @@ import {
   ChatItemType,
   CardRenderDetails,
   PromptAttachmentType,
+  QuickActionCommand,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -54,7 +55,8 @@ export {
   ToggleOption
 } from './components/toggle';
 export {
-  MynahIcons
+  MynahIcons,
+  MynahIconsType
 } from './components/icon';
 export {
   DomBuilder,
@@ -147,6 +149,11 @@ export interface MynahUIProps {
   onTabAdd?: (
     tabId: string,
     eventId?: string) => void;
+  onContextSelected?: (
+    contextItem: QuickActionCommand,
+    tabId: string,
+    eventId?: string
+  ) => boolean;
   onTabRemove?: (
     tabId: string,
     eventId?: string) => void;
@@ -223,6 +230,10 @@ export interface MynahUIProps {
     tabId: string,
     feedbackPayload: FeedbackPayload,
     eventId?: string) => void;
+  onFormModifierEnterPress?: (
+    formData: Record<string, string>,
+    tabId: string,
+    eventId?: string) => void;
   onCustomFormAction?: (
     tabId: string,
     action: {
@@ -256,6 +267,13 @@ export interface MynahUIProps {
     tabId: string,
     buttonId: string,
     eventId?: string) => void;
+  onQuickCommandGroupActionClick?: (
+    tabId: string,
+    action: {
+      id: string;
+    },
+    eventId?: string) => void;
+
 }
 
 export class MynahUI {
@@ -441,6 +459,23 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_SELECTED, (data: {
+      contextItem: QuickActionCommand;
+      tabId: string;
+      promptInputCallback: (insert: boolean) => void;
+    }) => {
+      data.promptInputCallback(this.props.onContextSelected === undefined || this.props.onContextSelected(data.contextItem, data.tabId, this.getUserEventId()));
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, (data: {
+      formData: Record<string, string>;
+      tabId: string;
+    }) => {
+      if (this.props.onFormModifierEnterPress !== undefined) {
+        this.props.onFormModifierEnterPress(data.formData, data.tabId, this.getUserEventId());
+      }
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.BODY_ACTION_CLICKED, (data: {
       tabId: string;
       messageId: string;
@@ -453,6 +488,17 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           id: data.actionId,
           text: data.actionText,
           formItemValues: data.formItemValues
+        }, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, (data: {
+      tabId: string;
+      actionId: string;
+    }) => {
+      if (this.props.onQuickCommandGroupActionClick !== undefined) {
+        this.props.onQuickCommandGroupActionClick(data.tabId, {
+          id: data.actionId,
         }, this.getUserEventId());
       }
     });
@@ -826,6 +872,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    * @returns string selectedTabId or undefined
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
+
+  public getTabData = (tabId: string): any => MynahUITabsStore.getInstance().getTabDataStore(tabId);
 
   /**
    * Toggles the visibility of the splash loader screen

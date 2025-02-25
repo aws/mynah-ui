@@ -22,20 +22,20 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   await waitForAnimationEnd(page);
 
   // The input should start as the input with two lines
-  expect(await promptInput.inputValue()).toBe(secondPrompt);
+  expect(await promptInput.innerText()).toBe(secondPrompt);
 
   // Input should remain the same and the cursor position should move to the first line
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
-  expect(await promptInput.inputValue()).toBe(secondPrompt);
+  expect(await promptInput.innerText()).toBe(secondPrompt);
 
   // Now that we're in the first line, it should navigate to the first user prompt
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
-  expect(await promptInput.inputValue()).toBe(firstPrompt);
+  expect(await promptInput.innerHTML()).toBe(firstPrompt);
 
   // Given that this input only has one line, we should be able to go down to prompt 2 immediately again
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
-  expect(await promptInput.inputValue()).toBe(secondPrompt);
+  expect(await promptInput.innerText()).toBe(secondPrompt);
 };

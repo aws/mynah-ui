@@ -5,13 +5,13 @@
 
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
-import { Icon, MynahIcons } from './icon';
+import { Icon, MynahIcons, MynahIconsType } from './icon';
 import '../styles/components/_title-description-icon.scss';
 
 interface TitleDescriptionWithIconProps {
   title?: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
   description?: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   testId?: string;
   classNames?: string[];
 }

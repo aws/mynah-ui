@@ -868,6 +868,7 @@ type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAc
 
 // ################################# 
 interface ChatItemContent {
+  header?: ChatItemContent | null;
   body?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
@@ -884,6 +885,9 @@ interface ChatItemContent {
     rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
+    flatList?: boolean;
+    collapsed?: boolean;
+    hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
   } | null;
@@ -1071,6 +1075,43 @@ mynahUI.addChatItem('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/chatItems/systemPrompt.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `header`
+With this parameter, you can add a `ChatItem` at the top of a ChatItem, before the body, but still within the card itself.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  body: `SOME CONTENT`,
+  header: {
+    fileList: { // For example, want to show which file is used to generate that answer
+      rootFolderTitle: undefined,
+      fileTreeTitle: '',
+      filePaths: ['./src/index.ts'],
+      details: {
+        './src/index.ts': {
+          icon: MynahIcons.FILE,
+          description: `SOME DESCRIPTION.`
+        }
+      }
+    }
+  }
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/header.png" alt="header" style="max-width:600px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -1732,6 +1773,9 @@ mynahUI.addChatItem(tabId, {
     deletedFiles: ['src/devfile.yaml'],
     // fileTreeTitle: "Custom file tree card title";
     // rootFolderTitle: "Custom root folder title";
+    // collapsed: true // Collapse the root folder by default
+    // hideFileCount: true // Hide the file counter next to folders
+    // flatList: true // Enable to generate a flat list with one parent folder and no sub folders
     actions: {
       'src/App.tsx': [
         {
@@ -1775,6 +1819,8 @@ mynahUI.addChatItem(tabId, {
 **NOTE 2:** You can add actions and details for each file (**but not for folders**). Beware that you need to add those actions for each specific file as a map which **the key needs to be the path of the file**.
 
 **NOTE 3:** In case you want to show one single file (or folder by giving it a folder icon) and not make it clickable, use the `details` section with the file name and set the `clickable` to `false`.
+
+**NOTE 4:** In case you want a flat list, where all subfolders are not rendered but just all the files, you can pass `true` to the `flatList` prop.
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
@@ -2034,8 +2080,10 @@ interface ChatItemFormItem {
   type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup'; // type (see below for each of them)
   mandatory?: boolean; // If it is set to true, buttons in the same card with waitMandatoryFormItems set to true will wait them to be filled
   title?: string; // Label of the input
+  description?: string; // The description, showing under the input field itself
   placeholder?: string; // Placeholder for input, but only applicable to textarea, textinput and numericinput
   value?: string; // Initial value of the item. All types of form items will get and return string values, conversion of the value type is up to you
+  checkModifierEnterKeyPress?: boolean; // Only applicable to textual inputs: whether the onFormModifierEnterPress event can be triggered from this input field
   options?: Array<{ // Only applicable to select and radiogroup types
     value: string;
     label: string;
@@ -2122,6 +2170,7 @@ mynahUI.addChatItem(tabId, {
             mandatory: true,
             title: `Email`,
             placeholder: 'email',
+            checkModifierEnterKeyPress: true
         },
         {
             id: 'name',
