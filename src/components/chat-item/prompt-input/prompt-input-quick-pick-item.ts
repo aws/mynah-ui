@@ -46,7 +46,7 @@ export class PromptInputQuickPickItem {
         {
           type: 'div',
           classNames: [ 'mynah-chat-command-selector-command-name' ],
-          children: [ this.props.quickPickItem.command ]
+          innerHTML: this.props.quickPickItem.command
         },
         ...(this.props.quickPickItem.description !== undefined
           ? [ {

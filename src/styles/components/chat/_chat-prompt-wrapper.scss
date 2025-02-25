@@ -116,7 +116,7 @@
                             color: var(--mynah-color-text-weak);
                             max-width: 100%;
                             overflow: hidden;
-                            white-space: over;
+                            overflow-wrap: break-word;
                             box-sizing: border-box;
                         }
                     }
@@ -388,5 +388,8 @@
         > .mynah-chat-prompt-input-inner-wrapper
         > .mynah-chat-prompt-input {
         min-height: var(--mynah-line-height);
+        &.empty::before {
+            white-space: nowrap;
+        }
     }
 }
