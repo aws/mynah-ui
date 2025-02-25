@@ -413,7 +413,7 @@ export class ChatPromptInput {
                   } else {
                     this.searchTerm = this.searchTerm.slice(0, -1);
                   }
-                } else {
+                } else if (e.key.length === 1) {
                   this.searchTerm += e.key.toLowerCase();
                 }
                 this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
@@ -483,6 +483,7 @@ export class ChatPromptInput {
       this.quickPickItemsSelectorContainer = new PromptInputQuickPickSelector({
         quickPickGroupList,
         onQuickPickGroupActionClick: (action) => {
+          this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, {
             tabId: this.props.tabId,
             actionId: action.id

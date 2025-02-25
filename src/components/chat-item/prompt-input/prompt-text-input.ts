@@ -25,6 +25,7 @@ export interface PromptTextInputProps {
 export class PromptTextInput {
   render: ExtendedHTMLElement;
   promptTextInputMaxLength: number;
+  private lastCursorIndex: number = 0;
   private readonly props: PromptTextInputProps;
   private readonly promptTextInput: ExtendedHTMLElement;
   private promptInputOverlay: Overlay | null = null;
@@ -69,6 +70,9 @@ export class PromptTextInput {
           }
           this.hideContextTooltip();
         },
+        keyup: (e: KeyboardEvent) => {
+          this.lastCursorIndex = this.updateCursorPos();
+        },
         input: (e: KeyboardEvent) => {
           if (this.props.onInput !== undefined) {
             this.props.onInput(e);
@@ -80,12 +84,39 @@ export class PromptTextInput {
           if (typeof this.props.onFocus !== 'undefined') {
             this.props.onFocus();
           }
+          this.lastCursorIndex = this.updateCursorPos();
         },
         blur: () => {
           if (typeof this.props.onBlur !== 'undefined') {
             this.props.onBlur();
           }
-        }
+        },
+        paste: (e: ClipboardEvent) => {
+          // Prevent the default paste behavior
+          e.preventDefault();
+
+          // Get plain text from clipboard
+          const text = e.clipboardData?.getData('text/plain') ?? '';
+
+          // Insert text at cursor position
+          const selection = window.getSelection();
+          if ((selection?.rangeCount) != null) {
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(document.createTextNode(text));
+
+            // Move cursor to end of inserted text
+            range.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+
+          // Check if input is empty and trigger input event
+          this.checkIsEmpty();
+          if (this.props.onInput != null) {
+            this.props.onInput(new KeyboardEvent('input'));
+          }
+        },
       },
     });
 
@@ -132,8 +163,26 @@ export class PromptTextInput {
     this.clear();
   }
 
+  private readonly updateCursorPos = (): number => {
+    const selection = window.getSelection();
+    if ((selection == null) || (selection.rangeCount === 0)) return 0;
+
+    const range = selection.getRangeAt(0);
+    const container = this.promptTextInput;
+
+    // If the selection is not within our container, return 0
+    if (!container.contains(range.commonAncestorContainer)) return 0;
+
+    // Get the range from start of container to cursor position
+    const preCaretRange = range.cloneRange();
+    preCaretRange.selectNodeContents(container);
+    preCaretRange.setEnd(range.endContainer, range.endOffset);
+
+    return preCaretRange.toString().length;
+  };
+
   private readonly checkIsEmpty = (): void => {
-    if (this.promptTextInput.textContent === '') {
+    if (this.promptTextInput.textContent === '' && this.promptTextInput.querySelectorAll('span.context').length === 0) {
       this.promptTextInput.addClass('empty');
       this.render.addClass('no-text');
     } else {
@@ -292,7 +341,7 @@ export class PromptTextInput {
     if (this.contextTooltipTimeout !== null) {
       clearTimeout(this.contextTooltipTimeout);
     }
-    if (this.contextTooltip !== null) {
+    if (this.contextTooltip != null) {
       this.contextTooltip.close();
       this.contextTooltip = null;
     }
@@ -342,22 +391,11 @@ export class PromptTextInput {
         ],
       });
     }
+
+    this.checkIsEmpty();
   };
 
-  public readonly getCursorPos = (): number => {
-    let position = 0;
-    const selection = window.getSelection();
-
-    if ((selection != null) && selection.rangeCount !== 0) {
-      const range = selection.getRangeAt(0);
-      const preCaretRange = range.cloneRange();
-      preCaretRange.selectNodeContents(this.promptTextInput);
-      preCaretRange.setEnd(range.endContainer, range.endOffset);
-      position = preCaretRange.toString().length;
-    }
-
-    return position;
-  };
+  public readonly getCursorPos = (): number => this.lastCursorIndex;
 
   public readonly clear = (): void => {
     this.promptTextInput.innerHTML = '';

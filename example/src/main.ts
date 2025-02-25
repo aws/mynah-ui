@@ -230,7 +230,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`New tab added: <b>${tabId}</b>`);
     },
     onContextSelected(contextItem) {
-      if (contextItem.command === 'add_prompt') {
+      if (contextItem.command === 'Add Prompt') {
         Log('Custom context action triggered for adding a prompt!')
         return false;
       }
