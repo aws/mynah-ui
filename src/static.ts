@@ -271,6 +271,7 @@ export interface ChatItemContent {
     rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
+    flatList?: boolean;
     collapsed?: boolean;
     hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;

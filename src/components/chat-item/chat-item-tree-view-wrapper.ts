@@ -21,6 +21,7 @@ export interface ChatItemTreeViewWrapperProps {
   classNames?: string[];
   rootTitle?: string;
   deletedFiles: string[];
+  flatList?: boolean;
   actions?: Record<string, FileNodeAction[]>;
   details?: Record<string, TreeNodeDetails>;
   hideFileCount?: boolean;
@@ -61,7 +62,7 @@ export class ChatItemTreeViewWrapper {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.chatItem.fileTree.wrapper,
-      classNames: [ 'mynah-chat-item-tree-view-wrapper', ...(props.classNames ?? []) ],
+      classNames: [ 'mynah-chat-item-tree-view-wrapper', props.flatList === true ? 'mynah-chat-item-tree-view-flat-list' : '', ...(props.classNames ?? []) ],
       children: [
         {
           type: 'div',
