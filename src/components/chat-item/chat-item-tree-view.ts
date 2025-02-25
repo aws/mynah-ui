@@ -13,7 +13,7 @@ export interface ChatItemTreeViewProps {
   tabId: string;
   messageId: string;
   hideFileCount?: boolean;
-  collapsedByDefault?: boolean;
+  collapsed?: boolean;
 }
 
 export class ChatItemTreeView {
@@ -30,7 +30,7 @@ export class ChatItemTreeView {
     this.tabId = props.tabId;
     this.messageId = props.messageId;
     this.hideFileCount = props.hideFileCount ?? false;
-    this.isOpen = !(props.collapsedByDefault ?? false);
+    this.isOpen = !(props.collapsed ?? false);
     this.depth = props.depth ?? 0;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
