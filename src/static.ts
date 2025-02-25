@@ -272,6 +272,7 @@ export interface ChatItemContent {
     filePaths?: string[];
     deletedFiles?: string[];
     flatList?: boolean;
+    folderIcon?: MynahIcons | MynahIconsType | null;
     collapsed?: boolean;
     hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;

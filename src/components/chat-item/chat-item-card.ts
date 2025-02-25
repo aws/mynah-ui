@@ -346,6 +346,7 @@ export class ChatItemCard {
         messageId: this.props.chatItem.messageId ?? '',
         cardTitle: this.props.chatItem.fileList.fileTreeTitle,
         rootTitle: this.props.chatItem.fileList.rootFolderTitle,
+        folderIcon: this.props.chatItem.fileList.folderIcon,
         hideFileCount: this.props.chatItem.fileList.hideFileCount ?? false,
         collapsed: this.props.chatItem.fileList.collapsed ?? false,
         files: filePaths,
