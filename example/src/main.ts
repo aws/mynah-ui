@@ -230,7 +230,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`New tab added: <b>${tabId}</b>`);
     },
     onContextSelected(contextItem) {
-      if (contextItem.command === 'add_prompt') {
+      if (contextItem.command === 'Add Prompt') {
         Log('Custom context action triggered for adding a prompt!')
         return false;
       }
@@ -744,7 +744,37 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     });
     connector
       .requestGenerativeAIAnswer(
-        optionalParts ?? exampleStreamParts,
+        optionalParts ?? [
+          {
+            ...exampleStreamParts[0],
+            header: {
+              fileList: {
+                collapsed: true,
+                hideFileCount: true,
+                flatList: true,
+                rootFolderTitle: 'Context',
+                folderIcon: null,
+                fileTreeTitle: '',
+                filePaths: ['./src/index.ts', './main','js_expert'],
+                details: {
+                  './src/index.ts': {
+                    icon: MynahIcons.FILE,
+                    description: `**index.ts** under **src** folder is
+used as a context to generate this message.`
+                  },
+                  './main': {
+                    icon: MynahIcons.FOLDER,
+                  },
+                  'js_expert': {
+                    icon: MynahIcons.CHAT,
+                  }
+                }
+              }
+            }
+          },
+          {
+            header: undefined,
+          }, ...exampleStreamParts],
         (chatItem: Partial<ChatItem>, percentage: number) => {
           if (streamingMessageId != null) {
             mynahUI.updateChatAnswerWithMessageId(tabId, streamingMessageId, chatItem);
@@ -763,23 +793,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           return true;
         },
         () => {
-          const cardDetails = mynahUI.endMessageStream(tabId, messageId, {
-            footer: {
-              fileList: {
-                rootFolderTitle: undefined,
-                fileTreeTitle: '',
-                filePaths: ['./src/index.ts'],
-                details: {
-                  './src/index.ts': {
-                    icon: MynahIcons.FILE,
-                    clickable: false,
-                    description: `Files used for this response: **index.ts**
-Use \`@\` to mention a file, folder, or method.`
-                  }
-                }
-              }
-            }
-          }) as Record<string, any>;
+          const cardDetails = mynahUI.endMessageStream(tabId, messageId, {}) as Record<string, any>;
 
           mynahUI.updateStore(tabId, {
             loadingChat: false,

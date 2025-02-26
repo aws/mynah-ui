@@ -4,7 +4,7 @@ import { cancelEvent } from '../../helper/events';
 import { TreeNode } from '../../helper/file-tree';
 import testIds from '../../helper/test-ids';
 import { Button } from '../button';
-import { Icon, MynahIcons } from '../icon';
+import { Icon, MynahIcons, MynahIconsType } from '../icon';
 import { ChatItemTreeFile } from './chat-item-tree-file';
 
 export interface ChatItemTreeViewProps {
@@ -14,10 +14,12 @@ export interface ChatItemTreeViewProps {
   messageId: string;
   hideFileCount?: boolean;
   collapsed?: boolean;
+  folderIcon?: MynahIcons | MynahIconsType | null;
 }
 
 export class ChatItemTreeView {
   private readonly node: TreeNode;
+  private readonly folderIcon: MynahIcons | MynahIconsType | null;
   private isOpen: boolean;
   private readonly depth: number;
   private readonly tabId: string;
@@ -27,6 +29,7 @@ export class ChatItemTreeView {
 
   constructor (props: ChatItemTreeViewProps) {
     this.node = props.node;
+    this.folderIcon = props.folderIcon === null ? null : props.folderIcon ?? MynahIcons.FOLDER;
     this.tabId = props.tabId;
     this.messageId = props.messageId;
     this.hideFileCount = props.hideFileCount ?? false;
@@ -61,7 +64,14 @@ export class ChatItemTreeView {
         DomBuilder.getInstance().build({
           type: 'div',
           classNames: [ 'mynah-chat-item-folder-child' ],
-          children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, hideFileCount: this.hideFileCount, messageId: this.messageId }).render ],
+          children: [ new ChatItemTreeView({
+            folderIcon: this.folderIcon,
+            node: childNode,
+            depth: this.depth + 1,
+            tabId: this.tabId,
+            hideFileCount: this.hideFileCount,
+            messageId: this.messageId
+          }).render ],
         })
       )
       : [];
@@ -79,7 +89,7 @@ export class ChatItemTreeView {
         type: 'div',
         classNames: [ 'mynah-chat-item-tree-view-button-title' ],
         children: [
-          new Icon({ icon: MynahIcons.FOLDER }).render,
+          ...(this.folderIcon !== null ? [ new Icon({ icon: this.folderIcon }).render ] : []),
           {
             type: 'span',
             children: [ this.node.name ]

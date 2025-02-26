@@ -14,7 +14,7 @@ export interface PromptInputQuickPickSelectorProps {
 export class PromptInputQuickPickSelector {
   render: ExtendedHTMLElement;
   private readonly props: PromptInputQuickPickSelectorProps;
-  private activeTargetElementIndex: number = -1;
+  private activeTargetElementIndex: number = 0;
   private allSelectableQuickPickElements: PromptInputQuickPickItem[] = [];
   constructor (props: PromptInputQuickPickSelectorProps) {
     this.props = props;
@@ -27,7 +27,7 @@ export class PromptInputQuickPickSelector {
   }
 
   private readonly getQuickPickGroups = (): ExtendedHTMLElement[] => {
-    return this.props.quickPickGroupList.map((quickPickGroup) => {
+    const groups = this.props.quickPickGroupList.map((quickPickGroup) => {
       return DomBuilder.getInstance().build({
         type: 'div',
         testId: testIds.prompt.quickPicksGroup,
@@ -72,6 +72,8 @@ export class PromptInputQuickPickSelector {
         ]
       });
     });
+    this.allSelectableQuickPickElements[0]?.setFocus(true);
+    return groups;
   };
 
   public readonly changeTarget = (direction: 'up' | 'down'): void => {
@@ -91,9 +93,7 @@ export class PromptInputQuickPickSelector {
         }
       }
 
-      if (this.activeTargetElementIndex !== -1) {
-        this.allSelectableQuickPickElements[this.activeTargetElementIndex].setFocus(false);
-      }
+      this.allSelectableQuickPickElements[this.activeTargetElementIndex].setFocus(false);
       this.activeTargetElementIndex = nextElementIndex;
       this.allSelectableQuickPickElements[this.activeTargetElementIndex].setFocus(true);
     }
@@ -107,7 +107,7 @@ export class PromptInputQuickPickSelector {
   };
 
   public readonly updateList = (quickPickGroupList: QuickActionCommandGroup[]): void => {
-    this.activeTargetElementIndex = -1;
+    this.activeTargetElementIndex = 0;
     this.allSelectableQuickPickElements = [];
     this.props.quickPickGroupList = quickPickGroupList;
     this.render.update({

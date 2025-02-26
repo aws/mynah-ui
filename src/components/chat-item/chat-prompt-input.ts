@@ -17,7 +17,7 @@ import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
 import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
-import { filterQuickPickItems } from '../../helper/quick-pick-data-handler';
+import { filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
 import { PromptInputQuickPickSelector } from './prompt-input/prompt-input-quick-pick-selector';
 
 // 96 extra is added as a threshold to allow for attachments
@@ -65,6 +65,7 @@ export class ChatPromptInput {
   private readonly userPromptHistory: UserPrompt[] = [];
   private userPromptHistoryIndex: number = -1;
   private lastUnsentUserPrompt: UserPrompt;
+  private readonly markerRemovalRegex = new RegExp(`${MARK_OPEN}|${MARK_CLOSE}`, 'g');
   constructor (props: ChatPromptInputProps) {
     this.props = props;
     this.promptTextInputCommand = new ChatPromptInputCommand({
@@ -413,7 +414,7 @@ export class ChatPromptInput {
                   } else {
                     this.searchTerm = this.searchTerm.slice(0, -1);
                   }
-                } else {
+                } else if (e.key.length === 1) {
                   this.searchTerm += e.key.toLowerCase();
                 }
                 this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
@@ -483,6 +484,7 @@ export class ChatPromptInput {
       this.quickPickItemsSelectorContainer = new PromptInputQuickPickSelector({
         quickPickGroupList,
         onQuickPickGroupActionClick: (action) => {
+          this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, {
             tabId: this.props.tabId,
             actionId: action.id
@@ -503,8 +505,13 @@ export class ChatPromptInput {
   };
 
   private readonly handleQuickActionCommandSelection = (
-    quickActionCommand: QuickActionCommand,
+    dirtyQuickActionCommand: QuickActionCommand,
     method: 'enter' | 'tab' | 'space' | 'click'): void => {
+    const quickActionCommand = {
+      ...dirtyQuickActionCommand,
+      command: dirtyQuickActionCommand.command.replace(this.markerRemovalRegex, '')
+    };
+
     this.selectedCommand = quickActionCommand.command;
     this.promptTextInput.updateTextInputValue('');
     if (quickActionCommand.placeholder !== undefined) {
@@ -524,16 +531,17 @@ export class ChatPromptInput {
     }
   };
 
-  private readonly handleContextCommandSelection = (contextCommand: QuickActionCommand): void => {
+  private readonly handleContextCommandSelection = (dirtyContextCommand: QuickActionCommand): void => {
+    const contextCommand: QuickActionCommand = {
+      ...dirtyContextCommand,
+      command: dirtyContextCommand.command.replace(this.markerRemovalRegex, '')
+    };
     // Check if the selected command has children
-    const children = this.quickPickItemGroups
-      .flatMap(group => group.commands)
-      .find(cmd => cmd.command === contextCommand.command)?.children;
-    if (children != null && children.length > 0) {
+    if (contextCommand.children?.[0] != null) {
       this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex + 1, this.promptTextInput.getCursorPos());
-      this.quickPickItemGroups = [ ...children ];
+      this.quickPickItemGroups = [ ...contextCommand.children ];
       this.quickPick.updateContent([
-        this.getQuickPickItemGroups(children)
+        this.getQuickPickItemGroups(contextCommand.children)
       ]);
     } else {
       this.quickPick.close();

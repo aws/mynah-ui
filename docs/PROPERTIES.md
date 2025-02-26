@@ -528,7 +528,7 @@ This event will be fired whenever a user selects an item from the context (`@`) 
 ```typescript
 ...
 onContextSelected(contextItem: QuickActionCommand) {
-  if (contextItem.command === 'add_prompt') {
+  if (contextItem.command === 'Add Prompt') {
     Log('Custom context action triggered for adding a prompt!')
     return false;
   }

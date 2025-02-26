@@ -200,36 +200,37 @@ export class ChatItemCard {
       this.initialSpinner?.[0]?.remove();
     }
 
-    /**
-     * Clear header block
-     */
-    if (this.cardHeader != null) {
-      this.cardHeader.remove();
-      this.cardHeader = null;
-    }
-    if (this.props.chatItem.header != null) {
-      this.cardHeader = this.getCardHeader();
-      this.card?.render.insertChild('beforeend', this.cardHeader);
-
-      /**
-       * Generate header if available
-       */
-      if (this.header != null) {
-        this.header.render.remove();
-        this.header = null;
+    // If no data is provided for the header
+    // skip removing and checking it
+    if (this.props.chatItem.header !== undefined) {
+      if (this.cardHeader != null) {
+        this.cardHeader.remove();
+        this.cardHeader = null;
       }
       if (this.props.chatItem.header != null) {
-        this.header = new ChatItemCard({
-          tabId: this.props.tabId,
-          small: true,
-          inline: true,
-          chatItem: {
-            ...this.props.chatItem.header,
-            type: ChatItemType.ANSWER,
-            messageId: this.props.chatItem.messageId
-          }
-        });
-        this.cardHeader.insertChild('beforeend', this.header.render);
+        this.cardHeader = this.getCardHeader();
+        this.card?.render.insertChild('beforeend', this.cardHeader);
+
+        /**
+         * Generate header if available
+         */
+        if (this.header != null) {
+          this.header.render.remove();
+          this.header = null;
+        }
+        if (this.props.chatItem.header != null) {
+          this.header = new ChatItemCard({
+            tabId: this.props.tabId,
+            small: true,
+            inline: true,
+            chatItem: {
+              ...this.props.chatItem.header,
+              type: ChatItemType.ANSWER,
+              messageId: this.props.chatItem.messageId
+            }
+          });
+          this.cardHeader.insertChild('beforeend', this.header.render);
+        }
       }
     }
 
@@ -345,6 +346,7 @@ export class ChatItemCard {
         messageId: this.props.chatItem.messageId ?? '',
         cardTitle: this.props.chatItem.fileList.fileTreeTitle,
         rootTitle: this.props.chatItem.fileList.rootFolderTitle,
+        folderIcon: this.props.chatItem.fileList.folderIcon,
         hideFileCount: this.props.chatItem.fileList.hideFileCount ?? false,
         collapsed: this.props.chatItem.fileList.collapsed ?? false,
         files: filePaths,

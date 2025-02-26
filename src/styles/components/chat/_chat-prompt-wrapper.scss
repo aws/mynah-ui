@@ -97,7 +97,7 @@
                     overflow-x: hidden;
                     display: block;
                     box-sizing: border-box;
-                    min-height: var(--mynah-line-height);
+                    min-height: calc(var(--mynah-line-height) * 3);
 
                     &[disabled] {
                         pointer-events: none;
@@ -115,8 +115,9 @@
                             font-size: inherit;
                             color: var(--mynah-color-text-weak);
                             max-width: 100%;
-                            white-space: nowrap;
                             overflow: hidden;
+                            overflow-wrap: break-word;
+                            box-sizing: border-box;
                         }
                     }
 
@@ -377,5 +378,18 @@
         margin-bottom: 0;
         max-width: 100%;
         box-sizing: border-box;
+    }
+}
+
+@media only screen and (max-height: 450px) {
+    > .mynah-chat-prompt-wrapper
+        > .mynah-chat-prompt
+        > .mynah-chat-prompt-input-wrapper
+        > .mynah-chat-prompt-input-inner-wrapper
+        > .mynah-chat-prompt-input {
+        min-height: var(--mynah-line-height);
+        &.empty::before {
+            white-space: nowrap;
+        }
     }
 }

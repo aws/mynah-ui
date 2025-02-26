@@ -32,35 +32,38 @@ export class PromptInputQuickPickItem {
       children: [
         ...(this.props.quickPickItem.icon !== undefined
           ? [
-              new Icon({
-                icon: this.props.quickPickItem.icon
-              }).render
+              {
+                type: 'div',
+                classNames: [ 'mynah-chat-command-selector-icon' ],
+                children: [
+                  new Icon({
+                    icon: this.props.quickPickItem.icon
+                  }).render
+                ]
+              }
             ]
           : []),
         {
           type: 'div',
-          classNames: [ 'mynah-chat-command-selector-command-container' ],
-          children: [
-            {
-              type: 'div',
-              classNames: [ 'mynah-chat-command-selector-command-name' ],
-              children: [ this.props.quickPickItem.command ]
-            },
-            ...(this.props.quickPickItem.description !== undefined
-              ? [ {
-                  type: 'div',
-                  classNames: [ 'mynah-chat-command-selector-command-description' ],
-                  children: [ this.props.quickPickItem.description ]
-                } ]
-              : [])
-          ]
+          classNames: [ 'mynah-chat-command-selector-command-name' ],
+          innerHTML: this.props.quickPickItem.command
         },
+        ...(this.props.quickPickItem.description !== undefined
+          ? [ {
+              type: 'div',
+              classNames: [ 'mynah-chat-command-selector-command-description' ],
+              children: [ this.props.quickPickItem.description ]
+            } ]
+          : []),
         ...((this.props.quickPickItem.children != null) && this.props.quickPickItem.children.length > 0
           ? [
-              new Icon({
-                icon: 'right-open',
-                classNames: [ 'mynah-chat-command-selector-command-arrow-icon' ]
-              }).render
+              {
+                type: 'div',
+                classNames: [ 'mynah-chat-command-selector-command-arrow-icon' ],
+                children: [
+                  new Icon({ icon: 'right-open' }).render
+                ]
+              }
             ]
           : [])
       ]
