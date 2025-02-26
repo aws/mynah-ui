@@ -65,6 +65,7 @@ export class ChatPromptInput {
   private readonly userPromptHistory: UserPrompt[] = [];
   private userPromptHistoryIndex: number = -1;
   private lastUnsentUserPrompt: UserPrompt;
+  private readonly markerRemovalRegex = new RegExp(`${MARK_OPEN}|${MARK_CLOSE}`, 'g');
   constructor (props: ChatPromptInputProps) {
     this.props = props;
     this.promptTextInputCommand = new ChatPromptInputCommand({
@@ -508,7 +509,7 @@ export class ChatPromptInput {
     method: 'enter' | 'tab' | 'space' | 'click'): void => {
     const quickActionCommand = {
       ...dirtyQuickActionCommand,
-      command: dirtyQuickActionCommand.command.replace(new RegExp(`${MARK_OPEN}|${MARK_CLOSE}`, 'g'), '')
+      command: dirtyQuickActionCommand.command.replace(this.markerRemovalRegex, '')
     };
 
     this.selectedCommand = quickActionCommand.command;
@@ -531,12 +532,12 @@ export class ChatPromptInput {
   };
 
   private readonly handleContextCommandSelection = (dirtyContextCommand: QuickActionCommand): void => {
-    const contextCommand = {
+    const contextCommand: QuickActionCommand = {
       ...dirtyContextCommand,
-      command: dirtyContextCommand.command.replace(new RegExp(`${MARK_OPEN}|${MARK_CLOSE}`, 'g'), '')
+      command: dirtyContextCommand.command.replace(this.markerRemovalRegex, '')
     };
     // Check if the selected command has children
-    if (contextCommand.children != null && contextCommand.children?.length > 0) {
+    if (contextCommand.children?.[0] != null) {
       this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex + 1, this.promptTextInput.getCursorPos());
       this.quickPickItemGroups = [ ...contextCommand.children ];
       this.quickPick.updateContent([

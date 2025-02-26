@@ -91,30 +91,31 @@ export class PromptTextInput {
             this.props.onBlur();
           }
         },
-        paste: (e: ClipboardEvent) => {
+        paste: (e: ClipboardEvent): void => {
           // Prevent the default paste behavior
           e.preventDefault();
 
           // Get plain text from clipboard
-          const text = e.clipboardData?.getData('text/plain') ?? '';
+          const text = e.clipboardData?.getData('text/plain');
+          if (text != null) {
+            // Insert text at cursor position
+            const selection = window.getSelection();
+            if ((selection?.rangeCount) != null) {
+              const range = selection.getRangeAt(0);
+              range.deleteContents();
+              range.insertNode(document.createTextNode(text));
 
-          // Insert text at cursor position
-          const selection = window.getSelection();
-          if ((selection?.rangeCount) != null) {
-            const range = selection.getRangeAt(0);
-            range.deleteContents();
-            range.insertNode(document.createTextNode(text));
+              // Move cursor to end of inserted text
+              range.collapse(false);
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }
 
-            // Move cursor to end of inserted text
-            range.collapse(false);
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }
-
-          // Check if input is empty and trigger input event
-          this.checkIsEmpty();
-          if (this.props.onInput != null) {
-            this.props.onInput(new KeyboardEvent('input'));
+            // Check if input is empty and trigger input event
+            this.checkIsEmpty();
+            if (this.props.onInput != null) {
+              this.props.onInput(new KeyboardEvent('input'));
+            }
           }
         },
       },
