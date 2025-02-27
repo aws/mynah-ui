@@ -231,6 +231,11 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 groupName: 'Files',
                 commands: [
                   {
+                    command: 'monarch.ts',
+                    description: './src/',
+                    icon: MynahIcons.FILE,
+                  },
+                  {
                     command: 'main.ts',
                     description: './src/',
                     icon: MynahIcons.FILE,
@@ -238,6 +243,11 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                   {
                     command: 'button.ts',
                     description: './src/components/',
+                    icon: MynahIcons.FILE,
+                  },
+                  {
+                    command: 'ex-dom.ts',
+                    description: './src/helper/',
                     icon: MynahIcons.FILE,
                   },
                   {

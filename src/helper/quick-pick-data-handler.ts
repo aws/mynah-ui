@@ -6,16 +6,19 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroup[], search
     return commands;
   }
 
-  const matchedCommands: QuickActionCommand[] = [];
+  const matchedCommands: Array<{score: number; command: QuickActionCommand}> = [];
 
   const findMatches = (cmd: QuickActionCommand): void => {
     const score = calculateItemScore(cmd.command, searchTerm);
     if (score > 0) {
       matchedCommands.push({
-        ...cmd,
-        // Update command with highlighted text
-        // It is being reverted when user makes the selection
-        command: highlightMatch(escapeHTML(cmd.command), searchTerm)
+        score,
+        command: {
+          ...cmd,
+          // Update command with highlighted text
+          // It is being reverted when user makes the selection
+          command: highlightMatch(escapeHTML(cmd.command), searchTerm)
+        }
       });
     }
 
@@ -36,7 +39,8 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroup[], search
 
   if (matchedCommands.length > 0) {
     return [ {
-      commands: matchedCommands
+      commands: matchedCommands.sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+        .map((item) => item.command)
     } ];
   }
 
