@@ -73,6 +73,7 @@ export class PromptInputQuickPickItem {
   public readonly setFocus = (isFocused: boolean): void => {
     if (isFocused) {
       this.render.addClass('target-command');
+      this.render.scrollIntoView(true);
     } else {
       this.render.removeClass('target-command');
     }
