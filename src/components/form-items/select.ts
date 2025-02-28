@@ -18,6 +18,7 @@ export interface SelectProps {
   attributes?: Record<string, string>;
   icon?: MynahIcons;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  description?: ExtendedHTMLElement;
   value?: string;
   optional?: boolean;
   options?: SelectOption[];
@@ -82,7 +83,8 @@ export class SelectInternal {
           children: [
             this.selectElement,
             new Icon({ icon: props.icon ?? MynahIcons.DOWN_OPEN, classNames: [ 'mynah-select-handle' ] }).render ]
-        }
+        },
+        ...[ props.description !== undefined ? props.description : '' ]
       ]
     });
   }

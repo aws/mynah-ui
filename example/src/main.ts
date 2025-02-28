@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
-import { Connector } from './connector';
+import { Connector, INITIAL_STREAM_DELAY } from './connector';
 import {
   MynahUI,
   MynahUIDataModel,
@@ -112,6 +112,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               text: 'Insert code!',
             },
             {
+              id: 'save-session',
+              icon: MynahIcons.DEPLOY,
+              text: 'Save session',
+            },
+            {
+              id: 'remove-saved-session',
+              icon: MynahIcons.REVERT,
+              text: 'Remove saved session',
+            },
+            {
               id: 'export-chat-md',
               icon: MynahIcons.EXTERNAL,
               text: 'Export chat (md)',
@@ -125,7 +135,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         },
       ],
     },
-    tabs: {
+    tabs: JSON.parse(localStorage.getItem('mynah-ui-storage') as string) ?? {
       'tab-1': {
         isSelected: true,
         store: {
@@ -134,7 +144,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }
       },
     },
-    onFocusStateChanged: (focusState:boolean) => {
+    onFocusStateChanged: (focusState: boolean) => {
       Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
     },
     onTabBarButtonClick: (tabId: string, buttonId: string) => {
@@ -165,16 +175,21 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert, 'code');
       } else if (buttonId === 'show-avatars') {
         showChatAvatars = !showChatAvatars;
-        Object.keys(mynahUI.getAllTabs()).forEach(tabIdFromStore=>mynahUI.updateStore(tabIdFromStore, {
+        Object.keys(mynahUI.getAllTabs()).forEach(tabIdFromStore => mynahUI.updateStore(tabIdFromStore, {
           showChatAvatars: showChatAvatars
         }));
       } else if (buttonId === 'splash-loader') {
         mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
-        setTimeout(()=>{
+        setTimeout(() => {
           mynahUI.toggleSplashLoader(false);
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+      } else if (buttonId === 'save-session') {
+        localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
+      } else if (buttonId === 'remove-saved-session') {
+        localStorage.removeItem('mynah-ui-storage');
+        window.location.reload();
       } else if (buttonId === 'new-welcome-screen') {
         mynahUI.updateStore('', {
           ...mynahUIDefaults.store,
@@ -213,6 +228,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     },
     onTabAdd: (tabId: string) => {
       Log(`New tab added: <b>${tabId}</b>`);
+    },
+    onContextSelected(contextItem) {
+      if (contextItem.command === 'Add Prompt') {
+        Log('Custom context action triggered for adding a prompt!')
+        return false;
+      }
+      return true;
     },
     onBeforeTabRemove: (tabId: string): boolean => {
       const isTabLoading = mynahUI.getAllTabs()[tabId].store?.loadingChat;
@@ -271,13 +293,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>
-      context: <b>${(prompt.context??[]).join('</b>, <b>')}`);
+      context: <b>[${(prompt.context ?? []).map(ctx => `${JSON.stringify(ctx)}`).join(']</b>, <b>[')}]`);
       if (tabId === 'tab-1') {
         mynahUI.updateStore(tabId, {
           tabCloseConfirmationMessage: `Working on "${prompt.prompt}"`,
         });
       }
-      if(mynahUI.getAllTabs()[tabId].store?.compactMode){
+      if (mynahUI.getAllTabs()[tabId].store?.compactMode) {
         mynahUI.updateStore(tabId, {
           compactMode: false,
           tabHeaderDetails: null,
@@ -299,7 +321,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onFollowUpClicked: (tabId: string, messageId: string, followUp: ChatItemAction) => {
       Log(`Followup click: <b>${followUp.pillText}</b>`);
       if (followUp.prompt != null || followUp.command != null) {
-        if(followUp.command === Commands.REPLACE_FOLLOWUPS) {
+        if (followUp.command === Commands.REPLACE_FOLLOWUPS) {
 
           mynahUI.addChatItem(tabId, {
             type: ChatItemType.ANSWER,
@@ -307,16 +329,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             body: 'Hello',
           });
 
-          setTimeout(()=>{
+          setTimeout(() => {
             mynahUI.updateChatAnswerWithMessageId(tabId, 'my-message-id', {
               followUp: exampleRichFollowups.followUp
             });
-            setTimeout(()=>{
+            setTimeout(() => {
               mynahUI.updateChatAnswerWithMessageId(tabId, 'my-message-id', {
                 followUp: defaultFollowUps.followUp,
               })
-            },1500)
-          },1500);
+            }, 1500)
+          }, 1500);
         } else {
           onChatPrompt(tabId, {
             command: followUp.command,
@@ -332,15 +354,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Action Text: <b>${action.text}</b><br/>
       `);
 
-      if(action.id === 'cancel-running-task'){
+      if (action.id === 'cancel-running-task') {
         streamingMessageId = null;
         mynahUI.updateStore(tabId, {
           loadingChat: false
         });
-        Log(`Stop generating code: <b>${tabId}</b>`);        
+        Log(`Stop generating code: <b>${tabId}</b>`);
       }
     },
-    onTabbedContentTabChange: (tabId: string, messageId: string, contentTabId: string) =>{
+    onTabbedContentTabChange: (tabId: string, messageId: string, contentTabId: string) => {
       Log(`Tabbed content tab changed on tab <b>${tabId}</b>:<br/>
         Message Id: <b>${messageId}</b><br/>
         Content tabId: <b>${contentTabId}</b><br/>
@@ -348,7 +370,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     },
     onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
       if (action.id === 'quick-start') {
-        mynahUI.updateStore(tabId, { 
+        mynahUI.updateStore(tabId, {
           tabHeaderDetails: null,
           compactMode: false,
           tabBackground: false,
@@ -360,13 +382,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       if (action.id === 'explore') {
         mynahUI.updateStore('', exploreTabData);
       }
-      if (action.id.match('quick-start-')){
-          mynahUI.updateStore('',{
-            ...mynahUIDefaults.store,
-            chatItems: [],
-            promptInputText: `/${action.id.replace('quick-start-', '')}`,
-            quickActionCommands: qAgentQuickActions
-          })
+      if (action.id.match('quick-start-')) {
+        mynahUI.updateStore('', {
+          ...mynahUIDefaults.store,
+          chatItems: [],
+          promptInputText: `/${action.id.replace('quick-start-', '')}`,
+          quickActionCommands: qAgentQuickActions
+        })
       }
       if (messageId === 'sticky-card') {
         mynahUI.updateStore(tabId, { promptInputStickyCard: null });
@@ -374,15 +396,19 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`Body action clicked in message <b>${messageId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>
-      ${
-        action.formItemValues
+      ${action.formItemValues
           ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
-              .map(optionId => {
-                return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
-              })
-              .join('<br/>')}`
+            .map(optionId => {
+              return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+            })
+            .join('<br/>')}`
           : ''
-      }
+        }
+      `);
+    },
+    onQuickCommandGroupActionClick: (tabId: string, action) => {
+      Log(`Quick command group action clicked in tab <b>${tabId}</b>:<br/>
+      Action Id: <b>${action.id}</b><br/>
       `);
     },
     onVote: (tabId: string, messageId: string, vote: RelevancyVoteType) => {
@@ -403,25 +429,29 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           });
           break;
         case 'revert-rejection':
-          mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {fileList: exampleFileListChatItem.fileList});
+          mynahUI.updateChatAnswerWithMessageId(tabId, messageId, { fileList: exampleFileListChatItem.fileList });
           break;
         default:
           break;
       }
     },
+    onFormModifierEnterPress(formData, tabId) {
+      Log(`Form modifier enter pressed on tab <b>${tabId}</b>:<br/>
+      Form data: <b>${JSON.stringify(formData)}</b><br/>
+      `);
+    },
     onCustomFormAction: (tabId, action) => {
       Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>
-      ${
-        action.formItemValues
+      ${action.formItemValues
           ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
-              .map(optionId => {
-                return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
-              })
-              .join('<br/>')}`
+            .map(optionId => {
+              return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+            })
+            .join('<br/>')}`
           : ''
-      }
+        }
       `);
     },
     onChatItemEngagement: (tabId, messageId, engagement) => {
@@ -450,9 +480,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     },
   });
 
-  setTimeout(()=>{
+  setTimeout(() => {
     mynahUI.toggleSplashLoader(false);
-  }, 2750)
+  }, INITIAL_STREAM_DELAY)
 
   const onChatPrompt = (tabId: string, prompt: ChatPrompt) => {
     if (prompt.command !== undefined && prompt.command.trim() !== '') {
@@ -647,7 +677,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
       }
     } else {
-      if(prompt != null){
+      if (prompt != null) {
         mynahUI.addChatItem(tabId, {
           type: ChatItemType.PROMPT,
           messageId: new Date().getTime().toString(),
@@ -714,40 +744,56 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     });
     connector
       .requestGenerativeAIAnswer(
-        optionalParts ?? exampleStreamParts,
+        optionalParts ?? [
+          {
+            ...exampleStreamParts[0],
+            header: {
+              fileList: {
+                collapsed: true,
+                hideFileCount: true,
+                flatList: true,
+                rootFolderTitle: 'Context',
+                folderIcon: null,
+                fileTreeTitle: '',
+                filePaths: ['./src/index.ts', './main','js_expert'],
+                details: {
+                  './src/index.ts': {
+                    icon: MynahIcons.FILE,
+                    description: `**index.ts** under **src** folder is
+used as a context to generate this message.`
+                  },
+                  './main': {
+                    icon: MynahIcons.FOLDER,
+                  },
+                  'js_expert': {
+                    icon: MynahIcons.CHAT,
+                  }
+                }
+              }
+            }
+          },
+          {
+            header: undefined,
+          }, ...exampleStreamParts],
         (chatItem: Partial<ChatItem>, percentage: number) => {
           if (streamingMessageId != null) {
             mynahUI.updateChatAnswerWithMessageId(tabId, streamingMessageId, chatItem);
             mynahUI.updateStore(tabId, {
-              ...(optionalParts != null ? {promptInputProgress: {
+              ...(optionalParts != null ? {
+                promptInputProgress: {
                   status: 'info',
-                  ...(percentage > 50 ? {text: 'Almost done...'} : {}),
+                  ...(percentage > 50 ? { text: 'Almost done...' } : {}),
                   valueText: `${parseInt(percentage.toString())}%`,
                   value: percentage,
-              }}: {})
+                }
+              } : {})
             });
             return false;
           }
           return true;
         },
         () => {
-          const cardDetails = mynahUI.endMessageStream(tabId, messageId, {
-            footer: {
-              fileList: {
-                rootFolderTitle: undefined,
-                fileTreeTitle: '',
-                filePaths: ['./src/index.ts'],
-                details: {
-                  './src/index.ts': {
-                    icon: MynahIcons.FILE,
-                    clickable: false,
-                    description: `Files used for this response: **index.ts**
-Use \`@\` to mention a file, folder, or method.`
-                  }
-                }
-              }
-            }
-          }) as Record<string, any>;
+          const cardDetails = mynahUI.endMessageStream(tabId, messageId, {}) as Record<string, any>;
 
           mynahUI.updateStore(tabId, {
             loadingChat: false,
@@ -755,24 +801,24 @@ Use \`@\` to mention a file, folder, or method.`
           mynahUI.updateStore(tabId, {
             promptInputDisabledState: false,
           });
-          if(optionalParts != null){
+          if (optionalParts != null) {
             mynahUI.updateStore(tabId, {
               promptInputProgress: {
-                  status: 'success',
-                  text: 'Completed...',
-                  valueText: '',
-                  value: 100,
-                  actions: []
+                status: 'success',
+                text: 'Completed...',
+                valueText: '',
+                value: 100,
+                actions: []
               }
             });
-            setTimeout(()=>{
+            setTimeout(() => {
               mynahUI.updateStore(tabId, {
                 promptInputProgress: null
               });
-            },1500);
+            }, 1500);
           }
           Log(`Stream ended with details: <br/>
-          ${Object.keys(cardDetails).map(key=>`${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
+          ${Object.keys(cardDetails).map(key => `${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
           streamingMessageId = null;
           mynahUI.addChatItem(tabId, defaultFollowUps);
@@ -786,18 +832,18 @@ Use \`@\` to mention a file, folder, or method.`
           canBeVoted: true,
           messageId: streamingMessageId,
         });
-        if(optionalParts != null){
+        if (optionalParts != null) {
           mynahUI.updateStore(tabId, {
             promptInputProgress: {
-                status: 'default',
-                text: 'Work in progress...',
-                value: -1,
-                actions: [{
-                  id: 'cancel-running-task',
-                  text: 'Cancel',
-                  icon: MynahIcons.CANCEL,
-                  disabled: false,
-                }]
+              status: 'default',
+              text: 'Work in progress...',
+              value: -1,
+              actions: [{
+                id: 'cancel-running-task',
+                text: 'Cancel',
+                icon: MynahIcons.CANCEL,
+                disabled: false,
+              }]
             }
           });
         }

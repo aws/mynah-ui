@@ -45,6 +45,9 @@ export interface MynahUIProps {
   onTabAdd?: (
     tabId: string,
     eventId?: string) => void;
+  onContextSelected?: (
+    contextItem: QuickActionCommand,
+  ) => boolean;
   onTabRemove?: (
     tabId: string,
     eventId?: string) => void;
@@ -114,6 +117,10 @@ export interface MynahUIProps {
   onSendFeedback?: (
     tabId: string,
     feedbackPayload: FeedbackPayload,
+    eventId?: string) => void;
+  onFormModifierEnterPress?: (
+    formData: Record<string, string>,
+    tabId: string,
     eventId?: string) => void;
   onCustomFormAction?: (
     tabId: string,
@@ -512,6 +519,26 @@ onTabAdd?: (tabId: string):void => {
 
 ---
 
+### `onContextSelected`
+
+This event will be fired whenever a user selects an item from the context (`@`) list either using mouse click or keyboard actions. It is only triggered for items without children, i.e. only leaves in the tree. The data of the selected context item can be accessed through the `contextItem`. This event handler expects a boolean return:
+- Returning `true` indicates that the context item should be added to the prompt input text.
+- Returning `false` indicates that nothing should be added to the prompt input, and the triggering string should be cleared. E.g. if a user types `@wor` and presses tab on the `@workspace` action, the `@wor` would be removed from the prompt input and no context item will be added.
+
+```typescript
+...
+onContextSelected(contextItem: QuickActionCommand) {
+  if (contextItem.command === 'Add Prompt') {
+    Log('Custom context action triggered for adding a prompt!')
+    return false;
+  }
+  return true;
+},
+...
+```
+
+---
+
 ### `onBeforeTabRemove`
 
 This event will be fired when user clicks the close button but before actually closing the tab. You have **partial control over the tab close**. If you return false to this function, it will not immediately close the tab and will ask an approval from the user. Otherwise it will close the tab. You can set the texts which will be appeared on the confirmation overlay on **[Config/TEXTS](./CONFIG.md#texts)**. It will only pass `tabId` for the closed tab as argument.
@@ -826,6 +853,26 @@ onSendFeedback?: (
     };
 ...
 ```
+
+---
+
+### `onFormModifierEnterPress`
+
+This event will be fired when the user presses the modifier key (`cmd` on macOS, and `ctrl` on Windows / Linux) and the `enter` key at the same time, while focused on a textual form input field. The event will only be triggered for input fields that have set `checkModifierEnterKeyPress: true`, and it will only be triggered if the form is valid and can be submitted. An example use case for this would be submitting the form through a keyboard hotkey action.
+
+```typescript
+...
+onFormModifierEnterPress?: (
+    formData: Record<string, string>,
+    tabId: string,
+    eventId?: string): void => {
+      console.log(`Form modifier enter pressed on tab <b>${tabId}</b>:<br/>
+      Form data: <b>${JSON.stringify(formData)}</b><br/>
+      `);
+    },
+...
+```
+
 ---
 
 ### `onCustomFormAction`

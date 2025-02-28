@@ -19,7 +19,7 @@ export const stayOnCurrentPrompt = async (page: Page, skipScreenshots?: boolean)
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 
-  expect(await promptInput.inputValue()).toBe('This is the first unsent user prompt');
+  expect(await promptInput.innerText()).toBe('This is the first unsent user prompt');
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();

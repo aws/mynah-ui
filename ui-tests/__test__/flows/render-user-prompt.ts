@@ -11,14 +11,14 @@ export const renderUserPrompt = async (page: Page, skipScreenshots?: boolean): P
   await page.locator(getSelector(testIds.prompt.input)).fill('This is a user Prompt');
   await page.locator(getSelector(testIds.prompt.send)).click();
   const promptInput = await page.waitForSelector(getSelector(testIds.prompt.input));
-  expect(await promptInput.isDisabled()).toEqual(true);
+  expect(await promptInput.getAttribute('disabled')).toEqual('disabled');
 
   const userCardSelector = getSelector(testIds.chatItem.type.prompt);
   const userCard = await page.waitForSelector(userCardSelector);
   expect(userCard).toBeDefined();
   await waitForAnimationEnd(page);
   await userCard.scrollIntoViewIfNeeded();
-  expect(await promptInput.isDisabled()).toEqual(false);
+  expect(await promptInput.getAttribute('disabled')).toEqual(null);
 
   if (skipScreenshots !== true) {
     expect(await userCard.screenshot()).toMatchImageSnapshot();
