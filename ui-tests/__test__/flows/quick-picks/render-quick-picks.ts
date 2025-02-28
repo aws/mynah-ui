@@ -7,6 +7,7 @@ import { openNewTab } from '../open-new-tab';
 export const renderQuickPicks = async (page: Page, mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
   await closeTab(page, false, true);
   await openNewTab(page, false, true);
+  await waitForAnimationEnd(page);
 
   // Clear the input
   const input = page.locator(getSelector(testIds.prompt.input));
@@ -25,4 +26,7 @@ export const renderQuickPicks = async (page: Page, mode?: 'command' | 'context',
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchImageSnapshot();
   }
+
+  // Clean up
+  await input.press('Backspace');
 };

@@ -5,12 +5,15 @@ import testIds from '../../../../src/helper/test-ids';
 export const selectQuickPicks = async (page: Page, method: 'click' | 'Tab' | 'Enter' | 'Space', mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
   // Clear the input
   const input = page.locator(getSelector(testIds.prompt.input));
-  await input.clear();
+  await input.press('Backspace');
+  await input.press('Backspace');
   await waitForAnimationEnd(page);
 
   // Type a '/' character, followed by a first character
   await input.press(mode === 'context' ? '@' : '/');
+  await waitForAnimationEnd(page);
   await input.press(mode === 'context' ? 'w' : 'h');
+  await waitForAnimationEnd(page);
   if (method !== 'click') {
     await input.press(method);
   } else {
