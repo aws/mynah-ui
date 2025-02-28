@@ -487,17 +487,25 @@ export class PromptTextInput {
 
   public readonly getCursorLine = (): { cursorLine: number; totalLines: number } => {
     const lineHeight = parseFloat(window.getComputedStyle(this.promptTextInput, null).getPropertyValue('line-height'));
-    const totalLines = Math.floor(this.promptTextInput.scrollHeight / lineHeight);
     let cursorLine = -1;
     const cursorElm = DomBuilder.getInstance().build({
       type: 'span',
       classNames: [ 'cursor' ]
     });
+    const eolElm = DomBuilder.getInstance().build({
+      type: 'span',
+      classNames: [ 'eol' ]
+    });
+    this.promptTextInput.insertChild('beforeend', eolElm);
+
     this.insertElementToGivenPosition(cursorElm, this.getCursorPos(), undefined, true);
     if (cursorElm != null) {
       // find the cursor line position depending on line height
       cursorLine = Math.floor(((cursorElm as HTMLSpanElement).offsetTop + ((cursorElm as HTMLSpanElement).offsetHeight)) / lineHeight);
     }
+    const totalLines = Math.floor(((eolElm as HTMLSpanElement).offsetTop + ((eolElm as HTMLSpanElement).offsetHeight)) / lineHeight) ?? 0;
+    eolElm.remove();
+
     return {
       cursorLine,
       totalLines
