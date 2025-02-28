@@ -7,6 +7,7 @@ import { openNewTab } from '../open-new-tab';
 export const navigatePromptsDown = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await closeTab(page, false, true);
   await openNewTab(page, false, true);
+  await waitForAnimationEnd(page);
 
   await page.locator(getSelector(testIds.prompt.input)).fill('This is the first user prompt');
   await page.locator(getSelector(testIds.prompt.send)).click();
