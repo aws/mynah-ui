@@ -309,7 +309,7 @@ export class ChatPromptInput {
         }
       } else if (navigationalKeys.includes(e.key)) {
         const cursorLine = this.promptTextInput.getCursorLine();
-        if ((cursorLine.cursorLine <= 1 && e.key === KeyMap.ARROW_UP) || (cursorLine.cursorLine >= cursorLine.totalLines && e.key === KeyMap.ARROW_DOWN)) {
+        if ((cursorLine.cursorLine <= 0 && e.key === KeyMap.ARROW_UP) || (cursorLine.cursorLine >= cursorLine.totalLines && e.key === KeyMap.ARROW_DOWN)) {
           if (this.userPromptHistoryIndex === -1 || this.userPromptHistoryIndex === this.userPromptHistory.length) {
             this.lastUnsentUserPrompt = {
               inputText: this.promptTextInput.getTextInputValue(),

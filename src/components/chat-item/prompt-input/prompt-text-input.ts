@@ -485,25 +485,34 @@ export class PromptTextInput {
     this.checkIsEmpty();
   };
 
+  /**
+   * Returns the cursorLine and totalLines. If the cursor as at the very beginning of the first line, it returns cursorLine: 0
+   * @returns {cursorLine: number, totalLines: number}
+   */
   public readonly getCursorLine = (): { cursorLine: number; totalLines: number } => {
     const lineHeight = parseFloat(window.getComputedStyle(this.promptTextInput, null).getPropertyValue('line-height'));
     let cursorLine = -1;
     const cursorElm = DomBuilder.getInstance().build({
       type: 'span',
       classNames: [ 'cursor' ]
-    });
+    }) as HTMLSpanElement;
     const eolElm = DomBuilder.getInstance().build({
       type: 'span',
       classNames: [ 'eol' ]
-    });
+    }) as HTMLSpanElement;
     this.promptTextInput.insertChild('beforeend', eolElm);
 
     this.insertElementToGivenPosition(cursorElm, this.getCursorPos(), undefined, true);
     if (cursorElm != null) {
       // find the cursor line position depending on line height
-      cursorLine = Math.floor(((cursorElm as HTMLSpanElement).offsetTop + ((cursorElm as HTMLSpanElement).offsetHeight)) / lineHeight);
+      cursorLine = Math.floor((cursorElm.offsetTop + (cursorElm.offsetHeight)) / lineHeight) ?? 0;
+      if (cursorLine === 1 && cursorElm.offsetLeft === 0) {
+        cursorLine = 0;
+      }
     }
-    const totalLines = Math.floor(((eolElm as HTMLSpanElement).offsetTop + ((eolElm as HTMLSpanElement).offsetHeight)) / lineHeight) ?? 0;
+    const totalLines = Math.floor((eolElm.offsetTop + (eolElm.offsetHeight)) / lineHeight) ?? 0;
+
+    cursorElm.remove();
     eolElm.remove();
 
     return {
