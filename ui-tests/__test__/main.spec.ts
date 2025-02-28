@@ -234,6 +234,7 @@ describe('Open MynahUI', () => {
     it('should navigate down to current empty prompt', async () => {
       await navigatePromptsToEmpty(page);
     });
+
     // it('should navigate up/down only if on first/last line', async () => {
     //   await navigatePromptsFirstLastLineCheck(page);
     // });
@@ -246,7 +247,7 @@ describe('Open MynahUI', () => {
       await navigateBackToCurrentPrompt(page);
     });
 
-    it.only('should navigate back to current prompt with code attachment', async () => {
+    it('should navigate back to current prompt with code attachment', async () => {
       await navigateBackToCurrentPromptWithCodeAttachment(page);
     });
   });
