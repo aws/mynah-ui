@@ -308,8 +308,8 @@ export class ChatPromptInput {
           this.quickPickOpen = true;
         }
       } else if (navigationalKeys.includes(e.key)) {
-        const cursorLine = this.promptTextInput.getCursorLine();
-        if ((cursorLine.cursorLine <= 0 && e.key === KeyMap.ARROW_UP) || (cursorLine.cursorLine >= cursorLine.totalLines && e.key === KeyMap.ARROW_DOWN)) {
+        const cursorPosition = this.promptTextInput.getCursorPosition();
+        if ((cursorPosition.isAtTheBeginning && e.key === KeyMap.ARROW_UP) || (cursorPosition.isAtTheEnd && e.key === KeyMap.ARROW_DOWN)) {
           if (this.userPromptHistoryIndex === -1 || this.userPromptHistoryIndex === this.userPromptHistory.length) {
             this.lastUnsentUserPrompt = {
               inputText: this.promptTextInput.getTextInputValue(),
@@ -321,10 +321,10 @@ export class ChatPromptInput {
             this.userPromptHistoryIndex = this.userPromptHistory.length;
           }
 
-          if (e.key === KeyMap.ARROW_UP && cursorLine.cursorLine <= 1) {
+          if (e.key === KeyMap.ARROW_UP) {
             // Check if the cursor is on the first line or not
             this.userPromptHistoryIndex = Math.max(0, this.userPromptHistoryIndex - 1);
-          } else if (e.key === KeyMap.ARROW_DOWN && cursorLine.cursorLine >= cursorLine.totalLines) {
+          } else if (e.key === KeyMap.ARROW_DOWN) {
             // Check if the cursor is on the last line or not
             this.userPromptHistoryIndex = Math.min(this.userPromptHistory.length, this.userPromptHistoryIndex + 1);
           }
