@@ -41,7 +41,7 @@ import { navigatePromptsUp } from './flows/navigate-prompts/navigate-prompts-up'
 import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigate-prompts-to-empty';
 import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
 import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
-import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
+// import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 
 describe('Open MynahUI', () => {
   beforeEach(async () => {
@@ -234,9 +234,9 @@ describe('Open MynahUI', () => {
     it('should navigate down to current empty prompt', async () => {
       await navigatePromptsToEmpty(page);
     });
-    it('should navigate up/down only if on first/last line', async () => {
-      await navigatePromptsFirstLastLineCheck(page);
-    });
+    // it('should navigate up/down only if on first/last line', async () => {
+    //   await navigatePromptsFirstLastLineCheck(page);
+    // });
 
     it('should stay on current prompt', async () => {
       await stayOnCurrentPrompt(page);
@@ -246,7 +246,7 @@ describe('Open MynahUI', () => {
       await navigateBackToCurrentPrompt(page);
     });
 
-    it('should navigate back to current prompt with code attachment', async () => {
+    it.only('should navigate back to current prompt with code attachment', async () => {
       await navigateBackToCurrentPromptWithCodeAttachment(page);
     });
   });

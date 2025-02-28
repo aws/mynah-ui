@@ -27,6 +27,9 @@ export const navigatePromptsDown = async (page: Page, skipScreenshots?: boolean)
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 
+  await promptInput.press('ArrowDown');
+  await waitForAnimationEnd(page);
+
   expect(await promptInput.innerText()).toBe('This is the second user prompt');
 
   if (skipScreenshots !== true) {
