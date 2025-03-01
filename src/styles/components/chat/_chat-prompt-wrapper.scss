@@ -93,7 +93,7 @@
                     white-space: pre-wrap;
                     word-break: normal;
                     overflow-wrap: break-word;
-                    padding: 0 0 2px 2px;
+                    padding: 0;
                     overflow-x: hidden;
                     display: block;
                     box-sizing: border-box;
@@ -121,10 +121,15 @@
                         }
                     }
 
-                    > span.cursor {
+                    > span.cursor,
+                    > span.eol {
                         max-width: 0;
                         line-height: inherit;
+                        max-height: var(--mynah-line-height);
+                        min-height: var(--mynah-line-height);
                         display: inline;
+                        margin: 0;
+                        padding: 0;
                     }
                     > span.context {
                         position: relative;
