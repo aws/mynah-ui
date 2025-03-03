@@ -19,9 +19,12 @@ export const navigatePromptsToEmpty = async (page: Page, skipScreenshots?: boole
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 
-  expect(await promptInput.inputValue()).toBe('');
+  await promptInput.press('ArrowDown');
+  await waitForAnimationEnd(page);
+
+  expect(await promptInput.innerText()).toBe('');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await promptInput.screenshot()).toMatchImageSnapshot();
   }
 };

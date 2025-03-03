@@ -19,6 +19,7 @@ export interface RadioGroupProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  description?: ExtendedHTMLElement;
   value?: string;
   optional?: boolean;
   options?: SelectOption[];
@@ -105,7 +106,8 @@ export class RadioGroupInternal extends RadioGroupAbstract {
           children: [
             this.radioGroupElement,
           ]
-        }
+        },
+        ...[ props.description !== undefined ? props.description : '' ]
       ]
     });
   }

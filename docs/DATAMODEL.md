@@ -312,32 +312,127 @@ const mynahUI = new MynahUI({
 });
 
 mynahUI.updateStore('tab-1', {
-    contextCommands: [
+contextCommands: [
       {
-        groupName: 'Mention code',
-        commands:[
+        commands: [
           {
-            command: '@ws',
-            description: '(BETA) Reference all code in workspace.'
+            command: 'workspace',
+            icon: MynahIcons.ASTERISK,
+            placeholder: 'Yes, you selected workspace :P',
+            description: 'Reference all code in workspace.'
           },
           {
-            command: '@folder',
-            placeholder: 'mention a specific folder',
+            command: 'folder',
+            icon: MynahIcons.FOLDER,
+            children: [
+              {
+                groupName: 'Folders',
+                commands: [
+                  {
+                    command: 'src',
+                    icon: MynahIcons.FOLDER,
+                    children: [
+                      {
+                        groupName: 'src/',
+                        commands: [
+                          {
+                            command: 'index.ts',
+                            icon: MynahIcons.FILE,
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    command: 'main',
+                    description: './src/',
+                    icon: MynahIcons.FOLDER,
+                  },
+                  {
+                    command: 'src',
+                    description: './example/',
+                    icon: MynahIcons.FOLDER,
+                  }
+                ]
+              }
+            ],
+            placeholder: 'Mention a specific folder',
             description: 'All files within a specific folder'
           },
           {
-            command: '@file',
-            placeholder: 'mention a specific file',
+            command: 'file',
+            icon: MynahIcons.FILE,
+            children: [
+              {
+                groupName: 'Files',
+                commands: [
+                  {
+                    command: 'monarch.ts',
+                    description: './src/',
+                    icon: MynahIcons.FILE,
+                  },
+                  {
+                    command: '_dark.scss',
+                    description: './src/styles/',
+                    icon: MynahIcons.FILE,
+                  }
+                ]
+              }
+            ],
+            placeholder: 'Mention a specific file',
             description: 'Reference a specific file'
           },
           {
-            command: '@code',
-            placeholder: 'mention a specific file/folder, or leave blank for full project',
+            command: 'symbols',
+            icon: MynahIcons.CODE_BLOCK,
+            children: [
+              {
+                groupName: 'Symbols',
+                commands: [
+                  {
+                    command: 'DomBuilder',
+                    icon: MynahIcons.CODE_BLOCK,
+                    description: 'The DomGeneration function in dom.ts file'
+                  }
+                ]
+              }
+            ],
+            placeholder: 'Select a symbol',
             description: 'After that mention a specific file/folder, or leave blank for full project'
           },
           {
-            command: '@gitlab',
-            description: 'Ask about data in gitlab account'
+            command: 'prompts',
+            icon: MynahIcons.CHAT,
+            description: 'Saved prompts, to reuse them in your current prompt',
+            children: [
+              {
+                groupName: 'Prompts',
+                actions: [
+                  {
+                    id: 'add-new-prompt',
+                    icon: 'plus',
+                    text: 'Add',
+                    description: 'Add new prompt'
+                  }
+                ],
+                commands: [
+                  {
+                    command: 'python_expert',
+                    icon: MynahIcons.CHAT,
+                    description: 'Expert on python stuff'
+                  },
+                  {
+                    command: 'javascript_expert',
+                    icon: MynahIcons.CHAT,
+                    description: 'Expert on Javascript and typescript'
+                  },
+                  {
+                    command: 'Add Prompt',
+                    icon: MynahIcons.PLUS,
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
@@ -349,7 +444,25 @@ mynahUI.updateStore('tab-1', {
   <img src="./img/data-model/tabStore/contextCommands.png" alt="contextCommands" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
-To see which context is used, check the incoming array in the prompt object comes with the `onChatPrompt` event.
+When hovered, context items will display a tooltip with the same information provided in the context menu list:
+
+<p align="center">
+  <img src="./img/data-model/tabStore/contextItem.png" alt="contextItem" style="max-width:140px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+Groups can have as many children as you'd like, which allows for a tree-like structure. Items with children will display a right-arrow icon when hovered / focused:
+
+<p align="center">
+  <img src="./img/data-model/tabStore/hoveredContextItem.png" alt="hoveredContextItem" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+Groups can have actions (see `add-new-prompt` action in the example code block above), which adds an action button on the top right:
+
+<p align="center">
+  <img src="./img/data-model/tabStore/groupAction.png" alt="groupAction" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+To see which context is used, check the incoming string array in the prompt object comes with the `onChatPrompt` event.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -868,6 +981,7 @@ type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAc
 
 // ################################# 
 interface ChatItemContent {
+  header?: ChatItemContent | null;
   body?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
@@ -884,6 +998,10 @@ interface ChatItemContent {
     rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
+    flatList?: boolean;
+    folderIcon?: MynahIcons | MynahIconsType | null;
+    collapsed?: boolean;
+    hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
   } | null;
@@ -1071,6 +1189,43 @@ mynahUI.addChatItem('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/chatItems/systemPrompt.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `header`
+With this parameter, you can add a `ChatItem` at the top of a ChatItem, before the body, but still within the card itself.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  body: `SOME CONTENT`,
+  header: {
+    fileList: { // For example, want to show which file is used to generate that answer
+      rootFolderTitle: undefined,
+      fileTreeTitle: '',
+      filePaths: ['./src/index.ts'],
+      details: {
+        './src/index.ts': {
+          icon: MynahIcons.FILE,
+          description: `SOME DESCRIPTION.`
+        }
+      }
+    }
+  }
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/header.png" alt="header" style="max-width:600px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -1732,6 +1887,10 @@ mynahUI.addChatItem(tabId, {
     deletedFiles: ['src/devfile.yaml'],
     // fileTreeTitle: "Custom file tree card title";
     // rootFolderTitle: "Custom root folder title";
+    // collapsed: true // Collapse the root folder by default
+    // hideFileCount: true // Hide the file counter next to folders
+    // flatList: true // Enable to generate a flat list with one parent folder and no sub folders
+    // folderIcon: 'folder' // Specify a custom icon for folders
     actions: {
       'src/App.tsx': [
         {
@@ -1775,6 +1934,8 @@ mynahUI.addChatItem(tabId, {
 **NOTE 2:** You can add actions and details for each file (**but not for folders**). Beware that you need to add those actions for each specific file as a map which **the key needs to be the path of the file**.
 
 **NOTE 3:** In case you want to show one single file (or folder by giving it a folder icon) and not make it clickable, use the `details` section with the file name and set the `clickable` to `false`.
+
+**NOTE 4:** In case you want a flat list, where all subfolders are not rendered but just all the files, you can pass `true` to the `flatList` prop.
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
@@ -2034,8 +2195,10 @@ interface ChatItemFormItem {
   type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup'; // type (see below for each of them)
   mandatory?: boolean; // If it is set to true, buttons in the same card with waitMandatoryFormItems set to true will wait them to be filled
   title?: string; // Label of the input
+  description?: string; // The description, showing under the input field itself
   placeholder?: string; // Placeholder for input, but only applicable to textarea, textinput and numericinput
   value?: string; // Initial value of the item. All types of form items will get and return string values, conversion of the value type is up to you
+  checkModifierEnterKeyPress?: boolean; // Only applicable to textual inputs: whether the onFormModifierEnterPress event can be triggered from this input field
   options?: Array<{ // Only applicable to select and radiogroup types
     value: string;
     label: string;
@@ -2122,6 +2285,7 @@ mynahUI.addChatItem(tabId, {
             mandatory: true,
             title: `Email`,
             placeholder: 'email',
+            checkModifierEnterKeyPress: true
         },
         {
             id: 'name',

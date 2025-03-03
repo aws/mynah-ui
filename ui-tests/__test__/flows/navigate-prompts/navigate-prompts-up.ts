@@ -17,9 +17,9 @@ export const navigatePromptsUp = async (page: Page, skipScreenshots?: boolean): 
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
-  expect(await promptInput.inputValue()).toBe('This is the first user prompt');
+  expect(await promptInput.innerText()).toBe('This is the first user prompt');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await promptInput.screenshot()).toMatchImageSnapshot();
   }
 };

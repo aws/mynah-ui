@@ -9,6 +9,7 @@ export default {
     input: 'prompt-input-textarea',
     inputWrapper: 'prompt-input-input-wrapper',
     remainingCharsIndicator: 'prompt-input-remaining-chars-indicator',
+    contextTooltip: 'prompt-input-context-tooltip',
     selectedCommand: 'prompt-input-selected-command',
     quickPicksWrapper: 'prompt-input-quick-picks-wrapper',
     quickPicksGroup: 'prompt-input-quick-picks-group',
@@ -59,6 +60,7 @@ export default {
     chatItemForm: {
       wrapper: 'chat-item-form-wrapper',
       title: 'chat-item-form-title',
+      description: 'chat-item-form-description',
       itemSelectWrapper: 'chat-item-form-item-select-wrapper',
       itemSelect: 'chat-item-form-item-select',
       itemRadioWrapper: 'chat-item-form-item-radio-wrapper',

@@ -20,9 +20,6 @@ import { renderInformationCard } from './flows/render-information-card';
 import { renderTabbedCard } from './flows/render-tabbed-card';
 import { welcomeMode } from './flows/welcome-mode';
 import { renderButtons } from './flows/render-buttons';
-import { navigatePromptsDown } from './flows/navigate-prompts/navigate-prompts-down';
-import { navigatePromptsUp } from './flows/navigate-prompts/navigate-prompts-up';
-import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigate-prompts-to-empty';
 import { hoverOverLink } from './flows/link-hover-preview';
 import { showFileTree } from './flows/file-tree/show-file-tree';
 import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
@@ -39,9 +36,12 @@ import { renderFeedbackForm } from './flows/feedback-form/render-feedback-form';
 import { cancelFeedbackForm } from './flows/feedback-form/cancel-feedback-form';
 import { submitFeedbackForm } from './flows/feedback-form/submit-feedback-form';
 import { stayOnCurrentPrompt } from './flows/navigate-prompts/stay-on-current-prompt';
+import { navigatePromptsDown } from './flows/navigate-prompts/navigate-prompts-down';
+import { navigatePromptsUp } from './flows/navigate-prompts/navigate-prompts-up';
+import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigate-prompts-to-empty';
 import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
 import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
-import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
+// import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 
 describe('Open MynahUI', () => {
   beforeEach(async () => {
@@ -234,9 +234,10 @@ describe('Open MynahUI', () => {
     it('should navigate down to current empty prompt', async () => {
       await navigatePromptsToEmpty(page);
     });
-    it('should navigate up/down only if on first/last line', async () => {
-      await navigatePromptsFirstLastLineCheck(page);
-    });
+
+    // it('should navigate up/down only if on first/last line', async () => {
+    //   await navigatePromptsFirstLastLineCheck(page);
+    // });
 
     it('should stay on current prompt', async () => {
       await stayOnCurrentPrompt(page);

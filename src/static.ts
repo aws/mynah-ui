@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MynahIcons } from './components/icon';
+import { MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
 import {
   SelectAbstract,
@@ -21,13 +21,18 @@ import {
 
 export interface QuickActionCommand {
   command: string;
+  id?: string;
+  label?: string;
   disabled?: boolean;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   description?: string;
   placeholder?: string;
+  children?: QuickActionCommandGroup[];
+  route?: string[];
 }
 export interface QuickActionCommandGroup {
   groupName?: string;
+  actions?: Action[];
   commands: QuickActionCommand[];
 }
 /**
@@ -161,6 +166,7 @@ export enum MynahEventNames {
   CHAT_ITEM_ADD = 'chatItemAdd',
   FOLLOW_UP_CLICKED = 'followUpClicked',
   BODY_ACTION_CLICKED = 'bodyActionClicked',
+  QUICK_COMMAND_GROUP_ACTION_CLICK = 'quickCommandGroupActionClicked',
   TABBED_CONTENT_SWITCH = 'tabbedContentSwitch',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
@@ -168,11 +174,13 @@ export enum MynahEventNames {
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
+  FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
   ADD_ATTACHMENT = 'addAttachment',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
   ROOT_RESIZE = 'rootResize',
+  CONTEXT_SELECTED = 'contextSelected'
 };
 
 export enum MynahPortalNames {
@@ -239,13 +247,14 @@ export interface ProgressField {
 
 export interface TreeNodeDetails {
   status?: Status;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   label?: string;
   description?: string;
   clickable?: boolean;
 }
 
 export interface ChatItemContent {
+  header?: ChatItemContent | null;
   body?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
@@ -262,6 +271,10 @@ export interface ChatItemContent {
     rootFolderTitle?: string;
     filePaths?: string[];
     deletedFiles?: string[];
+    flatList?: boolean;
+    folderIcon?: MynahIcons | MynahIconsType | null;
+    collapsed?: boolean;
+    hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
   } | null;
@@ -275,11 +288,11 @@ export interface ChatItemContent {
     title?: string;
     status?: {
       status?: Status;
-      icon?: MynahIcons;
+      icon?: MynahIcons | MynahIconsType;
       body?: string;
     };
     description?: string;
-    icon?: MynahIcons;
+    icon?: MynahIcons | MynahIconsType;
     content: ChatItemContent;
   } | null;
   tabbedContent?: Array<ToggleOption & {
@@ -293,29 +306,50 @@ export interface ChatItem extends ChatItemContent{
   messageId?: string;
   snapToTop?: boolean;
   canBeVoted?: boolean;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   hoverEffect?: boolean;
   status?: Status;
 }
 
-export interface ChatItemFormItem {
+export interface ValidationPattern {
+  pattern: string | RegExp;
+  errorMessage?: string;
+}
+
+interface BaseFormItem {
   id: string;
-  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup' | 'email';
   mandatory?: boolean;
   title?: string;
   placeholder?: string;
   value?: string;
+  description?: string;
+}
+
+export type TextBasedFormItem = BaseFormItem & {
+  type: 'textarea' | 'textinput' | 'numericinput' | 'email';
+  checkModifierEnterKeyPress?: boolean;
+  validationPatterns?: {
+    operator?: 'and' | 'or';
+    genericValidationErrorMessage?: string;
+    patterns: ValidationPattern[];
+  };
+};
+
+type OtherFormItem = BaseFormItem & {
+  type: 'select' | 'stars' | 'radiogroup';
   options?: Array<{
     value: string;
     label: string;
   }>;
-}
+};
+
+export type ChatItemFormItem = TextBasedFormItem | OtherFormItem;
 
 export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
-  context?: string[];
+  context?: string[] | QuickActionCommand[];
 }
 
 export interface ChatItemAction extends ChatPrompt {
@@ -324,30 +358,25 @@ export interface ChatItemAction extends ChatPrompt {
   disabled?: boolean;
   description?: string;
   status?: 'primary' | Status;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
 }
-export interface ChatItemButton {
+export interface ChatItemButton extends Omit<Action, 'status'> {
   keepCardAfterClick?: boolean;
   waitMandatoryFormItems?: boolean;
-  text: string;
-  id: string;
-  disabled?: boolean;
-  description?: string;
   status?: 'main' | 'primary' | 'clear' | Status;
   flash?: 'infinite' | 'once';
   fillState?: 'hover' | 'always';
-  icon?: MynahIcons;
   position?: 'inside' | 'outside';
 }
-
-export interface TabBarAction {
+export interface Action {
   text?: string;
   id: string;
   disabled?: boolean;
   description?: string;
   status?: Status;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
 }
+export interface TabBarAction extends Action {}
 
 export interface TabBarMainAction extends TabBarAction {
   items?: TabBarAction[];
@@ -359,7 +388,7 @@ export interface FileNodeAction {
   disabled?: boolean;
   description?: string;
   status?: Status;
-  icon: MynahIcons;
+  icon: MynahIcons | MynahIconsType;
 }
 
 export enum KeyMap {
@@ -454,7 +483,7 @@ export enum NotificationType {
 }
 
 export interface TabHeaderDetails {
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   title?: string;
   description?: string;
 }
@@ -463,7 +492,7 @@ export interface CodeBlockAction {
   id: 'copy' | 'insert-to-cursor' | string;
   label: string;
   description?: string;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
   data?: any;
   flash?: 'infinite' | 'once';
   acceptedLanguages?: string[];

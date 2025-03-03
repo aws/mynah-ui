@@ -31,6 +31,16 @@
             position: relative;
             border-radius: var(--mynah-input-radius);
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            > .mynah-card-body {
+                flex: 1;
+            }
+            > .mynah-chat-item-buttons-container > .mynah-button {
+                height: var(--mynah-sizing-6);
+                min-width: var(--mynah-sizing-6);
+                padding: var(--mynah-sizing-1);
+            }
         }
 
         & + .mynah-chat-command-selector-group {
@@ -40,7 +50,11 @@
         }
 
         > .mynah-chat-command-selector-command {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            grid-template-rows: auto auto;
+            row-gap: var(--mynah-sizing-1);
+            column-gap: var(--mynah-sizing-2);
             position: relative;
             box-sizing: border-box;
             width: 100%;
@@ -49,11 +63,10 @@
             justify-content: flex-start;
             overflow: hidden;
             cursor: pointer;
-            padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
+            padding: var(--mynah-sizing-2);
             color: var(--mynah-color-text-default);
             border-radius: var(--mynah-input-radius);
             transition: var(--mynah-short-transition-rev);
-            gap: var(--mynah-sizing-3);
 
             &[disabled='true'] {
                 &::before {
@@ -77,50 +90,44 @@
                     }
                 }
             }
-            > .mynah-ui-icon {
-                margin-top: var(--mynah-sizing-half);
-                font-size: var(--mynah-font-size-large);
+            > .mynah-chat-command-selector-icon {
+                align-self: center;
+                grid-row: 1;
+                grid-column: 1;
+                > .mynah-ui-icon {
+                    font-size: var(--mynah-font-size-large);
+                }
                 color: var(--mynah-color-text-default);
             }
 
-            > .mynah-chat-command-selector-command-container {
-                flex: 1;
-                display: flex;
-                position: relative;
-                box-sizing: border-box;
-                flex-flow: column nowrap;
-                align-items: flex-start;
-                justify-content: flex-start;
-                overflow: hidden;
-                gap: var(--mynah-sizing-1);
-
-                > .mynah-chat-command-selector-command-name {
-                    font-family: var(--mynah-font-family);
-                    font-weight: bold;
-                    flex: 0 1 0%;
-                }
-                > .mynah-chat-command-selector-command-description {
-                    color: var(--mynah-color-text-weak);
-                    flex: 1 0 100%;
+            > .mynah-chat-command-selector-command-name {
+                align-self: center;
+                grid-row: 1;
+                grid-column: 2;
+                font-family: var(--mynah-font-family);
+                font-weight: bold;
+                > mark {
+                    position: relative;
+                    color: initial !important;
+                    overflow: hidden;
                 }
             }
-        }
-    }
 
-    &:not(.has-target-item) {
-        > .mynah-chat-command-selector-group:first-child {
-            > .mynah-chat-command-selector-command:first-of-type {
-                &:before {
-                    content: '';
-                    z-index: -1;
-                    border: calc(2 * var(--mynah-border-width)) solid var(--mynah-color-button);
-                    box-sizing: border-box;
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    border-radius: inherit;
+            > .mynah-chat-command-selector-command-arrow-icon {
+                grid-row: 1 / -1;
+                grid-column: 3;
+                align-self: center;
+            }
+
+            > .mynah-chat-command-selector-command-description {
+                grid-row: 2;
+                grid-column: 2;
+                color: var(--mynah-color-text-weak);
+            }
+
+            &:not(:hover):not(.target-command) {
+                > .mynah-chat-command-selector-command-arrow-icon {
+                    opacity: 0;
                 }
             }
         }

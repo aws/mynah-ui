@@ -4,7 +4,7 @@ import { cancelEvent } from '../../helper/events';
 import { TreeNode } from '../../helper/file-tree';
 import testIds from '../../helper/test-ids';
 import { Button } from '../button';
-import { Icon, MynahIcons } from '../icon';
+import { Icon, MynahIcons, MynahIconsType } from '../icon';
 import { ChatItemTreeFile } from './chat-item-tree-file';
 
 export interface ChatItemTreeViewProps {
@@ -12,21 +12,28 @@ export interface ChatItemTreeViewProps {
   depth?: number;
   tabId: string;
   messageId: string;
+  hideFileCount?: boolean;
+  collapsed?: boolean;
+  folderIcon?: MynahIcons | MynahIconsType | null;
 }
 
 export class ChatItemTreeView {
   private readonly node: TreeNode;
+  private readonly folderIcon: MynahIcons | MynahIconsType | null;
   private isOpen: boolean;
   private readonly depth: number;
   private readonly tabId: string;
   private readonly messageId: string;
+  private readonly hideFileCount: boolean;
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemTreeViewProps) {
     this.node = props.node;
+    this.folderIcon = props.folderIcon === null ? null : props.folderIcon ?? MynahIcons.FOLDER;
     this.tabId = props.tabId;
     this.messageId = props.messageId;
-    this.isOpen = true;
+    this.hideFileCount = props.hideFileCount ?? false;
+    this.isOpen = !(props.collapsed ?? false);
     this.depth = props.depth ?? 0;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -56,8 +63,15 @@ export class ChatItemTreeView {
       ? this.node.children.map(childNode =>
         DomBuilder.getInstance().build({
           type: 'div',
-          classNames: [ 'mynah-chat-item-pull-request-item' ],
-          children: [ new ChatItemTreeView({ node: childNode, depth: this.depth + 1, tabId: this.tabId, messageId: this.messageId }).render ],
+          classNames: [ 'mynah-chat-item-folder-child' ],
+          children: [ new ChatItemTreeView({
+            folderIcon: this.folderIcon,
+            node: childNode,
+            depth: this.depth + 1,
+            tabId: this.tabId,
+            hideFileCount: this.hideFileCount,
+            messageId: this.messageId
+          }).render ],
         })
       )
       : [];
@@ -70,21 +84,23 @@ export class ChatItemTreeView {
     const folderItem = new Button({
       testId: testIds.chatItem.fileTree.folder,
       icon: new Icon({ icon: this.isOpen ? MynahIcons.DOWN_OPEN : MynahIcons.RIGHT_OPEN }).render,
-      classNames: [ 'mynah-chat-item-tree-view-button' ],
+      classNames: [ 'mynah-chat-item-tree-view-button', this.depth === 0 ? 'mynah-chat-item-tree-view-root' : '' ],
       label: DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-item-tree-view-button-title' ],
         children: [
-          new Icon({ icon: MynahIcons.FOLDER }).render,
+          ...(this.folderIcon !== null ? [ new Icon({ icon: this.folderIcon }).render ] : []),
           {
             type: 'span',
             children: [ this.node.name ]
           },
-          {
-            type: 'span',
-            classNames: [ 'mynah-chat-item-tree-view-button-weak-title' ],
-            children: [ `${this.node.children.length} ${Config.getInstance().config.texts.files}` ]
-          }
+          ...(this.hideFileCount
+            ? []
+            : [ {
+                type: 'span',
+                classNames: [ 'mynah-chat-item-tree-view-button-weak-title' ],
+                children: [ `${this.node.children.length} ${Config.getInstance().config.texts.files}` ]
+              } ])
         ]
       }),
       primary: false,

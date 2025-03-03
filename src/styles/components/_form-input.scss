@@ -27,6 +27,10 @@
             }
         }
     }
+    .mynah-ui-form-item-description {
+        font-size: var(--mynah-font-size-small);
+        color: var(--mynah-color-text-weak);
+    }
     .mynah-form-input-container {
         position: relative;
         display: flex;
@@ -160,6 +164,10 @@
                     }
                 }
             }
+
+            &.validation-error {
+                border-color: var(--mynah-color-status-error);
+            }
         }
         > textarea.mynah-form-input {
             font-family: var(--mynah-font-family);
@@ -173,6 +181,17 @@
             color: var(--mynah-color-text-weak);
             pointer-events: none;
             transform: translateX(-100%);
+        }
+        & + .mynah-form-input-validation-error-block {
+            display: flex;
+            flex-flow: column nowrap;
+            font-size: var(--mynah-font-size-xsmall);
+            font-style: italic;
+            color: var(--mynah-color-status-error);
+            opacity: 0.75;
+            &:empty {
+                display: none;
+            }
         }
     }
 }
