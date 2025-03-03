@@ -22,6 +22,6 @@ export const stayOnCurrentPrompt = async (page: Page, skipScreenshots?: boolean)
   expect(await promptInput.innerText()).toBe('This is the first unsent user prompt');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await promptInput.screenshot()).toMatchImageSnapshot();
   }
 };

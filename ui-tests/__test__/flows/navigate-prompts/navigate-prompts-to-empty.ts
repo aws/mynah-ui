@@ -25,6 +25,6 @@ export const navigatePromptsToEmpty = async (page: Page, skipScreenshots?: boole
   expect(await promptInput.innerText()).toBe('');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await promptInput.screenshot()).toMatchImageSnapshot();
   }
 };

@@ -33,6 +33,6 @@ export const navigatePromptsDown = async (page: Page, skipScreenshots?: boolean)
   expect(await promptInput.innerText()).toBe('This is the second user prompt');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await promptInput.screenshot()).toMatchImageSnapshot();
   }
 };

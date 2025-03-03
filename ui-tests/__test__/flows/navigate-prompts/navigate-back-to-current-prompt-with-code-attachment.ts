@@ -39,6 +39,6 @@ export const navigateBackToCurrentPromptWithCodeAttachment = async (page: Page, 
   expect(codeAttachmentContent).toBe('This is an unsent code attachment');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await promptInput.screenshot()).toMatchImageSnapshot();
   }
 };

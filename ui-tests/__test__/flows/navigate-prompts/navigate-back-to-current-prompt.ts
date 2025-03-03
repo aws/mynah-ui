@@ -30,6 +30,6 @@ export const navigateBackToCurrentPrompt = async (page: Page, skipScreenshots?: 
   expect(await promptInput.innerText()).toBe('This is the second unsent user prompt');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await promptInput.screenshot()).toMatchImageSnapshot();
   }
 };
