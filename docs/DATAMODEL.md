@@ -886,6 +886,7 @@ interface ChatItemContent {
     filePaths?: string[];
     deletedFiles?: string[];
     flatList?: boolean;
+    folderIcon?: MynahIcons | MynahIconsType | null;
     collapsed?: boolean;
     hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;
@@ -1776,6 +1777,7 @@ mynahUI.addChatItem(tabId, {
     // collapsed: true // Collapse the root folder by default
     // hideFileCount: true // Hide the file counter next to folders
     // flatList: true // Enable to generate a flat list with one parent folder and no sub folders
+    // folderIcon: 'folder' // Specify a custom icon for folders
     actions: {
       'src/App.tsx': [
         {
