@@ -2196,6 +2196,11 @@ interface ChatItemFormItem {
   mandatory?: boolean; // If it is set to true, buttons in the same card with waitMandatoryFormItems set to true will wait them to be filled
   title?: string; // Label of the input
   description?: string; // The description, showing under the input field itself
+  validationPatterns?: {
+    operator?: 'and' | 'or';
+    genericValidationErrorMessage?: string;
+    patterns: ValidationPattern[];
+  };
   placeholder?: string; // Placeholder for input, but only applicable to textarea, textinput and numericinput
   value?: string; // Initial value of the item. All types of form items will get and return string values, conversion of the value type is up to you
   checkModifierEnterKeyPress?: boolean; // Only applicable to textual inputs: whether the onFormModifierEnterPress event can be triggered from this input field
@@ -2207,6 +2212,8 @@ interface ChatItemFormItem {
 ```
 
 Since you can give unlimited form items with several different types, it might be good to know that some attributes are only applicable to some types. Like `options` attribute is only getting used by `select` and `radiogroup` items. Or `placeholder` is only getting used by `textarea`, `textinput` and `numericinput`.
+
+`validationPattenrs` works only for textual inputs. You can define one or more validation regex patterns, use an operator between them as `AND` or `OR`. You can show individual error messages for each validation or use one generic message if the combined validation fails (Might be useful for `OR` operator).
 
 **Another thing which might be interesting** is to know that if you set the `select` or the `radiogroup` mandatory, they'll be rendered as the first item's of them selected if you don't provide an initial value. And you cannot deselet a radio item in any case. For select, if it is mandatory there won't be the option `Please select...`
 
