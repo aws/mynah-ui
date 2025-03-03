@@ -335,23 +335,15 @@ export type TextBasedFormItem = BaseFormItem & {
   };
 };
 
-type SelectFormItem = BaseFormItem & {
-  type: 'select';
-  options: Array<{
-    value: string;
-    label: string;
-  }>;
-};
-
 type OtherFormItem = BaseFormItem & {
-  type: 'stars' | 'radiogroup';
+  type: 'select' | 'stars' | 'radiogroup';
   options?: Array<{
     value: string;
     label: string;
   }>;
 };
 
-export type ChatItemFormItem = TextBasedFormItem | SelectFormItem | OtherFormItem;
+export type ChatItemFormItem = TextBasedFormItem | OtherFormItem;
 
 export interface ChatPrompt {
   prompt?: string;
