@@ -124,11 +124,26 @@
                 grid-column: 2;
                 color: var(--mynah-color-text-weak);
             }
+        }
+    }
 
-            &:not(:hover):not(.target-command) {
-                > .mynah-chat-command-selector-command-arrow-icon {
-                    opacity: 0;
-                }
+    &:hover > .mynah-chat-command-selector-group > .mynah-chat-command-selector-command {
+        &.target-command:not([disabled='true']):not(:hover) {
+            background-color: transparent;
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                box-sizing: border-box;
+                width: 100%;
+                height: 100%;
+                border: solid var(--mynah-button-border-width) var(--mynah-color-button);
+                border-radius: inherit;
+            }
+            &,
+            & * {
+                color: var(--mynah-color-text-default);
             }
         }
     }

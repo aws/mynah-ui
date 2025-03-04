@@ -170,8 +170,8 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
       {
         commands: [
           {
-            command: 'workspace',
-            icon: MynahIcons.ASTERISK,
+            command: '@workspace',
+            // icon: MynahIcons.ASTERISK,
             placeholder: 'Yes, you selected workspace :P',
             description: 'Reference all code in workspace.'
           },
