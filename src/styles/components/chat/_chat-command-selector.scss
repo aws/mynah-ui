@@ -123,8 +123,11 @@
                 grid-row: 2;
                 grid-column: 2;
                 color: var(--mynah-color-text-weak);
+                white-space: nowrap;
+                overflow: hidden;
+                width: 100%;
             }
-
+              
             &:not(:hover):not(.target-command) {
                 > .mynah-chat-command-selector-command-arrow-icon {
                     opacity: 0;
