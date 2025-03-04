@@ -17,6 +17,7 @@ export interface ChatItemButtonsWrapperProps {
   buttons: ChatItemButton[] | null;
   formItems?: ChatItemFormItemsWrapper | null;
   onActionClick?: (action: ChatItemButton, e?: Event) => void;
+  onAllButtonsDisabled?: () => void;
 }
 export class ChatItemButtonsWrapper {
   private readonly props: ChatItemButtonsWrapperProps;
@@ -64,8 +65,9 @@ export class ChatItemButtonsWrapper {
             }
             if (props.formItems != null) {
               props.formItems.disableAll();
+            } else {
+              this.disableAll();
             }
-            this.disableAll();
             if (this.props.onActionClick != null) {
               this.props.onActionClick(chatActionAction, e);
             }
@@ -86,6 +88,9 @@ export class ChatItemButtonsWrapper {
       props.formItems.onValidationChange = (isValid) => {
         this.handleValidationChange(isValid);
       };
+      props.formItems.onAllFormItemsDisabled = () => {
+        this.disableAll();
+      };
     }
   }
 
@@ -103,5 +108,6 @@ export class ChatItemButtonsWrapper {
         this.actions[chatActionId].element.setEnabled(false);
       }
     });
+    this.props.onAllButtonsDisabled?.();
   };
 }

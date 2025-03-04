@@ -4,17 +4,16 @@
 
 <!---
     REMINDER:
-    - Read CONTRIBUTING.md first.
-    - Add test coverage for your changes.
-    - Update the changelog using `npm run newChange`.
-    - Link to related issues/commits.
-    - Testing: how did you test your changes?
-    - Screenshots
+    - Read contributing and developer guidelines first.
+    - Check your changes are not breaking anything on current VSCode and JetBrains extensions
+    - Add or update the documentation if applicable, this is mandatory
+    - Put screenshots if possible
 -->
 
 ## Tests
 - [ ] I have tested this change on VSCode
 - [ ] I have tested this change on JetBrains
+- [ ] I have added/updated the documentation (if applicable)
 
 ## License
 

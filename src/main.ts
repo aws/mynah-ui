@@ -26,6 +26,7 @@ import {
   ChatItemType,
   CardRenderDetails,
   PromptAttachmentType,
+  QuickActionCommand,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -39,6 +40,7 @@ import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
+import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 
 export { generateUID } from './helper/guid';
 export {
@@ -53,7 +55,8 @@ export {
   ToggleOption
 } from './components/toggle';
 export {
-  MynahIcons
+  MynahIcons,
+  MynahIconsType
 } from './components/icon';
 export {
   DomBuilder,
@@ -146,6 +149,11 @@ export interface MynahUIProps {
   onTabAdd?: (
     tabId: string,
     eventId?: string) => void;
+  onContextSelected?: (
+    contextItem: QuickActionCommand,
+    tabId: string,
+    eventId?: string
+  ) => boolean;
   onTabRemove?: (
     tabId: string,
     eventId?: string) => void;
@@ -222,6 +230,16 @@ export interface MynahUIProps {
     tabId: string,
     feedbackPayload: FeedbackPayload,
     eventId?: string) => void;
+  onFormModifierEnterPress?: (
+    formData: Record<string, string>,
+    tabId: string,
+    eventId?: string) => void;
+  onFormTextualItemKeyPress?: (
+    event: KeyboardEvent,
+    formData: Record<string, string>,
+    itemId: string,
+    tabId: string,
+    eventId?: string) => boolean;
   onCustomFormAction?: (
     tabId: string,
     action: {
@@ -255,6 +273,13 @@ export interface MynahUIProps {
     tabId: string,
     buttonId: string,
     eventId?: string) => void;
+  onQuickCommandGroupActionClick?: (
+    tabId: string,
+    action: {
+      id: string;
+    },
+    eventId?: string) => void;
+
 }
 
 export class MynahUI {
@@ -420,7 +445,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   private readonly addGlobalListeners = (): void => {
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: {tabId: string; prompt: ChatPrompt}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: { tabId: string; prompt: ChatPrompt }) => {
       if (this.props.onChatPrompt !== undefined) {
         this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
       }
@@ -440,6 +465,35 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_SELECTED, (data: {
+      contextItem: QuickActionCommand;
+      tabId: string;
+      promptInputCallback: (insert: boolean) => void;
+    }) => {
+      data.promptInputCallback(this.props.onContextSelected === undefined || this.props.onContextSelected(data.contextItem, data.tabId, this.getUserEventId()));
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, (data: {
+      formData: Record<string, string>;
+      tabId: string;
+    }) => {
+      if (this.props.onFormModifierEnterPress !== undefined) {
+        this.props.onFormModifierEnterPress(data.formData, data.tabId, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_TEXTUAL_ITEM_KEYPRESS, (data: {
+      event: KeyboardEvent;
+      formData: Record<string, string>;
+      itemId: string;
+      tabId: string;
+      callback: (disableAll?: boolean) => void;
+    }) => {
+      if (this.props.onFormTextualItemKeyPress !== undefined) {
+        data.callback(this.props.onFormTextualItemKeyPress(data.event, data.formData, data.itemId, data.tabId, this.getUserEventId()));
+      }
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.BODY_ACTION_CLICKED, (data: {
       tabId: string;
       messageId: string;
@@ -452,6 +506,17 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           id: data.actionId,
           text: data.actionText,
           formItemValues: data.formItemValues
+        }, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, (data: {
+      tabId: string;
+      actionId: string;
+    }) => {
+      if (this.props.onQuickCommandGroupActionClick !== undefined) {
+        this.props.onQuickCommandGroupActionClick(data.tabId, {
+          id: data.actionId,
         }, this.getUserEventId());
       }
     });
@@ -479,7 +544,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, (data: {messageId: string}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_MORE_WEB_RESULTS_CLICK, (data: { messageId: string }) => {
       if (this.props.onShowMoreWebResultsClick !== undefined) {
         this.props.onShowMoreWebResultsClick(
           MynahUITabsStore.getInstance().getSelectedTabId(),
@@ -616,13 +681,13 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, (data: {tabId: string}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_STORE, (data: { tabId: string }) => {
       if (this.props.onResetStore !== undefined) {
         this.props.onResetStore(data.tabId);
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_FOCUS, (data: {focusState: boolean}) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_FOCUS, (data: { focusState: boolean }) => {
       this.props.onFocusStateChanged?.(data.focusState);
     });
 
@@ -728,6 +793,18 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   /**
+   * Serialize all (non-empty) chat messages in a tab into a string
+   * @param tabId Corresponding tab ID.
+   * @param format Whether to serialize to markdown or HTML format
+   */
+  public serializeChat = (tabId: string, format: 'markdown' | 'html'): string => {
+    if (format === 'markdown') {
+      return serializeMarkdown(tabId);
+    }
+    return serializeHtml(tabId);
+  };
+
+  /**
    * Converts a card to an ANSWER if it is an ANSWER_STREAM
    * @param tabId Corresponding tab ID.
    * @param messageId Corresponding tab ID.
@@ -814,6 +891,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
 
+  public getTabData = (tabId: string): any => MynahUITabsStore.getInstance().getTabDataStore(tabId);
+
   /**
    * Toggles the visibility of the splash loader screen
    */
@@ -882,7 +961,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         description,
         buttons,
         formItems
-      }
+      },
     });
   };
 

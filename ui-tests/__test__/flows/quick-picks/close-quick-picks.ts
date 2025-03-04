@@ -3,12 +3,10 @@ import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
 export const closeQuickPicks = async (page: Page, method: 'blur' | 'escape', mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
-  // Clear the input
-  const input = page.locator(getSelector(testIds.prompt.input));
-  await input.clear();
-  await waitForAnimationEnd(page);
-
   // Press '/' in the input
+  const input = page.locator(getSelector(testIds.prompt.input));
+  await input.focus();
+  await waitForAnimationEnd(page);
   await input.press(mode === 'context' ? '@' : '/');
   await waitForAnimationEnd(page);
 
@@ -27,9 +25,14 @@ export const closeQuickPicks = async (page: Page, method: 'blur' | 'escape', mod
 
   // Now the command selector should be closed, but the input should still remain intact
   expect(await commandSelector.isVisible()).toBeFalsy();
-  expect(await input.inputValue()).toBe(mode === 'context' ? '@' : method === 'blur' ? '/' : '');
+  expect(await input.innerText()).toBe(mode === 'context' ? '@' : method === 'blur' ? '/' : '');
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchSnapshot();
+  }
+
+  if (mode === 'context') {
+    await input.clear();
+    await input.press('Backspace');
   }
 };

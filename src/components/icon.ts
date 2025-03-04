@@ -69,8 +69,10 @@ export enum MynahIcons {
   TRANSFORM = 'transform',
 }
 
+export type MynahIconsType = `${MynahIcons}`;
+
 export interface IconProps {
-  icon: MynahIcons;
+  icon: MynahIcons | MynahIconsType;
   classNames?: string[];
 }
 export class Icon {
@@ -83,14 +85,7 @@ export class Icon {
         'mynah-ui-icon',
                 `mynah-ui-icon-${props.icon}`,
                 ...(props.classNames !== undefined ? props.classNames : []),
-      ],
-      children: [ {
-        type: 'span',
-        attributes: {
-          'aria-hidden': 'true'
-        },
-        children: [ props.icon ]
-      } ]
+      ]
     });
   }
 }

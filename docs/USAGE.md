@@ -18,6 +18,7 @@ mynahUI.addToUserPrompt(...);
 mynahUI.updateLastChatAnswer(...);
 mynahUI.updateChatAnswerWithMessageId(...);
 mynahUI.endMessageStream(...);
+mynahUI.serializeChat(...);
 mynahUI.updateStore(...);
 mynahUI.selectTab(...);
 mynahUI.removeTab(...);
@@ -387,6 +388,25 @@ console.log(chatItemRenderDetails); >> totalCodeBlocks: N
 ```
 
 Can you end stream for a card you already ended the stream? Basically yes because it is just changing the type and returns you some insights about that card.
+
+---
+
+## Serializing a chat (`serializeChat`)
+
+You can serialize an entire chat from a specific tab using this function. Only the card bodies will be included, meaning that buttons and other interactable components are left out. There are two output options for the serialization:
+- **Markdown:** get all the bodies from chat items in markdown format so that it serves as the contents of a valid `.md` file. Each card body is separated by `\n\n---\n\n`.
+- **HTML:** get a string which serves as the contents of a valid `.html` file. It consists of a centered chat container, containing all the chat item bodies in cards. All the relevant stylesheets from MynahUI are included in the `<style>` section of the string.
+
+The following example shows how serialization could be used to download an export of a tab's chat:
+```typescript
+const serializedChat = mynahUI.serializeChat(tabId, 'markdown')
+const blob = new Blob([serializedChat], { type: 'text/plain' });
+const url = URL.createObjectURL(blob);
+const link = document.createElement('a');
+link.download = 'exported-chat.md';
+link.href = url;
+link.click();
+```
 
 ---
 

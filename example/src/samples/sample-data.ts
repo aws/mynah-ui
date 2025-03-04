@@ -516,6 +516,7 @@ _To send the form, mandatory items should be filled._`,
             id: 'expertise-area',
             type: 'select',
             title: `Area of expertise`,
+            description: 'Select your area of expertise',
             options: [
                 {
                     label: 'Frontend',
@@ -565,13 +566,25 @@ _To send the form, mandatory items should be filled._`,
             type: 'email',
             mandatory: true,
             title: `Email`,
+            description: 'Your email will be used to get back to you',
             placeholder: 'email',
+            checkModifierEnterKeyPress: true
         },
         {
             id: 'name',
             type: 'textinput',
             mandatory: true,
-            title: `Name`,
+            title: `Name (should contain "amazonq" and "aws" in the string)`,
+            validationPatterns: {
+                operator: 'and',
+                patterns: [{
+                    pattern: 'amazonq',
+                    errorMessage: 'Should contain amazonq!'
+                },{
+                    pattern: 'aws',
+                    errorMessage: 'Should contain aws!'
+                }]
+            },
             placeholder: 'Name and Surname',
         },
         {
@@ -594,8 +607,17 @@ _To send the form, mandatory items should be filled._`,
         {
             id: 'description',
             type: 'textarea',
-            title: `Any other things you would like to share?`,
-            placeholder: 'Write your feelings about our tool',
+            title: `Any other things you would like to share? (should contain one of "amazonq" or "aws", capital or not)`,
+            validationPatterns: {
+                operator: 'or',
+                genericValidationErrorMessage: 'Should contain one of "amazonq" or "aws"',
+                patterns: [{
+                    pattern: /amazonq/gi
+                },{
+                    pattern: /aws/gi
+                }]
+            },
+            placeholder: 'Write your feelings about our tool. If the form is fully filled and valid, Enter will submit the form',
         },
     ],
     buttons: [

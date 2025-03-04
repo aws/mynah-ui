@@ -5,15 +5,26 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { checkTextElementValidation } from '../../helper/validator';
+import { ValidationPattern } from '../../static';
 import '../../styles/components/_form-input.scss';
 
 export interface TextAreaProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  autoFocus?: boolean;
+  description?: ExtendedHTMLElement;
+  mandatory?: boolean;
+  fireModifierAndEnterKeyPress?: () => void;
   placeholder?: string;
+  validationPatterns?: {
+    operator?: 'and' | 'or';
+    patterns: ValidationPattern[];
+  };
   value?: string;
   onChange?: (value: string) => void;
+  onKeyPress?: (event: KeyboardEvent) => void;
   testId?: string;
 }
 
@@ -22,26 +33,55 @@ export abstract class TextAreaAbstract {
   setValue = (value: string): void => {};
   getValue = (): string => '';
   setEnabled = (enabled: boolean): void => {};
+  checkValidation = (): void => {};
 }
 export class TextAreaInternal extends TextAreaAbstract {
   private readonly inputElement: ExtendedHTMLElement;
+  private readonly validationErrorBlock: ExtendedHTMLElement;
+  private readonly props: TextAreaProps;
+  private readyToValidate: boolean = false;
   render: ExtendedHTMLElement;
   constructor (props: TextAreaProps) {
     super();
+    this.props = props;
+    this.validationErrorBlock = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-form-input-validation-error-block' ],
+    });
     this.inputElement = DomBuilder.getInstance().build({
       type: 'textarea',
-      testId: props.testId,
-      classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
-      attributes: props.placeholder !== undefined
-        ? {
-            placeholder: props.placeholder
-          }
-        : {},
+      testId: this.props.testId,
+      classNames: [ 'mynah-form-input', ...(this.props.classNames ?? []) ],
+      attributes: {
+        ...(this.props.placeholder !== undefined
+          ? {
+              placeholder: this.props.placeholder
+            }
+          : {}),
+        ...(this.props.autoFocus === true
+          ? {
+              autofocus: 'autofocus'
+            }
+          : {}),
+      },
       events: {
+        blur: (e) => {
+          this.readyToValidate = true;
+          this.checkValidation();
+        },
         keyup: (e) => {
-          if (props.onChange !== undefined) {
-            props.onChange((e.currentTarget as HTMLSelectElement).value);
+          if (this.props.onChange !== undefined) {
+            this.props.onChange((e.currentTarget as HTMLTextAreaElement).value);
           }
+          this.checkValidation();
+        },
+        keydown: (e: KeyboardEvent) => {
+          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            this.props.fireModifierAndEnterKeyPress?.();
+          }
+        },
+        keypress: (e: KeyboardEvent) => {
+          this.props.onKeyPress?.(e);
         }
       },
     });
@@ -62,9 +102,17 @@ export class TextAreaInternal extends TextAreaAbstract {
           children: [
             this.inputElement,
           ]
-        }
+        },
+        ...[ props.description !== undefined ? props.description : '' ],
+        this.validationErrorBlock
       ]
     });
+
+    if (this.props.autoFocus === true) {
+      setTimeout(() => {
+        this.inputElement.focus();
+      }, 250);
+    }
   }
 
   setValue = (value: string): void => {
@@ -82,6 +130,8 @@ export class TextAreaInternal extends TextAreaAbstract {
       this.inputElement.setAttribute('disabled', 'disabled');
     }
   };
+
+  checkValidation = (): void => checkTextElementValidation(this.inputElement, this.props.validationPatterns, this.validationErrorBlock, this.readyToValidate, this.props.mandatory);
 }
 
 export class TextArea extends TextAreaAbstract {
@@ -95,4 +145,5 @@ export class TextArea extends TextAreaAbstract {
   setValue = (value: string): void => {};
   getValue = (): string => '';
   setEnabled = (enabled: boolean): void => {};
+  checkValidation = (): void => {};
 }

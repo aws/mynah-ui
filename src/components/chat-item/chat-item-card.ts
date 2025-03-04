@@ -40,6 +40,7 @@ export class ChatItemCard {
   private readonly updateStack: Array<Partial<ChatItem>> = [];
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
   private cardFooter: ExtendedHTMLElement | null = null;
+  private cardHeader: ExtendedHTMLElement | null = null;
   private informationCard: ChatItemInformationCard | null = null;
   private tabbedCard: ChatItemTabbedCard | null = null;
   private cardIcon: Icon | null = null;
@@ -53,6 +54,7 @@ export class ChatItemCard {
   private followUps: ChatItemFollowUpContainer | null = null;
   private votes: ChatItemRelevanceVote | null = null;
   private footer: ChatItemCard | null = null;
+  private header: ChatItemCard | null = null;
   constructor (props: ChatItemCardProps) {
     this.props = props;
     this.chatAvatar = this.getChatAvatar();
@@ -77,6 +79,7 @@ export class ChatItemCard {
 
       ];
     }
+    this.cardHeader = this.getCardHeader();
     this.cardFooter = this.getCardFooter();
     this.card = new Card({
       testId: testIds.chatItem.card,
@@ -98,6 +101,13 @@ export class ChatItemCard {
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-card-footer', 'mynah-card-inner-order-70' ]
+    });
+  };
+
+  private readonly getCardHeader = (): ExtendedHTMLElement => {
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-item-card-header', 'mynah-card-inner-order-5' ]
     });
   };
 
@@ -188,6 +198,40 @@ export class ChatItemCard {
 
     if (chatItemHasContent(this.props.chatItem)) {
       this.initialSpinner?.[0]?.remove();
+    }
+
+    // If no data is provided for the header
+    // skip removing and checking it
+    if (this.props.chatItem.header !== undefined) {
+      if (this.cardHeader != null) {
+        this.cardHeader.remove();
+        this.cardHeader = null;
+      }
+      if (this.props.chatItem.header != null) {
+        this.cardHeader = this.getCardHeader();
+        this.card?.render.insertChild('beforeend', this.cardHeader);
+
+        /**
+         * Generate header if available
+         */
+        if (this.header != null) {
+          this.header.render.remove();
+          this.header = null;
+        }
+        if (this.props.chatItem.header != null) {
+          this.header = new ChatItemCard({
+            tabId: this.props.tabId,
+            small: true,
+            inline: true,
+            chatItem: {
+              ...this.props.chatItem.header,
+              type: ChatItemType.ANSWER,
+              messageId: this.props.chatItem.messageId
+            }
+          });
+          this.cardHeader.insertChild('beforeend', this.header.render);
+        }
+      }
     }
 
     /**
@@ -294,7 +338,7 @@ export class ChatItemCard {
       this.fileTreeWrapper = null;
     }
     if (this.props.chatItem.fileList != null) {
-      const { filePaths = [], deletedFiles = [], actions, details } = this.props.chatItem.fileList;
+      const { filePaths = [], deletedFiles = [], actions, details, flatList } = this.props.chatItem.fileList;
       const referenceSuggestionLabel = this.props.chatItem.body ?? '';
       this.fileTreeWrapper = new ChatItemTreeViewWrapper({
         tabId: this.props.tabId,
@@ -302,8 +346,12 @@ export class ChatItemCard {
         messageId: this.props.chatItem.messageId ?? '',
         cardTitle: this.props.chatItem.fileList.fileTreeTitle,
         rootTitle: this.props.chatItem.fileList.rootFolderTitle,
+        folderIcon: this.props.chatItem.fileList.folderIcon,
+        hideFileCount: this.props.chatItem.fileList.hideFileCount ?? false,
+        collapsed: this.props.chatItem.fileList.collapsed ?? false,
         files: filePaths,
         deletedFiles,
+        flatList,
         actions,
         details,
         references: this.props.chatItem.codeReference ?? [],
@@ -532,6 +580,9 @@ export class ChatItemCard {
   };
 
   public readonly clearContent = (): void => {
+    this.cardHeader?.remove();
+    this.cardHeader = null;
+
     this.contentBody?.render.remove();
     this.contentBody = null;
 

@@ -67,6 +67,9 @@ export class FeedbackForm {
                 chatItem: data.customFormData,
                 title: data.customFormData.title,
                 description: data.customFormData.description,
+                onFormDisabled: () => {
+                  this.close();
+                },
                 onFormAction: () => {
                   this.close();
                 },

@@ -28,6 +28,7 @@ const mynahUI = new MynahUI({
     onBodyActionClicked: ...,
     onTabChange: ...,
     onTabAdd: ...,
+    onContextSelected: ...,
     onTabRemove: ...,
     onChatItemEngagement: ...,
     onCopyCodeToClipboard: ...,

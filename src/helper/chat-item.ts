@@ -1,6 +1,7 @@
 import { ChatItem, ChatItemContent } from '../static';
 
 export const emptyChatItemContent: ChatItemContent = {
+  header: null,
   body: null,
   buttons: null,
   codeBlockActions: null,
