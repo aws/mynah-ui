@@ -12,22 +12,16 @@ export interface PromptInputQuickPickItemProps {
 export class PromptInputQuickPickItem {
   render: ExtendedHTMLElement;
   private readonly props: PromptInputQuickPickItemProps;
-  private readonly descriptionText: ExtendedHTMLElement;
   private readonly description: ExtendedHTMLElement;
 
   constructor (props: PromptInputQuickPickItemProps) {
     this.props = props;
 
-    this.descriptionText = DomBuilder.getInstance().build({
-      type: 'span',
-      classNames: [ 'mynah-chat-command-selector-command-description-text' ],
-      children: [ this.props.quickPickItem.description ?? '' ]
-    });
     this.description =
       DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-chat-command-selector-command-description' ],
-        children: [ this.descriptionText ]
+        children: [ this.props.quickPickItem.description ?? '' ]
       });
 
     this.render = DomBuilder.getInstance().build({
@@ -115,12 +109,12 @@ export class PromptInputQuickPickItem {
     const textWidth = measureElement.offsetWidth;
 
     // Get the max width from the container
-    const maxWidth = this.description.offsetWidth;
+    const maxWidth = this.description.offsetWidth - 10;
 
     // If the text fits, update with the original
     if (textWidth <= maxWidth) {
       document.body.removeChild(measureElement);
-      this.descriptionText.innerText = text;
+      this.description.innerText = text;
       return;
     }
 
@@ -143,6 +137,6 @@ export class PromptInputQuickPickItem {
     document.body.removeChild(measureElement);
 
     // Update the truncated text
-    this.descriptionText.innerText = text.slice(0, right) + ellipsis + text.slice(-right);
+    this.description.innerText = text.slice(0, right) + ellipsis + text.slice(-right);
   };
 }
