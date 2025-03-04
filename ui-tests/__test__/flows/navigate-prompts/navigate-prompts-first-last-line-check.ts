@@ -17,9 +17,6 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   await waitForAnimationEnd(page);
 
   // The input should start as the input with two lines
-  console.log((await promptInput.innerText()) === secondPrompt);
-  console.log(await promptInput.innerText());
-
   expect(await promptInput.innerText()).toBe(secondPrompt);
 
   // Input should remain the same as it is multiline
