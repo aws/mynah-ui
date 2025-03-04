@@ -8,6 +8,8 @@
 *.png
 *.map
 *.html
+*.xml
+*.zip
 .github
 .husky
 example
