@@ -122,6 +122,12 @@ export interface MynahUIProps {
     formData: Record<string, string>,
     tabId: string,
     eventId?: string) => void;
+    onFormTextualItemKeyPress?: (
+    event: KeyboardEvent,
+    formData: Record<string, string>,
+    itemId: string;
+    tabId: string,
+    eventId?: string) => boolean;
   onCustomFormAction?: (
     tabId: string,
     action: {
@@ -869,6 +875,39 @@ onFormModifierEnterPress?: (
       console.log(`Form modifier enter pressed on tab <b>${tabId}</b>:<br/>
       Form data: <b>${JSON.stringify(formData)}</b><br/>
       `);
+    },
+...
+```
+---
+
+### `onFormTextualItemKeyPress`
+
+This event will be fired when the user presses any key on their keyboard for textual form input items **if the form is valid**.
+
+**Important note**: 
+- This handler also expects a return as a boolean. If you return **`true`** then the form will be disabled including the following buttons. Also if they are in a custom form overlay panel, that panel will be closed. If you return **`false`**, everything will remain as is. 
+- Another important key point is having the `event` object as a KeyboardEvent. With that, you can prevent the default action of the keypress event. See the example below.
+
+
+```typescript
+...
+onFormTextualItemKeyPress?: (
+    event: KeyaboardEvent
+    formData: Record<string, string>,
+    itemId: string,
+    tabId: string,
+    eventId?: string): boolean => {
+      console.log(`Form keypress on tab <b>${tabId}</b>:<br/>
+      Item id: <b>${itemId}</b><br/>
+      Key: <b>${event.keyCode}</b><br/>
+      `);
+      if((itemId === 'description' || itemId === 'comment') && event.keyCode === 13 && event.ctrlKey !== true && event.shiftKey !== true) {
+        event.preventDefault(); // To stop default behavior
+        event.stopImmediatePropagation(); // To stop event to bubble to parent or other elements
+        // Do your magic, and submit your form data
+        return true; // return true to disable the form like a submit button do. It will also close the customForm overlay panel if the items are inside one.
+      }
+      return false; // Keep the form enabled and if applicable customForm overlay panel open
     },
 ...
 ```

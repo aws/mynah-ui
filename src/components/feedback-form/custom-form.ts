@@ -20,6 +20,7 @@ export interface CustomFormWrapperProps {
   title?: string;
   description?: string;
   onFormAction?: (actionName: string, formData: Record<string, string>) => void;
+  onFormDisabled?: () => void;
   onCloseButtonClick?: (e: Event) => void;
 }
 export class CustomFormWrapper {
@@ -90,6 +91,7 @@ export class CustomFormWrapper {
         tabId: this.props.tabId,
         formItems: this.chatFormItems,
         buttons: this.props.chatItem.buttons,
+        onAllButtonsDisabled: this.props.onFormDisabled,
         onActionClick: (action, e) => {
           if (e !== undefined) {
             cancelEvent(e);

@@ -617,7 +617,7 @@ _To send the form, mandatory items should be filled._`,
                     pattern: /aws/gi
                 }]
             },
-            placeholder: 'Write your feelings about our tool',
+            placeholder: 'Write your feelings about our tool. If the form is fully filled and valid, Enter will submit the form',
         },
     ],
     buttons: [

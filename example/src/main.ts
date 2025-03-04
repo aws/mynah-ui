@@ -440,6 +440,28 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Form data: <b>${JSON.stringify(formData)}</b><br/>
       `);
     },
+    onFormTextualItemKeyPress(event, formData, itemId, tabId) {
+      Log(`Form keypress on tab <b>${tabId}</b>:<br/>
+      Item id: <b>${itemId}</b><br/>
+      Key: <b>${event.keyCode}</b><br/>
+      `);
+      if((itemId === 'description' || itemId === 'comment') && event.keyCode === 13 && event.ctrlKey !== true && event.shiftKey !== true){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        Log(`Form keypress Enter submit on tab <b>${tabId}</b>:<br/>
+          ${formData
+            ? `<br/>Options:<br/>${Object.keys(formData)
+              .map(optionId => {
+                return `<b>${optionId}</b>: ${(formData as Record<string, string>)[optionId] ?? ''}`;
+              })
+              .join('<br/>')}`
+            : ''
+          }
+          `);
+        return true
+      }
+      return false;
+    },
     onCustomFormAction: (tabId, action) => {
       Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
@@ -696,6 +718,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           type: 'radiogroup',
           id: 'like',
           mandatory: true,
+          value: 'yes',
           options: [
             {
               label: 'Yes',
@@ -716,6 +739,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           type: 'textarea',
           id: 'comment',
           title: 'Any comments?',
+          placeholder: 'Enter will submit the form if the form is filled and valid',
+          autoFocus: true,
         },
       ],
       [

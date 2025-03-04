@@ -175,6 +175,7 @@ export enum MynahEventNames {
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
   FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
+  FORM_TEXTUAL_ITEM_KEYPRESS = 'formTextualItemKeyPress',
   ADD_ATTACHMENT = 'addAttachment',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
@@ -278,9 +279,6 @@ export interface ChatItemContent {
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
   } | null;
-  /**
-   * @deprecated starting from version v5.0.0, it will no longer render the buttons in a reversed order, but rather in the order of the array.
-   */
   buttons?: ChatItemButton[] | null;
   formItems?: ChatItemFormItem[] | null;
   footer?: ChatItemContent | null;
@@ -327,6 +325,7 @@ interface BaseFormItem {
 
 export type TextBasedFormItem = BaseFormItem & {
   type: 'textarea' | 'textinput' | 'numericinput' | 'email';
+  autoFocus?: boolean;
   checkModifierEnterKeyPress?: boolean;
   validationPatterns?: {
     operator?: 'and' | 'or';
