@@ -13,6 +13,7 @@ export interface TextInputProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  autoFocus?: boolean;
   description?: ExtendedHTMLElement;
   mandatory?: boolean;
   fireModifierAndEnterKeyPress?: () => void;
@@ -24,6 +25,7 @@ export interface TextInputProps {
   };
   value?: string;
   onChange?: (value: string) => void;
+  onKeyPress?: (event: KeyboardEvent) => void;
   testId?: string;
 }
 
@@ -53,11 +55,16 @@ export class TextInputInternal extends TextInputAbstract {
       classNames: [ 'mynah-form-input', ...(this.props.classNames ?? []) ],
       attributes: {
         type: props.type ?? 'text',
-        ...(props.placeholder !== undefined
+        ...(this.props.placeholder !== undefined
           ? {
-              placeholder: props.placeholder
+              placeholder: this.props.placeholder
             }
-          : {})
+          : {}),
+        ...(this.props.autoFocus === true
+          ? {
+              autofocus: 'autofocus'
+            }
+          : {}),
       },
       events: {
         blur: (e) => {
@@ -74,6 +81,9 @@ export class TextInputInternal extends TextInputAbstract {
           if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
             this.props.fireModifierAndEnterKeyPress?.();
           }
+        },
+        keypress: (e: KeyboardEvent) => {
+          this.props.onKeyPress?.(e);
         }
       },
     });
@@ -99,6 +109,12 @@ export class TextInputInternal extends TextInputAbstract {
         this.validationErrorBlock
       ]
     });
+
+    if (this.props.autoFocus === true) {
+      setTimeout(() => {
+        this.inputElement.focus();
+      }, 250);
+    }
   }
 
   setValue = (value: string): void => {

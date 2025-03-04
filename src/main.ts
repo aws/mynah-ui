@@ -234,6 +234,12 @@ export interface MynahUIProps {
     formData: Record<string, string>,
     tabId: string,
     eventId?: string) => void;
+  onFormTextualItemKeyPress?: (
+    event: KeyboardEvent,
+    formData: Record<string, string>,
+    itemId: string,
+    tabId: string,
+    eventId?: string) => boolean;
   onCustomFormAction?: (
     tabId: string,
     action: {
@@ -473,6 +479,18 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     }) => {
       if (this.props.onFormModifierEnterPress !== undefined) {
         this.props.onFormModifierEnterPress(data.formData, data.tabId, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_TEXTUAL_ITEM_KEYPRESS, (data: {
+      event: KeyboardEvent;
+      formData: Record<string, string>;
+      itemId: string;
+      tabId: string;
+      callback: (disableAll?: boolean) => void;
+    }) => {
+      if (this.props.onFormTextualItemKeyPress !== undefined) {
+        data.callback(this.props.onFormTextualItemKeyPress(data.event, data.formData, data.itemId, data.tabId, this.getUserEventId()));
       }
     });
 
@@ -943,7 +961,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         description,
         buttons,
         formItems
-      }
+      },
     });
   };
 

@@ -27,6 +27,7 @@ export class ChatItemFormItemsWrapper {
   private readonly validationItems: Record<string, boolean> = {};
   private isValid: boolean = false;
   onValidationChange?: (isValid: boolean) => void;
+  onAllFormItemsDisabled?: () => void;
 
   render: ExtendedHTMLElement;
   constructor (props: ChatItemFormItemsWrapperProps) {
@@ -100,8 +101,12 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextArea({
               testId: testIds.chatItem.chatItemForm.itemTextArea,
               label,
+              autoFocus: chatItemOption.autoFocus,
               description,
               fireModifierAndEnterKeyPress,
+              onKeyPress: (event) => {
+                this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
+              },
               value,
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
@@ -113,8 +118,12 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              autoFocus: chatItemOption.autoFocus,
               description,
               fireModifierAndEnterKeyPress,
+              onKeyPress: (event) => {
+                this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
+              },
               value,
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
@@ -126,8 +135,12 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              autoFocus: chatItemOption.autoFocus,
               description,
               fireModifierAndEnterKeyPress,
+              onKeyPress: (event) => {
+                this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
+              },
               value,
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
@@ -140,8 +153,12 @@ export class ChatItemFormItemsWrapper {
             chatOption = new TextInput({
               testId: testIds.chatItem.chatItemForm.itemInput,
               label,
+              autoFocus: chatItemOption.autoFocus,
               description,
               fireModifierAndEnterKeyPress,
+              onKeyPress: (event) => {
+                this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
+              },
               value,
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
@@ -189,6 +206,22 @@ export class ChatItemFormItemsWrapper {
     return {};
   };
 
+  private readonly handleTextualItemKeyPressEvent = (event: KeyboardEvent, itemId: string): void => {
+    if (this.isFormValid()) {
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_TEXTUAL_ITEM_KEYPRESS, {
+        event,
+        formData: this.getAllValues(),
+        itemId,
+        tabId: this.props.tabId,
+        callback: (disableAll?: boolean) => {
+          if (disableAll === true) {
+            this.disableAll();
+          }
+        }
+      });
+    }
+  };
+
   private readonly isItemValid = (value: string, chatItemOption: ChatItemFormItem): boolean => {
     let validationState = true;
     if (chatItemOption.mandatory === true) {
@@ -215,6 +248,7 @@ export class ChatItemFormItemsWrapper {
 
   disableAll = (): void => {
     Object.keys(this.options).forEach(chatOptionId => this.options[chatOptionId].setEnabled(false));
+    this.onAllFormItemsDisabled?.();
   };
 
   getAllValues = (): Record<string, string> => {
