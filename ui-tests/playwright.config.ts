@@ -15,11 +15,7 @@ export default defineConfig({
   use: {
     headless: isHeadless,
     trace: 'retain-on-failure', // Capture trace only on failure
-    // screenshot: 'only-on-failure', // Take screenshots only on failure
-    // video: 'retain-on-failure', // Record video only for failed tests
-
-    // Default viewport
-    viewport: DEFAULT_VIEWPORT
+    viewport: DEFAULT_VIEWPORT // Enforce the default viewport
   },
   expect: {
     toHaveScreenshot: {
