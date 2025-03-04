@@ -130,7 +130,7 @@
     &:hover > .mynah-chat-command-selector-group > .mynah-chat-command-selector-command {
         &.target-command:not([disabled='true']):not(:hover) {
             background-color: transparent;
-            &:before{
+            &:before {
                 content: '';
                 position: absolute;
                 top: 0;
