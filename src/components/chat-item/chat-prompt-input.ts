@@ -414,7 +414,7 @@ export class ChatPromptInput {
                   } else {
                     this.searchTerm = this.searchTerm.slice(0, -1);
                   }
-                } else if (e.key.length === 1) {
+                } else if ((!e.ctrlKey && !e.metaKey) && e.key.length === 1) {
                   this.searchTerm += e.key.toLowerCase();
                 }
                 this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
