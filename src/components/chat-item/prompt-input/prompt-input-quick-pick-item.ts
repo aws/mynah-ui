@@ -12,18 +12,9 @@ export interface PromptInputQuickPickItemProps {
 export class PromptInputQuickPickItem {
   render: ExtendedHTMLElement;
   private readonly props: PromptInputQuickPickItemProps;
-  private readonly description: ExtendedHTMLElement;
 
   constructor (props: PromptInputQuickPickItemProps) {
     this.props = props;
-
-    this.description =
-      DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-chat-command-selector-command-description' ],
-        children: [ this.props.quickPickItem.description ?? '' ]
-      });
-
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.quickPickItem,
@@ -59,7 +50,17 @@ export class PromptInputQuickPickItem {
           innerHTML: this.props.quickPickItem.command
         },
         ...(this.props.quickPickItem.description !== undefined
-          ? [ this.description ]
+          ? [ {
+              type: 'div',
+              classNames: [ 'mynah-chat-command-selector-command-description' ],
+              children: [ {
+                type: 'span',
+                children: [ this.props.quickPickItem.description.slice(0, Math.ceil(this.props.quickPickItem.description.length / 2)) ]
+              }, {
+                type: 'span',
+                children: [ this.props.quickPickItem.description.slice(Math.ceil(this.props.quickPickItem.description.length / 2)) ]
+              } ]
+            } ]
           : []),
         ...((this.props.quickPickItem.children != null) && this.props.quickPickItem.children.length > 0
           ? [
@@ -74,8 +75,6 @@ export class PromptInputQuickPickItem {
           : [])
       ]
     });
-
-    setTimeout(() => this.updateTruncation(), 5);
   }
 
   public readonly setFocus = (isFocused: boolean): void => {
@@ -89,54 +88,5 @@ export class PromptInputQuickPickItem {
 
   public readonly getItem = (): QuickActionCommand => {
     return this.props.quickPickItem;
-  };
-
-  private readonly updateTruncation = (): void => {
-    if (this.props.quickPickItem.description == null) {
-      return;
-    }
-    const text = this.props.quickPickItem.description;
-
-    // Create a temporary span element to measure the text
-    const measureElement = document.createElement('span');
-    measureElement.style.visibility = 'hidden';
-    measureElement.style.position = 'absolute';
-    measureElement.style.whiteSpace = 'nowrap';
-    document.body.appendChild(measureElement);
-
-    // Measure the full text
-    measureElement.textContent = text;
-    const textWidth = measureElement.offsetWidth;
-
-    // Get the max width from the container
-    const maxWidth = this.description.offsetWidth - 10;
-
-    // If the text fits, update with the original
-    if (textWidth <= maxWidth) {
-      document.body.removeChild(measureElement);
-      this.description.innerText = text;
-      return;
-    }
-
-    const ellipsis = '...';
-    let left = 0; let right = text.length;
-
-    while (left < right) {
-      const middle = Math.floor((left + right) / 2);
-      const truncated = text.slice(0, middle) + ellipsis + text.slice(-middle);
-      measureElement.textContent = truncated;
-
-      if (measureElement.offsetWidth > maxWidth) {
-        right = middle - 1;
-      } else {
-        left = middle + 1;
-      }
-    }
-
-    // Clean up by removing the temporary measure element
-    document.body.removeChild(measureElement);
-
-    // Update the truncated text
-    this.description.innerText = text.slice(0, right) + ellipsis + text.slice(-right);
   };
 }

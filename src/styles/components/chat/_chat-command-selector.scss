@@ -123,9 +123,27 @@
                 grid-row: 2;
                 grid-column: 2;
                 color: var(--mynah-color-text-weak);
-                white-space: nowrap;
-                overflow: hidden;
+                display: flex;
                 width: 100%;
+                overflow: hidden;
+                justify-content: flex-start;
+
+                > span:first-child {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: pre;
+                    flex: 0 1 auto;
+                    text-align: left;
+                }
+
+                > span:last-child {
+                    flex: 0 1 auto;
+                    white-space: pre;
+                    overflow: hidden;
+                    display: inline-flex;
+                    flex-flow: row nowrap;
+                    justify-content: flex-end;
+                }
             }
 
             &:not(:hover):not(.target-command) {
