@@ -409,7 +409,8 @@ export class ChatPromptInput {
               // In case the prompt is an incomplete regex
               try {
                 if (e.key === KeyMap.BACKSPACE) {
-                  if (this.searchTerm === '') {
+                  const isAllSelected = window.getSelection()?.toString() === this.promptTextInput.getTextInputValue();
+                  if (this.searchTerm === '' || isAllSelected) {
                     this.quickPick.close();
                   } else {
                     this.searchTerm = this.searchTerm.slice(0, -1);
