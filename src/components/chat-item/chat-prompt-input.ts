@@ -563,7 +563,7 @@ export class ChatPromptInput {
 
   private readonly sendPrompt = (): void => {
     const quickPickItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
-    const currentInputValue = this.promptTextInput.getTextInputValue(true);
+    const currentInputValue = this.promptTextInput.getTextInputValue();
     if (currentInputValue !== '' || this.selectedCommand.trim() !== '') {
       let selectedCommand = this.selectedCommand;
 
