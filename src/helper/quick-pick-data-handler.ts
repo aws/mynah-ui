@@ -1,5 +1,6 @@
 import escapeHTML from 'escape-html';
 import { QuickActionCommand, QuickActionCommandGroup } from '../static';
+import { MynahIcons } from '../main';
 
 export const filterQuickPickItems = (commands: QuickActionCommandGroup[], searchTerm: string): QuickActionCommandGroup[] => {
   if (searchTerm.trim() === '') {
@@ -37,14 +38,17 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroup[], search
     });
   });
 
+  const returnGroup: QuickActionCommandGroup = {
+    icon: MynahIcons.SEARCH,
+    groupName: `### "${searchTerm}"`,
+    commands: []
+  };
   if (matchedCommands.length > 0) {
-    return [ {
-      commands: matchedCommands.sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-        .map((item) => item.command)
-    } ];
+    returnGroup.commands = matchedCommands.sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+      .map((item) => item.command);
   }
 
-  return [];
+  return [ returnGroup ];
 };
 
 export const MARK_OPEN = '<mark>';

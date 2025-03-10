@@ -18,6 +18,11 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   // Add content to create a scroll area
   await clickToFollowup(page, true);
 
+  justWait(500);
+  chatItemsContainer.evaluate(elm => {
+    elm.scrollTop = 1000000;
+  });
+
   // Check if the footer element exceeds from bottom
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 

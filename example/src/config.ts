@@ -283,7 +283,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
               }
             ],
             placeholder: 'Select a symbol',
-            description: 'After that mention a specific file/folder, or leave blank for full project'
+            description: 'After that mention a specific file/folder, or leave blank for full project!'
           },
           {
             command: 'prompts',

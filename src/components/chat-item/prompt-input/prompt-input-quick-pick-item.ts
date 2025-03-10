@@ -15,6 +15,7 @@ export class PromptInputQuickPickItem {
 
   constructor (props: PromptInputQuickPickItemProps) {
     this.props = props;
+    const descriptionSplitPosition = this.props.quickPickItem.description != null ? Math.ceil(this.props.quickPickItem.description.length / 2) : 0;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.quickPickItem,
@@ -55,10 +56,10 @@ export class PromptInputQuickPickItem {
               classNames: [ 'mynah-chat-command-selector-command-description' ],
               children: [ {
                 type: 'span',
-                children: [ this.props.quickPickItem.description.slice(0, Math.ceil(this.props.quickPickItem.description.length / 2)) ]
+                innerHTML: this.props.quickPickItem.description.slice(0, descriptionSplitPosition)
               }, {
                 type: 'span',
-                children: [ this.props.quickPickItem.description.slice(Math.ceil(this.props.quickPickItem.description.length / 2)) ]
+                innerHTML: `<bdi>${this.props.quickPickItem.description.slice(descriptionSplitPosition)}</bdi>`
               } ]
             } ]
           : []),

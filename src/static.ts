@@ -32,6 +32,7 @@ export interface QuickActionCommand {
 }
 export interface QuickActionCommandGroup {
   groupName?: string;
+  icon?: MynahIcons | MynahIconsType;
   actions?: Action[];
   commands: QuickActionCommand[];
 }

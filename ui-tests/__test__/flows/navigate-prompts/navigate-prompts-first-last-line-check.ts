@@ -9,7 +9,7 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   await openNewTab(page, false, true);
 
   const firstPrompt = 'This is the first user prompt';
-  const secondPrompt = 'This is the second user prompt\nIt spans two separate lines.';
+  const secondPrompt = 'This is the second user prompt.\nIt spans two separate lines.';
 
   const promptInput = page.locator(getSelector(testIds.prompt.input));
   const sendButton = page.locator(getSelector(testIds.prompt.send));
@@ -22,8 +22,8 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   await waitForAnimationEnd(page);
 
   // The input should start as the input with two lines
-  console.log((await promptInput.innerHTML()) === secondPrompt);
-  console.log(await promptInput.innerHTML());
+  console.log((await promptInput.innerText()) === secondPrompt);
+  console.log(await promptInput.innerText());
 
   expect(await promptInput.innerText()).toBe(secondPrompt);
 
@@ -34,12 +34,14 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
 
   // Go back to the first line
   await promptInput.press('ArrowUp');
+  // Go to the beginning of the line
+  await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
 
   // Now that we're in the first line again, it should navigate to the first user prompt
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
-  expect(await promptInput.innerHTML()).toBe(firstPrompt);
+  expect(await promptInput.innerText()).toBe(firstPrompt);
 
   // Given that this input only has one line, we should be able to go down to prompt 2 immediately again, after going to the end of the text
   await promptInput.press('ArrowDown');

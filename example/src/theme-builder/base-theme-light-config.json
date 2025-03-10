@@ -394,46 +394,58 @@
         "unit": "",
         "value": "var(--mynah-sizing-2)"
     },
+    "--mynah-main-wrapper-transition": {
+        "type": "text",
+        "category": "transition",
+        "description": "This is a transition animation used in several places",
+        "value": "all 350ms cubic-bezier(0.83, 0, 0.17, 1)"
+    },
     "--mynah-bottom-panel-transition": {
         "type": "text",
         "category": "transition",
         "description": "This is a transition animation used in several places",
-        "value": "all 850ms cubic-bezier(0.25, 1, 0, 1)"
+        "value": "all 450ms cubic-bezier(0.25, 1, 0, 1)"
+    },
+    "--mynah-short-rev-transition": {
+        "type": "text",
+        "category": "transition",
+        "description": "This is a transition animation used in several places",
+        "value": "all 280ms cubic-bezier(0.35, 1, 0, 1)"
     },
     "--mynah-very-short-transition": {
         "type": "text",
         "category": "transition",
         "description": "This is a transition animation used in several places",
-        "value": "all 600ms cubic-bezier(0.25, 1, 0, 1)"
+        "value": "all 300ms cubic-bezier(0.25, 1, 0, 1)"
     },
     "--mynah-very-long-transition": {
         "type": "text",
         "category": "transition",
         "description": "This is a transition animation used in several places",
-        "value": "all 1650ms cubic-bezier(0.25, 1, 0, 1)"
+        "value": "all 1000ms cubic-bezier(0.25, 1, 0, 1)"
     },
     "--mynah-short-transition": {
         "type": "text",
         "category": "transition",
         "description": "This is a transition animation used in several places",
-        "value": "all 550ms cubic-bezier(0.85, 0.15, 0, 1)"
+        "value": "all 300ms cubic-bezier(0.85, 0.15, 0, 1)"
     },
     "--mynah-short-transition-rev": {
         "type": "text",
         "category": "transition",
         "description": "This is a transition animation used in several places",
-        "value": "all 580ms cubic-bezier(0.35, 1, 0, 1)"
+        "value": "all 280ms cubic-bezier(0.35, 1, 0, 1)"
     },
     "--mynah-short-transition-rev-opacity": {
         "type": "text",
         "category": "transition",
         "description": "This is a transition animation used in several places",
-        "value": "opacity 750ms cubic-bezier(0.35, 1, 0, 1)"
+        "value": "opacity 350ms cubic-bezier(0.35, 1, 0, 1)"
     },
     "--mynah-text-flow-transition": {
         "type": "text",
         "category": "transition",
         "description": "This is the transition animation for text flows during a stream update",
-        "value": "all 800ms cubic-bezier(0.35, 1.2, 0, 1), transform 800ms cubic-bezier(0.2, 1.05, 0, 1)"
+        "value": "all 400ms cubic-bezier(0.35, 1.2, 0, 1), transform 400ms cubic-bezier(0.2, 1.05, 0, 1)"
     }
 }

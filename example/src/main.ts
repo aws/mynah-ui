@@ -131,6 +131,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               icon: MynahIcons.EXTERNAL,
               text: 'Export chat (html)',
             },
+            {
+              id: 'enable-disable-progress-bar',
+              icon: MynahIcons.PLAY,
+              text: 'Enable/disable Progress bar',
+            },
           ],
         },
       ],
@@ -223,6 +228,17 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           title: 'Chat exported',
           content: 'The file will be downloaded.',
         });
+      } else if (buttonId === 'enable-disable-progress-bar') {
+        const currStatus = mynahUI.getTabData(tabId);
+        if(currStatus.store.promptInputProgress!=null){
+          mynahUI.updateStore(tabId, {promptInputProgress: null});
+        } else {
+          mynahUI.updateStore(tabId, {promptInputProgress: {
+            status: 'default',
+            text: 'Progressing...',
+            value: -1,
+          }});
+        }
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
     },
