@@ -131,6 +131,7 @@ export class ChatPromptInput {
       type: 'div',
       classNames: [ 'mynah-chat-prompt' ],
       children: [
+        this.progressIndicator.render,
         this.chatPrompt,
         {
           type: 'div',
@@ -148,7 +149,6 @@ export class ChatPromptInput {
           ]
         },
         this.attachmentWrapper,
-        this.progressIndicator.render
       ]
     });
 
@@ -563,8 +563,8 @@ export class ChatPromptInput {
 
   private readonly sendPrompt = (): void => {
     const quickPickItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
-    const currentInputValue = this.promptTextInput.getTextInputValue();
-    if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
+    const currentInputValue = this.promptTextInput.getTextInputValue(true);
+    if (currentInputValue !== '' || this.selectedCommand.trim() !== '') {
       let selectedCommand = this.selectedCommand;
 
       // Catching cases where user could send a prompt with quick action command but the command is not be selected correctly

@@ -2,6 +2,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
 import testIds from '../../../helper/test-ids';
 import { ChatItemButton, QuickActionCommandGroup, QuickActionCommand } from '../../../static';
 import { CardBody } from '../../card/card-body';
+import { Icon } from '../../icon';
 import { ChatItemButtonsWrapper } from '../chat-item-buttons';
 import { PromptInputQuickPickItem } from './prompt-input-quick-pick-item';
 
@@ -39,6 +40,7 @@ export class PromptInputQuickPickSelector {
                 testId: testIds.prompt.quickPicksGroupTitle,
                 classNames: [ 'mynah-chat-command-selector-group-title' ],
                 children: [
+                  ...(quickPickGroup.icon != null ? [ new Icon({ icon: quickPickGroup.icon }).render ] : []),
                   new CardBody({
                     body: quickPickGroup.groupName
                   }).render,
