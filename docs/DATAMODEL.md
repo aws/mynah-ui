@@ -232,6 +232,7 @@ const mynahUI = new MynahUI({
 mynahUI.updateStore('tab-1', {
     quickActionCommands: [
         {
+            icon: MynahIcons.CODE,
             groupName: 'Command Group 1',
             commands: [
             {
