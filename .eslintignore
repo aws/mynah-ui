@@ -8,6 +8,8 @@
 *.png
 *.map
 *.html
+*.xml
+*.zip
 .github
 .husky
 example
@@ -18,3 +20,5 @@ out
 LICENSE
 THIRD-PARTY-LICENSES
 NOTICE
+Dockerfile
+e2e-results
