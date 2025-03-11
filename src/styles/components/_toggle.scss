@@ -18,6 +18,10 @@
         min-width: var(--mynah-sizing-8);
         max-width: calc(3 * var(--mynah-sizing-15));
         flex-shrink: 0;
+        order: 10;
+        &.mynah-toggle-option-pinned {
+            order: 5;
+        }
         > .mynah-toggle-option {
             display: none;
             &:not(:first-child) + .mynah-toggle-option-label {
@@ -28,8 +32,8 @@
                     content: '';
                     position: absolute;
                     top: 50%;
-                    margin-top: calc(-1 * var(--mynah-sizing-half));
-                    left: var(--mynah-sizing-2);
+                    transform: translateY(-50%);
+                    left: calc(var(--mynah-sizing-1) + var(--mynah-sizing-half));
                     height: var(--mynah-sizing-1);
                     width: var(--mynah-sizing-1);
                     background-color: var(--mynah-color-status-success);
@@ -43,7 +47,8 @@
                 pointer-events: all;
                 position: relative;
                 z-index: 100;
-                padding: 0 var(--mynah-sizing-1) 0 var(--mynah-sizing-5);
+                padding: 0 var(--mynah-sizing-4) 0 var(--mynah-sizing-4);
+                gap: var(--mynah-sizing-1);
                 height: 100%;
                 box-sizing: border-box;
                 display: inline-flex;
@@ -66,9 +71,12 @@
                     white-space: nowrap;
                     max-width: 100%;
                     display: block;
+                    &:empty {
+                        display: none;
+                    }
                 }
                 > .mynah-toggle-close-button {
-                    margin-left: var(--mynah-sizing-4);
+                    margin-right: calc(-1 * var(--mynah-sizing-3));
                     $closeBtnSize: var(--mynah-sizing-5);
                     min-width: $closeBtnSize;
                     max-width: $closeBtnSize;

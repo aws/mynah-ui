@@ -7,13 +7,14 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { cancelEvent } from '../helper/events';
 import { Button } from './button';
-import { Icon, MynahIcons } from './icon';
+import { Icon, MynahIcons, MynahIconsType } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import '../styles/components/_toggle.scss';
 
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType;
+  pinned?: boolean;
   disabled?: boolean;
   selected?: boolean;
   value: string;
@@ -37,6 +38,7 @@ class ToggleOptionItem {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'span',
+      classNames: [ ...(this.props.pinned === true ? [ 'mynah-toggle-option-pinned' ] : [ '' ]) ],
       testId: props.wrapperTestId,
       attributes: {
         key: `${this.props.name}-${this.props.value}`,
@@ -106,7 +108,7 @@ class ToggleOptionItem {
               cancelEvent(e);
             },
             auxclick: () => {
-              if (this.props.onRemove !== undefined) {
+              if (this.props.onRemove !== undefined && this.props.pinned !== true) {
                 this.props.onRemove(this.props.value, this.render);
               }
             }
@@ -118,7 +120,7 @@ class ToggleOptionItem {
               classNames: [ 'mynah-toggle-option-label-text' ],
               children: [ this.props.label ?? '' ]
             },
-            this.props.onRemove !== undefined
+            (this.props.onRemove !== undefined && this.props.pinned !== true)
               ? new Button({
                 testId: this.props.closeButtonTestId,
                 classNames: [ 'mynah-toggle-close-button' ],

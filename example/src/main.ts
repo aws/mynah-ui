@@ -148,6 +148,21 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           ...welcomeScreenTabData.store
         }
       },
+      'pinned-tab': {
+        store: {
+          chatItems: [{
+            type: ChatItemType.ANSWER,
+            body: 'Hello!'
+          }],
+          tabHeaderDetails: {
+            description: 'Your chat history'
+          },
+          tabIcon: MynahIcons.MENU,
+          pinned: true,
+          tabTitle: '',
+          promptInputVisible: false,
+        }
+      },
     },
     onFocusStateChanged: (focusState: boolean) => {
       Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
