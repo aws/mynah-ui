@@ -13,7 +13,7 @@ import '../styles/components/_toggle.scss';
 
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;
-  icon?: MynahIcons | MynahIconsType;
+  icon?: MynahIcons | MynahIconsType | null;
   pinned?: boolean;
   disabled?: boolean;
   selected?: boolean;

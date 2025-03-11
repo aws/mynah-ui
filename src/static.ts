@@ -47,7 +47,7 @@ export interface MynahUIDataModel {
   /**
    * Tab icon
    * */
-  tabIcon?: MynahIcons | MynahIconsType;
+  tabIcon?: MynahIcons | MynahIconsType | null;
   /**
    * is tab pinned
    * */
