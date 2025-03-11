@@ -1,4 +1,4 @@
-import { ChatItem, ChatItemContent } from '../static';
+import { ChatItem, ChatItemContent, InformationItemGroup } from '../static';
 
 export const emptyChatItemContent: ChatItemContent = {
   header: null,
@@ -16,13 +16,17 @@ export const emptyChatItemContent: ChatItemContent = {
   tabbedContent: null
 };
 
+export function isChatItem (item: ChatItem | InformationItemGroup): item is ChatItem {
+  return 'type' in item;
+}
+
 export const chatItemHasContent = (chatItem: Partial<ChatItem>): boolean => (
   (chatItem.body != null && chatItem.body !== '') ||
-chatItem.fileList != null ||
-chatItem.formItems != null ||
-chatItem.customRenderer != null ||
-chatItem.informationCard != null ||
-chatItem.buttons != null);
+  chatItem.fileList != null ||
+  chatItem.formItems != null ||
+  chatItem.customRenderer != null ||
+  chatItem.informationCard != null ||
+  chatItem.buttons != null);
 
 export const copyToClipboard = async (
   textToSendClipboard: string,
