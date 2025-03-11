@@ -224,17 +224,18 @@ export enum ChatItemType {
 
 export interface InformationItemGroup {
   title?: string;
-  informationItems: InformationItem[];
+  icon?: MynahIcons | MynahIconsType;
+  children: InformationItem[];
 }
 
 export interface InformationItem {
   messageId?: string;
   icon?: MynahIcons | MynahIconsType;
-  title: string;
+  title?: string;
   description?: string;
   actions?: ChatItemButton[];
   active?: boolean;
-  onClick?: () => void;
+  clickable?: boolean;
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
