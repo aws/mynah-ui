@@ -56,10 +56,10 @@ export class PromptInputQuickPickItem {
               classNames: [ 'mynah-chat-command-selector-command-description' ],
               children: [ {
                 type: 'span',
-                innerHTML: this.props.quickPickItem.description.slice(0, descriptionSplitPosition)
+                innerHTML: this.props.quickPickItem.description.slice(0, descriptionSplitPosition).replace(/ /g, '&nbsp;')
               }, {
                 type: 'span',
-                innerHTML: `<bdi>${this.props.quickPickItem.description.slice(descriptionSplitPosition)}</bdi>`
+                innerHTML: `<bdi>${this.props.quickPickItem.description.slice(descriptionSplitPosition).replace(/ /g, '&nbsp;')}</bdi>`
               } ]
             } ]
           : []),

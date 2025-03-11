@@ -264,7 +264,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
               }
             ],
             placeholder: 'Mention a specific file',
-            description: 'Reference a specific file'
+            description: 'Add a file to context'
 
           },
           {
