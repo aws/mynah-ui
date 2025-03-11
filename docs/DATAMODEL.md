@@ -2769,16 +2769,17 @@ Information items can be rendered in an `InformationItemGroup` within the `chatI
 ```typescript
 export interface InformationItemGroup {
   title?: string;
-  informationItems: InformationItem[];
+  icon?: MynahIcons | MynahIconsType;
+  children: InformationItem[];
 }
 
 export interface InformationItem {
   messageId?: string;
   icon?: MynahIcons | MynahIconsType;
-  title: string;
+  title?: string;
   description?: string;
   actions?: ChatItemButton[];
   active?: boolean;
-  onClick?: () => void;
+  clickable?: boolean;
 }
 ```
