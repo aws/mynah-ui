@@ -83,7 +83,7 @@ interface MynahUIDataModel {
   /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
-  chatItems?: ChatItem[];
+  chatItems?: Array<ChatItem | InformationItemGroup>;
   /**
    * Attached code under the prompt input field
    */
@@ -855,6 +855,8 @@ mynahUI.updateStore('tab-1', {
 This is holding the chat items. If you provide it through the `defaults` or inside a tab item in the initial `tabs` property in the [Constructor properties](./PROPERTIES.md) you can give the whole set.
 
 **BUT** if you will set it through `updateStore` it will append the items in the list to the current chatItems list. In case if you need to update the list with a new one manually on runtime, you need to send an empty list first and than send the desired new list.
+
+ChatItems will either be of type `ChatItem` or `InformationItemGroup`. An `InformationItemGroup` can hold one or more `InformationItem` objects. This means that if you would like to just access the ChatItems in a tab, you should filter out the InformationItemGroups first.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -2755,5 +2757,29 @@ export interface ChatPrompt {
   escapedPrompt?: string; // Generally being used to send it back to mynah-ui for end user prompt rendering
   command?: string;
   context?: string[];
+}
+```
+
+---
+
+# `InformationItem`
+
+Information items can be rendered in an `InformationItemGroup` within the `chatItems?` array. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
+
+```typescript
+export interface InformationItemGroup {
+  title?: string;
+  icon?: MynahIcons | MynahIconsType;
+  children: InformationItem[];
+}
+
+export interface InformationItem {
+  messageId?: string;
+  icon?: MynahIcons | MynahIconsType;
+  title?: string;
+  description?: string;
+  actions?: ChatItemButton[];
+  active?: boolean;
+  clickable?: boolean;
 }
 ```

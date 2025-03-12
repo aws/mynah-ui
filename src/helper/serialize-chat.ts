@@ -1,5 +1,7 @@
 import { ChatItemCard } from '../components/chat-item/chat-item-card';
 import { MynahUITabsStore } from './tabs-store';
+import { ChatItem } from '../static';
+import { isChatItem } from './chat-item';
 
 /**
  * Serialize all (non-empty) chat messages in a tab to a markdown string
@@ -7,7 +9,9 @@ import { MynahUITabsStore } from './tabs-store';
  * @returns The bodies of chat cards in markdown format, separated by \n\n---\n\n
  */
 export const serializeMarkdown = (tabId: string): string => {
-  return MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.map(chatItem => chatItem.body ?? '').filter(chatItem => chatItem.trim() !== '').join('\n\n---\n\n') ?? '';
+  return MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.filter((chatItem): chatItem is ChatItem =>
+    isChatItem(chatItem)
+  ).map(chatItem => chatItem.body ?? '').filter(chatItem => chatItem.trim() !== '').join('\n\n---\n\n') ?? '';
 };
 
 /**
@@ -16,7 +20,9 @@ export const serializeMarkdown = (tabId: string): string => {
  * @returns The bodies of chat cards in HTML format
  */
 export const serializeHtml = (tabId: string): string => {
-  const chatItemCardDivs = MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.filter(chatItem => (chatItem.body != null) && chatItem.body.trim() !== '').map(chatItem => new ChatItemCard({
+  const chatItemCardDivs = MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.filter((chatItem): chatItem is ChatItem =>
+    isChatItem(chatItem) && chatItem.body != null && chatItem.body.trim() !== ''
+  ).map(chatItem => new ChatItemCard({
     chatItem: {
       type: chatItem.type,
       body: chatItem.body,

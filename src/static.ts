@@ -115,7 +115,7 @@ export interface MynahUIDataModel {
   /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
-  chatItems?: ChatItem[];
+  chatItems?: Array<ChatItem | InformationItemGroup>;
   /**
    * Attached code under the prompt input field
    */
@@ -220,6 +220,22 @@ export enum ChatItemType {
   ANSWER_STREAM = 'answer-stream',
   ANSWER_PART = 'answer-part',
   CODE_RESULT = 'code-result',
+}
+
+export interface InformationItemGroup {
+  title?: string;
+  icon?: MynahIcons | MynahIconsType;
+  children: InformationItem[];
+}
+
+export interface InformationItem {
+  messageId?: string;
+  icon?: MynahIcons | MynahIconsType;
+  title?: string;
+  description?: string;
+  actions?: ChatItemButton[];
+  active?: boolean;
+  clickable?: boolean;
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
