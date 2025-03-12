@@ -15,6 +15,8 @@ export class EmptyMynahUIDataModel {
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
       tabTitle: Config.getInstance().config.texts.mainTitle,
+      tabIcon: null,
+      pinned: false,
       tabBackground: false,
       loadingChat: false,
       tabCloseConfirmationCloseButton: null,

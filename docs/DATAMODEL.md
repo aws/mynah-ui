@@ -13,6 +13,14 @@ interface MynahUIDataModel {
    * */
   tabTitle?: string;
   /**
+   * Tab icon
+   * */
+  tabIcon?: MynahIcons | MynahIconsType | null;
+  /**
+   * is tab pinned
+   * */
+  pinned?: boolean;
+  /**
    * Tab title
    * */
   tabBackground?: boolean;
@@ -123,6 +131,57 @@ mynahUI.updateStore('tab-1', {
     tabTitle: 'Chat'
 })
 ```
+
+### `tabIcon` (default: undefined)
+Basically it is an icon you can give to the tab.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabTitle: '',
+    tabIcon: MynahIcons.MENU,
+    pinned: true
+})
+```
+
+### 
+
+<p align="center">
+  <img src="./img/data-model/tabStore/pinnedTab.png" alt="pinnedTab" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+### `pinned` (default: `false`)
+You can pin the tabs to the beginning. But when you pin a tab, end user cannot close them anymore. It will disable the middle mouse click to close a tab and remove the close button too. The tab will be basically pinned.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabTitle: '',
+    tabIcon: MynahIcons.MENU,
+    pinned: true
+})
+```
+
+### 
+
+<p align="center">
+  <img src="./img/data-model/tabStore/pinnedTab.png" alt="pinnedTab" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ### `tabBackground` (default: `false`)
 Shows or hides the gradient background on the tab.

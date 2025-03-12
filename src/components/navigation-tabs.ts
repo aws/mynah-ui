@@ -84,6 +84,8 @@ export class Tabs {
       const tabOption = {
         value: tabId,
         label: tabs[tabId].store?.tabTitle,
+        icon: tabs[tabId].store?.tabIcon,
+        pinned: tabs[tabId].store?.pinned,
         selected: tabs[tabId].isSelected
       };
       return tabOption;

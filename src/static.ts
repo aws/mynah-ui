@@ -45,6 +45,14 @@ export interface MynahUIDataModel {
    * */
   tabTitle?: string;
   /**
+   * Tab icon
+   * */
+  tabIcon?: MynahIcons | MynahIconsType | null;
+  /**
+   * is tab pinned
+   * */
+  pinned?: boolean;
+  /**
    * Tab title
    * */
   tabBackground?: boolean;
