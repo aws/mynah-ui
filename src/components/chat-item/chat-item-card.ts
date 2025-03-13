@@ -325,7 +325,23 @@ export class ChatItemCard {
       this.chatFormItems = new ChatItemFormItemsWrapper({
         classNames: [ 'mynah-card-inner-order-40' ],
         tabId: this.props.tabId,
-        chatItem: this.props.chatItem
+        chatItem: this.props.chatItem,
+        onModifierEnterPress (formData, tabId) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, { formData, tabId });
+        },
+        onTextualItemKeyPress (event, itemId, formData, tabId, disableAllCallback) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_TEXTUAL_ITEM_KEYPRESS, {
+            event,
+            formData,
+            itemId,
+            tabId,
+            callback: (disableAll?: boolean) => {
+              if (disableAll === true) {
+                disableAllCallback();
+              }
+            }
+          });
+        },
       });
       this.card?.render.insertChild('beforeend', this.chatFormItems.render);
     }

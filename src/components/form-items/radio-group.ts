@@ -43,7 +43,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
     this.radioGroupElement = DomBuilder.getInstance().build({
       type: 'div',
       testId: props.wrapperTestId,
-      classNames: [ 'mynah-form-input', 'no-border', ...(props.classNames ?? []) ],
+      classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
       children:
         props.options?.map((option, index) => ({
           type: 'div',
@@ -101,7 +101,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
         },
         {
           type: 'div',
-          classNames: [ 'mynah-form-input-container' ],
+          classNames: [ 'mynah-form-input-container', 'no-border' ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
             this.radioGroupElement,

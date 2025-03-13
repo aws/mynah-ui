@@ -346,6 +346,7 @@ interface BaseFormItem {
   placeholder?: string;
   value?: string;
   description?: string;
+  prefixIcon?: MynahIcons | MynahIconsType;
 }
 
 export type TextBasedFormItem = BaseFormItem & {
