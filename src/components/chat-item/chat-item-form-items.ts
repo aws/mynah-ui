@@ -21,7 +21,7 @@ export interface ChatItemFormItemsWrapperProps {
   classNames?: string[];
   onModifierEnterPress?: (formData: Record<string, any>, tabId: string) => void;
   onTextualItemKeyPress?: (event: KeyboardEvent, itemId: string, formData: Record<string, any>, tabId: string, disableAllCallback: () => void) => void;
-  onFormChange?: (formData: Record<string, any>, tabId: string) => void;
+  onFormChange?: (formData: Record<string, any>, isValid: boolean, tabId: string) => void;
 }
 export class ChatItemFormItemsWrapper {
   private readonly props: ChatItemFormItemsWrapperProps;
@@ -204,7 +204,7 @@ export class ChatItemFormItemsWrapper {
       this.validationItems[chatItemOption.id] = this.isItemValid(chatItemOption.value ?? '', chatItemOption);
       return {
         onChange: (value: string | number) => {
-          this.props.onFormChange?.(this.getAllValues(), this.props.tabId);
+          this.props.onFormChange?.(this.getAllValues(), this.isFormValid(), this.props.tabId);
           this.validationItems[chatItemOption.id] = this.isItemValid(value.toString(), chatItemOption);
           this.isFormValid();
         }
