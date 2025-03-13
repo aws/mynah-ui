@@ -98,6 +98,9 @@ export class CustomFormWrapper {
             }
           });
         },
+        onFormChange (formData, isValid, tabId) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_CHANGE, { formData, isValid, tabId });
+        },
       });
     }
 

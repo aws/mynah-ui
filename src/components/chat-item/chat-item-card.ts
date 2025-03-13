@@ -342,6 +342,9 @@ export class ChatItemCard {
             }
           });
         },
+        onFormChange (formData, isValid, tabId) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_CHANGE, { formData, isValid, tabId });
+        },
       });
       this.card?.render.insertChild('beforeend', this.chatFormItems.render);
     }
