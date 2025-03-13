@@ -81,7 +81,7 @@ export class ChatItemFormItemsWrapper {
               label,
               description,
               value,
-              prefixIcon: chatItemOption.prefixIcon,
+              icon: chatItemOption.icon,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
               placeholder: Config.getInstance().config.texts.pleaseSelect,
@@ -108,7 +108,7 @@ export class ChatItemFormItemsWrapper {
               description,
               fireModifierAndEnterKeyPress,
               onKeyPress: (event) => {
-                this.isFormValid() && this.props.onTextualItemKeyPress?.(event, chatItemOption.id, this.getAllValues(), props.tabId, this.disableAll);
+                this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
               },
               value,
               mandatory: chatItemOption.mandatory,
@@ -123,10 +123,10 @@ export class ChatItemFormItemsWrapper {
               label,
               autoFocus: chatItemOption.autoFocus,
               description,
-              prefixIcon: chatItemOption.prefixIcon,
+              icon: chatItemOption.icon,
               fireModifierAndEnterKeyPress,
               onKeyPress: (event) => {
-                this.isFormValid() && this.props.onTextualItemKeyPress?.(event, chatItemOption.id, this.getAllValues(), props.tabId, this.disableAll);
+                this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
               },
               value,
               mandatory: chatItemOption.mandatory,
@@ -141,10 +141,10 @@ export class ChatItemFormItemsWrapper {
               label,
               autoFocus: chatItemOption.autoFocus,
               description,
-              prefixIcon: chatItemOption.prefixIcon,
+              icon: chatItemOption.icon,
               fireModifierAndEnterKeyPress,
               onKeyPress: (event) => {
-                this.isFormValid() && this.props.onTextualItemKeyPress?.(event, chatItemOption.id, this.getAllValues(), props.tabId, this.disableAll);
+                this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
               },
               value,
               mandatory: chatItemOption.mandatory,
@@ -160,10 +160,10 @@ export class ChatItemFormItemsWrapper {
               label,
               autoFocus: chatItemOption.autoFocus,
               description,
-              prefixIcon: chatItemOption.prefixIcon,
+              icon: chatItemOption.icon,
               fireModifierAndEnterKeyPress,
               onKeyPress: (event) => {
-                this.isFormValid() && this.props.onTextualItemKeyPress?.(event, chatItemOption.id, this.getAllValues(), props.tabId, this.disableAll);
+                this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
               },
               value,
               mandatory: chatItemOption.mandatory,
@@ -211,6 +211,10 @@ export class ChatItemFormItemsWrapper {
       };
     }
     return {};
+  };
+
+  private readonly handleTextualItemKeyPressEvent = (event: KeyboardEvent, itemId: string): void => {
+    this.isFormValid() && this.props.onTextualItemKeyPress?.(event, itemId, this.getAllValues(), this.props.tabId, this.disableAll);
   };
 
   private readonly isItemValid = (value: string, chatItemOption: ChatItemFormItem): boolean => {

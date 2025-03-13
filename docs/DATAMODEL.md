@@ -978,6 +978,7 @@ interface ChatItemFormItem {
   id: string;
   type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup';
   mandatory?: boolean;
+  icon?: MynahIcons;
   title?: string;
   placeholder?: string;
   value?: string;
@@ -2259,6 +2260,7 @@ interface ChatItemFormItem {
   title?: string; // Label of the input
   autoFocus: boolean; // focus to the input when it is created, default=> false. (Only for textual form items)
   description?: string; // The description, showing under the input field itself
+  icon?: MynahIcons; // An icon displaying at the start of the input, renders on all inputs except for stars and radiogroup
   validationPatterns?: {
     operator?: 'and' | 'or';
     genericValidationErrorMessage?: string;

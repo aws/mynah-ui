@@ -16,7 +16,7 @@ export interface TextInputProps {
   label?: HTMLElement | ExtendedHTMLElement | string;
   autoFocus?: boolean;
   description?: ExtendedHTMLElement;
-  prefixIcon?: MynahIcons | MynahIconsType;
+  icon?: MynahIcons | MynahIconsType;
   mandatory?: boolean;
   fireModifierAndEnterKeyPress?: () => void;
   placeholder?: string;
@@ -104,8 +104,8 @@ export class TextInputInternal extends TextInputAbstract {
           classNames: [ 'mynah-form-input-container' ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
-            ...(props.prefixIcon
-              ? [ new Icon({ icon: props.prefixIcon, classNames: [ 'mynah-form-input-icon' ] }).render ]
+            ...(props.icon
+              ? [ new Icon({ icon: props.icon, classNames: [ 'mynah-form-input-icon' ] }).render ]
               : []),
             this.inputElement,
           ]
