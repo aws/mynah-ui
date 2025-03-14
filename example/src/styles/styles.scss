@@ -164,13 +164,6 @@ body {
             overflow: hidden;
             margin: 0 auto;
             width: 100%;
-
-            .mynah-nav-tabs-wrapper {
-                border-top: 0;
-                > .mynah-toggle-container > span:first-child > label {
-                    border-top-left-radius: var(--mynah-input-radius);
-                }
-            }
         }
     }
 

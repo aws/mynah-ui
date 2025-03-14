@@ -152,6 +152,9 @@
                         > .mynah-ui-icon {
                             height: calc(var(--mynah-font-size-medium) - var(--mynah-sizing-base));
                             font-size: var(--mynah-font-size-xsmall);
+                            & + span.at-char {
+                                display: none;
+                            }
                         }
                         &:before {
                             content: '';

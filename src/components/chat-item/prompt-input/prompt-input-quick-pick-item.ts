@@ -15,7 +15,7 @@ export class PromptInputQuickPickItem {
 
   constructor (props: PromptInputQuickPickItemProps) {
     this.props = props;
-    const descriptionSplitPosition = this.props.quickPickItem.description != null ? Math.ceil(this.props.quickPickItem.description.length / 2) : 0;
+    const descriptionSplitPosition = 20;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.quickPickItem,

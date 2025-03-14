@@ -147,8 +147,8 @@
                     height: var(--mynah-line-height);
                 }
                 > span:first-child {
-                    white-space: normal;
-                    word-break: break-word;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                     text-align: left;
                 }
 

@@ -114,7 +114,7 @@ class ToggleOptionItem {
             }
           },
           children: [
-            this.props.icon !== undefined ? new Icon({ icon: props.icon as MynahIcons }).render : '',
+            this.props.icon != null ? new Icon({ icon: props.icon as MynahIcons }).render : '',
             {
               type: 'span',
               classNames: [ 'mynah-toggle-option-label-text' ],
