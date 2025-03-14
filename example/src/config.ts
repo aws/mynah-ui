@@ -232,7 +232,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 commands: [
                   {
                     command: 'monarch.ts',
-                    description: './src/',
+                    description: 'spring-boot-template/.github/workflows/p-openapi.yaml',
                     icon: MynahIcons.FILE,
                   },
                   {
