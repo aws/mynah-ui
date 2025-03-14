@@ -245,14 +245,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       } else if (buttonId === 'enable-disable-progress-bar') {
         const currStatus = mynahUI.getTabData(tabId);
-        if(currStatus.store.promptInputProgress!=null){
-          mynahUI.updateStore(tabId, {promptInputProgress: null});
+        if (currStatus.store.promptInputProgress != null) {
+          mynahUI.updateStore(tabId, { promptInputProgress: null });
         } else {
-          mynahUI.updateStore(tabId, {promptInputProgress: {
-            status: 'default',
-            text: 'Progressing...',
-            value: -1,
-          }});
+          mynahUI.updateStore(tabId, {
+            promptInputProgress: {
+              status: 'default',
+              text: 'Progressing...',
+              value: -1,
+            }
+          });
         }
       }
       Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
@@ -476,7 +478,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Item id: <b>${itemId}</b><br/>
       Key: <b>${event.keyCode}</b><br/>
       `);
-      if((itemId === 'description' || itemId === 'comment') && event.keyCode === 13 && event.ctrlKey !== true && event.shiftKey !== true){
+      if ((itemId === 'description' || itemId === 'comment') && event.keyCode === 13 && event.ctrlKey !== true && event.shiftKey !== true) {
         event.preventDefault();
         event.stopImmediatePropagation();
         Log(`Form keypress Enter submit on tab <b>${tabId}</b>:<br/>
@@ -811,7 +813,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 rootFolderTitle: 'Context',
                 folderIcon: null,
                 fileTreeTitle: '',
-                filePaths: ['./src/index.ts', './main','js_expert'],
+                filePaths: ['./src/index.ts', './main', 'js_expert'],
                 details: {
                   './src/index.ts': {
                     icon: MynahIcons.FILE,

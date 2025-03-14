@@ -240,6 +240,10 @@ export interface MynahUIProps {
     itemId: string,
     tabId: string,
     eventId?: string) => boolean;
+  onFormChange?: (
+    formData: Record<string, any>,
+    isValid: boolean,
+    tabId: string) => void;
   onCustomFormAction?: (
     tabId: string,
     action: {
@@ -491,6 +495,16 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     }) => {
       if (this.props.onFormTextualItemKeyPress !== undefined) {
         data.callback(this.props.onFormTextualItemKeyPress(data.event, data.formData, data.itemId, data.tabId, this.getUserEventId()));
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_CHANGE, (data: {
+      formData: Record<string, string>;
+      isValid: boolean;
+      tabId: string;
+    }) => {
+      if (this.props.onFormChange !== undefined) {
+        this.props.onFormChange(data.formData, data.isValid, data.tabId);
       }
     });
 

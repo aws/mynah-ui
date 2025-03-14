@@ -516,6 +516,7 @@ _To send the form, mandatory items should be filled._`,
             id: 'expertise-area',
             type: 'select',
             title: `Area of expertise`,
+            icon: 'search',
             description: 'Select your area of expertise',
             options: [
                 {

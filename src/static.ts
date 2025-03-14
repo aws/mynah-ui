@@ -185,6 +185,7 @@ export enum MynahEventNames {
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
   FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
   FORM_TEXTUAL_ITEM_KEYPRESS = 'formTextualItemKeyPress',
+  FORM_CHANGE = 'formChange',
   ADD_ATTACHMENT = 'addAttachment',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
@@ -346,6 +347,7 @@ interface BaseFormItem {
   placeholder?: string;
   value?: string;
   description?: string;
+  icon?: MynahIcons | MynahIconsType;
 }
 
 export type TextBasedFormItem = BaseFormItem & {
