@@ -123,7 +123,7 @@ export interface MynahUIDataModel {
   /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
-  chatItems?: Array<ChatItem | InformationItemGroup>;
+  chatItems?: ChatItem[];
   /**
    * Attached code under the prompt input field
    */
