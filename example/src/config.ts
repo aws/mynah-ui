@@ -171,7 +171,6 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
         commands: [
           {
             command: '@workspace',
-            // icon: MynahIcons.ASTERISK,
             placeholder: 'Yes, you selected workspace :P',
             description: 'Reference all code in workspace.'
           },
@@ -287,7 +286,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
           },
           {
             command: 'prompts',
-            icon: MynahIcons.CHAT,
+            icon: MynahIcons.FLASH,
             description: 'Saved prompts, to reuse them in your current prompt',
             children: [
               {

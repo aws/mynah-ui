@@ -354,7 +354,8 @@ export class PromptTextInput {
     const contextSpanElement = DomBuilder.getInstance().build({
       type: 'span',
       children: [
-        ...(contextItem.icon != null ? [ new Icon({ icon: contextItem.icon }).render ] : [ '@' ]),
+        ...(contextItem.icon != null ? [ new Icon({ icon: contextItem.icon }).render ] : [ ]),
+        { type: 'span', classNames: [ 'at-char' ], innerHTML: '@' },
         `${contextItem.command.replace(/^@?(.*)$/, '$1')}`
       ],
       classNames: [ 'context' ],

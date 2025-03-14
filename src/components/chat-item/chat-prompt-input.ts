@@ -588,7 +588,9 @@ export class ChatPromptInput {
       const context: QuickActionCommand[] = this.promptTextInput.getUsedContext();
 
       const escapedPrompt = escapeHTML(promptText.replace(/@\S*/gi, (match) => {
-        return `**${match}**`;
+        // Unnecessary spaces will be removed by HTML rendering,
+        // it is safe to add a start space to avoid rendering problems for bold text
+        return ` **${match}**`;
       }));
 
       const promptData: {tabId: string; prompt: ChatPrompt} = {
