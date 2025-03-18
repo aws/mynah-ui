@@ -277,7 +277,10 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     command: 'DomBuilder',
                     icon: MynahIcons.CODE_BLOCK,
                     description: 'The DomGeneration function in dom.ts file'
-                  }
+                  },
+                  ...(
+                    Array(40_000).fill(null).map((_, i) => ({ command: `item${i}`, description: `./src/${i}`, icon: MynahIcons.CODE_BLOCK }))
+                  )
                 ]
               }
             ],
