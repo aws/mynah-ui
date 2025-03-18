@@ -18,7 +18,7 @@ import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper, ChatItemButtonsWrapperProps } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
 import { CONTAINER_GAP } from './chat-wrapper';
-import { chatItemHasContent, isChatItem } from '../../helper/chat-item';
+import { chatItemHasContent } from '../../helper/chat-item';
 import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
 import testIds from '../../helper/test-ids';
@@ -562,9 +562,7 @@ export class ChatItemCard {
             .getTabDataStore(this.props.tabId)
             .updateStore(
               {
-                chatItems: currentTabChatItems?.filter((chatItem): chatItem is ChatItem =>
-                  isChatItem(chatItem)
-                ).map((chatItem: ChatItem) => {
+                chatItems: currentTabChatItems?.map((chatItem: ChatItem) => {
                   if (chatItem.messageId === this.props.chatItem.messageId) {
                     return this.props.chatItem;
                   }
