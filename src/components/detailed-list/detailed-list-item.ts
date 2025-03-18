@@ -1,19 +1,19 @@
-import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
-import { cancelEvent } from '../../../helper/events';
-import testIds from '../../../helper/test-ids';
-import { QuickActionCommand } from '../../../static';
-import { Icon } from '../../icon';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { cancelEvent } from '../../helper/events';
+import testIds from '../../helper/test-ids';
+import { DetailedListItem } from '../../static';
+import { Icon } from '../icon';
 
-export interface PromptInputQuickPickItemProps {
-  quickPickItem: QuickActionCommand;
-  onSelect: (quickPickItem: QuickActionCommand) => void;
+export interface DetailedListItemWrapperProps {
+  listItem: DetailedListItem;
+  onSelect: (detailedListItem: DetailedListItem) => void;
 }
 
-export class PromptInputQuickPickItem {
+export class DetailedListItemWrapper {
   render: ExtendedHTMLElement;
-  private readonly props: PromptInputQuickPickItemProps;
+  private readonly props: DetailedListItemWrapperProps;
 
-  constructor (props: PromptInputQuickPickItemProps) {
+  constructor (props: DetailedListItemWrapperProps) {
     this.props = props;
     const descriptionSplitPosition = 20;
     this.render = DomBuilder.getInstance().build({
@@ -21,25 +21,25 @@ export class PromptInputQuickPickItem {
       testId: testIds.prompt.quickPickItem,
       classNames: [ 'mynah-chat-command-selector-command' ],
       attributes: {
-        disabled: this.props.quickPickItem.disabled ?? 'false',
+        disabled: this.props.listItem.disabled ?? 'false',
       },
       events: {
         click: (e) => {
           cancelEvent(e);
-          if (this.props.quickPickItem.disabled !== true) {
-            this.props.onSelect(this.props.quickPickItem);
+          if (this.props.listItem.disabled !== true) {
+            this.props.onSelect(this.props.listItem);
           }
         }
       },
       children: [
-        ...(this.props.quickPickItem.icon !== undefined
+        ...(this.props.listItem.icon !== undefined
           ? [
               {
                 type: 'div',
                 classNames: [ 'mynah-chat-command-selector-icon' ],
                 children: [
                   new Icon({
-                    icon: this.props.quickPickItem.icon
+                    icon: this.props.listItem.icon
                   }).render
                 ]
               }
@@ -48,22 +48,22 @@ export class PromptInputQuickPickItem {
         {
           type: 'div',
           classNames: [ 'mynah-chat-command-selector-command-name' ],
-          innerHTML: this.props.quickPickItem.command
+          innerHTML: this.props.listItem.title
         },
-        ...(this.props.quickPickItem.description !== undefined
+        ...(this.props.listItem.description !== undefined
           ? [ {
               type: 'div',
               classNames: [ 'mynah-chat-command-selector-command-description' ],
               children: [ {
                 type: 'span',
-                innerHTML: this.props.quickPickItem.description.slice(0, descriptionSplitPosition).replace(/ /g, '&nbsp;')
+                innerHTML: this.props.listItem.description.slice(0, descriptionSplitPosition).replace(/ /g, '&nbsp;')
               }, {
                 type: 'span',
-                innerHTML: `<bdi>${this.props.quickPickItem.description.slice(descriptionSplitPosition).replace(/ /g, '&nbsp;')}</bdi>`
+                innerHTML: `<bdi>${this.props.listItem.description.slice(descriptionSplitPosition).replace(/ /g, '&nbsp;')}</bdi>`
               } ]
             } ]
           : []),
-        ...((this.props.quickPickItem.children != null) && this.props.quickPickItem.children.length > 0
+        ...((this.props.listItem.children != null) && this.props.listItem.children.length > 0
           ? [
               {
                 type: 'div',
@@ -87,7 +87,7 @@ export class PromptInputQuickPickItem {
     }
   };
 
-  public readonly getItem = (): QuickActionCommand => {
-    return this.props.quickPickItem;
+  public readonly getItem = (): DetailedListItem => {
+    return this.props.listItem;
   };
 }

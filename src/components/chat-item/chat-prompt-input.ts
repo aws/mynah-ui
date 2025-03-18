@@ -17,8 +17,8 @@ import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
 import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
-import { filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
-import { PromptInputQuickPickSelector } from './prompt-input/prompt-input-quick-pick-selector';
+import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
+import { DetailedListWrapper } from '../detailed-list/detailed-list';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -51,7 +51,7 @@ export class ChatPromptInput {
   private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
   private readonly chatPrompt: ExtendedHTMLElement;
-  private quickPickItemsSelectorContainer: PromptInputQuickPickSelector;
+  private quickPickItemsSelectorContainer: DetailedListWrapper;
   private promptTextInputLabel: ExtendedHTMLElement;
   private remainingCharsOverlay: Overlay;
   private quickPickTriggerIndex: number;
@@ -291,7 +291,7 @@ export class ChatPromptInput {
         if (this.quickPickItemGroups.length > 0) {
           this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
           this.quickPick = new Overlay({
-            closeOnOutsideClick: true,
+            closeOnOutsideClick: false,
             referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
             dimOutside: false,
             stretchWidth: true,
@@ -369,8 +369,9 @@ export class ChatPromptInput {
           this.quickPick?.close();
         } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
           this.searchTerm = '';
-          const commandToSend = this.quickPickItemsSelectorContainer.getTargetElement();
-          if (commandToSend != null) {
+          const targetDetailedListItem = this.quickPickItemsSelectorContainer.getTargetElement();
+          if (targetDetailedListItem != null) {
+            const commandToSend = convertDetailedListItemToQuickActionCommand(targetDetailedListItem);
             if (this.quickPickType === 'context') {
               if (commandToSend.command !== '') {
                 this.handleContextCommandSelection(commandToSend);
@@ -481,9 +482,12 @@ export class ChatPromptInput {
   };
 
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
+    const detailedListItemsGroup = convertQuickActionCommandGroupsToDetailedListGroups(quickPickGroupList);
     if (this.quickPickItemsSelectorContainer == null) {
-      this.quickPickItemsSelectorContainer = new PromptInputQuickPickSelector({
-        quickPickGroupList,
+      this.quickPickItemsSelectorContainer = new DetailedListWrapper({
+        detailedList: {
+          list: detailedListItemsGroup
+        },
         onQuickPickGroupActionClick: (action) => {
           this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, {
@@ -491,7 +495,8 @@ export class ChatPromptInput {
             actionId: action.id
           });
         },
-        onQuickPickItemSelect: (quickPickCommand) => {
+        onQuickPickItemSelect: (detailedListItem) => {
+          const quickPickCommand: QuickActionCommand = convertDetailedListItemToQuickActionCommand(detailedListItem);
           if (this.quickPickType === 'context') {
             this.handleContextCommandSelection(quickPickCommand);
           } else {
@@ -500,7 +505,7 @@ export class ChatPromptInput {
         },
       });
     } else {
-      this.quickPickItemsSelectorContainer.updateList(quickPickGroupList);
+      this.quickPickItemsSelectorContainer.updateList(detailedListItemsGroup);
     }
     return this.quickPickItemsSelectorContainer.render;
   };

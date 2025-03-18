@@ -1,4 +1,4 @@
-import { ChatItem, ChatItemContent, InformationItemGroup } from '../static';
+import { ChatItem, ChatItemContent } from '../static';
 
 export const emptyChatItemContent: ChatItemContent = {
   header: null,
@@ -15,10 +15,6 @@ export const emptyChatItemContent: ChatItemContent = {
   relatedContent: null,
   tabbedContent: null
 };
-
-export function isChatItem (item: ChatItem | InformationItemGroup): item is ChatItem {
-  return 'type' in item;
-}
 
 export const chatItemHasContent = (chatItem: Partial<ChatItem>): boolean => (
   (chatItem.body != null && chatItem.body !== '') ||

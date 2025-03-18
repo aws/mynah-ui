@@ -91,7 +91,7 @@ interface MynahUIDataModel {
   /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
-  chatItems?: Array<ChatItem | InformationItemGroup>;
+  chatItems?: Array<ChatItem | DetailedListItemGroup>;
   /**
    * Attached code under the prompt input field
    */
@@ -915,7 +915,7 @@ This is holding the chat items. If you provide it through the `defaults` or insi
 
 **BUT** if you will set it through `updateStore` it will append the items in the list to the current chatItems list. In case if you need to update the list with a new one manually on runtime, you need to send an empty list first and than send the desired new list.
 
-ChatItems will either be of type `ChatItem` or `InformationItemGroup`. An `InformationItemGroup` can hold one or more `InformationItem` objects. This means that if you would like to just access the ChatItems in a tab, you should filter out the InformationItemGroups first.
+ChatItems will either be of type `ChatItem` or `DetailedListItemGroup`. An `DetailedListItemGroup` can hold one or more `DetailedListItem` objects. This means that if you would like to just access the ChatItems in a tab, you should filter out the DetailedListItemGroups first.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -2823,18 +2823,18 @@ export interface ChatPrompt {
 
 ---
 
-# `InformationItem`
+# `DetailedListItem`
 
-Information items can be rendered in an `InformationItemGroup` within the `chatItems?` array. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
+Information items can be rendered in an `DetailedListItemGroup` within the `chatItems?` array. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
 
 ```typescript
-export interface InformationItemGroup {
+export interface DetailedListItemGroup {
   title?: string;
   icon?: MynahIcons | MynahIconsType;
-  children: InformationItem[];
+  children: DetailedListItem[];
 }
 
-export interface InformationItem {
+export interface DetailedListItem {
   messageId?: string;
   icon?: MynahIcons | MynahIconsType;
   title?: string;
