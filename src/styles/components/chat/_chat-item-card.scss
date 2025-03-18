@@ -3,14 +3,14 @@
     display: inline-flex;
     flex-flow: column nowrap;
     position: relative;
-    max-width: 90%;
+    max-width: calc(100% - var(--mynah-chat-wrapper-spacing));
     min-width: 1%;
     transition: var(--mynah-very-short-transition);
-    transform: translate3d(0, min(50%, 25vh), 0) scale(0.95, 1.25);
+    transform: translate3d(0, min(30%, 10vh), 0) scale(0.99);
     opacity: 0;
     transform-origin: center bottom;
     gap: var(--mynah-sizing-4);
-
+    z-index: 100;
     &-status {
         @each $status in $mynah-statuses {
             &-#{$status} {
@@ -37,6 +37,7 @@
 
     &.mynah-chat-item-hover-effect:hover {
         cursor: pointer;
+        z-index: 1000;
         > .mynah-card {
             box-shadow: var(--mynah-shadow-card-hover);
         }
@@ -81,6 +82,7 @@
         border-radius: 100%;
     }
     > .mynah-card {
+        flex-shrink: 0;
         > .mynah-chat-items-spinner {
             overflow: visible;
             z-index: 10000;
@@ -128,7 +130,10 @@
             justify-content: space-between;
             align-items: center;
             padding-top: var(--mynah-sizing-3);
-            border-top: 1px solid var(--mynah-color-border-default);
+            border-top: var(--mynah-border-width) solid var(--mynah-color-border-default);
+            &:empty {
+                display: none;
+            }
             > .mynah-ui-chat-item-small-card {
                 padding: 0;
                 margin: 0;
@@ -296,8 +301,6 @@
     &.mynah-chat-item-answer-stream {
         > .mynah-card {
             border-bottom-left-radius: var(--mynah-card-radius-corner);
-            max-height: 100%;
-            flex: 1;
         }
     }
     &.mynah-chat-item-ai-prompt,

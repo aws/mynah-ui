@@ -28,6 +28,7 @@ export interface ChatWrapperProps {
 export class ChatWrapper {
   private readonly props: ChatWrapperProps;
   private readonly chatItemsContainer: ExtendedHTMLElement;
+  private activeConversationGroup: ExtendedHTMLElement;
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInputElement: ExtendedHTMLElement;
   private readonly promptInput: ChatPromptInput;
@@ -55,17 +56,17 @@ export class ChatWrapper {
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
-      if (this.chatItemsContainer.children.length === chatItems.length) {
-        const lastItem = this.chatItemsContainer.children.item(0);
+      if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
+        const lastItem = this.chatItemsContainer.children.item(Array.from(this.chatItemsContainer.children).length - 1);
         if (lastItem !== null) {
           const newChatItemCard = new ChatItemCard({ tabId: this.props.tabId, chatItem: chatItemToInsert });
           if (chatItemToInsert.messageId !== undefined) {
             this.allRenderedChatItems[chatItemToInsert.messageId] = newChatItemCard;
           }
-          lastItem.innerHTML = newChatItemCard.render.innerHTML;
+          lastItem.replaceWith(newChatItemCard.render);
         }
       } else if (chatItems.length > 0) {
-        if (this.chatItemsContainer.children.length === 0) {
+        if (Object.keys(this.allRenderedChatItems).length === 0) {
           chatItems.forEach(chatItem => {
             this.insertChatItem(chatItem);
           });
@@ -74,6 +75,13 @@ export class ChatWrapper {
         }
       } else {
         this.chatItemsContainer.clear(true);
+        this.activeConversationGroup = DomBuilder.getInstance().build({
+          type: 'div',
+          testId: testIds.chat.conversationContainer,
+          classNames: [ 'mynah-chat-items-conversation-container' ],
+          children: [],
+        });
+        this.chatItemsContainer.insertChild('beforeend', this.activeConversationGroup);
         this.allRenderedChatItems = {};
       }
     });
@@ -175,12 +183,20 @@ export class ChatWrapper {
       }
     });
 
+    this.activeConversationGroup = DomBuilder.getInstance().build({
+      type: 'div',
+      testId: testIds.chat.conversationContainer,
+      classNames: [ 'mynah-chat-items-conversation-container' ],
+      children: [],
+    });
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.chat.chatItemsContainer,
       classNames: [ 'mynah-chat-items-container' ],
       persistent: true,
-      children: [],
+      children: [
+        this.activeConversationGroup
+      ],
       events: {
         wheel: () => {
           this.scrollPos = this.chatItemsContainer.scrollTop;
@@ -298,19 +314,35 @@ export class ChatWrapper {
       this.lastStreamingChatItemCard = chatItemCard;
     }
 
+    if (chatItem.type === ChatItemType.PROMPT) {
+      this.activeConversationGroup = DomBuilder.getInstance().build({
+        type: 'div',
+        testId: testIds.chat.conversationContainer,
+        classNames: [ 'mynah-chat-items-conversation-container' ]
+      });
+      this.chatItemsContainer.insertChild('beforeend', this.activeConversationGroup);
+    }
+
     // Add to render
-    this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
+    this.activeConversationGroup.insertChild('beforeend', chatItemCard.render);
+    // this.chatItemsContainer.insertChild('beforeend', chatItemCard.render);
 
     // Add to all rendered chat items map
     this.allRenderedChatItems[currentMessageId] = chatItemCard;
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
-      // Make sure we scroll the chat window to the bottom
-      // Only if it is a PROMPT
-      this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight + 500;
+      // Make sure we align to top when there is a new prompt.
+      // Only if it is a PROMPT!
+      // Check css application
+      this.chatItemsContainer.addClass('set-scroll');
     }
 
-    this.scrollPos = this.chatItemsContainer.scrollTop;
+    setTimeout(() => {
+      // remove css class which allows us to snap automatically
+      this.chatItemsContainer.removeClass('set-scroll');
+      // set last scroll position
+      this.scrollPos = this.chatItemsContainer.scrollTop;
+    }, 100);
   };
 
   private readonly checkLastAnswerStreamChange = (updateWith: Partial<ChatItem>): void => {

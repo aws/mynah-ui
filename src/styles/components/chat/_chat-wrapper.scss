@@ -26,8 +26,6 @@
         width: inherit;
         max-width: inherit;
         box-sizing: border-box;
-        padding-left: var(--mynah-sizing-4);
-        padding-right: var(--mynah-sizing-4);
     }
     &:after {
         transition: var(--mynah-very-short-transition);
@@ -54,7 +52,7 @@
         > .mynah-chat-wrapper-footer-spacer,
         > .mynah-chat-wrapper-header-spacer,
         > .mynah-chat-items-container,
-        > .mynah-chat-items-container > .mynah-chat-item-card {
+        > .mynah-chat-items-container > .mynah-chat-items-conversation-container > .mynah-chat-item-card {
             transition: var(--mynah-main-wrapper-transition);
         }
 
@@ -102,7 +100,7 @@
             padding-top: var(--mynah-sizing-1);
             padding-bottom: var(--mynah-sizing-12);
         }
-        > .mynah-chat-items-container {
+        > .mynah-chat-items-container > .mynah-chat-items-conversation-container {
             > .mynah-chat-item-card {
                 &:not(.mynah-chat-item-prompt, .mynah-chat-item-system-prompt) {
                     max-width: 100%;
