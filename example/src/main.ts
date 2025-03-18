@@ -861,7 +861,6 @@ used as a context to generate this message.`
           return true;
         },
         () => {
-          console.log(messageId);
           const cardDetails = mynahUI.endMessageStream(tabId, messageId, {}) as Record<string, any>;
 
           mynahUI.updateStore(tabId, {

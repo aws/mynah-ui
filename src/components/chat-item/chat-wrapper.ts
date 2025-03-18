@@ -58,7 +58,7 @@ export class ChatWrapper {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(Array.from(this.chatItemsContainer.children).length - 1);
-        if (lastItem !== null) {
+        if (lastItem != null && chatItemToInsert != null) {
           const newChatItemCard = new ChatItemCard({ tabId: this.props.tabId, chatItem: chatItemToInsert });
           if (chatItemToInsert.messageId !== undefined) {
             this.allRenderedChatItems[chatItemToInsert.messageId] = newChatItemCard;
