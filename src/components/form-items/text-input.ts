@@ -8,6 +8,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { checkTextElementValidation } from '../../helper/validator';
 import { ValidationPattern } from '../../static';
 import '../../styles/components/_form-input.scss';
+import { Icon, MynahIcons, MynahIconsType } from '../icon';
 
 export interface TextInputProps {
   classNames?: string[];
@@ -15,6 +16,7 @@ export interface TextInputProps {
   label?: HTMLElement | ExtendedHTMLElement | string;
   autoFocus?: boolean;
   description?: ExtendedHTMLElement;
+  icon?: MynahIcons | MynahIconsType;
   mandatory?: boolean;
   fireModifierAndEnterKeyPress?: () => void;
   placeholder?: string;
@@ -102,6 +104,9 @@ export class TextInputInternal extends TextInputAbstract {
           classNames: [ 'mynah-form-input-container' ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
+            ...(props.icon
+              ? [ new Icon({ icon: props.icon, classNames: [ 'mynah-form-input-icon' ] }).render ]
+              : []),
             this.inputElement,
           ]
         },

@@ -4,15 +4,6 @@
     box-sizing: border-box;
     gap: var(--mynah-sizing-2);
     flex-flow: column nowrap;
-    &[disabled] {
-        .mynah-form-input {
-            opacity: 0.5 !important;
-        }
-        &,
-        & * {
-            pointer-events: none !important;
-        }
-    }
     > .mynah-form-input-label {
         > .mynah-ui-form-item-mandatory-title {
             display: inline-flex;
@@ -37,11 +28,43 @@
         box-sizing: border-box;
         justify-content: flex-end;
         align-items: center;
+        z-index: 0;
+
+        &:not(.no-border) {
+            padding: var(--mynah-sizing-3);
+            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+            background-color: var(--mynah-card-bg);
+            border-radius: var(--mynah-input-radius);
+        }
+
+        &:has(.mynah-form-input:disabled) {
+            &::after {
+                content: '';
+                position: absolute;
+                top: calc(var(--mynah-border-width) * -1);
+                left: calc(var(--mynah-border-width) * -1);
+                right: calc(var(--mynah-border-width) * -1);
+                bottom: calc(var(--mynah-border-width) * -1);
+                background-color: var(--mynah-color-text-weak);
+                border-radius: var(--mynah-input-radius);
+                z-index: -1;
+                opacity: 10%;
+            }
+            > .mynah-form-input {
+                background-color: transparent;
+            }
+        }
+
         > .mynah-form-input {
             width: 100%;
             left: 0;
             color: var(--mynah-color-text-default);
-            border-radius: var(--mynah-input-radius);
+
+            &[disabled] {
+                pointer-events: none;
+                opacity: 50%;
+            }
+
             &::placeholder {
                 color: var(--mynah-color-text-weak);
                 text-overflow: ellipsis;
@@ -52,13 +75,11 @@
                 font-style: italic;
                 opacity: 0.5;
             }
-            &:not(.no-border) {
-                padding: var(--mynah-sizing-3);
-                border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-                background-color: var(--mynah-card-bg);
-            }
+
             -webkit-appearance: none;
             appearance: none;
+            padding: 0;
+            border: none;
             text-indent: 1px;
             text-overflow: clip;
             outline: none;
@@ -70,6 +91,7 @@
                 &:not(:last-child) {
                     margin-right: var(--mynah-sizing-4);
                 }
+
                 > .mynah-form-input-radio-label {
                     display: inline-flex;
                     flex-flow: row nowrap;
@@ -176,11 +198,15 @@
             color: var(--mynah-color-text-input);
             outline: none;
         }
+        > .mynah-form-input-icon {
+            color: var(--mynah-color-text-weak);
+            margin-right: var(--mynah-sizing-2);
+        }
         > .mynah-select-handle {
             position: absolute;
             color: var(--mynah-color-text-weak);
             pointer-events: none;
-            transform: translateX(-100%);
+            transform: translateX(-25%);
         }
         & + .mynah-form-input-validation-error-block {
             display: flex;

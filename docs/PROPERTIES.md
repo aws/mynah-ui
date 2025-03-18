@@ -122,12 +122,16 @@ export interface MynahUIProps {
     formData: Record<string, string>,
     tabId: string,
     eventId?: string) => void;
-    onFormTextualItemKeyPress?: (
+  onFormTextualItemKeyPress?: (
     event: KeyboardEvent,
     formData: Record<string, string>,
     itemId: string;
     tabId: string,
     eventId?: string) => boolean;
+  onFormChange?: (
+    formData: Record<string, any>,
+    isValid: boolean,
+    tabId: string) => void;
   onCustomFormAction?: (
     tabId: string,
     action: {
@@ -878,6 +882,7 @@ onFormModifierEnterPress?: (
     },
 ...
 ```
+
 ---
 
 ### `onFormTextualItemKeyPress`
@@ -908,6 +913,26 @@ onFormTextualItemKeyPress?: (
         return true; // return true to disable the form like a submit button do. It will also close the customForm overlay panel if the items are inside one.
       }
       return false; // Keep the form enabled and if applicable customForm overlay panel open
+    },
+...
+```
+
+---
+
+### `onFormChange`
+
+This event will be fired whenever any value of any input in a form changes. This happens regardless of the validity of the form. 
+
+```typescript
+...
+onFormChange?: (
+    formData: Record<string, string>,
+    isValid: boolean,
+    tabId: string): void => {
+      console.log(`Form change detected on tab <b>${tabId}</b>:<br/>
+      Form data: <b>${JSON.stringify(formData)}</b><br/>
+      Form valid: <b>${isValid}</b>
+      `);
     },
 ...
 ```

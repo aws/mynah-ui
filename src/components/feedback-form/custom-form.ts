@@ -79,7 +79,29 @@ export class CustomFormWrapper {
       this.chatFormItems = null;
     }
     if (this.props.chatItem.formItems !== undefined) {
-      this.chatFormItems = new ChatItemFormItemsWrapper({ tabId: this.props.tabId, chatItem: this.props.chatItem });
+      this.chatFormItems = new ChatItemFormItemsWrapper({
+        tabId: this.props.tabId,
+        chatItem: this.props.chatItem,
+        onModifierEnterPress (formData, tabId) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, { formData, tabId });
+        },
+        onTextualItemKeyPress (event, itemId, formData, tabId, disableAllCallback) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_TEXTUAL_ITEM_KEYPRESS, {
+            event,
+            formData,
+            itemId,
+            tabId,
+            callback: (disableAll?: boolean) => {
+              if (disableAll === true) {
+                disableAllCallback();
+              }
+            }
+          });
+        },
+        onFormChange (formData, isValid, tabId) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_CHANGE, { formData, isValid, tabId });
+        },
+      });
     }
 
     if (this.chatButtons !== null) {
