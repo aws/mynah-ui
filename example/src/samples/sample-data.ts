@@ -364,7 +364,7 @@ export const exampleRichFollowups: ChatItem = {
 
 export const defaultFollowUps: ChatItem = {
     type: ChatItemType.ANSWER,
-    messageId: new Date().getTime().toString(),
+    messageId: generateUID(),
     followUp: {
         text: 'Example card types',
         options: [

@@ -9,7 +9,7 @@ export class Connector {
     onStreamUpdate: (chatItem: Partial<ChatItem>, progressPercentage: number) => boolean,
     onStreamEnd: () => void
   ): Promise<boolean> => await new Promise((resolve, reject) => {
-    Log('Simulating server response');
+    Log(`Simulating server response: messageId: ${streamingChatItems[0]?.messageId ?? 'NoNe'}`);
     setTimeout(() => {
       resolve(true);
       let streamFillInterval: ReturnType<typeof setInterval>;

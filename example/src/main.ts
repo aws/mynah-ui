@@ -804,7 +804,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   };
 
   const getGenerativeAIAnswer = (tabId: string, optionalParts?: Partial<ChatItem>[]): void => {
-    const messageId = new Date().getTime().toString();
+    const messageId = generateUID();
     mynahUI.updateStore(tabId, {
       loadingChat: true,
       promptInputDisabledState: true,
@@ -814,6 +814,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         optionalParts ?? [
           {
             ...exampleStreamParts[0],
+            messageId,
             header: {
               fileList: {
                 collapsed: true,
@@ -860,6 +861,7 @@ used as a context to generate this message.`
           return true;
         },
         () => {
+          console.log(messageId);
           const cardDetails = mynahUI.endMessageStream(tabId, messageId, {}) as Record<string, any>;
 
           mynahUI.updateStore(tabId, {
@@ -887,7 +889,7 @@ used as a context to generate this message.`
           Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails).map(key => `${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
-          mynahUI.updateChatAnswerWithMessageId(tabId, messageId, defaultFollowUps);
+          mynahUI.addChatItem(tabId, {...defaultFollowUps, messageId: generateUID()});
           streamingMessageId = null;
         }
       )
