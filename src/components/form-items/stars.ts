@@ -92,9 +92,9 @@ export class Stars {
 
   setEnabled = (enabled: boolean): void => {
     if (enabled) {
-      this.render.removeAttribute('disabled');
+      this.starsContainer.parentElement?.removeAttribute('disabled');
     } else {
-      this.render.setAttribute('disabled', 'disabled');
+      this.starsContainer.parentElement?.setAttribute('disabled', 'disabled');
     }
   };
 }
