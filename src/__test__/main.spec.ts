@@ -1,5 +1,5 @@
 import { MynahUITabsStore } from '../helper/tabs-store';
-import { ChatItemType, MynahUI } from '../main';
+import { ChatItemType, MynahUI, MynahUIDataModel } from '../main';
 
 const testTabId = 'tab-1';
 
@@ -76,5 +76,28 @@ describe('mynah-ui', () => {
 
     expect(cardElements[1].textContent).toBe('What is python');
     expect(cardElements[0].textContent).toBe('Amazon Q is generating your answer...');
+  });
+
+  it('does not break on data store extension', () => {
+    const testMynahUI = new MynahUI({
+      tabs: {
+        [testTabId]: {
+          isSelected: true,
+          store: {
+            loadingChat: false,
+          }
+        }
+      }
+    });
+
+    type ExtendedDataModel = MynahUIDataModel & { someOtherProperty: boolean };
+    const props: ExtendedDataModel = { someOtherProperty: true };
+
+    try {
+      testMynahUI.updateStore(testTabId, props);
+    } catch (e) {
+      console.log(e);
+      expect(true).toBe(false);
+    }
   });
 });
