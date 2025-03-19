@@ -205,6 +205,18 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+        mynahUI.openSheet({
+          tabId,
+          title: 'Some title',
+          description: 'Some description',
+          chatItems: [
+            {
+              body: 'test',
+              type: ChatItemType.ANSWER,
+            },
+          ],
+          fullScreen: false
+      });
       } else if (buttonId === 'save-session') {
         localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
       } else if (buttonId === 'remove-saved-session') {
