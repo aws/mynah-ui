@@ -258,6 +258,8 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     command: '_dark.scss',
                     description: './src/styles/',
                     icon: MynahIcons.FILE,
+                    // add route just to check if it returns back
+                    route: ['src','styles'],
                   }
                 ]
               }

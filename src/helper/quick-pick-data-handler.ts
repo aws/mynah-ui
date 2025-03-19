@@ -166,7 +166,8 @@ export const convertDetailedListItemToQuickActionCommand = (detailedListItem: De
     icon: detailedListItem.icon,
     id: detailedListItem.id,
     label: detailedListItem.title,
-    placeholder: detailedListItem.followupText
+    placeholder: detailedListItem.followupText,
+    route: detailedListItem.keywords,
   };
 };
 
@@ -181,7 +182,7 @@ export const convertQuickActionCommandGroupsToDetailedListGroups = (quickActionC
 
 export const convertQuickActionCommandToDetailedListItem = (quickActionCommand: QuickActionCommand): DetailedListItem => {
   return {
-    title: quickActionCommand.label ?? quickActionCommand.command,
+    title: quickActionCommand.command ?? quickActionCommand.label,
     clickable: true,
     followupText: quickActionCommand.placeholder,
     ...(quickActionCommand.children != null ? { children: convertQuickActionCommandGroupsToDetailedListGroups(quickActionCommand.children) } : {}),
@@ -189,6 +190,7 @@ export const convertQuickActionCommandToDetailedListItem = (quickActionCommand: 
     disabled: quickActionCommand.disabled,
     icon: quickActionCommand.icon,
     id: quickActionCommand.id,
+    keywords: quickActionCommand.route
   };
 };
 

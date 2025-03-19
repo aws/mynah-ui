@@ -257,6 +257,7 @@ export interface DetailedListItem {
   clickable?: boolean;
   actions?: ChatItemButton[];
   children?: DetailedListItemGroup[];
+  keywords?: string[];
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
