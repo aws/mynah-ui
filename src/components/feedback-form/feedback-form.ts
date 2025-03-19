@@ -3,29 +3,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ChatItemButton, ChatItemFormItem, FeedbackPayload, MynahEventNames, MynahPortalNames } from '../../static';
-import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { ChatItem, ChatItemButton, ChatItemFormItem, FeedbackPayload, MynahEventNames } from '../../static';
+import { DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { FeedbackFormComment } from './feedback-form-comment';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
-import { Icon, MynahIcons } from '../icon';
 import { Config } from '../../helper/config';
 import { Select } from '../form-items/select';
-import { CustomFormWrapper } from './custom-form';
-import '../../styles/components/_feedback-form.scss';
 import testIds from '../../helper/test-ids';
-import { CardBody } from '../card/card-body';
+import { MynahUITabsStore } from '../../helper/tabs-store';
+import { ChatItemFormItemsWrapper } from '../chat-item/chat-item-form-items';
+import { ChatItemButtonsWrapper } from '../chat-item/chat-item-buttons';
 
 export interface FeedbackFormProps {
   initPayload?: FeedbackPayload;
 }
 export class FeedbackForm {
-  private feedbackFormWrapper: ExtendedHTMLElement;
   private readonly feedbackOptionsWrapper: Select;
   private readonly feedbackComment: FeedbackFormComment;
   private readonly feedbackSubmitButton: Button;
   private feedbackPayload: FeedbackPayload = { messageId: '', selectedOption: '', tabId: '', comment: '' };
   public readonly feedbackFormContainer: ExtendedHTMLElement;
+  private chatFormItems: ChatItemFormItemsWrapper | null = null;
+  private chatButtons: ChatItemButtonsWrapper | null = null;
 
   constructor (props?: FeedbackFormProps) {
     this.feedbackPayload = {
@@ -35,60 +35,6 @@ export class FeedbackForm {
       comment: '',
       ...props?.initPayload
     };
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM, (data: {messageId?: string; tabId: string; customFormData?: {
-      title?: string;
-      description?: string;
-      buttons?: ChatItemButton[];
-      formItems?: ChatItemFormItem[];
-    };}) => {
-      if (this.feedbackFormWrapper === undefined) {
-        this.feedbackFormWrapper = DomBuilder.getInstance().createPortal(
-          MynahPortalNames.FEEDBACK_FORM,
-          {
-            type: 'div',
-            testId: testIds.feedbackForm.wrapper,
-            attributes: {
-              id: 'mynah-feedback-form-wrapper'
-            },
-          },
-          'afterbegin'
-        );
-      }
-
-      this.feedbackFormWrapper.clear();
-      this.feedbackFormWrapper.update({
-        children: [
-          data.messageId !== undefined
-            ? this.feedbackFormContainer
-            : data.customFormData !== undefined
-              ? new CustomFormWrapper({
-                tabId: data.tabId,
-                chatItem: data.customFormData,
-                title: data.customFormData.title,
-                description: data.customFormData.description,
-                onFormDisabled: () => {
-                  this.close();
-                },
-                onFormAction: () => {
-                  this.close();
-                },
-                onCloseButtonClick: (e) => {
-                  cancelEvent(e);
-                  this.close();
-                }
-              }).render
-              : ''
-        ]
-      });
-      if (data.messageId !== undefined) {
-        this.feedbackPayload.messageId = data.messageId;
-      }
-      this.feedbackPayload.tabId = data.tabId;
-      setTimeout(() => {
-        this.show();
-      }, 5);
-    });
 
     this.feedbackOptionsWrapper = new Select({
       wrapperTestId: testIds.feedbackForm.optionsSelectWrapper,
@@ -117,52 +63,15 @@ export class FeedbackForm {
       },
     });
 
-    this.feedbackFormContainer = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-feedback-form' ],
-      events: {
-        click: (e) => {
-          if (e.target != null && !(e.target as HTMLElement).classList.contains('mynah-ui-clickable-item')) {
-            cancelEvent(e);
-          }
-        }
-      },
-      children: [
-        {
-          type: 'div',
-          classNames: [ 'mynah-feedback-form-header' ],
-          children: [
-            {
-              type: 'h4',
-              testId: testIds.feedbackForm.title,
-              children: [ Config.getInstance().config.texts.feedbackFormTitle ]
-            },
-            new Button({
-              testId: testIds.feedbackForm.closeButton,
-              primary: false,
-              onClick: () => {
-                this.close();
-              },
-              icon: new Icon({ icon: MynahIcons.CANCEL }).render
-            }).render
-          ]
-        },
-        {
-          type: 'div',
-          classNames: [ 'mynah-feedback-form-description' ],
-          testId: testIds.feedbackForm.description,
-          children: [ Config.getInstance().config.texts.feedbackFormDescription !== ''
-            ? new CardBody({
-              body: Config.getInstance().config.texts.feedbackFormDescription,
-              onLinkClick: (link, event) => {
-                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_LINK_CLICK, {
-                  link,
-                  event,
-                });
-              },
-            }).render
-            : '' ]
-        },
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM, (data: {
+      messageId?: string; tabId: string; customFormData?: {
+        title?: string;
+        description?: string;
+        buttons?: ChatItemButton[];
+        formItems?: ChatItemFormItem[];
+      };
+    }) => {
+      const defaultFeedbackFormItems = [
         this.feedbackOptionsWrapper.render,
         {
           type: 'span',
@@ -184,7 +93,51 @@ export class FeedbackForm {
             this.feedbackSubmitButton.render
           ]
         }
-      ],
+      ];
+
+      const title = data.messageId !== undefined
+        ? Config.getInstance().config.texts.feedbackFormTitle
+        : data.customFormData !== undefined
+          ? data.customFormData.title
+          : undefined;
+
+      const description = data.messageId !== undefined
+        ? Config.getInstance().config.texts.feedbackFormDescription
+        : data.customFormData !== undefined
+          ? data.customFormData.description
+          : undefined;
+
+      const defaultOrCustomChatItems = data.messageId !== undefined
+        ? defaultFeedbackFormItems
+        : data.customFormData !== undefined
+          ? this.getFormItems({
+            tabId: data.tabId,
+            title: data.customFormData?.title,
+            description: data.customFormData?.description,
+            onFormDisabled: () => {
+              this.close();
+            },
+            onFormAction: () => {
+              this.close();
+            },
+            onCloseButtonClick: (e) => {
+              cancelEvent(e);
+              this.close();
+            },
+            chatItem: data.customFormData
+          })
+          : [];
+
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_SHEET, {
+        tabId: data.tabId,
+        title,
+        description,
+        chatItems: defaultOrCustomChatItems
+      });
+      if (data.messageId !== undefined) {
+        this.feedbackPayload.messageId = data.messageId;
+      }
+      this.feedbackPayload.tabId = data.tabId;
     });
   }
 
@@ -201,10 +154,86 @@ export class FeedbackForm {
       tabId: '',
       comment: ''
     };
-    this.feedbackFormWrapper.removeClass('mynah-feedback-form-show');
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CLOSE_SHEET, {});
   };
 
-  show = (): void => {
-    this.feedbackFormWrapper.addClass('mynah-feedback-form-show');
+  private readonly getFormItems = (data: {
+    tabId: string;
+    chatItem: Partial<ChatItem>;
+    title?: string;
+    description?: string;
+    onFormAction?: (actionName: string, formData: Record<string, string>) => void;
+    onFormDisabled?: () => void;
+    onCloseButtonClick?: (e: Event) => void;
+  }): Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject> => {
+    if (MynahUITabsStore.getInstance().getTabDataStore(data.tabId) === undefined) {
+      return [];
+    }
+    if (this.chatFormItems !== null) {
+      this.chatFormItems.render.remove();
+      this.chatFormItems = null;
+    }
+    if (data.chatItem.formItems !== undefined) {
+      this.chatFormItems = new ChatItemFormItemsWrapper({
+        tabId: data.tabId,
+        chatItem: data.chatItem,
+        onModifierEnterPress (formData, tabId) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, { formData, tabId });
+        },
+        onTextualItemKeyPress (event, itemId, formData, tabId, disableAllCallback) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_TEXTUAL_ITEM_KEYPRESS, {
+            event,
+            formData,
+            itemId,
+            tabId,
+            callback: (disableAll?: boolean) => {
+              if (disableAll === true) {
+                disableAllCallback();
+              }
+            }
+          });
+        },
+        onFormChange (formData, isValid, tabId) {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_CHANGE, { formData, isValid, tabId });
+        },
+      });
+    }
+
+    if (this.chatButtons !== null) {
+      this.chatButtons.render.remove();
+      this.chatButtons = null;
+    }
+    if (data.chatItem.buttons !== undefined) {
+      this.chatButtons = new ChatItemButtonsWrapper({
+        tabId: data.tabId,
+        formItems: this.chatFormItems,
+        buttons: data.chatItem.buttons,
+        onAllButtonsDisabled: data.onFormDisabled,
+        onActionClick: (action, e) => {
+          if (e !== undefined) {
+            cancelEvent(e);
+          }
+
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CUSTOM_FORM_ACTION_CLICK, {
+            tabId: data.tabId,
+            id: action.id,
+            text: action.text,
+            ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {})
+          });
+
+          if (data.onFormAction !== undefined) {
+            data.onFormAction(action.id, this.chatFormItems !== null ? this.chatFormItems.getAllValues() : {});
+          }
+        }
+      });
+    }
+    return [
+      ...(this.chatFormItems !== null
+        ? [ (this.chatFormItems).render ]
+        : []),
+      ...(this.chatButtons !== null
+        ? [ (this.chatButtons).render ]
+        : []),
+    ];
   };
 }

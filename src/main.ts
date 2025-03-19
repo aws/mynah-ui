@@ -41,6 +41,7 @@ import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
+import { Sheet, SheetProps } from './components/sheet';
 
 export { generateUID } from './helper/guid';
 export {
@@ -299,6 +300,7 @@ export class MynahUI {
   private readonly tabsWrapper: ExtendedHTMLElement;
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
+  private readonly sheet?: Sheet;
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
@@ -365,6 +367,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     if (props.onSendFeedback !== undefined) {
       this.feedbackForm = new FeedbackForm();
     }
+
+    this.sheet = new Sheet();
 
     if (Config.getInstance().config.maxTabs > 1) {
       this.tabsWrapper = new Tabs({
@@ -967,8 +971,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   /**
-   * Simply creates and shows a notification
-   * @param props NotificationProps
+   * Simply creates and shows a custom form
    */
   public showCustomForm = (
     tabId: string,
@@ -985,6 +988,12 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         formItems
       },
     });
+  };
+
+  public openSheet = (
+    data: SheetProps
+  ): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_SHEET, data);
   };
 
   public destroy = (): void => {
