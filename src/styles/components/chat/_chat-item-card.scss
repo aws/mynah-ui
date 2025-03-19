@@ -35,11 +35,16 @@
         }
     }
 
-    &.mynah-chat-item-hover-effect:hover {
-        cursor: pointer;
-        z-index: 1000;
-        > .mynah-card {
-            box-shadow: var(--mynah-shadow-card-hover);
+    &.mynah-chat-item-hover-effect{
+        &:last-child{
+            margin-bottom: var(--mynah-sizing-8);
+        }
+        &:hover {
+            cursor: pointer;
+            z-index: 1000;
+            > .mynah-card {
+                box-shadow: var(--mynah-shadow-card-hover);
+            }
         }
     }
 
