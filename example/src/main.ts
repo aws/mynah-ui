@@ -97,6 +97,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               icon: MynahIcons.MAGIC,
             },
             {
+              id: 'sheet',
+              text: 'Sheet',
+              icon: MynahIcons.COMMENT,
+            },
+            {
               id: 'show-avatars',
               text: 'Show/Hide avatars',
               icon: MynahIcons.USER,
@@ -205,6 +210,19 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+      } else if (buttonId === 'sheet') {
+        mynahUI.openSheet({
+          tabId,
+          title: 'Some title',
+          description: 'Some description',
+          children: [
+            {
+              body: 'test',
+              type: ChatItemType.ANSWER,
+            },
+          ],
+          fullScreen: false
+        });
       } else if (buttonId === 'save-session') {
         localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
       } else if (buttonId === 'remove-saved-session') {

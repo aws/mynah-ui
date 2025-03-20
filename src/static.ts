@@ -179,6 +179,8 @@ export enum MynahEventNames {
   TABBED_CONTENT_SWITCH = 'tabbedContentSwitch',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
+  OPEN_SHEET = 'openSheet',
+  CLOSE_SHEET = 'closeSheet',
   FILE_CLICK = 'fileClick',
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
@@ -198,7 +200,7 @@ export enum MynahPortalNames {
   WRAPPER = 'wrapper',
   SIDE_NAV = 'sideNav',
   OVERLAY = 'overlay',
-  FEEDBACK_FORM = 'feedbackForm',
+  SHEET = 'sheet'
 };
 
 export type PromptAttachmentType = 'code' | 'markdown';
