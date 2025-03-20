@@ -245,7 +245,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           tabId,
           title: 'Some title',
           description: 'Some description',
-          chatItems: [
+          children: [
             {
               body: 'test',
               type: ChatItemType.ANSWER,

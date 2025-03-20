@@ -4,7 +4,7 @@
  */
 
 import testIds from '../helper/test-ids';
-import { ChatItem, DomBuilder, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames } from '../main';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames } from '../main';
 import { cancelEvent, MynahUIGlobalEvents } from '../helper/events';
 import '../styles/components/_sheet.scss';
 import { Button } from './button';
@@ -14,7 +14,7 @@ import { CardBody } from './card/card-body';
 export interface SheetProps {
   tabId: string;
   title?: string;
-  chatItems?: ChatItem[];
+  children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   fullScreen?: boolean;
   description?: string;
 }
@@ -83,7 +83,7 @@ export class Sheet {
                 {
                   type: 'div',
                   classNames: [ 'mynah-sheet-body' ],
-                  children: data.chatItems
+                  children: data.children
                 },
               ],
             })

@@ -42,6 +42,7 @@ import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet, SheetProps } from './components/sheet';
+import { ChatItemCard } from './components/chat-item/chat-item-card';
 
 export { generateUID } from './helper/guid';
 export {
@@ -991,9 +992,17 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   public openSheet = (
-    data: SheetProps
+    data: SheetProps & {
+      children: ChatItem[];
+    }
   ): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_SHEET, data);
+    const properData: SheetProps = {
+      ...data,
+      children: data.children.map((chatItem: ChatItem) => {
+        return new ChatItemCard({ chatItem, tabId: data.tabId, inline: true }).render;
+      })
+    };
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_SHEET, properData);
   };
 
   public destroy = (): void => {
