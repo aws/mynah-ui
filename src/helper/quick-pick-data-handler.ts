@@ -159,13 +159,13 @@ export const convertDetailedListGroupsToQuickActionCommandGroups = (detailedList
 
 export const convertDetailedListItemToQuickActionCommand = (detailedListItem: DetailedListItem): QuickActionCommand => {
   return {
-    command: detailedListItem.name ?? '',
+    command: detailedListItem.title ?? '',
+    label: detailedListItem.name,
     ...(detailedListItem.children != null ? { children: convertDetailedListGroupsToQuickActionCommandGroups(detailedListItem.children) } : {}),
     description: detailedListItem.description,
     disabled: detailedListItem.disabled,
     icon: detailedListItem.icon,
     id: detailedListItem.id,
-    label: detailedListItem.title,
     placeholder: detailedListItem.followupText,
     route: detailedListItem.keywords,
   };
@@ -182,8 +182,8 @@ export const convertQuickActionCommandGroupsToDetailedListGroups = (quickActionC
 
 export const convertQuickActionCommandToDetailedListItem = (quickActionCommand: QuickActionCommand): DetailedListItem => {
   return {
-    title: quickActionCommand.label,
-    name: quickActionCommand.command,
+    title: quickActionCommand.command,
+    name: quickActionCommand.label,
     clickable: true,
     followupText: quickActionCommand.placeholder,
     ...(quickActionCommand.children != null ? { children: convertQuickActionCommandGroupsToDetailedListGroups(quickActionCommand.children) } : {}),
