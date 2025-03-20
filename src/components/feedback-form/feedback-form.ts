@@ -132,7 +132,7 @@ export class FeedbackForm {
         tabId: data.tabId,
         title,
         description,
-        chatItems: defaultOrCustomChatItems
+        children: defaultOrCustomChatItems
       });
       if (data.messageId !== undefined) {
         this.feedbackPayload.messageId = data.messageId;
