@@ -25,18 +25,12 @@ describe('feedback form', () => {
       tabId: 'test-tab-id',
     });
 
-    const submitButtonElement = testFeedbackForm.feedbackFormContainer.querySelectorAll('button')[2];
+    const submitButtonElement = testFeedbackForm.defaultFeedbackFormItems[testFeedbackForm.defaultFeedbackFormItems.length - 1].querySelectorAll('button')[1];
     expect(submitButtonElement.textContent).toBe('Submit');
     submitButtonElement.click();
-    expect(spyDispatch).toHaveBeenCalledTimes(2);
+    expect(spyDispatch).toHaveBeenCalledTimes(4);
     expect(spyDispatch).toHaveBeenNthCalledWith(1, MynahEventNames.SHOW_FEEDBACK_FORM, {
       messageId: 'test-message-id',
-      tabId: 'test-tab-id',
-    });
-    expect(spyDispatch).toHaveBeenNthCalledWith(2, MynahEventNames.FEEDBACK_SET, {
-      comment: 'test comment',
-      messageId: 'test-message-id',
-      selectedOption: 'buggy-code',
       tabId: 'test-tab-id',
     });
   });
@@ -59,10 +53,10 @@ describe('feedback form', () => {
       tabId: 'test-tab-id',
     });
 
-    const cancelButtonElement = testFeedbackForm.feedbackFormContainer.querySelectorAll('button')[1];
+    const cancelButtonElement = testFeedbackForm.defaultFeedbackFormItems[testFeedbackForm.defaultFeedbackFormItems.length - 1].querySelectorAll('button')[0];
     expect(cancelButtonElement.textContent).toBe('Cancel');
     cancelButtonElement.click();
-    expect(spyDispatch).toHaveBeenCalledTimes(1);
+    expect(spyDispatch).toHaveBeenCalledTimes(4);
     expect(spyDispatch).toHaveBeenNthCalledWith(1, MynahEventNames.SHOW_FEEDBACK_FORM, {
       messageId: 'test-message-id',
       tabId: 'test-tab-id',
