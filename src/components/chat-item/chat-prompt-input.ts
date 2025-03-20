@@ -19,6 +19,7 @@ import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
 import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
+import { MynahIcons } from '../icon';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -397,7 +398,7 @@ export class ChatPromptInput {
         }
       } else if (navigationalKeys.includes(e.key)) {
         cancelEvent(e);
-        this.quickPickItemsSelectorContainer.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down');
+        this.quickPickItemsSelectorContainer.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down', true);
       } else {
         if (this.quickPick != null) {
           if (this.promptTextInput.getTextInputValue() === '') {
@@ -488,14 +489,14 @@ export class ChatPromptInput {
         detailedList: {
           list: detailedListItemsGroup
         },
-        onQuickPickGroupActionClick: (action) => {
+        onDetailedListItemGroupActionClick: (action) => {
           this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, {
             tabId: this.props.tabId,
             actionId: action.id
           });
         },
-        onQuickPickItemSelect: (detailedListItem) => {
+        onDetailedListItemSelect: (detailedListItem) => {
           const quickPickCommand: QuickActionCommand = convertDetailedListItemToQuickActionCommand(detailedListItem);
           if (this.quickPickType === 'context') {
             this.handleContextCommandSelection(quickPickCommand);
@@ -505,7 +506,9 @@ export class ChatPromptInput {
         },
       });
     } else {
-      this.quickPickItemsSelectorContainer.updateList(detailedListItemsGroup);
+      this.quickPickItemsSelectorContainer.update({
+        list: detailedListItemsGroup
+      });
     }
     return this.quickPickItemsSelectorContainer.render;
   };

@@ -7,7 +7,9 @@
     overflow-y: auto;
     flex-flow: column nowrap;
     align-items: flex-start;
-    // overscroll-behavior: contain;
+    padding: var(--mynah-chat-wrapper-spacing);
+    padding-bottom: 0;
+    gap: var(--mynah-chat-wrapper-spacing);
 
     &.set-scroll {
         scroll-snap-type: y mandatory;
@@ -15,8 +17,6 @@
 
     > .mynah-chat-items-conversation-container {
         gap: var(--mynah-chat-wrapper-spacing);
-        padding: calc(var(--mynah-chat-wrapper-spacing) / 2) var(--mynah-chat-wrapper-spacing)
-            calc(var(--mynah-chat-wrapper-spacing) / 2) var(--mynah-chat-wrapper-spacing);
         position: relative;
         display: flex;
         flex-shrink: 0;
@@ -25,13 +25,25 @@
         align-items: flex-start;
         width: 100%;
         box-sizing: border-box;
+        &:empty {
+            display: none;
+        }
 
         content-visibility: auto;
         contain-intrinsic-size: auto 100vh;
 
-        &:first-child {
-            padding-top: var(--mynah-chat-wrapper-spacing);
+        > .intersection-observer {
+            position: absolute;
+            bottom: var(--mynah-sizing-8);
+            left: 0;
+            right: 0;
+            width: auto;
+            height: var(--mynah-sizing-1);
+            background-color: transparent;
+            z-index: 99;
+            pointer-events: none;
         }
+
         &:last-child {
             scroll-snap-align: start;
             padding-bottom: var(--mynah-chat-wrapper-spacing);

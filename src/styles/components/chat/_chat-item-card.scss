@@ -250,6 +250,12 @@
             }
         }
     }
+    // TODO: Add collapsaible max-height structure to prompt cards
+    // &.mynah-chat-item-prompt {
+    //     > .mynah-card {
+    //         max-height: calc(2 * var(--mynah-sizing-16));
+    //     }
+    // }
     &.mynah-chat-item-system-prompt,
     &.mynah-chat-item-prompt {
         align-self: flex-end;

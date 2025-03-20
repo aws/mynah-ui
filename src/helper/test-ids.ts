@@ -28,6 +28,8 @@ export default {
     middleBlockWrapper: 'chat-middle-block-wrapper',
     stopButton: 'chat-middle-block-stop-button',
     header: 'chat-wrapper-header-details',
+    moreContentIndicator: 'chat-wrapper-more-content-available-indicator',
+    moreContentIndicatorButton: 'chat-wrapper-more-content-available-indicator-button',
   },
   chatItem: {
     type: {

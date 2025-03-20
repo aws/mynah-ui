@@ -28,7 +28,6 @@ export interface ChatWrapperProps {
 export class ChatWrapper {
   private readonly props: ChatWrapperProps;
   private readonly chatItemsContainer: ExtendedHTMLElement;
-  private activeConversationGroup: ExtendedHTMLElement;
   private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInputElement: ExtendedHTMLElement;
   private readonly promptInput: ChatPromptInput;
@@ -36,6 +35,9 @@ export class ChatWrapper {
   private readonly headerSpacer: ExtendedHTMLElement;
   private readonly promptInfo: ExtendedHTMLElement;
   private readonly promptStickyCard: ExtendedHTMLElement;
+  private canObserveIntersection: boolean = false;
+  private observer: IntersectionObserver;
+  private activeConversationGroup: ExtendedHTMLElement;
   private tabHeaderDetails: ExtendedHTMLElement;
   private tabModeSwitchTimeout: ReturnType<typeof setTimeout> | null;
   private lastStreamingChatItemCard: ChatItemCard | null;
@@ -75,13 +77,7 @@ export class ChatWrapper {
         }
       } else {
         this.chatItemsContainer.clear(true);
-        this.activeConversationGroup = DomBuilder.getInstance().build({
-          type: 'div',
-          testId: testIds.chat.conversationContainer,
-          classNames: [ 'mynah-chat-items-conversation-container' ],
-          children: [],
-        });
-        this.chatItemsContainer.insertChild('beforeend', this.activeConversationGroup);
+        this.chatItemsContainer.insertChild('beforeend', this.getNewConversationGroupElement());
         this.allRenderedChatItems = {};
       }
     });
@@ -183,19 +179,13 @@ export class ChatWrapper {
       }
     });
 
-    this.activeConversationGroup = DomBuilder.getInstance().build({
-      type: 'div',
-      testId: testIds.chat.conversationContainer,
-      classNames: [ 'mynah-chat-items-conversation-container' ],
-      children: [],
-    });
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.chat.chatItemsContainer,
       classNames: [ 'mynah-chat-items-container' ],
       persistent: true,
       children: [
-        this.activeConversationGroup
+        this.getNewConversationGroupElement()
       ],
       events: {
         wheel: () => {
@@ -264,6 +254,24 @@ export class ChatWrapper {
         this.headerSpacer,
         this.tabHeaderDetails,
         this.chatItemsContainer,
+        {
+          type: 'div',
+          classNames: [ 'more-content-indicator' ],
+          testId: testIds.chat.moreContentIndicator,
+          children: [
+            new Button({
+              icon: new Icon({ icon: MynahIcons.DOWN_OPEN }).render,
+              testId: testIds.chat.moreContentIndicatorButton,
+              primary: false,
+              fillState: 'hover',
+              border: true,
+              onClick: () => {
+                this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
+                this.scrollPos = this.chatItemsContainer.scrollTop;
+              }
+            }).render
+          ]
+        },
         this.intermediateBlockContainer,
         this.promptStickyCard,
         this.promptInputElement,
@@ -277,6 +285,49 @@ export class ChatWrapper {
       initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
     }
   }
+
+  private readonly getNewConversationGroupElement = (): ExtendedHTMLElement => {
+    this.activeConversationGroup?.querySelector('.intersection-observer')?.remove();
+    this.activeConversationGroup = DomBuilder.getInstance().build({
+      type: 'div',
+      testId: testIds.chat.conversationContainer,
+      classNames: [ 'mynah-chat-items-conversation-container' ],
+      children: [
+        {
+          type: 'span',
+          classNames: [ 'intersection-observer' ]
+        }
+      ],
+    });
+    if (this.observer == null) {
+      this.observer = new IntersectionObserver((entries) => {
+        if (this.canObserveIntersection) {
+          if (!entries[0].isIntersecting) {
+            this.render?.addClass('more-content');
+          } else if (this.canObserveIntersection) {
+            this.canObserveIntersection = false;
+            this.render?.removeClass('more-content');
+            const previousObserverElement = this.activeConversationGroup.querySelector('.intersection-observer');
+            if (previousObserverElement != null) {
+              this.observer.unobserve(previousObserverElement);
+            }
+          }
+        }
+      });
+    } else {
+      const previousObserverElement = this.activeConversationGroup.querySelector('.intersection-observer');
+      if (previousObserverElement != null) {
+        this.observer.unobserve(previousObserverElement);
+      }
+    }
+    setTimeout(() => {
+      this.canObserveIntersection = true;
+    }, 500);
+    this.canObserveIntersection = false;
+    this.render?.removeClass('more-content');
+    this.observer.observe(this.activeConversationGroup.querySelector('.intersection-observer') as HTMLSpanElement);
+    return this.activeConversationGroup;
+  };
 
   private readonly removeEmptyCardsAndFollowups = (): void => {
     Object.keys(this.allRenderedChatItems).forEach(messageId => {
@@ -315,12 +366,7 @@ export class ChatWrapper {
     }
 
     if (chatItem.type === ChatItemType.PROMPT) {
-      this.activeConversationGroup = DomBuilder.getInstance().build({
-        type: 'div',
-        testId: testIds.chat.conversationContainer,
-        classNames: [ 'mynah-chat-items-conversation-container' ]
-      });
-      this.chatItemsContainer.insertChild('beforeend', this.activeConversationGroup);
+      this.chatItemsContainer.insertChild('beforeend', this.getNewConversationGroupElement());
     }
 
     // Add to render

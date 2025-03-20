@@ -15,11 +15,10 @@ export class DetailedListItemWrapper {
 
   constructor (props: DetailedListItemWrapperProps) {
     this.props = props;
-    const descriptionSplitPosition = 20;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.quickPickItem,
-      classNames: [ 'mynah-chat-command-selector-command' ],
+      classNames: [ 'mynah-detailed-list-item' ],
       attributes: {
         disabled: this.props.listItem.disabled ?? 'false',
       },
@@ -36,7 +35,7 @@ export class DetailedListItemWrapper {
           ? [
               {
                 type: 'div',
-                classNames: [ 'mynah-chat-command-selector-icon' ],
+                classNames: [ 'mynah-detailed-list-icon' ],
                 children: [
                   new Icon({
                     icon: this.props.listItem.icon
@@ -47,27 +46,21 @@ export class DetailedListItemWrapper {
           : []),
         {
           type: 'div',
-          classNames: [ 'mynah-chat-command-selector-command-name' ],
+          classNames: [ 'mynah-detailed-list-item-name' ],
           innerHTML: this.props.listItem.title
         },
         ...(this.props.listItem.description !== undefined
           ? [ {
               type: 'div',
-              classNames: [ 'mynah-chat-command-selector-command-description' ],
-              children: [ {
-                type: 'span',
-                innerHTML: this.props.listItem.description.slice(0, descriptionSplitPosition).replace(/ /g, '&nbsp;')
-              }, {
-                type: 'span',
-                innerHTML: `<bdi>${this.props.listItem.description.slice(descriptionSplitPosition).replace(/ /g, '&nbsp;')}</bdi>`
-              } ]
+              classNames: [ 'mynah-detailed-list-item-description' ],
+              innerHTML: `<bdi>${this.props.listItem.description.replace(/ /g, '&nbsp;')}</bdi>`
             } ]
           : []),
         ...((this.props.listItem.children != null) && this.props.listItem.children.length > 0
           ? [
               {
                 type: 'div',
-                classNames: [ 'mynah-chat-command-selector-command-arrow-icon' ],
+                classNames: [ 'mynah-detailed-list-item-arrow-icon' ],
                 children: [
                   new Icon({ icon: 'right-open' }).render
                 ]

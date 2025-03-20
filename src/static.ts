@@ -233,11 +233,12 @@ export enum ChatItemType {
 
 export interface DetailedList {
   filterOptions?: FilterOption[] | null;
-  actions?: Action[];
-  title?: string;
-  icon?: MynahIcons | MynahIconsType;
-  description?: string;
   list?: DetailedListItemGroup[];
+  header?: {
+    title?: string;
+    icon?: MynahIcons | MynahIconsType;
+    description?: string;
+  };
 }
 
 export interface DetailedListItemGroup {
@@ -248,7 +249,8 @@ export interface DetailedListItemGroup {
 }
 
 export interface DetailedListItem {
-  title: string;
+  title?: string;
+  name?: string;
   id?: string;
   icon?: MynahIcons | MynahIconsType;
   description?: string;

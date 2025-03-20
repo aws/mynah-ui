@@ -91,6 +91,15 @@ export class ChatItemCard {
     this.updateCardContent();
     this.render = this.generateCard();
 
+    // TODO: Add collapsaible max-height structure to prompt cards
+    // if (this.props.chatItem.type === ChatItemType.PROMPT) {
+    //   setTimeout(() => {
+    //     if ((this.card?.render.scrollHeight ?? 0) > (this.card?.render.clientHeight ?? 0)) {
+    //       console.log('Card content is higher than the card');
+    //     }
+    //   }, 10);
+    // }
+
     if (this.props.chatItem.type === ChatItemType.ANSWER_STREAM &&
       (this.props.chatItem.body ?? '').trim() !== '') {
       this.updateCardStack({});
