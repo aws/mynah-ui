@@ -19,7 +19,6 @@ import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
 import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
-import { MynahIcons } from '../icon';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit

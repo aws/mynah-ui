@@ -36,7 +36,7 @@ export class ChatWrapper {
   private readonly promptInfo: ExtendedHTMLElement;
   private readonly promptStickyCard: ExtendedHTMLElement;
   private canObserveIntersection: boolean = false;
-  private observer: IntersectionObserver;
+  private observer: IntersectionObserver | null;
   private activeConversationGroup: ExtendedHTMLElement;
   private tabHeaderDetails: ExtendedHTMLElement;
   private tabModeSwitchTimeout: ReturnType<typeof setTimeout> | null;
@@ -299,7 +299,7 @@ export class ChatWrapper {
         }
       ],
     });
-    if (this.observer == null) {
+    if (this.observer == null && IntersectionObserver != null) {
       this.observer = new IntersectionObserver((entries) => {
         if (this.canObserveIntersection) {
           if (!entries[0].isIntersecting) {
@@ -309,7 +309,7 @@ export class ChatWrapper {
             this.render?.removeClass('more-content');
             const previousObserverElement = this.activeConversationGroup.querySelector('.intersection-observer');
             if (previousObserverElement != null) {
-              this.observer.unobserve(previousObserverElement);
+              this.observer?.unobserve(previousObserverElement);
             }
           }
         }
@@ -317,7 +317,7 @@ export class ChatWrapper {
     } else {
       const previousObserverElement = this.activeConversationGroup.querySelector('.intersection-observer');
       if (previousObserverElement != null) {
-        this.observer.unobserve(previousObserverElement);
+        this.observer?.unobserve(previousObserverElement);
       }
     }
     setTimeout(() => {
@@ -325,7 +325,7 @@ export class ChatWrapper {
     }, 500);
     this.canObserveIntersection = false;
     this.render?.removeClass('more-content');
-    this.observer.observe(this.activeConversationGroup.querySelector('.intersection-observer') as HTMLSpanElement);
+    this.observer?.observe(this.activeConversationGroup.querySelector('.intersection-observer') as HTMLSpanElement);
     return this.activeConversationGroup;
   };
 
