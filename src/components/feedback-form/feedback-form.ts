@@ -4,7 +4,7 @@
  */
 
 import { ChatItem, ChatItemButton, ChatItemFormItem, FeedbackPayload, MynahEventNames } from '../../static';
-import { DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { Button } from '../button';
 import { FeedbackFormComment } from './feedback-form-comment';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
@@ -22,8 +22,8 @@ export class FeedbackForm {
   private readonly feedbackOptionsWrapper: Select;
   private readonly feedbackComment: FeedbackFormComment;
   private readonly feedbackSubmitButton: Button;
+  public readonly defaultFeedbackFormItems: ExtendedHTMLElement[];
   private feedbackPayload: FeedbackPayload = { messageId: '', selectedOption: '', tabId: '', comment: '' };
-  public readonly feedbackFormContainer: ExtendedHTMLElement;
   private chatFormItems: ChatItemFormItemsWrapper | null = null;
   private chatButtons: ChatItemButtonsWrapper | null = null;
 
@@ -63,6 +63,30 @@ export class FeedbackForm {
       },
     });
 
+    this.defaultFeedbackFormItems = [
+      this.feedbackOptionsWrapper.render,
+      DomBuilder.getInstance().build({
+        type: 'span',
+        children: [ Config.getInstance().config.texts.feedbackFormCommentLabel ],
+      }),
+      this.feedbackComment.render,
+      DomBuilder.getInstance().build({
+        type: 'div',
+        classNames: [ 'mynah-feedback-form-buttons-container' ],
+        children: [
+          new Button({
+            testId: testIds.feedbackForm.cancelButton,
+            primary: false,
+            label: Config.getInstance().config.texts.cancel,
+            onClick: () => {
+              this.close();
+            }
+          }).render,
+          this.feedbackSubmitButton.render
+        ]
+      }),
+    ];
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.SHOW_FEEDBACK_FORM, (data: {
       messageId?: string; tabId: string; customFormData?: {
         title?: string;
@@ -71,30 +95,6 @@ export class FeedbackForm {
         formItems?: ChatItemFormItem[];
       };
     }) => {
-      const defaultFeedbackFormItems = [
-        this.feedbackOptionsWrapper.render,
-        {
-          type: 'span',
-          children: [ Config.getInstance().config.texts.feedbackFormCommentLabel ],
-        },
-        this.feedbackComment.render,
-        {
-          type: 'div',
-          classNames: [ 'mynah-feedback-form-buttons-container' ],
-          children: [
-            new Button({
-              testId: testIds.feedbackForm.cancelButton,
-              primary: false,
-              label: Config.getInstance().config.texts.cancel,
-              onClick: () => {
-                this.close();
-              }
-            }).render,
-            this.feedbackSubmitButton.render
-          ]
-        }
-      ];
-
       const title = data.messageId !== undefined
         ? Config.getInstance().config.texts.feedbackFormTitle
         : data.customFormData !== undefined
@@ -108,7 +108,7 @@ export class FeedbackForm {
           : undefined;
 
       const defaultOrCustomChatItems = data.messageId !== undefined
-        ? defaultFeedbackFormItems
+        ? this.defaultFeedbackFormItems
         : data.customFormData !== undefined
           ? this.getFormItems({
             tabId: data.tabId,
