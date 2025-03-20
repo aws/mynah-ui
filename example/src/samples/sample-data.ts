@@ -1047,6 +1047,7 @@ export const exampleButtons: ChatItem = {
             fillState: 'hover',
             id: 'action-3',
             flash: 'infinite',
+            icon: MynahIcons.PROGRESS,
             status: 'main',
         },
         {

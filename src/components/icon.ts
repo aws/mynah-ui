@@ -51,6 +51,8 @@ export enum MynahIcons {
   LIGHT_BULB = 'light-bulb',
   ENVELOPE_SEND = 'envelope-send',
   REFRESH = 'refresh',
+  PROGRESS = 'progress',
+  SCROLL_DOWN = 'scroll-down',
   USER = 'user',
   PLAY = 'play',
   PENCIL = 'pencil',

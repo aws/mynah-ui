@@ -260,7 +260,7 @@ export class ChatWrapper {
           testId: testIds.chat.moreContentIndicator,
           children: [
             new Button({
-              icon: new Icon({ icon: MynahIcons.DOWN_OPEN }).render,
+              icon: new Icon({ icon: MynahIcons.SCROLL_DOWN }).render,
               testId: testIds.chat.moreContentIndicatorButton,
               primary: false,
               fillState: 'hover',
