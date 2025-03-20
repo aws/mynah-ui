@@ -180,10 +180,13 @@
                         text-align: left;
                         text-overflow: ellipsis;
                         padding-left: var(--mynah-sizing-1);
+                        padding-right: var(--mynah-sizing-1);
                     }
 
                     > .mynah-detailed-list-item-arrow-icon {
                         flex-shrink: 0;
+                        color: var(--mynah-color-text-weak);
+                        font-size: var(--mynah-font-size-small);
                     }
                 }
             }

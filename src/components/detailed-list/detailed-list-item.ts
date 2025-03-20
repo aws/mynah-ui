@@ -47,7 +47,7 @@ export class DetailedListItemWrapper {
         {
           type: 'div',
           classNames: [ 'mynah-detailed-list-item-name' ],
-          innerHTML: this.props.listItem.title
+          innerHTML: this.props.listItem.title ?? this.props.listItem.name
         },
         ...(this.props.listItem.description !== undefined
           ? [ {
