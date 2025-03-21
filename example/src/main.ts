@@ -373,6 +373,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             }, 1500)
           }, 1500);
         } else {
+          if(followUp.command != null){
+            mynahUI.addChatItem(tabId, {
+              type: ChatItemType.PROMPT,
+              body: `Example: **${followUp.pillText}**
+              <sub><sup>_can be triggered with **${followUp.command}**_</sup></sub>`
+            });
+          }
           onChatPrompt(tabId, {
             command: followUp.command,
             prompt: followUp.prompt,
@@ -585,6 +592,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             body: sampleAllInOneList.slice(-1)[0].body,
             snapToTop: true
           });
+          mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.CARD_RENDER_MARKDOWN_TABLE:
           mynahUI.addChatItem(tabId, {
@@ -593,6 +601,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             body: sampleTableList.slice(-1)[0].body,
             snapToTop: true
           });
+          mynahUI.addChatItem(tabId, defaultFollowUps);
           break;
         case Commands.CARD_SNAPS_TO_TOP:
           mynahUI.addChatItem(tabId, {
@@ -795,7 +804,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   };
 
   const getGenerativeAIAnswer = (tabId: string, optionalParts?: Partial<ChatItem>[]): void => {
-    const messageId = new Date().getTime().toString();
+    const messageId = generateUID();
     mynahUI.updateStore(tabId, {
       loadingChat: true,
       promptInputDisabledState: true,
@@ -805,6 +814,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         optionalParts ?? [
           {
             ...exampleStreamParts[0],
+            messageId,
             header: {
               fileList: {
                 collapsed: true,
@@ -878,8 +888,8 @@ used as a context to generate this message.`
           Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails).map(key => `${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
+          mynahUI.addChatItem(tabId, {...defaultFollowUps, messageId: generateUID()});
           streamingMessageId = null;
-          mynahUI.addChatItem(tabId, defaultFollowUps);
         }
       )
       .then(() => {
