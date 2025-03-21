@@ -4,7 +4,11 @@
     box-sizing: border-box;
     gap: var(--mynah-sizing-2);
     flex-flow: column nowrap;
+    pointer-events: all;
     > .mynah-form-input-label {
+        &:empty {
+            display: none;
+        }
         > .mynah-ui-form-item-mandatory-title {
             display: inline-flex;
             flex-flow: row nowrap;

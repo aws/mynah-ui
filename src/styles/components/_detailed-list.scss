@@ -13,10 +13,10 @@
     overflow: hidden;
     padding: var(--mynah-sizing-3);
     gap: var(--mynah-sizing-3);
+    pointer-events: all;
 
     > .mynah-detailed-list-header-wrapper {
         flex-shrink: 0;
-        padding: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
 
         > .mynah-ui-title-description-icon-wrapper {
             > .mynah-ui-title-description-icon-icon {
@@ -41,6 +41,9 @@
         flex-shrink: 0;
         &:empty {
             display: none;
+        }
+        > .mynah-chat-item-form-items-container {
+            gap: var(--mynah-sizing-3);
         }
     }
     > .mynah-detailed-list-item-groups-wrapper {
