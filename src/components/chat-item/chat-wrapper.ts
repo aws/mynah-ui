@@ -371,7 +371,6 @@ export class ChatWrapper {
 
     // Add to render
     this.activeConversationGroup.insertChild('beforeend', chatItemCard.render);
-    // this.chatItemsContainer.insertChild('beforeend', chatItemCard.render);
 
     // Add to all rendered chat items map
     this.allRenderedChatItems[currentMessageId] = chatItemCard;
