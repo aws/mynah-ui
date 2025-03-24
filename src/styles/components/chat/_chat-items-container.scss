@@ -29,9 +29,6 @@
             display: none;
         }
 
-        content-visibility: auto;
-        contain-intrinsic-size: auto 100vh;
-
         > .intersection-observer {
             position: absolute;
             bottom: var(--mynah-sizing-8);
