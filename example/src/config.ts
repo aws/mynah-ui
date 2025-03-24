@@ -258,6 +258,8 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     command: '_dark.scss',
                     description: './src/styles/',
                     icon: MynahIcons.FILE,
+                    // add route just to check if it returns back
+                    route: ['src','styles'],
                   }
                 ]
               }
@@ -277,7 +279,10 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     command: 'DomBuilder',
                     icon: MynahIcons.CODE_BLOCK,
                     description: 'The DomGeneration function in dom.ts file'
-                  }
+                  },
+                  ...(
+                    Array(10_000).fill(null).map((_, i) => ({ command: `item${i}`, description: `./src/${i}`, icon: MynahIcons.CODE_BLOCK }))
+                  )
                 ]
               }
             ],

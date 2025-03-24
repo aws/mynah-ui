@@ -24,9 +24,12 @@ export default {
   chat: {
     wrapper: 'chat-wrapper',
     chatItemsContainer: 'chat-chat-items-container',
+    conversationContainer: 'chat-chat-items-conversation-container',
     middleBlockWrapper: 'chat-middle-block-wrapper',
     stopButton: 'chat-middle-block-stop-button',
     header: 'chat-wrapper-header-details',
+    moreContentIndicator: 'chat-wrapper-more-content-available-indicator',
+    moreContentIndicatorButton: 'chat-wrapper-more-content-available-indicator-button',
   },
   chatItem: {
     type: {

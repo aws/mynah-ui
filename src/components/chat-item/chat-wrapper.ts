@@ -35,6 +35,9 @@ export class ChatWrapper {
   private readonly headerSpacer: ExtendedHTMLElement;
   private readonly promptInfo: ExtendedHTMLElement;
   private readonly promptStickyCard: ExtendedHTMLElement;
+  private canObserveIntersection: boolean = false;
+  private observer: IntersectionObserver | null;
+  private activeConversationGroup: ExtendedHTMLElement;
   private tabHeaderDetails: ExtendedHTMLElement;
   private tabModeSwitchTimeout: ReturnType<typeof setTimeout> | null;
   private lastStreamingChatItemCard: ChatItemCard | null;
@@ -55,17 +58,17 @@ export class ChatWrapper {
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
-      if (this.chatItemsContainer.children.length === chatItems.length) {
-        const lastItem = this.chatItemsContainer.children.item(0);
-        if (lastItem !== null) {
+      if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
+        const lastItem = this.chatItemsContainer.children.item(Array.from(this.chatItemsContainer.children).length - 1);
+        if (lastItem != null && chatItemToInsert != null) {
           const newChatItemCard = new ChatItemCard({ tabId: this.props.tabId, chatItem: chatItemToInsert });
           if (chatItemToInsert.messageId !== undefined) {
             this.allRenderedChatItems[chatItemToInsert.messageId] = newChatItemCard;
           }
-          lastItem.innerHTML = newChatItemCard.render.innerHTML;
+          lastItem.replaceWith(newChatItemCard.render);
         }
       } else if (chatItems.length > 0) {
-        if (this.chatItemsContainer.children.length === 0) {
+        if (Object.keys(this.allRenderedChatItems).length === 0) {
           chatItems.forEach(chatItem => {
             this.insertChatItem(chatItem);
           });
@@ -74,6 +77,7 @@ export class ChatWrapper {
         }
       } else {
         this.chatItemsContainer.clear(true);
+        this.chatItemsContainer.insertChild('beforeend', this.getNewConversationGroupElement());
         this.allRenderedChatItems = {};
       }
     });
@@ -180,7 +184,9 @@ export class ChatWrapper {
       testId: testIds.chat.chatItemsContainer,
       classNames: [ 'mynah-chat-items-container' ],
       persistent: true,
-      children: [],
+      children: [
+        this.getNewConversationGroupElement()
+      ],
       events: {
         wheel: () => {
           this.scrollPos = this.chatItemsContainer.scrollTop;
@@ -248,6 +254,24 @@ export class ChatWrapper {
         this.headerSpacer,
         this.tabHeaderDetails,
         this.chatItemsContainer,
+        {
+          type: 'div',
+          classNames: [ 'more-content-indicator' ],
+          testId: testIds.chat.moreContentIndicator,
+          children: [
+            new Button({
+              icon: new Icon({ icon: MynahIcons.SCROLL_DOWN }).render,
+              testId: testIds.chat.moreContentIndicatorButton,
+              primary: false,
+              fillState: 'hover',
+              border: true,
+              onClick: () => {
+                this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
+                this.scrollPos = this.chatItemsContainer.scrollTop;
+              }
+            }).render
+          ]
+        },
         this.intermediateBlockContainer,
         this.promptStickyCard,
         this.promptInputElement,
@@ -261,6 +285,49 @@ export class ChatWrapper {
       initChatItems.forEach((chatItem: ChatItem) => this.insertChatItem(chatItem));
     }
   }
+
+  private readonly getNewConversationGroupElement = (): ExtendedHTMLElement => {
+    this.activeConversationGroup?.querySelector('.intersection-observer')?.remove();
+    this.activeConversationGroup = DomBuilder.getInstance().build({
+      type: 'div',
+      testId: testIds.chat.conversationContainer,
+      classNames: [ 'mynah-chat-items-conversation-container' ],
+      children: [
+        {
+          type: 'span',
+          classNames: [ 'intersection-observer' ]
+        }
+      ],
+    });
+    if (this.observer == null && IntersectionObserver != null) {
+      this.observer = new IntersectionObserver((entries) => {
+        if (this.canObserveIntersection) {
+          if (!entries[0].isIntersecting) {
+            this.render?.addClass('more-content');
+          } else if (this.canObserveIntersection) {
+            this.canObserveIntersection = false;
+            this.render?.removeClass('more-content');
+            const previousObserverElement = this.activeConversationGroup.querySelector('.intersection-observer');
+            if (previousObserverElement != null) {
+              this.observer?.unobserve(previousObserverElement);
+            }
+          }
+        }
+      });
+    } else {
+      const previousObserverElement = this.activeConversationGroup.querySelector('.intersection-observer');
+      if (previousObserverElement != null) {
+        this.observer?.unobserve(previousObserverElement);
+      }
+    }
+    setTimeout(() => {
+      this.canObserveIntersection = true;
+    }, 500);
+    this.canObserveIntersection = false;
+    this.render?.removeClass('more-content');
+    this.observer?.observe(this.activeConversationGroup.querySelector('.intersection-observer') as HTMLSpanElement);
+    return this.activeConversationGroup;
+  };
 
   private readonly removeEmptyCardsAndFollowups = (): void => {
     Object.keys(this.allRenderedChatItems).forEach(messageId => {
@@ -298,19 +365,29 @@ export class ChatWrapper {
       this.lastStreamingChatItemCard = chatItemCard;
     }
 
+    if (chatItem.type === ChatItemType.PROMPT) {
+      this.chatItemsContainer.insertChild('beforeend', this.getNewConversationGroupElement());
+    }
+
     // Add to render
-    this.chatItemsContainer.insertChild('afterbegin', chatItemCard.render);
+    this.activeConversationGroup.insertChild('beforeend', chatItemCard.render);
 
     // Add to all rendered chat items map
     this.allRenderedChatItems[currentMessageId] = chatItemCard;
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
-      // Make sure we scroll the chat window to the bottom
-      // Only if it is a PROMPT
-      this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight + 500;
+      // Make sure we align to top when there is a new prompt.
+      // Only if it is a PROMPT!
+      // Check css application
+      this.chatItemsContainer.addClass('set-scroll');
     }
 
-    this.scrollPos = this.chatItemsContainer.scrollTop;
+    setTimeout(() => {
+      // remove css class which allows us to snap automatically
+      this.chatItemsContainer.removeClass('set-scroll');
+      // set last scroll position
+      this.scrollPos = this.chatItemsContainer.scrollTop;
+    }, 100);
   };
 
   private readonly checkLastAnswerStreamChange = (updateWith: Partial<ChatItem>): void => {

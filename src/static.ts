@@ -231,20 +231,35 @@ export enum ChatItemType {
   CODE_RESULT = 'code-result',
 }
 
-export interface InformationItemGroup {
-  title?: string;
-  icon?: MynahIcons | MynahIconsType;
-  children: InformationItem[];
+export interface DetailedList {
+  filterOptions?: FilterOption[] | null;
+  list?: DetailedListItemGroup[];
+  header?: {
+    title?: string;
+    icon?: MynahIcons | MynahIconsType;
+    description?: string;
+  };
 }
 
-export interface InformationItem {
-  messageId?: string;
+export interface DetailedListItemGroup {
+  groupName?: string;
+  actions?: Action[];
   icon?: MynahIcons | MynahIconsType;
+  children?: DetailedListItem[];
+}
+
+export interface DetailedListItem {
   title?: string;
+  name?: string;
+  id?: string;
+  icon?: MynahIcons | MynahIconsType;
   description?: string;
-  actions?: ChatItemButton[];
-  active?: boolean;
+  disabled?: boolean;
+  followupText?: string;
   clickable?: boolean;
+  actions?: ChatItemButton[];
+  children?: DetailedListItemGroup[];
+  keywords?: string[];
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
@@ -370,6 +385,7 @@ type OtherFormItem = BaseFormItem & {
 };
 
 export type ChatItemFormItem = TextBasedFormItem | OtherFormItem;
+export type FilterOption = ChatItemFormItem;
 
 export interface ChatPrompt {
   prompt?: string;

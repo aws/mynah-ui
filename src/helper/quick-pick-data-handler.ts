@@ -1,5 +1,5 @@
 import escapeHTML from 'escape-html';
-import { QuickActionCommand, QuickActionCommandGroup } from '../static';
+import { DetailedListItem, DetailedListItemGroup, QuickActionCommand, QuickActionCommandGroup } from '../static';
 import { MynahIcons } from '../main';
 
 export const filterQuickPickItems = (commands: QuickActionCommandGroup[], searchTerm: string): QuickActionCommandGroup[] => {
@@ -146,4 +146,59 @@ const calculateScore = (text: string, term: string): number => {
   }
 
   return termIndex === term.length ? score : 0;
+};
+
+export const convertDetailedListGroupsToQuickActionCommandGroups = (detailedListItemGroups: DetailedListItemGroup[]): QuickActionCommandGroup[] => {
+  return detailedListItemGroups.map(detailedListItemGroup => ({
+    commands: detailedListItemGroup.children?.map(detailedListItem => convertDetailedListItemToQuickActionCommand(detailedListItem)) as QuickActionCommand[],
+    actions: detailedListItemGroup.actions,
+    groupName: detailedListItemGroup.groupName,
+    icon: detailedListItemGroup.icon
+  }));
+};
+
+export const convertDetailedListItemToQuickActionCommand = (detailedListItem: DetailedListItem): QuickActionCommand => {
+  return {
+    command: detailedListItem.title ?? '',
+    label: detailedListItem.name,
+    ...(detailedListItem.children != null ? { children: convertDetailedListGroupsToQuickActionCommandGroups(detailedListItem.children) } : {}),
+    description: detailedListItem.description,
+    disabled: detailedListItem.disabled,
+    icon: detailedListItem.icon,
+    id: detailedListItem.id,
+    placeholder: detailedListItem.followupText,
+    route: detailedListItem.keywords,
+  };
+};
+
+export const convertQuickActionCommandGroupsToDetailedListGroups = (quickActionCommandGroup: QuickActionCommandGroup[]): DetailedListItemGroup[] => {
+  return quickActionCommandGroup.map(quickActionCommandGroup => ({
+    children: quickActionCommandGroup.commands?.map(quickActionCommand => convertQuickActionCommandToDetailedListItem(quickActionCommand)),
+    actions: quickActionCommandGroup.actions,
+    groupName: quickActionCommandGroup.groupName,
+    icon: quickActionCommandGroup.icon
+  }));
+};
+
+export const convertQuickActionCommandToDetailedListItem = (quickActionCommand: QuickActionCommand): DetailedListItem => {
+  return {
+    title: quickActionCommand.command,
+    name: quickActionCommand.label,
+    clickable: true,
+    followupText: quickActionCommand.placeholder,
+    ...(quickActionCommand.children != null ? { children: convertQuickActionCommandGroupsToDetailedListGroups(quickActionCommand.children) } : {}),
+    description: quickActionCommand.description,
+    disabled: quickActionCommand.disabled,
+    icon: quickActionCommand.icon,
+    id: quickActionCommand.id,
+    keywords: quickActionCommand.route
+  };
+};
+
+export const chunkArray = <T>(array: T[], chunkSize: number): T[][] => {
+  const result: T[][] = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    result.push(array.slice(i, i + chunkSize));
+  }
+  return result;
 };
