@@ -108,6 +108,12 @@ interface MynahUIDataModel {
    * Tab content header details, only visibile when showTabHeaderDetails is set to 'true'
    */
   tabHeaderDetails?: TabHeaderDetails | null;
+  /**
+   * A lightweight key-value store for essential tab-specific primitive metadata.
+   * Not intended for storing large amounts of data - use appropriate
+   * application state management for that purpose.
+   */
+  tabMetadata?: { [key: string]: string | boolean | number };
 }
 ```
 
@@ -906,6 +912,28 @@ mynahUI.updateStore('tab-1', {
   <br />
   <img src="./img/data-model/tabStore/tabHeaderDetails2.png" alt="tabHeaderDetails 2" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+---
+
+### `tabMetaData` (default: `{}`)
+
+A lightweight key-value store for essential tab-specific metadata. Not intended for storing large amounts of data - use appropriate application state management for that purpose.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabMetaData: {
+      'test': 'hi'
+    }
+})
+```
 
 ---
 
