@@ -59,7 +59,7 @@ export class SyntaxHighlighter {
     const codeElement = DomBuilder.getInstance().build({
       type: 'code',
       classNames: [
-        ...(props.language !== undefined ? [ `language-${props.language.replace('diff-', '')}` ] : [ (props.block ?? false) ? DEFAULT_LANGUAGE : 'language-plaintext' ]),
+        ...(props.language != null ? [ `language-${props.language.replace('diff-', '')}` ] : [ (props.block ?? false) ? DEFAULT_LANGUAGE : 'language-plaintext' ]),
         ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
       ],
       innerHTML: escapedCodeBlock
@@ -166,12 +166,12 @@ export class SyntaxHighlighter {
           classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
           children: [
             ...this.codeBlockButtons,
-            ...(this.codeBlockButtons.length > 0
+            ...(props.language != null
               ? [ {
                   type: 'span',
                   testId: testIds.chatItem.syntaxHighlighter.language,
                   classNames: [ 'mynah-syntax-highlighter-language' ],
-                  children: [ props.language ?? 'text' ]
+                  children: [ props.language ]
                 } ]
               : []),
           ],

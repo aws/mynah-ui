@@ -345,6 +345,8 @@ export interface ChatItem extends ChatItemContent{
   messageId?: string;
   snapToTop?: boolean;
   canBeVoted?: boolean;
+  fullWidth?: boolean;
+  padding?: boolean;
   icon?: MynahIcons | MynahIconsType;
   hoverEffect?: boolean;
   status?: Status;
