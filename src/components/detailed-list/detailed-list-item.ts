@@ -1,7 +1,7 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { cancelEvent } from '../../helper/events';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import testIds from '../../helper/test-ids';
-import { ChatItemButton, DetailedListItem } from '../../static';
+import { ChatItemButton, DetailedListItem, MynahEventNames } from '../../static';
 import { Button } from '../button';
 import { Icon } from '../icon';
 
@@ -84,12 +84,9 @@ export class DetailedListItemWrapper {
                 primary: false,
                 onClick: (e) => {
                   cancelEvent(e);
-                  // MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_ACTION_CLICK, {
-                  //   tabId: this.props.tabId,
-                  //   messageId: this.props.messageId,
-                  //   filePath: this.props.originalFilePath,
-                  //   actionName: action.name,
-                  // });
+                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DETAIL_ACTION_CLICK, {
+                    // TODO: DETAIL LIST EVENTS
+                  });
                 },
               }).render)
             } ]
