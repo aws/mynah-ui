@@ -145,8 +145,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         isSelected: true,
         store: {
           ...mynahUIDefaults.store,
-          ...welcomeScreenTabData.store
-        }
+          ...welcomeScreenTabData.store,
+          tabMetaData: {
+            'test': 'hi'
+          }
+        },
       },
       'pinned-tab': {
         store: {

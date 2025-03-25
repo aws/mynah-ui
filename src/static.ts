@@ -140,6 +140,12 @@ export interface MynahUIDataModel {
    * Tab content header details, only visibile when showTabHeaderDetails is set to 'true'
    */
   tabHeaderDetails?: TabHeaderDetails | null;
+  /**
+   * A lightweight key-value store for essential tab-specific primitive metadata.
+   * Not intended for storing large amounts of data - use appropriate
+   * application state management for that purpose.
+   */
+  tabMetadata?: { [key: string]: string | boolean | number };
 }
 
 export interface MynahUITabStoreTab {
@@ -340,7 +346,7 @@ export interface ChatItemContent {
   codeBlockActions?: CodeBlockActions | null;
 }
 
-export interface ChatItem extends ChatItemContent{
+export interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
