@@ -3092,22 +3092,38 @@ export interface ChatPrompt {
 
 # `DetailedListItem`
 
-Information items can be rendered in an `DetailedListItemGroup` within the `chatItems?` array. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
+DetailedList items can be rendered in an `DetailedListItemGroup` within the `chatItems?` array. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
 
 ```typescript
+export interface DetailedList {
+  filterOptions?: FilterOption[] | null;
+  list?: DetailedListItemGroup[];
+  header?: {
+    title?: string;
+    icon?: MynahIcons | MynahIconsType;
+    description?: string;
+  };
+}
+
 export interface DetailedListItemGroup {
-  title?: string;
+  groupName?: string;
+  actions?: Action[];
   icon?: MynahIcons | MynahIconsType;
-  children: DetailedListItem[];
+  children?: DetailedListItem[];
 }
 
 export interface DetailedListItem {
-  messageId?: string;
-  icon?: MynahIcons | MynahIconsType;
   title?: string;
+  name?: string;
+  id?: string;
+  icon?: MynahIcons | MynahIconsType;
   description?: string;
-  actions?: ChatItemButton[];
-  active?: boolean;
+  disabled?: boolean;
+  followupText?: string;
   clickable?: boolean;
+  actions?: ChatItemButton[];
+  children?: DetailedListItemGroup[];
+  keywords?: string[];
+}
 }
 ```

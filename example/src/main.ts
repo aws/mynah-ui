@@ -243,15 +243,96 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       } else if (buttonId === 'sheet') {
         mynahUI.openSheet({
           tabId,
-          title: 'Some title',
-          description: 'Some description',
           children: [
             {
-              body: 'test',
-              type: ChatItemType.ANSWER,
+              header: {
+                title: 'Chat history',
+              },
+              filterOptions: [
+                {
+                  type: 'textinput',
+                  icon: MynahIcons.SEARCH,
+                  id: generateUID(),
+                  placeholder: 'Search...'
+                }
+              ],
+              list: [
+                {
+                  groupName: 'Today',
+                  children: [{
+                    icon: MynahIcons.CHAT,
+                    title: 'Why is this unit test failing?'
+                  },
+                  {
+                    icon: MynahIcons.CHAT,
+                    title: 'Can you explain this error message in more detail? ArrayIndexOutOfBoundsException: 10 at Main.main(Main.java:4)'
+                  },
+                  {
+                    icon: MynahIcons.CHECK_LIST,
+                    title: '/test encrypt_input'
+                  }
+                  ]
+                },
+                {
+                  groupName: 'Yesterday',
+                  children: [{
+                    icon: MynahIcons.CHAT,
+                    title: 'How can I optimize utils.py for better performance?'
+                  },
+                  {
+                    icon: MynahIcons.CODE_BLOCK,
+                    title: '/dev Create a new REST API endpoint /api/authenticate to handle user authentication'
+                  },
+                  {
+                    icon: MynahIcons.CHAT,
+                    title: '@workspace provide a refactored version of the endpoint() function'
+                  },
+                  {
+                    icon: MynahIcons.CHAT,
+                    title: 'Explain the code in the mcp directory'
+                  }
+                  ]
+                },
+                {
+                  groupName: '4 days ago',
+                  children: [{
+                    icon: MynahIcons.CHAT,
+                    title: 'What are the dependencies of this module?'
+                  },
+                  {
+                    icon: MynahIcons.CODE_BLOCK,
+                    title: '/dev Update CSS styles for responsive layout'
+                  },
+                  ]
+                },
+                {
+                  groupName: 'Last week',
+                  children: [{
+                    icon: MynahIcons.CODE_BLOCK,
+                    title: '/dev Optimize image loading for faster page loads'
+                  },
+                  {
+                    icon: MynahIcons.CHAT,
+                    title: 'What are some alternatives to generating a unique salt value in encrypt()?'
+                  },
+                  {
+                    icon: MynahIcons.CHAT,
+                    title: 'Generate a regular expression pattern that matches email addresses'
+                  },
+                  {
+                    icon: MynahIcons.CHAT,
+                    title: 'Convert the selected code snippet to typescript'
+                  },
+                  {
+                    icon: MynahIcons.CHAT,
+                    title: 'Rewrite this sort function to use the merge sort algorithm'
+                  },
+                  ]
+                }
+              ]
             },
           ],
-          fullScreen: false
+          fullScreen: true
         });
       } else if (buttonId === 'save-session') {
         localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
@@ -422,7 +503,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             }, 1500)
           }, 1500);
         } else {
-          if(followUp.command != null){
+          if (followUp.command != null) {
             mynahUI.addChatItem(tabId, {
               type: ChatItemType.PROMPT,
               body: `Example: **${followUp.pillText}**
@@ -940,7 +1021,7 @@ used as a context to generate this message.`
           Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails).map(key => `${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
-          mynahUI.addChatItem(tabId, {...defaultFollowUps, messageId: generateUID()});
+          mynahUI.addChatItem(tabId, { ...defaultFollowUps, messageId: generateUID() });
           streamingMessageId = null;
         }
       )

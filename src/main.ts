@@ -27,6 +27,7 @@ import {
   CardRenderDetails,
   PromptAttachmentType,
   QuickActionCommand,
+  DetailedList,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -43,6 +44,7 @@ import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet, SheetProps } from './components/sheet';
 import { ChatItemCard } from './components/chat-item/chat-item-card';
+import { DetailedListWrapper } from './components/detailed-list/detailed-list';
 
 export { generateUID } from './helper/guid';
 export {
@@ -992,14 +994,25 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   public openSheet = (
-    data: SheetProps & {
-      children: ChatItem[];
+    data: {
+      tabId: string;
+      title?: string;
+      children?: Array<ChatItem | DetailedList>;
+      fullScreen?: boolean;
+      description?: string;
     }
   ): void => {
     const properData: SheetProps = {
       ...data,
-      children: data.children.map((chatItem: ChatItem) => {
-        return new ChatItemCard({ chatItem, tabId: data.tabId, inline: true }).render;
+      children: data.children?.map((child: ChatItem | DetailedList) => {
+        if ((child as ChatItem).type !== undefined) {
+          return new ChatItemCard({ chatItem: child as ChatItem, tabId: data.tabId, inline: true }).render;
+        }
+        return new DetailedListWrapper({
+          detailedList: child as DetailedList,
+          onDetailedListItemGroupActionClick: () => { },
+          onDetailedListItemSelect: () => { }
+        }).render;
       })
     };
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_SHEET, properData);
