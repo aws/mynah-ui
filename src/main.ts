@@ -291,7 +291,15 @@ export interface MynahUIProps {
       id: string;
     },
     eventId?: string) => void;
+  onDetailActionClick?: (
 
+  ) => void;
+  onDetailItemClick?: (
+
+  ) => void;
+  onDetailFilterChange?: (
+
+  ) => void;
 }
 
 export class MynahUI {
@@ -543,6 +551,24 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         this.props.onQuickCommandGroupActionClick(data.tabId, {
           id: data.actionId,
         }, this.getUserEventId());
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DETAIL_ACTION_CLICK, (data: {}) => {
+      if (this.props.onDetailActionClick !== undefined) {
+        this.props.onDetailActionClick();
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DETAIL_FILTER_CHANGE, (data: {}) => {
+      if (this.props.onDetailFilterChange !== undefined) {
+        this.props.onDetailFilterChange();
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DETAIL_ITEM_CLICK, (data: {}) => {
+      if (this.props.onDetailItemClick !== undefined) {
+        this.props.onDetailItemClick();
       }
     });
 
@@ -1011,7 +1037,18 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         return new DetailedListWrapper({
           detailedList: child as DetailedList,
           onDetailedListItemGroupActionClick: () => { },
-          onDetailedListItemSelect: () => { }
+          onFilterValueChange: () => {
+            if (this.props.onDetailFilterChange !== undefined) {
+              this.props.onDetailFilterChange();
+              // TODO: DETAIL LIST EVENTS
+            }
+          },
+          onDetailedListItemSelect: () => {
+            if (this.props.onDetailItemClick !== undefined) {
+              this.props.onDetailItemClick();
+            }
+            // TODO: DETAIL LIST EVENTS
+          }
         }).render;
       })
     };

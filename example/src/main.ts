@@ -607,6 +607,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       }
     },
+    onDetailActionClick() {
+        Log('Detail action clicked')
+    },
+    onDetailFilterChange() {
+        Log('Detail filter changed')
+    },
+    onDetailItemClick() {
+        Log('Detail item clicked')
+    },
     onShowMoreWebResultsClick: (tabId, messageId) => {
       Log(`Show more sources clicked for tab <b>${tabId}/${messageId}</b> in message <b>${messageId}</b>`);
     },

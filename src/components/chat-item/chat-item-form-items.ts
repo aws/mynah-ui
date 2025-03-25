@@ -224,7 +224,7 @@ export class ChatItemFormItemsWrapper {
       };
     }
     return {
-      onChange: () => {
+      onChange: (value: string | number) => {
         this.props.onFormChange?.(this.getAllValues(), this.isFormValid(), this.props.tabId);
       }
     };
