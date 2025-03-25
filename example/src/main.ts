@@ -386,7 +386,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
+                    clickable: false,
                   },
                   {
                     title: '“Always write short, concise reponses which are no longer than 1000 characters in total.”',

@@ -120,13 +120,17 @@
                     align-items: center;
                     justify-content: flex-start;
                     overflow: hidden;
-                    cursor: pointer;
                     padding: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
                     color: var(--mynah-color-text-default);
                     border-radius: var(--mynah-input-radius);
                     transition: var(--mynah-short-transition-rev);
                     background-color: inherit;
                     margin-bottom: var(--mynah-sizing-half);
+
+                    &[clickable='true'] {
+                        cursor: pointer;
+                        pointer-events: none;
+                    }
 
                     &[disabled='true'] {
                         &::before {
@@ -138,8 +142,8 @@
                             pointer-events: none;
                         }
                     }
-                    &:hover:not([disabled='true']),
-                    &.target-command:not([disabled='true']) {
+                    &:hover:not([disabled='true']):not([clickable='false']),
+                    &.target-command:not([disabled='true']):not([clickable='false']) {
                         background-color: var(--mynah-color-button);
                         &,
                         & * {
@@ -160,7 +164,10 @@
                     }
 
                     > .mynah-detailed-list-item-name {
-                        flex-shrink: 0;
+                        flex-shrink: 0.75;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                         font-family: var(--mynah-font-family);
                         font-weight: bold;
                         > mark {
@@ -178,7 +185,7 @@
                         display: flex;
                         overflow: hidden;
                         justify-content: flex-start;
-                        background-color: inherit;
+
                         display: inline-block;
                         white-space: nowrap;
                         direction: rtl;
@@ -186,6 +193,10 @@
                         text-overflow: ellipsis;
                         padding-left: var(--mynah-sizing-1);
                         padding-right: var(--mynah-sizing-1);
+                    }
+
+                    > .mynah-detailed-list-item-actions {
+                        flex-shrink: 0;
                     }
 
                     > .mynah-detailed-list-item-arrow-icon {
@@ -203,7 +214,7 @@
         > .mynah-detailed-list-group
         > .mynah-detailed-list-items-block
         > .mynah-detailed-list-item {
-        &.target-command:not([disabled='true']):not(:hover) {
+        &.target-command:not([disabled='true']):not([clickable='false']):not(:hover) {
             background-color: inherit;
             &:before {
                 content: '';
