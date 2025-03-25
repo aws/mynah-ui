@@ -1,24 +1,20 @@
-import { MynahUITabsStore } from '../helper/tabs-store';
 import { ChatItemType, MynahUI, MynahUIDataModel } from '../main';
 
 const testTabId = 'tab-1';
-
+let testMynahUI: MynahUI;
 afterEach(() => {
   // Clear the dom and store between tests
   document.body.innerHTML = '';
-  MynahUITabsStore.getInstance().updateTab(testTabId, {
-    isSelected: true,
-    store: {
-      loadingChat: false,
-      chatItems: [],
-    }
+  testMynahUI.updateStore(testTabId, {
+    loadingChat: false,
+    chatItems: [],
   });
 });
 
 describe('mynah-ui', () => {
   it('render chat items', () => {
     const testTabId = 'tab-1';
-    const testMynahUI = new MynahUI({
+    testMynahUI = new MynahUI({
       tabs: {
         [testTabId]: {
           isSelected: true,
@@ -46,10 +42,10 @@ describe('mynah-ui', () => {
     });
     const cardElements = document.body.querySelectorAll('.mynah-chat-item-card');
     expect(cardElements).toHaveLength(3);
-    expect(cardElements[2].textContent).toBe('What is a react hook');
+    expect(cardElements[0].textContent).toBe('What is a react hook');
     expect(cardElements[1].textContent).toContain('Just a function.');
-    expect(cardElements[0].textContent).toContain('Suggested follow up');
-    expect(cardElements[0].textContent).toContain('Follow up one');
+    expect(cardElements[2].textContent).toContain('Suggested follow up');
+    expect(cardElements[2].textContent).toContain('Follow up one');
   });
 
   it('loading state', () => {
@@ -74,8 +70,8 @@ describe('mynah-ui', () => {
     const cardElements = document.body.querySelectorAll('.mynah-chat-item-card');
     expect(cardElements).toHaveLength(2);
 
-    expect(cardElements[1].textContent).toBe('What is python');
-    expect(cardElements[0].textContent).toBe('Amazon Q is generating your answer...');
+    expect(cardElements[0].textContent).toBe('What is python');
+    expect(cardElements[1].textContent).toBe('Amazon Q is generating your answer...');
   });
 
   it('does not break on data store extension', () => {
