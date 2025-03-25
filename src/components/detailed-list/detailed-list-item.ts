@@ -22,11 +22,12 @@ export class DetailedListItemWrapper {
       classNames: [ 'mynah-detailed-list-item' ],
       attributes: {
         disabled: this.props.listItem.disabled ?? 'false',
+        clickable: this.props.listItem.clickable ?? 'true',
       },
       events: {
         click: (e) => {
           cancelEvent(e);
-          if (this.props.listItem.disabled !== true) {
+          if (this.props.listItem.disabled !== true && this.props.listItem.clickable !== false) {
             this.props.onSelect(this.props.listItem);
           }
         }
