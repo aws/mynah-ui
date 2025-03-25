@@ -1,7 +1,8 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import testIds from '../../helper/test-ids';
-import { DetailedListItem } from '../../static';
+import { ChatItemButton, DetailedListItem } from '../../static';
+import { Button } from '../button';
 import { Icon } from '../icon';
 
 export interface DetailedListItemWrapperProps {
@@ -66,7 +67,32 @@ export class DetailedListItemWrapper {
                 ]
               }
             ]
-          : [])
+          : []),
+        ...(this.props.listItem.actions !== undefined
+          ? [ {
+              type: 'div',
+              classNames: [ 'mynah-detailed-list-item-actions' ],
+              children: this.props.listItem.actions.map((action: ChatItemButton) => new Button({
+                testId: testIds.chatItem.fileTree.fileAction,
+                icon: action.icon ? new Icon({ icon: action.icon }).render : undefined,
+                ...(action.text !== undefined ? { label: action.text } : {}),
+                attributes: {
+                  title: action.description ?? ''
+                },
+                classNames: [ 'mynah-icon-button', action.status ?? '' ],
+                primary: false,
+                onClick: (e) => {
+                  cancelEvent(e);
+                  // MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_ACTION_CLICK, {
+                  //   tabId: this.props.tabId,
+                  //   messageId: this.props.messageId,
+                  //   filePath: this.props.originalFilePath,
+                  //   actionName: action.name,
+                  // });
+                },
+              }).render)
+            } ]
+          : []),
       ]
     });
   }
