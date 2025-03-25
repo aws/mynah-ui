@@ -42,6 +42,9 @@
         &:empty {
             display: none;
         }
+        .mynah-ui-form-item-mandatory-title {
+            display: none;
+        }
         > .mynah-chat-item-form-items-container {
             gap: var(--mynah-sizing-3);
         }
