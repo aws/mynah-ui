@@ -112,8 +112,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               icon: MynahIcons.MAGIC,
             },
             {
-              id: 'sheet',
-              text: 'Sheet',
+              id: 'history_sheet',
+              text: 'Sheet (History)',
+              icon: MynahIcons.COMMENT,
+            },
+            {
+              id: 'memory_sheet',
+              text: 'Sheet (Memory)',
               icon: MynahIcons.COMMENT,
             },
             {
@@ -240,7 +245,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
-      } else if (buttonId === 'sheet') {
+      } else if (buttonId === 'history_sheet') {
         mynahUI.openSheet({
           tabId,
           children: [
@@ -327,6 +332,184 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     icon: MynahIcons.CHAT,
                     title: 'Rewrite this sort function to use the merge sort algorithm'
                   },
+                  ]
+                }
+              ]
+            },
+          ],
+          fullScreen: true
+        });
+      } else if (buttonId === 'memory_sheet') {
+        mynahUI.openSheet({
+          tabId,
+          children: [
+            {
+              header: {
+                title: 'Memories (16)',
+              },
+              filterOptions: [
+                {
+                  type: 'textinput',
+                  icon: MynahIcons.SEARCH,
+                  id: generateUID(),
+                  placeholder: 'Search...'
+                },
+                {
+                  type: 'select',
+                  id: generateUID(),
+                  icon: MynahIcons.CHECK_LIST,
+                  value: 'all',
+                  options: [
+                    {
+                      label: 'All memories',
+                      value: 'all'
+                    },
+                    {
+                      label: 'Created by user',
+                      value: 'user'
+                    },
+                    {
+                      label: 'Inferred by Q',
+                      value: 'q'
+                    }
+                  ],
+                }
+              ],
+              list: [
+                {
+                  groupName: 'Today',
+                  children: [{
+                    title: '“Always add comments to my lines of Rust”',
+                    description: 'Created by user at 2:45pm on 1/2/24',
+                    actions: [{
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                    }],
+                    clickable: false
+                  },
+                  {
+                    title: '“Always write short, concise reponses which are no longer than 1000 characters in total.”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [{
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                    }],
+                    clickable: false
+                  }
+                  ]
+                },
+                {
+                  groupName: 'Yesterday',
+                  children: [
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    }
+                  ]
+                },
+                {
+                  groupName: '4 days ago',
+                  children: [
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                  ]
+                },
+                {
+                  groupName: 'Last week',
+                  children: [
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
+                    {
+                      title: '“Another memory”',
+                      description: 'Inferred by Q at 2:45pm on 1/2/24',
+                      actions: [{
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                      }],
+                      clickable: false
+                    },
                   ]
                 }
               ]
