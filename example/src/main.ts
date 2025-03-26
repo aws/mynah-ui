@@ -258,7 +258,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   type: 'textinput',
                   icon: MynahIcons.SEARCH,
                   id: generateUID(),
-                  placeholder: 'Search...'
+                  placeholder: 'Search...',
+                  autoFocus: true,
                 }
               ],
               list: [
@@ -352,7 +353,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   type: 'textinput',
                   icon: MynahIcons.SEARCH,
                   id: generateUID(),
-                  placeholder: 'Search...'
+                  placeholder: 'Search...',
+                  autoFocus: true,
                 },
                 {
                   type: 'select',
