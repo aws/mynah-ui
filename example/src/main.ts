@@ -400,7 +400,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: 'Today',
                 children: [{
                   title: '“Always add comments to my lines of Rust”',
-                  description: 'Created by user at 2:45pm on 1/2/24',
+                  description: 'Created by *user* at **2:45pm** on 1/2/24',
                   actions: [
                     {
                       id: generateUID(),

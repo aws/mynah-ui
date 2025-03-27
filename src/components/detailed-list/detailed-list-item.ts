@@ -1,3 +1,4 @@
+import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import testIds from '../../helper/test-ids';
@@ -50,16 +51,20 @@ export class DetailedListItemWrapper {
               }
             ]
           : []),
-        {
-          type: 'div',
-          classNames: [ 'mynah-detailed-list-item-name' ],
-          innerHTML: this.props.listItem.title ?? this.props.listItem.name
-        },
+        ...(this.props.listItem.title !== undefined || this.props.listItem.name !== undefined
+          ? [ {
+              type: 'div',
+              classNames: [ 'mynah-detailed-list-item-name' ],
+              innerHTML: this.props.listItem.title ?? this.props.listItem.name
+            } ]
+          : []),
         ...(this.props.listItem.description !== undefined
           ? [ {
               type: 'div',
               classNames: [ 'mynah-detailed-list-item-description' ],
-              innerHTML: `<bdi>${this.props.listItem.description.replace(/ /g, '&nbsp;')}</bdi>`
+              innerHTML: `<bdi>${marked.parse(this.props.listItem.description.replace(/ /g, '&nbsp;'), {
+              breaks: true,
+            }) as string}</bdi>`
             } ]
           : []),
         ...((this.props.listItem.children != null) && this.props.listItem.children.length > 0
