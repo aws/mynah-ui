@@ -21,8 +21,10 @@ export class DetailedListSheet {
 
   constructor (props: DetailedListSheetProps) {
     this.props = props;
+    // To prevent the header from being shown in the detailed list wrapper
+    const detailedListCopy: DetailedList = { ...props.detailedList, header: undefined };
     this.detailedListWrapper = new DetailedListWrapper({
-      detailedList: props.detailedList,
+      detailedList: detailedListCopy,
       onFilterValueChange: props.events?.onFilterValueChange,
       onDetailedListItemSelect: props.events?.onItemSelect,
       onDetailedListItemActionClick: props.events?.onActionClick,
