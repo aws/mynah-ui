@@ -42,9 +42,8 @@ import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
-import { Sheet, SheetProps } from './components/sheet';
-import { ChatItemCard } from './components/chat-item/chat-item-card';
-import { DetailedListWrapper } from './components/detailed-list/detailed-list';
+import { Sheet } from './components/sheet';
+import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
 
 export { generateUID } from './helper/guid';
 export {
@@ -291,15 +290,6 @@ export interface MynahUIProps {
       id: string;
     },
     eventId?: string) => void;
-  onDetailActionClick?: (
-
-  ) => void;
-  onDetailItemClick?: (
-
-  ) => void;
-  onDetailFilterChange?: (
-
-  ) => void;
 }
 
 export class MynahUI {
@@ -551,24 +541,6 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         this.props.onQuickCommandGroupActionClick(data.tabId, {
           id: data.actionId,
         }, this.getUserEventId());
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DETAIL_ACTION_CLICK, (data: {}) => {
-      if (this.props.onDetailActionClick !== undefined) {
-        this.props.onDetailActionClick();
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DETAIL_FILTER_CHANGE, (data: {}) => {
-      if (this.props.onDetailFilterChange !== undefined) {
-        this.props.onDetailFilterChange();
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DETAIL_ITEM_CLICK, (data: {}) => {
-      if (this.props.onDetailItemClick !== undefined) {
-        this.props.onDetailItemClick();
       }
     });
 
@@ -1019,40 +991,22 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     });
   };
 
-  public openSheet = (
-    data: {
-      tabId: string;
-      title?: string;
-      children?: Array<ChatItem | DetailedList>;
-      fullScreen?: boolean;
-      description?: string;
-    }
-  ): void => {
-    const properData: SheetProps = {
-      ...data,
-      children: data.children?.map((child: ChatItem | DetailedList) => {
-        if ((child as ChatItem).type !== undefined) {
-          return new ChatItemCard({ chatItem: child as ChatItem, tabId: data.tabId, inline: true }).render;
-        }
-        return new DetailedListWrapper({
-          detailedList: child as DetailedList,
-          onDetailedListItemGroupActionClick: () => { },
-          onFilterValueChange: () => {
-            if (this.props.onDetailFilterChange !== undefined) {
-              this.props.onDetailFilterChange();
-              // TODO: DETAIL LIST EVENTS
-            }
-          },
-          onDetailedListItemSelect: () => {
-            if (this.props.onDetailItemClick !== undefined) {
-              this.props.onDetailItemClick();
-            }
-            // TODO: DETAIL LIST EVENTS
-          }
-        }).render;
-      })
+  public openDetailedList = (
+    data: DetailedListSheetProps
+  ): {
+      update: (data: DetailedList) => void;
+      close: () => void;
+    } => {
+    const detailedListSheet = new DetailedListSheet({
+      tabId: data.tabId,
+      detailedList: data.detailedList,
+      events: data.events
+    });
+    detailedListSheet.open();
+    return {
+      update: detailedListSheet.update,
+      close: detailedListSheet.close
     };
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_SHEET, properData);
   };
 
   public destroy = (): void => {

@@ -1,13 +1,14 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
+import { cancelEvent } from '../../helper/events';
 import testIds from '../../helper/test-ids';
-import { ChatItemButton, DetailedListItem, MynahEventNames } from '../../static';
+import { ChatItemButton, DetailedListItem } from '../../static';
 import { Button } from '../button';
 import { Icon } from '../icon';
 
 export interface DetailedListItemWrapperProps {
   listItem: DetailedListItem;
-  onSelect: (detailedListItem: DetailedListItem) => void;
+  onSelect?: (detailedListItem: DetailedListItem) => void;
+  onActionClick?: (action: ChatItemButton) => void;
 }
 
 export class DetailedListItemWrapper {
@@ -28,7 +29,7 @@ export class DetailedListItemWrapper {
         click: (e) => {
           cancelEvent(e);
           if (this.props.listItem.disabled !== true && this.props.listItem.clickable !== false) {
-            this.props.onSelect(this.props.listItem);
+            this.props.onSelect?.(this.props.listItem);
           }
         }
       },
@@ -84,9 +85,7 @@ export class DetailedListItemWrapper {
                 primary: false,
                 onClick: (e) => {
                   cancelEvent(e);
-                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DETAIL_ACTION_CLICK, {
-                    // TODO: DETAIL LIST EVENTS
-                  });
+                  this.props.onActionClick?.(action);
                 },
               }).render)
             } ]

@@ -17,11 +17,13 @@ export interface SheetProps {
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   fullScreen?: boolean;
   description?: string;
+  onClose: () => void;
 }
 
 export class Sheet {
   sheetContainer: ExtendedHTMLElement;
   sheetWrapper: ExtendedHTMLElement;
+  onClose: () => void;
 
   constructor () {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_SHEET, (data: SheetProps) => {
@@ -40,6 +42,7 @@ export class Sheet {
       }
 
       this.sheetWrapper.clear();
+      this.onClose = data.onClose;
       this.sheetWrapper.update({
         children: [
           DomBuilder.getInstance().build(
@@ -102,6 +105,7 @@ export class Sheet {
 
   close = (): void => {
     this.sheetWrapper.removeClass('mynah-sheet-show');
+    this.onClose?.();
   };
 
   show = (): void => {
