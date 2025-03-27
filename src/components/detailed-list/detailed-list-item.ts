@@ -3,7 +3,8 @@ import { cancelEvent } from '../../helper/events';
 import testIds from '../../helper/test-ids';
 import { ChatItemButton, DetailedListItem } from '../../static';
 import { Button } from '../button';
-import { Icon } from '../icon';
+import { Icon, MynahIcons } from '../icon';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 
 export interface DetailedListItemWrapperProps {
   listItem: DetailedListItem;
@@ -15,6 +16,7 @@ export interface DetailedListItemWrapperProps {
 export class DetailedListItemWrapper {
   render: ExtendedHTMLElement;
   private readonly props: DetailedListItemWrapperProps;
+  private actionMenuOverlay: Overlay | undefined;
 
   constructor (props: DetailedListItemWrapperProps) {
     this.props = props;
@@ -72,24 +74,25 @@ export class DetailedListItemWrapper {
             ]
           : []),
         ...(this.props.listItem.actions !== undefined
-          ? [ {
-              type: 'div',
-              classNames: [ 'mynah-detailed-list-item-actions' ],
-              children: this.props.listItem.actions.map((action: ChatItemButton) => new Button({
-                testId: testIds.chatItem.fileTree.fileAction,
-                icon: action.icon ? new Icon({ icon: action.icon }).render : undefined,
-                ...(action.text !== undefined ? { label: action.text } : {}),
-                attributes: {
-                  title: action.description ?? ''
-                },
-                classNames: [ 'mynah-icon-button', action.status ?? '' ],
-                primary: false,
-                onClick: (e) => {
-                  cancelEvent(e);
-                  this.props.onActionClick?.(action);
-                },
-              }).render)
-            } ]
+          ? this.props.listItem.actions.length > 1
+            ? [ {
+                type: 'div',
+                classNames: [ 'mynah-detailed-list-item-actions' ],
+                children: [ new Button({
+                  testId: testIds.detailedList.actionMenu,
+                  icon: new Icon({ icon: MynahIcons.ELLIPSIS }).render,
+                  primary: false,
+                  onClick: (e) => {
+                    cancelEvent(e);
+                    this.showActionMenuOverlay();
+                  },
+                }).render ]
+              } ]
+            : [ {
+                type: 'div',
+                classNames: [ 'mynah-detailed-list-item-actions' ],
+                children: this.props.listItem.actions.map((action) => this.getActionButton(action, false))
+              } ]
           : []),
       ]
     });
@@ -106,5 +109,48 @@ export class DetailedListItemWrapper {
 
   public readonly getItem = (): DetailedListItem => {
     return this.props.listItem;
+  };
+
+  private readonly showActionMenuOverlay = (): void => {
+    this.actionMenuOverlay = new Overlay({
+      background: true,
+      closeOnOutsideClick: true,
+      referenceElement: this.render,
+      dimOutside: false,
+      removeOtherOverlays: true,
+      verticalDirection: OverlayVerticalDirection.START_TO_BOTTOM,
+      horizontalDirection: OverlayHorizontalDirection.TO_RIGHT,
+      children: [
+        {
+          type: 'div',
+          classNames: [ 'mynah-detailed-list-item-actions-overlay' ],
+          children: this.props.listItem.actions?.map((action) => this.getActionButton(action, true))
+        }
+      ],
+    });
+  };
+
+  private getActionButton (action: ChatItemButton, showText?: boolean): ExtendedHTMLElement {
+    return new Button({
+      testId: testIds.detailedList.action,
+      icon: action.icon ? new Icon({ icon: action.icon }).render : undefined,
+      ...(action.text !== undefined && showText === true ? { label: action.text } : {}),
+      attributes: {
+        title: action.description ?? ''
+      },
+      primary: false,
+      onClick: (e) => {
+        cancelEvent(e);
+        this.props.onActionClick?.(action);
+        this.hideActionMenuOverlay();
+      },
+    }).render;
+  }
+
+  private readonly hideActionMenuOverlay = (): void => {
+    if (this.actionMenuOverlay !== undefined) {
+      this.actionMenuOverlay.close();
+      this.actionMenuOverlay = undefined;
+    }
   };
 }
