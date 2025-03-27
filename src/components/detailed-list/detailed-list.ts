@@ -12,8 +12,9 @@ import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 export interface DetailedListWrapperProps {
   detailedList: DetailedList;
   onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
-  onDetailedListItemGroupActionClick: (action: ChatItemButton) => void;
-  onDetailedListItemSelect: (detailedListItem: DetailedListItem) => void;
+  onDetailedListItemGroupActionClick?: (action: ChatItemButton) => void;
+  onDetailedListItemSelect?: (detailedListItem: DetailedListItem) => void;
+  onDetailedListItemActionClick?: (action: ChatItemButton) => void;
 }
 
 export class DetailedListWrapper {
@@ -102,9 +103,7 @@ export class DetailedListWrapper {
                       text: action.text,
                       disabled: false
                     })),
-                    onActionClick: (action, event) => {
-                      this.props.onDetailedListItemGroupActionClick?.(action);
-                    }
+                    onActionClick: this.props.onDetailedListItemGroupActionClick
                   }).render
                 ]
               }) ]
@@ -116,9 +115,9 @@ export class DetailedListWrapper {
               children: detailedListItemPart.map(detailedListItem => {
                 const detailedListItemElement = new DetailedListItemWrapper({
                   listItem: detailedListItem,
-                  onSelect: () => {
-                    this.props.onDetailedListItemSelect(detailedListItem);
-                  }
+                  onSelect: this.props.onDetailedListItemSelect,
+                  onActionClick: this.props.onDetailedListItemActionClick,
+                  selectable: this.props.detailedList.selectable
                 });
                 if (detailedListItem.disabled !== true) {
                   this.allSelectableDetailedListElements.push(detailedListItemElement);

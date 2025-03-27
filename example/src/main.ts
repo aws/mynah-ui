@@ -97,6 +97,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               icon: MynahIcons.MAGIC,
             },
             {
+              id: 'history_sheet',
+              text: 'Sheet (History)',
+              icon: MynahIcons.COMMENT,
+            },
+            {
+              id: 'memory_sheet',
+              text: 'Sheet (Memory)',
+              icon: MynahIcons.COMMENT,
+            },
+            {
               id: 'show-avatars',
               text: 'Show/Hide avatars',
               icon: MynahIcons.USER,
@@ -208,6 +218,407 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+      } else if (buttonId === 'history_sheet') {
+        mynahUI.openDetailedList({
+          tabId,
+          detailedList:
+          {
+            header: {
+              title: 'Chat history',
+            },
+            selectable: true,
+            filterOptions: [
+              {
+                type: 'textinput',
+                icon: MynahIcons.SEARCH,
+                id: generateUID(),
+                placeholder: 'Search...',
+                autoFocus: true,
+              }
+            ],
+            list: [
+              {
+                groupName: 'Today',
+                children: [{
+                  icon: MynahIcons.CHAT,
+                  title: 'Why is this unit test failing?'
+                },
+                {
+                  icon: MynahIcons.CHAT,
+                  title: 'Can you explain this error message in more detail? ArrayIndexOutOfBoundsException: 10 at Main.main(Main.java:4)'
+                },
+                {
+                  icon: MynahIcons.CHECK_LIST,
+                  title: '/test encrypt_input'
+                }
+                ]
+              },
+              {
+                groupName: 'Yesterday',
+                children: [{
+                  icon: MynahIcons.CHAT,
+                  title: 'How can I optimize utils.py for better performance?'
+                },
+                {
+                  icon: MynahIcons.CODE_BLOCK,
+                  title: '/dev Create a new REST API endpoint /api/authenticate to handle user authentication'
+                },
+                {
+                  icon: MynahIcons.CHAT,
+                  title: '@workspace provide a refactored version of the endpoint() function'
+                },
+                {
+                  icon: MynahIcons.CHAT,
+                  title: 'Explain the code in the mcp directory'
+                }
+                ]
+              },
+              {
+                groupName: '4 days ago',
+                children: [{
+                  icon: MynahIcons.CHAT,
+                  title: 'What are the dependencies of this module?'
+                },
+                {
+                  icon: MynahIcons.CODE_BLOCK,
+                  title: '/dev Update CSS styles for responsive layout'
+                },
+                ]
+              },
+              {
+                groupName: 'Last week',
+                children: [{
+                  icon: MynahIcons.CODE_BLOCK,
+                  title: '/dev Optimize image loading for faster page loads'
+                },
+                {
+                  icon: MynahIcons.CHAT,
+                  title: 'What are some alternatives to generating a unique salt value in encrypt()?'
+                },
+                {
+                  icon: MynahIcons.CHAT,
+                  title: 'Generate a regular expression pattern that matches email addresses'
+                },
+                {
+                  icon: MynahIcons.CHAT,
+                  title: 'Convert the selected code snippet to typescript'
+                },
+                {
+                  icon: MynahIcons.CHAT,
+                  title: 'Rewrite this sort function to use the merge sort algorithm'
+                },
+                ]
+              }
+            ]
+          },
+          events: {
+            onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {
+              Log('Filter changed');
+            },
+            onKeyPress: (e) => {
+              Log('Key pressed');
+            },
+            onItemSelect: (detailedListItem) => {
+              Log('Item selected');
+            },
+            onActionClick: (button) => {
+              Log('Action clicked')
+            },
+            onClose: () => {
+              Log('Sheet closed')
+            },
+          }
+        });
+      } else if (buttonId === 'memory_sheet') {
+        const detailedList = mynahUI.openDetailedList({
+          tabId,
+          detailedList:
+          {
+            header: {
+              title: 'Memories (16)',
+            },
+            selectable: false,
+            filterOptions: [
+              {
+                type: 'textinput',
+                icon: MynahIcons.SEARCH,
+                id: generateUID(),
+                placeholder: 'Search...',
+                autoFocus: true,
+              },
+              {
+                type: 'select',
+                id: generateUID(),
+                icon: MynahIcons.CHECK_LIST,
+                value: 'all',
+                mandatory: true,
+                options: [
+                  {
+                    label: 'All memories',
+                    value: 'all'
+                  },
+                  {
+                    label: 'Created by user',
+                    value: 'user'
+                  },
+                  {
+                    label: 'Inferred by Q',
+                    value: 'q'
+                  }
+                ],
+              }
+            ],
+            list: [
+              {
+                groupName: 'Today',
+                children: [{
+                  title: '“Always add comments to my lines of Rust”',
+                  description: 'Created by *user* at **2:45pm** on 1/2/24',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.PENCIL,
+                      text: 'Edit'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  title: '“Always write short, concise reponses which are no longer than 1000 characters in total.”',
+                  description: 'Inferred by Q at 2:45pm on 1/2/24',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.PENCIL,
+                      text: 'Edit'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                }
+                ]
+              },
+              {
+                groupName: 'Yesterday',
+                children: [
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  }
+                ]
+              },
+              {
+                groupName: '4 days ago',
+                children: [
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                ]
+              },
+              {
+                groupName: 'Last week',
+                children: [
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                ]
+              }
+            ]
+          },
+          events: {
+            onFilterValueChange: () => {
+              Log('Filter changed');
+            },
+            onKeyPress: () => {
+              Log('Key pressed');
+            },
+            onItemSelect: (detailedListItem) => {
+              Log('Item selected');
+            },
+            onActionClick: () => {
+              Log('Action clicked')
+            },
+            onClose: () => {
+              Log('Sheet closed')
+            },
+          }
+        });
+        // detailedList.update({
+
+        // });
       } else if (buttonId === 'save-session') {
         localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
       } else if (buttonId === 'remove-saved-session') {
@@ -376,7 +787,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             }, 1500)
           }, 1500);
         } else {
-          if(followUp.command != null){
+          if (followUp.command != null) {
             mynahUI.addChatItem(tabId, {
               type: ChatItemType.PROMPT,
               body: `Example: **${followUp.pillText}**
@@ -891,7 +1302,7 @@ used as a context to generate this message.`
           Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails).map(key => `${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
-          mynahUI.addChatItem(tabId, {...defaultFollowUps, messageId: generateUID()});
+          mynahUI.addChatItem(tabId, { ...defaultFollowUps, messageId: generateUID() });
           streamingMessageId = null;
         }
       )

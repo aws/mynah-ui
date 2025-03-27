@@ -210,7 +210,11 @@ export class ChatItemFormItemsWrapper {
         }
       };
     }
-    return {};
+    return {
+      onChange: (value: string | number) => {
+        this.props.onFormChange?.(this.getAllValues(), this.isFormValid(), this.props.tabId);
+      }
+    };
   };
 
   private readonly handleTextualItemKeyPressEvent = (event: KeyboardEvent, itemId: string): void => {
