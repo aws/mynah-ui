@@ -502,7 +502,8 @@ export class ChatPromptInput {
     if (this.quickPickItemsSelectorContainer == null) {
       this.quickPickItemsSelectorContainer = new DetailedListWrapper({
         detailedList: {
-          list: detailedListItemsGroup
+          list: detailedListItemsGroup,
+          selectable: true
         },
         onDetailedListItemGroupActionClick: (action) => {
           this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());

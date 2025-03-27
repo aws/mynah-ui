@@ -121,6 +121,10 @@ export default {
     description: 'sheet-description',
     closeButton: 'sheet-close-button',
   },
+  detailedList: {
+    action: 'detailed-list-action',
+    actionMenu: 'detailed-list-action-menu'
+  },
   tabBar: {
     wrapper: 'tab-bar-wrapper',
     buttonsWrapper: 'tab-bar-buttons-wrapper',

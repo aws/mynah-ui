@@ -233,3 +233,30 @@
         }
     }
 }
+
+.mynah-detailed-list-item-actions-overlay {
+    display: inline-flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--mynah-sizing-1);
+    overflow: hidden;
+    position: relative;
+    pointer-events: all;
+    padding: var(--mynah-sizing-4);
+    border-radius: inherit;
+    button {
+        pointer-events: all;
+        > .mynah-button-label {
+            padding: 0;
+            flex-shrink: 0;
+        }
+        > i {
+            flex-shrink: 0;
+            & + .mynah-button-label {
+                padding-left: var(--mynah-sizing-1);
+                flex-shrink: 0;
+            }
+        }
+    }
+}

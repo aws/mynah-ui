@@ -7,7 +7,7 @@
     right: var(--mynah-sizing-2);
     width: auto;
     box-sizing: border-box;
-    z-index: 9999999;
+    z-index: 100000;
     opacity: 0;
     transform: translate3d(0, 5vh, 0);
     transition: var(--mynah-bottom-panel-transition);

@@ -401,18 +401,34 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 children: [{
                   title: '“Always add comments to my lines of Rust”',
                   description: 'Created by user at 2:45pm on 1/2/24',
-                  actions: [{
-                    id: generateUID(),
-                    icon: MynahIcons.TRASH,
-                  }],
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.PENCIL,
+                      text: 'Edit'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   title: '“Always write short, concise reponses which are no longer than 1000 characters in total.”',
                   description: 'Inferred by Q at 2:45pm on 1/2/24',
-                  actions: [{
-                    id: generateUID(),
-                    icon: MynahIcons.TRASH,
-                  }],
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.PENCIL,
+                      text: 'Edit'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 }
                 ]
               },
@@ -422,34 +438,66 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   }
                 ]
               },
@@ -459,18 +507,34 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                 ]
               },
@@ -480,42 +544,82 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                   {
                     title: '“Another memory”',
                     description: 'Inferred by Q at 2:45pm on 1/2/24',
-                    actions: [{
-                      id: generateUID(),
-                      icon: MynahIcons.TRASH,
-                    }],
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
                   },
                 ]
               }
@@ -540,7 +644,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           }
         });
         // detailedList.update({
-          
+
         // });
       } else if (buttonId === 'save-session') {
         localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
