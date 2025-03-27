@@ -253,6 +253,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             header: {
               title: 'Chat history',
             },
+            selectable: true,
             filterOptions: [
               {
                 type: 'textinput',
@@ -363,6 +364,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             header: {
               title: 'Memories (16)',
             },
+            selectable: false,
             filterOptions: [
               {
                 type: 'textinput',
@@ -403,7 +405,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     id: generateUID(),
                     icon: MynahIcons.TRASH,
                   }],
-                  clickable: false,
                 },
                 {
                   title: '“Always write short, concise reponses which are no longer than 1000 characters in total.”',
@@ -412,7 +413,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     id: generateUID(),
                     icon: MynahIcons.TRASH,
                   }],
-                  clickable: false
                 }
                 ]
               },
@@ -426,7 +426,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                   {
                     title: '“Another memory”',
@@ -435,7 +434,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                   {
                     title: '“Another memory”',
@@ -444,7 +442,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                   {
                     title: '“Another memory”',
@@ -453,7 +450,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   }
                 ]
               },
@@ -467,7 +463,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                   {
                     title: '“Another memory”',
@@ -476,7 +471,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                 ]
               },
@@ -490,7 +484,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                   {
                     title: '“Another memory”',
@@ -499,7 +492,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                   {
                     title: '“Another memory”',
@@ -508,7 +500,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                   {
                     title: '“Another memory”',
@@ -517,7 +508,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                   {
                     title: '“Another memory”',
@@ -526,7 +516,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                       id: generateUID(),
                       icon: MynahIcons.TRASH,
                     }],
-                    clickable: false
                   },
                 ]
               }

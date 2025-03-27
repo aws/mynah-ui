@@ -127,7 +127,7 @@
                     background-color: inherit;
                     margin-bottom: var(--mynah-sizing-half);
 
-                    &[clickable='true'] {
+                    &[selectable='true'] {
                         cursor: pointer;
                     }
 
@@ -141,8 +141,8 @@
                             pointer-events: none;
                         }
                     }
-                    &:hover:not([disabled='true']):not([clickable='false']),
-                    &.target-command:not([disabled='true']):not([clickable='false']) {
+                    &:hover:not([disabled='true']):not([selectable='false']),
+                    &.target-command:not([disabled='true']):not([selectable='false']) {
                         background-color: var(--mynah-color-button);
                         &,
                         & * {
@@ -213,7 +213,7 @@
         > .mynah-detailed-list-group
         > .mynah-detailed-list-items-block
         > .mynah-detailed-list-item {
-        &.target-command:not([disabled='true']):not([clickable='false']):not(:hover) {
+        &.target-command:not([disabled='true']):not([selectable='false']):not(:hover) {
             background-color: inherit;
             &:before {
                 content: '';

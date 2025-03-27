@@ -255,6 +255,7 @@ export interface DetailedList {
     icon?: MynahIcons | MynahIconsType;
     description?: string;
   };
+  selectable?: boolean;
 }
 
 export interface DetailedListItemGroup {
@@ -272,7 +273,6 @@ export interface DetailedListItem {
   description?: string;
   disabled?: boolean;
   followupText?: string;
-  clickable?: boolean;
   actions?: ChatItemButton[];
   children?: DetailedListItemGroup[];
   keywords?: string[];
