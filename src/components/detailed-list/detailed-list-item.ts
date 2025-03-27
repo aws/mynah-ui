@@ -9,6 +9,7 @@ export interface DetailedListItemWrapperProps {
   listItem: DetailedListItem;
   onSelect?: (detailedListItem: DetailedListItem) => void;
   onActionClick?: (action: ChatItemButton) => void;
+  selectable?: boolean;
 }
 
 export class DetailedListItemWrapper {
@@ -23,12 +24,12 @@ export class DetailedListItemWrapper {
       classNames: [ 'mynah-detailed-list-item' ],
       attributes: {
         disabled: this.props.listItem.disabled ?? 'false',
-        clickable: this.props.listItem.clickable ?? 'true',
+        selectable: this.props.selectable ?? 'true',
       },
       events: {
         click: (e) => {
           cancelEvent(e);
-          if (this.props.listItem.disabled !== true && this.props.listItem.clickable !== false) {
+          if (this.props.listItem.disabled !== true && this.props.selectable !== false) {
             this.props.onSelect?.(this.props.listItem);
           }
         }
