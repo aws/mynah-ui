@@ -12,6 +12,7 @@ import {
   ChatItem,
   MynahIcons,
   generateUID,
+  KeyMap,
 } from '@aws/mynah-ui';
 import { mynahUIDefaults } from './config';
 import { Log, LogClear } from './logger';
@@ -268,15 +269,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: 'Today',
                 children: [{
                   icon: MynahIcons.CHAT,
-                  title: 'Why is this unit test failing?'
+                  description: 'Why is this unit test failing?'
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  title: 'Can you explain this error message in more detail? ArrayIndexOutOfBoundsException: 10 at Main.main(Main.java:4)'
+                  description: '**Can you explain this error message in more detail? ArrayIndexOutOfBoundsException: 10 at Main.main(Main.java:4)**'
                 },
                 {
                   icon: MynahIcons.CHECK_LIST,
-                  title: '/test encrypt_input'
+                  description: '/test encrypt_input'
                 }
                 ]
               },
@@ -284,19 +285,19 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: 'Yesterday',
                 children: [{
                   icon: MynahIcons.CHAT,
-                  title: 'How can I optimize utils.py for better performance?'
+                  description: 'How can I optimize utils.py for better performance?'
                 },
                 {
                   icon: MynahIcons.CODE_BLOCK,
-                  title: '/dev Create a new REST API endpoint /api/authenticate to handle user authentication'
+                  description: '/dev Create a new REST API endpoint /api/authenticate to handle user authentication'
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  title: '@workspace provide a refactored version of the endpoint() function'
+                  description: '**@workspace provide a refactored version of the endpoint() function**'
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  title: 'Explain the code in the mcp directory'
+                  description: 'Explain the code in the mcp directory'
                 }
                 ]
               },
@@ -304,11 +305,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: '4 days ago',
                 children: [{
                   icon: MynahIcons.CHAT,
-                  title: 'What are the dependencies of this module?'
+                  description: 'What are the dependencies of this module?'
                 },
                 {
                   icon: MynahIcons.CODE_BLOCK,
-                  title: '/dev Update CSS styles for responsive layout'
+                  description: '/dev Update CSS styles for responsive layout'
                 },
                 ]
               },
@@ -316,23 +317,23 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: 'Last week',
                 children: [{
                   icon: MynahIcons.CODE_BLOCK,
-                  title: '/dev Optimize image loading for faster page loads'
+                  description: '**/dev Optimize image loading for faster page loads**'
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  title: 'What are some alternatives to generating a unique salt value in encrypt()?'
+                  description: 'What are some alternatives to generating a unique salt value in encrypt()?'
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  title: 'Generate a regular expression pattern that matches email addresses'
+                  description: '**Generate a regular expression pattern that matches email addresses**'
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  title: 'Convert the selected code snippet to typescript'
+                  description: 'Convert the selected code snippet to typescript'
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  title: 'Rewrite this sort function to use the merge sort algorithm'
+                  description: 'Rewrite this sort function to use the merge sort algorithm'
                 },
                 ]
               }
@@ -344,13 +345,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             },
             onKeyPress: (e) => {
               Log('Key pressed');
-              if (e.key === 'Escape') {
+              if (e.key === KeyMap.ESCAPE) {
                 close();
               }
-              else if (e.key === 'ArrowUp') {
+              else if (e.key === KeyMap.ARROW_UP) {
                 changeTarget('up', true)
               }
-              else if (e.key === 'ArrowDown') {
+              else if (e.key === KeyMap.ARROW_DOWN) {
                 changeTarget('down', true)
               }
             },
@@ -366,7 +367,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           }
         });
       } else if (buttonId === 'memory_sheet') {
-        const detailedList = mynahUI.openDetailedList({
+        const { close, update, changeTarget } = mynahUI.openDetailedList({
           tabId,
           detailedList:
           {
@@ -420,7 +421,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
-                  description: 'This item just has a description',
+                  title: '“Always add comments to my lines of Rust”',
+                  description: 'Created by user at **2:45pm** on 1/2/24',
                   actions: [
                     {
                       id: generateUID(),
@@ -630,16 +632,19 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             ]
           },
           events: {
-            onFilterValueChange: () => {
+            onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {
               Log('Filter changed');
             },
-            onKeyPress: () => {
+            onKeyPress: (e) => {
               Log('Key pressed');
+              if (e.key === KeyMap.ESCAPE) {
+                close();
+              }
             },
             onItemSelect: (detailedListItem) => {
               Log('Item selected');
             },
-            onActionClick: () => {
+            onActionClick: (button) => {
               Log('Action clicked')
             },
             onClose: () => {
@@ -647,7 +652,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             },
           }
         });
-        // detailedList.update({
+        // update({
 
         // });
       } else if (buttonId === 'save-session') {
