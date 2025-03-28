@@ -505,14 +505,14 @@ export class ChatPromptInput {
           list: detailedListItemsGroup,
           selectable: true
         },
-        onDetailedListItemGroupActionClick: (action) => {
+        onGroupActionClick: (action) => {
           this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, {
             tabId: this.props.tabId,
             actionId: action.id
           });
         },
-        onDetailedListItemSelect: (detailedListItem) => {
+        onItemSelect: (detailedListItem) => {
           const quickPickCommand: QuickActionCommand = convertDetailedListItemToQuickActionCommand(detailedListItem);
           if (this.quickPickType === 'context') {
             this.handleContextCommandSelection(quickPickCommand);

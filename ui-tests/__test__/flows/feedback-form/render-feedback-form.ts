@@ -34,9 +34,6 @@ export const renderFeedbackForm = async (page: Page, skipScreenshots?: boolean):
   await commentInput.fill('This is some feedback comment');
   await waitForAnimationEnd(page);
 
-  // const descriptionText = page.locator(getSelector(testIds.feedbackForm.description));
-  // expect(descriptionText).toBeDefined();
-
   const submitButton = page.locator(getSelector(testIds.feedbackForm.submitButton));
   expect(submitButton).toBeDefined();
 

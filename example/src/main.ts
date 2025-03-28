@@ -377,13 +377,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 type: 'select',
                 id: generateUID(),
                 icon: MynahIcons.CHECK_LIST,
-                value: 'all',
-                mandatory: true,
+                placeholder: 'All memories',
                 options: [
-                  {
-                    label: 'All memories',
-                    value: 'all'
-                  },
                   {
                     label: 'Created by user',
                     value: 'user'
