@@ -344,7 +344,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             header: {
               title: 'Memories (16)',
             },
-            textDirection: 'row',
+            textDirection: 'column',
             selectable: false,
             filterOptions: [
               {
