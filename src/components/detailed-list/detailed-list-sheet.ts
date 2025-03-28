@@ -26,8 +26,8 @@ export class DetailedListSheet {
     this.detailedListWrapper = new DetailedListWrapper({
       detailedList: detailedListCopy,
       onFilterValueChange: props.events?.onFilterValueChange,
-      onDetailedListItemSelect: props.events?.onItemSelect,
-      onDetailedListItemActionClick: props.events?.onActionClick,
+      onItemSelect: props.events?.onItemSelect,
+      onItemActionClick: props.events?.onActionClick,
     });
     this.keyPressHandler = (e: KeyboardEvent) => {
       this.props.events?.onKeyPress?.(e);

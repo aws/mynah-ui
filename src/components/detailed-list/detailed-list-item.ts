@@ -38,7 +38,7 @@ export class DetailedListItemWrapper {
         }
       },
       children: [
-        ...(this.props.listItem.icon !== undefined
+        ...(this.props.listItem.icon != null
           ? [
               {
                 type: 'div',
@@ -51,14 +51,14 @@ export class DetailedListItemWrapper {
               }
             ]
           : []),
-        ...(this.props.listItem.title !== undefined || this.props.listItem.name !== undefined
+        ...(this.props.listItem.title != null || this.props.listItem.name != null
           ? [ {
               type: 'div',
               classNames: [ 'mynah-detailed-list-item-name' ],
               innerHTML: this.props.listItem.title ?? this.props.listItem.name
             } ]
           : []),
-        ...(this.props.listItem.description !== undefined
+        ...(this.props.listItem.description != null
           ? [ {
               type: 'div',
               classNames: [ 'mynah-detailed-list-item-description' ],
@@ -78,7 +78,7 @@ export class DetailedListItemWrapper {
               }
             ]
           : []),
-        ...(this.props.listItem.actions !== undefined
+        ...(this.props.listItem.actions != null
           ? this.props.listItem.actions.length > 1
             ? [ {
                 type: 'div',
@@ -123,8 +123,8 @@ export class DetailedListItemWrapper {
       referenceElement: this.render,
       dimOutside: false,
       removeOtherOverlays: true,
-      verticalDirection: OverlayVerticalDirection.START_TO_BOTTOM,
-      horizontalDirection: OverlayHorizontalDirection.TO_RIGHT,
+      verticalDirection: OverlayVerticalDirection.CENTER,
+      horizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
       children: [
         {
           type: 'div',
