@@ -988,6 +988,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   ): {
       update: (data: DetailedList) => void;
       close: () => void;
+      changeTarget: (direction: 'up' | 'down', snapOnLastAndFirst?: boolean) => void;
     } => {
     const detailedListSheet = new DetailedListSheet({
       tabId: data.tabId,
@@ -997,7 +998,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     detailedListSheet.open();
     return {
       update: detailedListSheet.update,
-      close: detailedListSheet.close
+      close: detailedListSheet.close,
+      changeTarget: detailedListSheet.detailedListWrapper.changeTarget
     };
   };
 

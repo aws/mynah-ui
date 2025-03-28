@@ -110,10 +110,12 @@ export class DetailedListItemWrapper {
     });
   }
 
-  public readonly setFocus = (isFocused: boolean): void => {
+  public readonly setFocus = (isFocused: boolean, scrollIntoView: boolean): void => {
     if (isFocused) {
       this.render.addClass('target-command');
-      this.render.scrollIntoView(true);
+      if (scrollIntoView) {
+        this.render.scrollIntoView(true);
+      }
     } else {
       this.render.removeClass('target-command');
     }

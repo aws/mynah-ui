@@ -216,7 +216,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
       } else if (buttonId === 'history_sheet') {
-        mynahUI.openDetailedList({
+        const { update, close, changeTarget } = mynahUI.openDetailedList({
           tabId,
           detailedList:
           {
@@ -314,6 +314,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             },
             onKeyPress: (e) => {
               Log('Key pressed');
+              if (e.key === 'Escape') {
+                close();
+              }
+              else if (e.key === 'ArrowUp') {
+                changeTarget('up', true)
+              }
+              else if (e.key === 'ArrowDown') {
+                changeTarget('down', true)
+              }
             },
             onItemSelect: (detailedListItem) => {
               Log('Item selected');
