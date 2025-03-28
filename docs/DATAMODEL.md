@@ -2544,20 +2544,21 @@ Ok, finally, when we click the `Submit` button, as it is configured that way, it
 
 A sample return to the [onInBodyButtonClicked](./PROPERTIES.md#oninbodybuttonclicked) function
 ```console
-Body action clicked in message 1707218619540:
+Body action clicked in message 1743163457971:
 Action Id: submit
 Action Text: Submit
 
 Options:
-expertise-area: frontend
+expertise-area:
 preferred-ide: vscode
-working-hours: 30
-email: dogusata@amazon.com
-name: Dogus Atasoy
-ease-of-usage-rating: 5
+remote-ide: remote
+working-hours:
+email: d@a.c
+name: amazonq aws
+ease-of-usage-rating: 4
 accuracy-rating: 4
-general-rating: 5
-description: It is lovely!
+general-rating:
+description: aws
 ```
 
 ---
