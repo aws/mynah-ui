@@ -364,6 +364,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             header: {
               title: 'Memories (16)',
             },
+            textDirection: 'row',
             selectable: false,
             filterOptions: [
               {
@@ -410,8 +411,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
-                  title: '“Always write short, concise reponses which are no longer than 1000 characters in total.”',
-                  description: 'Inferred by Q at 2:45pm on 1/2/24',
+                  description: 'This item just has a description',
                   actions: [
                     {
                       id: generateUID(),
