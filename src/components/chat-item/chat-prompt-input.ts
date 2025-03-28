@@ -413,7 +413,7 @@ export class ChatPromptInput {
         }
       } else if (navigationalKeys.includes(e.key)) {
         cancelEvent(e);
-        this.quickPickItemsSelectorContainer.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down', true);
+        this.quickPickItemsSelectorContainer.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down', true, true);
       } else {
         if (this.quickPick != null) {
           if (this.promptTextInput.getTextInputValue() === '') {

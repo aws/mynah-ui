@@ -131,11 +131,11 @@ export class DetailedListWrapper {
         ]
       });
     });
-    this.allSelectableDetailedListElements[0]?.setFocus(true);
+    this.allSelectableDetailedListElements[0]?.setFocus(true, true);
     return groups ?? [ '' ];
   };
 
-  public readonly changeTarget = (direction: 'up' | 'down', snapOnLastAndFirst?: boolean): void => {
+  public readonly changeTarget = (direction: 'up' | 'down', snapOnLastAndFirst?: boolean, scrollIntoView?: boolean): void => {
     if (this.allSelectableDetailedListElements.length > 0) {
       let nextElementIndex: number = this.activeTargetElementIndex;
       if (direction === 'up') {
@@ -156,9 +156,9 @@ export class DetailedListWrapper {
         }
       }
 
-      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(false);
+      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(false, scrollIntoView === true);
       this.activeTargetElementIndex = nextElementIndex;
-      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(true);
+      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(true, scrollIntoView === true);
     }
   };
 
