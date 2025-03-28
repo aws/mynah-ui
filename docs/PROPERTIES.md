@@ -140,6 +140,10 @@ export interface MynahUIProps {
       formItemValues?: Record<string, string>;
     },
     eventId?: string) => void;
+  onPromptInputOptionChange?: (
+    tabId: string,
+    optionsValues: Record<string, string>,
+    eventId?: string) => void;
   /**
    * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
    */
@@ -413,6 +417,7 @@ onChatPrompt?: (
       console.log(`Prompt text (as written): ${prompt.prompt}`);
       console.log(`Prompt text (HTML escaped): ${prompt.escapedPrompt}`);
       console.log(`Command (if selected from quick actions): ${prompt.command}`);
+      console.log(`Options {${Object.keys(prompt.options??{}).map(op=>`'${op}': '${prompt.options?.[op] as string}'`).join(',') ?? ''}}`);
       console.log(`Context (if selected from context selector): ${(prompt.context??[]).join(', ')}`);
       console.log(`Attachment (feature not available yet): ${prompt.attachment}`);
     };
@@ -958,6 +963,33 @@ onCustomFormAction?: (
       console.log(`Action text: ${action.text ?? ''}`);
       console.log(`Form item values: ${JSON.stringify(action.formItemValues ?? {})}`);
     };
+...
+```
+---
+
+### `onPromptInputOptionChange`
+
+This event will be fired when user changes any of the prompt input options. It will pass `tabId` and `optionsValues`. Those options values are string key value pairs for any given form item in the promptInputOptions. 
+
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptOptions.png" alt="promptOptions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onPromptInputOptionChange: (tabId, optionsValues)=>{
+  Log(`Prompt options change for tab <b>${tabId}</b>:<br/>
+    ${optionsValues
+        ? `<br/>Options:<br/>${Object.keys(optionsValues)
+          .map(optionId => {
+            return `<b>${optionId}</b>: ${(optionsValues as Record<string, string>)[optionId] ?? ''}`;
+          })
+          .join('<br/>')}`
+        : ''
+      }
+    `);
+},
 ...
 ```
 ---

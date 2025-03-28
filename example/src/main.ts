@@ -60,6 +60,20 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     defaults: {
       store: {
         ...(mynahUIDefaults.store),
+        promptInputOptions: [
+          {
+            type: 'toggle',
+            id: 'prompt-type',
+            value: 'ask',
+            options: [{
+              value: 'ask',
+              icon: MynahIcons.CHAT
+            },{
+              value: 'do',
+              icon: MynahIcons.FLASH
+            }]
+          }
+        ],
         showChatAvatars
       }
     },
@@ -166,6 +180,18 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           promptInputVisible: false,
         }
       },
+    },
+    onPromptInputOptionChange: (tabId, optionsValues)=>{
+      Log(`Prompt options change for tab <b>${tabId}</b>:<br/>
+        ${optionsValues
+            ? `<br/>Options:<br/>${Object.keys(optionsValues)
+              .map(optionId => {
+                return `<b>${optionId}</b>: ${(optionsValues as Record<string, string>)[optionId] ?? ''}`;
+              })
+              .join('<br/>')}`
+            : ''
+          }
+        `);
     },
     onFocusStateChanged: (focusState: boolean) => {
       Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
@@ -329,6 +355,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>
+      options: <b>{${Object.keys(prompt.options??{}).map(op=>`'${op}': '${prompt.options?.[op] as string}'`).join(',') ?? ''}}</b><br/>
       context: <b>[${(prompt.context ?? []).map(ctx => `${JSON.stringify(ctx)}`).join(']</b>, <b>[')}]`);
       if (tabId === 'tab-1') {
         mynahUI.updateStore(tabId, {

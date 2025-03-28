@@ -53,7 +53,7 @@ export class DetailedListWrapper {
     });
   }
 
-  private readonly getHeader = (): ExtendedHTMLElement[] => {
+  private readonly getHeader = (): Array<ExtendedHTMLElement | string> => {
     if (this.props.detailedList.header != null) {
       return [ new TitleDescriptionWithIcon({
         description: this.props.detailedList.header.description,
@@ -61,10 +61,10 @@ export class DetailedListWrapper {
         title: this.props.detailedList.header.title,
       }).render ];
     }
-    return [];
+    return [ '' ];
   };
 
-  private readonly getFilters = (): ExtendedHTMLElement[] => {
+  private readonly getFilters = (): Array<ExtendedHTMLElement | string> => {
     if (this.props.detailedList.filterOptions != null && this.props.detailedList.filterOptions.length > 0) {
       return [ new ChatItemFormItemsWrapper({
         tabId: '',
@@ -74,10 +74,10 @@ export class DetailedListWrapper {
         onFormChange: this.props.onFilterValueChange
       }).render ];
     }
-    return [];
+    return [ '' ];
   };
 
-  private readonly getDetailedListItemGroups = (): ExtendedHTMLElement[] => {
+  private readonly getDetailedListItemGroups = (): Array<ExtendedHTMLElement | string> => {
     const groups = this.props.detailedList.list?.map((detailedListGroup: DetailedListItemGroup) => {
       return DomBuilder.getInstance().build({
         type: 'div',
@@ -132,7 +132,7 @@ export class DetailedListWrapper {
       });
     });
     this.allSelectableDetailedListElements[0]?.setFocus(true);
-    return groups ?? [];
+    return groups ?? [ '' ];
   };
 
   public readonly changeTarget = (direction: 'up' | 'down', snapOnLastAndFirst?: boolean): void => {

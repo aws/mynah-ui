@@ -9,7 +9,7 @@ import { cancelEvent } from '../helper/events';
 import { Button } from './button';
 import { Icon, MynahIcons, MynahIconsType } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
-import '../styles/components/_toggle.scss';
+import '../styles/components/_tab.scss';
 
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;
@@ -20,7 +20,7 @@ export interface ToggleOption {
   value: string;
   disabledTooltip?: string | ExtendedHTMLElement;
 }
-interface ToggleOptionRenderProps extends ToggleOption {
+interface TabItemRenderProps extends ToggleOption {
   wrapperTestId?: string;
   optionTestId?: string;
   labelTestId?: string;
@@ -29,16 +29,16 @@ interface ToggleOptionRenderProps extends ToggleOption {
   onChange?: (selectedValue: string) => void;
   onRemove?: (selectedValue: string, domElement: ExtendedHTMLElement) => void;
 }
-class ToggleOptionItem {
+class TabItem {
   render: ExtendedHTMLElement;
-  private readonly props: ToggleOptionRenderProps;
+  private readonly props: TabItemRenderProps;
   private disabledTooltip?: Overlay;
   private disabledTooltipTimer: ReturnType<typeof setTimeout>;
-  constructor (props: ToggleOptionRenderProps) {
+  constructor (props: TabItemRenderProps) {
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'span',
-      classNames: [ ...(this.props.pinned === true ? [ 'mynah-toggle-option-pinned' ] : [ '' ]) ],
+      classNames: [ ...(this.props.pinned === true ? [ 'mynah-tab-item-pinned' ] : [ '' ]) ],
       testId: props.wrapperTestId,
       attributes: {
         key: `${this.props.name}-${this.props.value}`,
@@ -52,7 +52,7 @@ class ToggleOptionItem {
                   this.disabledTooltip = new Overlay({
                     children: [ {
                       type: 'span',
-                      classNames: [ 'mynah-toggle-disabled-tooltip-container' ],
+                      classNames: [ 'mynah-tabs-disabled-tooltip-container' ],
                       children: [ this.props.disabledTooltip ?? '' ]
                     } ],
                     closeOnOutsideClick: false,
@@ -79,7 +79,7 @@ class ToggleOptionItem {
         {
           type: 'input',
           testId: props.optionTestId,
-          classNames: [ 'mynah-toggle-option' ],
+          classNames: [ 'mynah-tab-item' ],
           attributes: {
             type: 'radio',
             id: `${this.props.name}-${this.props.value}`,
@@ -99,7 +99,7 @@ class ToggleOptionItem {
         {
           type: 'label',
           testId: props.labelTestId,
-          classNames: [ 'mynah-toggle-option-label' ],
+          classNames: [ 'mynah-tab-item-label' ],
           attributes: {
             for: `${this.props.name}-${this.props.value}`,
           },
@@ -117,13 +117,13 @@ class ToggleOptionItem {
             this.props.icon != null ? new Icon({ icon: props.icon as MynahIcons }).render : '',
             {
               type: 'span',
-              classNames: [ 'mynah-toggle-option-label-text' ],
+              classNames: [ 'mynah-tab-item-label-text' ],
               children: [ this.props.label ?? '' ]
             },
             (this.props.onRemove !== undefined && this.props.pinned !== true)
               ? new Button({
                 testId: this.props.closeButtonTestId,
-                classNames: [ 'mynah-toggle-close-button' ],
+                classNames: [ 'mynah-tabs-close-button' ],
                 onClick: () => {
                   if (this.props.onRemove !== undefined) {
                     this.props.onRemove(this.props.value, this.render);
@@ -139,7 +139,7 @@ class ToggleOptionItem {
     });
   }
 }
-export interface ToggleProps {
+export interface TabProps {
   testId?: string;
   options: ToggleOption[];
   direction?: 'horizontal' | 'vertical';
@@ -149,18 +149,18 @@ export interface ToggleProps {
   onChange?: (selectedValue: string) => void;
   onRemove?: (selectedValue: string, domElement: ExtendedHTMLElement) => void;
 }
-export class Toggle {
+export class Tab {
   render: ExtendedHTMLElement;
-  private readonly props: ToggleProps;
+  private readonly props: TabProps;
   private currentValue?: string | null;
 
-  constructor (props: ToggleProps) {
+  constructor (props: TabProps) {
     this.props = { direction: 'horizontal', ...props };
     this.currentValue = this.props.value;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: this.props.testId,
-      classNames: [ 'mynah-toggle-container', 'mynah-toggle-type-tabs', `mynah-toggle-direction-${this.props.direction as string}` ],
+      classNames: [ 'mynah-tabs-container', `mynah-tabs-direction-${this.props.direction as string}` ],
       attributes: props.disabled === true ? { disabled: 'disabled' } : {},
       children: this.getChildren(props.value),
       events: {
@@ -181,7 +181,7 @@ export class Toggle {
 
   private readonly getChildren = (value?: string | null): any[] => [
     ...this.props.options.map(option => {
-      return new ToggleOptionItem({
+      return new TabItem({
         ...option,
         selected: value === option.value,
         name: this.props.name,
@@ -219,7 +219,7 @@ export class Toggle {
 
   addOption = (option: ToggleOption): void => {
     this.props.options.push(option);
-    this.render.appendChild(new ToggleOptionItem({
+    this.render.appendChild(new TabItem({
       ...option,
       name: this.props.name,
       onChange: this.updateSelectionRender,
@@ -249,7 +249,7 @@ export class Toggle {
 
   updateOptionTitle = (value: string, title: string): void => {
     this.props.options = this.props.options.filter(option => option.value !== value);
-    const elmToCheck = this.render.querySelector(`span[key="${this.props.name}-${value}"] .mynah-toggle-option-label-text`);
+    const elmToCheck = this.render.querySelector(`span[key="${this.props.name}-${value}"] .mynah-tab-item-label-text`);
     if (elmToCheck !== undefined) {
       (elmToCheck as HTMLSpanElement).innerHTML = title;
     }

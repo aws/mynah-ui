@@ -557,6 +557,29 @@ _To send the form, mandatory items should be filled._`,
             ],
         },
         {
+            id: 'remote-ide',
+            type: 'toggle',
+            value: 'remote',
+            title: `Environment`,
+            options: [
+                {
+                    label: 'Remote',
+                    value: 'remote',
+                    icon: MynahIcons.STAR
+                },
+                {
+                    label: 'Local',
+                    value: 'local',
+                    icon: MynahIcons.SCROLL_DOWN
+                },
+                {
+                    label: 'Both',
+                    value: 'both',
+                    icon: MynahIcons.STACK
+                }
+            ],
+        },
+        {
             id: 'working-hours',
             type: 'numericinput',
             title: `How many hours are you using an IDE weekly?`,

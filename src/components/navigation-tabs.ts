@@ -14,7 +14,7 @@ import { CardBody } from './card/card-body';
 import { Icon, MynahIcons } from './icon';
 import { TabBarButtonsWrapper } from './navigation-tab-bar-buttons';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
-import { Toggle, ToggleOption } from './toggle';
+import { Tab, ToggleOption } from './tabs';
 import '../styles/components/_nav-tabs.scss';
 import { DEFAULT_TIMEOUT } from './notification';
 import testIds from '../helper/test-ids';
@@ -29,7 +29,7 @@ export class Tabs {
   render: ExtendedHTMLElement;
   private tabIdTitleSubscriptions: Record<string, string> = {};
   private tabIdChatItemsSubscriptions: Record<string, string> = {};
-  private toggleGroup: Toggle;
+  private toggleGroup: Tab;
   private maxReachedOverlay: Overlay | undefined;
   private closeConfirmationOverlay: Overlay | undefined;
   private readonly props: TabsProps;
@@ -97,7 +97,7 @@ export class Tabs {
     tabs.forEach(tab => {
       this.assignListener(tab.value);
     });
-    this.toggleGroup = new Toggle({
+    this.toggleGroup = new Tab({
       testId: testIds.tabBar.tabsWrapper,
       onChange: (selectedTabId: string) => {
         MynahUITabsStore.getInstance().selectTab(selectedTabId);
@@ -120,7 +120,7 @@ export class Tabs {
       this.toggleGroup.render,
       new Button({
         testId: testIds.tabBar.tabAddButton,
-        classNames: [ 'mynah-toggle-close-button' ],
+        classNames: [ 'mynah-tabs-close-button' ],
         additionalEvents: {
           mouseenter: (e) => {
             if (MynahUITabsStore.getInstance().tabsLength() === Config.getInstance().config.maxTabs) {
