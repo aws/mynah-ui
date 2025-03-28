@@ -7,15 +7,17 @@ import { Config } from '../../helper/config';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import { generateUID } from '../../helper/guid';
-import { Icon, MynahIcons } from '../icon';
+import { Icon, MynahIcons, MynahIconsType } from '../icon';
 import '../../styles/components/_form-input.scss';
 
 interface SelectOption {
   value: string;
-  label: string;
+  label?: string;
+  icon?: MynahIcons | MynahIconsType;
 }
 
 export interface RadioGroupProps {
+  type?: 'radio' | 'toggle';
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
@@ -57,9 +59,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
                 cancelEvent(e);
                 e.currentTarget.querySelector('input').checked = true;
                 this.setValue(option.value);
-                if (props.onChange !== undefined) {
-                  props.onChange(option.value);
-                }
+                props.onChange?.(option.value);
               }
             },
             children: [
@@ -79,13 +79,15 @@ export class RadioGroupInternal extends RadioGroupAbstract {
                 type: 'span',
                 classNames: [ 'mynah-form-input-radio-check' ],
                 children: [
-                  new Icon({ icon: MynahIcons.OK }).render
+                  new Icon({ icon: option.icon ?? MynahIcons.OK }).render
                 ]
               },
-              {
-                type: 'span',
-                children: [ option.label ]
-              }
+              ...(option.label != null
+                ? [ {
+                    type: 'span',
+                    children: [ option.label ]
+                  } ]
+                : [])
             ]
           } ]
         })) as DomBuilderObject[]
@@ -97,11 +99,11 @@ export class RadioGroupInternal extends RadioGroupAbstract {
         {
           type: 'span',
           classNames: [ 'mynah-form-input-label' ],
-          children: [ ...(props.label !== undefined ? [ props.label ] : []) ]
+          children: [ ...(props.label != null ? [ props.label ] : []) ]
         },
         {
           type: 'div',
-          classNames: [ 'mynah-form-input-container', 'no-border' ],
+          classNames: [ 'mynah-form-input-container', `mynah-form-input-${props.type ?? 'radio'}-group`, 'no-border' ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
             this.radioGroupElement,

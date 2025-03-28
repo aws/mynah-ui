@@ -53,7 +53,7 @@ export {
 export * from './static';
 export {
   ToggleOption
-} from './components/toggle';
+} from './components/tabs';
 export {
   MynahIcons,
   MynahIconsType
@@ -251,6 +251,10 @@ export interface MynahUIProps {
       text?: string;
       formItemValues?: Record<string, string>;
     },
+    eventId?: string) => void;
+  onPromptInputOptionChange?: (
+    tabId: string,
+    optionsValues: Record<string, string>,
     eventId?: string) => void;
   /**
    * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
@@ -741,6 +745,10 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       if (this.props.onCustomFormAction !== undefined) {
         this.props.onCustomFormAction(data.tabId, data, this.getUserEventId());
       }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_OPTIONS_CHANGE, (data) => {
+      this.props.onPromptInputOptionChange?.(data.tabId, data.optionsValues, this.getUserEventId());
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TAB_BAR_BUTTON_CLICK, (data) => {

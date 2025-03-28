@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatPrompt, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatPrompt, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -19,6 +19,7 @@ import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
 import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
+import { PromptOptions } from './prompt-input/prompt-options';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -50,6 +51,7 @@ export class ChatPromptInput {
   private readonly sendButton: PromptInputSendButton;
   private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
+  private readonly promptOptions: PromptOptions;
   private readonly chatPrompt: ExtendedHTMLElement;
   private quickPickItemsSelectorContainer: DetailedListWrapper;
   private promptTextInputLabel: ExtendedHTMLElement;
@@ -118,6 +120,16 @@ export class ChatPromptInput {
       tabId: this.props.tabId,
     });
 
+    this.promptOptions = new PromptOptions({
+      filterOptions: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputOptions'),
+      onFiltersChange: (formData) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.PROMPT_INPUT_OPTIONS_CHANGE, {
+          tabId: this.props.tabId,
+          optionsValues: formData
+        });
+      }
+    });
+
     this.attachmentWrapper = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.attachmentWrapper,
@@ -148,6 +160,7 @@ export class ChatPromptInput {
             },
           ]
         },
+        this.promptOptions.render,
         this.attachmentWrapper,
       ]
     });
@@ -160,6 +173,9 @@ export class ChatPromptInput {
           this.promptTextInput.focus();
         }, 750);
       }
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputOptions', (newFilterOptions: FilterOption[]) => {
+      this.promptOptions.update(newFilterOptions);
     });
 
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputLabel', (promptInputLabel: string) => {
@@ -606,6 +622,7 @@ export class ChatPromptInput {
           prompt: promptText,
           escapedPrompt,
           context,
+          options: this.promptOptions.getOptionValues() ?? {},
           ...(selectedCommand !== '' ? { command: selectedCommand } : {}),
         }
       };

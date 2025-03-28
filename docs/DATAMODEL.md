@@ -89,6 +89,10 @@ interface MynahUIDataModel {
   */
   promptInputProgress?: ProgressField | null;
   /**
+  * Prompt input options/form items
+  */
+  promptInputOptions?: FilterOption[] | null;
+  /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: Array<ChatItem | DetailedListItemGroup>;
@@ -773,6 +777,37 @@ mynahUI.updateStore('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/tabStore/progress.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `promptInputOptions`
+
+Under the prompt input field, it is possible to add form items too for several options. For example a toggle can be placed to let user pick the type of the prompt. To listen the value changes on these options please check [onPromptInputOptionChange in Constructor properties](./PROPERTIES.md#onPromptInputOptionChange) and the see how they are being passed to prompt please check [onChatPrompt in Constructor properties](./PROPERTIES.md#onChatPrompt).
+
+To cleanup, simply set to `null` or an empty array.
+
+```typescript
+mynahUI.updateStore('tab-1', {
+  promptInputOptions: [
+    {
+      type: 'toggle',
+      id: 'prompt-type',
+      value: 'ask',
+      options: [{
+        value: 'ask',
+        icon: MynahIcons.CHAT
+      },{
+        value: 'do',
+        icon: MynahIcons.FLASH
+      }]
+    }
+  ]
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptOptions.png" alt="promptOptions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

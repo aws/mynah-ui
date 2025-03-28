@@ -1,6 +1,6 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItemContent, ChatItemType, MynahEventNames } from '../../static';
-import { Toggle, ToggleOption } from '../toggle';
+import { Tab, ToggleOption } from '../tabs';
 import { ChatItemCard } from './chat-item-card';
 import testIds from '../../helper/test-ids';
 import '../../styles/components/chat/_chat-item-card-tabbed-card.scss';
@@ -21,7 +21,7 @@ export class ChatItemTabbedCard {
 
   constructor (props: ChatItemTabbedCardProps) {
     this.props = props;
-    const toggleGroup = new Toggle({
+    const toggleGroup = new Tab({
       options: props.tabbedCard,
       direction: 'horizontal',
       name: `tabbed-card-toggle-${props.messageId ?? props.tabId}`,

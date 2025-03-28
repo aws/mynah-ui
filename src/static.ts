@@ -121,6 +121,10 @@ export interface MynahUIDataModel {
   */
   promptInputProgress?: ProgressField | null;
   /**
+  * Prompt input options/form items
+  */
+  promptInputOptions?: FilterOption[] | null;
+  /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
@@ -189,6 +193,7 @@ export enum MynahEventNames {
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
+  PROMPT_INPUT_OPTIONS_CHANGE = 'promptInputOptionsChange',
   FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
   FORM_TEXTUAL_ITEM_KEYPRESS = 'formTextualItemKeyPress',
   FORM_CHANGE = 'formChange',
@@ -383,20 +388,30 @@ export type TextBasedFormItem = BaseFormItem & {
 };
 
 type OtherFormItem = BaseFormItem & {
-  type: 'select' | 'stars' | 'radiogroup';
+  type: 'select' | 'stars';
   options?: Array<{
     value: string;
     label: string;
   }>;
 };
 
-export type ChatItemFormItem = TextBasedFormItem | OtherFormItem;
+type RadioGroupFormItem = BaseFormItem & {
+  type: 'radiogroup' | 'toggle';
+  options?: Array<{
+    value: string;
+    label?: string;
+    icon?: MynahIcons | MynahIconsType;
+  }>;
+};
+
+export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem;
 export type FilterOption = ChatItemFormItem;
 
 export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
+  options?: Record<string, string>;
   context?: string[] | QuickActionCommand[];
 }
 

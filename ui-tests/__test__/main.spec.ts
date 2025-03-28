@@ -41,6 +41,7 @@ import { navigatePromptsUp } from './flows/navigate-prompts/navigate-prompts-up'
 import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigate-prompts-to-empty';
 import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
 import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
+import { promptOptions } from './flows/prompt-options';
 // import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 
 describe('Open MynahUI', () => {
@@ -75,6 +76,10 @@ describe('Open MynahUI', () => {
 
   it('should render welcome structure', async () => {
     await welcomeMode(page);
+  });
+
+  it('should show prompt options', async () => {
+    await promptOptions(page);
   });
 
   it('should show progress indicator', async () => {

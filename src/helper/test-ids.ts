@@ -4,6 +4,7 @@ export default {
     wrapper: 'prompt-input-wrapper',
     attachmentWrapper: 'prompt-input-attachment-wrapper',
     attachment: 'prompt-input-attachment',
+    options: 'prompt-input-options',
     attachmentRemove: 'prompt-input-attachment-remove-button',
     send: 'prompt-input-send-button',
     input: 'prompt-input-textarea',
@@ -72,6 +73,8 @@ export default {
       itemStarsWrapper: 'chat-item-form-item-stars-wrapper',
       itemStars: 'chat-item-form-item-stars',
       itemTextArea: 'chat-item-form-item-textarea',
+      itemToggleWrapper: 'chat-item-form-item-toggle-wrapper',
+      itemToggleOption: 'chat-item-form-item-toggle-option'
     },
     vote: {
       wrapper: 'chat-item-vote-wrapper',
