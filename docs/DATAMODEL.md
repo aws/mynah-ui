@@ -2370,24 +2370,26 @@ mynahUI.addChatItem(tabId, {
             id: 'expertise-area',
             type: 'select',
             title: `Area of expertise`,
+            icon: 'search',
+            description: 'Select your area of expertise',
             options: [
                 {
                     label: 'Frontend',
-                    value: 'frontend'
+                    value: 'frontend',
                 },
                 {
                     label: 'Backend',
-                    value: 'backend'
+                    value: 'backend',
                 },
                 {
                     label: 'Data Science',
-                    value: 'datascience'
+                    value: 'datascience',
                 },
                 {
                     label: 'Other',
-                    value: 'other'
-                }
-            ]
+                    value: 'other',
+                },
+            ],
         },
         {
             id: 'preferred-ide',
@@ -2396,17 +2398,40 @@ mynahUI.addChatItem(tabId, {
             options: [
                 {
                     label: 'VSCode',
-                    value: 'vscode'
+                    value: 'vscode',
                 },
                 {
                     label: 'JetBrains IntelliJ',
-                    value: 'intellij'
+                    value: 'intellij',
                 },
                 {
                     label: 'Visual Studio',
-                    value: 'intellij'
+                    value: 'visualstudio',
+                },
+            ],
+        },
+        {
+            id: 'remote-ide',
+            type: 'toggle',
+            value: 'remote',
+            title: `Environment`,
+            options: [
+                {
+                    label: 'Remote',
+                    value: 'remote',
+                    icon: MynahIcons.STAR
+                },
+                {
+                    label: 'Local',
+                    value: 'local',
+                    icon: MynahIcons.SCROLL_DOWN
+                },
+                {
+                    label: 'Both',
+                    value: 'both',
+                    icon: MynahIcons.STACK
                 }
-            ]
+            ],
         },
         {
             id: 'working-hours',
@@ -2416,9 +2441,10 @@ mynahUI.addChatItem(tabId, {
         },
         {
             id: 'email',
-            type: 'textinput',
+            type: 'email',
             mandatory: true,
             title: `Email`,
+            description: 'Your email will be used to get back to you',
             placeholder: 'email',
             checkModifierEnterKeyPress: true
         },
@@ -2426,7 +2452,17 @@ mynahUI.addChatItem(tabId, {
             id: 'name',
             type: 'textinput',
             mandatory: true,
-            title: `Name`,
+            title: `Name (should contain "amazonq" and "aws" in the string)`,
+            validationPatterns: {
+                operator: 'and',
+                patterns: [{
+                    pattern: 'amazonq',
+                    errorMessage: 'Should contain amazonq!'
+                },{
+                    pattern: 'aws',
+                    errorMessage: 'Should contain aws!'
+                }]
+            },
             placeholder: 'Name and Surname',
         },
         {
@@ -2449,22 +2485,31 @@ mynahUI.addChatItem(tabId, {
         {
             id: 'description',
             type: 'textarea',
-            title: `Any other things you would like to share?`,
-            placeholder: 'Write your feelings about our tool',
-        }
+            title: `Any other things you would like to share? (should contain one of "amazonq" or "aws", capital or not)`,
+            validationPatterns: {
+                operator: 'or',
+                genericValidationErrorMessage: 'Should contain one of "amazonq" or "aws"',
+                patterns: [{
+                    pattern: /amazonq/gi
+                },{
+                    pattern: /aws/gi
+                }]
+            },
+            placeholder: 'Write your feelings about our tool. If the form is fully filled and valid, Enter will submit the form',
+        },
     ],
     buttons: [
         {
             id: 'submit',
             text: 'Submit',
-            status: 'info',
+            status: 'primary',
         },
         {
             id: 'cancel-feedback',
             text: 'Cancel',
             keepCardAfterClick: false,
             waitMandatoryFormItems: false,
-        }
+        },
     ],
 });
 ```
