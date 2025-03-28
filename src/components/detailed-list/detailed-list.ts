@@ -117,7 +117,8 @@ export class DetailedListWrapper {
                   listItem: detailedListItem,
                   onSelect: this.props.onItemSelect,
                   onActionClick: this.props.onItemActionClick,
-                  selectable: this.props.detailedList.selectable
+                  selectable: this.props.detailedList.selectable,
+                  textDirection: this.props.detailedList.textDirection
                 });
                 if (detailedListItem.disabled !== true) {
                   this.allSelectableDetailedListElements.push(detailedListItemElement);

@@ -145,7 +145,6 @@
                         & * {
                             color: var(--mynah-color-button-reverse);
                             .mynah-detailed-list-item-description {
-                                color: var(--mynah-color-button-reverse);
                                 opacity: 0.65;
                             }
                         }
@@ -159,35 +158,81 @@
                         color: var(--mynah-color-text-default);
                     }
 
-                    > .mynah-detailed-list-item-name {
-                        flex-shrink: 0.75;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        font-family: var(--mynah-font-family);
-                        font-weight: bold;
-                        > mark {
-                            position: relative;
-                            color: initial !important;
-                            overflow: hidden;
-                        }
-                    }
-
-                    > .mynah-detailed-list-item-description {
-                        flex-grow: 1;
-                        flex-shrink: 1;
-                        color: var(--mynah-color-text-weak);
+                    > .mynah-detailed-list-item-text {
                         display: flex;
-                        overflow: hidden;
+                        gap: var(--mynah-sizing-half);
+                        position: relative;
+                        box-sizing: border-box;
+                        width: 100%;
+                        flex-flow: row nowrap;
+                        align-items: flex-start;
                         justify-content: flex-start;
+                        overflow: hidden;
 
-                        display: inline-block;
-                        white-space: nowrap;
-                        direction: rtl;
-                        text-align: left;
-                        text-overflow: ellipsis;
-                        padding-left: var(--mynah-sizing-1);
-                        padding-right: var(--mynah-sizing-1);
+                        &.mynah-detailed-list-item-text-direction-column {
+                            flex-direction: column;
+                            gap: var(--mynah-sizing-2);
+
+                            > .mynah-detailed-list-item-name {
+                                width: 100%;
+                            }
+
+                            > .mynah-detailed-list-item-description {
+                                width: 100%;
+                            }
+                        }
+
+                        > .mynah-detailed-list-item-name {
+                            flex-shrink: 0.2;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            font-family: var(--mynah-font-family);
+                            font-weight: bold;
+                            > mark {
+                                position: relative;
+                                color: initial !important;
+                                overflow: hidden;
+                            }
+
+                            & + .mynah-detailed-list-item-description {
+                                flex-grow: 1;
+                                flex-shrink: 1;
+                                color: var(--mynah-color-text-weak);
+                                display: flex;
+                                overflow: hidden;
+                                justify-content: flex-start;
+                                display: inline-block;
+                                white-space: nowrap;
+                                direction: rtl;
+                                text-align: left;
+                                text-overflow: ellipsis;
+                                padding-left: var(--mynah-sizing-1);
+                                padding-right: var(--mynah-sizing-1);
+
+                                p {
+                                    margin: 0;
+                                }
+                            }
+                        }
+
+                        > .mynah-detailed-list-item-description {
+                            flex-grow: 1;
+                            flex-shrink: 1;
+                            display: flex;
+                            overflow: hidden;
+                            justify-content: flex-start;
+                            display: inline-block;
+                            white-space: nowrap;
+                            text-align: left;
+                            text-overflow: ellipsis;
+
+                            p {
+                                margin: 0;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                            }
+                        }
                     }
 
                     > .mynah-detailed-list-item-actions {

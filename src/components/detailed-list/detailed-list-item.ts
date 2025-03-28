@@ -12,6 +12,7 @@ export interface DetailedListItemWrapperProps {
   onSelect?: (detailedListItem: DetailedListItem) => void;
   onActionClick?: (action: ChatItemButton) => void;
   selectable?: boolean;
+  textDirection?: 'row' | 'column';
 }
 
 export class DetailedListItemWrapper {
@@ -51,22 +52,28 @@ export class DetailedListItemWrapper {
               }
             ]
           : []),
-        ...(this.props.listItem.title != null || this.props.listItem.name != null
-          ? [ {
-              type: 'div',
-              classNames: [ 'mynah-detailed-list-item-name' ],
-              innerHTML: this.props.listItem.title ?? this.props.listItem.name
-            } ]
-          : []),
-        ...(this.props.listItem.description != null
-          ? [ {
-              type: 'div',
-              classNames: [ 'mynah-detailed-list-item-description' ],
-              innerHTML: `<bdi>${marked.parse(this.props.listItem.description.replace(/ /g, '&nbsp;'), {
-              breaks: true,
-            }) as string}</bdi>`
-            } ]
-          : []),
+        {
+          type: 'div',
+          classNames: [ 'mynah-detailed-list-item-text', 'mynah-detailed-list-item-text-direction-' + (this.props.textDirection ?? 'row') ],
+          children: [
+            ...(this.props.listItem.title != null || this.props.listItem.name != null
+              ? [ {
+                  type: 'div',
+                  classNames: [ 'mynah-detailed-list-item-name' ],
+                  innerHTML: this.props.listItem.title ?? this.props.listItem.name
+                } ]
+              : []),
+            ...(this.props.listItem.description != null
+              ? [ {
+                  type: 'div',
+                  classNames: [ 'mynah-detailed-list-item-description' ],
+                  innerHTML: `<bdi>${marked.parse(this.props.listItem.description.replace(/ /g, '&nbsp;'), {
+                          breaks: true,
+                        }) as string}</bdi>`
+                } ]
+              : [])
+          ]
+        },
         ...((this.props.listItem.children != null) && this.props.listItem.children.length > 0
           ? [
               {

@@ -244,6 +244,7 @@ export interface DetailedList {
     description?: string;
   };
   selectable?: boolean;
+  textDirection?: 'row' | 'column';
 }
 
 export interface DetailedListItemGroup {
