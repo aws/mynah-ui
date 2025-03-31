@@ -1,4 +1,4 @@
-.mynah-toggle-container {
+.mynah-tabs-container {
     flex-flow: row nowrap;
     max-width: 100%;
     overflow: hidden;
@@ -19,15 +19,15 @@
         max-width: calc(3 * var(--mynah-sizing-15));
         flex-shrink: 0;
         order: 10;
-        &.mynah-toggle-option-pinned {
+        &.mynah-tab-item-pinned {
             order: 5;
         }
-        > .mynah-toggle-option {
+        > .mynah-tab-item {
             display: none;
-            &:not(:first-child) + .mynah-toggle-option-label {
+            &:not(:first-child) + .mynah-tab-item-label {
                 margin-left: calc(-1 * var(--mynah-sizing-1));
             }
-            &:not(:checked) + .mynah-toggle-option-label {
+            &:not(:checked) + .mynah-tab-item-label {
                 &.indication:after {
                     content: '';
                     position: absolute;
@@ -42,7 +42,7 @@
                     opacity: 0.75;
                 }
             }
-            & + .mynah-toggle-option-label {
+            & + .mynah-tab-item-label {
                 cursor: pointer;
                 pointer-events: all;
                 position: relative;
@@ -75,7 +75,7 @@
                         display: none;
                     }
                 }
-                > .mynah-toggle-close-button {
+                > .mynah-tabs-close-button {
                     margin-right: calc(-1 * var(--mynah-sizing-3));
                     $closeBtnSize: var(--mynah-sizing-5);
                     min-width: $closeBtnSize;
@@ -85,7 +85,7 @@
                     padding: 0;
                 }
             }
-            &:checked + .mynah-toggle-option-label {
+            &:checked + .mynah-tab-item-label {
                 border-top-color: var(--mynah-color-button);
                 color: var(--mynah-color-text-default);
                 opacity: 1;
@@ -93,7 +93,7 @@
             }
             &[disabled='disabled'] {
                 pointer-events: none !important;
-                & + .mynah-toggle-option-label {
+                & + .mynah-tab-item-label {
                     pointer-events: none !important;
                     opacity: 0.25;
                 }
@@ -101,13 +101,13 @@
         }
     }
 
-    &.mynah-toggle-direction-vertical {
+    &.mynah-tabs-direction-vertical {
         flex-flow: column nowrap;
         gap: var(--mynah-sizing-3);
     }
 }
 
-.mynah-toggle-disabled-tooltip-container {
+.mynah-tabs-disabled-tooltip-container {
     max-width: 30vw;
     display: inline-block;
     padding: var(--mynah-sizing-3);

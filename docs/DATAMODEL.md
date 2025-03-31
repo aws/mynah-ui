@@ -89,6 +89,10 @@ interface MynahUIDataModel {
   */
   promptInputProgress?: ProgressField | null;
   /**
+  * Prompt input options/form items
+  */
+  promptInputOptions?: FilterOption[] | null;
+  /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: Array<ChatItem | DetailedListItemGroup>;
@@ -773,6 +777,37 @@ mynahUI.updateStore('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/tabStore/progress.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `promptInputOptions`
+
+Under the prompt input field, it is possible to add form items too for several options. For example a toggle can be placed to let user pick the type of the prompt. To listen the value changes on these options please check [onPromptInputOptionChange in Constructor properties](./PROPERTIES.md#onPromptInputOptionChange) and the see how they are being passed to prompt please check [onChatPrompt in Constructor properties](./PROPERTIES.md#onChatPrompt).
+
+To cleanup, simply set to `null` or an empty array.
+
+```typescript
+mynahUI.updateStore('tab-1', {
+  promptInputOptions: [
+    {
+      type: 'toggle',
+      id: 'prompt-type',
+      value: 'ask',
+      options: [{
+        value: 'ask',
+        icon: MynahIcons.CHAT
+      },{
+        value: 'do',
+        icon: MynahIcons.FLASH
+      }]
+    }
+  ]
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptOptions.png" alt="promptOptions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -2335,24 +2370,26 @@ mynahUI.addChatItem(tabId, {
             id: 'expertise-area',
             type: 'select',
             title: `Area of expertise`,
+            icon: 'search',
+            description: 'Select your area of expertise',
             options: [
                 {
                     label: 'Frontend',
-                    value: 'frontend'
+                    value: 'frontend',
                 },
                 {
                     label: 'Backend',
-                    value: 'backend'
+                    value: 'backend',
                 },
                 {
                     label: 'Data Science',
-                    value: 'datascience'
+                    value: 'datascience',
                 },
                 {
                     label: 'Other',
-                    value: 'other'
-                }
-            ]
+                    value: 'other',
+                },
+            ],
         },
         {
             id: 'preferred-ide',
@@ -2361,17 +2398,40 @@ mynahUI.addChatItem(tabId, {
             options: [
                 {
                     label: 'VSCode',
-                    value: 'vscode'
+                    value: 'vscode',
                 },
                 {
                     label: 'JetBrains IntelliJ',
-                    value: 'intellij'
+                    value: 'intellij',
                 },
                 {
                     label: 'Visual Studio',
-                    value: 'intellij'
+                    value: 'visualstudio',
+                },
+            ],
+        },
+        {
+            id: 'remote-ide',
+            type: 'toggle',
+            value: 'remote',
+            title: `Environment`,
+            options: [
+                {
+                    label: 'Remote',
+                    value: 'remote',
+                    icon: MynahIcons.STAR
+                },
+                {
+                    label: 'Local',
+                    value: 'local',
+                    icon: MynahIcons.SCROLL_DOWN
+                },
+                {
+                    label: 'Both',
+                    value: 'both',
+                    icon: MynahIcons.STACK
                 }
-            ]
+            ],
         },
         {
             id: 'working-hours',
@@ -2381,9 +2441,10 @@ mynahUI.addChatItem(tabId, {
         },
         {
             id: 'email',
-            type: 'textinput',
+            type: 'email',
             mandatory: true,
             title: `Email`,
+            description: 'Your email will be used to get back to you',
             placeholder: 'email',
             checkModifierEnterKeyPress: true
         },
@@ -2391,7 +2452,17 @@ mynahUI.addChatItem(tabId, {
             id: 'name',
             type: 'textinput',
             mandatory: true,
-            title: `Name`,
+            title: `Name (should contain "amazonq" and "aws" in the string)`,
+            validationPatterns: {
+                operator: 'and',
+                patterns: [{
+                    pattern: 'amazonq',
+                    errorMessage: 'Should contain amazonq!'
+                },{
+                    pattern: 'aws',
+                    errorMessage: 'Should contain aws!'
+                }]
+            },
             placeholder: 'Name and Surname',
         },
         {
@@ -2414,22 +2485,31 @@ mynahUI.addChatItem(tabId, {
         {
             id: 'description',
             type: 'textarea',
-            title: `Any other things you would like to share?`,
-            placeholder: 'Write your feelings about our tool',
-        }
+            title: `Any other things you would like to share? (should contain one of "amazonq" or "aws", capital or not)`,
+            validationPatterns: {
+                operator: 'or',
+                genericValidationErrorMessage: 'Should contain one of "amazonq" or "aws"',
+                patterns: [{
+                    pattern: /amazonq/gi
+                },{
+                    pattern: /aws/gi
+                }]
+            },
+            placeholder: 'Write your feelings about our tool. If the form is fully filled and valid, Enter will submit the form',
+        },
     ],
     buttons: [
         {
             id: 'submit',
             text: 'Submit',
-            status: 'info',
+            status: 'primary',
         },
         {
             id: 'cancel-feedback',
             text: 'Cancel',
             keepCardAfterClick: false,
             waitMandatoryFormItems: false,
-        }
+        },
     ],
 });
 ```
@@ -2464,20 +2544,21 @@ Ok, finally, when we click the `Submit` button, as it is configured that way, it
 
 A sample return to the [onInBodyButtonClicked](./PROPERTIES.md#oninbodybuttonclicked) function
 ```console
-Body action clicked in message 1707218619540:
+Body action clicked in message 1743163457971:
 Action Id: submit
 Action Text: Submit
 
 Options:
-expertise-area: frontend
+expertise-area:
 preferred-ide: vscode
-working-hours: 30
-email: dogusata@amazon.com
-name: Dogus Atasoy
-ease-of-usage-rating: 5
+remote-ide: remote
+working-hours:
+email: d@a.c
+name: amazonq aws
+ease-of-usage-rating: 4
 accuracy-rating: 4
-general-rating: 5
-description: It is lovely!
+general-rating:
+description: aws
 ```
 
 ---

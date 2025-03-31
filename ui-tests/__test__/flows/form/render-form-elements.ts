@@ -64,6 +64,29 @@ export const renderFormElements = async (page: Page, skipScreenshots?: boolean):
             ],
           },
           {
+            id: 'remote-ide',
+            type: 'toggle',
+            value: 'remote',
+            title: 'Environment',
+            options: [
+              {
+                label: 'Remote',
+                value: 'remote',
+                icon: 'star'
+              },
+              {
+                label: 'Local',
+                value: 'local',
+                icon: 'scroll-down'
+              },
+              {
+                label: 'Both',
+                value: 'both',
+                icon: 'stack'
+              }
+            ],
+          },
+          {
             id: 'working-hours',
             type: 'numericinput',
             title: 'How many hours are you using an IDE weekly?',

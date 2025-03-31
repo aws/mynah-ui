@@ -1,8 +1,8 @@
-import { Toggle } from '../toggle';
+import { Tab } from '../tabs';
 
 describe('toggle (tabs)', () => {
   it('items', () => {
-    const testToggle = new Toggle({
+    const testToggle = new Tab({
       options: [
         {
           label: 'label1',
@@ -29,7 +29,7 @@ describe('toggle (tabs)', () => {
     const mockOnChangeHandler = jest.fn();
     const mockOnRemoveHandler = jest.fn();
 
-    const testToggle = new Toggle({
+    const testToggle = new Tab({
       options: [],
       direction: 'horizontal',
       name: 'testToggle',
