@@ -107,6 +107,7 @@
     --mynah-font-size-xxlarge: 1.6rem;
     --mynah-line-height: 1.25rem;
 
+    --mynah-syntax-code-block-max-height: calc(25 * var(--mynah-syntax-code-line-height));
     --mynah-syntax-code-line-height: 1.5rem;
     --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
 
