@@ -86,7 +86,7 @@ export class ChatItemTreeFile {
             this.props.deleted === true ? 'mynah-chat-item-tree-view-file-item-deleted' : '',
           ],
           children: [
-            ...(this.props.details?.icon != null ? [ new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE }).render ] : []),
+            ...(this.props.details?.icon !== null ? [ new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE }).render ] : []),
             {
               type: 'span',
               classNames: [ 'mynah-chat-item-tree-view-file-item-title-text' ],
