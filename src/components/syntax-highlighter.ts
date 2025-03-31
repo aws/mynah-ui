@@ -11,7 +11,7 @@ import {
   OnCodeBlockActionFunction,
 } from '../static';
 import { Button } from './button';
-import { Icon } from './icon';
+import { Icon, MynahIcons } from './icon';
 import { cancelEvent } from '../helper/events';
 import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
@@ -21,6 +21,7 @@ import unescapeHTML from 'unescape-html';
 import hljs from 'highlight.js';
 import '../styles/components/_syntax-highlighter.scss';
 import { mergeHTMLPlugin } from '../helper/merge-html-plugin';
+import { MoreContentIndicator } from './more-content-indicator';
 
 export interface SyntaxHighlighterProps {
   codeStringWithMarkup: string;
@@ -178,6 +179,30 @@ export class SyntaxHighlighter {
         }
       ]
     });
+
+    setTimeout(() => {
+      if (preElement.scrollHeight > preElement.clientHeight) {
+        const moreContentIndicator = new MoreContentIndicator({
+          icon: MynahIcons.DOWN_OPEN,
+          border: false,
+          onClick: () => {
+            if (this.render.hasClass('no-max')) {
+              this.render.removeClass('no-max');
+              moreContentIndicator.update({
+                icon: MynahIcons.DOWN_OPEN
+              });
+            } else {
+              this.render.addClass('no-max');
+              moreContentIndicator.update({
+                icon: MynahIcons.UP_OPEN
+              });
+            }
+          }
+        });
+        this.render.addClass('max-height-exceed');
+        this.render.insertAdjacentElement('beforeend', moreContentIndicator.render);
+      }
+    }, 10);
   }
 
   private readonly getSelectedCodeContextMenu = (): {
