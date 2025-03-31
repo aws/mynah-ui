@@ -269,15 +269,51 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: 'Today',
                 children: [{
                   icon: MynahIcons.CHAT,
-                  description: 'Why is this unit test failing?'
+                  description: 'Why is this unit test failing?',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  description: '**Can you explain this error message in more detail? ArrayIndexOutOfBoundsException: 10 at Main.main(Main.java:4)**'
+                  description: '**Can you explain this error message in more detail? ArrayIndexOutOfBoundsException: 10 at Main.main(Main.java:4)**',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CHECK_LIST,
-                  description: '/test encrypt_input'
+                  description: '/test encrypt_input',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 }
                 ]
               },
@@ -285,19 +321,67 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: 'Yesterday',
                 children: [{
                   icon: MynahIcons.CHAT,
-                  description: 'How can I optimize utils.py for better performance?'
+                  description: 'How can I optimize utils.py for better performance?',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CODE_BLOCK,
-                  description: '/dev Create a new REST API endpoint /api/authenticate to handle user authentication'
+                  description: '/dev Create a new REST API endpoint /api/authenticate to handle user authentication',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  description: '**@workspace provide a refactored version of the endpoint() function**'
+                  description: '**@workspace provide a refactored version of the endpoint() function**',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  description: 'Explain the code in the mcp directory'
+                  description: 'Explain the code in the mcp directory',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 }
                 ]
               },
@@ -305,11 +389,35 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: '4 days ago',
                 children: [{
                   icon: MynahIcons.CHAT,
-                  description: 'What are the dependencies of this module?'
+                  description: 'What are the dependencies of this module?',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CODE_BLOCK,
-                  description: '/dev Update CSS styles for responsive layout'
+                  description: '/dev Update CSS styles for responsive layout',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 ]
               },
@@ -317,23 +425,83 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 groupName: 'Last week',
                 children: [{
                   icon: MynahIcons.CODE_BLOCK,
-                  description: '**/dev Optimize image loading for faster page loads**'
+                  description: '**/dev Optimize image loading for faster page loads**',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  description: 'What are some alternatives to generating a unique salt value in encrypt()?'
+                  description: 'What are some alternatives to generating a unique salt value in encrypt()?',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  description: '**Generate a regular expression pattern that matches email addresses**'
+                  description: '**Generate a regular expression pattern that matches email addresses**',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  description: 'Convert the selected code snippet to typescript'
+                  description: 'Convert the selected code snippet to typescript',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 {
                   icon: MynahIcons.CHAT,
-                  description: 'Rewrite this sort function to use the merge sort algorithm'
+                  description: 'Rewrite this sort function to use the merge sort algorithm',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
                 },
                 ]
               }
