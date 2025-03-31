@@ -247,7 +247,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
       } else if (buttonId === 'history_sheet') {
-        const { update, close, changeTarget } = mynahUI.openDetailedList({
+        const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
           tabId,
           detailedList:
           {
@@ -268,6 +268,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               {
                 groupName: 'Today',
                 children: [{
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: 'Why is this unit test failing?',
                   actions: [
@@ -284,6 +285,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: '**Can you explain this error message in more detail? ArrayIndexOutOfBoundsException: 10 at Main.main(Main.java:4)**',
                   actions: [
@@ -300,6 +302,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CHECK_LIST,
                   description: '/test encrypt_input',
                   actions: [
@@ -320,6 +323,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               {
                 groupName: 'Yesterday',
                 children: [{
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: 'How can I optimize utils.py for better performance?',
                   actions: [
@@ -336,6 +340,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CODE_BLOCK,
                   description: '/dev Create a new REST API endpoint /api/authenticate to handle user authentication',
                   actions: [
@@ -352,6 +357,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: '**@workspace provide a refactored version of the endpoint() function**',
                   actions: [
@@ -368,6 +374,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: 'Explain the code in the mcp directory',
                   actions: [
@@ -388,6 +395,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               {
                 groupName: '4 days ago',
                 children: [{
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: 'What are the dependencies of this module?',
                   actions: [
@@ -404,6 +412,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CODE_BLOCK,
                   description: '/dev Update CSS styles for responsive layout',
                   actions: [
@@ -424,6 +433,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               {
                 groupName: 'Last week',
                 children: [{
+                  id: generateUID(),
                   icon: MynahIcons.CODE_BLOCK,
                   description: '**/dev Optimize image loading for faster page loads**',
                   actions: [
@@ -440,6 +450,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: 'What are some alternatives to generating a unique salt value in encrypt()?',
                   actions: [
@@ -456,6 +467,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: '**Generate a regular expression pattern that matches email addresses**',
                   actions: [
@@ -472,6 +484,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: 'Convert the selected code snippet to typescript',
                   actions: [
@@ -488,6 +501,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                   ],
                 },
                 {
+                  id: generateUID(),
                   icon: MynahIcons.CHAT,
                   description: 'Rewrite this sort function to use the merge sort algorithm',
                   actions: [
@@ -521,6 +535,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               }
               else if (e.key === KeyMap.ARROW_DOWN) {
                 changeTarget('down', true)
+              }
+              else if (e.key === KeyMap.ENTER) {
+                Log('Selected item with id: ' + getTargetElementId())
               }
             },
             onItemSelect: (detailedListItem) => {

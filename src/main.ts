@@ -997,6 +997,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       update: (data: DetailedList) => void;
       close: () => void;
       changeTarget: (direction: 'up' | 'down', snapOnLastAndFirst?: boolean) => void;
+      getTargetElementId: () => string | undefined;
     } => {
     const detailedListSheet = new DetailedListSheet({
       tabId: data.tabId,
@@ -1004,10 +1005,16 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       events: data.events
     });
     detailedListSheet.open();
+
+    const getTargetElementId = (): string | undefined => {
+      const targetElement = detailedListSheet.detailedListWrapper.getTargetElement();
+      return targetElement?.id ?? undefined;
+    };
     return {
       update: detailedListSheet.update,
       close: detailedListSheet.close,
-      changeTarget: detailedListSheet.detailedListWrapper.changeTarget
+      changeTarget: detailedListSheet.detailedListWrapper.changeTarget,
+      getTargetElementId
     };
   };
 
