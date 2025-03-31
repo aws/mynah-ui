@@ -25,8 +25,7 @@ export const serializeHtml = (tabId: string): string => {
       body: chatItem.body,
       messageId: chatItem.messageId,
       status: chatItem.status,
-      icon: chatItem.icon,
-      snapToTop: chatItem.snapToTop,
+      icon: chatItem.icon
     },
     tabId,
   }).render.outerHTML).reverse().join('\n');

@@ -31,6 +31,7 @@ export interface SyntaxHighlighterProps {
   startingLineNumber?: number;
   index?: number;
   codeBlockActions?: CodeBlockActions;
+  hideLanguage?: boolean;
   onCopiedToClipboard?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
   onCodeBlockAction?: OnCodeBlockActionFunction;
 }
@@ -167,12 +168,12 @@ export class SyntaxHighlighter {
           classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
           children: [
             ...this.codeBlockButtons,
-            ...(props.language != null
+            ...(props.language != null && this.props.hideLanguage !== true
               ? [ {
                   type: 'span',
                   testId: testIds.chatItem.syntaxHighlighter.language,
                   classNames: [ 'mynah-syntax-highlighter-language' ],
-                  children: [ props.language ]
+                  children: [ props.language.replace('diff-', '') ]
                 } ]
               : []),
           ],

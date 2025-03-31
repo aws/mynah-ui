@@ -56,6 +56,7 @@ import SCROLL_DOWN from './icons/scroll-down.svg';
 import USER from './icons/user.svg';
 import PLAY from './icons/play.svg';
 import PAUSE from './icons/pause.svg';
+import STOP from './icons/stop.svg';
 import CODE_BLOCK from './icons/code-block.svg';
 import COPY from './icons/copy.svg';
 import CURSOR_INSERT from './icons/cursor-insert.svg';
@@ -124,6 +125,7 @@ export class MynahUIIconImporter {
       USER,
       PLAY,
       PAUSE,
+      STOP,
       CODE_BLOCK,
       COPY,
       CURSOR_INSERT,

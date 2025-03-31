@@ -20,6 +20,7 @@ export const chatItemHasContent = (chatItem: Partial<ChatItem>): boolean => (
   (chatItem.body != null && chatItem.body !== '') ||
   chatItem.fileList != null ||
   chatItem.formItems != null ||
+  chatItem.header != null ||
   chatItem.customRenderer != null ||
   chatItem.informationCard != null ||
   chatItem.buttons != null);
