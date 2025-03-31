@@ -54,15 +54,13 @@
                 z-index: -1;
                 opacity: 10%;
             }
-            > .mynah-form-input {
-                background-color: transparent;
-            }
         }
 
         > .mynah-form-input {
             width: 100%;
             left: 0;
             color: var(--mynah-color-text-default);
+            background-color: transparent;
 
             &[disabled] {
                 pointer-events: none;
