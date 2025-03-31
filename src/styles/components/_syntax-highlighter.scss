@@ -305,6 +305,9 @@
         justify-content: center;
         height: var(--mynah-sizing-9);
         margin-top: 0;
+        box-shadow: 0 -15px 15px 0px var(--mynah-card-bg);
+        background-color: var(--mynah-card-bg);
+        &::before
         > .mynah-button {
             padding: var(--mynah-sizing-1);
             min-width: auto;
