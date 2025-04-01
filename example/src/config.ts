@@ -49,6 +49,11 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
         description: 'ChatItem cards can tell more with some status colors on borders together with icons. See different examples with status colors applied!',
       },
       {
+        command: Commands.HEADER_TYPES,
+        icon: MynahIcons.COMMENT,
+        description: 'ChatItem cards with different headers, padding, fullWidth and directive types.',
+      },
+      {
         command: Commands.FORM_CARD,
         icon: MynahIcons.LIST_ADD,
         description: 'ChatItem cards can have forms inside, including several input items and buttons!',

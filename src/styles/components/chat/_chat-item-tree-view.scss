@@ -193,9 +193,28 @@
                 flex: 1;
                 flex-shrink: 2;
 
+                > .mynah-chat-item-tree-view-file-item-details-changes {
+                    white-space: nowrap;
+                    flex-shrink: 0;
+                    display: inline-flex;
+                    flex-flow: row nowrap;
+                    gap: var(--mynah-sizing-1);
+                    justify-content: center;
+                    align-items: center;
+                    > .changes-added {
+                        color: var(--mynah-color-status-success);
+                    }
+                    > .changes-deleted {
+                        color: var(--mynah-color-status-error);
+                    }
+                    > .changes-total {
+                        color: var(--mynah-color-status-info);
+                    }
+                }
                 > .mynah-chat-item-tree-view-file-item-details-text {
                     flex: 1;
                     white-space: nowrap;
+                    color: var(--mynah-color-text-weak);
                 }
             }
 

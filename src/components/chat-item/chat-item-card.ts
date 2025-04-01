@@ -17,7 +17,6 @@ import { Config } from '../../helper/config';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper, ChatItemButtonsWrapperProps } from './chat-item-buttons';
 import { cleanHtml } from '../../helper/sanitize';
-import { CONTAINER_GAP } from './chat-wrapper';
 import { chatItemHasContent } from '../../helper/chat-item';
 import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
@@ -56,7 +55,14 @@ export class ChatItemCard {
   private footer: ChatItemCard | null = null;
   private header: ChatItemCard | null = null;
   constructor (props: ChatItemCardProps) {
-    this.props = props;
+    this.props = {
+      ...props,
+      chatItem: {
+        ...props.chatItem,
+        fullWidth: props.chatItem.fullWidth != null ? props.chatItem.fullWidth : (props.chatItem.type === ChatItemType.DIRECTIVE),
+        padding: props.chatItem.padding != null ? props.chatItem.padding : (props.chatItem.type !== ChatItemType.DIRECTIVE),
+      }
+    };
     this.chatAvatar = this.getChatAvatar();
     MynahUITabsStore.getInstance()
       .getTabDataStore(this.props.tabId)
@@ -84,9 +90,9 @@ export class ChatItemCard {
     this.card = new Card({
       testId: testIds.chatItem.card,
       children: this.initialSpinner ?? [],
-      background: this.props.inline !== true,
-      border: this.props.inline !== true,
-      padding: this.props.inline === true ? 'none' : undefined,
+      background: this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE,
+      border: this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE,
+      padding: this.props.inline === true || this.props.chatItem.padding === false ? 'none' : undefined,
     });
     this.updateCardContent();
     this.render = this.generateCard();
@@ -139,9 +145,8 @@ export class ChatItemCard {
     setTimeout(
       () => {
         generatedCard.addClass('reveal');
-        this.checkCardSnap();
       },
-      this.props.chatItem.type === ChatItemType.PROMPT ? 10 : 200
+      50
     );
 
     return generatedCard;
@@ -151,6 +156,8 @@ export class ChatItemCard {
     return [
       ...(this.props.chatItem.hoverEffect !== undefined ? [ 'mynah-chat-item-hover-effect' ] : []),
       ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
+      ...(this.props.chatItem.fullWidth === true ? [ 'full-width' ] : []),
+      ...(this.props.chatItem.padding === false ? [ 'no-padding' ] : []),
       ...(this.props.inline === true ? [ 'mynah-ui-chat-item-inline-card' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
@@ -234,11 +241,23 @@ export class ChatItemCard {
             inline: true,
             chatItem: {
               ...this.props.chatItem.header,
+              status: undefined,
               type: ChatItemType.ANSWER,
-              messageId: this.props.chatItem.messageId
-            }
+              messageId: this.props.chatItem.messageId,
+            },
           });
           this.cardHeader.insertChild('beforeend', this.header.render);
+
+          if (this.props.chatItem.header.status != null) {
+            this.cardHeader.insertAdjacentElement('beforeend', DomBuilder.getInstance().build({
+              type: 'span',
+              classNames: [ 'mynah-chat-item-card-header-status', `status-${this.props.chatItem.header.status.status ?? 'default'}` ],
+              children: [
+                ...(this.props.chatItem.header.status.icon != null ? [ new Icon({ icon: this.props.chatItem.header.status.icon }).render ] : []),
+                ...(this.props.chatItem.header.status.text != null ? [ { type: 'span', classNames: [ 'mynah-chat-item-card-header-status-text' ], children: [ this.props.chatItem.header.status.text ] } ] : []),
+              ]
+            }));
+          }
         }
       }
     }
@@ -262,6 +281,7 @@ export class ChatItemCard {
     if (this.props.chatItem.body != null && this.props.chatItem.body !== '') {
       const updatedCardContentBodyProps: ChatItemCardContentProps = {
         body: this.props.chatItem.body ?? '',
+        hideCodeBlockLanguage: this.props.chatItem.padding === false,
         classNames: [ 'mynah-card-inner-order-20' ],
         renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
         codeReference: this.props.chatItem.codeReference ?? undefined,
@@ -548,13 +568,6 @@ export class ChatItemCard {
 
   private readonly canShowAvatar = (): boolean => (this.props.chatItem.type === ChatItemType.ANSWER_STREAM || (this.props.inline !== true && chatItemHasContent({ ...this.props.chatItem, followUp: undefined })));
 
-  private readonly checkCardSnap = (): void => {
-    // If the chat item has snapToTop value as true, we'll snap the card to the container top
-    if (this.render.offsetParent != null && this.props.chatItem.snapToTop === true) {
-      this.render.offsetParent.scrollTop = this.render.offsetTop - CONTAINER_GAP - (this.render.offsetParent as HTMLElement).offsetTop;
-    }
-  };
-
   public readonly updateCard = (): void => {
     if (this.updateStack.length > 0) {
       const updateWith: Partial<ChatItem> | undefined = this.updateStack.shift();
@@ -595,10 +608,6 @@ export class ChatItemCard {
         this.updateCardContent();
         this.updateCard();
       }
-    } else {
-      setTimeout(() => {
-        this.checkCardSnap();
-      }, 200);
     }
   };
 

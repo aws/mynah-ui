@@ -234,6 +234,7 @@ export interface SourceLink {
 }
 export enum ChatItemType {
   PROMPT = 'prompt',
+  DIRECTIVE = 'directive',
   SYSTEM_PROMPT = 'system-prompt',
   AI_PROMPT = 'ai-prompt',
   ANSWER = 'answer',
@@ -300,14 +301,26 @@ export interface ProgressField {
 
 export interface TreeNodeDetails {
   status?: Status;
-  icon?: MynahIcons | MynahIconsType;
+  icon?: MynahIcons | MynahIconsType | null;
   label?: string;
+  changes?: {
+    added?: number;
+    deleted?: number;
+    total?: number;
+  };
   description?: string;
   clickable?: boolean;
 }
 
 export interface ChatItemContent {
-  header?: ChatItemContent | null;
+  header?: (ChatItemContent & {
+    icon?: MynahIcons | MynahIconsType;
+    status?: {
+      status?: Status;
+      icon?: MynahIcons | MynahIconsType;
+      text?: string;
+    };
+  }) | null;
   body?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
@@ -356,6 +369,8 @@ export interface ChatItem extends ChatItemContent {
   messageId?: string;
   snapToTop?: boolean;
   canBeVoted?: boolean;
+  fullWidth?: boolean;
+  padding?: boolean;
   icon?: MynahIcons | MynahIconsType;
   hoverEffect?: boolean;
   status?: Status;

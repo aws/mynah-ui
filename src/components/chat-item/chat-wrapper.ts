@@ -19,6 +19,7 @@ import testIds from '../../helper/test-ids';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { GradientBackground } from '../background';
 import { MynahUIGlobalEvents } from '../../helper/events';
+import { MoreContentIndicator } from '../more-content-indicator';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -254,24 +255,12 @@ export class ChatWrapper {
         this.headerSpacer,
         this.tabHeaderDetails,
         this.chatItemsContainer,
-        {
-          type: 'div',
-          classNames: [ 'more-content-indicator' ],
-          testId: testIds.chat.moreContentIndicator,
-          children: [
-            new Button({
-              icon: new Icon({ icon: MynahIcons.SCROLL_DOWN }).render,
-              testId: testIds.chat.moreContentIndicatorButton,
-              primary: false,
-              fillState: 'hover',
-              border: true,
-              onClick: () => {
-                this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
-                this.scrollPos = this.chatItemsContainer.scrollTop;
-              }
-            }).render
-          ]
-        },
+        new MoreContentIndicator({
+          onClick: () => {
+            this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
+            this.scrollPos = this.chatItemsContainer.scrollTop;
+          }
+        }).render,
         this.intermediateBlockContainer,
         this.promptStickyCard,
         this.promptInputElement,

@@ -11,7 +11,7 @@ import {
   OnCodeBlockActionFunction,
 } from '../static';
 import { Button } from './button';
-import { Icon } from './icon';
+import { Icon, MynahIcons } from './icon';
 import { cancelEvent } from '../helper/events';
 import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
@@ -21,6 +21,7 @@ import unescapeHTML from 'unescape-html';
 import hljs from 'highlight.js';
 import '../styles/components/_syntax-highlighter.scss';
 import { mergeHTMLPlugin } from '../helper/merge-html-plugin';
+import { MoreContentIndicator } from './more-content-indicator';
 
 export interface SyntaxHighlighterProps {
   codeStringWithMarkup: string;
@@ -30,6 +31,7 @@ export interface SyntaxHighlighterProps {
   startingLineNumber?: number;
   index?: number;
   codeBlockActions?: CodeBlockActions;
+  hideLanguage?: boolean;
   onCopiedToClipboard?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
   onCodeBlockAction?: OnCodeBlockActionFunction;
 }
@@ -59,7 +61,7 @@ export class SyntaxHighlighter {
     const codeElement = DomBuilder.getInstance().build({
       type: 'code',
       classNames: [
-        ...(props.language !== undefined ? [ `language-${props.language.replace('diff-', '')}` ] : [ (props.block ?? false) ? DEFAULT_LANGUAGE : 'language-plaintext' ]),
+        ...(props.language != null ? [ `language-${props.language.replace('diff-', '')}` ] : [ (props.block ?? false) ? DEFAULT_LANGUAGE : 'language-plaintext' ]),
         ...(props.showLineNumbers === true ? [ 'line-numbers' ] : []),
       ],
       innerHTML: escapedCodeBlock
@@ -166,18 +168,42 @@ export class SyntaxHighlighter {
           classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
           children: [
             ...this.codeBlockButtons,
-            ...(this.codeBlockButtons.length > 0
+            ...(props.language != null && this.props.hideLanguage !== true
               ? [ {
                   type: 'span',
                   testId: testIds.chatItem.syntaxHighlighter.language,
                   classNames: [ 'mynah-syntax-highlighter-language' ],
-                  children: [ props.language ?? 'text' ]
+                  children: [ props.language.replace('diff-', '') ]
                 } ]
               : []),
           ],
         }
       ]
     });
+
+    setTimeout(() => {
+      if (preElement.scrollHeight > preElement.clientHeight) {
+        const moreContentIndicator = new MoreContentIndicator({
+          icon: MynahIcons.DOWN_OPEN,
+          border: false,
+          onClick: () => {
+            if (this.render.hasClass('no-max')) {
+              this.render.removeClass('no-max');
+              moreContentIndicator.update({
+                icon: MynahIcons.DOWN_OPEN
+              });
+            } else {
+              this.render.addClass('no-max');
+              moreContentIndicator.update({
+                icon: MynahIcons.UP_OPEN
+              });
+            }
+          }
+        });
+        this.render.addClass('max-height-exceed');
+        this.render.insertAdjacentElement('beforeend', moreContentIndicator.render);
+      }
+    }, 10);
   }
 
   private readonly getSelectedCodeContextMenu = (): {

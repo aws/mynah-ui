@@ -41,6 +41,9 @@
             text-overflow: ellipsis;
         }
     }
+    .more-content-indicator {
+        display: none !important;
+    }
 }
 
 .mynah-prompt-input-snippet-attachment-overlay {

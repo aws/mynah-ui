@@ -5,7 +5,7 @@ import { FileNodeAction, MynahEventNames, TreeNodeDetails } from '../../static';
 import { Button } from '../button';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
-import { Icon, MynahIcons } from '../icon';
+import { Icon, MynahIcons, MynahIconsType } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import testIds from '../../helper/test-ids';
 
@@ -15,7 +15,7 @@ export interface ChatItemTreeFileProps {
   filePath: string;
   originalFilePath: string;
   fileName: string;
-  icon?: MynahIcons;
+  icon?: MynahIcons | MynahIconsType | null;
   deleted?: boolean;
   details?: TreeNodeDetails;
   actions?: FileNodeAction[];
@@ -72,7 +72,7 @@ export class ChatItemTreeFile {
         mouseleave: this.hideTooltip
       },
       children: [
-        ...(this.props.icon != null && this.props.details?.icon == null
+        ...(this.props.icon != null && this.props.details?.icon === undefined
           ? [ {
               type: 'span',
               classNames: [ 'mynah-chat-single-file-icon' ],
@@ -86,7 +86,7 @@ export class ChatItemTreeFile {
             this.props.deleted === true ? 'mynah-chat-item-tree-view-file-item-deleted' : '',
           ],
           children: [
-            new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE }).render,
+            ...(this.props.details?.icon !== null ? [ new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE }).render ] : []),
             {
               type: 'span',
               classNames: [ 'mynah-chat-item-tree-view-file-item-title-text' ],
@@ -98,6 +98,17 @@ export class ChatItemTreeFile {
           classNames: [ 'mynah-chat-item-tree-view-file-item-details' ],
           children: this.props.details != null
             ? [
+                ...(this.props.details.changes != null
+                  ? [ {
+                      type: 'span',
+                      classNames: [ 'mynah-chat-item-tree-view-file-item-details-changes' ],
+                      children: [
+                        ...(this.props.details.changes.added != null ? [ { type: 'span', classNames: [ 'changes-added' ], children: [ `+${this.props.details.changes.added}` ] } ] : []),
+                        ...(this.props.details.changes.deleted != null ? [ { type: 'span', classNames: [ 'changes-deleted' ], children: [ `-${this.props.details.changes.deleted}` ] } ] : []),
+                        ...(this.props.details.changes.total != null ? [ { type: 'span', classNames: [ 'changes-total' ], children: [ `${this.props.details.changes.total}` ] } ] : []),
+                      ]
+                    } ]
+                  : []),
                 ...(this.props.details.label != null
                   ? [ {
                       type: 'span',
