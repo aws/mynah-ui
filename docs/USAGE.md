@@ -19,6 +19,7 @@ mynahUI.updateLastChatAnswer(...);
 mynahUI.updateChatAnswerWithMessageId(...);
 mynahUI.endMessageStream(...);
 mynahUI.serializeChat(...);
+mynahUI.openDetailedList(...);
 mynahUI.updateStore(...);
 mynahUI.selectTab(...);
 mynahUI.removeTab(...);
@@ -407,6 +408,37 @@ link.download = 'exported-chat.md';
 link.href = url;
 link.click();
 ```
+
+---
+
+## Opening a DetailedList sheet (`openDetailedList`)
+
+You can open a sheet with a DetailedList inside of it using the `openDetailedList` function. Refer to the example app for two examples, one for a chat history list and one for a memory management list. More information on the `DetailedList` data model can be found in DATAMODEL.md.
+
+The function provides a couple of callbacks which can be used to control the sheet. Next to that, you can also customize 5 event handlers, providable through the `events` object.
+
+```typescript
+const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
+    tabId,
+    detailedList: {}, // The DetailedList, for the data model check DATAMODEL.md
+    events: {
+      onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {
+      },
+      onKeyPress: (e) => {
+      },
+      onItemSelect: (detailedListItem) => {
+      },
+      onActionClick: (button) => {
+      },
+      onClose: () => {
+      },
+    }
+});          
+```
+
+<p align="center">
+  <img src="./img/detailedListSheet.png" alt="Detailed List Sheet" style="max-width:350px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ---
 
