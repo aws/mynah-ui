@@ -100,6 +100,19 @@ export class ChatItemFormItemsWrapper {
               ...(this.getHandlers(chatItemOption))
             });
             break;
+          case 'toggle':
+            chatOption = new RadioGroup({
+              type: 'toggle',
+              wrapperTestId: testIds.chatItem.chatItemForm.itemToggleWrapper,
+              optionTestId: testIds.chatItem.chatItemForm.itemToggleOption,
+              label,
+              description,
+              value,
+              options: chatItemOption.options,
+              optional: chatItemOption.mandatory !== true,
+              ...(this.getHandlers(chatItemOption))
+            });
+            break;
           case 'textarea':
             chatOption = new TextArea({
               testId: testIds.chatItem.chatItemForm.itemTextArea,
@@ -211,7 +224,7 @@ export class ChatItemFormItemsWrapper {
       };
     }
     return {
-      onChange: (value: string | number) => {
+      onChange: () => {
         this.props.onFormChange?.(this.getAllValues(), this.isFormValid(), this.props.tabId);
       }
     };
