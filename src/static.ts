@@ -191,8 +191,6 @@ export enum MynahEventNames {
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   OPEN_SHEET = 'openSheet',
   CLOSE_SHEET = 'closeSheet',
-  OPEN_DETAILED_LIST = 'openDetailedList',
-  CLOSE_DETAILED_LIST = 'closeDetailedList',
   FILE_CLICK = 'fileClick',
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
