@@ -27,6 +27,7 @@ import {
   CardRenderDetails,
   PromptAttachmentType,
   QuickActionCommand,
+  DetailedList,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -41,6 +42,8 @@ import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
+import { Sheet } from './components/sheet';
+import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
 
 export { generateUID } from './helper/guid';
 export {
@@ -287,7 +290,6 @@ export interface MynahUIProps {
       id: string;
     },
     eventId?: string) => void;
-
 }
 
 export class MynahUI {
@@ -299,6 +301,7 @@ export class MynahUI {
   private readonly tabsWrapper: ExtendedHTMLElement;
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
+  private readonly sheet?: Sheet;
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
@@ -365,6 +368,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     if (props.onSendFeedback !== undefined) {
       this.feedbackForm = new FeedbackForm();
     }
+
+    this.sheet = new Sheet();
 
     if (Config.getInstance().config.maxTabs > 1) {
       this.tabsWrapper = new Tabs({
@@ -967,8 +972,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   /**
-   * Simply creates and shows a notification
-   * @param props NotificationProps
+   * Simply creates and shows a custom form
    */
   public showCustomForm = (
     tabId: string,
@@ -985,6 +989,33 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         formItems
       },
     });
+  };
+
+  public openDetailedList = (
+    data: DetailedListSheetProps
+  ): {
+      update: (data: DetailedList) => void;
+      close: () => void;
+      changeTarget: (direction: 'up' | 'down', snapOnLastAndFirst?: boolean) => void;
+      getTargetElementId: () => string | undefined;
+    } => {
+    const detailedListSheet = new DetailedListSheet({
+      tabId: data.tabId,
+      detailedList: data.detailedList,
+      events: data.events
+    });
+    detailedListSheet.open();
+
+    const getTargetElementId = (): string | undefined => {
+      const targetElement = detailedListSheet.detailedListWrapper.getTargetElement();
+      return targetElement?.id ?? undefined;
+    };
+    return {
+      update: detailedListSheet.update,
+      close: detailedListSheet.close,
+      changeTarget: detailedListSheet.detailedListWrapper.changeTarget,
+      getTargetElementId
+    };
   };
 
   public destroy = (): void => {

@@ -117,13 +117,16 @@
                     align-items: center;
                     justify-content: flex-start;
                     overflow: hidden;
-                    cursor: pointer;
                     padding: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
                     color: var(--mynah-color-text-default);
                     border-radius: var(--mynah-input-radius);
                     transition: var(--mynah-short-transition-rev);
                     background-color: inherit;
                     margin-bottom: var(--mynah-sizing-half);
+
+                    &[selectable='true'] {
+                        cursor: pointer;
+                    }
 
                     &[disabled='true'] {
                         &::before {
@@ -135,14 +138,13 @@
                             pointer-events: none;
                         }
                     }
-                    &:hover:not([disabled='true']),
-                    &.target-command:not([disabled='true']) {
+                    &:hover:not([disabled='true']):not([selectable='false']),
+                    &.target-command:not([disabled='true']):not([selectable='false']) {
                         background-color: var(--mynah-color-button);
                         &,
                         & * {
                             color: var(--mynah-color-button-reverse);
                             .mynah-detailed-list-item-description {
-                                color: var(--mynah-color-button-reverse);
                                 opacity: 0.65;
                             }
                         }
@@ -156,33 +158,85 @@
                         color: var(--mynah-color-text-default);
                     }
 
-                    > .mynah-detailed-list-item-name {
-                        flex-shrink: 0;
-                        font-family: var(--mynah-font-family);
-                        font-weight: bold;
-                        > mark {
-                            position: relative;
-                            color: initial !important;
+                    > .mynah-detailed-list-item-text {
+                        display: flex;
+                        gap: var(--mynah-sizing-half);
+                        position: relative;
+                        box-sizing: border-box;
+                        width: 100%;
+                        flex-flow: row nowrap;
+                        align-items: flex-start;
+                        justify-content: flex-start;
+                        overflow: hidden;
+
+                        &.mynah-detailed-list-item-text-direction-column {
+                            flex-direction: column;
+                            gap: var(--mynah-sizing-2);
+
+                            > .mynah-detailed-list-item-name {
+                                width: 100%;
+                            }
+
+                            > .mynah-detailed-list-item-description {
+                                width: 100%;
+                            }
+                        }
+
+                        > .mynah-detailed-list-item-name {
+                            flex-shrink: 0;
                             overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            font-family: var(--mynah-font-family);
+                            font-weight: bold;
+                            > mark {
+                                position: relative;
+                                color: initial !important;
+                                overflow: hidden;
+                            }
+
+                            & + .mynah-detailed-list-item-description {
+                                flex-grow: 1;
+                                flex-shrink: 1;
+                                color: var(--mynah-color-text-weak);
+                                display: flex;
+                                overflow: hidden;
+                                justify-content: flex-start;
+                                display: inline-block;
+                                white-space: nowrap;
+                                direction: rtl;
+                                text-align: left;
+                                text-overflow: ellipsis;
+                                padding-left: var(--mynah-sizing-1);
+                                padding-right: var(--mynah-sizing-1);
+
+                                p {
+                                    margin: 0;
+                                }
+                            }
+                        }
+
+                        > .mynah-detailed-list-item-description {
+                            flex-grow: 1;
+                            flex-shrink: 1;
+                            display: flex;
+                            overflow: hidden;
+                            justify-content: flex-start;
+                            display: inline-block;
+                            white-space: nowrap;
+                            text-align: left;
+                            text-overflow: ellipsis;
+
+                            p {
+                                margin: 0;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                            }
                         }
                     }
 
-                    > .mynah-detailed-list-item-description {
-                        flex-grow: 1;
-                        flex-shrink: 1;
-                        color: var(--mynah-color-text-weak);
-                        font-size: var(--mynah-font-size-small);
-                        display: flex;
-                        overflow: hidden;
-                        justify-content: flex-start;
-                        background-color: inherit;
-                        display: inline-block;
-                        white-space: nowrap;
-                        direction: rtl;
-                        text-align: left;
-                        text-overflow: ellipsis;
-                        padding-left: var(--mynah-sizing-1);
-                        padding-right: var(--mynah-sizing-1);
+                    > .mynah-detailed-list-item-actions {
+                        flex-shrink: 0;
                     }
 
                     > .mynah-detailed-list-item-arrow-icon {
@@ -200,7 +254,7 @@
         > .mynah-detailed-list-group
         > .mynah-detailed-list-items-block
         > .mynah-detailed-list-item {
-        &.target-command:not([disabled='true']):not(:hover) {
+        &.target-command:not([disabled='true']):not([selectable='false']):not(:hover) {
             background-color: inherit;
             &:before {
                 content: '';
@@ -216,6 +270,33 @@
             &,
             & * {
                 color: var(--mynah-color-text-default);
+            }
+        }
+    }
+}
+
+.mynah-detailed-list-item-actions-overlay {
+    display: inline-flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--mynah-sizing-1);
+    overflow: hidden;
+    position: relative;
+    pointer-events: all;
+    padding: var(--mynah-sizing-4);
+    border-radius: inherit;
+    button {
+        pointer-events: all;
+        > .mynah-button-label {
+            padding: 0;
+            flex-shrink: 0;
+        }
+        > i {
+            flex-shrink: 0;
+            & + .mynah-button-label {
+                padding-left: var(--mynah-sizing-1);
+                flex-shrink: 0;
             }
         }
     }

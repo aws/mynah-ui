@@ -184,7 +184,6 @@ export const convertQuickActionCommandToDetailedListItem = (quickActionCommand: 
   return {
     title: quickActionCommand.command,
     name: quickActionCommand.label,
-    clickable: true,
     followupText: quickActionCommand.placeholder,
     ...(quickActionCommand.children != null ? { children: convertQuickActionCommandGroupsToDetailedListGroups(quickActionCommand.children) } : {}),
     description: quickActionCommand.description,

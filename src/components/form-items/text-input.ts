@@ -73,7 +73,7 @@ export class TextInputInternal extends TextInputAbstract {
           this.readyToValidate = true;
           this.checkValidation();
         },
-        keyup: (e) => {
+        input: (e) => {
           if (this.props.onChange !== undefined) {
             this.props.onChange((e.currentTarget as HTMLInputElement).value);
           }

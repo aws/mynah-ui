@@ -69,6 +69,7 @@ export class TextAreaInternal extends TextAreaAbstract {
           this.readyToValidate = true;
           this.checkValidation();
         },
+        // TODO: change this to 'input' event?
         keyup: (e) => {
           if (this.props.onChange !== undefined) {
             this.props.onChange((e.currentTarget as HTMLTextAreaElement).value);

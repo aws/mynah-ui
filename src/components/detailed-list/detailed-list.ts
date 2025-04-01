@@ -12,8 +12,9 @@ import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 export interface DetailedListWrapperProps {
   detailedList: DetailedList;
   onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
-  onDetailedListItemGroupActionClick: (action: ChatItemButton) => void;
-  onDetailedListItemSelect: (detailedListItem: DetailedListItem) => void;
+  onGroupActionClick?: (action: ChatItemButton) => void;
+  onItemSelect?: (detailedListItem: DetailedListItem) => void;
+  onItemActionClick?: (action: ChatItemButton) => void;
 }
 
 export class DetailedListWrapper {
@@ -102,9 +103,7 @@ export class DetailedListWrapper {
                       text: action.text,
                       disabled: false
                     })),
-                    onActionClick: (action, event) => {
-                      this.props.onDetailedListItemGroupActionClick?.(action);
-                    }
+                    onActionClick: this.props.onGroupActionClick
                   }).render
                 ]
               }) ]
@@ -116,9 +115,10 @@ export class DetailedListWrapper {
               children: detailedListItemPart.map(detailedListItem => {
                 const detailedListItemElement = new DetailedListItemWrapper({
                   listItem: detailedListItem,
-                  onSelect: () => {
-                    this.props.onDetailedListItemSelect(detailedListItem);
-                  }
+                  onSelect: this.props.onItemSelect,
+                  onActionClick: this.props.onItemActionClick,
+                  selectable: this.props.detailedList.selectable,
+                  textDirection: this.props.detailedList.textDirection
                 });
                 if (detailedListItem.disabled !== true) {
                   this.allSelectableDetailedListElements.push(detailedListItemElement);
@@ -131,11 +131,11 @@ export class DetailedListWrapper {
         ]
       });
     });
-    this.allSelectableDetailedListElements[0]?.setFocus(true);
+    this.allSelectableDetailedListElements[0]?.setFocus(true, true);
     return groups ?? [ '' ];
   };
 
-  public readonly changeTarget = (direction: 'up' | 'down', snapOnLastAndFirst?: boolean): void => {
+  public readonly changeTarget = (direction: 'up' | 'down', snapOnLastAndFirst?: boolean, scrollIntoView?: boolean): void => {
     if (this.allSelectableDetailedListElements.length > 0) {
       let nextElementIndex: number = this.activeTargetElementIndex;
       if (direction === 'up') {
@@ -156,9 +156,9 @@ export class DetailedListWrapper {
         }
       }
 
-      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(false);
+      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(false, scrollIntoView === true);
       this.activeTargetElementIndex = nextElementIndex;
-      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(true);
+      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(true, scrollIntoView === true);
     }
   };
 

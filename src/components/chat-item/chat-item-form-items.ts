@@ -84,7 +84,7 @@ export class ChatItemFormItemsWrapper {
               icon: chatItemOption.icon,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
-              placeholder: Config.getInstance().config.texts.pleaseSelect,
+              placeholder: chatItemOption.placeholder ?? Config.getInstance().config.texts.pleaseSelect,
               ...(this.getHandlers(chatItemOption))
             });
             break;

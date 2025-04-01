@@ -95,7 +95,7 @@ interface MynahUIDataModel {
   /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
-  chatItems?: Array<ChatItem | DetailedListItemGroup>;
+  chatItems?: ChatItem[];
   /**
    * Attached code under the prompt input field
    */
@@ -977,8 +977,6 @@ mynahUI.updateStore('tab-1', {
 This is holding the chat items. If you provide it through the `defaults` or inside a tab item in the initial `tabs` property in the [Constructor properties](./PROPERTIES.md) you can give the whole set.
 
 **BUT** if you will set it through `updateStore` it will append the items in the list to the current chatItems list. In case if you need to update the list with a new one manually on runtime, you need to send an empty list first and than send the desired new list.
-
-ChatItems will either be of type `ChatItem` or `DetailedListItemGroup`. An `DetailedListItemGroup` can hold one or more `DetailedListItem` objects. This means that if you would like to just access the ChatItems in a tab, you should filter out the DetailedListItemGroups first.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -3092,22 +3090,38 @@ export interface ChatPrompt {
 
 # `DetailedListItem`
 
-Information items can be rendered in an `DetailedListItemGroup` within the `chatItems?` array. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
+DetailedList items can be rendered in an `DetailedListItemGroup` within a `DetailedList`. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
 
 ```typescript
+export interface DetailedList {
+  filterOptions?: FilterOption[] | null;
+  list?: DetailedListItemGroup[];
+  header?: {
+    title?: string;
+    icon?: MynahIcons | MynahIconsType;
+    description?: string;
+  };
+}
+
 export interface DetailedListItemGroup {
-  title?: string;
+  groupName?: string;
+  actions?: Action[];
   icon?: MynahIcons | MynahIconsType;
-  children: DetailedListItem[];
+  children?: DetailedListItem[];
 }
 
 export interface DetailedListItem {
-  messageId?: string;
-  icon?: MynahIcons | MynahIconsType;
   title?: string;
+  name?: string;
+  id?: string;
+  icon?: MynahIcons | MynahIconsType;
   description?: string;
-  actions?: ChatItemButton[];
-  active?: boolean;
+  disabled?: boolean;
+  followupText?: string;
   clickable?: boolean;
+  actions?: ChatItemButton[];
+  children?: DetailedListItemGroup[];
+  keywords?: string[];
+}
 }
 ```

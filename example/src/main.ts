@@ -12,6 +12,7 @@ import {
   ChatItem,
   MynahIcons,
   generateUID,
+  KeyMap,
 } from '@aws/mynah-ui';
 import { mynahUIDefaults } from './config';
 import { Log, LogClear } from './logger';
@@ -110,6 +111,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
               id: 'custom-data-check',
               text: 'Custom check',
               icon: MynahIcons.MAGIC,
+            },
+            {
+              id: 'history_sheet',
+              text: 'Sheet (History)',
+              icon: MynahIcons.COMMENT,
+            },
+            {
+              id: 'memory_sheet',
+              text: 'Sheet (Memory)',
+              icon: MynahIcons.COMMENT,
             },
             {
               id: 'show-avatars',
@@ -234,7 +245,601 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.toggleSplashLoader(false);
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
-        // Use for custom temporary checks       
+        // Use for custom temporary checks
+      } else if (buttonId === 'history_sheet') {
+        const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
+          tabId,
+          detailedList:
+          {
+            header: {
+              title: 'Chat history',
+            },
+            selectable: true,
+            filterOptions: [
+              {
+                type: 'textinput',
+                icon: MynahIcons.SEARCH,
+                id: generateUID(),
+                placeholder: 'Search...',
+                autoFocus: true,
+              }
+            ],
+            list: [
+              {
+                groupName: 'Today',
+                children: [{
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: 'Why is this unit test failing?',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: '**Can you explain this error message in more detail? ArrayIndexOutOfBoundsException: 10 at Main.main(Main.java:4)**',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CHECK_LIST,
+                  description: '/test encrypt_input',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                }
+                ]
+              },
+              {
+                groupName: 'Yesterday',
+                children: [{
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: 'How can I optimize utils.py for better performance?',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CODE_BLOCK,
+                  description: '/dev Create a new REST API endpoint /api/authenticate to handle user authentication',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: '**@workspace provide a refactored version of the endpoint() function**',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: 'Explain the code in the mcp directory',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                }
+                ]
+              },
+              {
+                groupName: '4 days ago',
+                children: [{
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: 'What are the dependencies of this module?',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CODE_BLOCK,
+                  description: '/dev Update CSS styles for responsive layout',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                ]
+              },
+              {
+                groupName: 'Last week',
+                children: [{
+                  id: generateUID(),
+                  icon: MynahIcons.CODE_BLOCK,
+                  description: '**/dev Optimize image loading for faster page loads**',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: 'What are some alternatives to generating a unique salt value in encrypt()?',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: '**Generate a regular expression pattern that matches email addresses**',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: 'Convert the selected code snippet to typescript',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  id: generateUID(),
+                  icon: MynahIcons.CHAT,
+                  description: 'Rewrite this sort function to use the merge sort algorithm',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.EXTERNAL,
+                      text: 'Export'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                ]
+              }
+            ]
+          },
+          events: {
+            onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {
+              Log('Filter changed');
+            },
+            onKeyPress: (e) => {
+              Log('Key pressed');
+              if (e.key === KeyMap.ESCAPE) {
+                close();
+              }
+              else if (e.key === KeyMap.ARROW_UP) {
+                changeTarget('up', true)
+              }
+              else if (e.key === KeyMap.ARROW_DOWN) {
+                changeTarget('down', true)
+              }
+              else if (e.key === KeyMap.ENTER) {
+                Log('Selected item with id: ' + getTargetElementId())
+              }
+            },
+            onItemSelect: (detailedListItem) => {
+              Log('Item selected');
+            },
+            onActionClick: (button) => {
+              Log('Action clicked')
+            },
+            onClose: () => {
+              Log('Sheet closed')
+            },
+          }
+        });
+      } else if (buttonId === 'memory_sheet') {
+        const { close, update, changeTarget } = mynahUI.openDetailedList({
+          tabId,
+          detailedList:
+          {
+            header: {
+              title: 'Memories (16)',
+            },
+            textDirection: 'column',
+            selectable: false,
+            filterOptions: [
+              {
+                type: 'textinput',
+                icon: MynahIcons.SEARCH,
+                id: generateUID(),
+                placeholder: 'Search...',
+                autoFocus: true,
+              },
+              {
+                type: 'select',
+                id: generateUID(),
+                icon: MynahIcons.CHECK_LIST,
+                placeholder: 'All memories',
+                options: [
+                  {
+                    label: 'Created by user',
+                    value: 'user'
+                  },
+                  {
+                    label: 'Inferred by Q',
+                    value: 'q'
+                  }
+                ],
+              }
+            ],
+            list: [
+              {
+                groupName: 'Today',
+                children: [{
+                  title: '“Always add comments to my lines of Rust”',
+                  description: 'Created by *user* at **2:45pm** on 1/2/24',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.PENCIL,
+                      text: 'Edit'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                },
+                {
+                  title: '“Always add comments to my lines of Rust”',
+                  description: 'Created by user at **2:45pm** on 1/2/24',
+                  actions: [
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.PENCIL,
+                      text: 'Edit'
+                    },
+                    {
+                      id: generateUID(),
+                      icon: MynahIcons.TRASH,
+                      text: 'Delete'
+                    },
+                  ],
+                }
+                ]
+              },
+              {
+                groupName: 'Yesterday',
+                children: [
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  }
+                ]
+              },
+              {
+                groupName: '4 days ago',
+                children: [
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                ]
+              },
+              {
+                groupName: 'Last week',
+                children: [
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                  {
+                    title: '“Another memory”',
+                    description: 'Inferred by Q at 2:45pm on 1/2/24',
+                    actions: [
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.PENCIL,
+                        text: 'Edit'
+                      },
+                      {
+                        id: generateUID(),
+                        icon: MynahIcons.TRASH,
+                        text: 'Delete'
+                      },
+                    ],
+                  },
+                ]
+              }
+            ]
+          },
+          events: {
+            onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {
+              Log('Filter changed');
+            },
+            onKeyPress: (e) => {
+              Log('Key pressed');
+              if (e.key === KeyMap.ESCAPE) {
+                close();
+              }
+            },
+            onItemSelect: (detailedListItem) => {
+              Log('Item selected');
+            },
+            onActionClick: (button) => {
+              Log('Action clicked')
+            },
+            onClose: () => {
+              Log('Sheet closed')
+            },
+          }
+        });
+        // update({
+
+        // });
       } else if (buttonId === 'save-session') {
         localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
       } else if (buttonId === 'remove-saved-session') {
@@ -404,7 +1009,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             }, 1500)
           }, 1500);
         } else {
-          if(followUp.command != null){
+          if (followUp.command != null) {
             mynahUI.addChatItem(tabId, {
               type: ChatItemType.PROMPT,
               body: `Example: **${followUp.pillText}**
@@ -922,7 +1527,7 @@ used as a context to generate this message.`
           Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails).map(key => `${key}: <b>${cardDetails[key].toString()}</b>`).join('<br/>')}
           `);
-          mynahUI.addChatItem(tabId, {...defaultFollowUps, messageId: generateUID()});
+          mynahUI.addChatItem(tabId, { ...defaultFollowUps, messageId: generateUID() });
           streamingMessageId = null;
         }
       )
