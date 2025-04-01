@@ -40,6 +40,7 @@ import {
   exampleButtons,
   exampleStatusButtons,
   exampleVoteChatItem,
+  sampleHeaderTypes,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -233,7 +234,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.toggleSplashLoader(false);
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
-        // Use for custom temporary checks
+        // Use for custom temporary checks       
       } else if (buttonId === 'save-session') {
         localStorage.setItem('mynah-ui-storage', JSON.stringify(mynahUI.getAllTabs()));
       } else if (buttonId === 'remove-saved-session') {
@@ -644,6 +645,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           break;
         case Commands.PROGRESSIVE_CARD:
           getGenerativeAIAnswer(tabId, exampleProgressCards);
+          break;
+        case Commands.HEADER_TYPES:
+          sampleHeaderTypes.forEach(ci => mynahUI.addChatItem(tabId, ci));
           break;
         case Commands.STATUS_CARDS:
           mynahUI.addChatItem(tabId, {
