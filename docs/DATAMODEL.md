@@ -1012,6 +1012,7 @@ Let's start with the model definition:
 enum ChatItemType {
   CODE_RESULT = 'code-result',
   ANSWER_STREAM = 'answer-stream',
+  DIRECTIVE = 'directive',
   ANSWER = 'answer',
   PROMPT = 'prompt',
   SYSTEM_PROMPT = 'system-prompt'
@@ -1201,6 +1202,33 @@ mynahUI.updateLastChatAnswer('tab-1', {
 
 ---
 
+
+
+### ChatItemType.`DIRECTIVE` _(position: left)_
+Use for directions. Those chat item cards will not have a background, will not have a padding and border at all. But they'll support all chatitem functionalities as is.  
+
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    type: ChatItemType.DIRECTIVE,
+    body: '_Starting with a directive_'
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/directive.png" alt="directive" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
 ### ChatItemType.`ANSWER` or ChatItemType.`CODE_RESULT` _(position: left)_
 Use for all kind of answers. Including the followups etc.
 
@@ -1335,6 +1363,12 @@ mynahUI.addChatItem(tabId, {
   type: ChatItemType.ANSWER,
   body: `SOME CONTENT`,
   header: {
+    // icon: MynahIcons.CODE_BLOCK;
+    // status: {
+    //  status: 'success',
+    //  icon: MynahIcons.OK,
+    //  text: 'Accepted',
+    // },
     fileList: { // For example, want to show which file is used to generate that answer
       rootFolderTitle: undefined,
       fileTreeTitle: '',
@@ -1354,6 +1388,50 @@ mynahUI.addChatItem(tabId, {
   <img src="./img/data-model/chatItems/header.png" alt="header" style="max-width:600px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
+You can also provide an icon specifically for the header, as well as a separate status section on right. 
+
+Here's another example for that:
+
+```typescript
+mynahUI.addChatItem(tabId, {
+  messageId: 'MY_UNIQUE_ID',
+  type: ChatItemType.ANSWER,
+  fullWidth: true,
+  padding: false,
+  header: {
+    icon: MynahIcons.CODE_BLOCK,
+    status: {
+      icon: MynahIcons.PROGRESS,
+      text: 'Working',
+      status: 'warning'
+    },
+    buttons: [{
+      id: 'stop',
+      icon: MynahIcons.CANCEL,
+    }],
+    fileList: {
+      fileTreeTitle: '',
+      filePaths: ['package.json'],
+      details: {
+        'package.json': {
+          icon: null,
+          label: 'Creating',
+          changes: {
+            added: 36,
+            deleted: 0,
+            total: 36
+          }
+        }
+      }
+    }
+  }
+});
+```
+
+
+<p align="center">
+  <img src="./img/data-model/chatItems/headerMore.png" alt="headerMore" style="max-width:600px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 ---
 
 ## `body`
@@ -1854,6 +1932,47 @@ mynahUI.addChatItem('tab-1', {
 
 ---
 
+## `fullWidth`
+It will make the card full width, in the available horizontal space. So it will not get with up to 95% of the available screen real estate and dynamically to the width of the content. It will be 100% all the time. Including the inner items like fileTree, code blocks etc.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  fullWidth: true,
+  body: "Here's a message with `fullWidth: true`."
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/fullWidth.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `padding`
+It will allow you to control the padding, by default it is `true`. If you set it to `false`, it will not show any paddings around the contents.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+  padding: false,
+  type: ChatItemType.ANSWER,
+  body: `Hello from MynahUI:
+\`\`\`bash
+mkdir -p src/ lalalaaaa
+\`\`\``,
+  codeBlockActions: {copy: null, 'insert-to-cursor': null}
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/padding.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+**Note:** Keep in mind that, if the `padding` is set to `false`, code blocks inside body will not show language if there are also no actions specified for them. So, if you turn of `copy` and `insert-to-cursor` by setting them to `null` in `codeBlockActions`, it will also hide the language bar if the card padding is false.
+
+
+---
+
 ## `codeBlockActions`
 With this parameter, you can add per chatitem code block actions to the code blocks inside that ChatItem. You can also override the actions added through [CONFIG](./CONFIG.md#codeblockactions). 
 
@@ -2036,6 +2155,11 @@ mynahUI.addChatItem(tabId, {
       'src/devfile.yaml': {
         status: 'error',
         label: "Change rejected",
+        changes: {
+          added: 36,
+          deleted: 5,
+          total: 41
+        },
         icon: MynahIcons.REVERT,
         description: 'Markdown tooltip to show',
         clickable: true; // or false if you want to make the file not clickabke
@@ -2065,6 +2189,40 @@ mynahUI.addChatItem(tabId, {
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+#### File `details`
+
+You can customize the details of a file. Like setting a custom icon, adding some informative text, a status color.
+
+**icon:**
+You can give a custom icon for each file, and you can even decided not to put an icon for that file by individually giving `null` as the icon value. 
+
+**changes:**
+In addition to the label field, you can also specificy addition, deletion and total counts for a change on that file. Those are specifically getting some status colors unlike the flat `label` field. 
+
+Here's a sample;
+
+```typescript
+fileList: {
+  fileTreeTitle: '',
+  filePaths: ['package.json'],
+  details: {
+    'package.json': {
+      icon: null,
+      label: 'Created',
+      changes: {
+        added: 36,
+        deleted: 0,
+        total: 36
+      }
+    }
+  }
+}
+```
+<p align="center">
+  <img src="./img/data-model/chatItems/fileListDetailsChanges.png" alt="fileListDetailsChanges" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
