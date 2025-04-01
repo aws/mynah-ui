@@ -97,7 +97,7 @@ export class ChatItemFormItemsWrapper {
               value,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'textarea':
@@ -114,7 +114,7 @@ export class ChatItemFormItemsWrapper {
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'textinput':
@@ -132,7 +132,7 @@ export class ChatItemFormItemsWrapper {
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'numericinput':
@@ -151,7 +151,7 @@ export class ChatItemFormItemsWrapper {
               validationPatterns: chatItemOption.validationPatterns,
               type: 'number',
               placeholder: chatItemOption.placeholder,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'email':
@@ -170,7 +170,7 @@ export class ChatItemFormItemsWrapper {
               validationPatterns: chatItemOption.validationPatterns,
               type: 'email',
               placeholder: chatItemOption.placeholder,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'stars':
@@ -180,7 +180,7 @@ export class ChatItemFormItemsWrapper {
               label,
               description,
               value,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           default:
@@ -197,7 +197,7 @@ export class ChatItemFormItemsWrapper {
     this.isFormValid();
   }
 
-  private readonly getValidationHandler = (chatItemOption: ChatItemFormItem): Object => {
+  private readonly getHandlers = (chatItemOption: ChatItemFormItem): Object => {
     if (chatItemOption.mandatory === true ||
       ([ 'textarea', 'textinput', 'numericinput', 'email' ].includes(chatItemOption.type) && (chatItemOption as TextBasedFormItem).validationPatterns != null)) {
       // Set initial validation status
