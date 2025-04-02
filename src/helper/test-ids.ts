@@ -41,6 +41,7 @@ export default {
       aiPrompt: 'chat-item-ai-prompt',
       systemPrompt: 'chat-item-system-prompt',
     },
+    moreContentIndicator: 'chat-item-card-more-content-indicator',
     card: 'chat-item-card',
     cardBody: 'chat-item-card-body',
     buttons: {

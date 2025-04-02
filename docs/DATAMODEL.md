@@ -1154,6 +1154,7 @@ interface ChatItem extends ChatItemContent{
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
+  autoCollapse?: boolean;
   canBeVoted?: boolean;
   icon?: MynahIcons;
   hoverEffect?: boolean;
@@ -1967,6 +1968,29 @@ mkdir -p src/ lalalaaaa
 </p>
 
 **Note:** Keep in mind that, if the `padding` is set to `false`, code blocks inside body will not show language if there are also no actions specified for them. So, if you turn of `copy` and `insert-to-cursor` by setting them to `null` in `codeBlockActions`, it will also hide the language bar if the card padding is false.
+
+
+---
+
+## `autoCollapse`
+It will allow you to limit the card height up to 25% of the screen height and give an option to expand/collapse it back.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+  autoCollapse: true,
+  fullWidth: true,
+  type: ChatItemType.ANSWER,
+  body: `Hello from MynahUI:
+  .....
+`,
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/autoCollapse.png" alt="autoCollapse" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+**Note:** Keep in mind that, when you enable `autoCollapse`, code blocks will not be collapsed by default. To avoid multiple inner collapsed items inside a collapsed item.
 
 
 ---

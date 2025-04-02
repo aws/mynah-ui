@@ -41,6 +41,7 @@ export interface CardBodyProps {
   childLocation?: 'above-body' | 'below-body';
   highlightRangeWithTooltip?: ReferenceTrackerInformation[] | null;
   hideCodeBlockLanguage?: boolean;
+  unlimitedCodeBlockHeight?: boolean;
   codeBlockActions?: CodeBlockActions;
   useParts?: boolean;
   codeBlockStartIndex?: number;
@@ -138,6 +139,7 @@ export class CardBody {
           codeStringWithMarkup: unescapeHTML(codeString),
           language: snippetLanguage?.trim() !== '' ? snippetLanguage : '',
           hideLanguage: this.props.hideCodeBlockLanguage,
+          unlimitedHeight: this.props.unlimitedCodeBlockHeight,
           codeBlockActions: !isBlockCode
             ? undefined
             : {

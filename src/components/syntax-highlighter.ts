@@ -32,6 +32,7 @@ export interface SyntaxHighlighterProps {
   index?: number;
   codeBlockActions?: CodeBlockActions;
   hideLanguage?: boolean;
+  unlimitedHeight?: boolean;
   onCopiedToClipboard?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
   onCodeBlockAction?: OnCodeBlockActionFunction;
 }
@@ -39,7 +40,7 @@ export interface SyntaxHighlighterProps {
 const DEFAULT_LANGUAGE = 'c';
 
 export class SyntaxHighlighter {
-  private readonly props?: SyntaxHighlighterProps;
+  private readonly props: SyntaxHighlighterProps;
   private readonly codeBlockButtons: ExtendedHTMLElement[] = [];
   render: ExtendedHTMLElement;
 
@@ -182,7 +183,7 @@ export class SyntaxHighlighter {
     });
 
     setTimeout(() => {
-      if (preElement.scrollHeight > preElement.clientHeight) {
+      if (this.props.unlimitedHeight !== true && preElement.scrollHeight > preElement.clientHeight) {
         const moreContentIndicator = new MoreContentIndicator({
           icon: MynahIcons.DOWN_OPEN,
           border: false,
@@ -202,8 +203,10 @@ export class SyntaxHighlighter {
         });
         this.render.addClass('max-height-exceed');
         this.render.insertAdjacentElement('beforeend', moreContentIndicator.render);
+      } else {
+        this.render.addClass('no-max');
       }
-    }, 10);
+    }, 1);
   }
 
   private readonly getSelectedCodeContextMenu = (): {
