@@ -1383,6 +1383,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       if (prompt != null) {
         mynahUI.addChatItem(tabId, {
           type: ChatItemType.PROMPT,
+          autoCollapse: true,
           messageId: new Date().getTime().toString(),
           body: `${prompt.escapedPrompt as string}`,
         });
