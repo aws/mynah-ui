@@ -1973,7 +1973,7 @@ mkdir -p src/ lalalaaaa
 ---
 
 ## `autoCollapse`
-It will allow you to limit the card height up to 25% of the screen height and give and option to expand/collapse it back.
+It will allow you to limit the card height up to 25% of the screen height and give an option to expand/collapse it back.
 
 ```typescript
 mynahUI.addChatItem(tabId, {

@@ -176,7 +176,6 @@ export class ChatItemCard {
     if (elm != null) {
       if (this.props.chatItem.autoCollapse === true && elm.scrollHeight > window.innerHeight / 4) {
         this.render?.addClass('mynah-chat-item-auto-collapse');
-        // ...(this.props.chatItem.autoCollapse === true ? [ 'mynah-chat-item-auto-collapse' ] : []),
       } else {
         this.render?.removeClass('mynah-chat-item-auto-collapse');
       }

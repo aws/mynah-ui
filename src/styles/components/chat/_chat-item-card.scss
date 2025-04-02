@@ -111,12 +111,14 @@
         }
     }
 
+    --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-card-bg);
+
     &.mynah-chat-item-auto-collapse {
         > .more-content-indicator {
             order: 1000;
             justify-content: center;
-            background-color: var(--mynah-card-bg);
-            box-shadow: 0 -15px 15px 0px var(--mynah-card-bg);
+            background-color: var(--mynah-chat-item-more-content-indicator-bg-color);
+            box-shadow: 0 -10px 10px -5px var(--mynah-chat-item-more-content-indicator-bg-color);
             height: var(--mynah-sizing-9);
             z-index: 1000;
             position: absolute;
@@ -398,8 +400,7 @@
     &.mynah-chat-item-directive {
         color: var(--mynah-color-text-weak);
         &.mynah-chat-item-auto-collapse > .more-content-indicator {
-            background-color: var(--mynah-color-bg);
-            box-shadow: 0 -15px 15px 0px var(--mynah-color-bg);
+            --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-color-bg);
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
         }
@@ -445,17 +446,15 @@
         }
 
         &.mynah-chat-item-auto-collapse > .more-content-indicator {
-            background-color: var(--mynah-card-bg-alternate);
-            box-shadow: 0 -15px 15px 0px var(--mynah-card-bg-alternate);
+            --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-card-bg-alternate);
+            color: var(--mynah-color-text-alternate);
             border-bottom-right-radius: var(--mynah-card-radius-corner);
             border-bottom-left-radius: var(--mynah-card-radius);
-            color: var(--mynah-color-text-alternate);
         }
     }
     &.mynah-chat-item-system-prompt {
         &.mynah-chat-item-auto-collapse > .more-content-indicator {
-            background-color: var(--mynah-color-status-warning);
-            box-shadow: 0 -15px 15px 0px var(--mynah-color-status-warning);
+            --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-color-status-warning);
         }
         > .mynah-card {
             background-color: var(--mynah-color-status-warning);
