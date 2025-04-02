@@ -379,7 +379,8 @@
 
 > .mynah-chat-prompt-input-sticky-card {
     &:not(:empty) {
-        padding-top: var(--mynah-sizing-4);
+        padding: var(--mynah-sizing-4);
+        padding-bottom: 0;
     }
 
     > .mynah-chat-item-card {
