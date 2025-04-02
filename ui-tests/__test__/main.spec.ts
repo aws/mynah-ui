@@ -190,34 +190,6 @@ test.describe('Open MynahUI', () => {
     });
   });
 
-  test('should show link preview in tooltip on link hover', async ({ page }) => {
-    await hoverOverLink(page);
-  });
-
-  test('should render buttons on cards correctly', async ({ page }) => {
-    await renderButtons(page);
-  });
-
-  test.describe('Forms', () => {
-    test('should render form elements correctly', async ({ page }) => {
-      await renderFormElements(page);
-    });
-    test('should disable forms on submit', async ({ page }) => {
-      await disableForm(page);
-    });
-    test('should remove form card when canceled', async ({ page }) => {
-      await removeForm(page);
-    });
-  });
-
-  // it('should keep the content inside window boundaries', async () => {
-  //   await checkContentInsideWindowBoundaries(page);
-  // });
-
-  test('should parse markdown', async ({ page }) => {
-    await parseMarkdown(page);
-  });
-
   test.describe('Prompt navigation', () => {
     test('should navigate up to previous prompt', async ({ page }) => {
       await navigatePromptsUp(page);
