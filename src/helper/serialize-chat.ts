@@ -28,7 +28,7 @@ export const serializeHtml = (tabId: string): string => {
       icon: chatItem.icon
     },
     tabId,
-  }).render.outerHTML).reverse().join('\n');
+  }).render.outerHTML).join('\n');
 
   // Get all relevant styles from the document
   const styleSheets = Array.from(document.styleSheets);
@@ -44,7 +44,7 @@ export const serializeHtml = (tabId: string): string => {
                 ruleText = `.mynah-chat-wrapper { display: block !important; ${rule.style.cssText} }`;
               }
               if (rule.selectorText.includes('.mynah-chat-item-card')) {
-                ruleText = rule.cssText.replace('opacity: 0', 'opacity: 1').replace('transform: translate3d(0px, min(50%, 25vh), 0px) scale(0.95, 1.25)', 'transform: none');
+                ruleText = rule.cssText.replace('opacity: 0', 'opacity: 1').replace('transform: translate3d(0px, min(30%, 10vh), 0px) scale(0.99)', 'transform: none');
               }
               if (rule.selectorText.includes('.mynah-syntax-highlighter-copy-buttons')) {
                 ruleText = rule.cssText.replace('display: flex', 'display: none');
@@ -70,7 +70,7 @@ export const serializeHtml = (tabId: string): string => {
       </head>
       <body>
       <div class="mynah-chat-wrapper" style="max-width: 600px; overflow-y: scroll; margin: auto; border: 1px solid gray;">
-        <div class="mynah-chat-items-container">${chatItemCardDivs ?? ''}</div>
+        <div class="mynah-chat-items-container" style="padding: 10px;">${chatItemCardDivs ?? ''}</div>
         </div>
       </body>
     </html>
