@@ -66,6 +66,7 @@ Let's see what kind of custom properties you can set and how to set them?
     --mynah-color-syntax-code: var(--vscode-terminal-ansiBlue);
     --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
     --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
+    --mynah-syntax-code-block-max-height: calc(25 * var(--mynah-syntax-code-line-height));
 
     --mynah-color-status-info: var(--vscode-editorInfo-foreground);
     --mynah-color-status-success: var(--vscode-terminal-ansiGreen);

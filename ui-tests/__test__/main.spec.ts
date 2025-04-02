@@ -40,6 +40,7 @@ import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-b
 import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
 import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 import { DEFAULT_VIEWPORT } from './helpers';
+import { promptOptions } from './flows/prompt-options';
 
 test.describe('Open MynahUI', () => {
   test.beforeEach(async ({ page }) => {
@@ -55,6 +56,10 @@ test.describe('Open MynahUI', () => {
 
   test('should render welcome structure', async ({ page }) => {
     await welcomeMode(page);
+  });
+
+  test('should show prompt options', async ({ page }) => {
+    await promptOptions(page);
   });
 
   test('should show progress indicator', async ({ page }) => {
@@ -183,6 +188,34 @@ test.describe('Open MynahUI', () => {
     test('should render file appearance based on its details', async ({ page }) => {
       await renderFileDetails(page);
     });
+  });
+
+  test('should show link preview in tooltip on link hover', async ({ page }) => {
+    await hoverOverLink(page);
+  });
+
+  test('should render buttons on cards correctly', async ({ page }) => {
+    await renderButtons(page);
+  });
+
+  test.describe('Forms', () => {
+    test('should render form elements correctly', async ({ page }) => {
+      await renderFormElements(page);
+    });
+    test('should disable forms on submit', async ({ page }) => {
+      await disableForm(page);
+    });
+    test('should remove form card when canceled', async ({ page }) => {
+      await removeForm(page);
+    });
+  });
+
+  // it('should keep the content inside window boundaries', async () => {
+  //   await checkContentInsideWindowBoundaries(page);
+  // });
+
+  test('should parse markdown', async ({ page }) => {
+    await parseMarkdown(page);
   });
 
   test.describe('Prompt navigation', () => {

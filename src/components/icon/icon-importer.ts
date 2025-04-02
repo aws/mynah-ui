@@ -18,6 +18,7 @@ import TABS from './icons/tabs.svg';
 import PENCIL from './icons/pencil.svg';
 import FOLDER from './icons/folder.svg';
 import FILE from './icons/file.svg';
+import FLASH from './icons/flash.svg';
 import CHAT from './icons/chat.svg';
 import COMMENT from './icons/comment.svg';
 import LINK from './icons/link.svg';
@@ -46,12 +47,16 @@ import ERROR from './icons/error.svg';
 import THUMBS_UP from './icons/thumbs-up.svg';
 import THUMBS_DOWN from './icons/thumbs-down.svg';
 import STAR from './icons/star.svg';
+import STACK from './icons/stack.svg';
 import LIGHT_BULB from './icons/light-bulb.svg';
 import ENVELOPE_SEND from './icons/envelope-send.svg';
 import REFRESH from './icons/refresh.svg';
+import PROGRESS from './icons/progress.svg';
+import SCROLL_DOWN from './icons/scroll-down.svg';
 import USER from './icons/user.svg';
 import PLAY from './icons/play.svg';
 import PAUSE from './icons/pause.svg';
+import STOP from './icons/stop.svg';
 import CODE_BLOCK from './icons/code-block.svg';
 import COPY from './icons/copy.svg';
 import CURSOR_INSERT from './icons/cursor-insert.svg';
@@ -80,6 +85,7 @@ export class MynahUIIconImporter {
       LIST_ADD,
       FOLDER,
       FILE,
+      FLASH,
       TABS,
       PENCIL,
       CHAT,
@@ -110,12 +116,16 @@ export class MynahUIIconImporter {
       THUMBS_UP,
       THUMBS_DOWN,
       STAR,
+      STACK,
       LIGHT_BULB,
       ENVELOPE_SEND,
       REFRESH,
+      PROGRESS,
+      SCROLL_DOWN,
       USER,
       PLAY,
       PAUSE,
+      STOP,
       CODE_BLOCK,
       COPY,
       CURSOR_INSERT,

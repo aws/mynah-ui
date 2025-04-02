@@ -354,7 +354,8 @@ export class PromptTextInput {
     const contextSpanElement = DomBuilder.getInstance().build({
       type: 'span',
       children: [
-        ...(contextItem.icon != null ? [ new Icon({ icon: contextItem.icon }).render ] : [ '@' ]),
+        ...(contextItem.icon != null ? [ new Icon({ icon: contextItem.icon }).render ] : [ ]),
+        { type: 'span', classNames: [ 'at-char' ], innerHTML: '@' },
         `${contextItem.command.replace(/^@?(.*)$/, '$1')}`
       ],
       classNames: [ 'context' ],
@@ -418,8 +419,11 @@ export class PromptTextInput {
     this.checkIsEmpty();
   };
 
-  public readonly getTextInputValue = (): string => {
-    return (this.promptTextInput.innerText ?? '').trim();
+  public readonly getTextInputValue = (withInputLineBreaks?: boolean): string => {
+    if (withInputLineBreaks === true) {
+      return (this.promptTextInput.innerText ?? '').trim();
+    }
+    return (this.promptTextInput.textContent ?? '').trim();
   };
 
   public readonly updateTextInputValue = (value: string): void => {

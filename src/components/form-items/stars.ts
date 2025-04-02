@@ -65,12 +65,12 @@ export class Stars {
         },
         {
           type: 'div',
-          classNames: [ 'mynah-form-input-container' ],
+          classNames: [ 'mynah-form-input-container', 'no-border' ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
             {
               type: 'div',
-              classNames: [ 'mynah-form-input', 'no-border', ...(props.classNames ?? []) ],
+              classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
               children: [
                 this.starsContainer
               ]
@@ -92,9 +92,9 @@ export class Stars {
 
   setEnabled = (enabled: boolean): void => {
     if (enabled) {
-      this.render.removeAttribute('disabled');
+      this.starsContainer.parentElement?.removeAttribute('disabled');
     } else {
-      this.render.setAttribute('disabled', 'disabled');
+      this.starsContainer.parentElement?.setAttribute('disabled', 'disabled');
     }
   };
 }

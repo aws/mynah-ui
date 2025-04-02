@@ -418,7 +418,7 @@ export const getTypewriterPartsCss = (
         visibility: hidden;
         opacity: 0;
         margin-bottom: var(--mynah-typewriter-bottom-pull, -1.5rem);
-        animation: typewriter-${typewriterId} ${150 + timeForEach}ms ease-out forwards;
+        animation: typewriter-${typewriterId} ${50 + timeForEach}ms ease-out forwards;
         animation-delay: ${(i - lastVisibleItemIndex) * timeForEach}ms;
       }
       `;

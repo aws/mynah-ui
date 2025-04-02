@@ -74,7 +74,7 @@ describe('chat-prompt-input', () => {
     const promptInput = document.body.querySelector('.mynah-chat-prompt-input') as HTMLDivElement;
 
     // Input character should change the remaining character count
-    promptInput.innerText = 'z'.repeat(INPUT_LENGTH_WARNING_THRESHOLD());
+    promptInput.textContent = 'z'.repeat(INPUT_LENGTH_WARNING_THRESHOLD());
     promptInput?.dispatchEvent(new KeyboardEvent('input', { key: 'z' }));
 
     expect(document.body.querySelector('.mynah-chat-prompt-chars-indicator')?.textContent).toBe(`${INPUT_LENGTH_WARNING_THRESHOLD()}/${MAX_USER_INPUT()}`);

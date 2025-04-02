@@ -5,10 +5,9 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { MynahUIGlobalEvents } from '../../helper/events';
 import testIds from '../../helper/test-ids';
 import { isMandatoryItemValid, isTextualFormItemValid } from '../../helper/validator';
-import { ChatItem, ChatItemFormItem, MynahEventNames, TextBasedFormItem } from '../../static';
+import { ChatItem, ChatItemFormItem, TextBasedFormItem } from '../../static';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
 import { Stars } from '../form-items/stars';
@@ -20,6 +19,9 @@ export interface ChatItemFormItemsWrapperProps {
   tabId: string;
   chatItem: Partial<ChatItem>;
   classNames?: string[];
+  onModifierEnterPress?: (formData: Record<string, any>, tabId: string) => void;
+  onTextualItemKeyPress?: (event: KeyboardEvent, itemId: string, formData: Record<string, any>, tabId: string, disableAllCallback: () => void) => void;
+  onFormChange?: (formData: Record<string, any>, isValid: boolean, tabId: string) => void;
 }
 export class ChatItemFormItemsWrapper {
   private readonly props: ChatItemFormItemsWrapperProps;
@@ -67,7 +69,7 @@ export class ChatItemFormItemsWrapper {
         }
         const fireModifierAndEnterKeyPress = (): void => {
           if ((chatItemOption as TextBasedFormItem).checkModifierEnterKeyPress === true && this.isFormValid()) {
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, { formData: this.getAllValues(), tabId: props.tabId });
+            this.props.onModifierEnterPress?.(this.getAllValues(), props.tabId);
           }
         };
         const value = chatItemOption.value?.toString();
@@ -79,10 +81,11 @@ export class ChatItemFormItemsWrapper {
               label,
               description,
               value,
+              icon: chatItemOption.icon,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
-              placeholder: Config.getInstance().config.texts.pleaseSelect,
-              ...(this.getValidationHandler(chatItemOption))
+              placeholder: chatItemOption.placeholder ?? Config.getInstance().config.texts.pleaseSelect,
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'radiogroup':
@@ -94,7 +97,20 @@ export class ChatItemFormItemsWrapper {
               value,
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
+            });
+            break;
+          case 'toggle':
+            chatOption = new RadioGroup({
+              type: 'toggle',
+              wrapperTestId: testIds.chatItem.chatItemForm.itemToggleWrapper,
+              optionTestId: testIds.chatItem.chatItemForm.itemToggleOption,
+              label,
+              description,
+              value,
+              options: chatItemOption.options,
+              optional: chatItemOption.mandatory !== true,
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'textarea':
@@ -111,7 +127,7 @@ export class ChatItemFormItemsWrapper {
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'textinput':
@@ -120,6 +136,7 @@ export class ChatItemFormItemsWrapper {
               label,
               autoFocus: chatItemOption.autoFocus,
               description,
+              icon: chatItemOption.icon,
               fireModifierAndEnterKeyPress,
               onKeyPress: (event) => {
                 this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
@@ -128,7 +145,7 @@ export class ChatItemFormItemsWrapper {
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
               placeholder: chatItemOption.placeholder,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'numericinput':
@@ -137,6 +154,7 @@ export class ChatItemFormItemsWrapper {
               label,
               autoFocus: chatItemOption.autoFocus,
               description,
+              icon: chatItemOption.icon,
               fireModifierAndEnterKeyPress,
               onKeyPress: (event) => {
                 this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
@@ -146,7 +164,7 @@ export class ChatItemFormItemsWrapper {
               validationPatterns: chatItemOption.validationPatterns,
               type: 'number',
               placeholder: chatItemOption.placeholder,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'email':
@@ -155,6 +173,7 @@ export class ChatItemFormItemsWrapper {
               label,
               autoFocus: chatItemOption.autoFocus,
               description,
+              icon: chatItemOption.icon,
               fireModifierAndEnterKeyPress,
               onKeyPress: (event) => {
                 this.handleTextualItemKeyPressEvent(event, chatItemOption.id);
@@ -164,7 +183,7 @@ export class ChatItemFormItemsWrapper {
               validationPatterns: chatItemOption.validationPatterns,
               type: 'email',
               placeholder: chatItemOption.placeholder,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           case 'stars':
@@ -174,7 +193,7 @@ export class ChatItemFormItemsWrapper {
               label,
               description,
               value,
-              ...(this.getValidationHandler(chatItemOption))
+              ...(this.getHandlers(chatItemOption))
             });
             break;
           default:
@@ -191,35 +210,28 @@ export class ChatItemFormItemsWrapper {
     this.isFormValid();
   }
 
-  private readonly getValidationHandler = (chatItemOption: ChatItemFormItem): Object => {
+  private readonly getHandlers = (chatItemOption: ChatItemFormItem): Object => {
     if (chatItemOption.mandatory === true ||
       ([ 'textarea', 'textinput', 'numericinput', 'email' ].includes(chatItemOption.type) && (chatItemOption as TextBasedFormItem).validationPatterns != null)) {
       // Set initial validation status
       this.validationItems[chatItemOption.id] = this.isItemValid(chatItemOption.value ?? '', chatItemOption);
       return {
         onChange: (value: string | number) => {
+          this.props.onFormChange?.(this.getAllValues(), this.isFormValid(), this.props.tabId);
           this.validationItems[chatItemOption.id] = this.isItemValid(value.toString(), chatItemOption);
           this.isFormValid();
         }
       };
     }
-    return {};
+    return {
+      onChange: () => {
+        this.props.onFormChange?.(this.getAllValues(), this.isFormValid(), this.props.tabId);
+      }
+    };
   };
 
   private readonly handleTextualItemKeyPressEvent = (event: KeyboardEvent, itemId: string): void => {
-    if (this.isFormValid()) {
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_TEXTUAL_ITEM_KEYPRESS, {
-        event,
-        formData: this.getAllValues(),
-        itemId,
-        tabId: this.props.tabId,
-        callback: (disableAll?: boolean) => {
-          if (disableAll === true) {
-            this.disableAll();
-          }
-        }
-      });
-    }
+    this.isFormValid() && this.props.onTextualItemKeyPress?.(event, itemId, this.getAllValues(), this.props.tabId, this.disableAll);
   };
 
   private readonly isItemValid = (value: string, chatItemOption: ChatItemFormItem): boolean => {

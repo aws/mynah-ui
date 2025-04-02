@@ -27,6 +27,7 @@ import {
   CardRenderDetails,
   PromptAttachmentType,
   QuickActionCommand,
+  DetailedList,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -41,6 +42,8 @@ import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
 import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
+import { Sheet } from './components/sheet';
+import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
 
 export { generateUID } from './helper/guid';
 export {
@@ -53,7 +56,7 @@ export {
 export * from './static';
 export {
   ToggleOption
-} from './components/toggle';
+} from './components/tabs';
 export {
   MynahIcons,
   MynahIconsType
@@ -240,6 +243,10 @@ export interface MynahUIProps {
     itemId: string,
     tabId: string,
     eventId?: string) => boolean;
+  onFormChange?: (
+    formData: Record<string, any>,
+    isValid: boolean,
+    tabId: string) => void;
   onCustomFormAction?: (
     tabId: string,
     action: {
@@ -247,6 +254,10 @@ export interface MynahUIProps {
       text?: string;
       formItemValues?: Record<string, string>;
     },
+    eventId?: string) => void;
+  onPromptInputOptionChange?: (
+    tabId: string,
+    optionsValues: Record<string, string>,
     eventId?: string) => void;
   /**
    * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
@@ -279,7 +290,6 @@ export interface MynahUIProps {
       id: string;
     },
     eventId?: string) => void;
-
 }
 
 export class MynahUI {
@@ -291,6 +301,7 @@ export class MynahUI {
   private readonly tabsWrapper: ExtendedHTMLElement;
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
+  private readonly sheet?: Sheet;
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
@@ -357,6 +368,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     if (props.onSendFeedback !== undefined) {
       this.feedbackForm = new FeedbackForm();
     }
+
+    this.sheet = new Sheet();
 
     if (Config.getInstance().config.maxTabs > 1) {
       this.tabsWrapper = new Tabs({
@@ -491,6 +504,16 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     }) => {
       if (this.props.onFormTextualItemKeyPress !== undefined) {
         data.callback(this.props.onFormTextualItemKeyPress(data.event, data.formData, data.itemId, data.tabId, this.getUserEventId()));
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_CHANGE, (data: {
+      formData: Record<string, string>;
+      isValid: boolean;
+      tabId: string;
+    }) => {
+      if (this.props.onFormChange !== undefined) {
+        this.props.onFormChange(data.formData, data.isValid, data.tabId);
       }
     });
 
@@ -729,6 +752,10 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       }
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_OPTIONS_CHANGE, (data) => {
+      this.props.onPromptInputOptionChange?.(data.tabId, data.optionsValues, this.getUserEventId());
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TAB_BAR_BUTTON_CLICK, (data) => {
       if (this.props.onTabBarButtonClick !== undefined) {
         this.props.onTabBarButtonClick(data.tabId, data.buttonId, this.getUserEventId());
@@ -945,8 +972,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   /**
-   * Simply creates and shows a notification
-   * @param props NotificationProps
+   * Simply creates and shows a custom form
    */
   public showCustomForm = (
     tabId: string,
@@ -963,6 +989,33 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         formItems
       },
     });
+  };
+
+  public openDetailedList = (
+    data: DetailedListSheetProps
+  ): {
+      update: (data: DetailedList) => void;
+      close: () => void;
+      changeTarget: (direction: 'up' | 'down', snapOnLastAndFirst?: boolean) => void;
+      getTargetElementId: () => string | undefined;
+    } => {
+    const detailedListSheet = new DetailedListSheet({
+      tabId: data.tabId,
+      detailedList: data.detailedList,
+      events: data.events
+    });
+    detailedListSheet.open();
+
+    const getTargetElementId = (): string | undefined => {
+      const targetElement = detailedListSheet.detailedListWrapper.getTargetElement();
+      return targetElement?.id ?? undefined;
+    };
+    return {
+      update: detailedListSheet.update,
+      close: detailedListSheet.close,
+      changeTarget: detailedListSheet.detailedListWrapper.changeTarget,
+      getTargetElementId
+    };
   };
 
   public destroy = (): void => {

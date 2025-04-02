@@ -10,33 +10,42 @@ import { generateUID } from './guid';
 import clone from 'just-clone';
 
 const PrimitiveObjectTypes = [ 'string', 'number', 'boolean' ];
+const emptyDataModelObject: Required<MynahUIDataModel> = {
+  tabTitle: '',
+  tabIcon: null,
+  pinned: false,
+  tabBackground: false,
+  loadingChat: false,
+  tabCloseConfirmationCloseButton: null,
+  tabCloseConfirmationKeepButton: null,
+  tabCloseConfirmationMessage: null,
+  cancelButtonWhenLoading: true,
+  showChatAvatars: false,
+  quickActionCommands: [],
+  contextCommands: [],
+  promptInputPlaceholder: '',
+  promptInputText: '',
+  promptInputLabel: '',
+  promptInputVisible: true,
+  promptInputInfo: '',
+  promptInputStickyCard: null,
+  promptInputDisabledState: false,
+  promptInputProgress: null,
+  promptInputOptions: [],
+  chatItems: [],
+  selectedCodeSnippet: '',
+  tabBarButtons: [],
+  compactMode: false,
+  tabHeaderDetails: null,
+  tabMetadata: {}
+};
+const dataModelKeys = Object.keys(emptyDataModelObject);
 export class EmptyMynahUIDataModel {
   data: Required<MynahUIDataModel>;
   constructor (defaults?: MynahUIDataModel | null) {
     this.data = {
+      ...emptyDataModelObject,
       tabTitle: Config.getInstance().config.texts.mainTitle,
-      tabBackground: false,
-      loadingChat: false,
-      tabCloseConfirmationCloseButton: null,
-      tabCloseConfirmationKeepButton: null,
-      tabCloseConfirmationMessage: null,
-      cancelButtonWhenLoading: true,
-      showChatAvatars: false,
-      quickActionCommands: [],
-      contextCommands: [],
-      promptInputPlaceholder: '',
-      promptInputText: '',
-      promptInputLabel: '',
-      promptInputVisible: true,
-      promptInputInfo: '',
-      promptInputStickyCard: null,
-      promptInputDisabledState: false,
-      promptInputProgress: null,
-      chatItems: [],
-      selectedCodeSnippet: '',
-      tabBarButtons: [],
-      compactMode: false,
-      tabHeaderDetails: null,
       ...defaults
     };
   }
@@ -52,7 +61,9 @@ export class MynahUIDataStore {
     this.store = Object.assign(this.store, initialData);
     this.subscriptions = Object.create({});
     (Object.keys(this.store) as Array<keyof MynahUIDataModel>).forEach((storeKey) => {
-      Object.assign(this.subscriptions, { [storeKey]: {} });
+      if (dataModelKeys.includes(storeKey)) {
+        Object.assign(this.subscriptions, { [storeKey]: {} });
+      }
     });
   }
 
@@ -62,6 +73,13 @@ export class MynahUIDataStore {
    */
   public setDefaults = (defaults: MynahUIDataModel | null): void => {
     this.defaults = defaults;
+    if (this.defaults != null) {
+      (Object.keys(this.defaults) as Array<keyof MynahUIDataModel>).forEach((storeKey) => {
+        if (!dataModelKeys.includes(storeKey)) {
+          delete this.defaults?.[storeKey];
+        }
+      });
+    }
   };
 
   /**
@@ -118,11 +136,13 @@ export class MynahUIDataStore {
   public updateStore = (data: MynahUIDataModel, skipSubscribers?: boolean): void => {
     if (skipSubscribers !== true) {
       (Object.keys(data) as Array<keyof MynahUIDataModel>).forEach(storeKey => {
-        Object.keys(this.subscriptions[storeKey]).forEach((subscriptionId: string) => {
-          if (!PrimitiveObjectTypes.includes(typeof data[storeKey]) || data[storeKey] !== this.store[storeKey]) {
-            this.subscriptions[storeKey][subscriptionId](data[storeKey], this.store[storeKey]);
-          }
-        });
+        if (dataModelKeys.includes(storeKey)) {
+          Object.keys(this.subscriptions[storeKey]).forEach((subscriptionId: string) => {
+            if (!PrimitiveObjectTypes.includes(typeof data[storeKey]) || data[storeKey] !== this.store[storeKey]) {
+              this.subscriptions[storeKey][subscriptionId](data[storeKey], this.store[storeKey]);
+            }
+          });
+        }
       });
     }
     this.store = Object.assign(clone(this.store), data);

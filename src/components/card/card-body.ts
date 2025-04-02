@@ -40,6 +40,7 @@ export interface CardBodyProps {
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   childLocation?: 'above-body' | 'below-body';
   highlightRangeWithTooltip?: ReferenceTrackerInformation[] | null;
+  hideCodeBlockLanguage?: boolean;
   codeBlockActions?: CodeBlockActions;
   useParts?: boolean;
   codeBlockStartIndex?: number;
@@ -136,6 +137,7 @@ export class CardBody {
         const highlighter = new SyntaxHighlighter({
           codeStringWithMarkup: unescapeHTML(codeString),
           language: snippetLanguage?.trim() !== '' ? snippetLanguage : '',
+          hideLanguage: this.props.hideCodeBlockLanguage,
           codeBlockActions: !isBlockCode
             ? undefined
             : {

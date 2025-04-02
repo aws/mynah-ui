@@ -49,6 +49,11 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
         description: 'ChatItem cards can tell more with some status colors on borders together with icons. See different examples with status colors applied!',
       },
       {
+        command: Commands.HEADER_TYPES,
+        icon: MynahIcons.COMMENT,
+        description: 'ChatItem cards with different headers, padding, fullWidth and directive types.',
+      },
+      {
         command: Commands.FORM_CARD,
         icon: MynahIcons.LIST_ADD,
         description: 'ChatItem cards can have forms inside, including several input items and buttons!',
@@ -171,7 +176,6 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
         commands: [
           {
             command: '@workspace',
-            // icon: MynahIcons.ASTERISK,
             placeholder: 'Yes, you selected workspace :P',
             description: 'Reference all code in workspace.'
           },
@@ -232,7 +236,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 commands: [
                   {
                     command: 'monarch.ts',
-                    description: './src/',
+                    description: 'spring-boot-template/.github/workflows/p-openapi.yaml',
                     icon: MynahIcons.FILE,
                   },
                   {
@@ -259,12 +263,14 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     command: '_dark.scss',
                     description: './src/styles/',
                     icon: MynahIcons.FILE,
+                    // add route just to check if it returns back
+                    route: ['src','styles'],
                   }
                 ]
               }
             ],
             placeholder: 'Mention a specific file',
-            description: 'Reference a specific file'
+            description: 'Add a file to context'
 
           },
           {
@@ -278,16 +284,19 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     command: 'DomBuilder',
                     icon: MynahIcons.CODE_BLOCK,
                     description: 'The DomGeneration function in dom.ts file'
-                  }
+                  },
+                  ...(
+                    Array(10_000).fill(null).map((_, i) => ({ command: `item${i}`, description: `./src/${i}`, icon: MynahIcons.CODE_BLOCK }))
+                  )
                 ]
               }
             ],
             placeholder: 'Select a symbol',
-            description: 'After that mention a specific file/folder, or leave blank for full project'
+            description: 'After that mention a specific file/folder, or leave blank for full project!'
           },
           {
             command: 'prompts',
-            icon: MynahIcons.CHAT,
+            icon: MynahIcons.FLASH,
             description: 'Saved prompts, to reuse them in your current prompt',
             children: [
               {

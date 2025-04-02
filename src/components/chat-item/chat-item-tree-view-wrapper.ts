@@ -80,10 +80,12 @@ export class ChatItemTreeViewWrapper {
                       type: 'h4',
                       children: [ `${props.cardTitle ?? Config.getInstance().config.texts.codeSuggestions}` ]
                     },
-                    {
-                      type: 'span',
-                      children: [ `${(props.files?.length ?? 0) + (props.deletedFiles?.length ?? 0)} ${Config.getInstance().config.texts.files}` ]
-                    },
+                    ...(props.hideFileCount !== true
+                      ? [ {
+                          type: 'span',
+                          children: [ `${(props.files?.length ?? 0) + (props.deletedFiles?.length ?? 0)} ${Config.getInstance().config.texts.files}` ]
+                        } ]
+                      : []),
                   ]
                 } ]
               : []),

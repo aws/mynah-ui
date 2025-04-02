@@ -5,7 +5,7 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
-import { Icon, MynahIcons } from '../icon';
+import { Icon, MynahIcons, MynahIconsType } from '../icon';
 import '../../styles/components/_form-input.scss';
 
 interface SelectOption {
@@ -16,7 +16,8 @@ interface SelectOption {
 export interface SelectProps {
   classNames?: string[];
   attributes?: Record<string, string>;
-  icon?: MynahIcons;
+  handleIcon?: MynahIcons | MynahIconsType;
+  icon?: MynahIcons | MynahIconsType;
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
   value?: string;
@@ -81,8 +82,11 @@ export class SelectInternal {
           classNames: [ 'mynah-form-input-container' ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
+            ...(props.icon
+              ? [ new Icon({ icon: props.icon, classNames: [ 'mynah-form-input-icon' ] }).render ]
+              : []),
             this.selectElement,
-            new Icon({ icon: props.icon ?? MynahIcons.DOWN_OPEN, classNames: [ 'mynah-select-handle' ] }).render ]
+            new Icon({ icon: props.handleIcon ?? MynahIcons.DOWN_OPEN, classNames: [ 'mynah-select-handle' ] }).render ]
         },
         ...[ props.description !== undefined ? props.description : '' ]
       ]

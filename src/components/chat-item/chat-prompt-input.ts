@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatPrompt, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatPrompt, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -17,8 +17,9 @@ import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
 import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
-import { filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
-import { PromptInputQuickPickSelector } from './prompt-input/prompt-input-quick-pick-selector';
+import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
+import { DetailedListWrapper } from '../detailed-list/detailed-list';
+import { PromptOptions } from './prompt-input/prompt-options';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -50,8 +51,9 @@ export class ChatPromptInput {
   private readonly sendButton: PromptInputSendButton;
   private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
+  private readonly promptOptions: PromptOptions;
   private readonly chatPrompt: ExtendedHTMLElement;
-  private quickPickItemsSelectorContainer: PromptInputQuickPickSelector;
+  private quickPickItemsSelectorContainer: DetailedListWrapper;
   private promptTextInputLabel: ExtendedHTMLElement;
   private remainingCharsOverlay: Overlay;
   private quickPickTriggerIndex: number;
@@ -118,6 +120,16 @@ export class ChatPromptInput {
       tabId: this.props.tabId,
     });
 
+    this.promptOptions = new PromptOptions({
+      filterOptions: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputOptions'),
+      onFiltersChange: (formData) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.PROMPT_INPUT_OPTIONS_CHANGE, {
+          tabId: this.props.tabId,
+          optionsValues: formData
+        });
+      }
+    });
+
     this.attachmentWrapper = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.attachmentWrapper,
@@ -131,6 +143,7 @@ export class ChatPromptInput {
       type: 'div',
       classNames: [ 'mynah-chat-prompt' ],
       children: [
+        this.progressIndicator.render,
         this.chatPrompt,
         {
           type: 'div',
@@ -147,8 +160,8 @@ export class ChatPromptInput {
             },
           ]
         },
+        this.promptOptions.render,
         this.attachmentWrapper,
-        this.progressIndicator.render
       ]
     });
 
@@ -160,6 +173,9 @@ export class ChatPromptInput {
           this.promptTextInput.focus();
         }, 750);
       }
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputOptions', (newFilterOptions: FilterOption[]) => {
+      this.promptOptions.update(newFilterOptions);
     });
 
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputLabel', (promptInputLabel: string) => {
@@ -369,8 +385,9 @@ export class ChatPromptInput {
           this.quickPick?.close();
         } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
           this.searchTerm = '';
-          const commandToSend = this.quickPickItemsSelectorContainer.getTargetElement();
-          if (commandToSend != null) {
+          const targetDetailedListItem = this.quickPickItemsSelectorContainer.getTargetElement();
+          if (targetDetailedListItem != null) {
+            const commandToSend = convertDetailedListItemToQuickActionCommand(targetDetailedListItem);
             if (this.quickPickType === 'context') {
               if (commandToSend.command !== '') {
                 this.handleContextCommandSelection(commandToSend);
@@ -396,7 +413,7 @@ export class ChatPromptInput {
         }
       } else if (navigationalKeys.includes(e.key)) {
         cancelEvent(e);
-        this.quickPickItemsSelectorContainer.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down');
+        this.quickPickItemsSelectorContainer.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down', true, true);
       } else {
         if (this.quickPick != null) {
           if (this.promptTextInput.getTextInputValue() === '') {
@@ -409,12 +426,13 @@ export class ChatPromptInput {
               // In case the prompt is an incomplete regex
               try {
                 if (e.key === KeyMap.BACKSPACE) {
-                  if (this.searchTerm === '') {
+                  const isAllSelected = window.getSelection()?.toString() === this.promptTextInput.getTextInputValue();
+                  if (this.searchTerm === '' || isAllSelected) {
                     this.quickPick.close();
                   } else {
                     this.searchTerm = this.searchTerm.slice(0, -1);
                   }
-                } else if (e.key.length === 1) {
+                } else if ((!e.ctrlKey && !e.metaKey) && e.key.length === 1) {
                   this.searchTerm += e.key.toLowerCase();
                 }
                 this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
@@ -480,17 +498,22 @@ export class ChatPromptInput {
   };
 
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
+    const detailedListItemsGroup = convertQuickActionCommandGroupsToDetailedListGroups(quickPickGroupList);
     if (this.quickPickItemsSelectorContainer == null) {
-      this.quickPickItemsSelectorContainer = new PromptInputQuickPickSelector({
-        quickPickGroupList,
-        onQuickPickGroupActionClick: (action) => {
+      this.quickPickItemsSelectorContainer = new DetailedListWrapper({
+        detailedList: {
+          list: detailedListItemsGroup,
+          selectable: true
+        },
+        onGroupActionClick: (action) => {
           this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, {
             tabId: this.props.tabId,
             actionId: action.id
           });
         },
-        onQuickPickItemSelect: (quickPickCommand) => {
+        onItemSelect: (detailedListItem) => {
+          const quickPickCommand: QuickActionCommand = convertDetailedListItemToQuickActionCommand(detailedListItem);
           if (this.quickPickType === 'context') {
             this.handleContextCommandSelection(quickPickCommand);
           } else {
@@ -499,7 +522,9 @@ export class ChatPromptInput {
         },
       });
     } else {
-      this.quickPickItemsSelectorContainer.updateList(quickPickGroupList);
+      this.quickPickItemsSelectorContainer.update({
+        list: detailedListItemsGroup
+      });
     }
     return this.quickPickItemsSelectorContainer.render;
   };
@@ -564,7 +589,7 @@ export class ChatPromptInput {
   private readonly sendPrompt = (): void => {
     const quickPickItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[];
     const currentInputValue = this.promptTextInput.getTextInputValue();
-    if (currentInputValue.trim() !== '' || this.selectedCommand.trim() !== '') {
+    if (currentInputValue !== '' || this.selectedCommand.trim() !== '') {
       let selectedCommand = this.selectedCommand;
 
       // Catching cases where user could send a prompt with quick action command but the command is not be selected correctly
@@ -587,7 +612,9 @@ export class ChatPromptInput {
       const context: QuickActionCommand[] = this.promptTextInput.getUsedContext();
 
       const escapedPrompt = escapeHTML(promptText.replace(/@\S*/gi, (match) => {
-        return `**${match}**`;
+        // Unnecessary spaces will be removed by HTML rendering,
+        // it is safe to add a start space to avoid rendering problems for bold text
+        return ` **${match}**`;
       }));
 
       const promptData: {tabId: string; prompt: ChatPrompt} = {
@@ -596,6 +623,7 @@ export class ChatPromptInput {
           prompt: promptText,
           escapedPrompt,
           context,
+          options: this.promptOptions.getOptionValues() ?? {},
           ...(selectedCommand !== '' ? { command: selectedCommand } : {}),
         }
       };

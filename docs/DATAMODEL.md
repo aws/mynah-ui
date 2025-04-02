@@ -13,6 +13,14 @@ interface MynahUIDataModel {
    * */
   tabTitle?: string;
   /**
+   * Tab icon
+   * */
+  tabIcon?: MynahIcons | MynahIconsType | null;
+  /**
+   * is tab pinned
+   * */
+  pinned?: boolean;
+  /**
    * Tab title
    * */
   tabBackground?: boolean;
@@ -81,6 +89,10 @@ interface MynahUIDataModel {
   */
   promptInputProgress?: ProgressField | null;
   /**
+  * Prompt input options/form items
+  */
+  promptInputOptions?: FilterOption[] | null;
+  /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
@@ -100,6 +112,12 @@ interface MynahUIDataModel {
    * Tab content header details, only visibile when showTabHeaderDetails is set to 'true'
    */
   tabHeaderDetails?: TabHeaderDetails | null;
+  /**
+   * A lightweight key-value store for essential tab-specific primitive metadata.
+   * Not intended for storing large amounts of data - use appropriate
+   * application state management for that purpose.
+   */
+  tabMetadata?: { [key: string]: string | boolean | number };
 }
 ```
 
@@ -123,6 +141,57 @@ mynahUI.updateStore('tab-1', {
     tabTitle: 'Chat'
 })
 ```
+
+### `tabIcon` (default: undefined)
+Basically it is an icon you can give to the tab.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabTitle: '',
+    tabIcon: MynahIcons.MENU,
+    pinned: true
+})
+```
+
+### 
+
+<p align="center">
+  <img src="./img/data-model/tabStore/pinnedTab.png" alt="pinnedTab" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+### `pinned` (default: `false`)
+You can pin the tabs to the beginning. But when you pin a tab, end user cannot close them anymore. It will disable the middle mouse click to close a tab and remove the close button too. The tab will be basically pinned.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabTitle: '',
+    tabIcon: MynahIcons.MENU,
+    pinned: true
+})
+```
+
+### 
+
+<p align="center">
+  <img src="./img/data-model/tabStore/pinnedTab.png" alt="pinnedTab" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ### `tabBackground` (default: `false`)
 Shows or hides the gradient background on the tab.
@@ -232,6 +301,7 @@ const mynahUI = new MynahUI({
 mynahUI.updateStore('tab-1', {
     quickActionCommands: [
         {
+            icon: MynahIcons.CODE,
             groupName: 'Command Group 1',
             commands: [
             {
@@ -711,6 +781,37 @@ mynahUI.updateStore('tab-1', {
 
 ---
 
+### `promptInputOptions`
+
+Under the prompt input field, it is possible to add form items too for several options. For example a toggle can be placed to let user pick the type of the prompt. To listen the value changes on these options please check [onPromptInputOptionChange in Constructor properties](./PROPERTIES.md#onPromptInputOptionChange) and the see how they are being passed to prompt please check [onChatPrompt in Constructor properties](./PROPERTIES.md#onChatPrompt).
+
+To cleanup, simply set to `null` or an empty array.
+
+```typescript
+mynahUI.updateStore('tab-1', {
+  promptInputOptions: [
+    {
+      type: 'toggle',
+      id: 'prompt-type',
+      value: 'ask',
+      options: [{
+        value: 'ask',
+        icon: MynahIcons.CHAT
+      },{
+        value: 'do',
+        icon: MynahIcons.FLASH
+      }]
+    }
+  ]
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptOptions.png" alt="promptOptions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
 ### `selectedCodeSnippet`
 
 This is the attached code block text right under the prompt input field..
@@ -849,6 +950,28 @@ mynahUI.updateStore('tab-1', {
 
 ---
 
+### `tabMetaData` (default: `{}`)
+
+A lightweight key-value store for essential tab-specific metadata. Not intended for storing large amounts of data - use appropriate application state management for that purpose.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    tabMetaData: {
+      'test': 'hi'
+    }
+})
+```
+
+---
+
 ### `chatItems` (default: `[]`)
 
 This is holding the chat items. If you provide it through the `defaults` or inside a tab item in the initial `tabs` property in the [Constructor properties](./PROPERTIES.md) you can give the whole set.
@@ -887,6 +1010,7 @@ Let's start with the model definition:
 enum ChatItemType {
   CODE_RESULT = 'code-result',
   ANSWER_STREAM = 'answer-stream',
+  DIRECTIVE = 'directive',
   ANSWER = 'answer',
   PROMPT = 'prompt',
   SYSTEM_PROMPT = 'system-prompt'
@@ -916,6 +1040,7 @@ interface ChatItemFormItem {
   id: string;
   type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup';
   mandatory?: boolean;
+  icon?: MynahIcons;
   title?: string;
   placeholder?: string;
   value?: string;
@@ -1075,6 +1200,33 @@ mynahUI.updateLastChatAnswer('tab-1', {
 
 ---
 
+
+
+### ChatItemType.`DIRECTIVE` _(position: left)_
+Use for directions. Those chat item cards will not have a background, will not have a padding and border at all. But they'll support all chatitem functionalities as is.  
+
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    type: ChatItemType.DIRECTIVE,
+    body: '_Starting with a directive_'
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/directive.png" alt="directive" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
 ### ChatItemType.`ANSWER` or ChatItemType.`CODE_RESULT` _(position: left)_
 Use for all kind of answers. Including the followups etc.
 
@@ -1209,6 +1361,12 @@ mynahUI.addChatItem(tabId, {
   type: ChatItemType.ANSWER,
   body: `SOME CONTENT`,
   header: {
+    // icon: MynahIcons.CODE_BLOCK;
+    // status: {
+    //  status: 'success',
+    //  icon: MynahIcons.OK,
+    //  text: 'Accepted',
+    // },
     fileList: { // For example, want to show which file is used to generate that answer
       rootFolderTitle: undefined,
       fileTreeTitle: '',
@@ -1228,6 +1386,50 @@ mynahUI.addChatItem(tabId, {
   <img src="./img/data-model/chatItems/header.png" alt="header" style="max-width:600px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
+You can also provide an icon specifically for the header, as well as a separate status section on right. 
+
+Here's another example for that:
+
+```typescript
+mynahUI.addChatItem(tabId, {
+  messageId: 'MY_UNIQUE_ID',
+  type: ChatItemType.ANSWER,
+  fullWidth: true,
+  padding: false,
+  header: {
+    icon: MynahIcons.CODE_BLOCK,
+    status: {
+      icon: MynahIcons.PROGRESS,
+      text: 'Working',
+      status: 'warning'
+    },
+    buttons: [{
+      id: 'stop',
+      icon: MynahIcons.CANCEL,
+    }],
+    fileList: {
+      fileTreeTitle: '',
+      filePaths: ['package.json'],
+      details: {
+        'package.json': {
+          icon: null,
+          label: 'Creating',
+          changes: {
+            added: 36,
+            deleted: 0,
+            total: 36
+          }
+        }
+      }
+    }
+  }
+});
+```
+
+
+<p align="center">
+  <img src="./img/data-model/chatItems/headerMore.png" alt="headerMore" style="max-width:600px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 ---
 
 ## `body`
@@ -1728,6 +1930,47 @@ mynahUI.addChatItem('tab-1', {
 
 ---
 
+## `fullWidth`
+It will make the card full width, in the available horizontal space. So it will not get with up to 95% of the available screen real estate and dynamically to the width of the content. It will be 100% all the time. Including the inner items like fileTree, code blocks etc.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  fullWidth: true,
+  body: "Here's a message with `fullWidth: true`."
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/fullWidth.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `padding`
+It will allow you to control the padding, by default it is `true`. If you set it to `false`, it will not show any paddings around the contents.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+  padding: false,
+  type: ChatItemType.ANSWER,
+  body: `Hello from MynahUI:
+\`\`\`bash
+mkdir -p src/ lalalaaaa
+\`\`\``,
+  codeBlockActions: {copy: null, 'insert-to-cursor': null}
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/padding.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+**Note:** Keep in mind that, if the `padding` is set to `false`, code blocks inside body will not show language if there are also no actions specified for them. So, if you turn of `copy` and `insert-to-cursor` by setting them to `null` in `codeBlockActions`, it will also hide the language bar if the card padding is false.
+
+
+---
+
 ## `codeBlockActions`
 With this parameter, you can add per chatitem code block actions to the code blocks inside that ChatItem. You can also override the actions added through [CONFIG](./CONFIG.md#codeblockactions). 
 
@@ -1910,6 +2153,11 @@ mynahUI.addChatItem(tabId, {
       'src/devfile.yaml': {
         status: 'error',
         label: "Change rejected",
+        changes: {
+          added: 36,
+          deleted: 5,
+          total: 41
+        },
         icon: MynahIcons.REVERT,
         description: 'Markdown tooltip to show',
         clickable: true; // or false if you want to make the file not clickabke
@@ -1939,6 +2187,40 @@ mynahUI.addChatItem(tabId, {
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+#### File `details`
+
+You can customize the details of a file. Like setting a custom icon, adding some informative text, a status color.
+
+**icon:**
+You can give a custom icon for each file, and you can even decided not to put an icon for that file by individually giving `null` as the icon value. 
+
+**changes:**
+In addition to the label field, you can also specificy addition, deletion and total counts for a change on that file. Those are specifically getting some status colors unlike the flat `label` field. 
+
+Here's a sample;
+
+```typescript
+fileList: {
+  fileTreeTitle: '',
+  filePaths: ['package.json'],
+  details: {
+    'package.json': {
+      icon: null,
+      label: 'Created',
+      changes: {
+        added: 36,
+        deleted: 0,
+        total: 36
+      }
+    }
+  }
+}
+```
+<p align="center">
+  <img src="./img/data-model/chatItems/fileListDetailsChanges.png" alt="fileListDetailsChanges" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -2197,6 +2479,7 @@ interface ChatItemFormItem {
   title?: string; // Label of the input
   autoFocus: boolean; // focus to the input when it is created, default=> false. (Only for textual form items)
   description?: string; // The description, showing under the input field itself
+  icon?: MynahIcons; // An icon displaying at the start of the input, renders on all inputs except for stars and radiogroup
   validationPatterns?: {
     operator?: 'and' | 'or';
     genericValidationErrorMessage?: string;
@@ -2243,24 +2526,26 @@ mynahUI.addChatItem(tabId, {
             id: 'expertise-area',
             type: 'select',
             title: `Area of expertise`,
+            icon: 'search',
+            description: 'Select your area of expertise',
             options: [
                 {
                     label: 'Frontend',
-                    value: 'frontend'
+                    value: 'frontend',
                 },
                 {
                     label: 'Backend',
-                    value: 'backend'
+                    value: 'backend',
                 },
                 {
                     label: 'Data Science',
-                    value: 'datascience'
+                    value: 'datascience',
                 },
                 {
                     label: 'Other',
-                    value: 'other'
-                }
-            ]
+                    value: 'other',
+                },
+            ],
         },
         {
             id: 'preferred-ide',
@@ -2269,17 +2554,40 @@ mynahUI.addChatItem(tabId, {
             options: [
                 {
                     label: 'VSCode',
-                    value: 'vscode'
+                    value: 'vscode',
                 },
                 {
                     label: 'JetBrains IntelliJ',
-                    value: 'intellij'
+                    value: 'intellij',
                 },
                 {
                     label: 'Visual Studio',
-                    value: 'intellij'
+                    value: 'visualstudio',
+                },
+            ],
+        },
+        {
+            id: 'remote-ide',
+            type: 'toggle',
+            value: 'remote',
+            title: `Environment`,
+            options: [
+                {
+                    label: 'Remote',
+                    value: 'remote',
+                    icon: MynahIcons.STAR
+                },
+                {
+                    label: 'Local',
+                    value: 'local',
+                    icon: MynahIcons.SCROLL_DOWN
+                },
+                {
+                    label: 'Both',
+                    value: 'both',
+                    icon: MynahIcons.STACK
                 }
-            ]
+            ],
         },
         {
             id: 'working-hours',
@@ -2289,9 +2597,10 @@ mynahUI.addChatItem(tabId, {
         },
         {
             id: 'email',
-            type: 'textinput',
+            type: 'email',
             mandatory: true,
             title: `Email`,
+            description: 'Your email will be used to get back to you',
             placeholder: 'email',
             checkModifierEnterKeyPress: true
         },
@@ -2299,7 +2608,17 @@ mynahUI.addChatItem(tabId, {
             id: 'name',
             type: 'textinput',
             mandatory: true,
-            title: `Name`,
+            title: `Name (should contain "amazonq" and "aws" in the string)`,
+            validationPatterns: {
+                operator: 'and',
+                patterns: [{
+                    pattern: 'amazonq',
+                    errorMessage: 'Should contain amazonq!'
+                },{
+                    pattern: 'aws',
+                    errorMessage: 'Should contain aws!'
+                }]
+            },
             placeholder: 'Name and Surname',
         },
         {
@@ -2322,22 +2641,31 @@ mynahUI.addChatItem(tabId, {
         {
             id: 'description',
             type: 'textarea',
-            title: `Any other things you would like to share?`,
-            placeholder: 'Write your feelings about our tool',
-        }
+            title: `Any other things you would like to share? (should contain one of "amazonq" or "aws", capital or not)`,
+            validationPatterns: {
+                operator: 'or',
+                genericValidationErrorMessage: 'Should contain one of "amazonq" or "aws"',
+                patterns: [{
+                    pattern: /amazonq/gi
+                },{
+                    pattern: /aws/gi
+                }]
+            },
+            placeholder: 'Write your feelings about our tool. If the form is fully filled and valid, Enter will submit the form',
+        },
     ],
     buttons: [
         {
             id: 'submit',
             text: 'Submit',
-            status: 'info',
+            status: 'primary',
         },
         {
             id: 'cancel-feedback',
             text: 'Cancel',
             keepCardAfterClick: false,
             waitMandatoryFormItems: false,
-        }
+        },
     ],
 });
 ```
@@ -2372,20 +2700,21 @@ Ok, finally, when we click the `Submit` button, as it is configured that way, it
 
 A sample return to the [onInBodyButtonClicked](./PROPERTIES.md#oninbodybuttonclicked) function
 ```console
-Body action clicked in message 1707218619540:
+Body action clicked in message 1743163457971:
 Action Id: submit
 Action Text: Submit
 
 Options:
-expertise-area: frontend
+expertise-area:
 preferred-ide: vscode
-working-hours: 30
-email: dogusata@amazon.com
-name: Dogus Atasoy
-ease-of-usage-rating: 5
+remote-ide: remote
+working-hours:
+email: d@a.c
+name: amazonq aws
+ease-of-usage-rating: 4
 accuracy-rating: 4
-general-rating: 5
-description: It is lovely!
+general-rating:
+description: aws
 ```
 
 ---
@@ -2754,5 +3083,45 @@ export interface ChatPrompt {
   escapedPrompt?: string; // Generally being used to send it back to mynah-ui for end user prompt rendering
   command?: string;
   context?: string[];
+}
+```
+
+---
+
+# `DetailedListItem`
+
+DetailedList items can be rendered in an `DetailedListItemGroup` within a `DetailedList`. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
+
+```typescript
+export interface DetailedList {
+  filterOptions?: FilterOption[] | null;
+  list?: DetailedListItemGroup[];
+  header?: {
+    title?: string;
+    icon?: MynahIcons | MynahIconsType;
+    description?: string;
+  };
+}
+
+export interface DetailedListItemGroup {
+  groupName?: string;
+  actions?: Action[];
+  icon?: MynahIcons | MynahIconsType;
+  children?: DetailedListItem[];
+}
+
+export interface DetailedListItem {
+  title?: string;
+  name?: string;
+  id?: string;
+  icon?: MynahIcons | MynahIconsType;
+  description?: string;
+  disabled?: boolean;
+  followupText?: string;
+  clickable?: boolean;
+  actions?: ChatItemButton[];
+  children?: DetailedListItemGroup[];
+  keywords?: string[];
+}
 }
 ```

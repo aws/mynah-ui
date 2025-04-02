@@ -1,5 +1,6 @@
 import { ChatItemCard } from '../components/chat-item/chat-item-card';
 import { MynahUITabsStore } from './tabs-store';
+import { ChatItem } from '../static';
 
 /**
  * Serialize all (non-empty) chat messages in a tab to a markdown string
@@ -16,14 +17,15 @@ export const serializeMarkdown = (tabId: string): string => {
  * @returns The bodies of chat cards in HTML format
  */
 export const serializeHtml = (tabId: string): string => {
-  const chatItemCardDivs = MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.filter(chatItem => (chatItem.body != null) && chatItem.body.trim() !== '').map(chatItem => new ChatItemCard({
+  const chatItemCardDivs = MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.filter((chatItem): chatItem is ChatItem =>
+    chatItem?.body != null && chatItem.body.trim() !== ''
+  ).map(chatItem => new ChatItemCard({
     chatItem: {
       type: chatItem.type,
       body: chatItem.body,
       messageId: chatItem.messageId,
       status: chatItem.status,
-      icon: chatItem.icon,
-      snapToTop: chatItem.snapToTop,
+      icon: chatItem.icon
     },
     tabId,
   }).render.outerHTML).reverse().join('\n');

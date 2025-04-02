@@ -32,6 +32,7 @@ export interface QuickActionCommand {
 }
 export interface QuickActionCommandGroup {
   groupName?: string;
+  icon?: MynahIcons | MynahIconsType;
   actions?: Action[];
   commands: QuickActionCommand[];
 }
@@ -43,6 +44,14 @@ export interface MynahUIDataModel {
    * Tab title
    * */
   tabTitle?: string;
+  /**
+   * Tab icon
+   * */
+  tabIcon?: MynahIcons | MynahIconsType | null;
+  /**
+   * is tab pinned
+   * */
+  pinned?: boolean;
   /**
    * Tab title
    * */
@@ -112,6 +121,10 @@ export interface MynahUIDataModel {
   */
   promptInputProgress?: ProgressField | null;
   /**
+  * Prompt input options/form items
+  */
+  promptInputOptions?: FilterOption[] | null;
+  /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
@@ -131,6 +144,12 @@ export interface MynahUIDataModel {
    * Tab content header details, only visibile when showTabHeaderDetails is set to 'true'
    */
   tabHeaderDetails?: TabHeaderDetails | null;
+  /**
+   * A lightweight key-value store for essential tab-specific primitive metadata.
+   * Not intended for storing large amounts of data - use appropriate
+   * application state management for that purpose.
+   */
+  tabMetadata?: { [key: string]: string | boolean | number };
 }
 
 export interface MynahUITabStoreTab {
@@ -170,12 +189,16 @@ export enum MynahEventNames {
   TABBED_CONTENT_SWITCH = 'tabbedContentSwitch',
   SHOW_MORE_WEB_RESULTS_CLICK = 'showMoreWebResultsClick',
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
+  OPEN_SHEET = 'openSheet',
+  CLOSE_SHEET = 'closeSheet',
   FILE_CLICK = 'fileClick',
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
+  PROMPT_INPUT_OPTIONS_CHANGE = 'promptInputOptionsChange',
   FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
   FORM_TEXTUAL_ITEM_KEYPRESS = 'formTextualItemKeyPress',
+  FORM_CHANGE = 'formChange',
   ADD_ATTACHMENT = 'addAttachment',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
@@ -188,7 +211,7 @@ export enum MynahPortalNames {
   WRAPPER = 'wrapper',
   SIDE_NAV = 'sideNav',
   OVERLAY = 'overlay',
-  FEEDBACK_FORM = 'feedbackForm',
+  SHEET = 'sheet'
 };
 
 export type PromptAttachmentType = 'code' | 'markdown';
@@ -213,12 +236,45 @@ export interface SourceLink {
 }
 export enum ChatItemType {
   PROMPT = 'prompt',
+  DIRECTIVE = 'directive',
   SYSTEM_PROMPT = 'system-prompt',
   AI_PROMPT = 'ai-prompt',
   ANSWER = 'answer',
   ANSWER_STREAM = 'answer-stream',
   ANSWER_PART = 'answer-part',
   CODE_RESULT = 'code-result',
+}
+
+export interface DetailedList {
+  filterOptions?: FilterOption[] | null;
+  list?: DetailedListItemGroup[];
+  header?: {
+    title?: string;
+    icon?: MynahIcons | MynahIconsType;
+    description?: string;
+  };
+  selectable?: boolean;
+  textDirection?: 'row' | 'column';
+}
+
+export interface DetailedListItemGroup {
+  groupName?: string;
+  actions?: Action[];
+  icon?: MynahIcons | MynahIconsType;
+  children?: DetailedListItem[];
+}
+
+export interface DetailedListItem {
+  title?: string;
+  name?: string;
+  id?: string;
+  icon?: MynahIcons | MynahIconsType;
+  description?: string;
+  disabled?: boolean;
+  followupText?: string;
+  actions?: ChatItemButton[];
+  children?: DetailedListItemGroup[];
+  keywords?: string[];
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
@@ -248,14 +304,26 @@ export interface ProgressField {
 
 export interface TreeNodeDetails {
   status?: Status;
-  icon?: MynahIcons | MynahIconsType;
+  icon?: MynahIcons | MynahIconsType | null;
   label?: string;
+  changes?: {
+    added?: number;
+    deleted?: number;
+    total?: number;
+  };
   description?: string;
   clickable?: boolean;
 }
 
 export interface ChatItemContent {
-  header?: ChatItemContent | null;
+  header?: (ChatItemContent & {
+    icon?: MynahIcons | MynahIconsType;
+    status?: {
+      status?: Status;
+      icon?: MynahIcons | MynahIconsType;
+      text?: string;
+    };
+  }) | null;
   body?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
@@ -299,11 +367,13 @@ export interface ChatItemContent {
   codeBlockActions?: CodeBlockActions | null;
 }
 
-export interface ChatItem extends ChatItemContent{
+export interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
   canBeVoted?: boolean;
+  fullWidth?: boolean;
+  padding?: boolean;
   icon?: MynahIcons | MynahIconsType;
   hoverEffect?: boolean;
   status?: Status;
@@ -321,6 +391,7 @@ interface BaseFormItem {
   placeholder?: string;
   value?: string;
   description?: string;
+  icon?: MynahIcons | MynahIconsType;
 }
 
 export type TextBasedFormItem = BaseFormItem & {
@@ -335,19 +406,30 @@ export type TextBasedFormItem = BaseFormItem & {
 };
 
 type OtherFormItem = BaseFormItem & {
-  type: 'select' | 'stars' | 'radiogroup';
+  type: 'select' | 'stars';
   options?: Array<{
     value: string;
     label: string;
   }>;
 };
 
-export type ChatItemFormItem = TextBasedFormItem | OtherFormItem;
+type RadioGroupFormItem = BaseFormItem & {
+  type: 'radiogroup' | 'toggle';
+  options?: Array<{
+    value: string;
+    label?: string;
+    icon?: MynahIcons | MynahIconsType;
+  }>;
+};
+
+export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem;
+export type FilterOption = ChatItemFormItem;
 
 export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
+  options?: Record<string, string>;
   context?: string[] | QuickActionCommand[];
 }
 

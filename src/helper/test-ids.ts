@@ -4,6 +4,7 @@ export default {
     wrapper: 'prompt-input-wrapper',
     attachmentWrapper: 'prompt-input-attachment-wrapper',
     attachment: 'prompt-input-attachment',
+    options: 'prompt-input-options',
     attachmentRemove: 'prompt-input-attachment-remove-button',
     send: 'prompt-input-send-button',
     input: 'prompt-input-textarea',
@@ -24,9 +25,12 @@ export default {
   chat: {
     wrapper: 'chat-wrapper',
     chatItemsContainer: 'chat-chat-items-container',
+    conversationContainer: 'chat-chat-items-conversation-container',
     middleBlockWrapper: 'chat-middle-block-wrapper',
     stopButton: 'chat-middle-block-stop-button',
     header: 'chat-wrapper-header-details',
+    moreContentIndicator: 'chat-wrapper-more-content-available-indicator',
+    moreContentIndicatorButton: 'chat-wrapper-more-content-available-indicator-button',
   },
   chatItem: {
     type: {
@@ -69,6 +73,8 @@ export default {
       itemStarsWrapper: 'chat-item-form-item-stars-wrapper',
       itemStars: 'chat-item-form-item-stars',
       itemTextArea: 'chat-item-form-item-textarea',
+      itemToggleWrapper: 'chat-item-form-item-toggle-wrapper',
+      itemToggleOption: 'chat-item-form-item-toggle-option'
     },
     vote: {
       wrapper: 'chat-item-vote-wrapper',
@@ -102,21 +108,22 @@ export default {
     }
   },
   feedbackForm: {
-    wrapper: 'feedback-form-wrapper',
-    title: 'feedback-form-title',
-    description: 'feedback-form-description',
     optionsSelectWrapper: 'feedback-form-options-select-wrapper',
     optionsSelect: 'feedback-form-options-select',
     comment: 'feedback-form-comment-text-area',
-    closeButton: 'feedback-form-close-button',
     cancelButton: 'feedback-form-cancel-button',
     submitButton: 'feedback-form-submit-button',
   },
-  customFeedbackForm: {
-    wrapper: 'custom-feedback-form-wrapper',
-    title: 'custom-feedback-form-title',
-    description: 'custom-feedback-form-description',
-    closeButton: 'custom-feedback-form-close-button',
+  sheet: {
+    wrapper: 'sheet-wrapper',
+    header: 'sheet-header',
+    title: 'sheet-title',
+    description: 'sheet-description',
+    closeButton: 'sheet-close-button',
+  },
+  detailedList: {
+    action: 'detailed-list-action',
+    actionMenu: 'detailed-list-action-menu'
   },
   tabBar: {
     wrapper: 'tab-bar-wrapper',

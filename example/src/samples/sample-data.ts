@@ -364,7 +364,7 @@ export const exampleRichFollowups: ChatItem = {
 
 export const defaultFollowUps: ChatItem = {
     type: ChatItemType.ANSWER,
-    messageId: new Date().getTime().toString(),
+    messageId: generateUID(),
     followUp: {
         text: 'Example card types',
         options: [
@@ -375,6 +375,10 @@ export const defaultFollowUps: ChatItem = {
             {
                 command: Commands.STATUS_CARDS,
                 pillText: 'Cards with status',
+            },
+            {
+                command: Commands.HEADER_TYPES,
+                pillText: 'Cards with headers',
             },
             {
                 command: Commands.FORM_CARD,
@@ -516,6 +520,7 @@ _To send the form, mandatory items should be filled._`,
             id: 'expertise-area',
             type: 'select',
             title: `Area of expertise`,
+            icon: 'search',
             description: 'Select your area of expertise',
             options: [
                 {
@@ -556,6 +561,29 @@ _To send the form, mandatory items should be filled._`,
             ],
         },
         {
+            id: 'remote-ide',
+            type: 'toggle',
+            value: 'remote',
+            title: `Environment`,
+            options: [
+                {
+                    label: 'Remote',
+                    value: 'remote',
+                    icon: MynahIcons.STAR
+                },
+                {
+                    label: 'Local',
+                    value: 'local',
+                    icon: MynahIcons.SCROLL_DOWN
+                },
+                {
+                    label: 'Both',
+                    value: 'both',
+                    icon: MynahIcons.STACK
+                }
+            ],
+        },
+        {
             id: 'working-hours',
             type: 'numericinput',
             title: `How many hours are you using an IDE weekly?`,
@@ -567,7 +595,7 @@ _To send the form, mandatory items should be filled._`,
             mandatory: true,
             title: `Email`,
             description: 'Your email will be used to get back to you',
-            placeholder: 'email',
+            placeholder: 'Email',
             checkModifierEnterKeyPress: true
         },
         {
@@ -1046,6 +1074,7 @@ export const exampleButtons: ChatItem = {
             fillState: 'hover',
             id: 'action-3',
             flash: 'infinite',
+            icon: MynahIcons.PROGRESS,
             status: 'main',
         },
         {
@@ -1144,3 +1173,195 @@ export const exampleVoteChatItem: ChatItem = {
     canBeVoted: true,
     body: 'This chat item can be voted.',
 };
+
+export const sampleHeaderTypes: ChatItem[] = [
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: MynahIcons.CODE_BLOCK,
+            status: {
+                icon: MynahIcons.PROGRESS,
+                text: 'Working',
+                status: 'warning'
+            },
+            buttons: [{
+            id: 'stop',
+            icon: MynahIcons.CANCEL,
+            }],
+            fileList: {
+                fileTreeTitle: '',
+                filePaths: ['package.json'],
+                details: {
+                    'package.json': {
+                        icon: null,
+                        label: 'Creating',
+                        changes: {
+                            added: 36,
+                            deleted: 0,
+                            total: 36
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+        icon: 'code-block',
+        status: {
+            icon: MynahIcons.OK,
+            text: 'Accepted',
+            status: 'success'
+        },
+        fileList: {
+            hideFileCount: true,
+            fileTreeTitle: '',
+            filePaths: ['package.json'],
+            details: {
+            'package.json': {
+                icon: null,
+                label: 'Created',
+                changes: {
+                added: 36,
+                deleted: 0,
+                total: 36
+                }
+            }
+            }
+        }
+        }
+    },
+
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'code-block',
+            buttons: [
+                {
+                icon: 'cancel',
+                status: 'clear',
+                id: 'reject-file'
+                },
+                {
+                icon: 'ok',
+                status: 'clear',
+                id: 'accept-file'
+                }
+            ],
+            fileList: {
+                hideFileCount: true,
+                fileTreeTitle: '',
+                filePaths: ['package.json'],
+                details: {
+                    'package.json': {
+                        icon: null,
+                        label: 'Created',
+                        changes: {
+                        added: 36,
+                        deleted: 0,
+                        total: 36
+                        }
+                    }
+                }
+            }
+        },
+        body: `
+\`\`\`diff-typescript
+const mynahUI = new MynahUI({
+tabs: {
+    'tab-1': {
+        isSelected: true,
+        store: {
+            tabTitle: 'Chat',
+            chatItems: [
+                {
+                    type: ChatItemType.ANSWER,
+                    body: 'Welcome to our chat!',
+                    messageId: 'welcome-message'
+                },
+            ],
+-                promptInputPlaceholder: 'Write your question',
++                promptInputPlaceholder: 'Type your question',
+        }
+    }
+},
+-    onChatPrompt: () => {},
++    onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
++        mynahUI.addChatItem(tabId, {
++            type: ChatItemType.PROMPT,
++            messageId: new Date().getTime().toString(),
++            body: prompt.escapedPrompt
++        });
++        // call your genAI action
++    }
+});
+\`\`\`
+    `,
+        codeBlockActions: {
+            'copy': null,
+            'insert-to-cursor': null,
+        }
+    },
+
+    {
+        fullWidth: true,
+        padding: false,
+        type: ChatItemType.ANSWER,
+        header: {
+            icon: MynahIcons.CODE_BLOCK,
+            body: 'Terminal command',
+            status: {
+                icon: MynahIcons.PROGRESS
+            },
+            buttons: [
+                {
+                status: 'clear',
+                icon: MynahIcons.STOP,
+                id: 'stop-bash-command'
+                }
+            ]
+        },
+        body: `
+\`\`\`bash
+mkdir -p src/ lalalaaaa
+\`\`\`
+`,
+        codeBlockActions: {copy: null, 'insert-to-cursor': null}
+    },
+
+    {
+        fullWidth: true,
+        padding: false,
+        type: ChatItemType.ANSWER,
+        header: {
+            icon: MynahIcons.CODE_BLOCK,
+            body: 'Terminal command',
+            buttons: [
+                {
+                status: 'clear',
+                icon: 'play',
+                id: 'run-bash-command'
+                }
+            ]
+        },
+        body: `
+\`\`\`bash
+mkdir -p src/ lalalaaaa
+\`\`\`
+`,
+        codeBlockActions: {copy: null, 'insert-to-cursor': null}
+    },
+
+    {
+        type: ChatItemType.DIRECTIVE,
+        body: '_Starting with a directive_'
+    }
+];
