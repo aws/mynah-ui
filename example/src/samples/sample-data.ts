@@ -72,7 +72,7 @@ export const exampleSources = [
 ] as SourceLink[];
 
 export const sampleMarkdownList: Partial<ChatItem>[] = [
-    { body: `${sampleList0 as string}` },
+    { autoCollapse: true, body: `${sampleList0 as string}` },
     { body: `${sampleList1 as string}` },
     { body: `${sampleList2 as string}` },
     { body: `${sampleList3 as string}` },

@@ -111,6 +111,47 @@
         }
     }
 
+    &.mynah-chat-item-auto-collapse {
+        > .more-content-indicator {
+            order: 1000;
+            justify-content: center;
+            background-color: var(--mynah-card-bg);
+            box-shadow: 0 -15px 15px 0px var(--mynah-card-bg);
+            height: var(--mynah-sizing-9);
+            z-index: 1000;
+            position: absolute;
+            bottom: var(--mynah-border-width);
+            left: var(--mynah-border-width);
+            right: var(--mynah-border-width);
+            padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
+            border-bottom-left-radius: var(--mynah-card-radius-corner);
+            border-bottom-right-radius: var(--mynah-card-radius);
+            > button > i {
+                opacity: 0.5;
+            }
+        }
+        &.mynah-chat-item-collapsed {
+            > .mynah-card {
+                max-height: 25vh;
+                overflow-y: auto;
+            }
+        }
+        > .mynah-card:after {
+            content: '';
+            position: relative;
+            display: block;
+            order: 10000;
+            width: 100%;
+            min-height: var(--mynah-sizing-7);
+            height: var(--mynah-sizing-7);
+        }
+    }
+    &:not(.mynah-chat-item-auto-collapse) {
+        > .more-content-indicator {
+            display: none;
+        }
+    }
+
     &.mynah-chat-item-card-has-icon {
         > .mynah-card {
             padding-left: var(--mynah-sizing-10);
@@ -354,15 +395,14 @@
             }
         }
     }
-    // TODO: Add collapsaible max-height structure to prompt cards
-    // &.mynah-chat-item-prompt {
-    //     > .mynah-card {
-    //         max-height: calc(2 * var(--mynah-sizing-16));
-    //     }
-    // }
-
     &.mynah-chat-item-directive {
         color: var(--mynah-color-text-weak);
+        &.mynah-chat-item-auto-collapse > .more-content-indicator {
+            background-color: var(--mynah-color-bg);
+            box-shadow: 0 -15px 15px 0px var(--mynah-color-bg);
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
     }
 
     &.mynah-chat-item-system-prompt,
@@ -403,8 +443,20 @@
         .mynah-chat-item-card-related-content > .mynah-card {
             border: none;
         }
+
+        &.mynah-chat-item-auto-collapse > .more-content-indicator {
+            background-color: var(--mynah-card-bg-alternate);
+            box-shadow: 0 -15px 15px 0px var(--mynah-card-bg-alternate);
+            border-bottom-right-radius: var(--mynah-card-radius-corner);
+            border-bottom-left-radius: var(--mynah-card-radius);
+            color: var(--mynah-color-text-alternate);
+        }
     }
     &.mynah-chat-item-system-prompt {
+        &.mynah-chat-item-auto-collapse > .more-content-indicator {
+            background-color: var(--mynah-color-status-warning);
+            box-shadow: 0 -15px 15px 0px var(--mynah-color-status-warning);
+        }
         > .mynah-card {
             background-color: var(--mynah-color-status-warning);
         }

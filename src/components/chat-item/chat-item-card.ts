@@ -24,6 +24,7 @@ import testIds from '../../helper/test-ids';
 import { ChatItemInformationCard } from './chat-item-information-card';
 import { ChatItemTabbedCard } from './chat-item-tabbed-card';
 import { Spinner } from '../spinner/spinner';
+import { MoreContentIndicator } from '../more-content-indicator';
 
 export interface ChatItemCardProps {
   tabId: string;
@@ -51,6 +52,8 @@ export class ChatItemCard {
   private chatButtonsOutside: ChatItemButtonsWrapper | null = null;
   private fileTreeWrapper: ChatItemTreeViewWrapper | null = null;
   private followUps: ChatItemFollowUpContainer | null = null;
+  private readonly moreContentIndicator: MoreContentIndicator | null = null;
+  private isMoreContentExpanded: boolean = false;
   private votes: ChatItemRelevanceVote | null = null;
   private footer: ChatItemCard | null = null;
   private header: ChatItemCard | null = null;
@@ -97,14 +100,30 @@ export class ChatItemCard {
     this.updateCardContent();
     this.render = this.generateCard();
 
-    // TODO: Add collapsaible max-height structure to prompt cards
-    // if (this.props.chatItem.type === ChatItemType.PROMPT) {
-    //   setTimeout(() => {
-    //     if ((this.card?.render.scrollHeight ?? 0) > (this.card?.render.clientHeight ?? 0)) {
-    //       console.log('Card content is higher than the card');
-    //     }
-    //   }, 10);
-    // }
+    /**
+     * Generate/update more content indicator if available
+     */
+    this.moreContentIndicator = new MoreContentIndicator({
+      icon: MynahIcons.DOWN_OPEN,
+      border: false,
+      onClick: () => {
+        if (this.isMoreContentExpanded) {
+          this.isMoreContentExpanded = false;
+          this.render.addClass('mynah-chat-item-collapsed');
+          this.moreContentIndicator?.update({ icon: MynahIcons.DOWN_OPEN });
+        } else {
+          this.isMoreContentExpanded = true;
+          this.render.removeClass('mynah-chat-item-collapsed');
+          this.moreContentIndicator?.update({ icon: MynahIcons.UP_OPEN });
+        }
+      },
+      testId: testIds.chatItem.moreContentIndicator
+    });
+    this.render.insertChild('beforeend', this.moreContentIndicator.render);
+
+    if (this.props.chatItem.autoCollapse === true) {
+      this.render.addClass('mynah-chat-item-collapsed');
+    }
 
     if (this.props.chatItem.type === ChatItemType.ANSWER_STREAM &&
       (this.props.chatItem.body ?? '').trim() !== '') {
@@ -144,12 +163,24 @@ export class ChatItemCard {
 
     setTimeout(
       () => {
+        this.setMaxHeightClass(this.card?.render);
         generatedCard.addClass('reveal');
       },
       50
     );
 
     return generatedCard;
+  };
+
+  private readonly setMaxHeightClass = (elm?: ExtendedHTMLElement): void => {
+    if (elm != null) {
+      if (this.props.chatItem.autoCollapse === true && elm.scrollHeight > window.innerHeight / 4) {
+        this.render?.addClass('mynah-chat-item-auto-collapse');
+        // ...(this.props.chatItem.autoCollapse === true ? [ 'mynah-chat-item-auto-collapse' ] : []),
+      } else {
+        this.render?.removeClass('mynah-chat-item-auto-collapse');
+      }
+    }
   };
 
   private readonly getCardClasses = (): string[] => {
@@ -282,6 +313,7 @@ export class ChatItemCard {
       const updatedCardContentBodyProps: ChatItemCardContentProps = {
         body: this.props.chatItem.body ?? '',
         hideCodeBlockLanguage: this.props.chatItem.padding === false,
+        unlimitedCodeBlockHeight: this.props.chatItem.autoCollapse,
         classNames: [ 'mynah-card-inner-order-20' ],
         renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
         codeReference: this.props.chatItem.codeReference ?? undefined,
@@ -603,10 +635,11 @@ export class ChatItemCard {
                 }
               }
             : {}),
-          classNames: [ ...this.getCardClasses(), 'reveal' ],
+          classNames: [ ...this.getCardClasses(), 'reveal', ...(this.isMoreContentExpanded ? [ ] : [ 'mynah-chat-item-collapsed' ]) ],
         });
         this.updateCardContent();
         this.updateCard();
+        this.setMaxHeightClass(this.card?.render);
       }
     }
   };

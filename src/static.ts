@@ -371,6 +371,7 @@ export interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
+  autoCollapse?: boolean;
   canBeVoted?: boolean;
   fullWidth?: boolean;
   padding?: boolean;
