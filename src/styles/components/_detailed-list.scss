@@ -4,7 +4,6 @@
     box-sizing: border-box;
     border-radius: var(--mynah-card-radius);
     width: 100%;
-    pointer-events: all;
     flex-flow: column nowrap;
     align-items: stretch;
     justify-content: flex-start;
@@ -105,8 +104,8 @@
             > .mynah-detailed-list-items-block {
                 display: block;
                 overflow: hidden;
-                content-visibility: auto;
-                contain-intrinsic-size: auto calc(3 * var(--mynah-line-height));
+                min-height: var(--mynah-sizing-10);
+
                 > .mynah-detailed-list-item {
                     display: flex;
                     gap: var(--mynah-sizing-half);
@@ -115,12 +114,12 @@
                     width: 100%;
                     flex-flow: row nowrap;
                     align-items: center;
+                    min-height: var(--mynah-sizing-10);
                     justify-content: flex-start;
                     overflow: hidden;
                     padding: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
                     color: var(--mynah-color-text-default);
                     border-radius: var(--mynah-input-radius);
-                    transition: var(--mynah-short-transition-rev);
                     background-color: inherit;
                     margin-bottom: var(--mynah-sizing-half);
 
