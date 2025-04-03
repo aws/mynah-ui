@@ -23,9 +23,12 @@ export class DetailedListWrapper {
   private readonly detailedListItemGroupsContainer: ExtendedHTMLElement;
   private readonly filtersContainer: ExtendedHTMLElement;
   private readonly headerContainer: ExtendedHTMLElement;
-  private readonly observer: IntersectionObserver | null;
   private readonly props: DetailedListWrapperProps;
-  private detailedListItemsBlockData: Record<string, DetailedListItem[]> = {};
+  private detailedListItemsBlockData: Array<{
+    data: DetailedListItem[];
+    element: ExtendedHTMLElement;
+  }> = [];
+
   private activeTargetElementIndex: number = 0;
   private allSelectableDetailedListElements: DetailedListItemWrapper[] = [];
   constructor (props: DetailedListWrapperProps) {
@@ -43,21 +46,28 @@ export class DetailedListWrapper {
     this.detailedListItemGroupsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-detailed-list-item-groups-wrapper' ],
-      children: this.getDetailedListItemGroups()
-    });
-
-    if (this.observer == null && IntersectionObserver != null) {
-      this.observer = new IntersectionObserver((entries) => {
-        const itemsBlockKey = entries[0].target.getAttribute('key');
-        if (entries[0].isIntersecting && itemsBlockKey != null) {
-          (entries[0].target as ExtendedHTMLElement).update({
-            children: this.getDetailedListItemElements(this.detailedListItemsBlockData[itemsBlockKey])
+      children: this.getDetailedListItemGroups(),
+      events: {
+        scroll: () => {
+          const wrapperOffsetHeight = this.detailedListItemGroupsContainer.offsetHeight;
+          const wrapperScrollTop = this.detailedListItemGroupsContainer.scrollTop;
+          this.detailedListItemsBlockData.forEach(itemsBlock => {
+            const itemBlockTop = itemsBlock.element.offsetTop;
+            const itemBlockBottom = itemsBlock.element.offsetTop + itemsBlock.element.offsetHeight;
+            if (itemsBlock.element.childNodes.length === 0 &&
+              (itemBlockTop < wrapperScrollTop + wrapperOffsetHeight) &&
+              (itemBlockBottom > wrapperScrollTop - wrapperOffsetHeight)) {
+              itemsBlock.element.update({
+                children: this.getDetailedListItemElements(itemsBlock.data)
+              });
+            } else if ((itemBlockTop > wrapperScrollTop + wrapperOffsetHeight) ||
+            (itemBlockBottom < wrapperScrollTop - wrapperOffsetHeight)) {
+              itemsBlock.element.clear();
+            }
           });
-        } else {
-          (entries[0].target as ExtendedHTMLElement).clear();
         }
-      }, { root: this.detailedListItemGroupsContainer, rootMargin: '50px 0px 50px 0px', threshold: 0 });
-    }
+      }
+    });
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
@@ -125,23 +135,23 @@ export class DetailedListWrapper {
                 ]
               }) ]
             : []),
-          ...((chunkArray(detailedListGroup.children ?? [], 50)).map((detailedListItemPart, index) => {
+          ...((chunkArray(detailedListGroup.children ?? [], 100)).map((detailedListItemPart, index) => {
             const itemBlockKey = generateUID();
             const detailedListItemBlock = DomBuilder.getInstance().build({
               type: 'div',
               attributes: {
                 key: itemBlockKey,
-                style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-10) + var(--mynah-sizing-half))); background-color: rgba(${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)}, 0.05)`
+                style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-10) + var(--mynah-sizing-half)));`
               },
               classNames: [ 'mynah-detailed-list-items-block' ],
-              children: index < 4
+              children: index < 5
                 ? this.getDetailedListItemElements(detailedListItemPart)
                 : []
             });
-            this.detailedListItemsBlockData[itemBlockKey] = detailedListItemPart;
-            if (index > 3) {
-              this.observer?.observe(detailedListItemBlock);
-            }
+            this.detailedListItemsBlockData.push({
+              data: detailedListItemPart,
+              element: detailedListItemBlock
+            });
             return detailedListItemBlock;
           }))
         ]
@@ -217,9 +227,8 @@ export class DetailedListWrapper {
     }
 
     if (detailedList.list != null) {
+      this.detailedListItemsBlockData = [];
       this.detailedListItemGroupsContainer.clear();
-      this.detailedListItemsBlockData = {};
-      this.observer?.disconnect();
       this.activeTargetElementIndex = 0;
       this.allSelectableDetailedListElements = [];
       this.props.detailedList.list = detailedList.list;

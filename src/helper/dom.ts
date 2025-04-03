@@ -380,45 +380,21 @@ export const getTypewriterPartsCss = (
     },
     persistent: true,
     innerHTML: `
-    root:{
-    --mynah-typewriter-bottom-pull: max(-100%, calc(-5 * var(--mynah-line-height, 1.5rem)));
-    }
-    @keyframes typewriter-${typewriterId} {
-      0% {
-          opacity: 0;
-          margin-bottom: var(--mynah-typewriter-bottom-pull, -1.5rem);
-          visibility: visible;
-      }
-      99% {
-          opacity: 1;
-          margin-bottom: 0px;
-          visibility: visible;
-      }
-      100% {
-          opacity: 1;
-          margin-bottom: initial;
-          visibility: visible;
-      }
-  }
   ${new Array(Math.max(0, totalNumberOfItems))
     .fill(null)
     .map((n, i) => {
       if (i < lastVisibleItemIndex) {
         return `
       .${typewriterId} .typewriter-part[index="${i}"] {
-        visibility: visible !important;
         opacity: 1 !important;
-        margin-bottom: initial;
         animation: none;
       }
       `;
       }
       return `
       .${typewriterId} .typewriter-part[index="${i}"] {
-        visibility: hidden;
         opacity: 0;
-        margin-bottom: var(--mynah-typewriter-bottom-pull, -1.5rem);
-        animation: typewriter-${typewriterId} ${50 + timeForEach}ms ease-out forwards;
+        animation: typewriter-reveal ${50 + timeForEach}ms linear forwards;
         animation-delay: ${(i - lastVisibleItemIndex) * timeForEach}ms;
       }
       `;
