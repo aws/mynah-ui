@@ -307,7 +307,7 @@ export class ChatPromptInput {
         if (this.quickPickItemGroups.length > 0) {
           this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
           this.quickPick = new Overlay({
-            closeOnOutsideClick: true,
+            closeOnOutsideClick: false,
             referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
             dimOutside: false,
             stretchWidth: true,

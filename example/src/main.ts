@@ -171,26 +171,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         isSelected: true,
         store: {
           ...mynahUIDefaults.store,
-          ...welcomeScreenTabData.store,
-          tabMetaData: {
-            'test': 'hi'
-          }
+          // ...welcomeScreenTabData.store,
         },
-      },
-      'pinned-tab': {
-        store: {
-          chatItems: [{
-            type: ChatItemType.ANSWER,
-            body: 'Hello!'
-          }],
-          tabHeaderDetails: {
-            description: 'Your chat history'
-          },
-          tabIcon: MynahIcons.MENU,
-          pinned: true,
-          tabTitle: '',
-          promptInputVisible: false,
-        }
       },
     },
     onPromptInputOptionChange: (tabId, optionsValues)=>{
