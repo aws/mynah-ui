@@ -7,9 +7,6 @@
     align-items: flex-start;
 }
 .mynah-chat-wrapper {
-    // This allows us to recalculate depending on the screen width went to 0 and reverted back (VSCode panel close/open)
-    transition: all 10ms 10ms linear;
-
     position: relative;
     width: inherit;
     max-width: inherit;
@@ -19,7 +16,11 @@
     overflow: hidden;
     justify-content: center;
     align-items: stretch;
-    display: none;
+    display: flex;
+    position: absolute;
+    left: -100%;
+    opacity: 0;
+    visibility: hidden;
 
     box-sizing: border-box;
     > div[class^='mynah-chat'] {
