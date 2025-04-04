@@ -9,6 +9,9 @@ jobs:
           # Checkout the PR branch
           - name: Checkout Code
             uses: actions/checkout@v4
+            with:
+              ref: ${{ github.head_ref }}
+              fetch-depth: 0
     
           # Set up Node
           - name: Set up Node
@@ -48,15 +51,16 @@ jobs:
               path: ./ui-tests/__results__
               retention-days: 30
     
-          # Replace branch content with snapshots produced by Docker
           - name: Replace Snapshots in PR Branch
             if: ${{ !failure() }}
             run: |
               git config user.name "github-actions[bot]"
               git config user.email "github-actions[bot]@users.noreply.github.com"
+              git fetch origin
+              git checkout ${{ github.head_ref }}
               git add ./ui-tests/__results__/__snapshots__
-              git commit -m "[Docker] Update E2E image snapshots"
-              git push origin HEAD:${{ github.head_ref }}
+              git diff --staged --quiet || git commit -m "[Docker] Update E2E image snapshots"
+              git push origin ${{ github.head_ref }}
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
