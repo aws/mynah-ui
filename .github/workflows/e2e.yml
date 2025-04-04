@@ -1,0 +1,76 @@
+name: Run E2E Tests
+on: workflow_call
+jobs:
+    e2e:
+        # Prevents the workflow running from snapshot updates committed by the bot
+        if: github.actor != 'github-actions[bot]'
+        runs-on: ubuntu-latest
+        steps:
+          # Checkout the PR branch
+          - name: Checkout Code
+            uses: actions/checkout@v4
+            with:
+              ref: ${{ github.head_ref }}
+              fetch-depth: 0
+    
+          # Set up Node
+          - name: Set up Node
+            uses: actions/setup-node@v4
+            with:
+              node-version: '20.x'
+              registry-url: 'https://registry.npmjs.org'
+              scope: '@aws'
+    
+          # Install
+          - name: Install NPM packages
+            run: npm ci
+
+          # Build
+          - name: Build
+            run: npm run build && cd ./ui-tests && npm install && cd ..
+
+            # Run the linter
+          - name: Run linter
+            run: npm run lint
+
+          # Build and run Docker image
+          - name: Build and run E2E tests Docker Image
+            run: npm run tests:e2e
+            continue-on-error: true
+    
+          # Extract test results from Docker container
+          - name: Extract test results from Docker container
+            if: ${{ !failure() }}
+            run: npm run docker:inspect:override
+              
+          # Upload an artifact of all the results
+          - name: Upload E2E results
+            uses: actions/upload-artifact@v4
+            with:
+              name: snapshots
+              path: ./ui-tests/__results__
+              retention-days: 30
+    
+          - name: Replace Snapshots in PR Branch
+            if: ${{ !failure() }}
+            run: |
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git fetch origin
+              git checkout ${{ github.head_ref }}
+              git add ./ui-tests/__results__/__snapshots__
+              git diff --staged --quiet || git commit -m "[Docker] Update E2E image snapshots"
+              git push origin ${{ github.head_ref }}
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+          # Report test results using JUnit XML
+          - name: Publish Test Results
+            uses: phoenix-actions/test-reporting@v8
+            id: test-report               # Set ID reference for step
+            if: success() || failure()    # run this step even if previous step failed
+            with:
+              name: E2E Tests
+              path: ./ui-tests/__results__/__reports__/junit.xml
+              reporter: jest-junit
+              fail-on-error: false
