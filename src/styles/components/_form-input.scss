@@ -156,7 +156,7 @@
             pointer-events: none;
             transform: translateX(-25%);
         }
-        & + .mynah-form-input-validation-error-block {
+        & ~ .mynah-form-input-validation-error-block {
             display: flex;
             flex-flow: column nowrap;
             font-size: var(--mynah-font-size-xsmall);

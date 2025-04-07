@@ -517,6 +517,7 @@ export const exampleFormChatItem: ChatItem = {
 _To send the form, mandatory items should be filled._`,
     formItems: [
         {
+            tooltip: 'Please select your expertise area',
             id: 'expertise-area',
             type: 'select',
             title: `Area of expertise`,

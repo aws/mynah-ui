@@ -152,6 +152,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
         type: 'toggle',
         id: 'prompt-type',
         value: 'ask',
+        tooltip: 'Switch between chat and pair programmer modes',
         options: [ {
           value: 'ask',
           icon: 'chat'
@@ -300,7 +301,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     description: 'The DomGeneration function in dom.ts file'
                   },
                   ...(
-                    Array(500_000).fill(null).map((_, i) => ({ command: `item${i}`, description: `./src/${i}`, icon: MynahIcons.CODE_BLOCK }))
+                    Array(100_000).fill(null).map((_, i) => ({ command: `item${i}`, description: `./src/${i}`, icon: MynahIcons.CODE_BLOCK }))
                   )
                 ]
               }

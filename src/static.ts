@@ -318,6 +318,7 @@ export interface TreeNodeDetails {
 export interface ChatItemContent {
   header?: (ChatItemContent & {
     icon?: MynahIcons | MynahIconsType;
+    iconStatus?: 'main' | 'primary' | 'clear' | Status;
     status?: {
       status?: Status;
       icon?: MynahIcons | MynahIconsType;
@@ -373,9 +374,12 @@ export interface ChatItem extends ChatItemContent {
   snapToTop?: boolean;
   autoCollapse?: boolean;
   canBeVoted?: boolean;
+  canBeDismissed?: boolean;
+  title?: string;
   fullWidth?: boolean;
   padding?: boolean;
   icon?: MynahIcons | MynahIconsType;
+  iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
   status?: Status;
 }
@@ -392,6 +396,7 @@ interface BaseFormItem {
   placeholder?: string;
   value?: string;
   description?: string;
+  tooltip?: string;
   icon?: MynahIcons | MynahIconsType;
 }
 

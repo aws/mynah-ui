@@ -158,6 +158,11 @@ export class MynahUIIconImporter {
         .mynah-ui-icon-${iconName} {
           -webkit-mask-image: var(--mynah-ui-icon-${iconName});
           mask-image: var(--mynah-ui-icon-${iconName});
+        }
+        .mynah-ui-icon-${iconName}-subtract {
+          -webkit-mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
+          mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
+          mask-composite: subtract;
         }`;
       }).join('')}
       ` ]
