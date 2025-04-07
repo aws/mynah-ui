@@ -66,7 +66,7 @@ jobs:
     
           # Report test results using JUnit XML
           - name: Publish Test Results
-            uses: phoenix-actions/test-reporting@v8
+            uses: dorny/test-reporter@v2.0.0
             id: test-report               # Set ID reference for step
             if: success() || failure()    # run this step even if previous step failed
             with:
