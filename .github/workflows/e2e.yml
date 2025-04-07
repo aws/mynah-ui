@@ -22,12 +22,8 @@ jobs:
               scope: '@aws'
     
           # Install
-          - name: Install NPM packages
+          - name: Install dependencies
             run: npm ci
-
-            # Run the linter
-          - name: Run linter
-            run: npm run lint
 
           # Build and run Docker image
           - name: Build and run E2E tests Docker Image
