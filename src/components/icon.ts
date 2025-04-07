@@ -79,6 +79,7 @@ export type MynahIconsType = `${MynahIcons}`;
 
 export interface IconProps {
   icon: MynahIcons | MynahIconsType;
+  subtract?: boolean;
   classNames?: string[];
 }
 export class Icon {
@@ -89,7 +90,7 @@ export class Icon {
       type: 'i',
       classNames: [
         'mynah-ui-icon',
-                `mynah-ui-icon-${props.icon}`,
+                `mynah-ui-icon-${props.icon}${props.subtract === true ? '-subtract' : ''}`,
                 ...(props.classNames !== undefined ? props.classNames : []),
       ]
     });

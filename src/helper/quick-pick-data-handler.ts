@@ -47,8 +47,6 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroup[], search
       .map((item) => item.command);
   }
   returnGroup.groupName = `### ${searchTerm}: (${returnGroup.commands.length})`;
-  // returnGroup.commands = returnGroup.commands.splice(0, 200);
-
   return [ returnGroup ];
 };
 

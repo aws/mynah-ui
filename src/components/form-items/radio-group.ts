@@ -22,6 +22,7 @@ export interface RadioGroupProps {
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
+  tooltip?: ExtendedHTMLElement;
   value?: string;
   optional?: boolean;
   options?: SelectOption[];

@@ -171,7 +171,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         isSelected: true,
         store: {
           ...mynahUIDefaults.store,
-          // ...welcomeScreenTabData.store,
+          ...welcomeScreenTabData.store,
         },
       },
     },
@@ -228,6 +228,18 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }, 10000);
       } else if (buttonId === 'custom-data-check') {
         // Use for custom temporary checks
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.ANSWER,
+          title: 'SAVE THE DATE',
+          header: {
+            icon: 'calendar',
+            iconStatus: 'primary',
+            body: '## Soon, a new version will be released!'
+          },
+          fullWidth: true,
+          canBeDismissed: true,
+          body: "We're improving the performance, adding new features or making new UX changes every week. Save the date for new updates!."
+        });
       } else if (buttonId === 'history_sheet') {
         const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
           tabId,
@@ -1379,49 +1391,35 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       tabId,
       [
         {
-          type: 'radiogroup',
-          id: 'like',
+          type: 'textinput',
+          id: 'prompt-name',
+          title: 'Prompt name',
           mandatory: true,
-          value: 'yes',
-          options: [
-            {
-              label: 'Yes',
-              value: 'yes',
-            },
-            {
-              label: 'No',
-              value: 'no',
-            },
-            {
-              label: "Don't know",
-              value: 'dunno',
-            },
-          ],
-          title: 'Do you like it so far?',
-        },
-        {
-          type: 'textarea',
-          id: 'comment',
-          title: 'Any comments?',
-          placeholder: 'Enter will submit the form if the form is filled and valid',
+          validationPatterns: {
+            patterns: [{ pattern: /^[^./\\]+$/ }],
+            genericValidationErrorMessage:
+                'Text cannot contain dots (.), forward slashes (/), or backslashes (\\).',
+          },
+          placeholder: "Enter prompt name",
+          description: "Use this prompt by typing '@' followed by the prompt name.",
           autoFocus: true,
         },
       ],
       [
         {
-          id: 'save-comment',
-          text: 'Send',
-          status: 'primary',
-          waitMandatoryFormItems: true,
-        },
-        {
-          id: 'cancel-comment',
+          id: 'cancel-create-prompt',
+          status: 'clear',
           text: 'Cancel',
           waitMandatoryFormItems: false,
         },
+        {
+          id: 'submit-create-prompt',
+          text: 'Create',
+          status: 'main',
+          waitMandatoryFormItems: true,
+        }
       ],
-      'You opinions are so valuable!',
-      'Please give us your 2 mins to help us out. This form is not real by the way, it is just for demonstration.'
+      'Create saved prompt',
     );
   };
 

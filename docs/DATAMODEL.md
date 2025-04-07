@@ -1106,7 +1106,15 @@ type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAc
 
 // ################################# 
 interface ChatItemContent {
-  header?: ChatItemContent | null;
+  header?: (ChatItemContent & {
+    icon?: MynahIcons | MynahIconsType;
+    iconStatus?: 'main' | 'primary' | 'clear' | Status;
+    status?: {
+      status?: Status;
+      icon?: MynahIcons | MynahIconsType;
+      text?: string;
+    };
+  }) | null;
   body?: string | null;
   customRenderer?: string | ChatItemBodyRenderer | ChatItemBodyRenderer[] | null;
   followUp?: {
@@ -1157,6 +1165,7 @@ interface ChatItem extends ChatItemContent{
   autoCollapse?: boolean;
   canBeVoted?: boolean;
   icon?: MynahIcons;
+  iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
   status?: 'info' | 'success' | 'warning' | 'error';
 }
@@ -2503,6 +2512,7 @@ interface ChatItemFormItem {
   title?: string; // Label of the input
   autoFocus: boolean; // focus to the input when it is created, default=> false. (Only for textual form items)
   description?: string; // The description, showing under the input field itself
+  tooltip?: string; // The tooltip, showing when you hover to the whole input field
   icon?: MynahIcons; // An icon displaying at the start of the input, renders on all inputs except for stars and radiogroup
   validationPatterns?: {
     operator?: 'and' | 'or';
@@ -2720,6 +2730,14 @@ Ok, finally, when we click the `Submit` button, as it is configured that way, it
 </p>
 
 
+And how the tooltip looks like:
+
+<p align="center">
+  <img src="./img/data-model/chatItems/formItemsTooltip.png" alt="formItems" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+
 **Note:** As you can see. `Cancel` button has the value for `keepCardAfterClick` and `waitMandatoryItems` as `false` which means that `Cancel` button won't be disabled even if the form is not valid _(mandatory fields not filled)_ and when clicked it will remove the whole card.
 
 A sample return to the [onInBodyButtonClicked](./PROPERTIES.md#oninbodybuttonclicked) function
@@ -2808,6 +2826,109 @@ mynahUI.addChatItem(tabId, {
 
 <p align="center">
   <img src="./img/data-model/chatItems/icon.png" alt="icon" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `iconStatus`
+It allows you give a background status color only to the icon. Can be given to both the `header` and main card icons. 
+
+See the example below.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  title: 'SAVE THE DATE',
+  header: {
+    icon: 'calendar',
+    iconStatus: 'primary',
+    body: '## Soon, a new version will be released!'
+  },
+  fullWidth: true,
+  canBeDismissed: true,
+  body: "We're improving the performance, adding new features or making new UX changes every week. Save the date for new updates!."
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/iconStatus.png" alt="icon" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+
+## `canBeDismissed`
+It allows you put a close button on top of the card. It appears even above the `header` section.
+
+See the example below.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  title: 'SAVE THE DATE',
+  header: {
+    icon: 'calendar',
+    iconStatus: 'primary',
+    body: '## Soon, a new version will be released!'
+  },
+  fullWidth: true,
+  canBeDismissed: true,
+  body: "We're improving the performance, adding new features or making new UX changes every week. Save the date for new updates!."
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/iconStatus.png" alt="icon" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `title`
+It allows you give a dimmed color title to the card itself other than the `header` section. It is simple, just a string. And can be combined with the `canBeDismissed` too.
+
+See the example below.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+  type: ChatItemType.ANSWER,
+  title: 'SAVE THE DATE',
+  header: {
+    icon: 'calendar',
+    iconStatus: 'primary',
+    body: '## Soon, a new version will be released!'
+  },
+  fullWidth: true,
+  canBeDismissed: true,
+  body: "We're improving the performance, adding new features or making new UX changes every week. Save the date for new updates!."
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/iconStatus.png" alt="icon" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

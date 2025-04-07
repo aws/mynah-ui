@@ -5,16 +5,20 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { cancelEvent } from '../../helper/events';
 import testIds from '../../helper/test-ids';
 import { isMandatoryItemValid, isTextualFormItemValid } from '../../helper/validator';
 import { ChatItem, ChatItemFormItem, TextBasedFormItem } from '../../static';
+import { Card } from '../card/card';
+import { CardBody } from '../card/card-body';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
 import { Stars } from '../form-items/stars';
 import { TextArea } from '../form-items/text-area';
 import { TextInput } from '../form-items/text-input';
 import { Icon, MynahIcons } from '../icon';
-
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
+const TOOLTIP_DELAY = 350;
 export interface ChatItemFormItemsWrapperProps {
   tabId: string;
   chatItem: Partial<ChatItem>;
@@ -28,6 +32,8 @@ export class ChatItemFormItemsWrapper {
   private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars> = {};
   private readonly validationItems: Record<string, boolean> = {};
   private isValid: boolean = false;
+  private tooltipOverlay: Overlay | null;
+  private tooltipTimeout: ReturnType<typeof setTimeout>;
   onValidationChange?: (isValid: boolean) => void;
   onAllFormItemsDisabled?: () => void;
 
@@ -39,7 +45,7 @@ export class ChatItemFormItemsWrapper {
       testId: testIds.chatItem.chatItemForm.wrapper,
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
-        let chatOption;
+        let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | undefined;
         let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true ? '* ' : ''}${chatItemOption.title ?? ''}`;
         if (chatItemOption.mandatory === true) {
           label = DomBuilder.getInstance().build({
@@ -57,7 +63,7 @@ export class ChatItemFormItemsWrapper {
           }
         }
         let description;
-        if (chatItemOption.description !== undefined) {
+        if (chatItemOption.description != null) {
           description = DomBuilder.getInstance().build({
             type: 'span',
             testId: testIds.chatItem.chatItemForm.description,
@@ -200,8 +206,21 @@ export class ChatItemFormItemsWrapper {
             break;
         }
 
-        if (chatOption !== undefined) {
+        if (chatOption != null) {
           this.options[chatItemOption.id] = chatOption;
+          if (chatItemOption.tooltip != null) {
+            chatOption.render.update({
+              events: {
+                mouseover: (e) => {
+                  cancelEvent(e);
+                  if (chatItemOption.tooltip != null && chatOption?.render != null) {
+                    this.showTooltip(chatItemOption.tooltip, chatOption.render);
+                  }
+                },
+                mouseleave: this.hideTooltip
+              }
+            });
+          }
           return chatOption.render;
         }
         return null;
@@ -209,6 +228,41 @@ export class ChatItemFormItemsWrapper {
     });
     this.isFormValid();
   }
+
+  private readonly showTooltip = (content: string, elm: HTMLElement | ExtendedHTMLElement): void => {
+    if (content.trim() !== undefined) {
+      clearTimeout(this.tooltipTimeout);
+      this.tooltipTimeout = setTimeout(() => {
+        this.tooltipOverlay = new Overlay({
+          background: true,
+          closeOnOutsideClick: false,
+          referenceElement: elm,
+          dimOutside: false,
+          removeOtherOverlays: true,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.CENTER,
+          children: [
+            new Card({
+              border: false,
+              children: [
+                new CardBody({
+                  body: content
+                }).render
+              ]
+            }).render
+          ],
+        });
+      }, TOOLTIP_DELAY);
+    }
+  };
+
+  public readonly hideTooltip = (): void => {
+    clearTimeout(this.tooltipTimeout);
+    if (this.tooltipOverlay !== null) {
+      this.tooltipOverlay?.close();
+      this.tooltipOverlay = null;
+    }
+  };
 
   private readonly getHandlers = (chatItemOption: ChatItemFormItem): Object => {
     if (chatItemOption.mandatory === true ||

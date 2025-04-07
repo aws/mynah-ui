@@ -25,6 +25,7 @@ import { ChatItemInformationCard } from './chat-item-information-card';
 import { ChatItemTabbedCard } from './chat-item-tabbed-card';
 import { Spinner } from '../spinner/spinner';
 import { MoreContentIndicator } from '../more-content-indicator';
+import { Button } from '../button';
 
 export interface ChatItemCardProps {
   tabId: string;
@@ -41,6 +42,7 @@ export class ChatItemCard {
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
   private cardFooter: ExtendedHTMLElement | null = null;
   private cardHeader: ExtendedHTMLElement | null = null;
+  private cardTitle: ExtendedHTMLElement | null = null;
   private informationCard: ChatItemInformationCard | null = null;
   private tabbedCard: ChatItemTabbedCard | null = null;
   private cardIcon: Icon | null = null;
@@ -88,6 +90,7 @@ export class ChatItemCard {
 
       ];
     }
+    this.cardTitle = this.getCardTitle();
     this.cardHeader = this.getCardHeader();
     this.cardFooter = this.getCardFooter();
     this.card = new Card({
@@ -142,6 +145,13 @@ export class ChatItemCard {
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-card-header', 'mynah-card-inner-order-5' ]
+    });
+  };
+
+  private readonly getCardTitle = (): ExtendedHTMLElement => {
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-item-card-title', 'mynah-card-inner-order-3' ]
     });
   };
 
@@ -248,6 +258,46 @@ export class ChatItemCard {
 
     // If no data is provided for the header
     // skip removing and checking it
+    if (this.props.chatItem.canBeDismissed === true || this.props.chatItem.title != null) {
+      if (this.cardTitle != null) {
+        this.cardTitle.remove();
+        this.cardTitle = null;
+      }
+      this.cardTitle = this.getCardTitle();
+      if (this.props.chatItem.title != null) {
+        this.cardTitle?.insertChild('beforeend', DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-chat-item-card-title-text' ],
+          children: [ this.props.chatItem.title ]
+        }));
+      }
+
+      if (this.props.chatItem.canBeDismissed === true) {
+        this.cardTitle?.insertChild('beforeend', new Button({
+          icon: new Icon({ icon: 'cancel' }).render,
+          onClick: () => {
+            this.render.remove();
+            if (this.props.chatItem.messageId !== undefined) {
+              const currentChatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
+              MynahUITabsStore.getInstance()
+                .getTabDataStore(this.props.tabId)
+                .updateStore(
+                  {
+                    chatItems: [ ...currentChatItems.map(chatItem => this.props.chatItem.messageId !== chatItem.messageId ? chatItem : { type: ChatItemType.ANSWER, messageId: chatItem.messageId }) ],
+                  },
+                  true
+                );
+            }
+          },
+          primary: false,
+          status: 'clear'
+        }).render);
+      }
+      this.card?.render.insertChild('afterbegin', this.cardTitle);
+    }
+
+    // If no data is provided for the header
+    // skip removing and checking it
     if (this.props.chatItem.header !== undefined) {
       if (this.cardHeader != null) {
         this.cardHeader.remove();
@@ -300,7 +350,7 @@ export class ChatItemCard {
         this.cardIcon.render.remove();
         this.cardIcon = null;
       } else {
-        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10' ] });
+        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
         this.card?.render.insertChild('beforeend', this.cardIcon.render);
       }
     }
