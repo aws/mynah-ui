@@ -68,6 +68,7 @@ import BUG from './icons/bug.svg';
 import CHECK_LIST from './icons/check-list.svg';
 import DEPLOY from './icons/deploy.svg';
 import HELP from './icons/help.svg';
+import HISTORY from './icons/history.svg';
 import MESSAGE from './icons/message.svg';
 import TRASH from './icons/trash.svg';
 import TRANSFORM from './icons/transform.svg';
@@ -140,6 +141,7 @@ export class MynahUIIconImporter {
       MESSAGE,
       TRASH,
       TRANSFORM,
+      HISTORY
     };
     DomBuilder.getInstance().createPortal('mynah-ui-icons', {
       type: 'style',
