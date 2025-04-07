@@ -40,13 +40,14 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroup[], search
 
   const returnGroup: QuickActionCommandGroup = {
     icon: MynahIcons.SEARCH,
-    groupName: `### "${searchTerm}"`,
     commands: []
   };
   if (matchedCommands.length > 0) {
     returnGroup.commands = matchedCommands.sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .map((item) => item.command);
   }
+  returnGroup.groupName = `### ${searchTerm}: (${returnGroup.commands.length})`;
+  // returnGroup.commands = returnGroup.commands.splice(0, 200);
 
   return [ returnGroup ];
 };

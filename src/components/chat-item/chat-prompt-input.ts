@@ -282,9 +282,6 @@ export class ChatPromptInput {
       this.promptTextInput.blur();
     }
     if (!this.quickPickOpen) {
-      const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
-      const quickPickCommandItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[]) ?? [];
-
       if (e.key === KeyMap.BACKSPACE || e.key === KeyMap.DELETE) {
         if (this.selectedCommand !== '' && this.promptTextInput.getTextInputValue() === '') {
           cancelEvent(e);
@@ -299,6 +296,8 @@ export class ChatPromptInput {
         (this.selectedCommand === '' && e.key === KeyMap.SLASH && this.promptTextInput.getTextInputValue() === '') ||
         (e.key === KeyMap.AT && this.promptTextInput.promptTextInputMaxLength > 0)
       ) {
+        const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+        const quickPickCommandItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[]) ?? [];
         this.searchTerm = '';
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
         this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;

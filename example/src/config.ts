@@ -147,6 +147,20 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
     tabTitle: 'Chat',
     cancelButtonWhenLoading: true,
     promptInputInfo: 'This is the information field. Check [MynahUI Data Model](https://github.com/aws/mynah-ui/blob/main/docs/DATAMODEL.md) for more details.',
+    promptInputOptions: [
+      {
+        type: 'toggle',
+        id: 'prompt-type',
+        value: 'ask',
+        options: [ {
+          value: 'ask',
+          icon: 'chat'
+        }, {
+          value: 'do',
+          icon: 'code-block'
+        } ]
+      }
+    ],
     chatItems: [
       {
         type: ChatItemType.ANSWER,
@@ -286,7 +300,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                     description: 'The DomGeneration function in dom.ts file'
                   },
                   ...(
-                    Array(10_000).fill(null).map((_, i) => ({ command: `item${i}`, description: `./src/${i}`, icon: MynahIcons.CODE_BLOCK }))
+                    Array(500_000).fill(null).map((_, i) => ({ command: `item${i}`, description: `./src/${i}`, icon: MynahIcons.CODE_BLOCK }))
                   )
                 ]
               }
