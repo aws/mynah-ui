@@ -8,7 +8,7 @@ import { ChatItem } from '../static';
  * @returns The bodies of chat cards in markdown format, separated by \n\n---\n\n
  */
 export const serializeMarkdown = (tabId: string): string => {
-  return MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.map(chatItem => chatItem.body ?? '').filter(chatItem => chatItem.trim() !== '').join('\n\n---\n\n') ?? '';
+  return (MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems') as ChatItem[]).map(chatItem => chatItem.body ?? '').filter(chatItem => chatItem.trim() !== '').join('\n\n---\n\n') ?? '';
 };
 
 /**
@@ -17,7 +17,7 @@ export const serializeMarkdown = (tabId: string): string => {
  * @returns The bodies of chat cards in HTML format
  */
 export const serializeHtml = (tabId: string): string => {
-  const chatItemCardDivs = MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.filter((chatItem): chatItem is ChatItem =>
+  const chatItemCardDivs = (MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems') as ChatItem[]).filter((chatItem): chatItem is ChatItem =>
     chatItem?.body != null && chatItem.body.trim() !== ''
   ).map(chatItem => new ChatItemCard({
     chatItem: {
