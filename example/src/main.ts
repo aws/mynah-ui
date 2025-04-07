@@ -1115,7 +1115,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
       Item id: <b>${itemId}</b><br/>
       Key: <b>${event.keyCode}</b><br/>
       `);
-      if ((itemId === 'description' || itemId === 'comment') && event.keyCode === 13 && event.ctrlKey !== true && event.shiftKey !== true) {
+      if ((itemId === 'prompt-name') && event.key === 'Enter' && event.ctrlKey !== true && event.shiftKey !== true) {
         event.preventDefault();
         event.stopImmediatePropagation();
         Log(`Form keypress Enter submit on tab <b>${tabId}</b>:<br/>
@@ -1465,7 +1465,7 @@ used as a context to generate this message.`
           }, ...exampleStreamParts],
         (chatItem: Partial<ChatItem>, percentage: number) => {
           if (streamingMessageId != null) {
-            mynahUI.updateChatAnswerWithMessageId(tabId, streamingMessageId, chatItem);
+            mynahUI.updateLastChatAnswer(tabId, chatItem);
             mynahUI.updateStore(tabId, {
               ...(optionalParts != null ? {
                 promptInputProgress: {
