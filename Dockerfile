@@ -23,10 +23,6 @@ COPY ./ui-tests/webpack.config.js /app/ui-tests/
 # Copy the __test__, __results__, and src directories from ui-tests
 COPY ./ui-tests/__test__ /app/ui-tests/__test__
 COPY ./ui-tests/__results__/__snapshots__ /app/ui-tests/__results__/__snapshots__
-# RUN if [ -d "./ui-tests/__results__/__snapshots__" ]; then \
-#     mkdir -p /app/ui-tests/__results__/__snapshots__ && \
-#     cp -r ./ui-tests/__results__/__snapshots__/* /app/ui-tests/__results__/__snapshots__/ || true; \
-#     fi
 COPY ./ui-tests/src /app/ui-tests/src
 
 # Install dependencies and build MynahUI
