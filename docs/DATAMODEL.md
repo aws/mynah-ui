@@ -109,7 +109,7 @@ interface MynahUIDataModel {
    */
   compactMode?: boolean;
   /**
-   * Tab content header details, only visibile when showTabHeaderDetails is set to 'true'
+   * Tab content header details, only visibile when not null / undefined
    */
   tabHeaderDetails?: TabHeaderDetails | null;
   /**
