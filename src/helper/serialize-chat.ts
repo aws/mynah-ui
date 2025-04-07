@@ -8,7 +8,7 @@ import { ChatItem } from '../static';
  * @returns The bodies of chat cards in markdown format, separated by \n\n---\n\n
  */
 export const serializeMarkdown = (tabId: string): string => {
-  return MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.map(chatItem => chatItem.body ?? '').filter(chatItem => chatItem.trim() !== '').join('\n\n---\n\n') ?? '';
+  return (MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems') as ChatItem[]).map(chatItem => chatItem.body ?? '').filter(chatItem => chatItem.trim() !== '').join('\n\n---\n\n') ?? '';
 };
 
 /**
@@ -17,7 +17,7 @@ export const serializeMarkdown = (tabId: string): string => {
  * @returns The bodies of chat cards in HTML format
  */
 export const serializeHtml = (tabId: string): string => {
-  const chatItemCardDivs = MynahUITabsStore.getInstance().getAllTabs()[tabId].store?.chatItems?.filter((chatItem): chatItem is ChatItem =>
+  const chatItemCardDivs = (MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems') as ChatItem[]).filter((chatItem): chatItem is ChatItem =>
     chatItem?.body != null && chatItem.body.trim() !== ''
   ).map(chatItem => new ChatItemCard({
     chatItem: {
@@ -41,7 +41,7 @@ export const serializeHtml = (tabId: string): string => {
 
             if (rule instanceof CSSStyleRule) {
               if (rule.selectorText === '.mynah-chat-wrapper') {
-                ruleText = `.mynah-chat-wrapper { display: block !important; ${rule.style.cssText} }`;
+                ruleText = `.mynah-chat-wrapper { visibility: visible !important; position: relative !important; left: initial !important; opacity: 1 !important; ${rule.style.cssText} }`;
               }
               if (rule.selectorText.includes('.mynah-chat-item-card')) {
                 ruleText = rule.cssText.replace('opacity: 0', 'opacity: 1').replace('transform: translate3d(0px, min(30%, 10vh), 0px) scale(0.99)', 'transform: none');
@@ -69,7 +69,7 @@ export const serializeHtml = (tabId: string): string => {
         </style>
       </head>
       <body>
-      <div class="mynah-chat-wrapper" style="max-width: 600px; overflow-y: scroll; margin: auto; border: 1px solid gray;">
+      <div class="mynah-chat-wrapper" style="max-width: 600px; margin: auto; border: 1px solid gray;">
         <div class="mynah-chat-items-container" style="padding: 10px;">${chatItemCardDivs ?? ''}</div>
         </div>
       </body>
