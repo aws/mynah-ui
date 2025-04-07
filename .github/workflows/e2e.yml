@@ -20,14 +20,40 @@ jobs:
               node-version: '20.x'
               registry-url: 'https://registry.npmjs.org'
               scope: '@aws'
-    
-          # Install
-          - name: Install dependencies
-            run: npm ci
 
-          # Build and run Docker image
-          - name: Build and run E2E tests Docker Image
-            run: npm run tests:e2e
+          # Set up Docker Buildx
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v3
+            
+          # Cache Docker layers
+          - name: Cache Docker layers
+            uses: actions/cache@v3
+            with:
+              path: /tmp/.buildx-cache
+              key: ${{ runner.os }}-buildx-${{ hashFiles('**/package-lock.json', '**/ui-tests/package-lock.json', 'Dockerfile') }}
+              restore-keys: |
+                ${{ runner.os }}-buildx-
+
+          # Build Docker image with caching
+          - name: Build E2E tests Docker Image
+            uses: docker/build-push-action@v5
+            with:
+              context: .
+              push: false
+              load: true
+              tags: flarechatui-e2e-image:latest
+              cache-from: type=local,src=/tmp/.buildx-cache
+              cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+          # Move cache to prevent unlimited growth
+          - name: Move cache
+            run: |
+              rm -rf /tmp/.buildx-cache
+              mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+          # Run the Docker container
+          - name: Run E2E tests Docker Container
+            run: npm run docker:run
     
           # Extract test results from Docker container
           - name: Extract test results from Docker container
@@ -43,6 +69,7 @@ jobs:
               path: ./ui-tests/__results__
               retention-days: 30
     
+          # Your commented out snapshot replacement section preserved
           # - name: Replace Snapshots in PR Branch
           #   if: ${{ !failure() }}
           #   run: |
