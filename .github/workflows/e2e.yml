@@ -28,7 +28,6 @@ jobs:
           # Build and run Docker image
           - name: Build and run E2E tests Docker Image
             run: npm run tests:e2e
-            continue-on-error: true
     
           # Extract test results from Docker container
           - name: Extract test results from Docker container
@@ -38,6 +37,7 @@ jobs:
           # Upload an artifact of all the results
           - name: Upload E2E results
             uses: actions/upload-artifact@v4
+            if: always()
             with:
               name: snapshots
               path: ./ui-tests/__results__
@@ -55,3 +55,7 @@ jobs:
           #     git push origin ${{ github.head_ref }}
           #   env:
           #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    report:
+      if: always()
+      uses: ./.github/workflows/test_report.yml

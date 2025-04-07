@@ -1,9 +1,5 @@
 name: 'Test Report'
-on:
-  workflow_run:
-    workflows: ['Run E2E Tests']
-    types:
-      - completed
+on: workflow_call
 permissions:
   contents: read
   actions: read
@@ -11,13 +7,10 @@ permissions:
 jobs:
   report:
     runs-on: ubuntu-latest
-    # Remove any conditional that might prevent it from running
-    if: always()
     steps:
     - uses: dorny/test-reporter@v2.0.0
       with:
         name: E2E Tests Report
         path: ./ui-tests/__results__/__reports__/junit.xml
         reporter: jest-junit
-        # Add this to ensure it runs even if it can't find test results
         fail-on-error: false
