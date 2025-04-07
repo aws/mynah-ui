@@ -7,7 +7,7 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames, PromptAttachmentType, TabHeaderDetails } from '../../static';
+import { CardRenderDetails, ChatItem, ChatItemType, PromptAttachmentType, TabHeaderDetails } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
@@ -18,7 +18,6 @@ import '../../styles/components/chat/_chat-wrapper.scss';
 import testIds from '../../helper/test-ids';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { GradientBackground } from '../background';
-import { MynahUIGlobalEvents } from '../../helper/events';
 import { MoreContentIndicator } from '../more-content-indicator';
 
 export const CONTAINER_GAP = 12;
@@ -44,8 +43,6 @@ export class ChatWrapper {
   private lastStreamingChatItemCard: ChatItemCard | null;
   private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
-  private scrollPos: number = 0;
-  private restoreScrollAfterResize: boolean = false;
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
     this.props = props;
@@ -80,30 +77,6 @@ export class ChatWrapper {
         this.chatItemsContainer.clear(true);
         this.chatItemsContainer.insertChild('beforeend', this.getNewConversationGroupElement());
         this.allRenderedChatItems = {};
-      }
-    });
-
-    MynahUITabsStore.getInstance().addListener('selectedTabChange', (selectedTabId) => {
-      if (this.props.tabId === selectedTabId) {
-        setTimeout(() => {
-          this.chatItemsContainer.scrollTop = this.scrollPos;
-        }, 10);
-      }
-    });
-    MynahUITabsStore.getInstance().addListener('beforeTabChange', (selectedTabId) => {
-      if (this.props.tabId !== selectedTabId) {
-        this.scrollPos = this.chatItemsContainer.scrollTop;
-      }
-    });
-
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_RESIZE, (data: {clientRect: DOMRect}) => {
-      if (!this.restoreScrollAfterResize && (data.clientRect.height < 10 || data.clientRect.width < 10) && this.props.tabId === MynahUITabsStore.getInstance().getSelectedTabId()) {
-        this.restoreScrollAfterResize = true;
-      } else if (this.restoreScrollAfterResize) {
-        this.restoreScrollAfterResize = false;
-        setTimeout(() => {
-          this.chatItemsContainer.scrollTop = this.scrollPos;
-        }, 10);
       }
     });
 
@@ -188,11 +161,6 @@ export class ChatWrapper {
       children: [
         this.getNewConversationGroupElement()
       ],
-      events: {
-        wheel: () => {
-          this.scrollPos = this.chatItemsContainer.scrollTop;
-        }
-      }
     });
 
     this.tabHeaderDetails = new TitleDescriptionWithIcon({
@@ -245,7 +213,10 @@ export class ChatWrapper {
           type: 'style',
           children: [ `
           .mynah-nav-tabs-wrapper[selected-tab="${this.props.tabId}"] ~ .mynah-ui-tab-contents-wrapper > .mynah-chat-wrapper[mynah-tab-id="${this.props.tabId}"]{
-              display: flex;
+              visibility: visible;
+              position: relative;
+              left: initial;
+              opacity: 1;
             }
             .mynah-nav-tabs-wrapper[selected-tab="${this.props.tabId}"] ~ .mynah-ui-tab-contents-wrapper > .mynah-chat-wrapper:not([mynah-tab-id="${this.props.tabId}"]) * {
               pointer-events: none !important;
@@ -258,7 +229,6 @@ export class ChatWrapper {
         new MoreContentIndicator({
           onClick: () => {
             this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
-            this.scrollPos = this.chatItemsContainer.scrollTop;
           }
         }).render,
         this.intermediateBlockContainer,
@@ -331,11 +301,6 @@ export class ChatWrapper {
     this.removeEmptyCardsAndFollowups();
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
     const chatItemCard = new ChatItemCard({
-      onAnimationStateChange: (isAnimating) => {
-        if (!isAnimating) {
-          this.scrollPos = this.chatItemsContainer.scrollTop;
-        }
-      },
       tabId: this.props.tabId,
       chatItem: {
         ...chatItem,
@@ -374,8 +339,6 @@ export class ChatWrapper {
     setTimeout(() => {
       // remove css class which allows us to snap automatically
       this.chatItemsContainer.removeClass('set-scroll');
-      // set last scroll position
-      this.scrollPos = this.chatItemsContainer.scrollTop;
     }, 100);
   };
 

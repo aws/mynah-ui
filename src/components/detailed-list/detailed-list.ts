@@ -8,6 +8,7 @@ import { DetailedListItemWrapper } from './detailed-list-item';
 import { chunkArray } from '../../helper/quick-pick-data-handler';
 import { ChatItemFormItemsWrapper } from '../chat-item/chat-item-form-items';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
+import { generateUID } from '../../main';
 
 export interface DetailedListWrapperProps {
   detailedList: DetailedList;
@@ -23,6 +24,11 @@ export class DetailedListWrapper {
   private readonly filtersContainer: ExtendedHTMLElement;
   private readonly headerContainer: ExtendedHTMLElement;
   private readonly props: DetailedListWrapperProps;
+  private detailedListItemsBlockData: Array<{
+    data: DetailedListItem[];
+    element: ExtendedHTMLElement;
+  }> = [];
+
   private activeTargetElementIndex: number = 0;
   private allSelectableDetailedListElements: DetailedListItemWrapper[] = [];
   constructor (props: DetailedListWrapperProps) {
@@ -40,8 +46,29 @@ export class DetailedListWrapper {
     this.detailedListItemGroupsContainer = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-detailed-list-item-groups-wrapper' ],
-      children: this.getDetailedListItemGroups()
+      children: this.getDetailedListItemGroups(),
+      events: {
+        scroll: () => {
+          const wrapperOffsetHeight = this.detailedListItemGroupsContainer.offsetHeight;
+          const wrapperScrollTop = this.detailedListItemGroupsContainer.scrollTop;
+          this.detailedListItemsBlockData.forEach(itemsBlock => {
+            const itemBlockTop = itemsBlock.element.offsetTop;
+            const itemBlockBottom = itemsBlock.element.offsetTop + itemsBlock.element.offsetHeight;
+            if (itemsBlock.element.childNodes.length === 0 &&
+              (itemBlockTop < wrapperScrollTop + wrapperOffsetHeight) &&
+              (itemBlockBottom > wrapperScrollTop - wrapperOffsetHeight)) {
+              itemsBlock.element.update({
+                children: this.getDetailedListItemElements(itemsBlock.data)
+              });
+            } else if ((itemBlockTop > wrapperScrollTop + wrapperOffsetHeight) ||
+            (itemBlockBottom < wrapperScrollTop - wrapperOffsetHeight)) {
+              itemsBlock.element.clear();
+            }
+          });
+        }
+      }
     });
+
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.quickPicksWrapper,
@@ -108,23 +135,22 @@ export class DetailedListWrapper {
                 ]
               }) ]
             : []),
-          ...((chunkArray(detailedListGroup.children ?? [], 100)).map(detailedListItemPart => {
+          ...((chunkArray(detailedListGroup.children ?? [], 100)).map((detailedListItemPart, index) => {
+            const itemBlockKey = generateUID();
             const detailedListItemBlock = DomBuilder.getInstance().build({
               type: 'div',
+              attributes: {
+                key: itemBlockKey,
+                style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-10) + var(--mynah-sizing-half)));`
+              },
               classNames: [ 'mynah-detailed-list-items-block' ],
-              children: detailedListItemPart.map(detailedListItem => {
-                const detailedListItemElement = new DetailedListItemWrapper({
-                  listItem: detailedListItem,
-                  onSelect: this.props.onItemSelect,
-                  onActionClick: this.props.onItemActionClick,
-                  selectable: this.props.detailedList.selectable,
-                  textDirection: this.props.detailedList.textDirection
-                });
-                if (detailedListItem.disabled !== true) {
-                  this.allSelectableDetailedListElements.push(detailedListItemElement);
-                }
-                return detailedListItemElement.render;
-              })
+              children: index < 5
+                ? this.getDetailedListItemElements(detailedListItemPart)
+                : []
+            });
+            this.detailedListItemsBlockData.push({
+              data: detailedListItemPart,
+              element: detailedListItemBlock
             });
             return detailedListItemBlock;
           }))
@@ -133,6 +159,22 @@ export class DetailedListWrapper {
     });
     this.allSelectableDetailedListElements[0]?.setFocus(true, true);
     return groups ?? [ '' ];
+  };
+
+  private readonly getDetailedListItemElements = (detailedListItems: DetailedListItem[]): ExtendedHTMLElement[] => {
+    return detailedListItems.map(detailedListItem => {
+      const detailedListItemElement = new DetailedListItemWrapper({
+        listItem: detailedListItem,
+        onSelect: this.props.onItemSelect,
+        onActionClick: this.props.onItemActionClick,
+        selectable: this.props.detailedList.selectable,
+        textDirection: this.props.detailedList.textDirection
+      });
+      if (detailedListItem.disabled !== true) {
+        this.allSelectableDetailedListElements.push(detailedListItemElement);
+      }
+      return detailedListItemElement.render;
+    });
   };
 
   public readonly changeTarget = (direction: 'up' | 'down', snapOnLastAndFirst?: boolean, scrollIntoView?: boolean): void => {
@@ -185,6 +227,8 @@ export class DetailedListWrapper {
     }
 
     if (detailedList.list != null) {
+      this.detailedListItemsBlockData = [];
+      this.detailedListItemGroupsContainer.clear();
       this.activeTargetElementIndex = 0;
       this.allSelectableDetailedListElements = [];
       this.props.detailedList.list = detailedList.list;
