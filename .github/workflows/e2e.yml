@@ -25,10 +25,6 @@ jobs:
           - name: Install NPM packages
             run: npm ci
 
-          # Build
-          - name: Build
-            run: npm run build && cd ./ui-tests && npm install && cd ..
-
             # Run the linter
           - name: Run linter
             run: npm run lint
@@ -63,14 +59,3 @@ jobs:
               git push origin ${{ github.head_ref }}
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-          # Report test results using JUnit XML
-          - name: Publish Test Results
-            uses: dorny/test-reporter@v2.0.0
-            id: test-report               # Set ID reference for step
-            if: success() || failure()    # run this step even if previous step failed
-            with:
-              name: E2E Tests
-              path: ./ui-tests/__results__/__reports__/junit.xml
-              reporter: jest-junit
-              fail-on-error: false
