@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
@@ -30,6 +30,6 @@ export const filterQuickPicks = async (page: Page, mode?: 'command' | 'context',
   expect(innerTexts[0]).not.toContain(mode === 'context' ? '@file' : '/clear');
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

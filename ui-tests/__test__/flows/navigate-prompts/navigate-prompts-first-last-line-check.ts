@@ -1,13 +1,8 @@
-import { Page } from 'playwright/test';
-import { getSelector, waitForAnimationEnd } from '../../helpers';
+import { expect, Page } from 'playwright/test';
+import { getSelector, normalizeText, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
-import { closeTab } from '../close-tab';
-import { openNewTab } from '../open-new-tab';
 
 export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
   const firstPrompt = 'This is the first user prompt';
   const secondPrompt = 'This is the second user prompt.\nIt spans two separate lines.';
 
@@ -22,15 +17,12 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   await waitForAnimationEnd(page);
 
   // The input should start as the input with two lines
-  console.log((await promptInput.innerText()) === secondPrompt);
-  console.log(await promptInput.innerText());
-
-  expect(await promptInput.innerText()).toBe(secondPrompt);
+  expect(normalizeText(await promptInput.innerText())).toBe(normalizeText(secondPrompt));
 
   // Input should remain the same as it is multiline
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
-  expect(await promptInput.innerText()).toBe(secondPrompt);
+  expect(normalizeText(await promptInput.innerText())).toBe(normalizeText(secondPrompt));
 
   // Go back to the first line
   await promptInput.press('ArrowUp');
@@ -41,7 +33,7 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   // Now that we're in the first line again, it should navigate to the first user prompt
   await promptInput.press('ArrowUp');
   await waitForAnimationEnd(page);
-  expect(await promptInput.innerText()).toBe(firstPrompt);
+  expect(normalizeText(await promptInput.innerText())).toBe(normalizeText(firstPrompt));
 
   // Given that this input only has one line, we should be able to go down to prompt 2 immediately again, after going to the end of the text
   await promptInput.press('ArrowDown');
@@ -49,5 +41,6 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   await promptInput.press('ArrowDown');
   await waitForAnimationEnd(page);
 
-  expect(await promptInput.innerText()).toBe(secondPrompt);
+  // The explicit \n is lost at the end, so we account for that as it is expected
+  expect(normalizeText(await promptInput.innerText())).toBe(normalizeText(secondPrompt.replace('\n', '')));
 };

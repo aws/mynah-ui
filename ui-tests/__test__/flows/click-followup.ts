@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
@@ -16,6 +16,6 @@ export const clickToFollowup = async (page: Page, skipScreenshots?: boolean): Pr
   await userCard.scrollIntoViewIfNeeded();
 
   if (skipScreenshots !== true) {
-    expect(await userCard.screenshot()).toMatchImageSnapshot();
+    expect(await userCard.screenshot()).toMatchSnapshot();
   }
 };
