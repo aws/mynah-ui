@@ -20,7 +20,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: npm run build && cd ./ui-tests && npm install && cd ..
 
       - name: Run linter
         run: npm run lint
