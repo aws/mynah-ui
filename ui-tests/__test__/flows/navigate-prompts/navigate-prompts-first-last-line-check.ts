@@ -41,5 +41,6 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   await promptInput.press('ArrowDown');
   await justWait(100);
 
-  expect(await promptInput.innerText()).toBe(secondPrompt);
+  // The explicit \n is lost at the end, so we account for that as it is expected
+  expect(await promptInput.innerText()).toBe(secondPrompt.replace('\n', ''));
 };

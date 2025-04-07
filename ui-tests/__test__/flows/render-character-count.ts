@@ -1,5 +1,5 @@
 import { expect, Page } from 'playwright/test';
-import { getSelector, isVisible } from '../helpers';
+import { getSelector, isVisible, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
 export const renderCharacterCount = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
@@ -18,6 +18,8 @@ export const renderCharacterCount = async (page: Page, skipScreenshots?: boolean
 
   // Check that the value is set to 3500/4000
   expect(await characterCounter.innerText()).toBe('3500/4000');
+
+  await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
     expect(await page.screenshot()).toMatchSnapshot();
