@@ -115,7 +115,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             {
               id: 'history_sheet',
               text: 'Sheet (History)',
-              icon: MynahIcons.COMMENT,
+              icon: MynahIcons.HISTORY,
             },
             {
               id: 'memory_sheet',
