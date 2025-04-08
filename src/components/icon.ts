@@ -68,6 +68,7 @@ export enum MynahIcons {
   BUG = 'bug',
   CHECK_LIST = 'check-list',
   DEPLOY = 'deploy',
+  SHELL = 'shell',
   HELP = 'help',
   MESSAGE = 'message',
   TRASH = 'trash',

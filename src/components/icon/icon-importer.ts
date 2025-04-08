@@ -67,6 +67,7 @@ import ASTERISK from './icons/asterisk.svg';
 import BUG from './icons/bug.svg';
 import CHECK_LIST from './icons/check-list.svg';
 import DEPLOY from './icons/deploy.svg';
+import SHELL from './icons/shell.svg';
 import HELP from './icons/help.svg';
 import HISTORY from './icons/history.svg';
 import MESSAGE from './icons/message.svg';
@@ -137,6 +138,7 @@ export class MynahUIIconImporter {
       BUG,
       CHECK_LIST,
       DEPLOY,
+      SHELL,
       HELP,
       MESSAGE,
       TRASH,

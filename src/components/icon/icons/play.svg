@@ -1,12 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- Generator: Adobe Illustrator 24.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
-<g id="play">
-	<path d="M21.549,11.208L7.328,2.13C7.052,1.955,6.715,1.957,6.441,2.136C6.168,2.315,6,2.644,6,3v18
-		c0,0.354,0.167,0.683,0.439,0.862C6.578,21.954,6.733,22,6.889,22c0.149,0,0.298-0.042,0.433-0.127l14.223-8.922
-		c0.28-0.176,0.455-0.509,0.456-0.87C22.001,11.72,21.829,11.386,21.549,11.208z"/>
-</g>
-<g id="Layer_1">
-</g>
+<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" fill="none">
+ <g>
+  <title>Layer 1</title>
+  <path d="m1.77969,0.62577l1.17333,-0.58667l8,5.33333l0,1.22667l-8,5.3333l-1.17333,-0.64l0,-10.66663zm1.49333,1.44l0,7.84003l5.86667,-3.9467l-5.86667,-3.89333z" fill="#000000" id="svg_1"/>
+ </g>
+
 </svg>

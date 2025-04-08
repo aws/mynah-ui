@@ -1202,7 +1202,8 @@ export const sampleHeaderTypes: ChatItem[] = [
             },
             buttons: [{
             id: 'stop',
-            icon: MynahIcons.CANCEL,
+            status: 'clear',
+            icon: MynahIcons.STOP,
             }],
             fileList: {
                 fileTreeTitle: '',
@@ -1330,7 +1331,7 @@ tabs: {
         padding: false,
         type: ChatItemType.ANSWER,
         header: {
-            icon: MynahIcons.CODE_BLOCK,
+            icon: MynahIcons.SHELL,
             body: 'Terminal command',
             status: {
                 icon: MynahIcons.PROGRESS
