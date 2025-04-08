@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CheckboxAbstract, CheckboxProps } from './components/form-items/checkbox';
 import { MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
 import {
@@ -428,7 +429,13 @@ type RadioGroupFormItem = BaseFormItem & {
   }>;
 };
 
-export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem;
+type CheckboxFormItem = BaseFormItem & {
+  type: 'switch' | 'checkbox';
+  value?: 'true' | 'false';
+  label?: string;
+};
+
+export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;
 export type FilterOption = ChatItemFormItem;
 
 export interface ChatPrompt {
@@ -626,6 +633,7 @@ type ExtractMethods<T> = PickMatching<T, any>;
 export interface ComponentOverrides {
   Button?: new(props: ButtonProps) => ExtractMethods<ButtonAbstract>;
   RadioGroup?: new(props: RadioGroupProps) => ExtractMethods<RadioGroupAbstract>;
+  Checkbox?: new(props: CheckboxProps) => ExtractMethods<CheckboxAbstract>;
   Select?: new(props: SelectProps) => ExtractMethods<SelectAbstract>;
   TextInput?: new(props: TextInputProps) => ExtractMethods<TextInputAbstract>;
   TextArea?: new(props: TextAreaProps) => ExtractMethods<TextAreaAbstract>;

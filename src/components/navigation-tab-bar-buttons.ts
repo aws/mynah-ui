@@ -18,31 +18,53 @@ export interface TabBarButtonsWrapperProps {
 }
 export class TabBarButtonsWrapper {
   render: ExtendedHTMLElement;
+  private selectedTabId: string;
+  private tabBarButtonsSubscriptionId: string | null = null;
   private readonly props: TabBarButtonsWrapperProps;
 
   constructor (props?: TabBarButtonsWrapperProps) {
     this.props = props ?? {};
+    this.selectedTabId = MynahUITabsStore.getInstance().getSelectedTabId();
+    this.handleTabBarButtonsChange();
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.tabBar.buttonsWrapper,
       persistent: true,
       classNames: [ 'mynah-nav-tabs-bar-buttons-wrapper' ],
-      children: this.getTabsBarButtonsRender(MynahUITabsStore.getInstance().getSelectedTabId()),
+      children: this.getTabsBarButtonsRender(this.selectedTabId),
     });
 
     MynahUITabsStore.getInstance().addListener('selectedTabChange', (selectedTabId) => {
+      this.selectedTabId = selectedTabId;
       this.render.clear();
       this.render.update({
         children: this.getTabsBarButtonsRender(selectedTabId)
       });
+      this.handleTabBarButtonsChange();
     });
   }
 
-  private readonly getTabsBarButtonsRender = (selectedTabId: string): ExtendedHTMLElement[] => {
+  private readonly handleTabBarButtonsChange = (): void => {
+    if (this.tabBarButtonsSubscriptionId != null) {
+      MynahUITabsStore.getInstance().removeListenerFromDataStore(this.selectedTabId, this.tabBarButtonsSubscriptionId, 'tabBarButtons');
+    }
+    this.tabBarButtonsSubscriptionId = MynahUITabsStore.getInstance().addListenerToDataStore(this.selectedTabId, 'tabBarButtons', (tabBarButtons) => {
+      this.render.clear();
+      this.render.update({
+        children: this.getTabsBarButtonsRender(this.selectedTabId, tabBarButtons)
+      });
+    });
+  };
+
+  private readonly getTabsBarButtonsRender = (selectedTabId: string, givenTabBarButtons?: TabBarMainAction[]): ExtendedHTMLElement[] => {
     let tabBarButtons = Config.getInstance().config.tabBarButtons ?? [];
-    const tabBarButtonsFromTabStore = MynahUITabsStore.getInstance().getTabDataStore(selectedTabId)?.getValue('tabBarButtons');
-    if (tabBarButtonsFromTabStore != null && tabBarButtonsFromTabStore.length > 0) {
-      tabBarButtons = tabBarButtonsFromTabStore;
+    if (givenTabBarButtons != null) {
+      tabBarButtons = givenTabBarButtons;
+    } else {
+      const tabBarButtonsFromTabStore = MynahUITabsStore.getInstance().getTabDataStore(selectedTabId)?.getValue('tabBarButtons');
+      if (tabBarButtonsFromTabStore != null && tabBarButtonsFromTabStore.length > 0) {
+        tabBarButtons = tabBarButtonsFromTabStore;
+      }
     }
     return tabBarButtons.map((tabBarButton: TabBarMainAction) => new TabBarButtonWithMultipleOptions({
       onButtonClick: (buttonId) => {

@@ -800,10 +800,13 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         // However, to be on the safe side, if there is no streaming card available, we're adding one.
         this.addChatItem(tabId, {
           type: ChatItemType.ANSWER_STREAM,
-          body: ''
+          body: '',
+          messageId: generateUID()
         });
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
       }
+
+      console.log(MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems'));
     }
   };
 

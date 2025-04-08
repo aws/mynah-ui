@@ -149,17 +149,11 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
     promptInputInfo: 'This is the information field. Check [MynahUI Data Model](https://github.com/aws/mynah-ui/blob/main/docs/DATAMODEL.md) for more details.',
     promptInputOptions: [
       {
-        type: 'toggle',
-        id: 'prompt-type',
-        value: 'ask',
-        tooltip: 'Switch between chat and pair programmer modes',
-        options: [ {
-          value: 'ask',
-          icon: 'chat'
-        }, {
-          value: 'do',
-          icon: 'code-block'
-        } ]
+        type: 'switch',
+        id: 'pair-programmer-mode',
+        tooltip: 'Enable or disable pair programmer mode',
+        value: 'false',
+        icon: 'code-block'
       }
     ],
     chatItems: [

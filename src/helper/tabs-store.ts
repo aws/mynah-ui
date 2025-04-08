@@ -102,12 +102,12 @@ export class MynahUITabsStore {
    * @param data A full or partial set of store data model with values.
    */
   public updateTab = (tabId: string, tabData?: Partial<MynahUITabStoreTab>, skipSubscribers?: boolean): void => {
-    if (this.tabsStore[tabId] !== undefined) {
+    if (this.tabsStore[tabId] != null) {
       if (tabData?.isSelected === true && this.getSelectedTabId() !== tabId) {
         this.selectTab(tabId);
       }
       this.tabsStore[tabId] = { ...this.tabsStore[tabId], ...tabData };
-      if (tabData?.store !== undefined) {
+      if (tabData?.store != null) {
         if (this.tabsDataStore[tabId] === undefined) {
           this.tabsDataStore[tabId] = new MynahUIDataStore(tabId);
         }

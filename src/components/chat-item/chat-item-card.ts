@@ -653,13 +653,8 @@ export class ChatItemCard {
     if (this.updateStack.length > 0) {
       const updateWith: Partial<ChatItem> | undefined = this.updateStack.shift();
       if (updateWith !== undefined) {
-        this.props.chatItem = {
-          ...this.props.chatItem,
-          ...updateWith,
-        };
-
         // Update item inside the store
-        if (this.props.chatItem.messageId !== undefined) {
+        if (this.props.chatItem.messageId != null) {
           const currentTabChatItems = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId)?.getStore()?.chatItems;
           MynahUITabsStore.getInstance()
             .getTabDataStore(this.props.tabId)
@@ -667,7 +662,10 @@ export class ChatItemCard {
               {
                 chatItems: currentTabChatItems?.map((chatItem: ChatItem) => {
                   if (chatItem.messageId === this.props.chatItem.messageId) {
-                    return this.props.chatItem;
+                    return {
+                      ...this.props.chatItem,
+                      ...updateWith
+                    };
                   }
                   return chatItem;
                 }),
@@ -675,6 +673,11 @@ export class ChatItemCard {
               true
             );
         }
+
+        this.props.chatItem = {
+          ...this.props.chatItem,
+          ...updateWith,
+        };
 
         this.render?.update({
           ...(this.props.chatItem.messageId != null

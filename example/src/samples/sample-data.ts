@@ -585,6 +585,21 @@ _To send the form, mandatory items should be filled._`,
             ],
         },
         {
+          id: 'is-online',
+          type: 'checkbox',
+          value: 'true',
+          label: 'Yes',
+          title: 'Are you working online?',
+        },
+        {
+          id: 'is-monorepo',
+          type: 'switch',
+          label: 'Yes',
+          icon: 'deploy',
+          title: 'Are you working in a monorepo project?',
+          tooltip: "If you're working more on monorepos, check this"
+        },
+        {
             id: 'working-hours',
             type: 'numericinput',
             title: `How many hours are you using an IDE weekly?`,
@@ -1189,7 +1204,8 @@ export const sampleHeaderTypes: ChatItem[] = [
             },
             buttons: [{
             id: 'stop',
-            icon: MynahIcons.CANCEL,
+            status: 'clear',
+            icon: MynahIcons.STOP,
             }],
             fileList: {
                 fileTreeTitle: '',
@@ -1317,7 +1333,7 @@ tabs: {
         padding: false,
         type: ChatItemType.ANSWER,
         header: {
-            icon: MynahIcons.CODE_BLOCK,
+            icon: MynahIcons.SHELL,
             body: 'Terminal command',
             status: {
                 icon: MynahIcons.PROGRESS

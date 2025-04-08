@@ -17,12 +17,11 @@ interface SelectOption {
 }
 
 export interface RadioGroupProps {
-  type?: 'radio' | 'toggle';
+  type?: 'radiogroup' | 'toggle';
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
-  tooltip?: ExtendedHTMLElement;
   value?: string;
   optional?: boolean;
   options?: SelectOption[];
@@ -104,7 +103,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
         },
         {
           type: 'div',
-          classNames: [ 'mynah-form-input-container', `mynah-form-input-${props.type ?? 'radio'}-group`, 'no-border' ],
+          classNames: [ 'mynah-form-input-container', `mynah-form-input-${props.type === 'radiogroup' ? 'radio' : 'toggle'}-group`, 'no-border' ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
             this.radioGroupElement,
