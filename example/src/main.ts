@@ -1420,7 +1420,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         optionalParts ?? [
           {
             ...exampleStreamParts[0],
-            messageId,
+            // messageId,
             header: {
               fileList: {
                 collapsed: true,
@@ -1451,7 +1451,7 @@ used as a context to generate this message.`
           }, ...exampleStreamParts],
         (chatItem: Partial<ChatItem>, percentage: number) => {
           if (streamingMessageId != null) {
-            mynahUI.updateLastChatAnswer(tabId, chatItem);
+            mynahUI.updateLastChatAnswer(tabId, {...chatItem, messageId: streamingMessageId});
             mynahUI.updateStore(tabId, {
               ...(optionalParts != null ? {
                 promptInputProgress: {
@@ -1500,11 +1500,11 @@ used as a context to generate this message.`
       )
       .then(() => {
         streamingMessageId = messageId;
-        mynahUI.addChatItem(tabId, {
+        mynahUI.updateLastChatAnswer(tabId, {
           type: ChatItemType.ANSWER_STREAM,
           body: '',
           canBeVoted: true,
-          messageId: streamingMessageId,
+          // messageId: streamingMessageId,
         });
         if (optionalParts != null) {
           mynahUI.updateStore(tabId, {
