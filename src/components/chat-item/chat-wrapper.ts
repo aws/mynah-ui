@@ -371,7 +371,10 @@ export class ChatWrapper {
         this.lastStreamingChatItemMessageId = updateWith.messageId;
       }
 
-      this.checkLastAnswerStreamChange(updateWith);
+      this.checkLastAnswerStreamChange({
+        ...(this.lastStreamingChatItemMessageId != null ? { messageId: this.lastStreamingChatItemMessageId } : {}),
+        ...updateWith,
+      });
     }
   };
 

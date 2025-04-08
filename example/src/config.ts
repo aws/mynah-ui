@@ -150,7 +150,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
     promptInputOptions: [
       {
         type: 'switch',
-        id: 'prompt-type',
+        id: 'pair-programmer-mode',
         tooltip: 'Enable or disable pair programmer mode',
         value: 'false',
         icon: 'code-block'
