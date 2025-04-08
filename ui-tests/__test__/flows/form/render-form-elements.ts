@@ -19,7 +19,7 @@ export const renderFormElements = async (page: Page, skipScreenshots?: boolean):
         snapToTop: true,
         body: `Can you help us to improve our AI Assistant? Please fill the form below and hit **Submit** to send your feedback.
 
-        _To send the form, mandatory items should be filled._`,
+_To send the form, mandatory items should be filled._`,
         formItems: [
           {
             id: 'expertise-area',
@@ -85,6 +85,18 @@ export const renderFormElements = async (page: Page, skipScreenshots?: boolean):
                 icon: 'stack'
               }
             ],
+          },
+          {
+            id: 'is-online',
+            type: 'checkbox',
+            value: 'true',
+            title: 'Are you working online?',
+          },
+          {
+            id: 'is-monorepo',
+            type: 'switch',
+            title: 'Are you working in a monorepo project?',
+            tooltip: "If you're working more on monorepos, check this"
           },
           {
             id: 'working-hours',

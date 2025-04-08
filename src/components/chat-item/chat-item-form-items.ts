@@ -11,6 +11,7 @@ import { isMandatoryItemValid, isTextualFormItemValid } from '../../helper/valid
 import { ChatItem, ChatItemFormItem, TextBasedFormItem } from '../../static';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
+import { Checkbox } from '../form-items/checkbox';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
 import { Stars } from '../form-items/stars';
@@ -29,7 +30,7 @@ export interface ChatItemFormItemsWrapperProps {
 }
 export class ChatItemFormItemsWrapper {
   private readonly props: ChatItemFormItemsWrapperProps;
-  private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars> = {};
+  private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars | Checkbox> = {};
   private readonly validationItems: Record<string, boolean> = {};
   private isValid: boolean = false;
   private tooltipOverlay: Overlay | null;
@@ -45,7 +46,7 @@ export class ChatItemFormItemsWrapper {
       testId: testIds.chatItem.chatItemForm.wrapper,
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
-        let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | undefined;
+        let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | undefined;
         let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true ? '* ' : ''}${chatItemOption.title ?? ''}`;
         if (chatItemOption.mandatory === true) {
           label = DomBuilder.getInstance().build({
@@ -95,7 +96,9 @@ export class ChatItemFormItemsWrapper {
             });
             break;
           case 'radiogroup':
+          case 'toggle':
             chatOption = new RadioGroup({
+              type: chatItemOption.type,
               wrapperTestId: testIds.chatItem.chatItemForm.itemRadioWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemRadio,
               label,
@@ -106,15 +109,16 @@ export class ChatItemFormItemsWrapper {
               ...(this.getHandlers(chatItemOption))
             });
             break;
-          case 'toggle':
-            chatOption = new RadioGroup({
-              type: 'toggle',
+          case 'checkbox':
+          case 'switch':
+            chatOption = new Checkbox({
+              type: chatItemOption.type,
               wrapperTestId: testIds.chatItem.chatItemForm.itemToggleWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemToggleOption,
               label,
+              icon: chatItemOption.icon,
               description,
-              value,
-              options: chatItemOption.options,
+              value: value as 'true' | 'false',
               optional: chatItemOption.mandatory !== true,
               ...(this.getHandlers(chatItemOption))
             });
@@ -240,7 +244,7 @@ export class ChatItemFormItemsWrapper {
           dimOutside: false,
           removeOtherOverlays: true,
           verticalDirection: OverlayVerticalDirection.TO_TOP,
-          horizontalDirection: OverlayHorizontalDirection.CENTER,
+          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
           children: [
             new Card({
               border: false,

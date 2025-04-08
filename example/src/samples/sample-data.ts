@@ -585,6 +585,19 @@ _To send the form, mandatory items should be filled._`,
             ],
         },
         {
+            id: 'is-online',
+            type: 'checkbox',
+            value: 'true',
+            title: `Are you working online?`,
+        },
+        {
+            id: 'is-monorepo',
+            type: 'switch',
+            icon: 'code-block',
+            title: `Are you working in a monorepo project?`,
+            tooltip: "If you're working more on monorepos, check this"
+        },
+        {
             id: 'working-hours',
             type: 'numericinput',
             title: `How many hours are you using an IDE weekly?`,

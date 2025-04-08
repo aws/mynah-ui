@@ -62,20 +62,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     defaults: {
       store: {
         ...(mynahUIDefaults.store),
-        promptInputOptions: [
-          {
-            type: 'toggle',
-            id: 'prompt-type',
-            value: 'ask',
-            options: [{
-              value: 'ask',
-              icon: MynahIcons.CHAT
-            },{
-              value: 'do',
-              icon: MynahIcons.FLASH
-            }]
-          }
-        ],
         showChatAvatars
       }
     },

@@ -2507,7 +2507,7 @@ Let's take a look to the data type of a form item:
 ```typescript
 interface ChatItemFormItem {
   id: string; // id is mandatory to understand to get the specific values for each form item when a button is clicked
-  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup'; // type (see below for each of them)
+  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup' | 'toggle' | 'checkbox' | 'switch' ; // type (see below for each of them)
   mandatory?: boolean; // If it is set to true, buttons in the same card with waitMandatoryFormItems set to true will wait them to be filled
   title?: string; // Label of the input
   autoFocus: boolean; // focus to the input when it is created, default=> false. (Only for textual form items)
@@ -2622,6 +2622,18 @@ mynahUI.addChatItem(tabId, {
                     icon: MynahIcons.STACK
                 }
             ],
+        },
+        {
+            id: 'is-online',
+            type: 'checkbox',
+            value: 'true',
+            title: `Are you working online?`,
+        },
+        {
+            id: 'is-monorepo',
+            type: 'switch',
+            title: `Are you working in a monorepo project?`,
+            tooltip: "If you're working more on monorepos, check this"
         },
         {
             id: 'working-hours',
@@ -2750,13 +2762,15 @@ Options:
 expertise-area:
 preferred-ide: vscode
 remote-ide: remote
+is-online: true
+is-monorepo: false
 working-hours:
 email: d@a.c
-name: amazonq aws
-ease-of-usage-rating: 4
-accuracy-rating: 4
+name: aws amazonq
+ease-of-usage-rating: 5
+accuracy-rating: 5
 general-rating:
-description: aws
+description:
 ```
 
 ---
