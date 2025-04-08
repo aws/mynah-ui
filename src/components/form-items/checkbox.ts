@@ -13,7 +13,8 @@ export interface CheckboxProps {
   type?: 'checkbox' | 'switch';
   classNames?: string[];
   attributes?: Record<string, string>;
-  label?: HTMLElement | ExtendedHTMLElement | string;
+  title?: HTMLElement | ExtendedHTMLElement | string;
+  label?: string;
   description?: ExtendedHTMLElement;
   tooltip?: ExtendedHTMLElement;
   value?: 'true' | 'false';
@@ -38,6 +39,7 @@ export class CheckboxInternal extends CheckboxAbstract {
     super();
     this.checkboxItem = DomBuilder.getInstance().build({
       type: 'input',
+      classNames: [ `as-${props.type ?? 'checkbox'}` ],
       attributes: {
         type: 'checkbox',
       },
@@ -73,6 +75,12 @@ export class CheckboxInternal extends CheckboxAbstract {
                   new Icon({ icon: props.icon ?? MynahIcons.OK }).render
                 ]
               },
+              ...(props.label != null
+                ? [ {
+                    type: 'span',
+                    children: [ props.label ]
+                  } ]
+                : [])
             ]
           } ]
         } ]
@@ -84,7 +92,7 @@ export class CheckboxInternal extends CheckboxAbstract {
         {
           type: 'span',
           classNames: [ 'mynah-form-input-label' ],
-          children: [ ...(props.label != null ? [ props.label ] : []) ]
+          children: [ ...(props.title != null ? [ props.title ] : []) ]
         },
         {
           type: 'div',

@@ -2627,11 +2627,14 @@ mynahUI.addChatItem(tabId, {
             id: 'is-online',
             type: 'checkbox',
             value: 'true',
+            label: 'Yes',
             title: `Are you working online?`,
         },
         {
             id: 'is-monorepo',
             type: 'switch',
+            label: 'Yes',
+            icon: 'deploy',
             title: `Are you working in a monorepo project?`,
             tooltip: "If you're working more on monorepos, check this"
         },
@@ -2759,18 +2762,18 @@ Action Id: submit
 Action Text: Submit
 
 Options:
-expertise-area:
+expertise-area: frontend
 preferred-ide: vscode
 remote-ide: remote
-is-online: true
-is-monorepo: false
-working-hours:
+is-online: false
+is-monorepo: true
+working-hours: 30
 email: d@a.c
 name: aws amazonq
-ease-of-usage-rating: 5
-accuracy-rating: 5
-general-rating:
-description:
+ease-of-usage-rating: 4
+accuracy-rating: 4
+general-rating: 4
+description: aws
 ```
 
 ---

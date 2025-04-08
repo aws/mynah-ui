@@ -34,6 +34,18 @@
                     opacity: 1;
                 }
             }
+            &[type='checkbox'].as-checkbox {
+                & + .mynah-form-input-radio-check,
+                & + .mynah-form-input-radio-check:after {
+                    border-radius: var(--mynah-input-radius);
+                }
+                & + .mynah-form-input-radio-check:after{
+                    top: calc(-2 * var(--mynah-border-width));
+                    right: calc(-2 * var(--mynah-border-width));
+                    bottom: calc(-2 * var(--mynah-border-width));
+                    left: calc(-2 * var(--mynah-border-width));
+                }
+            }
         }
         > .mynah-form-input-radio-check {
             position: relative;

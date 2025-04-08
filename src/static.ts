@@ -432,6 +432,7 @@ type RadioGroupFormItem = BaseFormItem & {
 type CheckboxFormItem = BaseFormItem & {
   type: 'switch' | 'checkbox';
   value?: 'true' | 'false';
+  label?: string;
 };
 
 export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;
