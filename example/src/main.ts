@@ -228,7 +228,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       } else if (buttonId === 'history_sheet') {
         const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
-          tabId,
           detailedList:
           {
             header: {
@@ -284,7 +283,20 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 {
                   id: generateUID(),
                   icon: MynahIcons.CHECK_LIST,
-                  description: '/test encrypt_input',
+                  description: `
+                  \`some very long markdown string goes
+                  \n
+                  here to see if it gets cut off properly as expected, with an ellipsis through css.some very long markdown 
+                  \n
+                  string goes here to see if it gets cut off properly as expected, with an ellipsis through css.some very 
+                  
+                  long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.some v
+                  
+                  ery long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.som
+                  
+                  e very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.some
+                  
+                  very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.\``,
                   actions: [
                     {
                       id: generateUID(),
@@ -533,7 +545,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       } else if (buttonId === 'memory_sheet') {
         const { close, update, changeTarget } = mynahUI.openDetailedList({
-          tabId,
           detailedList:
           {
             header: {
