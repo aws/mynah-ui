@@ -805,8 +805,6 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         });
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
       }
-
-      console.log(MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('chatItems'));
     }
   };
 

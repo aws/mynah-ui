@@ -142,11 +142,29 @@ export class SyntaxHighlighter {
       });
     }
 
+    const moreContentIndicator = new MoreContentIndicator({
+      icon: MynahIcons.DOWN_OPEN,
+      border: false,
+      onClick: () => {
+        if (this.render.hasClass('no-max')) {
+          this.render.removeClass('no-max');
+          moreContentIndicator.update({
+            icon: MynahIcons.DOWN_OPEN
+          });
+        } else {
+          this.render.addClass('no-max');
+          moreContentIndicator.update({
+            icon: MynahIcons.UP_OPEN
+          });
+        }
+      }
+    });
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.chatItem.syntaxHighlighter.wrapper,
       classNames: [ 'mynah-syntax-highlighter',
-        ...(props.block !== true ? [ 'mynah-inline-code' ] : []),
+        ...(props.block !== true ? [ 'mynah-inline-code' ] : [ ]),
+        ...(props.unlimitedHeight === true ? [ 'no-max' ] : [ ]),
       ],
       children: [
         preElement,
@@ -163,50 +181,35 @@ export class SyntaxHighlighter {
               }
             ]
           : []),
-        {
-          type: 'div',
-          testId: testIds.chatItem.syntaxHighlighter.buttonsWrapper,
-          classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
-          children: [
-            ...this.codeBlockButtons,
-            ...(props.language != null && this.props.hideLanguage !== true
-              ? [ {
-                  type: 'span',
-                  testId: testIds.chatItem.syntaxHighlighter.language,
-                  classNames: [ 'mynah-syntax-highlighter-language' ],
-                  children: [ props.language.replace('diff-', '') ]
-                } ]
-              : []),
-          ],
-        }
+        ...(this.props.block === true
+          ? [
+              ...(this.props.unlimitedHeight !== true ? [ moreContentIndicator.render ] : []),
+              {
+                type: 'div',
+                testId: testIds.chatItem.syntaxHighlighter.buttonsWrapper,
+                classNames: [ 'mynah-syntax-highlighter-copy-buttons' ],
+                children: [
+                  ...this.codeBlockButtons,
+                  ...(props.language != null && this.props.hideLanguage !== true
+                    ? [ {
+                        type: 'span',
+                        testId: testIds.chatItem.syntaxHighlighter.language,
+                        classNames: [ 'mynah-syntax-highlighter-language' ],
+                        children: [ props.language.replace('diff-', '') ]
+                      } ]
+                    : []),
+                ],
+              }
+            ]
+          : [])
       ]
     });
 
     setTimeout(() => {
-      if (this.props.unlimitedHeight !== true && preElement.scrollHeight > preElement.clientHeight) {
-        const moreContentIndicator = new MoreContentIndicator({
-          icon: MynahIcons.DOWN_OPEN,
-          border: false,
-          onClick: () => {
-            if (this.render.hasClass('no-max')) {
-              this.render.removeClass('no-max');
-              moreContentIndicator.update({
-                icon: MynahIcons.DOWN_OPEN
-              });
-            } else {
-              this.render.addClass('no-max');
-              moreContentIndicator.update({
-                icon: MynahIcons.UP_OPEN
-              });
-            }
-          }
-        });
+      if (this.props.block === true && this.props.unlimitedHeight !== true && preElement.scrollHeight > preElement.clientHeight) {
         this.render.addClass('max-height-exceed');
-        this.render.insertAdjacentElement('beforeend', moreContentIndicator.render);
-      } else {
-        this.render.addClass('no-max');
       }
-    }, 1);
+    }, 100);
   }
 
   private readonly getSelectedCodeContextMenu = (): {
