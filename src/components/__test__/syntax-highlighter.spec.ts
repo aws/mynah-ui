@@ -9,7 +9,7 @@ describe('syntax-highlighter', () => {
     });
 
     expect(testSyntaxHighlighter.render.outerHTML.replace('\n', '')).toBe(
-      '<div class="mynah-syntax-highlighter"><pre><code class="language-js hljs language-javascript" data-highlighted="yes"><span class="hljs-title function_">alert</span>(<span class="hljs-string">"hello"</span>);</code></pre><div class="mynah-syntax-highlighter-copy-buttons"><span class="mynah-syntax-highlighter-language">js</span></div></div>'
+      '<div class="mynah-syntax-highlighter"><pre><code class="language-js hljs language-javascript" data-highlighted="yes"><span class="hljs-title function_">alert</span>(<span class="hljs-string">"hello"</span>);</code></pre><div class="more-content-indicator"><button class="mynah-button mynah-button-secondary fill-state-hover mynah-ui-clickable-item" tabindex="0"><i class="mynah-ui-icon mynah-ui-icon-down-open"></i></button></div><div class="mynah-syntax-highlighter-copy-buttons"><span class="mynah-syntax-highlighter-language">js</span></div></div>'
     );
   });
 
@@ -31,8 +31,8 @@ describe('syntax-highlighter', () => {
       onCodeBlockAction: () => {},
       block: true,
     });
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(2);
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[0]?.textContent).toBe('Copy');
-    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.textContent).toBe('Insert at cursor');
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.length).toBe(3);
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[1]?.textContent).toBe('Copy');
+    expect(testSyntaxHighlighter.render.querySelectorAll('button')?.[2]?.textContent).toBe('Insert at cursor');
   });
 });

@@ -77,8 +77,8 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
 
   // Code blocks
   expect(await answerCard.evaluate(node => node.querySelectorAll('pre > code')[0]?.innerHTML)).toBe('inline code');
-  expect(await answerCard.evaluate(node => node.querySelectorAll('pre')[2]?.nextElementSibling?.querySelector(':scope > span')?.innerHTML)).toBe('javascript');
-  expect(await answerCard.evaluate(node => node.querySelectorAll('pre')[2]?.nextElementSibling?.querySelector(':scope > button')?.querySelector(':scope > span')?.innerHTML)).toBe('Copy');
+  expect(await answerCard.evaluate(node => node.querySelectorAll('pre')[2]?.nextElementSibling?.nextElementSibling?.querySelector(':scope > span')?.innerHTML)).toBe('javascript');
+  expect(await answerCard.evaluate(node => node.querySelectorAll('pre')[2]?.nextElementSibling?.nextElementSibling?.querySelector(':scope > button')?.querySelector(':scope > span')?.innerHTML)).toBe('Copy');
 
   // Reference highlight
   expect(await answerCard.evaluate(node => node.querySelectorAll('pre')[1]?.querySelector(':scope > code > mark')?.innerHTML)).toBe('no syntax');

@@ -16,7 +16,6 @@
     border-radius: var(--mynah-input-radius);
     line-height: var(--mynah-syntax-code-line-height);
     color: var(--mynah-color-text-default);
-    max-height: var(--mynah-syntax-code-block-max-height);
 
     &:before,
     & > .line-numbers-rows:before {
@@ -44,6 +43,9 @@
         margin-block: 0 !important;
         position: relative;
         border-top: 1px solid var(--mynah-color-border-default);
+        &:empty {
+            display: none;
+        }
         &:before {
             content: '';
             position: absolute;
@@ -126,12 +128,29 @@
             background-color: var(--mynah-color-syntax-bg);
         }
     }
+    &:not(.mynah-inline-code) {
+        > pre {
+            max-height: var(--mynah-syntax-code-block-max-height);
+            $listFader: linear-gradient(
+                to bottom,
+                black 0%,
+                black calc(1 * (var(--mynah-syntax-code-block-max-height) - (2 * var(--mynah-sizing-10)))),
+                transparent calc(1 * (var(--mynah-syntax-code-block-max-height) - (var(--mynah-sizing-10)))),
+                transparent 100%
+            );
+            -webkit-mask-image: $listFader;
+            -webkit-mask-size: 100% 100%;
+            mask-image: $listFader;
+            mask-size: 100% 100%;
+        }
+    }
     > pre {
         padding: var(--mynah-sizing-2);
+        position: relative;
         margin: 0;
         overflow-x: auto;
-        overflow-y: hidden;
-        position: relative;
+        overflow-y: scroll;
+        box-sizing: border-box;
 
         *,
         & {
@@ -297,17 +316,16 @@
         }
     }
 
-    &.max-height-exceed {
-        > pre {
-            overflow-y: auto;
-            padding-bottom: var(--mynah-sizing-4);
-            @include list-fader-bottom();
-        }
-    }
     > .more-content-indicator {
+        position: absolute;
+        top: var(--mynah-syntax-code-block-max-height);
+        left: 0;
+        width: 100%;
         padding: var(--mynah-sizing-half);
         justify-content: center;
-        height: auto;
+        height: var(--mynah-sizing-10);
+        box-sizing: border-box;
+        transform: translateY(-100%);
         margin-top: 0;
         box-shadow: none;
         background-color: var(--mynah-card-bg);
@@ -328,9 +346,23 @@
     }
 
     &.no-max {
-        max-height: initial;
         > pre {
+            max-height: initial;
             overflow-y: hidden;
+            padding-bottom: var(--mynah-sizing-2);
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
+        > .more-content-indicator {
+            position: relative;
+            top: initial;
+            transform: translateY(0);
+        }
+    }
+
+    &.max-height-exceed:not(.no-max, .mynah-inline-code) {
+        > pre {
+            padding-bottom: var(--mynah-sizing-13);
         }
     }
 }

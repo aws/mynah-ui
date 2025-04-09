@@ -405,6 +405,10 @@ export const getTypewriterPartsCss = (
 
 export const cleanupElement = (elm: HTMLElement): void => {
   if (elm.querySelectorAll !== undefined) {
-    Array.from(elm.querySelectorAll('*:empty:not(img, br, hr, input[type="checkbox"])')).forEach(emptyElement => { emptyElement.remove(); });
+    Array.from(elm.querySelectorAll('*:empty:not(img, br, hr, input[type="checkbox"])')).forEach(emptyElement => {
+      if (emptyElement.classList.length === 0) {
+        emptyElement.remove();
+      }
+    });
   }
 };
