@@ -419,7 +419,6 @@ The function provides a couple of callbacks which can be used to control the she
 
 ```typescript
 const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
-    tabId,
     detailedList: {}, // The DetailedList, for the data model check DATAMODEL.md
     events: {
       onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {

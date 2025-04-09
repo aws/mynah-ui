@@ -228,7 +228,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       } else if (buttonId === 'history_sheet') {
         const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
-          tabId,
           detailedList:
           {
             header: {
@@ -533,7 +532,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         });
       } else if (buttonId === 'memory_sheet') {
         const { close, update, changeTarget } = mynahUI.openDetailedList({
-          tabId,
           detailedList:
           {
             header: {

@@ -12,7 +12,6 @@ import { Icon } from './icon';
 import { CardBody } from './card/card-body';
 
 export interface SheetProps {
-  tabId: string;
   title?: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   fullScreen?: boolean;
