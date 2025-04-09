@@ -3,6 +3,7 @@ import { ChatItemButton, DetailedList, DetailedListItem, MynahEventNames } from 
 import { DetailedListWrapper } from './detailed-list';
 
 export interface DetailedListSheetProps {
+  tabId?: string; // TODO: remove this in new major version, still here for backwards compatibility
   detailedList: DetailedList;
   events?: {
     onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
