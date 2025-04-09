@@ -19,7 +19,7 @@ export interface TabBarButtonsWrapperProps {
 export class TabBarButtonsWrapper {
   render: ExtendedHTMLElement;
   private selectedTabId: string;
-  private tabBarButtonsSubscriptionId: string | null = null;
+  private tabBarButtonsSubscription: {subsId: string | null; tabId: string} | null = null;
   private readonly props: TabBarButtonsWrapperProps;
 
   constructor (props?: TabBarButtonsWrapperProps) {
@@ -36,24 +36,27 @@ export class TabBarButtonsWrapper {
 
     MynahUITabsStore.getInstance().addListener('selectedTabChange', (selectedTabId) => {
       this.selectedTabId = selectedTabId;
+      this.handleTabBarButtonsChange();
       this.render.clear();
       this.render.update({
         children: this.getTabsBarButtonsRender(selectedTabId)
       });
-      this.handleTabBarButtonsChange();
     });
   }
 
   private readonly handleTabBarButtonsChange = (): void => {
-    if (this.tabBarButtonsSubscriptionId != null) {
-      MynahUITabsStore.getInstance().removeListenerFromDataStore(this.selectedTabId, this.tabBarButtonsSubscriptionId, 'tabBarButtons');
+    if (this.tabBarButtonsSubscription?.subsId != null) {
+      MynahUITabsStore.getInstance().removeListenerFromDataStore(this.tabBarButtonsSubscription.tabId, this.tabBarButtonsSubscription.subsId, 'tabBarButtons');
     }
-    this.tabBarButtonsSubscriptionId = MynahUITabsStore.getInstance().addListenerToDataStore(this.selectedTabId, 'tabBarButtons', (tabBarButtons) => {
-      this.render.clear();
-      this.render.update({
-        children: this.getTabsBarButtonsRender(this.selectedTabId, tabBarButtons)
-      });
-    });
+    this.tabBarButtonsSubscription = {
+      subsId: MynahUITabsStore.getInstance().addListenerToDataStore(this.selectedTabId, 'tabBarButtons', (tabBarButtons) => {
+        this.render.clear();
+        this.render.update({
+          children: this.getTabsBarButtonsRender(this.selectedTabId, tabBarButtons)
+        });
+      }),
+      tabId: this.selectedTabId
+    };
   };
 
   private readonly getTabsBarButtonsRender = (selectedTabId: string, givenTabBarButtons?: TabBarMainAction[]): ExtendedHTMLElement[] => {

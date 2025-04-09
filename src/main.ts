@@ -995,7 +995,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   public openDetailedList = (
-    data: DetailedListSheetProps
+    data: DetailedListSheetProps,
   ): {
       update: (data: DetailedList) => void;
       close: () => void;
