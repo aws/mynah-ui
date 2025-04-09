@@ -73,16 +73,18 @@ export class MynahUITabsStore {
   };
 
   public readonly removeTab = (tabId: string): string => {
+    const wasSelected = this.tabsStore[tabId].isSelected ?? false;
     let newSelectedTab: MynahUITabStoreTab | undefined;
     delete this.tabsStore[tabId];
     this.tabsDataStore[tabId].resetStore();
     delete this.tabsDataStore[tabId];
-    const tabIds = Object.keys(this.tabsStore);
-    // Refresh the tab selection
-    if (tabIds.length > 0) {
-      this.deselectAllTabs();
-      this.selectTab(tabIds[tabIds.length - 1]);
-      newSelectedTab = this.tabsStore[this.getSelectedTabId()];
+    if (wasSelected) {
+      const tabIds = Object.keys(this.tabsStore);
+      if (tabIds.length > 0) {
+        this.deselectAllTabs();
+        this.selectTab(tabIds[tabIds.length - 1]);
+        newSelectedTab = this.tabsStore[this.getSelectedTabId()];
+      }
     }
     this.informSubscribers('remove', tabId, newSelectedTab);
     return tabId;
