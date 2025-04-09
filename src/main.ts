@@ -1003,7 +1003,6 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
       getTargetElementId: () => string | undefined;
     } => {
     const detailedListSheet = new DetailedListSheet({
-      tabId: data.tabId,
       detailedList: data.detailedList,
       events: data.events
     });

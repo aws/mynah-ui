@@ -3,7 +3,6 @@ import { ChatItemButton, DetailedList, DetailedListItem, MynahEventNames } from 
 import { DetailedListWrapper } from './detailed-list';
 
 export interface DetailedListSheetProps {
-  tabId: string;
   detailedList: DetailedList;
   events?: {
     onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
@@ -36,7 +35,6 @@ export class DetailedListSheet {
 
   open = (): void => {
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_SHEET, {
-      tabId: this.props.tabId,
       fullScreen: true,
       title: this.props.detailedList.header?.title,
       description: this.props.detailedList.header?.description,
