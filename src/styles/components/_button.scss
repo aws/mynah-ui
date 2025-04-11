@@ -1,7 +1,8 @@
 @import '../scss-variables';
 .mynah-button {
     border: none;
-    min-width: var(--mynah-sizing-8);
+    min-width: var(--mynah-sizing-9);
+    min-height: var(--mynah-sizing-9);
     border-radius: var(--mynah-button-radius);
     font-family: var(--mynah-font-family);
     font-size: var(--mynah-font-size-medium) !important;
@@ -16,7 +17,6 @@
     transform: translateZ(0px);
     padding: var(--mynah-sizing-2);
     gap: var(--mynah-sizing-1);
-    filter: brightness(0.925);
     opacity: 1;
     line-height: var(--mynah-line-height);
     margin-top: var(--mynah-border-width);

@@ -13,7 +13,7 @@
         "units": ["px", "rem", ""],
         "unit": "rem",
         "category": "sizing",
-        "value": "0.25"
+        "value": "0.2"
     },
     "--mynah-chat-wrapper-spacing": {
         "type": "text",

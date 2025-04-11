@@ -16,6 +16,7 @@ const PREVIEW_DELAY = 500;
 export interface PromptTextInputProps {
   tabId: string;
   initMaxLength: number;
+  children?: ExtendedHTMLElement[];
   onKeydown: (e: KeyboardEvent) => void;
   onInput?: (e: KeyboardEvent) => void;
   onFocus?: () => void;
@@ -126,6 +127,7 @@ export class PromptTextInput {
       testId: testIds.prompt.inputWrapper,
       classNames: [ 'mynah-chat-prompt-input-inner-wrapper', 'no-text' ],
       children: [
+        ...(this.props.children ?? []),
         this.promptTextInput,
       ]
     });

@@ -24,10 +24,10 @@ export class PromptInputSendButton {
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),
         tabindex: '0'
       },
-      icon: new Icon({ icon: MynahIcons.ENVELOPE_SEND }).render,
+      icon: new Icon({ icon: MynahIcons.ENTER }).render,
       primary: false,
       border: false,
-      status: 'info',
+      status: 'clear',
       onClick: () => {
         this.props.onClick();
       },

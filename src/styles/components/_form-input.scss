@@ -33,6 +33,8 @@
         justify-content: flex-end;
         align-items: center;
         z-index: 0;
+        min-width: var(--mynah-sizing-9);
+        min-height: var(--mynah-sizing-9);
 
         &:not(.no-border) {
             padding: var(--mynah-sizing-3);
@@ -125,7 +127,7 @@
             justify-content: flex-start;
             > .mynah-form-input {
                 width: auto;
-                padding: var(--mynah-sizing-half);
+                // padding: var(--mynah-sizing-half);
                 border-radius: var(--mynah-input-radius);
                 background-color: var(--mynah-color-bg);
                 border: var(--mynah-border-width) solid var(--mynah-color-border-default);
