@@ -4,7 +4,7 @@
     margin-block-start: 0 !important;
     padding: var(--mynah-sizing-half);
     min-width: 100%;
-    box-sizing: content-box;
+    box-sizing: border-box;
 
     &.mynah-chat-item-tree-view-flat-list {
         .mynah-chat-tree-view-folder-open,
