@@ -227,6 +227,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           canBeDismissed: true,
           body: "We're improving the performance, adding new features or making new UX changes every week. Save the date for new updates!."
         });
+        mynahUI.addChatItem(tabId, {
+          type: ChatItemType.ANSWER,
+          fullWidth: true,
+          buttons: [{
+            id:'accept-all-changed',
+            icon: 'ok',
+            position: 'outside',
+            text: 'Accept all'
+          }]
+        });
       } else if (buttonId === 'history_sheet') {
         const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
           detailedList:

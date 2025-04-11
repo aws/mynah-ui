@@ -8,8 +8,6 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardRenderDetails, ChatItem, ChatItemType, PromptAttachmentType, TabHeaderDetails } from '../../static';
-import { Button } from '../button';
-import { Icon, MynahIcons } from '../icon';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
@@ -28,7 +26,6 @@ export interface ChatWrapperProps {
 export class ChatWrapper {
   private readonly props: ChatWrapperProps;
   private readonly chatItemsContainer: ExtendedHTMLElement;
-  private readonly intermediateBlockContainer: ExtendedHTMLElement;
   private readonly promptInputElement: ExtendedHTMLElement;
   private readonly promptInput: ChatPromptInput;
   private readonly footerSpacer: ExtendedHTMLElement;
@@ -147,14 +144,6 @@ export class ChatWrapper {
       }
     });
 
-    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'cancelButtonWhenLoading', (showCancelButton: boolean) => {
-      if (showCancelButton) {
-        this.intermediateBlockContainer.removeClass('hidden');
-      } else {
-        this.intermediateBlockContainer.addClass('hidden');
-      }
-    });
-
     this.chatItemsContainer = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.chat.chatItemsContainer,
@@ -172,29 +161,8 @@ export class ChatWrapper {
 
     this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
     this.promptStickyCard = new ChatPromptInputStickyCard({ tabId: this.props.tabId }).render;
-    this.intermediateBlockContainer = DomBuilder.getInstance().build({
-      type: 'div',
-      testId: testIds.chat.middleBlockWrapper,
-      classNames: [ 'mynah-chat-overflowing-intermediate-block',
-        ...(MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('cancelButtonWhenLoading') === false ? [ 'hidden' ] : []) ],
-      children: [
-        ...(this.props?.onStopChatResponse !== undefined
-          ? [ new Button({
-              testId: testIds.chat.stopButton,
-              classNames: [ 'mynah-chat-stop-chat-response-button' ],
-              label: Config.getInstance().config.texts.stopGenerating,
-              icon: new Icon({ icon: MynahIcons.CANCEL }).render,
-              onClick: () => {
-                if ((this.props?.onStopChatResponse) !== undefined) {
-                  this.props?.onStopChatResponse(this.props.tabId);
-                }
-              },
-            }).render ]
-          : [])
-      ]
-    });
     if (Config.getInstance().config.showPromptField) {
-      this.promptInput = new ChatPromptInput({ tabId: this.props.tabId });
+      this.promptInput = new ChatPromptInput({ tabId: this.props.tabId, onStopChatResponse: this.props?.onStopChatResponse });
       this.promptInputElement = this.promptInput.render;
     }
 
@@ -233,7 +201,6 @@ export class ChatWrapper {
             this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
           }
         }).render,
-        this.intermediateBlockContainer,
         this.promptStickyCard,
         this.promptInputElement,
         this.footerSpacer,

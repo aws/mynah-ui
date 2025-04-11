@@ -49,7 +49,6 @@
 
     &.tab-mode-switch-animation {
         &,
-        > .mynah-chat-overflowing-intermediate-block,
         > .mynah-ui-tab-header-details,
         > .mynah-chat-wrapper-footer-spacer,
         > .mynah-chat-wrapper-header-spacer,
@@ -61,7 +60,6 @@
         &:not(.show-tab-header-details) {
             &,
             > .mynah-chat-wrapper-footer-spacerinfo,
-            > .mynah-chat-overflowing-intermediate-block,
             > .mynah-chat-items-container {
                 transition-delay: 100ms;
             }
@@ -85,9 +83,6 @@
         > .mynah-ui-tab-header-details {
             opacity: 1;
             max-height: 100vh;
-        }
-        > .mynah-chat-overflowing-intermediate-block {
-            opacity: 0;
         }
         &:not(.compact-mode) {
             > .mynah-chat-wrapper-footer-spacer {
@@ -162,7 +157,6 @@
     }
 
     @import 'chat-items-container';
-    @import 'chat-overflowing-intermediate-block';
     @import 'chat-prompt-wrapper';
     &.loading {
         > .mynah-chat-items-container {

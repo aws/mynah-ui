@@ -15,6 +15,9 @@
     overflow: hidden;
     border-radius: var(--mynah-card-radius);
     box-shadow: var(--mynah-shadow-card);
+    &:empty {
+        display: none;
+    }
 
     @for $i from 0 through 100 {
         > .mynah-card-inner-order-#{$i} {

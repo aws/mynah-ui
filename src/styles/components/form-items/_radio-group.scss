@@ -15,6 +15,11 @@
         position: relative;
         gap: var(--mynah-sizing-1);
         cursor: pointer;
+
+        box-sizing: border-box;
+        min-width: var(--mynah-sizing-8);
+        min-height: var(--mynah-sizing-8);
+
         > input {
             position: absolute;
             opacity: 0;
@@ -52,7 +57,7 @@
             transition: var(--mynah-bottom-panel-transition);
             width: var(--mynah-sizing-6);
             height: var(--mynah-sizing-6);
-            border-radius: var(--mynah-sizing-3);
+            border-radius: 100%;
             overflow: hidden;
             box-sizing: border-box;
             border: var(--mynah-border-width) solid var(--mynah-color-border-default);
@@ -60,6 +65,7 @@
             flex-flow: row nowrap;
             justify-content: center;
             align-items: center;
+
             > .mynah-ui-icon {
                 position: relative;
                 transition: inherit;

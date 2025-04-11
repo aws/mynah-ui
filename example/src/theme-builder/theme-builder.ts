@@ -204,7 +204,7 @@ export class ThemeBuilder {
     private buildCssValues = () => {
         (document.querySelector('#custom-style') as HTMLElement).innerHTML = `
         html[theme="base-${this.baseThemeType}"]:root {
-            font-size: 14px;
+            font-size: 13px;
             ${this.getCssCustomVars()}
         }
         `;

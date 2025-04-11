@@ -20,6 +20,7 @@ import { CardBody } from '../card/card-body';
 import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
 import { PromptOptions } from './prompt-input/prompt-options';
+import { PromptInputStopButton } from './prompt-input/prompt-input-stop-button';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -35,6 +36,7 @@ export const INPUT_LENGTH_WARNING_THRESHOLD = (): number => {
 
 export interface ChatPromptInputProps {
   tabId: string;
+  onStopChatResponse?: (tabId: string) => void;
 }
 
 interface UserPrompt {
@@ -49,6 +51,7 @@ export class ChatPromptInput {
   private readonly promptTextInput: PromptTextInput;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly sendButton: PromptInputSendButton;
+  private readonly stopButton: PromptInputStopButton;
   private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
   private readonly promptOptions: PromptOptions;
@@ -81,6 +84,7 @@ export class ChatPromptInput {
     this.promptTextInput = new PromptTextInput({
       initMaxLength: MAX_USER_INPUT(),
       tabId: this.props.tabId,
+      children: [ this.promptTextInputCommand.render ],
       onKeydown: this.handleInputKeydown,
       onInput: () => this.updateAvailableCharactersIndicator(),
       onFocus: () => {
@@ -110,6 +114,14 @@ export class ChatPromptInput {
       tabId: this.props.tabId,
       onClick: () => {
         this.sendPrompt();
+      },
+    });
+    this.stopButton = new PromptInputStopButton({
+      tabId: this.props.tabId,
+      onClick: () => {
+        if (this.props.onStopChatResponse != null) {
+          this.props.onStopChatResponse(this.props.tabId);
+        }
       },
     });
     this.progressIndicator = new PromptInputProgress({
@@ -149,18 +161,18 @@ export class ChatPromptInput {
           type: 'div',
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
-            this.promptTextInputCommand.render,
             this.promptTextInput.render,
             {
               type: 'div',
               classNames: [ 'mynah-chat-prompt-button-wrapper' ],
               children: [
+                this.promptOptions.render,
+                this.stopButton.render,
                 this.sendButton.render,
               ]
             },
           ]
         },
-        this.promptOptions.render,
         this.attachmentWrapper,
       ]
     });

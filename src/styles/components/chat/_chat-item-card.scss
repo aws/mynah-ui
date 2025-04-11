@@ -31,6 +31,10 @@
     &.full-width {
         max-width: 100%;
         min-width: 100%;
+
+        > .mynah-chat-item-buttons-container {
+            justify-content: flex-start;
+        }
     }
 
     &.no-padding {
@@ -78,7 +82,7 @@
         }
     }
 
-    --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-card-bg);
+    --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-color-bg);
 
     &.mynah-chat-item-auto-collapse {
         > .more-content-indicator {
@@ -89,7 +93,7 @@
             height: var(--mynah-sizing-9);
             z-index: 1000;
             position: absolute;
-            bottom: var(--mynah-border-width);
+            bottom: 0;
             left: var(--mynah-border-width);
             right: var(--mynah-border-width);
             padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
@@ -230,7 +234,7 @@
             > .mynah-chat-item-card-related-content {
                 margin-top: var(--mynah-sizing-3);
                 padding-top: var(--mynah-sizing-4);
-                border-top: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+                // border-top: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
                 > .mynah-chat-item-card-related-content-title {
                     color: var(--mynah-color-text-weak);
                     font-size: var(--mynah-font-size-xsmall);
@@ -249,7 +253,7 @@
             justify-content: space-between;
             align-items: center;
             padding-top: var(--mynah-sizing-3);
-            border-top: var(--mynah-border-width) solid var(--mynah-color-border-default);
+            // border-top: var(--mynah-border-width) solid var(--mynah-color-border-default);
             &:empty {
                 display: none;
             }
@@ -338,7 +342,8 @@
             display: inline-flex;
             flex-flow: row wrap;
             max-width: 100%;
-            gap: var(--mynah-sizing-1);
+            row-gap: var(--mynah-sizing-1);
+            column-gap: var(--mynah-sizing-2);
             > .mynah-chat-item-followup-question-option {
                 color: var(--mynah-color-text-default);
                 &:not(:hover) {
@@ -478,6 +483,7 @@
     &.mynah-chat-item-answer,
     &.mynah-chat-item-code-result,
     &.mynah-chat-item-answer-stream {
+        overflow: visible;
         > .mynah-card {
             border-bottom-left-radius: var(--mynah-card-radius-corner);
         }
