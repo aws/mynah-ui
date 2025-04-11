@@ -1,3 +1,5 @@
+@import '../scss-variables';
+
 .mynah-ui-icon {
     font-style: normal;
     font-weight: normal;
@@ -13,6 +15,12 @@
 
     > span {
         display: none;
+    }
+
+    @each $status in $mynah-statuses {
+        &.status-#{$status} {
+            color: var(--mynah-color-status-#{$status});
+        }
     }
 
     // Specific colorful Q icon
