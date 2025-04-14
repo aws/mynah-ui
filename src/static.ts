@@ -379,6 +379,7 @@ export interface ChatItem extends ChatItemContent {
   title?: string;
   fullWidth?: boolean;
   padding?: boolean;
+  muted?: boolean;
   icon?: MynahIcons | MynahIconsType;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
