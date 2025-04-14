@@ -38,8 +38,7 @@
     }
 
     &.muted {
-        *:not(.mynah-chat-item-card-header-status, 
-              .mynah-chat-item-card-header-status *) {
+        *:not(.mynah-chat-item-card-header-status, .mynah-chat-item-card-header-status *) {
             color: var(--mynah-color-text-weak) !important;
         }
 
