@@ -63,6 +63,7 @@ import COPY from './icons/copy.svg';
 import CURSOR_INSERT from './icons/cursor-insert.svg';
 import TEXT_SELECT from './icons/text-select.svg';
 import REVERT from './icons/revert.svg';
+import UNDO from './icons/undo.svg';
 import ROCKET from './icons/rocket.svg';
 import ASTERISK from './icons/asterisk.svg';
 import BUG from './icons/bug.svg';
@@ -135,6 +136,7 @@ export class MynahUIIconImporter {
       CURSOR_INSERT,
       TEXT_SELECT,
       REVERT,
+      UNDO,
       ROCKET,
       ASTERISK,
       BUG,
