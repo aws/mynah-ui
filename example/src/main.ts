@@ -1263,6 +1263,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.addChatItem(tabId, {
             type: ChatItemType.ANSWER,
             messageId: new Date().getTime().toString(),
+            muted: true,
             body: `This is an extended card with an icon and a different border color. It also includes some action buttons.`,
             status: 'error',
             icon: MynahIcons.ERROR,
