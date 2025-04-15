@@ -342,8 +342,7 @@
             display: inline-flex;
             flex-flow: row wrap;
             max-width: 100%;
-            row-gap: var(--mynah-sizing-1);
-            column-gap: var(--mynah-sizing-2);
+            gap: var(--mynah-sizing-2);
             > .mynah-chat-item-followup-question-option {
                 color: var(--mynah-color-text-default);
                 &:not(:hover) {
