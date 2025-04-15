@@ -9,6 +9,13 @@
     &.mynah-chat-item-tree-view-flat-list {
         .mynah-chat-tree-view-folder-open,
         .mynah-chat-tree-view-folder-closed {
+            > .mynah-chat-item-tree-view-button {
+                min-height: auto;
+                height: auto;
+                padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
+                box-sizing: border-box;
+                line-height: initial;
+            }
             .mynah-chat-item-tree-view-button:not(.mynah-chat-item-tree-view-root) {
                 display: none;
             }
@@ -71,7 +78,7 @@
             > .mynah-chat-item-tree-view-button {
                 gap: var(--mynah-sizing-1);
                 & ~ .mynah-chat-item-folder-child {
-                    padding-left: var(--mynah-sizing-6);
+                    padding-left: var(--mynah-sizing-7);
                 }
             }
 
@@ -231,6 +238,7 @@
                     width: auto;
                     height: auto;
                     min-width: auto;
+                    min-height: auto;
                     padding: var(--mynah-sizing-half);
                     border-radius: var(--mynah-button-radius);
                     margin: 0;
@@ -273,6 +281,8 @@
 
                 > span {
                     white-space: nowrap;
+                    margin-right: var(--mynah-sizing-1);
+                    margin-left: var(--mynah-sizing-1);
                 }
             }
 
@@ -362,4 +372,30 @@
     .mynah-chat-item-tree-view-license-dropdown-button > span {
         max-width: unset;
     }
+}
+
+// TODO: Update this depending on the general file list structure
+.mynah-chat-item-answer,
+.mynah-chat-item-answer-answer-stream {
+    > .mynah-card.padding-none:not(.background, .border) .mynah-chat-item-tree-view-wrapper {
+        &,
+        > .mynah-chat-item-tree-view-wrapper-container {
+            padding: 0;
+            border-radius: var(--mynah-button-radius);
+            background-color: transparent;
+        }
+    }
+    // > .mynah-card.padding-none:not(.background, .border) {
+    //     > .mynah-chat-item-card-header,
+    //     > .mynah-chat-item-card-footer {
+    //         > .mynah-chat-item-card
+    //             > .mynah-card.padding-none:not(.background, .border)
+    //             > .mynah-chat-item-tree-view-wrapper {
+    //             background-color: red;
+    //         }
+    //     }
+    //     > .mynah-chat-item-tree-view-wrapper {
+    //         background-color: red !important;
+    //     }
+    // }
 }

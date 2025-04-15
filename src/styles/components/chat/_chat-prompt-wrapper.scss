@@ -1,8 +1,7 @@
 @import '../../mixins';
 > .mynah-chat-prompt-wrapper {
     display: block;
-    padding: var(--mynah-sizing-4);
-    border-top: 1px solid var(--mynah-color-border-default);
+    padding: var(--mynah-chat-wrapper-spacing);
     &.hidden {
         display: none;
         &,
