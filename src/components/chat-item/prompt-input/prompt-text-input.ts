@@ -207,7 +207,7 @@ export class PromptTextInput {
     maintainCursor: boolean = false
   ): void => {
     const selection = window.getSelection();
-    if (selection == null || (selection.anchorNode !== this.promptTextInput && selection.anchorNode?.parentNode !== this.promptTextInput)) {
+    if (selection == null) {
       this.promptTextInput.insertChild('beforeend', element as HTMLElement);
       return;
     }
@@ -434,6 +434,10 @@ export class PromptTextInput {
   public readonly updateTextInputValue = (value: string): void => {
     this.promptTextInput.innerText = value;
     this.checkIsEmpty();
+  };
+
+  public readonly insertEndSpace = (): void => {
+    this.promptTextInput.insertAdjacentText('beforeend', ' ');
   };
 
   public readonly updateTextInputMaxLength = (maxLength: number): void => {

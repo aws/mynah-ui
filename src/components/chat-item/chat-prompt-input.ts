@@ -177,7 +177,8 @@ export class ChatPromptInput {
                     this.quickPickType = 'context';
                     this.quickPickItemGroups = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
                     this.quickPickTriggerIndex = this.promptTextInput.getCursorPos();
-
+                    this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+                    this.promptTextInput.insertEndSpace();
                     this.openQuickPick();
                   },
                 }).render,
@@ -328,7 +329,7 @@ export class ChatPromptInput {
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
         this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;
         this.quickPickTriggerIndex = this.quickPickType === 'context' ? this.promptTextInput.getCursorPos() : 1;
-
+        this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
         this.openQuickPick();
       } else if (navigationalKeys.includes(e.key)) {
         const cursorPosition = this.promptTextInput.getCursorPosition();
@@ -460,7 +461,6 @@ export class ChatPromptInput {
 
   private readonly openQuickPick = (): void => {
     if (this.quickPickItemGroups.length > 0) {
-      this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
       this.quickPick = new Overlay({
         closeOnOutsideClick: true,
         referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
@@ -506,23 +506,8 @@ export class ChatPromptInput {
         }
       });
 
-      if (this.quickPickItemGroups.length > 0) {
-        this.filteredQuickPickItemGroups = [ ...restorePreviousFilteredQuickPickItemGroups ];
-        this.quickPick = new Overlay({
-          closeOnOutsideClick: true,
-          referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
-          dimOutside: false,
-          stretchWidth: true,
-          verticalDirection: OverlayVerticalDirection.TO_TOP,
-          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
-          onClose: () => {
-            this.quickPickOpen = false;
-          },
-          children: [ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ],
-        });
-
-        this.quickPickOpen = true;
-      }
+      this.filteredQuickPickItemGroups = [ ...restorePreviousFilteredQuickPickItemGroups ];
+      this.openQuickPick();
     }
   };
 
@@ -530,6 +515,7 @@ export class ChatPromptInput {
     const detailedListItemsGroup = convertQuickActionCommandGroupsToDetailedListGroups(quickPickGroupList);
     if (this.quickPickItemsSelectorContainer == null) {
       this.quickPickItemsSelectorContainer = new DetailedListWrapper({
+        descriptionTextDirection: 'rtl',
         detailedList: {
           list: detailedListItemsGroup,
           selectable: true
@@ -555,7 +541,13 @@ export class ChatPromptInput {
         list: detailedListItemsGroup
       });
     }
-    return this.quickPickItemsSelectorContainer.render;
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-prompt-quick-picks-overlay-wrapper' ],
+      children: [
+        this.quickPickItemsSelectorContainer.render
+      ]
+    });
   };
 
   private readonly handleQuickActionCommandSelection = (

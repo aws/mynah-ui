@@ -7,7 +7,6 @@
     flex-flow: column nowrap;
     align-items: stretch;
     justify-content: flex-start;
-    max-height: 80vh;
     overflow: hidden;
     padding: var(--mynah-sizing-3);
     gap: var(--mynah-sizing-3);
@@ -230,6 +229,11 @@
                                 margin: 0;
                                 text-overflow: ellipsis;
                                 overflow: hidden;
+                            }
+                            &.rtl {
+                                p {
+                                    direction: rtl;
+                                }
                             }
                         }
                     }
