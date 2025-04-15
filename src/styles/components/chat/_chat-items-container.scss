@@ -58,7 +58,7 @@
     }
     > .mynah-chat-items-container {
         padding-bottom: var(--mynah-sizing-14);
-        > .mynah-chat-items-conversation-container {
+        > .mynah-chat-items-conversation-container:last-child {
             > .mynah-chat-item-card.mynah-chat-item-answer-stream {
                 &:last-child {
                     position: relative;

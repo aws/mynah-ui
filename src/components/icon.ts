@@ -6,6 +6,7 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { MynahUIIconImporter } from './icon/icon-importer';
 import '../styles/components/_icon.scss';
+import { Status } from '../static';
 
 export enum MynahIcons {
   Q = 'q',
@@ -83,6 +84,7 @@ export interface IconProps {
   icon: MynahIcons | MynahIconsType;
   subtract?: boolean;
   classNames?: string[];
+  status?: Status;
 }
 export class Icon {
   render: ExtendedHTMLElement;
@@ -93,6 +95,7 @@ export class Icon {
       classNames: [
         'mynah-ui-icon',
                 `mynah-ui-icon-${props.icon}${props.subtract === true ? '-subtract' : ''}`,
+                ...(props.status !== undefined ? [ `status-${props.status}` ] : []),
                 ...(props.classNames !== undefined ? props.classNames : []),
       ]
     });

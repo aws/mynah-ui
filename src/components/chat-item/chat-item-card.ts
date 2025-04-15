@@ -352,7 +352,7 @@ export class ChatItemCard {
         this.cardIcon.render.remove();
         this.cardIcon = null;
       } else {
-        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
+        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, status: this.props.chatItem.iconForegroundStatus, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
         this.card?.render.insertChild('beforeend', this.cardIcon.render);
       }
     }

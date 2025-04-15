@@ -306,6 +306,7 @@ export interface ProgressField {
 export interface TreeNodeDetails {
   status?: Status;
   icon?: MynahIcons | MynahIconsType | null;
+  iconForegroundStatus?: Status;
   label?: string;
   changes?: {
     added?: number;
@@ -320,6 +321,7 @@ export interface ChatItemContent {
   header?: (ChatItemContent & {
     icon?: MynahIcons | MynahIconsType;
     iconStatus?: 'main' | 'primary' | 'clear' | Status;
+    iconForegroundStatus?: Status;
     status?: {
       status?: Status;
       icon?: MynahIcons | MynahIconsType;
@@ -380,6 +382,7 @@ export interface ChatItem extends ChatItemContent {
   fullWidth?: boolean;
   padding?: boolean;
   icon?: MynahIcons | MynahIconsType;
+  iconForegroundStatus?: Status;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
   status?: Status;
