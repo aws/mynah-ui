@@ -50,6 +50,7 @@ import STAR from './icons/star.svg';
 import STACK from './icons/stack.svg';
 import LIGHT_BULB from './icons/light-bulb.svg';
 import ENVELOPE_SEND from './icons/envelope-send.svg';
+import ENTER from './icons/enter.svg';
 import REFRESH from './icons/refresh.svg';
 import PROGRESS from './icons/progress.svg';
 import SCROLL_DOWN from './icons/scroll-down.svg';
@@ -121,6 +122,7 @@ export class MynahUIIconImporter {
       STACK,
       LIGHT_BULB,
       ENVELOPE_SEND,
+      ENTER,
       REFRESH,
       PROGRESS,
       SCROLL_DOWN,

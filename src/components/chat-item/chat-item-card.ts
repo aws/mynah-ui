@@ -90,15 +90,17 @@ export class ChatItemCard {
 
       ];
     }
+
+    // this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM
     this.cardTitle = this.getCardTitle();
     this.cardHeader = this.getCardHeader();
     this.cardFooter = this.getCardFooter();
     this.card = new Card({
       testId: testIds.chatItem.card,
       children: this.initialSpinner ?? [],
-      background: this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE,
-      border: this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE,
-      padding: this.props.inline === true || this.props.chatItem.padding === false ? 'none' : undefined,
+      background: this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE && !(this.props.chatItem.fullWidth !== true && (this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM)),
+      border: this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE && !(this.props.chatItem.fullWidth !== true && (this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM)),
+      padding: this.props.inline === true || this.props.chatItem.padding === false || (this.props.chatItem.fullWidth !== true && (this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM)) ? 'none' : undefined,
     });
     this.updateCardContent();
     this.render = this.generateCard();
@@ -196,7 +198,7 @@ export class ChatItemCard {
     return [
       ...(this.props.chatItem.hoverEffect !== undefined ? [ 'mynah-chat-item-hover-effect' ] : []),
       ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
-      ...(this.props.chatItem.fullWidth === true ? [ 'full-width' ] : []),
+      ...(this.props.chatItem.fullWidth === true || this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM ? [ 'full-width' ] : []),
       ...(this.props.chatItem.padding === false ? [ 'no-padding' ] : []),
       ...(this.props.inline === true ? [ 'mynah-ui-chat-item-inline-card' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),

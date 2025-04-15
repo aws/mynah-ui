@@ -10,6 +10,7 @@
     padding: var(--mynah-chat-wrapper-spacing);
     padding-bottom: 0;
     gap: var(--mynah-chat-wrapper-spacing);
+    @include list-fader-bottom();
 
     &.set-scroll {
         scroll-snap-type: y mandatory;
@@ -50,13 +51,17 @@
 }
 
 &.loading {
+    @import 'chat-items-bottom-animator';
+    &:before {
+        display: block;
+        animation: horizontal-roll 1250ms linear infinite both;
+    }
     > .mynah-chat-items-container {
         padding-bottom: var(--mynah-sizing-14);
         > .mynah-chat-items-conversation-container:last-child {
             > .mynah-chat-item-card.mynah-chat-item-answer-stream {
                 &:last-child {
                     position: relative;
-                    @import 'chat-items-bottom-animator';
                     > .mynah-card {
                         min-width: 100px;
                         > .mynah-chat-item-card-footer {
@@ -66,12 +71,6 @@
                     &.mynah-chat-item-empty {
                         .mynah-chat-items-spinner {
                             display: inline-flex;
-                        }
-                    }
-                    &:not(.mynah-chat-item-empty) {
-                        &:before {
-                            display: block;
-                            animation: horizontal-roll 1250ms linear infinite both;
                         }
                     }
                 }
