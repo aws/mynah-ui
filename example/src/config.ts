@@ -151,7 +151,8 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
       {
         type: 'switch',
         id: 'pair-programmer-mode',
-        tooltip: 'Enable or disable pair programmer mode',
+        tooltip: 'Disabled pair programmer mode',
+        alternateTooltip: 'Enable pair programmer mode',
         value: 'false',
         icon: 'code-block'
       }
