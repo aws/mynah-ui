@@ -42,7 +42,6 @@
             gap: var(--mynah-sizing-2);
             align-items: flex-start;
             position: relative;
-            color: var(--mynah-color-text-weak);
 
             > .mynah-chat-prompt-input-inner-wrapper {
                 display: flex;
@@ -182,33 +181,37 @@
                     flex-flow: row nowrap;
                     overflow: visible;
                     box-sizing: border-box;
-                    gap: var(--mynah-sizing-2);
+                    gap: var(--mynah-sizing-1);
                     flex-flow: row nowrap;
                     align-items: center;
                     justify-content: flex-end;
                     overflow: visible;
                     width: 100%;
-
-                    > .mynah-chat-prompt-stop-button,
-                    > .mynah-chat-prompt-button {
-                        flex-shrink: 0;
+                    color: inherit;
+                    > .mynah-button {
                         border-radius: 50%;
-                        background-color: var(--mynah-color-text-input);
-                        i {
-                            color: var(--mynah-card-bg);
+                        &.mynah-chat-prompt-stop-button,
+                        &.mynah-chat-prompt-button {
+                            flex-shrink: 0;
+                            border-radius: 50%;
+                            background-color: var(--mynah-color-text-input);
+                            i {
+                                color: var(--mynah-card-bg);
+                            }
                         }
-                    }
 
-                    > .mynah-chat-prompt-stop-button {
-                        &:not(.hidden) {
-                            & + .mynah-chat-prompt-button {
+                        &.mynah-chat-prompt-stop-button {
+                            &:not(.hidden) {
+                                & + .mynah-chat-prompt-button {
+                                    display: none;
+                                }
+                            }
+                            &.hidden {
                                 display: none;
                             }
                         }
-                        &.hidden {
-                            display: none;
-                        }
                     }
+
                     > .mynah-prompt-input-options {
                         flex: 1;
                         &:empty {
@@ -232,7 +235,6 @@
                 & ~ .mynah-chat-prompt-button-wrapper > .mynah-chat-prompt-button[disabled] {
                     pointer-events: none;
                     background-color: transparent;
-                    // opacity: 0.25;
                     i {
                         color: var(--mynah-color-text-weak);
                     }

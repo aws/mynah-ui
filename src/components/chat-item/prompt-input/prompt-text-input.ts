@@ -207,7 +207,10 @@ export class PromptTextInput {
     maintainCursor: boolean = false
   ): void => {
     const selection = window.getSelection();
-    if (selection == null) return;
+    if (selection == null || (selection.anchorNode !== this.promptTextInput && selection.anchorNode?.parentNode !== this.promptTextInput)) {
+      this.promptTextInput.insertChild('beforeend', element as HTMLElement);
+      return;
+    }
 
     // Store original cursor position if we need to maintain it
     const originalRange = maintainCursor ? selection.getRangeAt(0).cloneRange() : null;
