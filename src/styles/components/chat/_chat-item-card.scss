@@ -88,7 +88,7 @@
             justify-content: center;
             background-color: var(--mynah-chat-item-more-content-indicator-bg-color);
             box-shadow: 0 -10px 10px -5px var(--mynah-chat-item-more-content-indicator-bg-color);
-            height: var(--mynah-sizing-9);
+            height: var(--mynah-sizing-10);
             z-index: 1000;
             position: absolute;
             bottom: 0;
@@ -215,7 +215,7 @@
             flex-flow: row nowrap;
         }
         > .mynah-card-body {
-            padding: calc(2 * var(--mynah-border-width));
+            padding: 0;
             & > div {
                 > .mynah-syntax-highlighter {
                     filter: contrast(1.15) brightness(0.85);

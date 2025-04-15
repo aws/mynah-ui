@@ -19,8 +19,6 @@
     gap: var(--mynah-sizing-1);
     opacity: 1;
     line-height: var(--mynah-line-height);
-    margin-top: var(--mynah-border-width);
-    margin-bottom: var(--mynah-border-width);
     background-color: transparent;
     color: inherit;
     &:not(.mynah-button-secondary) {
