@@ -16,7 +16,6 @@ export interface CheckboxProps {
   title?: HTMLElement | ExtendedHTMLElement | string;
   label?: string;
   description?: ExtendedHTMLElement;
-  tooltip?: ExtendedHTMLElement;
   value?: 'true' | 'false';
   optional?: boolean;
   icon?: MynahIcons | MynahIconsType;

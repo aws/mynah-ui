@@ -436,6 +436,7 @@ type CheckboxFormItem = BaseFormItem & {
   type: 'switch' | 'checkbox';
   value?: 'true' | 'false';
   label?: string;
+  alternateTooltip?: string;
 };
 
 export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;
