@@ -9,6 +9,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 
 export interface DetailedListItemWrapperProps {
   listItem: DetailedListItem;
+  descriptionTextDirection?: 'ltr' | 'rtl';
   onSelect?: (detailedListItem: DetailedListItem) => void;
   onActionClick?: (action: ChatItemButton) => void;
   selectable?: boolean;
@@ -66,7 +67,7 @@ export class DetailedListItemWrapper {
             ...(this.props.listItem.description != null
               ? [ {
                   type: 'div',
-                  classNames: [ 'mynah-detailed-list-item-description' ],
+                  classNames: [ 'mynah-detailed-list-item-description', this.props.descriptionTextDirection ?? 'ltr' ],
                   innerHTML: `<bdi>${marked.parse(this.props.listItem.description.replace(/ /g, '&nbsp;').replace(/\n\s*\n/g, ' '), {
                     breaks: false,
                         }) as string}</bdi>`
