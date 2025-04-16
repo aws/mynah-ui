@@ -1177,6 +1177,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     onInfoLinkClick: (tabId, link, mouseEvent) => {
       Log(`Link inside prompt info field clicked: <b>${link}</b>`);
     },
+    onMessageDismiss: (tabId, messageId) => {
+      Log(`Card dismissed: tabId: <b>${tabId}</b>, messageId: <b>${messageId}</b>`);
+    },
   });
 
   setTimeout(() => {
@@ -1259,6 +1262,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
           mynahUI.addChatItem(tabId, {
             type: ChatItemType.ANSWER,
             messageId: new Date().getTime().toString(),
+            muted: true,
             body: `This is an extended card with an icon and a different border color. It also includes some action buttons.`,
             status: 'error',
             icon: MynahIcons.ERROR,

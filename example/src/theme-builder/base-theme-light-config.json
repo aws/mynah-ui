@@ -304,7 +304,7 @@
         "category": "font-size",
         "units": ["px", "rem", ""],
         "unit": "rem",
-        "value": "1"
+        "value": "0.9"
     },
     "--mynah-syntax-code-line-height": {
         "type": "measurement",

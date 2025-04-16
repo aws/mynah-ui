@@ -165,6 +165,19 @@
     }
 }
 
+.mynah-overlay
+    > .mynah-overlay-container
+    > .mynah-overlay-inner-container
+    > .mynah-chat-prompt-quick-picks-overlay-wrapper {
+    max-height: 70vh;
+    height: auto;
+    display: flex;
+    overflow: hidden;
+    > .mynah-detailed-list {
+        flex: 1;
+    }
+}
+
 .mynah-chat-items-container,
 .mynah-chat-prompt-input-sticky-card {
     @import 'chat-item-card';

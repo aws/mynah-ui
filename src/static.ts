@@ -201,6 +201,7 @@ export enum MynahEventNames {
   FORM_TEXTUAL_ITEM_KEYPRESS = 'formTextualItemKeyPress',
   FORM_CHANGE = 'formChange',
   ADD_ATTACHMENT = 'addAttachment',
+  CARD_DISMISS = 'cardDismiss',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
@@ -306,6 +307,7 @@ export interface ProgressField {
 export interface TreeNodeDetails {
   status?: Status;
   icon?: MynahIcons | MynahIconsType | null;
+  iconForegroundStatus?: Status;
   label?: string;
   changes?: {
     added?: number;
@@ -320,6 +322,7 @@ export interface ChatItemContent {
   header?: (ChatItemContent & {
     icon?: MynahIcons | MynahIconsType;
     iconStatus?: 'main' | 'primary' | 'clear' | Status;
+    iconForegroundStatus?: Status;
     status?: {
       status?: Status;
       icon?: MynahIcons | MynahIconsType;
@@ -379,7 +382,9 @@ export interface ChatItem extends ChatItemContent {
   title?: string;
   fullWidth?: boolean;
   padding?: boolean;
+  muted?: boolean;
   icon?: MynahIcons | MynahIconsType;
+  iconForegroundStatus?: Status;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
   status?: Status;
@@ -433,6 +438,7 @@ type CheckboxFormItem = BaseFormItem & {
   type: 'switch' | 'checkbox';
   value?: 'true' | 'false';
   label?: string;
+  alternateTooltip?: string;
 };
 
 export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;

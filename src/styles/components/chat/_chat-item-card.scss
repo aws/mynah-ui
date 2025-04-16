@@ -35,6 +35,37 @@
         }
     }
 
+    &.muted {
+        *:not(.mynah-chat-item-card-header-status, .mynah-chat-item-card-header-status *) {
+            color: var(--mynah-color-text-weak) !important;
+        }
+
+        .language-diff {
+            display: none !important;
+        }
+
+        *:not(.mynah-chat-item-card-header, .mynah-card) {
+            filter: grayscale(100%);
+        }
+
+        .mynah-chat-item-card-header-status,
+        .mynah-chat-item-card-header-status * {
+            filter: none;
+        }
+
+        .mynah-button {
+            cursor: default;
+            &:active,
+            &:focus-visible,
+            &:hover {
+                &:after {
+                    transform: translate3d(-7%, 0, 0);
+                    opacity: 0;
+                }
+            }
+        }
+    }
+
     &.no-padding {
         > .mynah-card {
             border-bottom-left-radius: inherit;
@@ -88,7 +119,7 @@
             justify-content: center;
             background-color: var(--mynah-chat-item-more-content-indicator-bg-color);
             box-shadow: 0 -10px 10px -5px var(--mynah-chat-item-more-content-indicator-bg-color);
-            height: var(--mynah-sizing-9);
+            height: var(--mynah-sizing-10);
             z-index: 1000;
             position: absolute;
             bottom: 0;
@@ -215,7 +246,7 @@
             flex-flow: row nowrap;
         }
         > .mynah-card-body {
-            padding: calc(2 * var(--mynah-border-width));
+            padding: 0;
             & > div {
                 > .mynah-syntax-highlighter {
                     filter: contrast(1.15) brightness(0.85);
@@ -340,8 +371,7 @@
             display: inline-flex;
             flex-flow: row wrap;
             max-width: 100%;
-            row-gap: var(--mynah-sizing-1);
-            column-gap: var(--mynah-sizing-2);
+            gap: var(--mynah-sizing-2);
             > .mynah-chat-item-followup-question-option {
                 color: var(--mynah-color-text-default);
                 &:not(:hover) {

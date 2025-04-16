@@ -201,6 +201,7 @@ export class ChatItemCard {
       ...(this.props.chatItem.fullWidth === true || this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM ? [ 'full-width' ] : []),
       ...(this.props.chatItem.padding === false ? [ 'no-padding' ] : []),
       ...(this.props.inline === true ? [ 'mynah-ui-chat-item-inline-card' ] : []),
+      ...(this.props.chatItem.muted === true ? [ 'muted' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
       'mynah-chat-item-card',
@@ -279,6 +280,7 @@ export class ChatItemCard {
           icon: new Icon({ icon: 'cancel' }).render,
           onClick: () => {
             this.render.remove();
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CARD_DISMISS, { tabId: this.props.tabId, messageId: this.props.chatItem.messageId });
             if (this.props.chatItem.messageId !== undefined) {
               const currentChatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
               MynahUITabsStore.getInstance()
@@ -352,7 +354,7 @@ export class ChatItemCard {
         this.cardIcon.render.remove();
         this.cardIcon = null;
       } else {
-        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
+        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, status: this.props.chatItem.iconForegroundStatus, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
         this.card?.render.insertChild('beforeend', this.cardIcon.render);
       }
     }
