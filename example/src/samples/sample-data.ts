@@ -1225,17 +1225,18 @@ export const sampleHeaderTypes: ChatItem[] = [
         }
     },
     {
-        type: ChatItemType.DIRECTIVE,
+        type: ChatItemType.ANSWER,
         fullWidth: true,
         buttons: [
             {
             id: 'undo-all',
             status: 'clear',
+            position: 'outside',
+            keepCardAfterClick: false,
             icon: MynahIcons.UNDO,
             text: 'Undo all changes'
             }
-        ],
-        padding: false,
+        ]
     },
     {
         type: ChatItemType.ANSWER,
