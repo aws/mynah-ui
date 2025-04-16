@@ -4,7 +4,7 @@
  */
 
 import { CheckboxAbstract, CheckboxProps } from './components/form-items/checkbox';
-import { MynahIcons, MynahIconsType } from './components/icon';
+import { CustomIcon, MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
 import {
   SelectAbstract,
@@ -320,7 +320,7 @@ export interface TreeNodeDetails {
 
 export interface ChatItemContent {
   header?: (ChatItemContent & {
-    icon?: MynahIcons | MynahIconsType;
+    icon?: MynahIcons | MynahIconsType | CustomIcon;
     iconStatus?: 'main' | 'primary' | 'clear' | Status;
     iconForegroundStatus?: Status;
     status?: {
@@ -383,7 +383,7 @@ export interface ChatItem extends ChatItemContent {
   fullWidth?: boolean;
   padding?: boolean;
   muted?: boolean;
-  icon?: MynahIcons | MynahIconsType;
+  icon?: MynahIcons | MynahIconsType | CustomIcon;
   iconForegroundStatus?: Status;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;

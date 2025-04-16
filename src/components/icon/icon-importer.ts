@@ -5,7 +5,7 @@
  */
 
 import { DomBuilder } from '../../helper/dom';
-import { MynahIcons } from '../icon';
+import { CustomIcon, MynahIcons } from '../icon';
 // ICONS
 import Q from './icons/q.svg';
 import MENU from './icons/menu.svg';
@@ -78,99 +78,134 @@ import TRANSFORM from './icons/transform.svg';
 
 export class MynahUIIconImporter {
   private static instance: MynahUIIconImporter;
+  private readonly customIcons: Map<string, string> = new Map();
+  private readonly portalId = 'mynah-ui-icons';
+  private readonly defaultIconMappings = {
+    Q,
+    MENU,
+    MINUS,
+    SEARCH,
+    PLUS,
+    PAPER_CLIP,
+    LIST_ADD,
+    FOLDER,
+    FILE,
+    FLASH,
+    TABS,
+    PENCIL,
+    CHAT,
+    LINK,
+    DOC,
+    EXTERNAL,
+    CANCEL,
+    CANCEL_CIRCLE,
+    CALENDAR,
+    COMMENT,
+    MEGAPHONE,
+    MAGIC,
+    NOTIFICATION,
+    EYE,
+    ELLIPSIS,
+    OK,
+    UP_OPEN,
+    DOWN_OPEN,
+    RIGHT_OPEN,
+    LEFT_OPEN,
+    RESIZE_FULL,
+    RESIZE_SMALL,
+    BLOCK,
+    OK_CIRCLED,
+    INFO,
+    WARNING,
+    ERROR,
+    THUMBS_UP,
+    THUMBS_DOWN,
+    STAR,
+    STACK,
+    LIGHT_BULB,
+    ENVELOPE_SEND,
+    ENTER,
+    REFRESH,
+    PROGRESS,
+    SCROLL_DOWN,
+    USER,
+    PLAY,
+    PAUSE,
+    STOP,
+    CODE_BLOCK,
+    COPY,
+    CURSOR_INSERT,
+    TEXT_SELECT,
+    REVERT,
+    UNDO,
+    ROCKET,
+    ASTERISK,
+    BUG,
+    CHECK_LIST,
+    DEPLOY,
+    SHELL,
+    HELP,
+    MESSAGE,
+    TRASH,
+    TRANSFORM,
+    HISTORY
+  };
+
   private constructor () {
-    const mynahIconMappings = {
-      Q,
-      MENU,
-      MINUS,
-      SEARCH,
-      PLUS,
-      PAPER_CLIP,
-      LIST_ADD,
-      FOLDER,
-      FILE,
-      FLASH,
-      TABS,
-      PENCIL,
-      CHAT,
-      LINK,
-      DOC,
-      EXTERNAL,
-      CANCEL,
-      CANCEL_CIRCLE,
-      CALENDAR,
-      COMMENT,
-      MEGAPHONE,
-      MAGIC,
-      NOTIFICATION,
-      EYE,
-      ELLIPSIS,
-      OK,
-      UP_OPEN,
-      DOWN_OPEN,
-      RIGHT_OPEN,
-      LEFT_OPEN,
-      RESIZE_FULL,
-      RESIZE_SMALL,
-      BLOCK,
-      OK_CIRCLED,
-      INFO,
-      WARNING,
-      ERROR,
-      THUMBS_UP,
-      THUMBS_DOWN,
-      STAR,
-      STACK,
-      LIGHT_BULB,
-      ENVELOPE_SEND,
-      ENTER,
-      REFRESH,
-      PROGRESS,
-      SCROLL_DOWN,
-      USER,
-      PLAY,
-      PAUSE,
-      STOP,
-      CODE_BLOCK,
-      COPY,
-      CURSOR_INSERT,
-      TEXT_SELECT,
-      REVERT,
-      UNDO,
-      ROCKET,
-      ASTERISK,
-      BUG,
-      CHECK_LIST,
-      DEPLOY,
-      SHELL,
-      HELP,
-      MESSAGE,
-      TRASH,
-      TRANSFORM,
-      HISTORY
-    };
+    this.initializeDefaultIcons();
+  }
+
+  private cleanupExistingPortal (): void {
+    const existingPortal = document.getElementById(this.portalId);
+    if (existingPortal != null) {
+      existingPortal.remove();
+    }
+  }
+
+  private initializeDefaultIcons (): void {
+    this.createIconStyles(this.defaultIconMappings);
+  }
+
+  public addCustomIcon (customIcon: CustomIcon): void {
+    // If icon already exists with same content, no need to proceed
+    if (this.customIcons.get(customIcon.name) === customIcon.base64Svg) {
+      return;
+    }
+
+    this.customIcons.set(customIcon.name, customIcon.base64Svg);
+
+    // Recreate all styles including both default and custom icons
+    this.cleanupExistingPortal();
+    this.createIconStyles({
+      ...this.defaultIconMappings,
+      ...Object.fromEntries(this.customIcons)
+    });
+  }
+
+  private createIconStyles (iconMappings: Record<string, string>): void {
     DomBuilder.getInstance().createPortal('mynah-ui-icons', {
       type: 'style',
       attributes: {
         type: 'text/css'
       },
       children: [ `
-      ${Object.keys(MynahIcons).map(iconKey => {
-        const iconName = MynahIcons[iconKey as keyof typeof MynahIcons];
-        return `
-        :root{
-          --mynah-ui-icon-${iconName}: url(${mynahIconMappings[iconKey as keyof typeof mynahIconMappings]});
-        }
-        .mynah-ui-icon-${iconName} {
-          -webkit-mask-image: var(--mynah-ui-icon-${iconName});
-          mask-image: var(--mynah-ui-icon-${iconName});
-        }
-        .mynah-ui-icon-${iconName}-subtract {
-          -webkit-mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
-          mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
-          mask-composite: subtract;
-        }`;
-      }).join('')}
+        ${Object.keys(iconMappings).map(iconKey => {
+          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+          const iconName = MynahIcons[iconKey as keyof typeof MynahIcons] || iconKey;
+          return `
+          :root{
+            --mynah-ui-icon-${iconName}: url(${iconMappings[iconKey]});
+          }
+          .mynah-ui-icon-${iconName} {
+            -webkit-mask-image: var(--mynah-ui-icon-${iconName});
+            mask-image: var(--mynah-ui-icon-${iconName});
+          }
+          .mynah-ui-icon-${iconName}-subtract {
+            -webkit-mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
+            mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
+            mask-composite: subtract;
+          }`;
+        }).join('')}
       ` ]
     }, 'beforebegin');
   }
