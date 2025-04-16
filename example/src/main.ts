@@ -1047,7 +1047,23 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         `);
     },
     onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
-      if (action.id === 'quick-start') {
+      if(action.id === 'accept-file-change-on-header-card') {
+        console.log(messageId, mynahUI.getTabData(tabId).getStore());
+        mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+          muted: true,
+          header: {
+            ...(mynahUI.getTabData(tabId).store.chatItems.find((chatItem:any)=>chatItem.messageId === messageId).header ?? {}),
+            buttons: null,
+            status: {
+              icon: 'ok',
+              status: 'success',
+              text: 'Accepted'
+            }
+          }
+        });
+      } else if(action.id === 'reject-file-change-on-header-card') {
+
+      } else if (action.id === 'quick-start') {
         mynahUI.updateStore(tabId, {
           tabHeaderDetails: null,
           compactMode: false,
