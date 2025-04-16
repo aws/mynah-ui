@@ -1302,18 +1302,19 @@ export const sampleHeaderTypes: ChatItem[] = [
         type: ChatItemType.ANSWER,
         fullWidth: true,
         padding: false,
+        messageId: generateUID(),
         header: {
             icon: 'code-block',
             buttons: [
                 {
                 icon: 'cancel',
                 status: 'clear',
-                id: 'reject-file'
+                id: 'reject-file-change-on-header-card'
                 },
                 {
                 icon: 'ok',
                 status: 'clear',
-                id: 'accept-file'
+                id: 'accept-file-change-on-header-card'
                 }
             ],
             fileList: {
