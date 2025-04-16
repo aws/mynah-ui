@@ -65,6 +65,7 @@ export enum MynahIcons {
   CURSOR_INSERT = 'cursor-insert',
   TEXT_SELECT = 'text-select',
   REVERT = 'revert',
+  UNDO = 'undo',
   ROCKET = 'rocket',
   ASTERISK = 'asterisk',
   BUG = 'bug',

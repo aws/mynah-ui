@@ -1224,7 +1224,19 @@ export const sampleHeaderTypes: ChatItem[] = [
             }
         }
     },
-
+    {
+        type: ChatItemType.DIRECTIVE,
+        fullWidth: true,
+        buttons: [
+            {
+            id: 'undo-all',
+            status: 'clear',
+            icon: MynahIcons.UNDO,
+            text: 'Undo all changes'
+            }
+        ],
+        padding: false,
+    },
     {
         type: ChatItemType.ANSWER,
         fullWidth: true,
