@@ -274,6 +274,10 @@ export interface MynahUIProps {
     deleted: boolean,
     messageId?: string,
     eventId?: string) => void;
+  onMessageDismiss?: (
+    tabId: string,
+    messageId: string,
+    eventId?: string) => void;
   onFileActionClick?: (
     tabId: string,
     messageId: string,
@@ -733,6 +737,13 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           data.messageId,
           this.getUserEventId());
       }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CARD_DISMISS, (data) => {
+      this.props.onMessageDismiss?.(
+        data.tabId,
+        data.messageId,
+        this.getUserEventId());
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_ACTION_CLICK, (data) => {

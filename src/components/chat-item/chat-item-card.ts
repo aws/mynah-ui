@@ -279,6 +279,7 @@ export class ChatItemCard {
           icon: new Icon({ icon: 'cancel' }).render,
           onClick: () => {
             this.render.remove();
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CARD_DISMISS, { tabId: this.props.tabId, messageId: this.props.chatItem.messageId });
             if (this.props.chatItem.messageId !== undefined) {
               const currentChatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
               MynahUITabsStore.getInstance()
