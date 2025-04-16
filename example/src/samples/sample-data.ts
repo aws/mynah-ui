@@ -1,12 +1,14 @@
-import { ChatItem, 
-    ChatItemContent, 
-    ChatItemType, 
-    generateUID, 
-    MynahIcons, 
-    MynahUIDataModel, 
-    MynahUITabStoreTab, 
-    SourceLink, 
-    Status } from '@aws/mynah-ui';
+import {
+    ChatItem,
+    ChatItemContent,
+    ChatItemType,
+    generateUID,
+    MynahIcons,
+    MynahUIDataModel,
+    MynahUITabStoreTab,
+    SourceLink,
+    Status
+} from '@aws/mynah-ui';
 import md0 from './sample-0.md';
 import md1 from './sample-1.md';
 import md2 from './sample-2.md';
@@ -129,205 +131,205 @@ export const tabbedData: ChatItemContent['tabbedContent'] = [
         label: 'Examples',
         value: 'examples',
         icon: MynahIcons.PLAY,
-        content:{
+        content: {
             body: `**Here are some examples you can find:**`,
             customRenderer: `<img aspect-ratio src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_REV_SQ.8c88ac215fe4e441dc42865dd6962ed4f444a90d.png" alt="Powered by AWS">`
         }
     }
 ];
 
-export const exploreTabData: MynahUIDataModel = { 
+export const exploreTabData: MynahUIDataModel = {
     tabBackground: false,
     compactMode: false,
     tabTitle: 'Explore Agents',
     promptInputVisible: false,
     tabHeaderDetails: {
-      icon: MynahIcons.ASTERISK,
-      title: 'Amazon Q Developer Agents',
-      description: 'Software development'
+        icon: MynahIcons.ASTERISK,
+        title: 'Amazon Q Developer Agents',
+        description: 'Software development'
     },
     chatItems: [
-      {
-        type: ChatItemType.ANSWER,
-        snapToTop: true,
-        hoverEffect: true,
-        body: `### Feature development
+        {
+            type: ChatItemType.ANSWER,
+            snapToTop: true,
+            hoverEffect: true,
+            body: `### Feature development
 Generate code across files with a task description.
 `,
-        icon: MynahIcons.CODE_BLOCK,
-        footer: {
-          tabbedContent: tabbedData
+            icon: MynahIcons.CODE_BLOCK,
+            footer: {
+                tabbedContent: tabbedData
+            },
+            buttons: [
+                {
+                    status: 'clear',
+                    id: 'user-guide-dev',
+                    disabled: false,
+                    text: 'Read user guide'
+                },
+                {
+                    status: 'main',
+                    fillState: 'hover',
+                    flash: 'once',
+                    icon: MynahIcons.RIGHT_OPEN,
+                    id: 'quick-start-dev',
+                    text: `Quick start with **/dev**`
+                }
+            ]
         },
-        buttons: [
-          {
-            status: 'clear',
-            id: 'user-guide-dev',
-            disabled: false,
-            text: 'Read user guide'
-          },
-          {
-            status: 'main',
-            fillState: 'hover',
-            flash: 'once',
-            icon: MynahIcons.RIGHT_OPEN,
-            id: 'quick-start-dev',
-            text: `Quick start with **/dev**`
-          }
-        ]
-      },
-      {
-        type: ChatItemType.ANSWER,
-        hoverEffect: true,
-        body: `### Write
+        {
+            type: ChatItemType.ANSWER,
+            hoverEffect: true,
+            body: `### Write
 Automatically write code and commit it.
 `,
-        icon: MynahIcons.BUG,
-        footer: {
-          tabbedContent: tabbedData
+            icon: MynahIcons.BUG,
+            footer: {
+                tabbedContent: tabbedData
+            },
+            buttons: [
+                {
+                    status: 'clear',
+                    id: 'user-guide-write',
+                    disabled: false,
+                    text: 'Read user guide'
+                },
+                {
+                    disabled: false,
+                    icon: MynahIcons.RIGHT_OPEN,
+                    status: 'main',
+                    fillState: 'hover',
+                    flash: 'once',
+                    id: 'quick-start-write',
+                    text: `Quick start with **/write**`
+                }
+            ]
         },
-        buttons: [
-          {
-            status: 'clear',
-            id: 'user-guide-write',
-            disabled: false,
-            text: 'Read user guide'
-          },
-          {
-            disabled: false,
-            icon: MynahIcons.RIGHT_OPEN,
-            status: 'main',
-            fillState: 'hover',
-            flash: 'once',
-            id: 'quick-start-write',
-            text: `Quick start with **/write**`
-          }
-        ]
-      },
-      {
-        type: ChatItemType.ANSWER,
-        hoverEffect: true,
-        body: `### Generation
+        {
+            type: ChatItemType.ANSWER,
+            hoverEffect: true,
+            body: `### Generation
 Generate code for selected codebase (supports python & java).
 `,
-        icon: MynahIcons.CHECK_LIST,
-        footer: {
-          tabbedContent: tabbedData
+            icon: MynahIcons.CHECK_LIST,
+            footer: {
+                tabbedContent: tabbedData
+            },
+            buttons: [
+                {
+                    status: 'clear',
+                    id: 'user-guide-generate',
+                    disabled: false,
+                    text: 'Read user guide'
+                },
+                {
+                    disabled: false,
+                    icon: MynahIcons.RIGHT_OPEN,
+                    status: 'main',
+                    fillState: 'hover',
+                    flash: 'once',
+                    id: 'quick-start-generate',
+                    text: `Quick start with **/generate**`
+                }
+            ]
         },
-        buttons: [
-          {
-            status: 'clear',
-            id: 'user-guide-generate',
-            disabled: false,
-            text: 'Read user guide'
-          },
-          {
-            disabled: false,
-            icon: MynahIcons.RIGHT_OPEN,
-            status: 'main',
-            fillState: 'hover',
-            flash: 'once',
-            id: 'quick-start-generate',
-            text: `Quick start with **/generate**`
-          }
-        ]
-      },
-      {
-        type: ChatItemType.ANSWER,
-        hoverEffect: true,
-        body: `### Transform
+        {
+            type: ChatItemType.ANSWER,
+            hoverEffect: true,
+            body: `### Transform
 Transform your java project from an old version to a new one.
 `,
-        icon: MynahIcons.TRANSFORM,
-        footer: {
-          tabbedContent: tabbedData
+            icon: MynahIcons.TRANSFORM,
+            footer: {
+                tabbedContent: tabbedData
+            },
+            buttons: [
+                {
+                    status: 'clear',
+                    id: 'user-guide-transform',
+                    disabled: false,
+                    text: 'Read user guide'
+                },
+                {
+                    disabled: false,
+                    icon: MynahIcons.RIGHT_OPEN,
+                    status: 'main',
+                    fillState: 'hover',
+                    flash: 'once',
+                    id: 'quick-start-transform',
+                    text: `Quick start with **/transform**`
+                }
+            ]
         },
-        buttons: [
-          {
-            status: 'clear',
-            id: 'user-guide-transform',
-            disabled: false,
-            text: 'Read user guide'
-          },
-          {
-            disabled: false,
-            icon: MynahIcons.RIGHT_OPEN,
-            status: 'main',
-            fillState: 'hover',
-            flash: 'once',
-            id: 'quick-start-transform',
-            text: `Quick start with **/transform**`
-          }
-        ]
-      },
     ]
 };
 
 export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
     {
-      groupName: 'Amazon Q Agents',
-      commands: [
-        {
-          command: '/dev',
-          icon: MynahIcons.CODE_BLOCK,
-          description: 'Generate code across files with a task description.',
-          placeholder: 'Type your question'
-        },
-        {
-            command: '/write',
-            icon: MynahIcons.BUG,
-            description: 'Automatically write code and commit it',
-            placeholder: 'Type your question'
-        },
-        {
-            command: '/generate',
-            icon: MynahIcons.CHECK_LIST,
-            description: 'Generate code for selected codebase (supports python & java)',
-            placeholder: 'Type your question'
-        },
-        {
-            command: '/transform',
-            icon: MynahIcons.TRANSFORM,
-            description: 'Transform your java project',
-            placeholder: 'Type your question'
-        },
-      ]
+        groupName: 'Amazon Q Agents',
+        commands: [
+            {
+                command: '/dev',
+                icon: MynahIcons.CODE_BLOCK,
+                description: 'Generate code across files with a task description.',
+                placeholder: 'Type your question'
+            },
+            {
+                command: '/write',
+                icon: MynahIcons.BUG,
+                description: 'Automatically write code and commit it',
+                placeholder: 'Type your question'
+            },
+            {
+                command: '/generate',
+                icon: MynahIcons.CHECK_LIST,
+                description: 'Generate code for selected codebase (supports python & java)',
+                placeholder: 'Type your question'
+            },
+            {
+                command: '/transform',
+                icon: MynahIcons.TRANSFORM,
+                description: 'Transform your java project',
+                placeholder: 'Type your question'
+            },
+        ]
     }
 ];
 
-export const welcomeScreenTabData:MynahUITabStoreTab = {
+export const welcomeScreenTabData: MynahUITabStoreTab = {
     isSelected: true,
     store: {
-      quickActionCommands: qAgentQuickActions,
-      tabTitle: 'Welcome to Q',
-      tabBackground: true,
-      chatItems: [{
-        type: ChatItemType.ANSWER,
-        icon: MynahIcons.ASTERISK,
-        messageId: 'new-welcome-card',
-        body: `#### Work on a task with Q Developer Agents
+        quickActionCommands: qAgentQuickActions,
+        tabTitle: 'Welcome to Q',
+        tabBackground: true,
+        chatItems: [{
+            type: ChatItemType.ANSWER,
+            icon: MynahIcons.ASTERISK,
+            messageId: 'new-welcome-card',
+            body: `#### Work on a task with Q Developer Agents
 _Generate code, scan for issues, and more._`,
-        buttons: [
-          {
-            id: 'explore',
-            disabled: false,
-            text: 'Explore',
-          },
-          {
-            id: 'quick-start',
-            text: 'Quick start',
-            disabled: false,
-            status: 'main',
-          }
-        ]
-      }],
-      promptInputLabel: 'Or, start a chat',
-      promptInputPlaceholder: 'Type your question',
-      compactMode: true,
-      tabHeaderDetails: {
-        title: "Hi, I'm Amazon Q.",
-        description: 'Where would you like to start?',
-        icon: MynahIcons.Q
-      },
+            buttons: [
+                {
+                    id: 'explore',
+                    disabled: false,
+                    text: 'Explore',
+                },
+                {
+                    id: 'quick-start',
+                    text: 'Quick start',
+                    disabled: false,
+                    status: 'main',
+                }
+            ]
+        }],
+        promptInputLabel: 'Or, start a chat',
+        promptInputPlaceholder: 'Type your question',
+        compactMode: true,
+        tabHeaderDetails: {
+            title: "Hi, I'm Amazon Q.",
+            description: 'Where would you like to start?',
+            icon: MynahIcons.Q
+        },
     },
 };
 
@@ -585,19 +587,19 @@ _To send the form, mandatory items should be filled._`,
             ],
         },
         {
-          id: 'is-online',
-          type: 'checkbox',
-          value: 'true',
-          label: 'Yes',
-          title: 'Are you working online?',
+            id: 'is-online',
+            type: 'checkbox',
+            value: 'true',
+            label: 'Yes',
+            title: 'Are you working online?',
         },
         {
-          id: 'is-monorepo',
-          type: 'switch',
-          label: 'Yes',
-          icon: 'deploy',
-          title: 'Are you working in a monorepo project?',
-          tooltip: "If you're working more on monorepos, check this"
+            id: 'is-monorepo',
+            type: 'switch',
+            label: 'Yes',
+            icon: 'deploy',
+            title: 'Are you working in a monorepo project?',
+            tooltip: "If you're working more on monorepos, check this"
         },
         {
             id: 'working-hours',
@@ -624,7 +626,7 @@ _To send the form, mandatory items should be filled._`,
                 patterns: [{
                     pattern: 'amazonq',
                     errorMessage: 'Should contain amazonq!'
-                },{
+                }, {
                     pattern: 'aws',
                     errorMessage: 'Should contain aws!'
                 }]
@@ -657,7 +659,7 @@ _To send the form, mandatory items should be filled._`,
                 genericValidationErrorMessage: 'Should contain one of "amazonq" or "aws"',
                 patterns: [{
                     pattern: /amazonq/gi
-                },{
+                }, {
                     pattern: /aws/gi
                 }]
             },
@@ -1007,7 +1009,7 @@ export const exampleDownloadFile: ChatItem = {
     },
 };
 
-export const exampleInformationCard = (statusType: null | Status, statusBody: string | null, snap?:boolean):ChatItem => {
+export const exampleInformationCard = (statusType: null | Status, statusBody: string | null, snap?: boolean): ChatItem => {
     return {
         messageId: generateUID(),
         snapToTop: snap === true,
@@ -1144,7 +1146,7 @@ export const exampleStatusButtons: ChatItem = {
             icon: MynahIcons.REFRESH,
             status: 'info'
         },
-        
+
 
         // External buttons
         {
@@ -1182,7 +1184,7 @@ export const exampleStatusButtons: ChatItem = {
         },
     ],
 }
- 
+
 export const exampleVoteChatItem: ChatItem = {
     messageId: new Date().getTime().toString(),
     type: ChatItemType.ANSWER,
@@ -1196,16 +1198,19 @@ export const sampleHeaderTypes: ChatItem[] = [
         fullWidth: true,
         padding: false,
         header: {
-            icon: MynahIcons.CODE_BLOCK,
+            icon: {
+                name: 'javascript',
+                base64Svg: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zLjEyIDAuMjRINC44MlY1QzQuODIgNi4wMjY2NyA0LjU4IDYuNzczMzMgNC4xIDcuMjRDMy42NiA3LjY2NjY3IDMgNy44OCAyLjEyIDcuODhDMS45MiA3Ljg4IDEuNyA3Ljg2NjY3IDEuNDYgNy44NEMxLjIyIDcuOCAxLjAyNjY3IDcuNzQ2NjcgMC44OCA3LjY4TDEuMDYgNi4zMkMxLjMxMzMzIDYuNDQgMS42MDY2NyA2LjUgMS45NCA2LjVDMi4zMTMzMyA2LjUgMi41OTMzMyA2LjQgMi43OCA2LjJDMy4wMDY2NyA1Ljk2IDMuMTIgNS41NiAzLjEyIDVWMC4yNFpNNi4zMiA2QzYuNTYgNi4xMzMzMyA2Ljg0IDYuMjQ2NjcgNy4xNiA2LjM0QzcuNTIgNi40NDY2NyA3Ljg2IDYuNSA4LjE4IDYuNUM4LjU4IDYuNSA4Ljg4IDYuNDMzMzMgOS4wOCA2LjNDOS4yOCA2LjE1MzMzIDkuMzggNS45NTMzMyA5LjM4IDUuN0M5LjM4IDUuNDQ2NjcgOS4yODY2NyA1LjI0NjY3IDkuMSA1LjFDOC45MTMzMyA0Ljk0IDguNTg2NjcgNC43OCA4LjEyIDQuNjJDNi43NDY2NyA0LjE0IDYuMDYgMy4zOTMzMyA2LjA2IDIuMzhDNi4wNiAxLjcxMzMzIDYuMzEzMzMgMS4xNzMzMyA2LjgyIDAuNzU5OTk5QzcuMzQgMC4zMzMzMzMgOC4wNDY2NyAwLjEyIDguOTQgMC4xMkM5LjY0NjY3IDAuMTIgMTAuMjkzMyAwLjI0NjY2NyAxMC44OCAwLjVMMTAuNSAxLjg4TDEwLjM4IDEuODJDMTAuMTQgMS43MjY2NyA5Ljk0NjY3IDEuNjYgOS44IDEuNjJDOS41MiAxLjU0IDkuMjMzMzMgMS41IDguOTQgMS41QzguNTggMS41IDguMyAxLjU3MzMzIDguMSAxLjcyQzcuOTEzMzMgMS44NTMzMyA3LjgyIDIuMDMzMzMgNy44MiAyLjI2QzcuODIgMi40ODY2NyA3LjkyNjY3IDIuNjczMzMgOC4xNCAyLjgyQzguMyAyLjk0IDguNjQ2NjcgMy4xMDY2NyA5LjE4IDMuMzJDOS44NDY2NyAzLjU3MzMzIDEwLjMzMzMgMy44OCAxMC42NCA0LjI0QzEwLjk2IDQuNiAxMS4xMiA1LjA0IDExLjEyIDUuNTZDMTEuMTIgNi4yMjY2NyAxMC44NjY3IDYuNzY2NjcgMTAuMzYgNy4xOEM5LjgxMzMzIDcuNjQ2NjcgOS4wNDY2NyA3Ljg4IDguMDYgNy44OEM3LjY3MzMzIDcuODggNy4yNjY2NyA3LjgyNjY3IDYuODQgNy43MkM2LjUwNjY3IDcuNjUzMzMgNi4yMDY2NyA3LjU2IDUuOTQgNy40NEw2LjMyIDZaIiBmaWxsPSIjQ0JDQjQxIi8+Cjwvc3ZnPgo='
+            },
             status: {
                 icon: MynahIcons.PROGRESS,
                 text: 'Working',
                 status: 'warning'
             },
             buttons: [{
-            id: 'stop',
-            status: 'clear',
-            icon: MynahIcons.STOP,
+                id: 'stop',
+                status: 'clear',
+                icon: MynahIcons.STOP,
             }],
             fileList: {
                 fileTreeTitle: '',
@@ -1229,12 +1234,12 @@ export const sampleHeaderTypes: ChatItem[] = [
         fullWidth: true,
         buttons: [
             {
-            id: 'undo-all',
-            status: 'clear',
-            position: 'outside',
-            keepCardAfterClick: false,
-            icon: MynahIcons.UNDO,
-            text: 'Undo all changes'
+                id: 'undo-all',
+                status: 'clear',
+                position: 'outside',
+                keepCardAfterClick: false,
+                icon: MynahIcons.UNDO,
+                text: 'Undo all changes'
             }
         ]
     },
@@ -1243,28 +1248,28 @@ export const sampleHeaderTypes: ChatItem[] = [
         fullWidth: true,
         padding: false,
         header: {
-        icon: 'code-block',
-        status: {
-            icon: MynahIcons.OK,
-            text: 'Accepted',
-            status: 'success'
-        },
-        fileList: {
-            hideFileCount: true,
-            fileTreeTitle: '',
-            filePaths: ['package.json'],
-            details: {
-            'package.json': {
-                icon: null,
-                label: 'Created',
-                changes: {
-                added: 36,
-                deleted: 0,
-                total: 36
+            icon: 'code-block',
+            status: {
+                icon: MynahIcons.OK,
+                text: 'Accepted',
+                status: 'success'
+            },
+            fileList: {
+                hideFileCount: true,
+                fileTreeTitle: '',
+                filePaths: ['package.json'],
+                details: {
+                    'package.json': {
+                        icon: null,
+                        label: 'Created',
+                        changes: {
+                            added: 36,
+                            deleted: 0,
+                            total: 36
+                        }
+                    }
                 }
             }
-            }
-        }
         }
     },
 
@@ -1274,28 +1279,28 @@ export const sampleHeaderTypes: ChatItem[] = [
         padding: false,
         muted: true,
         header: {
-        icon: 'code-block',
-        status: {
-            icon: MynahIcons.OK,
-            text: 'Accepted',
-            status: 'success'
-        },
-        fileList: {
-            hideFileCount: true,
-            fileTreeTitle: '',
-            filePaths: ['package.json'],
-            details: {
-            'package.json': {
-                icon: null,
-                label: 'Created',
-                changes: {
-                added: 36,
-                deleted: 0,
-                total: 36
+            icon: 'code-block',
+            status: {
+                icon: MynahIcons.OK,
+                text: 'Accepted',
+                status: 'success'
+            },
+            fileList: {
+                hideFileCount: true,
+                fileTreeTitle: '',
+                filePaths: ['package.json'],
+                details: {
+                    'package.json': {
+                        icon: null,
+                        label: 'Created',
+                        changes: {
+                            added: 36,
+                            deleted: 0,
+                            total: 36
+                        }
+                    }
                 }
             }
-            }
-        }
         }
     },
 
@@ -1308,14 +1313,14 @@ export const sampleHeaderTypes: ChatItem[] = [
             icon: 'code-block',
             buttons: [
                 {
-                icon: 'cancel',
-                status: 'clear',
-                id: 'reject-file-change-on-header-card'
+                    icon: 'cancel',
+                    status: 'clear',
+                    id: 'reject-file-change-on-header-card'
                 },
                 {
-                icon: 'ok',
-                status: 'clear',
-                id: 'accept-file-change-on-header-card'
+                    icon: 'ok',
+                    status: 'clear',
+                    id: 'accept-file-change-on-header-card'
                 }
             ],
             fileList: {
@@ -1327,9 +1332,9 @@ export const sampleHeaderTypes: ChatItem[] = [
                         icon: null,
                         label: 'Created',
                         changes: {
-                        added: 36,
-                        deleted: 0,
-                        total: 36
+                            added: 36,
+                            deleted: 0,
+                            total: 36
                         }
                     }
                 }
@@ -1385,9 +1390,9 @@ tabs: {
             },
             buttons: [
                 {
-                status: 'clear',
-                icon: MynahIcons.STOP,
-                id: 'stop-bash-command'
+                    status: 'clear',
+                    icon: MynahIcons.STOP,
+                    id: 'stop-bash-command'
                 }
             ]
         },
@@ -1396,7 +1401,7 @@ tabs: {
 mkdir -p src/ lalalaaaa
 \`\`\`
 `,
-        codeBlockActions: {copy: null, 'insert-to-cursor': null}
+        codeBlockActions: { copy: null, 'insert-to-cursor': null }
     },
 
     {
@@ -1408,9 +1413,9 @@ mkdir -p src/ lalalaaaa
             body: 'Terminal command',
             buttons: [
                 {
-                status: 'clear',
-                icon: 'play',
-                id: 'run-bash-command'
+                    status: 'clear',
+                    icon: 'play',
+                    id: 'run-bash-command'
                 }
             ]
         },
@@ -1419,7 +1424,7 @@ mkdir -p src/ lalalaaaa
 mkdir -p src/ lalalaaaa
 \`\`\`
 `,
-        codeBlockActions: {copy: null, 'insert-to-cursor': null}
+        codeBlockActions: { copy: null, 'insert-to-cursor': null }
     },
 
     {
