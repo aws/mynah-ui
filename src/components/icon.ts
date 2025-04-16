@@ -79,10 +79,15 @@ export enum MynahIcons {
   HISTORY = 'history'
 }
 
+export interface CustomIcon {
+  name: string;
+  base64Svg: string;
+}
+
 export type MynahIconsType = `${MynahIcons}`;
 
 export interface IconProps {
-  icon: MynahIcons | MynahIconsType;
+  icon: MynahIcons | MynahIconsType | CustomIcon;
   subtract?: boolean;
   classNames?: string[];
   status?: Status;
@@ -91,14 +96,29 @@ export class Icon {
   render: ExtendedHTMLElement;
   constructor (props: IconProps) {
     MynahUIIconImporter.getInstance();
+
+    // Determine if the icon is a custom icon or a predefined one
+    const iconName = this.isCustomIcon(props.icon)
+      ? props.icon.name
+      : props.icon;
+
+    // If it's a custom icon, register it first
+    if (this.isCustomIcon(props.icon)) {
+      MynahUIIconImporter.getInstance().addCustomIcon(props.icon);
+    }
+
     this.render = DomBuilder.getInstance().build({
       type: 'i',
       classNames: [
         'mynah-ui-icon',
-                `mynah-ui-icon-${props.icon}${props.subtract === true ? '-subtract' : ''}`,
+                `mynah-ui-icon-${iconName}${props.subtract === true ? '-subtract' : ''}`,
                 ...(props.status !== undefined ? [ `status-${props.status}` ] : []),
                 ...(props.classNames !== undefined ? props.classNames : []),
       ]
     });
+  }
+
+  private isCustomIcon (icon: MynahIcons | MynahIconsType | CustomIcon): icon is CustomIcon {
+    return typeof icon === 'object' && 'base64Svg' in icon && 'name' in icon;
   }
 }
