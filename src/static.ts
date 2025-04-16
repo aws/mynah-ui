@@ -201,6 +201,7 @@ export enum MynahEventNames {
   FORM_TEXTUAL_ITEM_KEYPRESS = 'formTextualItemKeyPress',
   FORM_CHANGE = 'formChange',
   ADD_ATTACHMENT = 'addAttachment',
+  CARD_DISMISS = 'cardDismiss',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
