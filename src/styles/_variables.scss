@@ -52,6 +52,17 @@
     --mynah-color-syntax-deletion: rgba(255, 0, 0, 0.1);
     --mynah-color-syntax-addition: rgba(0, 255, 128, 0.1);
 
+    --shiki-foreground: var(--mynah-color-syntax-code);
+    --shiki-background: transparent;
+    --shiki-token-constant: var(--mynah-color-syntax-variable);
+    --shiki-token-string: var(--mynah-color-syntax-string);
+    --shiki-token-comment: var(--mynah-color-syntax-comment);
+    --shiki-token-keyword: var(--mynah-color-syntax-keyword);
+    --shiki-token-parameter: var(--mynah-color-syntax-property);
+    --shiki-token-function: var(--mynah-color-syntax-function);
+    --shiki-token-string-expression: var(--mynah-color-syntax-operator);
+    --shiki-token-punctuation: var(--mynah-color-syntax-operator);
+
     --mynah-color-status-info: #0971d3;
     --mynah-color-status-success: #037f03;
     --mynah-color-status-warning: #b2911c;

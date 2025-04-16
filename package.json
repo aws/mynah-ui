@@ -35,6 +35,8 @@
         "prepare": "npx husky"
     },
     "dependencies": {
+        "@shikijs/langs": "^3.2.2",
+        "@shikijs/themes": "^3.2.2",
         "escape-html": "^1.0.3",
         "highlight.js": "^11.11.0",
         "just-clone": "^6.2.0",
@@ -81,6 +83,7 @@
         "prettier": "^3.0.3",
         "sass": "1.49.8",
         "sass-loader": "12.6.0",
+        "shiki": "^3.2.2",
         "style-loader": "3.3.1",
         "svg-url-loader": "^8.0.0",
         "ts-jest": "^29.1.1",

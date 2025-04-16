@@ -15,7 +15,7 @@
     line-height: var(--mynah-syntax-code-line-height);
     color: var(--mynah-color-text-default);
 
-    > .line-numbers-rows:before {
+    &:before {
         content: '';
         position: absolute;
         left: 0;
@@ -121,6 +121,21 @@
                 word-wrap: break-word;
             }
         }
+
+        .shiki {
+            counter-reset: step;
+            counter-increment: step 0;
+            .line {
+                &::before {
+                    counter-increment: step;
+                    margin-right: 12px;
+                    display: inline-block;
+                    text-align: right;
+                    content: counter(step);
+                    width: 10px;
+                }
+            }
+        }
     }
     > pre {
         padding: var(--mynah-sizing-2);
@@ -183,115 +198,10 @@
             }
         }
 
-        .hljs {
-            color: var(--mynah-color-syntax-code);
-
-            .hljs-comment,
-            .hljs-quote {
-                color: var(--mynah-color-syntax-comment);
-                font-style: italic;
-            }
-
-            .hljs-doctag,
-            .hljs-keyword,
-            .hljs-formula {
-                color: var(--mynah-color-syntax-keyword);
-            }
-
-            .hljs-section,
-            .hljs-name,
-            .hljs-selector-tag,
-            .hljs-subst,
-            .hljs-title.function_ {
-                color: var(--mynah-color-syntax-function);
-            }
-
-            .hljs-literal,
-            .hljs-property {
-                color: var(--mynah-color-syntax-property);
-            }
-
-            .hljs-string,
-            .hljs-regexp,
-            .hljs-attribute,
-            .hljs-meta .hljs-string {
-                color: var(--mynah-color-syntax-string);
-            }
-
-            .hljs-attr,
-            .hljs-variable,
-            .hljs-template-variable,
-            .hljs-type,
-            .hljs-selector-class,
-            .hljs-selector-attr,
-            .hljs-selector-pseudo,
-            .hljs-number {
-                color: var(--mynah-color-syntax-variable);
-            }
-
-            .hljs-symbol,
-            .hljs-bullet,
-            .hljs-link,
-            .hljs-meta,
-            .hljs-selector-id,
-            .hljs-title {
-                color: var(--mynah-color-syntax-operator);
-            }
-
-            .hljs-built_in,
-            .hljs-title.class_,
-            .hljs-class .hljs-title {
-                color: var(--mynah-color-syntax-class-name);
-            }
-
-            .hljs-emphasis {
-                font-style: italic;
-            }
-
-            .hljs-strong {
-                font-weight: bold;
-            }
-
-            .hljs-link {
-                text-decoration: underline;
-            }
-        }
-
         > code::selection,
         &::selection {
             text-shadow: none;
             background: #b3d4fc;
-        }
-
-        &.line-numbers {
-            position: relative;
-            padding-left: 3.8em;
-            counter-reset: linenumber;
-            position: relative;
-        }
-    }
-    > .line-numbers-rows {
-        position: absolute;
-        background-color: inherit;
-        > span,
-        & {
-            pointer-events: none;
-            user-select: none;
-        }
-        top: var(--mynah-sizing-2);
-        font-size: 100%;
-        left: 0;
-        width: var(--mynah-sizing-12);
-        overflow: hidden;
-        text-overflow: clip;
-        letter-spacing: -1px;
-        border-right: 1px solid var(--mynah-color-border-default);
-
-        > span {
-            display: block;
-            color: var(--mynah-color-border-default);
-            padding-right: 0.8em;
-            text-align: right;
         }
     }
 
