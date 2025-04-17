@@ -35,7 +35,6 @@ import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import { Config } from './helper/config';
-import { marked, Tokens } from 'marked';
 import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
@@ -44,6 +43,7 @@ import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet } from './components/sheet';
 import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
+import { configureMarked, parseMarkdown } from './helper/marked';
 
 export { generateUID } from './helper/guid';
 export {
@@ -309,23 +309,7 @@ export class MynahUI {
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
-    // Apply global fix for marked listitem content is not getting parsed.
-    marked.use({
-      renderer: {
-        listitem: (item: Tokens.ListItem) => `<li>
-${item.task ? `<input ${item.checked === true ? 'checked' : ''} disabled type="checkbox">` : ''}
-${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}
-</li>`,
-        link: (token) => {
-          const pattern = /^\[(?:\[([^\]]+)\]|([^\]]+))\]\(([^)]+)\)$/;
-          // Expect raw formatted only in [TEXT](URL)
-          if (!pattern.test(token.raw)) {
-            return token.href;
-          }
-          return `<a href="${token.href}" target="_blank" title="${token.title ?? token.text}">${token.text}</a>`;
-        }
-      },
-    });
+    configureMarked();
 
     this.props = props;
     Config.getInstance(props.config);
@@ -336,7 +320,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     this.splashLoaderText = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-ui-splash-loader-text' ],
-      innerHTML: marked.parse(this.props.splashScreenInitialStatus?.text ?? '', { breaks: true }) as string,
+      innerHTML: parseMarkdown(this.props.splashScreenInitialStatus?.text ?? '', { includeLineBreaks: true }),
     });
     this.splashLoader = DomBuilder.getInstance().build({
       type: 'div',
@@ -944,7 +928,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
 
     if (text != null) {
       this.splashLoaderText.update({
-        innerHTML: marked.parse(text, { breaks: true }) as string
+        innerHTML: parseMarkdown(text, { includeLineBreaks: true })
       });
     }
   };

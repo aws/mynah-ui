@@ -10,13 +10,13 @@ import {
   OnCopiedToClipboardFunction,
   ReferenceTrackerInformation,
 } from '../../static';
-import { marked } from 'marked';
 import unescapeHTML from 'unescape-html';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { SyntaxHighlighter } from '../syntax-highlighter';
 import { generateUID } from '../../helper/guid';
 import '../../styles/components/card/_card.scss';
 import { Config } from '../../helper/config';
+import { parseMarkdown } from '../../helper/marked';
 
 const PREVIEW_DELAY = 500;
 
@@ -294,9 +294,7 @@ export class CardBody {
         ...(Array.from(
           DomBuilder.getInstance().build({
             type: 'div',
-            innerHTML: `${marked.parse(incomingBody, {
-              breaks: true,
-            }) as string}`,
+            innerHTML: `${parseMarkdown(incomingBody, { includeLineBreaks: true })}`,
           }).childNodes
         ).map(node => {
           const processedNode = this.processNode(node as HTMLElement);

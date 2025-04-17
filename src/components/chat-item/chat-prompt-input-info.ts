@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardBody } from '../card/card-body';
@@ -17,15 +16,6 @@ export interface ChatPromptInputInfoProps{
 export class ChatPromptInputInfo {
   render: ExtendedHTMLElement;
   constructor (props: ChatPromptInputInfoProps) {
-    // revert back if the extension is set before (because it only works globally)
-    marked.use({
-      extensions: [ {
-        name: 'text',
-        renderer: (token) => {
-          return token.text;
-        }
-      } ]
-    });
     MynahUITabsStore.getInstance().addListenerToDataStore(props.tabId, 'promptInputInfo', (newInfo: string) => {
       if (newInfo != null && newInfo.trim() !== '') {
         this.render.update({
