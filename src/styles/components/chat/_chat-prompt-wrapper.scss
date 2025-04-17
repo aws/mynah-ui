@@ -114,7 +114,7 @@
                             pointer-events: none;
                             text-overflow: ellipsis;
                             position: absolute;
-                            z-index: 0;
+                            z-index: var(--mynah-z-0);
                             font-weight: inherit;
                             font-size: inherit;
                             color: var(--mynah-color-text-input-placeholder);
@@ -143,7 +143,7 @@
                         display: inline;
                         white-space: nowrap;
                         overflow-wrap: break-word;
-                        z-index: 1000;
+                        z-index: var(--mynah-z-1);
                         cursor: pointer;
                         padding: 0.05em 0.2em 0.05em 0.2em;
                         margin-bottom: var(--mynah-border-width);
@@ -170,7 +170,7 @@
                             height: calc(100%);
                             background-color: var(--mynah-color-button);
                             border-radius: inherit;
-                            z-index: -1;
+                            z-index: var(--mynah-z-sub);
                         }
                     }
                 }
@@ -256,7 +256,7 @@
                     border-radius: var(--mynah-card-radius);
                     opacity: 0;
                     transition: var(--mynah-short-transition-rev);
-                    z-index: 8000;
+                    z-index: var(--mynah-z-2);
                     background-color: var(--mynah-color-alternate);
                 }
 
@@ -271,7 +271,7 @@
                     height: 30px;
                     margin-left: -15px;
                     margin-top: -15px;
-                    z-index: 9000;
+                    z-index: var(--mynah-z-3);
 
                     > i {
                         width: 30px;
@@ -310,7 +310,7 @@
             width: 100%;
             height: 100%;
             box-sizing: border-box;
-            z-index: 1000;
+            z-index: var(--mynah-z-1);
             display: flex;
             min-width: 100%;
             overflow: hidden;

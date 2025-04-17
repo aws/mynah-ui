@@ -60,7 +60,7 @@
             }
             & + span {
                 position: relative;
-                z-index: 999;
+                z-index: var(--mynah-z-1);
             }
         }
     }

@@ -16,7 +16,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    z-index: 1000000000;
+    z-index: var(--mynah-z-max);
     gap: var(--mynah-sizing-6);
     &,
     & * {

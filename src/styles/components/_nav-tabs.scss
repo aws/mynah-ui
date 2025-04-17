@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     overflow: hidden;
-    z-index: 100;
+    z-index: var(--mynah-z-1);
     min-height: var(--mynah-sizing-8);
     max-height: var(--mynah-sizing-8);
     position: relative;

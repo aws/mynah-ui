@@ -40,7 +40,7 @@
         width: auto;
         height: auto;
         background-color: black;
-        z-index: 1000;
+        z-index: var(--mynah-z-max);
         opacity: 0;
         pointer-events: none;
         transform: translate3d(0, 0, 0) scale(2);
