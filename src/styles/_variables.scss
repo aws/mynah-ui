@@ -5,12 +5,20 @@
     font-family: var(--mynah-font-family, 'system-ui');
     --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
 
+    // =======
+    // Sizings
+    // =======
+
     --mynah-max-width: 2560px;
     --mynah-sizing-base: 0.22rem;
     --mynah-chat-wrapper-spacing: var(--mynah-sizing-6);
 
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
+
+    // ======
+    // Colors
+    // ======
 
     --mynah-color-text-default: var(--vscode-foreground);
     --mynah-color-text-alternate: var(--mynah-color-button-reverse);
@@ -93,10 +101,18 @@
     --mynah-card-bg: var(--vscode-editor-background);
     --mynah-card-bg-alternate: var(--mynah-color-button);
 
+    // =======
+    // Shadows
+    // =======
+
     --mynah-shadow-button: none;
     --mynah-shadow-card: none;
     --mynah-shadow-card-hover: 0 40px 25px -15px rgba(0, 0, 0, 0.35);
     --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
+
+    // ==========
+    // Font sizes
+    // ==========
 
     --mynah-font-size-xxsmall: 0.8rem;
     --mynah-font-size-xsmall: 0.9rem;
@@ -107,14 +123,26 @@
     --mynah-font-size-xxlarge: 1.6rem;
     --mynah-line-height: 1.25rem;
 
+    // ===========
+    // Code blocks
+    // ===========
+
     --mynah-syntax-code-block-max-height: calc(25 * var(--mynah-syntax-code-line-height));
     --mynah-syntax-code-line-height: 1.5rem;
     --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
+
+    // =============
+    // Border radius
+    // =============
 
     --mynah-card-radius: var(--mynah-sizing-2);
     --mynah-input-radius: var(--mynah-sizing-1);
     --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
+
+    // ===========
+    // Transitions
+    // ===========
 
     --mynah-main-wrapper-transition: all 350ms cubic-bezier(0.83, 0, 0.17, 1);
     --mynah-bottom-panel-transition: all 450ms cubic-bezier(0.25, 1, 0, 1);
@@ -125,4 +153,17 @@
     --mynah-short-transition-rev: all 280ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-short-transition-rev-opacity: opacity 350ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-text-flow-transition: all 400ms cubic-bezier(0.35, 1, 0, 1), transform 400ms cubic-bezier(0.25, 1, 0, 1);
+
+    // =========
+    // Z-indices
+    // =========
+
+    --mynah-z-sub: -1;  /* Below default layer */
+    --mynah-z-0: 0;     /* Default state */
+    --mynah-z-1: 100;   /* First layer */
+    --mynah-z-2: 200;   /* Second layer */
+    --mynah-z-3: 300;   /* Third layer */
+    --mynah-z-4: 400;   /* Fourth layer */
+    --mynah-z-5: 500;   /* Fifth layer */
+    --mynah-z-max: 999; /* Maximum layer - for critical elements */
 }

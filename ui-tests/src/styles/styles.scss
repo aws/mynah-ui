@@ -29,7 +29,7 @@ body {
     position: relative;
     display: flex;
     flex-flow: row nowrap;
-    z-index: 100;
+    z-index: var(--mynah-z-1);
     flex: 1;
     height: 100%;
     width: 100%;

@@ -32,7 +32,7 @@
         box-sizing: border-box;
         justify-content: flex-end;
         align-items: center;
-        z-index: 0;
+        z-index: var(--mynah-z-0);
         min-width: var(--mynah-sizing-9);
         min-height: var(--mynah-sizing-9);
 
@@ -53,7 +53,7 @@
                 bottom: calc(var(--mynah-border-width) * -1);
                 background-color: var(--mynah-color-text-weak);
                 border-radius: var(--mynah-input-radius);
-                z-index: -1;
+                z-index: var(--mynah-z-sub);
                 opacity: 10%;
             }
         }
