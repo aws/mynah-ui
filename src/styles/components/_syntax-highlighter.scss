@@ -122,7 +122,7 @@
         &:after {
             border: var(--mynah-border-width) solid var(--mynah-color-border-default);
             background-color: var(--mynah-card-bg);
-            z-index: -1;
+            z-index: var(--mynah-z-sub);
         }
         &:before {
             background-color: var(--mynah-color-syntax-bg);

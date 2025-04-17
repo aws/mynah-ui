@@ -139,7 +139,7 @@
         text-overflow: ellipsis;
         margin-right: var(--mynah-sizing-1);
         margin-left: var(--mynah-sizing-1);
-        z-index: 100;
+        z-index: var(--mynah-z-1);
     }
 
     .mynah-chat-item-card:hover &.mynah-button-flash-by-parent-focus:not(:hover) {

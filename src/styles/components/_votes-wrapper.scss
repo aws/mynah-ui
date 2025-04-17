@@ -29,7 +29,7 @@
             display: none;
         }
         > .mynah-vote-label {
-            z-index: 10;
+            z-index: var(--mynah-z-1);
             cursor: pointer;
             font-size: var(--mynah-font-size-small);
             transition: var(--mynah-very-short-transition);

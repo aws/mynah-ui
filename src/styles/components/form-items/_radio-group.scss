@@ -72,7 +72,7 @@
                 transform: scale(0);
                 transform-origin: center center;
                 color: var(--mynah-color-button);
-                z-index: 10;
+                z-index: var(--mynah-z-2);
             }
             &::after {
                 $edgeSpace: calc(0 * var(--mynah-border-width));
@@ -88,7 +88,7 @@
                 transform-origin: center center;
                 opacity: 0;
                 border-radius: inherit;
-                z-index: 5;
+                z-index: var(--mynah-z-1);
             }
 
             & + span:empty {

@@ -125,7 +125,7 @@
             }
 
             > .mynah-chat-item-tree-view-file-item-actions {
-                z-index: 150;
+                z-index: var(--mynah-z-3);
             }
             &:not(:hover) {
                 > .mynah-chat-item-tree-view-file-item-actions {
@@ -136,14 +136,14 @@
             &:before {
                 content: '';
                 position: absolute;
-                z-index: 0;
+                z-index: var(--mynah-z-0);
                 opacity: 0.1;
                 width: 100%;
                 height: 100%;
                 left: 0;
                 top: 0;
                 border-radius: inherit;
-                z-index: 100;
+                z-index: var(--mynah-z-2);
                 pointer-events: all;
             }
 
@@ -196,7 +196,7 @@
                 align-items: center;
                 gap: var(--mynah-sizing-1);
                 font-size: 90%;
-                z-index: 10;
+                z-index: var(--mynah-z-1);
                 flex: 1;
                 flex-shrink: 2;
 
@@ -231,7 +231,7 @@
                 justify-content: flex-end;
                 align-items: center;
                 font-size: 90%;
-                z-index: 10;
+                z-index: var(--mynah-z-1);
                 padding-right: var(--mynah-sizing-1);
                 flex-shrink: 0;
                 > .mynah-button {
@@ -271,7 +271,7 @@
                 justify-content: flex-start;
                 align-items: center;
                 gap: var(--mynah-sizing-1);
-                z-index: 10;
+                z-index: var(--mynah-z-1);
                 flex-shrink: 0.01;
 
                 > .mynah-ui-icon {
