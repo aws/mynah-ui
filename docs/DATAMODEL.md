@@ -2810,9 +2810,16 @@ mynahUI.addChatItem(tabId, {
 ---
 
 ## `icon`
-It allows you to set an icon on the left top corner of the card. You should use one from `MynahIcons`. 
+It allows you to set an icon on the left top corner of the card. You should use one from `MynahIcons`, or you can provide a custom icon from an SVG converted to a base64 string, by providing an object with a name and the base64 string as follows:
 
-See the example below.
+```typescript
+{
+  name: 'iconName',
+  base64Svg: 'someBase64SVGStringHere'
+}
+```
+
+See the examples below for providing an icon.
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -2831,13 +2838,33 @@ mynahUI.addChatItem(tabId, {
     icon: MynahIcons.CHAT,
 });
 
-// Icon with status
+// Icon with a background status color
 mynahUI.addChatItem(tabId, {
     type: ChatItemType.ANSWER,
     messageId: new Date().getTime().toString(),
     body: `This is a card with an icon and a status!`,
-    status: 'info',
+    iconStatus: 'info',
     icon: MynahIcons.CHAT,
+});
+
+// Icon with a foreground status color
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: `This is a card with an icon and a status!`,
+    iconForegroundStatus: 'info',
+    icon: MynahIcons.CHAT,
+});
+
+// Custom icon
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: `This is a card with an icon and a status!`,
+    icon: {
+      name: 'javascript',
+      base64Svg: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iO...'
+    },
 });
 ```
 
@@ -2848,7 +2875,7 @@ mynahUI.addChatItem(tabId, {
 ---
 
 ## `iconStatus`
-It allows you give a background status color only to the icon. Can be given to both the `header` and main card icons. 
+It allows you to give a background status color only to the icon. Can be given to both the `header` and main card icons. 
 
 See the example below.
 
@@ -2881,9 +2908,87 @@ mynahUI.addChatItem(tabId, {
 
 ---
 
+## `iconForegroundStatus`
+Allows you to provide a status color to an icon itself. Can be given to both the `header` and main card icons, as well as file list icons.
+
+See the example below.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: `This is a card with an icon and a status!`,
+    iconForegroundStatus: 'info',
+    icon: MynahIcons.CHAT,
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/icon-foreground.png" alt="icon foreground color" style="max-width:400px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `muted`
+You can give any card a `muted` state by providing `muted: true`. This will grayscale all content, including text and images. The only exception is the header status area, which will remain colored (as can be seen in the screenshot below).
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    fullWidth: true,
+    padding: false,
+    muted: true,
+    header: {
+        icon: 'code-block',
+        status: {
+            icon: MynahIcons.OK,
+            text: 'Accepted',
+            status: 'success'
+        },
+        fileList: {
+            hideFileCount: true,
+            fileTreeTitle: '',
+            filePaths: ['package.json'],
+            details: {
+                'package.json': {
+                    icon: null,
+                    label: 'Created',
+                    changes: {
+                        added: 36,
+                        deleted: 0,
+                        total: 36
+                    }
+                }
+            }
+        }
+    }
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/muted-cards.png" alt="muted cards" style="max-width:400px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
 
 ## `canBeDismissed`
-It allows you put a close button on top of the card. It appears even above the `header` section.
+It allows you to put a close button on top of the card. It appears even above the `header` section.
 
 See the example below.
 
