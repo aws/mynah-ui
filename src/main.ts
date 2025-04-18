@@ -801,9 +801,11 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         this.addChatItem(tabId, {
           type: ChatItemType.ANSWER_STREAM,
           body: '',
-          messageId: generateUID()
+          messageId: generateUID(),
+          ...updateWith
         });
-        this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
+        console.log("There were no previous streaming cards, we're creating a new one with the content below:");
+        console.log(updateWith);
       }
     }
   };
