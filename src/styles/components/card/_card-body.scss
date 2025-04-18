@@ -171,4 +171,9 @@
             cursor: help;
         }
     }
+
+    ol,
+    ul {
+        padding-left: calc(var(--mynah-font-size-medium) * 2);
+    }
 }

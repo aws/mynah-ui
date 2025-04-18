@@ -12,6 +12,7 @@ import { generateUID } from '../../main';
 
 export interface DetailedListWrapperProps {
   detailedList: DetailedList;
+  descriptionTextDirection?: 'ltr' | 'rtl';
   onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
   onGroupActionClick?: (action: ChatItemButton) => void;
   onItemSelect?: (detailedListItem: DetailedListItem) => void;
@@ -141,7 +142,7 @@ export class DetailedListWrapper {
               type: 'div',
               attributes: {
                 key: itemBlockKey,
-                style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-10) + var(--mynah-sizing-half)));`
+                style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-8) + var(--mynah-sizing-half)));`
               },
               classNames: [ 'mynah-detailed-list-items-block' ],
               children: index < 5
@@ -168,7 +169,8 @@ export class DetailedListWrapper {
         onSelect: this.props.onItemSelect,
         onActionClick: this.props.onItemActionClick,
         selectable: this.props.detailedList.selectable,
-        textDirection: this.props.detailedList.textDirection
+        textDirection: this.props.detailedList.textDirection,
+        descriptionTextDirection: this.props.descriptionTextDirection
       });
       if (detailedListItem.disabled !== true) {
         this.allSelectableDetailedListElements.push(detailedListItemElement);

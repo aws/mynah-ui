@@ -243,6 +243,14 @@ export class MynahUITabsStore {
     };
   };
 
+  /**
+   * Updates defaults of the tab store
+   * @param defaults MynahUITabStoreTab
+   */
+  public getTabDefaults = (): MynahUITabStoreTab => {
+    return this.tabDefaults;
+  };
+
   public destroy = (): void => {
     MynahUITabsStore.instance = undefined;
   };

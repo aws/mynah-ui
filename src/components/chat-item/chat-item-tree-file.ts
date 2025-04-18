@@ -86,7 +86,7 @@ export class ChatItemTreeFile {
             this.props.deleted === true ? 'mynah-chat-item-tree-view-file-item-deleted' : '',
           ],
           children: [
-            ...(this.props.details?.icon !== null ? [ new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE }).render ] : []),
+            ...(this.props.details?.icon !== null ? [ new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE, status: this.props.details?.iconForegroundStatus }).render ] : []),
             {
               type: 'span',
               classNames: [ 'mynah-chat-item-tree-view-file-item-title-text' ],
@@ -153,6 +153,7 @@ export class ChatItemTreeFile {
     if (content.trim() !== '') {
       clearTimeout(this.fileTooltipTimeout);
       this.fileTooltipTimeout = setTimeout(() => {
+        clearTimeout(this.fileTooltipTimeout);
         this.fileTooltip = new Overlay({
           testId: testIds.chatItem.fileTree.fileTooltipWrapper,
           background: true,

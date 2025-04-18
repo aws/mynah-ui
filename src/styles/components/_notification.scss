@@ -3,8 +3,8 @@
     flex-flow: row nowrap;
     align-items: flex-start;
     justify-content: flex-start;
-    gap: var(--mynah-sizing-3);
-    padding: var(--mynah-sizing-5);
+    gap: var(--mynah-sizing-2);
+    padding: var(--mynah-sizing-2);
     overflow: hidden;
     position: relative;
     &.mynah-notification-clickable {
@@ -12,7 +12,7 @@
         cursor: pointer;
     }
     > .mynah-ui-icon {
-        font-size: var(--mynah-sizing-6);
+        font-size: var(--mynah-font-size-large);
         &- {
             &ok-circled {
                 color: var(--mynah-color-status-success);
@@ -32,7 +32,7 @@
         flex-flow: column nowrap;
         align-items: flex-start;
         justify-content: flex-start;
-        gap: var(--mynah-sizing-3);
+        gap: var(--mynah-sizing-2);
         overflow: hidden;
         position: relative;
         > .mynah-notification-title {
@@ -47,7 +47,7 @@
             flex-flow: column nowrap;
             justify-content: flex-start;
             align-items: flex-start;
-            gap: var(--mynah-sizing-2);
+            gap: var(--mynah-sizing-1);
             > .mynah-button {
                 align-self: stretch;
                 background-color: var(--mynah-color-alternate);

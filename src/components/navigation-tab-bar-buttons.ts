@@ -96,8 +96,9 @@ class TabBarButtonWithMultipleOptions {
       testId: (this.props.tabBarActionButton.items != null && this.props.tabBarActionButton.items?.length > 0) ? testIds.tabBar.menuButton : testIds.tabBar.button,
       label: this.props.tabBarActionButton.text,
       tooltip: this.props.tabBarActionButton.description,
-      tooltipVerticalDirection: OverlayVerticalDirection.START_TO_BOTTOM,
-      tooltipHorizontalDirection: OverlayHorizontalDirection.TO_LEFT,
+      disabled: this.props.tabBarActionButton.disabled,
+      tooltipVerticalDirection: OverlayVerticalDirection.TO_BOTTOM,
+      tooltipHorizontalDirection: OverlayHorizontalDirection.CENTER,
       icon: this.props.tabBarActionButton.icon != null ? new Icon({ icon: this.props.tabBarActionButton.icon }).render : undefined,
       primary: false,
       onClick: () => {
