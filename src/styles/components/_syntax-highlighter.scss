@@ -133,17 +133,6 @@
     &:not(.mynah-inline-code) {
         > pre {
             max-height: var(--mynah-syntax-code-block-max-height);
-            $listFader: linear-gradient(
-                to bottom,
-                black 0%,
-                black calc(1 * (var(--mynah-syntax-code-block-max-height) - (2 * var(--mynah-sizing-10)))),
-                transparent calc(1 * (var(--mynah-syntax-code-block-max-height) - (var(--mynah-sizing-10)))),
-                transparent 100%
-            );
-            -webkit-mask-image: $listFader;
-            -webkit-mask-size: 100% 100%;
-            mask-image: $listFader;
-            mask-size: 100% 100%;
         }
     }
     > pre {
@@ -364,9 +353,23 @@
     }
 
     &.max-height-exceed {
+        &:not(.mynah-inline-code) > pre {
+            padding-bottom: var(--mynah-sizing-12);
+        }
         &:not(.no-max, .mynah-inline-code) {
             > pre {
                 padding-bottom: var(--mynah-sizing-13);
+                $listFader: linear-gradient(
+                    to bottom,
+                    black 0%,
+                    black calc(1 * (var(--mynah-syntax-code-block-max-height) - (2 * var(--mynah-sizing-10)))),
+                    transparent calc(1 * (var(--mynah-syntax-code-block-max-height) - (var(--mynah-sizing-10)))),
+                    transparent 100%
+                );
+                -webkit-mask-image: $listFader;
+                -webkit-mask-size: 100% 100%;
+                mask-image: $listFader;
+                mask-size: 100% 100%;
             }
         }
         > .more-content-indicator {

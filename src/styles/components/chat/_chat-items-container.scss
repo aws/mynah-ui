@@ -51,7 +51,8 @@
 }
 
 &.loading {
-    @import 'chat-items-bottom-animator';
+    // @import 'chat-items-bottom-animator';
+    // TODO: Temporary, since when it exceeds the height, we don't know if the content is still being produced
     &:before {
         display: block;
         animation: horizontal-roll 1250ms linear infinite both;
