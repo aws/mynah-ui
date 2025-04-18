@@ -74,6 +74,7 @@ export enum MynahIcons {
   SHELL = 'shell',
   HELP = 'help',
   MESSAGE = 'message',
+  MCP = 'mcp',
   TRASH = 'trash',
   TRANSFORM = 'transform',
   HISTORY = 'history'

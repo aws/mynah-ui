@@ -44,6 +44,7 @@ import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet } from './components/sheet';
 import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
+import { MynahUIDataStore } from './helper/store';
 
 export { generateUID } from './helper/guid';
 export {
@@ -812,7 +813,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         this.addChatItem(tabId, {
           type: ChatItemType.ANSWER_STREAM,
           body: '',
-          messageId: generateUID()
+          messageId: generateUID(),
         });
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
       }
@@ -916,6 +917,14 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   /**
+   * Updates defaults of the tab store
+   * @param defaults MynahUITabStoreTab
+   */
+  public getTabDefaults = (): MynahUITabStoreTab => {
+    return MynahUITabsStore.getInstance().getTabDefaults();
+  };
+
+  /**
    * This function returns the selected tab id if there is any, otherwise returns undefined
    * @returns string selectedTabId or undefined
    */
@@ -930,7 +939,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
 
-  public getTabData = (tabId: string): any => MynahUITabsStore.getInstance().getTabDataStore(tabId);
+  public getTabData = (tabId: string): MynahUIDataStore => MynahUITabsStore.getInstance().getTabDataStore(tabId);
 
   /**
    * Toggles the visibility of the splash loader screen

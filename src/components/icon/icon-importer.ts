@@ -73,6 +73,7 @@ import SHELL from './icons/shell.svg';
 import HELP from './icons/help.svg';
 import HISTORY from './icons/history.svg';
 import MESSAGE from './icons/message.svg';
+import MCP from './icons/mcp.svg';
 import TRASH from './icons/trash.svg';
 import TRANSFORM from './icons/transform.svg';
 
@@ -146,6 +147,7 @@ export class MynahUIIconImporter {
     SHELL,
     HELP,
     MESSAGE,
+    MCP,
     TRASH,
     TRANSFORM,
     HISTORY

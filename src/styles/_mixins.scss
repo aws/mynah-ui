@@ -8,10 +8,10 @@
     mask-size: 100% 100%;
 }
 
-@mixin gradient-border($gradient: var(--mynah-color-gradient-main)) {
+@mixin gradient-border($gradient: var(--mynah-color-gradient-main), $background: var(--mynah-card-bg)) {
     background-clip: padding-box, border-box;
     background-origin: border-box;
-    background-image: linear-gradient(var(--mynah-card-bg), var(--mynah-card-bg)), $gradient;
+    background-image: linear-gradient($background, $background), $gradient;
     background-position: 0% bottom;
     background-size: 200% 100%;
     background-repeat: repeat-x;
