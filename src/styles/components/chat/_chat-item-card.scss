@@ -158,11 +158,17 @@
 
     &.mynah-chat-item-card-has-icon {
         > .mynah-card {
+            &.padding-none {
+                > .mynah-chat-item-card-icon {
+                    left: 0;
+                    top: 0;
+                }
+            }
             padding-left: var(--mynah-sizing-10);
             > .mynah-chat-item-card-icon {
                 position: absolute;
-                left: var(--mynah-sizing-4);
-                transform: translateY(calc(var(--mynah-line-height) / 2 - var(--mynah-border-width) * 2));
+                left: var(--mynah-sizing-3);
+                top: var(--mynah-sizing-5);
 
                 &[class*='icon-status-']:not(.icon-status-none) {
                     padding: var(--mynah-sizing-2);
@@ -474,6 +480,7 @@
             padding: var(--mynah-sizing-4);
             background-color: var(--mynah-card-bg-alternate);
             border-bottom-right-radius: var(--mynah-card-radius-corner);
+            border: none;
             &,
             > .mynah-card-body {
                 color: var(--mynah-color-text-alternate);

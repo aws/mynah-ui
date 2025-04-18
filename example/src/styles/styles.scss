@@ -3,10 +3,12 @@
 // Since mynah-ui css custom properties are mapped to VSCode theme ones by default
 // here are some sample VSCode themes applied.
 @import 'themes/light+.scss';
+@import 'themes/light+tweaked.scss';
 @import 'themes/light-orange.scss';
 @import 'themes/light-quiet.scss';
 @import 'themes/light-solarized.scss';
 @import 'themes/dark-plus.scss';
+@import 'themes/dark+tweaked.scss';
 @import 'themes/dark-abyss.scss';
 @import 'themes/dark-ayu-mirage.scss';
 @import 'themes/dark-dracula.scss';
