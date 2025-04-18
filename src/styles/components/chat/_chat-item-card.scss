@@ -107,7 +107,7 @@
             }
 
             > .mynah-chat-item-card-header {
-                padding: var(--mynah-sizing-1) var(--mynah-sizing-3);
+                padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
                 @include full-width-header();
             }
         }
@@ -254,7 +254,7 @@
             flex-flow: row nowrap;
         }
         > .mynah-card-body {
-            padding: 0;
+            padding: var(--mynah-border-width);
             & > div {
                 > .mynah-syntax-highlighter {
                     filter: contrast(1.15) brightness(0.85);

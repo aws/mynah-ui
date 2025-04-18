@@ -216,6 +216,7 @@
     display: flex;
     overflow: hidden;
     > .mynah-detailed-list {
+        padding: var(--mynah-sizing-2);
         flex: 1;
     }
 }

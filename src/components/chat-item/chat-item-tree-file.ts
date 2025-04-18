@@ -153,6 +153,7 @@ export class ChatItemTreeFile {
     if (content.trim() !== '') {
       clearTimeout(this.fileTooltipTimeout);
       this.fileTooltipTimeout = setTimeout(() => {
+        clearTimeout(this.fileTooltipTimeout);
         this.fileTooltip = new Overlay({
           testId: testIds.chatItem.fileTree.fileTooltipWrapper,
           background: true,

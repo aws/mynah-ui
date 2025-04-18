@@ -2,14 +2,12 @@
 .mynah-detailed-list {
     display: flex;
     box-sizing: border-box;
-    border-radius: var(--mynah-card-radius);
     width: 100%;
     flex-flow: column nowrap;
     align-items: stretch;
     justify-content: flex-start;
     overflow: hidden;
-    padding: var(--mynah-sizing-3);
-    gap: var(--mynah-sizing-3);
+    gap: var(--mynah-sizing-2);
     pointer-events: all;
 
     > .mynah-detailed-list-header-wrapper {
