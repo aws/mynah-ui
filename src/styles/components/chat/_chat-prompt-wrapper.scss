@@ -153,10 +153,9 @@
                         justify-content: center;
                         align-items: center;
                         gap: var(--mynah-sizing-half);
-                        font-size: var(--mynah-font-size-medium);
+                        font-size: var(--mynah-font-size-small);
                         > .mynah-ui-icon {
-                            height: calc(var(--mynah-font-size-medium) - var(--mynah-sizing-base));
-                            font-size: var(--mynah-font-size-xsmall);
+                            font-size: var(--mynah-font-size-xxsmall);
                             & + span.at-char {
                                 display: none;
                             }
@@ -386,7 +385,7 @@
         max-width: 100%;
         width: 100%;
         > .mynah-card {
-            border-bottom-left-radius: var(--mynah-card-radius) !important;
+            border-bottom-left-radius: 0 !important;
         }
     }
 }

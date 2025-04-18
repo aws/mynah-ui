@@ -29,7 +29,7 @@
     --mynah-color-toggle: var(--vscode-sideBar-background);
     --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
 
-    --mynah-color-syntax-bg: var(--vscode-terminal-dropBackground, #fafafa);
+    --mynah-color-syntax-bg: var(--vscode-editor-background, #fafafa);
     --mynah-color-syntax-variable: var(--vscode-debugTokenExpression-number, #986801);
     --mynah-color-syntax-function: var(--vscode-debugTokenExpression-boolean, #e45649);
     --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan, #0184bb);
@@ -115,7 +115,7 @@
     --mynah-font-size-xxlarge: 1.5rem;
     --mynah-line-height: 1rem;
 
-    --mynah-syntax-code-block-max-height: calc(25 * var(--mynah-syntax-code-line-height));
+    --mynah-syntax-code-block-max-height: calc(25 * var(--mynah-syntax-code-font-size) * 118 / 100);
     --mynah-syntax-code-line-height: 118%;
     --mynah-syntax-code-font-size: var(--mynah-font-size-medium);
 

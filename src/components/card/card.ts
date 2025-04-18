@@ -45,7 +45,7 @@ export class Card {
       testId: this.props.testId,
       classNames: [
         'mynah-card',
-        `padding-${props.padding ?? 'large'}`,
+        `padding-${props.padding ?? 'medium'}`,
         props.border !== false ? 'border' : '',
         props.background !== false ? 'background' : '',
         ...(props.classNames ?? [])

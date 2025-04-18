@@ -184,8 +184,8 @@
     flex-flow: row-reverse wrap-reverse;
     gap: var(--mynah-sizing-2);
     overflow: hidden;
-    padding-top: var(--mynah-sizing-1);
-    padding-bottom: var(--mynah-sizing-1);
+    padding-top: 0;
+    padding-bottom: 0;
     justify-content: flex-end;
     align-items: center;
 }

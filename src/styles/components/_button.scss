@@ -139,11 +139,6 @@
         text-overflow: ellipsis;
         z-index: 100;
     }
-    > .mynah-ui-icon {
-        & + span {
-            margin-right: var(--mynah-sizing-1);
-        }
-    }
 
     .mynah-chat-item-card:hover &.mynah-button-flash-by-parent-focus:not(:hover) {
         &,
