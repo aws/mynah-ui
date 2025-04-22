@@ -1165,7 +1165,7 @@ interface ChatItemContent {
   codeBlockActions?: CodeBlockActions | null;
 }
 
-export interface ChatItem extends ChatItemContent {
+interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
