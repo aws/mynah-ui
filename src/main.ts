@@ -28,6 +28,7 @@ import {
   PromptAttachmentType,
   QuickActionCommand,
   DetailedList,
+  TreeNodeDetails,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -274,7 +275,9 @@ export interface MynahUIProps {
     filePath: string,
     deleted: boolean,
     messageId?: string,
-    eventId?: string) => void;
+    eventId?: string,
+    fileDetails?: TreeNodeDetails
+  ) => void;
   onMessageDismiss?: (
     tabId: string,
     messageId: string,
@@ -726,7 +729,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           data.filePath,
           data.deleted,
           data.messageId,
-          this.getUserEventId());
+          this.getUserEventId(),
+          data.fileDetails);
       }
 
       if (this.props.onOpenDiff !== undefined) {
