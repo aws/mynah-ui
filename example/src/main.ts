@@ -171,6 +171,21 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 // Use for custom temporary checks
                 mynahUI.addChatItem(tabId, {
                     type: ChatItemType.ANSWER,
+                    icon: 'calendar',
+                    header: {
+                        body: '#### Allow read-only tools outside your workspace',
+                        buttons: [{
+                            id: 'allow-readonly-tools',
+                            text: 'Allow',
+                            icon: 'ok',
+                            status: 'clear'
+                        }]
+                    },
+                    fullWidth: true,
+                    body: '<span style="color:var(--mynah-color-text-weak)">Tools: tool-long-name-1, tool-long-name-2</span>',
+                });
+                mynahUI.addChatItem(tabId, {
+                    type: ChatItemType.ANSWER,
                     title: 'SAVE THE DATE',
                     header: {
                         icon: 'calendar',

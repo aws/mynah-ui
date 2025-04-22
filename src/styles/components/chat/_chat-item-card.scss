@@ -35,6 +35,11 @@
         > .mynah-chat-item-buttons-container {
             justify-content: flex-start;
         }
+        > .mynah-card {
+            > .mynah-chat-item-card-header {
+                @include full-width-header();
+            }
+        }
     }
 
     &.muted {
