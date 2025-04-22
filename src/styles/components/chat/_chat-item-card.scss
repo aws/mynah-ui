@@ -119,7 +119,7 @@
             }
 
             > .mynah-chat-item-card-header {
-                padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
+                padding: var(--mynah-sizing-1) var(--mynah-sizing-1) var(--mynah-sizing-1) var(--mynah-sizing-2);
                 @include full-width-header();
             }
         }
@@ -365,6 +365,8 @@
                 gap: var(--mynah-sizing-1);
                 justify-content: flex-start;
                 align-items: center;
+                font-size: var(--mynah-font-size-large);
+                padding-right: var(--mynah-sizing-1);
                 @each $status in $mynah-statuses {
                     &.status-#{$status} {
                         color: var(--mynah-color-status-#{$status});

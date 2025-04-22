@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
-import { MynahUIGlobalEvents } from '../../helper/events';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { CardBody, CardBodyProps } from '../card/card-body';
@@ -26,7 +26,10 @@ import { ChatItemTabbedCard } from './chat-item-tabbed-card';
 import { Spinner } from '../spinner/spinner';
 import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
+import { marked } from 'marked';
 
+const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
   tabId: string;
   chatItem: ChatItem;
@@ -37,6 +40,8 @@ export interface ChatItemCardProps {
 export class ChatItemCard {
   readonly props: ChatItemCardProps;
   render: ExtendedHTMLElement;
+  private tooltipOverlay: Overlay | null;
+  private tooltipTimeout: ReturnType<typeof setTimeout>;
   private readonly card: Card | null = null;
   private readonly updateStack: Array<Partial<ChatItem>> = [];
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
@@ -197,7 +202,7 @@ export class ChatItemCard {
   private readonly getCardClasses = (): string[] => {
     return [
       ...(this.props.chatItem.hoverEffect !== undefined ? [ 'mynah-chat-item-hover-effect' ] : []),
-      ...(this.props.chatItem.shimmer !== undefined ? [ 'text-shimmer' ] : []),
+      ...(this.props.chatItem.shimmer === true ? [ 'text-shimmer' ] : []),
       ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
       ...(this.props.chatItem.fullWidth === true || this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM ? [ 'full-width' ] : []),
       ...(this.props.chatItem.padding === false ? [ 'no-padding' ] : []),
@@ -340,7 +345,19 @@ export class ChatItemCard {
               children: [
                 ...(this.props.chatItem.header.status.icon != null ? [ new Icon({ icon: this.props.chatItem.header.status.icon }).render ] : []),
                 ...(this.props.chatItem.header.status.text != null ? [ { type: 'span', classNames: [ 'mynah-chat-item-card-header-status-text' ], children: [ this.props.chatItem.header.status.text ] } ] : []),
-              ]
+              ],
+              ...(this.props.chatItem.header.status?.description != null
+                ? {
+                    events: {
+                      mouseover: (e) => {
+                        cancelEvent(e);
+                        const tooltipText = marked(this.props.chatItem?.header?.status?.description ?? '', { breaks: true }) as string;
+                        this.showTooltip(tooltipText, e.target ?? e.currentTarget);
+                      },
+                      mouseleave: this.hideTooltip
+                    }
+                  }
+                : {})
             }));
           }
         }
@@ -398,6 +415,9 @@ export class ChatItemCard {
         this.contentBody = new ChatItemCardContent(updatedCardContentBodyProps);
         this.card?.render.insertChild('beforeend', this.contentBody.render);
       }
+    } else if (this.props.chatItem.body === null) {
+      this.contentBody?.render.remove();
+      this.contentBody = null;
     }
 
     /**
@@ -656,6 +676,41 @@ export class ChatItemCard {
     });
 
   private readonly canShowAvatar = (): boolean => (this.props.chatItem.type === ChatItemType.ANSWER_STREAM || (this.props.inline !== true && chatItemHasContent({ ...this.props.chatItem, followUp: undefined })));
+
+  private readonly showTooltip = (content: string, elm: HTMLElement): void => {
+    if (content.trim() !== undefined) {
+      clearTimeout(this.tooltipTimeout);
+      this.tooltipTimeout = setTimeout(() => {
+        this.tooltipOverlay = new Overlay({
+          background: true,
+          closeOnOutsideClick: false,
+          referenceElement: elm,
+          dimOutside: false,
+          removeOtherOverlays: true,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.CENTER,
+          children: [
+            new Card({
+              border: false,
+              children: [
+                new CardBody({
+                  body: content
+                }).render
+              ]
+            }).render
+          ],
+        });
+      }, TOOLTIP_DELAY);
+    }
+  };
+
+  public readonly hideTooltip = (): void => {
+    clearTimeout(this.tooltipTimeout);
+    if (this.tooltipOverlay !== null) {
+      this.tooltipOverlay?.close();
+      this.tooltipOverlay = null;
+    }
+  };
 
   public readonly updateCard = (): void => {
     if (this.updateStack.length > 0) {

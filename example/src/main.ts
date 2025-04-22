@@ -1284,7 +1284,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     getGenerativeAIAnswer(tabId, sampleMarkdownList);
                     break;
                 case Commands.CARD_WITH_PROGRESSIVE_FILE_LIST:
-                    getGenerativeAIAnswer(tabId, sampleProgressiveFileList);
+                    getGenerativeAIAnswer(tabId, sampleProgressiveFileList, ChatItemType.ANSWER);
                     break;
                 case Commands.CARD_WITH_ALL_MARKDOWN_TAGS:
                     mynahUI.addChatItem(tabId, {
@@ -1507,14 +1507,16 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         );
     };
 
-    const getGenerativeAIAnswer = (tabId: string, optionalParts?: Partial<ChatItem>[]): void => {
+    const getGenerativeAIAnswer = (tabId: string, optionalParts?: Partial<ChatItem>[], type?: ChatItemType): void => {
         const messageId = generateUID();
         mynahUI.updateStore(tabId, {
             loadingChat: true,
             promptInputDisabledState: true,
         });
         mynahUI.addChatItem(tabId, {
-            type: ChatItemType.ANSWER_STREAM,
+            type: type ?? ChatItemType.ANSWER_STREAM,
+            body: type === ChatItemType.ANSWER && optionalParts?.[0]?.body != null ? optionalParts[0].body : '',
+            shimmer: type === ChatItemType.ANSWER && optionalParts?.[0]?.body != null,
             messageId: messageId,
         });
         connector
