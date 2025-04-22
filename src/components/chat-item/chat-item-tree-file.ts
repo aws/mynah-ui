@@ -47,6 +47,7 @@ export class ChatItemTreeFile {
               messageId: this.props.messageId,
               filePath: this.props.originalFilePath,
               deleted: this.props.deleted,
+              fileDetails: this.props.details
             });
           }
         },

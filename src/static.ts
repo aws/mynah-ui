@@ -316,6 +316,7 @@ export interface TreeNodeDetails {
   };
   description?: string;
   clickable?: boolean;
+  data?: Record<string, string>;
 }
 
 export interface ChatItemContent {

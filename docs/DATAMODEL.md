@@ -1055,16 +1055,23 @@ interface FileNodeAction {
   label?: string;
   disabled?: boolean;
   description?: string;
-  status?: 'info' | 'success' | 'warning' | 'error';
-  icon: MynahIcons;
+  status?: Status;
+  icon: MynahIcons | MynahIconsType;
 }
 
 interface TreeNodeDetails {
-  status?: 'info' | 'success' | 'warning' | 'error';
-  icon?: MynahIcons;
+  status?: Status;
+  icon?: MynahIcons | MynahIconsType | null;
+  iconForegroundStatus?: Status;
   label?: string;
-  description?: string; // Markdown tooltip
-  clickable?: boolean; // can it be clicked? (Default: true)
+  changes?: {
+    added?: number;
+    deleted?: number;
+    total?: number;
+  };
+  description?: string;
+  clickable?: boolean;
+  data?: Record<string, string>;
 }
 
 interface SourceLink {

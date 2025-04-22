@@ -13,6 +13,7 @@ import {
     MynahIcons,
     generateUID,
     KeyMap,
+    TreeNodeDetails,
 } from '@aws/mynah-ui';
 import { mcpButton, mynahUIDefaults, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
@@ -1133,7 +1134,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         onVote: (tabId: string, messageId: string, vote: RelevancyVoteType) => {
             Log(`Message <b>${messageId}</b> is <b>${vote}d</b>.`);
         },
-        onFileClick: (tabId: string, filePath: string, deleted: boolean, messageId?: string) => {
+        onFileClick: (tabId: string, filePath: string, deleted: boolean, messageId?: string, eventId?: string, fileDetails?: TreeNodeDetails) => {
             Log(`File clicked on message ${messageId}: <b>${filePath}</b>`);
         },
         onFileActionClick: (tabId, messageId, filePath, actionName) => {
