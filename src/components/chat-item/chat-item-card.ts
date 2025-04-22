@@ -197,6 +197,7 @@ export class ChatItemCard {
   private readonly getCardClasses = (): string[] => {
     return [
       ...(this.props.chatItem.hoverEffect !== undefined ? [ 'mynah-chat-item-hover-effect' ] : []),
+      ...(this.props.chatItem.shimmer !== undefined ? [ 'text-shimmer' ] : []),
       ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
       ...(this.props.chatItem.fullWidth === true || this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM ? [ 'full-width' ] : []),
       ...(this.props.chatItem.padding === false ? [ 'no-padding' ] : []),

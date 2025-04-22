@@ -1,6 +1,6 @@
 @import '../../scss-variables';
-@import '../chat/chat-items-bottom-animator';
 @import '../../mixins';
+
 .mynah-chat-item-card {
     display: inline-flex;
     flex-flow: column nowrap;
@@ -25,6 +25,13 @@
                     }
                 }
             }
+        }
+    }
+
+    &.text-shimmer {
+        p,
+        span {
+            @include text-shimmer;
         }
     }
 

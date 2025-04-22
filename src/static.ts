@@ -395,6 +395,7 @@ export interface ChatItem extends ChatItemContent {
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
   status?: Status;
+  shimmer?: boolean;
 }
 
 export interface ValidationPattern {
