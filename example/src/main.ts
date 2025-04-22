@@ -209,6 +209,12 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                         },
                     ],
                 });
+                mynahUI.addChatItem(tabId, {
+                    type: ChatItemType.ANSWER,
+                    messageId: new Date().getTime().toString(),
+                    body: 'Thinking...',
+                    shimmer: true,
+                });
             } else if (buttonId === 'history_sheet') {
                 const { update, close, changeTarget, getTargetElementId } = mynahUI.openDetailedList({
                     detailedList: {
