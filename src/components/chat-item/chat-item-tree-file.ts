@@ -91,7 +91,7 @@ export class ChatItemTreeFile {
             {
               type: 'span',
               classNames: [ 'mynah-chat-item-tree-view-file-item-title-text' ],
-              children: [ this.props.fileName ]
+              children: [ this.props.details?.visibleName ?? this.props.fileName ]
             } ]
         },
         {
@@ -110,11 +110,14 @@ export class ChatItemTreeFile {
                       ]
                     } ]
                   : []),
+                ...(this.props.details?.labelIcon != null ? [ new Icon({ icon: this.props.details?.labelIcon, status: this.props.details?.labelIconForegroundStatus }).render ] : []),
                 ...(this.props.details.label != null
                   ? [ {
                       type: 'span',
                       classNames: [ 'mynah-chat-item-tree-view-file-item-details-text' ],
-                      children: [ this.props.details.label ]
+                      children: [
+                        this.props.details.label
+                      ]
                     } ]
                   : []),
               ]

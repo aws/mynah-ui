@@ -153,6 +153,11 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
                 description: 'ChatItem card with a complex markdown list inside.',
             },
             {
+                command: Commands.CARD_WITH_PROGRESSIVE_FILE_LIST,
+                icon: MynahIcons.FILE,
+                description: 'ChatItem card with a progressive file list.',
+            },
+            {
                 command: Commands.VOTE,
                 icon: MynahIcons.THUMBS_UP,
                 description: 'ChatItem card which can be voted',

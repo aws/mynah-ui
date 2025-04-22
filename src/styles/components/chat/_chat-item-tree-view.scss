@@ -26,7 +26,7 @@
     }
 
     > .mynah-chat-item-tree-view-wrapper-container {
-        background-color: var(--mynah-card-bg);
+        // background-color: var(--mynah-card-bg);
         color: var(--mynah-color-text-default);
         margin-block-start: 0 !important;
         margin-block-end: 0 !important;
@@ -72,7 +72,7 @@
             }
 
             .mynah-chat-item-tree-view-button-weak-title {
-                opacity: 0.65;
+                color: var(--mynah-color-text-weak);
             }
 
             .mynah-chat-item-folder-child {
@@ -85,7 +85,7 @@
             flex-flow: row nowrap;
             justify-content: flex-start;
             align-items: center;
-            gap: var(--mynah-sizing-2);
+            gap: var(--mynah-sizing-1);
             overflow-y: hidden;
             cursor: pointer;
             position: relative;
@@ -115,56 +115,31 @@
                     pointer-events: none;
                 }
             }
-            &:before {
-                content: '';
-                position: absolute;
-                z-index: 0;
-                opacity: 0.1;
-                width: 100%;
-                height: 100%;
-                left: 0;
-                top: 0;
-                border-radius: inherit;
-                z-index: 100;
-                pointer-events: all;
-            }
 
             &-status {
                 &-info {
-                    &:before {
-                        background-color: var(--mynah-color-status-info);
-                    }
-
+                    > .mynah-chat-item-tree-view-file-item-title,
                     > .mynah-chat-item-tree-view-file-item-details > .mynah-ui-icon {
                         color: var(--mynah-color-status-info);
                     }
                 }
 
                 &-success {
-                    &:before {
-                        background-color: var(--mynah-color-status-success);
-                    }
-
+                    > .mynah-chat-item-tree-view-file-item-title,
                     > .mynah-chat-item-tree-view-file-item-details > .mynah-ui-icon {
                         color: var(--mynah-color-status-success);
                     }
                 }
 
                 &-warning {
-                    &:before {
-                        background-color: var(--mynah-color-status-warning);
-                    }
-
+                    > .mynah-chat-item-tree-view-file-item-title,
                     > .mynah-chat-item-tree-view-file-item-details > .mynah-ui-icon {
                         color: var(--mynah-color-status-warning);
                     }
                 }
 
                 &-error {
-                    &:before {
-                        background-color: var(--mynah-color-status-error);
-                    }
-
+                    > .mynah-chat-item-tree-view-file-item-title,
                     > .mynah-chat-item-tree-view-file-item-details > .mynah-ui-icon {
                         color: var(--mynah-color-status-error);
                     }
@@ -177,7 +152,6 @@
                 justify-content: flex-start;
                 align-items: center;
                 gap: var(--mynah-sizing-1);
-                font-size: 90%;
                 z-index: 10;
                 flex: 1;
                 flex-shrink: 2;

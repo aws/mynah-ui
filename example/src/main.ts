@@ -43,6 +43,7 @@ import {
     exampleStatusButtons,
     exampleVoteChatItem,
     sampleHeaderTypes,
+    sampleProgressiveFileList,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -1276,6 +1277,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 case Commands.CARD_WITH_MARKDOWN_LIST:
                     getGenerativeAIAnswer(tabId, sampleMarkdownList);
                     break;
+                case Commands.CARD_WITH_PROGRESSIVE_FILE_LIST:
+                    getGenerativeAIAnswer(tabId, sampleProgressiveFileList);
+                    break;
                 case Commands.CARD_WITH_ALL_MARKDOWN_TAGS:
                     mynahUI.addChatItem(tabId, {
                         type: ChatItemType.ANSWER,
@@ -1545,7 +1549,6 @@ used as a context to generate this message.`,
                 ],
                 (chatItem: Partial<ChatItem>, percentage: number) => {
                     if (streamingMessageId != null) {
-                        console.log(mynahUI.getAllTabs());
                         mynahUI.updateChatAnswerWithMessageId(tabId, messageId, { ...chatItem, messageId: streamingMessageId });
 
                         mynahUI.updateStore(tabId, {

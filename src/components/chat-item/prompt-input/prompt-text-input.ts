@@ -47,7 +47,7 @@ export class PromptTextInput {
       classNames: [ 'mynah-chat-prompt-input', 'empty' ],
       innerHTML: '',
       attributes: {
-        contenteditable: 'true',
+        contenteditable: 'plaintext-only',
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),
         tabindex: '0',
         rows: '1',
@@ -140,7 +140,7 @@ export class PromptTextInput {
       } else {
         // Enable the input field and focus on it
         this.promptTextInput.removeAttribute('disabled');
-        this.promptTextInput.setAttribute('contenteditable', 'true');
+        this.promptTextInput.setAttribute('contenteditable', 'plaintext-only');
         if (Config.getInstance().config.autoFocus && document.hasFocus()) {
           this.promptTextInput.focus();
         }

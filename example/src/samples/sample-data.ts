@@ -73,6 +73,157 @@ export const exampleSources = [
     },
 ] as SourceLink[];
 
+const progressiveFileListDefaults: ChatItem['fileList'] = {
+    hideFileCount: true,
+    fileTreeTitle: '',
+    flatList: true,
+    collapsed: false,
+    rootFolderTitle: 'Reading',
+    rootFolderLabel: 'portfolio',
+    rootFolderStatusIcon: 'progress',
+    rootFolderStatusIconForegroundStatus: 'info'
+};
+
+export const sampleProgressiveFileList: Partial<ChatItem>[] = [
+    {
+        body: '',
+        fileList: {
+            fileTreeTitle: '',
+            filePaths: ['portfolio'],
+            details: {
+                'portfolio': {
+                    visibleName: 'Reading',
+                    icon: 'folder',
+                    labelIcon: 'progress',
+                    labelIconForegroundStatus: 'info',
+                    label: 'portfolio'
+                }
+            }
+        }
+    },{
+        body: '', 
+        fileList: {
+            ...progressiveFileListDefaults,
+            filePaths: ['/qdev-wbr/pytest.ini'],
+            details: {
+                '/qdev-wbr/pytest.ini': {
+                    icon: 'progress',
+                    label: 'Working on',
+                    visibleName: '/qdev-wbr/pytest.ini',
+                    iconForegroundStatus: 'info',
+                }
+            }
+        }
+    },{
+        fileList: {
+            ...progressiveFileListDefaults,
+            filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts'],
+            details: {
+                '/qdev-wbr/pytest.ini': {
+                    icon: 'ok-circled',
+                    visibleName: '/qdev-wbr/pytest.ini',
+                    label: 'Done',
+                    iconForegroundStatus: 'success',
+                },
+                'yy.ts': {
+                    icon: 'progress',
+                    label: 'Working on',
+                    iconForegroundStatus: 'info',
+                }
+            }
+        }
+    },{
+        fileList: {
+            ...progressiveFileListDefaults,
+            filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
+            details: {
+                '/qdev-wbr/pytest.ini': {
+                    icon: 'ok-circled',
+                    visibleName: '/qdev-wbr/pytest.ini',
+                    label: 'Done',
+                    iconForegroundStatus: 'success',
+                },
+                'yy.ts': {
+                    icon: 'ok-circled',
+                    label: 'Done',
+                    iconForegroundStatus: 'success',
+                },
+                'zz.ts': {
+                    icon: 'progress',
+                    label: 'Working on',
+                    iconForegroundStatus: 'info',
+                },
+                'tt.ts': {
+                    icon: 'file',
+                    label: 'In queue'
+                }
+            }
+        }
+    },{
+        fileList: {
+            ...progressiveFileListDefaults,
+            filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
+            details: {
+                '/qdev-wbr/pytest.ini': {
+                    icon: 'ok-circled',
+                    visibleName: '/qdev-wbr/pytest.ini',
+                    label: 'Done',
+                    iconForegroundStatus: 'success',
+                },
+                'yy.ts': {
+                    icon: 'ok-circled',
+                    label: 'Done',
+                    iconForegroundStatus: 'success',
+                },
+                'zz.ts': {
+                    icon: 'ok-circled',
+                    label: 'Done',
+                    iconForegroundStatus: 'success',
+                },
+                'tt.ts': {
+                    icon: 'progress',
+                    label: 'Working on',
+                    iconForegroundStatus: 'info'
+                }
+            }
+        }
+    },{
+        fileList: {
+            ...progressiveFileListDefaults,
+            filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
+            rootFolderTitle: 'portfolio',
+            rootFolderLabel: undefined,
+            rootFolderStatusIconForegroundStatus: undefined,
+            rootFolderStatusIcon: undefined,
+            details: {
+                '/qdev-wbr/pytest.ini': {
+                    icon: 'ok-circled',
+                    label: 'Done',
+                    visibleName: '/qdev-wbr/pytest.ini',
+                    iconForegroundStatus: 'success',
+                },
+                'yy.ts': {
+                    icon: 'ok-circled',
+                    label: 'Done',
+                    iconForegroundStatus: 'success',
+                },
+                'zz.ts': {
+                    icon: 'ok-circled',
+                    label: 'Done',
+                    iconForegroundStatus: 'success',
+                },
+                'tt.ts': {
+                    icon: 'cancel-circle',
+                    label: 'Failed reading',
+                    status: 'error',
+                    iconForegroundStatus: 'error'
+                }
+            }
+        }
+    },
+];
+
+
 export const sampleMarkdownList: Partial<ChatItem>[] = [
     { autoCollapse: true, body: `${sampleList0 as string}` },
     { body: `${sampleList1 as string}` },
@@ -389,6 +540,10 @@ export const defaultFollowUps: ChatItem = {
             {
                 command: Commands.CARD_WITH_MARKDOWN_LIST,
                 pillText: 'Markdown list',
+            },
+            {
+                command: Commands.CARD_WITH_PROGRESSIVE_FILE_LIST,
+                pillText: 'Progressive file list',
             },
             {
                 command: Commands.CARD_WITH_ALL_MARKDOWN_TAGS,
