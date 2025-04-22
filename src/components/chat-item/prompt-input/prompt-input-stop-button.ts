@@ -33,6 +33,7 @@ export class PromptInputStopButton {
       attributes: {
         tabindex: '0'
       },
+      label: Config.getInstance().config.texts.stopGenerating,
       icon: new Icon({ icon: MynahIcons.STOP }).render,
       primary: false,
       border: false,

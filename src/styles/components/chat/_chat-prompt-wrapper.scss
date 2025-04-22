@@ -190,15 +190,9 @@
                     width: 100%;
                     color: inherit;
                     > .mynah-button {
-                        border-radius: 50%;
                         &.mynah-chat-prompt-stop-button,
                         &.mynah-chat-prompt-button {
                             flex-shrink: 0;
-                            border-radius: 50%;
-                            background-color: var(--mynah-color-text-input);
-                            i {
-                                color: var(--mynah-card-bg);
-                            }
                         }
 
                         &.mynah-chat-prompt-stop-button {

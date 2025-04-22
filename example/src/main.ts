@@ -1503,6 +1503,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             loadingChat: true,
             promptInputDisabledState: true,
         });
+        mynahUI.addChatItem(tabId, {
+            type: ChatItemType.ANSWER_STREAM,
+            messageId: messageId,
+        });
         connector
             .requestGenerativeAIAnswer(
                 optionalParts ?? [
@@ -1541,7 +1545,9 @@ used as a context to generate this message.`,
                 ],
                 (chatItem: Partial<ChatItem>, percentage: number) => {
                     if (streamingMessageId != null) {
-                        mynahUI.updateLastChatAnswer(tabId, { ...chatItem, messageId: streamingMessageId });
+                        console.log(mynahUI.getAllTabs());
+                        mynahUI.updateChatAnswerWithMessageId(tabId, messageId, { ...chatItem, messageId: streamingMessageId });
+
                         mynahUI.updateStore(tabId, {
                             ...(optionalParts != null
                                 ? {
@@ -1560,11 +1566,10 @@ used as a context to generate this message.`,
                 },
                 () => {
                     const cardDetails = mynahUI.endMessageStream(tabId, messageId, {}) as Record<string, any>;
+                    mynahUI.endMessageStream(tabId, `${messageId}_clone`, {}) as Record<string, any>;
 
                     mynahUI.updateStore(tabId, {
                         loadingChat: false,
-                    });
-                    mynahUI.updateStore(tabId, {
                         promptInputDisabledState: false,
                     });
                     if (optionalParts != null) {
@@ -1594,11 +1599,10 @@ used as a context to generate this message.`,
             )
             .then(() => {
                 streamingMessageId = messageId;
-                mynahUI.updateLastChatAnswer(tabId, {
+                mynahUI.updateChatAnswerWithMessageId(tabId, streamingMessageId, {
                     type: ChatItemType.ANSWER_STREAM,
                     body: '',
-                    canBeVoted: true,
-                    // messageId: streamingMessageId,
+                    canBeVoted: true
                 });
                 if (optionalParts != null) {
                     mynahUI.updateStore(tabId, {
