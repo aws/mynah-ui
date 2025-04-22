@@ -306,8 +306,11 @@ export interface ProgressField {
 
 export interface TreeNodeDetails {
   status?: Status;
+  visibleName?: string;
   icon?: MynahIcons | MynahIconsType | null;
   iconForegroundStatus?: Status;
+  labelIcon?: MynahIcons | MynahIconsType | null;
+  labelIconForegroundStatus?: Status;
   label?: string;
   changes?: {
     added?: number;
@@ -344,6 +347,9 @@ export interface ChatItemContent {
   fileList?: {
     fileTreeTitle?: string;
     rootFolderTitle?: string;
+    rootFolderStatusIcon?: MynahIcons | MynahIconsType;
+    rootFolderStatusIconForegroundStatus?: Status;
+    rootFolderLabel?: string;
     filePaths?: string[];
     deletedFiles?: string[];
     flatList?: boolean;

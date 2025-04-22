@@ -7,7 +7,7 @@ import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { fileListToTree } from '../../helper/file-tree';
-import { FileNodeAction, ReferenceTrackerInformation, TreeNodeDetails } from '../../static';
+import { FileNodeAction, ReferenceTrackerInformation, Status, TreeNodeDetails } from '../../static';
 import { MynahIcons, MynahIconsType } from '../icon';
 import { ChatItemTreeFile } from './chat-item-tree-file';
 import { ChatItemTreeView } from './chat-item-tree-view';
@@ -20,6 +20,9 @@ export interface ChatItemTreeViewWrapperProps {
   cardTitle?: string;
   classNames?: string[];
   rootTitle?: string;
+  rootLabel?: string;
+  rootStatusIcon?: MynahIcons | MynahIconsType;
+  rootIconForegroundStatus?: Status;
   deletedFiles: string[];
   flatList?: boolean;
   folderIcon?: MynahIcons | MynahIconsType | null;
@@ -56,7 +59,7 @@ export class ChatItemTreeViewWrapper {
         messageId: props.messageId,
         folderIcon: props.folderIcon,
         tabId: props.tabId,
-        node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle),
+        node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle, props.rootStatusIcon, props.rootIconForegroundStatus, props.rootLabel),
         hideFileCount: props.hideFileCount,
         collapsed: props.collapsed
       }).render;
