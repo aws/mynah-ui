@@ -73,7 +73,7 @@
 @mixin full-width-header() {
     min-width: 100%;
     box-sizing: border-box;
-    gap: var(--mynah-sizing-3);
+    gap: var(--mynah-sizing-1);
     > .mynah-ui-chat-item-small-card {
         flex: 1;
         > .mynah-card.padding-none {

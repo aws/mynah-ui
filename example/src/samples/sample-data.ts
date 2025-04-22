@@ -86,7 +86,15 @@ const progressiveFileListDefaults: ChatItem['fileList'] = {
 
 export const sampleProgressiveFileList: Partial<ChatItem>[] = [
     {
-        body: '',
+        body: 'Thinking...',
+        type: ChatItemType.ANSWER,
+        shimmer: true,
+    }, {
+        body: 'More thinking...',
+    },
+    {
+        body: null,
+        shimmer: false,
         fileList: {
             fileTreeTitle: '',
             filePaths: ['portfolio'],
@@ -101,7 +109,6 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
             }
         }
     },{
-        body: '', 
         fileList: {
             ...progressiveFileListDefaults,
             filePaths: ['/qdev-wbr/pytest.ini'],
@@ -1570,6 +1577,35 @@ mkdir -p src/ lalalaaaa
                 {
                     status: 'clear',
                     icon: 'play',
+                    id: 'run-bash-command'
+                }
+            ]
+        },
+        body: `
+\`\`\`bash
+mkdir -p src/ lalalaaaa
+\`\`\`
+`,
+        codeBlockActions: { copy: null, 'insert-to-cursor': null }
+    },
+
+    {
+        fullWidth: true,
+        padding: false,
+        type: ChatItemType.ANSWER,
+        header: {
+            icon: MynahIcons.CODE_BLOCK,
+            body: 'Terminal command',
+            status: {
+                icon: MynahIcons.WARNING,
+                status: 'warning',
+                description: 'This command may cause\nsignificant data loss or damage.'
+            },
+            buttons: [
+                {
+                    status: 'clear',
+                    icon: 'play',
+                    text: 'Run',
                     id: 'run-bash-command'
                 }
             ]

@@ -329,6 +329,7 @@ export interface ChatItemContent {
     iconForegroundStatus?: Status;
     status?: {
       status?: Status;
+      description?: string;
       icon?: MynahIcons | MynahIconsType;
       text?: string;
     };
