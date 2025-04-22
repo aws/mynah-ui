@@ -368,7 +368,7 @@ export class ChatItemCard {
         hideCodeBlockLanguage: this.props.chatItem.padding === false,
         unlimitedCodeBlockHeight: this.props.chatItem.autoCollapse,
         classNames: [ 'mynah-card-inner-order-20' ],
-        renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
+        renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM || this.props.chatItem.type === ChatItemType.DIRECTIVE,
         codeReference: this.props.chatItem.codeReference ?? undefined,
         onAnimationStateChange: (isAnimating) => {
           if (isAnimating) {
