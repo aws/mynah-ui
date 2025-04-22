@@ -1165,16 +1165,23 @@ interface ChatItemContent {
   codeBlockActions?: CodeBlockActions | null;
 }
 
-interface ChatItem extends ChatItemContent{
+interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
   autoCollapse?: boolean;
   canBeVoted?: boolean;
-  icon?: MynahIcons;
+  canBeDismissed?: boolean;
+  title?: string;
+  fullWidth?: boolean;
+  padding?: boolean;
+  muted?: boolean;
+  icon?: MynahIcons | MynahIconsType | CustomIcon;
+  iconForegroundStatus?: Status;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
-  status?: 'info' | 'success' | 'warning' | 'error';
+  status?: Status;
+  shimmer?: boolean;
 }
 // ################################# 
 ```
@@ -1963,6 +1970,22 @@ mynahUI.addChatItem(tabId, {
 </p>
 
 ---
+
+## `shimmer`
+It will give the text in the chat item an animated shimmer effect.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+    type: ChatItemType.ANSWER,
+    messageId: new Date().getTime().toString(),
+    body: 'Thinking...',
+    shimmer: true,
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/shimmer.gif" alt="shimmer" style="max-width:200px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ## `padding`
 It will allow you to control the padding, by default it is `true`. If you set it to `false`, it will not show any paddings around the contents.
