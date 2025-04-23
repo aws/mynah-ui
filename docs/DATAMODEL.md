@@ -2913,7 +2913,7 @@ mynahUI.addChatItem(tabId, {
 
 
 ## `canBeDismissed`
-It allows you put a close button on top of the card. It appears even above the `header` section.
+It allows you put a close button on top of the card, which will remove the card once clicked. It will appear even above the `header` section.
 
 See the example below.
 
