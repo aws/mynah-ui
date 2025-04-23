@@ -10,6 +10,7 @@ import { Status } from '../static';
 
 export enum MynahIcons {
   Q = 'q',
+  AT = 'at',
   MENU = 'menu',
   MINUS = 'minus',
   SEARCH = 'search',
@@ -64,6 +65,7 @@ export enum MynahIcons {
   COPY = 'copy',
   CURSOR_INSERT = 'cursor-insert',
   TEXT_SELECT = 'text-select',
+  TOOLS = 'tools',
   REVERT = 'revert',
   UNDO = 'undo',
   ROCKET = 'rocket',

@@ -118,7 +118,7 @@
                             z-index: 0;
                             font-weight: inherit;
                             font-size: inherit;
-                            color: var(--mynah-color-text-weak);
+                            color: var(--mynah-color-text-input-placeholder);
                             max-width: 100%;
                             overflow: hidden;
                             overflow-wrap: break-word;
@@ -181,7 +181,7 @@
                     flex-flow: row nowrap;
                     overflow: visible;
                     box-sizing: border-box;
-                    gap: var(--mynah-sizing-1);
+                    gap: var(--mynah-sizing-half);
                     flex-flow: row nowrap;
                     align-items: center;
                     justify-content: flex-end;
@@ -230,7 +230,7 @@
                     pointer-events: none;
                     background-color: transparent;
                     i {
-                        color: var(--mynah-color-text-weak);
+                        color: var(--mynah-color-text-disabled);
                     }
                 }
             }

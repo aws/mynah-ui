@@ -15,10 +15,12 @@
     --mynah-color-text-default: var(--vscode-foreground); // OK
     --mynah-color-text-alternate: var(--vscode-foreground, var(--mynah-color-button-reverse));
     --mynah-color-text-strong: var(--vscode-input-foreground);
-    --mynah-color-text-weak: var(--vscode-disabledForeground);
+    --mynah-color-text-weak: var(--vscode-descriptionForeground, var(--vscode-disabledForeground));
+    --mynah-color-text-disabled: var(--vscode-disabledForeground);
     --mynah-color-text-link: var(--vscode-textLink-foreground);
     --mynah-color-text-link-alternate: var(--mynah-color-button-reverse);
     --mynah-color-text-input: var(--vscode-input-foreground);
+    --mynah-color-text-input-placeholder: var(--vscode-input-placeholderForeground, var(--mynah-color-text-disabled));
 
     --mynah-color-bg: var(--vscode-sideBar-background, var(--vscode-sideBar-background));
     --mynah-color-tab-active: var(--vscode-tab-activeBackground, var(--vscode-editor-background, var(--mynah-card-bg)));
@@ -45,7 +47,7 @@
     --mynah-color-status-info: #0971d3;
     --mynah-color-status-success: #037f03;
     --mynah-color-status-warning: #b2911c;
-    --mynah-color-status-error: #d91515;
+    --mynah-color-status-error: var(--vscode-editorError-foreground, #d91515);
 
     --mynah-color-gradient-alternate: #ffffff;
 

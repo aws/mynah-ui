@@ -290,9 +290,9 @@
             gap: var(--mynah-sizing-2);
             justify-content: flex-start;
             align-items: center;
-            transition: var(--mynah-very-short-transition);
             display: flex;
             flex-flow: row nowrap;
+            @include text-shimmer;
         }
         > .mynah-card-body {
             padding: var(--mynah-border-width);
@@ -312,7 +312,6 @@
             > .mynah-chat-item-card-related-content {
                 margin-top: var(--mynah-sizing-3);
                 padding-top: var(--mynah-sizing-4);
-                // border-top: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
                 > .mynah-chat-item-card-related-content-title {
                     color: var(--mynah-color-text-weak);
                     font-size: var(--mynah-font-size-xsmall);
@@ -331,7 +330,6 @@
             justify-content: space-between;
             align-items: center;
             padding-top: var(--mynah-sizing-3);
-            // border-top: var(--mynah-border-width) solid var(--mynah-color-border-default);
             &:empty {
                 display: none;
             }

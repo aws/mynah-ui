@@ -51,7 +51,7 @@
                 left: calc(var(--mynah-border-width) * -1);
                 right: calc(var(--mynah-border-width) * -1);
                 bottom: calc(var(--mynah-border-width) * -1);
-                background-color: var(--mynah-color-text-weak);
+                background-color: var(--mynah-color-text-disabled);
                 border-radius: var(--mynah-input-radius);
                 z-index: -1;
                 opacity: 10%;
@@ -70,7 +70,7 @@
             }
 
             &::placeholder {
-                color: var(--mynah-color-text-weak);
+                color: var(--mynah-color-text-input-placeholder);
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;

@@ -36,7 +36,8 @@
         pointer-events: none;
     }
     .mynah-button {
-        margin: var(--mynah-sizing-half);
+        margin: var(--mynah-border-width);
+        margin-top: 0;
     }
 }
 
