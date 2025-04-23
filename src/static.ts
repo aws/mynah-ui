@@ -385,6 +385,7 @@ export interface ChatItem extends ChatItemContent {
   messageId?: string;
   snapToTop?: boolean;
   autoCollapse?: boolean;
+  contentHorizontalAlignment?: 'default' | 'center';
   canBeVoted?: boolean;
   canBeDismissed?: boolean;
   title?: string;
