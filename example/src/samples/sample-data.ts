@@ -1662,4 +1662,32 @@ After that some blockquote!
 and normal text again.
 `,
     },
+
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            buttons: [{
+                icon: 'undo',
+                text: 'Undo',
+                status: 'clear',
+                id: 'undo-change', // Or whatever ID you have
+            }],
+            fileList: {
+                hideFileCount: true,
+                fileTreeTitle: '',
+                filePaths: ['maze_game.py'],
+                details: {
+                    'maze_game.py': {
+                        icon: null,
+                        changes: {
+                            added: 131,
+                            deleted: 0,
+                        },
+                    },
+                },
+            },
+        },
+    }
 ];

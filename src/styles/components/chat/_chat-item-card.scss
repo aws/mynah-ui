@@ -209,7 +209,7 @@
             > .mynah-chat-item-card-icon {
                 position: absolute;
                 left: var(--mynah-sizing-3);
-                top: var(--mynah-sizing-5);
+                top: calc(var(--mynah-sizing-1) + var(--mynah-line-height));
 
                 &[class*='icon-status-']:not(.icon-status-none) {
                     padding: var(--mynah-sizing-2);
@@ -394,6 +394,7 @@
                 align-items: center;
                 font-size: var(--mynah-font-size-large);
                 padding-right: var(--mynah-sizing-1);
+                min-height: var(--mynah-sizing-7);
                 @each $status in $mynah-statuses {
                     &.status-#{$status} {
                         color: var(--mynah-color-status-#{$status});
