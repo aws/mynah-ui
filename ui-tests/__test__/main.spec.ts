@@ -44,7 +44,7 @@ import { promptOptions } from './flows/prompt-options';
 import { renderIcons } from './flows/icons';
 import { renderMutedCards } from './flows/muted-cards';
 import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
-// import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
+import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 import { renderHeaders } from './flows/headers';
 import { renderAndDismissCard } from './flows/dismissible-cards';
 
@@ -224,7 +224,7 @@ describe('Open MynahUI', () => {
     await renderHeaders(page);
   });
 
-  it.only('should render and remove dismissible cards', async () => {
+  it('should render and remove dismissible cards', async () => {
     await renderAndDismissCard(page);
   });
 
@@ -248,7 +248,7 @@ describe('Open MynahUI', () => {
     await parseMarkdown(page);
   });
 
-  describe('Prompt navigation', () => {
+  describe.only('Prompt navigation', () => {
     it('should navigate up to previous prompt', async () => {
       await navigatePromptsUp(page);
     });
@@ -260,9 +260,9 @@ describe('Open MynahUI', () => {
       await navigatePromptsToEmpty(page);
     });
 
-    // it('should navigate up/down only if on first/last line', async () => {
-    //   await navigatePromptsFirstLastLineCheck(page);
-    // });
+    it('should navigate up/down only if on first/last line', async () => {
+      await navigatePromptsFirstLastLineCheck(page);
+    });
 
     it('should stay on current prompt', async () => {
       await stayOnCurrentPrompt(page);

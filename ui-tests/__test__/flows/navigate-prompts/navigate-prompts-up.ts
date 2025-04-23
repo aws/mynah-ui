@@ -10,7 +10,7 @@ export const navigatePromptsUp = async (page: Page, skipScreenshots?: boolean): 
   await openNewTab(page, false, true);
 
   await page.locator(getSelector(testIds.prompt.input)).fill('This is the first user prompt');
-  await page.locator(getSelector(testIds.prompt.send)).click();
+  await page.locator(getSelector(testIds.prompt.send)).nth(1).click();
   await waitForAnimationEnd(page);
 
   const promptInput = page.locator(getSelector(testIds.prompt.input));
