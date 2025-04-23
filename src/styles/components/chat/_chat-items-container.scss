@@ -11,6 +11,7 @@
     padding-bottom: 0;
     gap: var(--mynah-chat-wrapper-spacing);
     @include list-fader-bottom();
+    scroll-behavior: smooth;
 
     &.set-scroll {
         scroll-snap-type: y mandatory;
@@ -50,8 +51,6 @@
     }
 }
 &.loading {
-    // @import 'chat-items-bottom-animator';
-    // TODO: Temporary, since when it exceeds the height, we don't know if the content is still being produced
     &:before {
         display: block;
         animation: horizontal-roll 1250ms linear infinite both;

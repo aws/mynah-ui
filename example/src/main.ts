@@ -88,7 +88,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             },
         },
         onPromptInputOptionChange: (tabId, optionsValues) => {
-            if(optionsValues['pair-programmer-mode'] != null){
+            if (optionsValues['pair-programmer-mode'] != null) {
                 mynahUI.addChatItem(tabId, {
                     type: ChatItemType.DIRECTIVE,
                     contentHorizontalAlignment: 'center',
@@ -180,9 +180,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 // Use for custom temporary checks
                 mynahUI.addChatItem(tabId, {
                     type: ChatItemType.ANSWER,
-                    icon: 'calendar',
+                    icon: 'tools',
                     header: {
                         body: '#### Allow read-only tools outside your workspace',
+                        status: {
+                            icon: 'warning',
+                            status: 'warning',
+                        },
                         buttons: [
                             {
                                 id: 'allow-readonly-tools',
@@ -1075,7 +1079,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             if (action.id === 'allow-readonly-tools') {
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
                     muted: true,
-                    icon: 'calendar',
+                    icon: 'tools',
                     header: {
                         body: '#### Allow read-only tools outside your workspace',
                         buttons: [
@@ -1663,6 +1667,7 @@ used as a context to generate this message.`,
                                     id: 'cancel-running-task',
                                     text: 'Cancel',
                                     icon: MynahIcons.CANCEL,
+                                    status: 'clear',
                                     disabled: false,
                                 },
                             ],

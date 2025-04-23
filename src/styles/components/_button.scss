@@ -15,10 +15,9 @@
     overflow: hidden;
     position: relative;
     transform: translateZ(0px);
-    padding: var(--mynah-sizing-1);
+    padding: var(--mynah-sizing-1) calc(var(--mynah-sizing-1) + var(--mynah-sizing-half));
     gap: var(--mynah-sizing-1);
     opacity: 1;
-    line-height: var(--mynah-line-height);
     background-color: transparent;
     color: inherit;
     &:not(.mynah-button-secondary) {

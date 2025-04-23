@@ -23,7 +23,6 @@ import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-
 import testIds from '../../helper/test-ids';
 import { ChatItemInformationCard } from './chat-item-information-card';
 import { ChatItemTabbedCard } from './chat-item-tabbed-card';
-import { Spinner } from '../spinner/spinner';
 import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
@@ -90,8 +89,8 @@ export class ChatItemCard {
         DomBuilder.getInstance().build({
           type: 'div',
           persistent: true,
-          classNames: [ 'mynah-chat-items-spinner' ],
-          children: [ new Spinner().render, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
+          classNames: [ 'mynah-chat-items-spinner', 'text-shimmer' ],
+          children: [ { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
         }),
 
       ];

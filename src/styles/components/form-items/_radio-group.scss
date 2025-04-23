@@ -30,7 +30,7 @@
                 border-color: var(--mynah-color-button);
                 > .mynah-ui-icon {
                     transform: scale(0.75);
-                    color: var(--mynah-card-bg);
+                    color: var(--mynah-color-button-reverse);
                     opacity: 1;
                 }
                 &::after {

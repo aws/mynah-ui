@@ -8,6 +8,7 @@ import { DomBuilder } from '../../helper/dom';
 import { CustomIcon, MynahIcons } from '../icon';
 // ICONS
 import Q from './icons/q.svg';
+import AT from './icons/at.svg';
 import MENU from './icons/menu.svg';
 import MINUS from './icons/minus.svg';
 import SEARCH from './icons/search.svg';
@@ -62,6 +63,7 @@ import CODE_BLOCK from './icons/code-block.svg';
 import COPY from './icons/copy.svg';
 import CURSOR_INSERT from './icons/cursor-insert.svg';
 import TEXT_SELECT from './icons/text-select.svg';
+import TOOLS from './icons/tools.svg';
 import REVERT from './icons/revert.svg';
 import UNDO from './icons/undo.svg';
 import ROCKET from './icons/rocket.svg';
@@ -83,6 +85,7 @@ export class MynahUIIconImporter {
   private readonly portalId = 'mynah-ui-icons';
   private readonly defaultIconMappings = {
     Q,
+    AT,
     MENU,
     MINUS,
     SEARCH,
@@ -137,6 +140,7 @@ export class MynahUIIconImporter {
     COPY,
     CURSOR_INSERT,
     TEXT_SELECT,
+    TOOLS,
     REVERT,
     UNDO,
     ROCKET,

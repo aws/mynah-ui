@@ -1654,6 +1654,12 @@ mkdir -p src/ lalalaaaa
 
     {
         type: ChatItemType.DIRECTIVE,
-        body: '_Starting with a directive_',
+        body: `_Starting with a directive_
+After that some blockquote!
+
+> This is a blockquote.
+
+and normal text again.
+`,
     },
 ];
