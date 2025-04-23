@@ -200,7 +200,6 @@
                                 justify-content: flex-start;
                                 display: inline-block;
                                 white-space: nowrap;
-                                direction: rtl;
                                 text-align: left;
                                 text-overflow: ellipsis;
                                 padding-left: var(--mynah-sizing-1);
@@ -222,16 +221,10 @@
                             white-space: nowrap;
                             text-align: left;
                             text-overflow: ellipsis;
-
-                            p {
-                                margin: 0;
-                                text-overflow: ellipsis;
-                                overflow: hidden;
-                            }
+                            margin: 0;
                             &.rtl {
-                                p {
-                                    direction: rtl;
-                                }
+                                direction: rtl;
+                                text-align: left;
                             }
                         }
                     }

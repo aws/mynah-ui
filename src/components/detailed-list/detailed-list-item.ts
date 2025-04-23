@@ -68,7 +68,7 @@ export class DetailedListItemWrapper {
               ? [ {
                   type: 'div',
                   classNames: [ 'mynah-detailed-list-item-description', this.props.descriptionTextDirection ?? 'ltr' ],
-                  innerHTML: `<bdi>${marked.parse(this.props.listItem.description.replace(/ /g, '&nbsp;').replace(/\n\s*\n/g, ' '), {
+                  innerHTML: `<bdi>${marked.parseInline(this.props.listItem.description.replace(/ /g, '&nbsp;').replace(/\n\s*\n/g, ' '), {
                     breaks: false,
                         }) as string}</bdi>`
                 } ]
