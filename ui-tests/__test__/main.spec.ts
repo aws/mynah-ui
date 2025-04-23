@@ -46,6 +46,7 @@ import { renderMutedCards } from './flows/muted-cards';
 import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 // import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 import { renderHeaders } from './flows/headers';
+import { renderAndDismissCard } from './flows/dismissible-cards';
 
 describe('Open MynahUI', () => {
   beforeEach(async () => {
@@ -221,6 +222,10 @@ describe('Open MynahUI', () => {
 
   it('should render card headers correctly', async () => {
     await renderHeaders(page);
+  });
+
+  it.only('should render and remove dismissible cards', async () => {
+    await renderAndDismissCard(page);
   });
 
   describe('Forms', () => {

@@ -45,9 +45,10 @@ export default {
     card: 'chat-item-card',
     cardBody: 'chat-item-card-body',
     buttons: {
-      wrapper: 'chat-iem-buttons-wrapper',
+      wrapper: 'chat-item-buttons-wrapper',
       button: 'chat-item-action-button',
     },
+    dismissButton: 'chat-item-dismiss-button',
     chatItemFollowup: {
       optionsWrapper: 'chat-item-followup-options-wrapper',
       optionButton: 'chat-item-followup-option',

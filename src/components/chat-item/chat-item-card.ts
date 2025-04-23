@@ -300,7 +300,8 @@ export class ChatItemCard {
             }
           },
           primary: false,
-          status: 'clear'
+          status: 'clear',
+          testId: testIds.chatItem.dismissButton
         }).render);
       }
       this.card?.render.insertChild('afterbegin', this.cardTitle);
