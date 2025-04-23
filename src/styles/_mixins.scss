@@ -82,7 +82,7 @@
             grid-template-rows: auto;
             padding: 0;
             column-gap: 0;
-            align-items: baseline;
+            align-items: center;
             > .mynah-ui-icon {
                 margin-right: var(--mynah-sizing-2);
                 &[class*='icon-status'] + .mynah-card-body {
