@@ -15,9 +15,11 @@ export interface ChatItemTreeViewProps {
   hideFileCount?: boolean;
   collapsed?: boolean;
   folderIcon?: MynahIcons | MynahIconsType | null;
+  onRootCollapsedStateChange?: (isCollapsed: boolean) => void;
 }
 
 export class ChatItemTreeView {
+  private readonly props: ChatItemTreeViewProps;
   private readonly node: TreeNode;
   private readonly folderIcon: MynahIcons | MynahIconsType | null;
   private isOpen: boolean;
@@ -28,6 +30,7 @@ export class ChatItemTreeView {
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemTreeViewProps) {
+    this.props = props;
     this.node = props.node;
     this.folderIcon = props.folderIcon === null ? null : props.folderIcon ?? MynahIcons.FOLDER;
     this.tabId = props.tabId;
@@ -70,7 +73,7 @@ export class ChatItemTreeView {
             depth: this.depth + 1,
             tabId: this.tabId,
             hideFileCount: this.hideFileCount,
-            messageId: this.messageId
+            messageId: this.messageId,
           }).render ],
         })
       )
@@ -118,6 +121,7 @@ export class ChatItemTreeView {
       onClick: e => {
         cancelEvent(e);
         this.isOpen = !this.isOpen;
+        this.props.onRootCollapsedStateChange?.(!this.isOpen);
         this.updateTree();
       },
     }).render;

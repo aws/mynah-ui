@@ -32,6 +32,7 @@ export interface ChatItemTreeViewWrapperProps {
   collapsed?: boolean;
   referenceSuggestionLabel: string;
   references: ReferenceTrackerInformation[];
+  onRootCollapsedStateChange: (isCollapsed: boolean) => void;
 }
 
 export class ChatItemTreeViewWrapper {
@@ -61,7 +62,8 @@ export class ChatItemTreeViewWrapper {
         tabId: props.tabId,
         node: fileListToTree(props.files, props.deletedFiles, props.actions, props.details, props.rootTitle, props.rootStatusIcon, props.rootIconForegroundStatus, props.rootLabel),
         hideFileCount: props.hideFileCount,
-        collapsed: props.collapsed
+        collapsed: props.collapsed,
+        onRootCollapsedStateChange: props.onRootCollapsedStateChange
       }).render;
 
     this.render = DomBuilder.getInstance().build({

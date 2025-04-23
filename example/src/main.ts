@@ -122,10 +122,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   Click to configure.`;
                 }
 
-                Object.keys(mynahUI.getAllTabs()).forEach(tabIdKey => {
-                  mynahUI.updateStore(tabIdKey, {
-                      tabBarButtons: [mcpButton, ...tabbarButtons],
-                  });
+                Object.keys(mynahUI.getAllTabs()).forEach((tabIdKey) => {
+                    mynahUI.updateStore(tabIdKey, {
+                        tabBarButtons: [mcpButton, ...tabbarButtons],
+                    });
                 });
                 mynahUI.updateTabDefaults({
                     store: {
@@ -176,12 +176,14 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     icon: 'calendar',
                     header: {
                         body: '#### Allow read-only tools outside your workspace',
-                        buttons: [{
-                            id: 'allow-readonly-tools',
-                            text: 'Allow',
-                            icon: 'ok',
-                            status: 'clear'
-                        }]
+                        buttons: [
+                            {
+                                id: 'allow-readonly-tools',
+                                text: 'Allow',
+                                icon: 'ok',
+                                status: 'clear',
+                            },
+                        ],
                     },
                     fullWidth: true,
                     body: '<span style="color:var(--mynah-color-text-weak)">Tools: tool-long-name-1, tool-long-name-2</span>',
@@ -1063,7 +1065,23 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         `);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
-            if (action.id === 'accept-file-change-on-header-card') {
+            if (action.id === 'allow-readonly-tools') {
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    muted: true,
+                    header: {
+                        body: '#### Allow read-only tools outside your workspace',
+                        buttons: [
+                            {
+                                id: 'allow-readonly-tools',
+                                text: 'Allowed',
+                                icon: 'ok',
+                                status: 'clear',
+                                disabled: true,
+                            },
+                        ],
+                    },
+                });
+            } else if (action.id === 'accept-file-change-on-header-card') {
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
                     muted: true,
                     header: {
@@ -1141,7 +1159,14 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         onVote: (tabId: string, messageId: string, vote: RelevancyVoteType) => {
             Log(`Message <b>${messageId}</b> is <b>${vote}d</b>.`);
         },
-        onFileClick: (tabId: string, filePath: string, deleted: boolean, messageId?: string, eventId?: string, fileDetails?: TreeNodeDetails) => {
+        onFileClick: (
+            tabId: string,
+            filePath: string,
+            deleted: boolean,
+            messageId?: string,
+            eventId?: string,
+            fileDetails?: TreeNodeDetails,
+        ) => {
             Log(`File clicked on message ${messageId}: <b>${filePath}</b>`);
         },
         onFileActionClick: (tabId, messageId, filePath, actionName) => {
@@ -1558,7 +1583,10 @@ used as a context to generate this message.`,
                 ],
                 (chatItem: Partial<ChatItem>, percentage: number) => {
                     if (streamingMessageId != null) {
-                        mynahUI.updateChatAnswerWithMessageId(tabId, messageId, { ...chatItem, messageId: streamingMessageId });
+                        mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                            ...chatItem,
+                            messageId: streamingMessageId,
+                        });
 
                         mynahUI.updateStore(tabId, {
                             ...(optionalParts != null
@@ -1614,7 +1642,7 @@ used as a context to generate this message.`,
                 mynahUI.updateChatAnswerWithMessageId(tabId, streamingMessageId, {
                     type: ChatItemType.ANSWER_STREAM,
                     body: '',
-                    canBeVoted: true
+                    canBeVoted: true,
                 });
                 if (optionalParts != null) {
                     mynahUI.updateStore(tabId, {
