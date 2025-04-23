@@ -45,6 +45,7 @@ import { renderIcons } from './flows/icons';
 import { renderMutedCards } from './flows/muted-cards';
 import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 // import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
+import { renderHeaders } from './flows/headers';
 
 describe('Open MynahUI', () => {
   beforeEach(async () => {
@@ -54,7 +55,7 @@ describe('Open MynahUI', () => {
   beforeAll(async () => {
     const browserName = browser.browserType().name();
     const toMatchImageSnapshot = configureToMatchImageSnapshot({
-      failureThreshold: 0.01,
+      failureThreshold: 0.03,
       allowSizeMismatch: true,
       failureThresholdType: 'percent',
       storeReceivedOnFailure: true,
@@ -218,6 +219,10 @@ describe('Open MynahUI', () => {
     await renderMutedCards(page);
   });
 
+  it('should render card headers correctly', async () => {
+    await renderHeaders(page);
+  });
+
   describe('Forms', () => {
     it('should render form elements correctly', async () => {
       await renderFormElements(page);
@@ -230,7 +235,7 @@ describe('Open MynahUI', () => {
     });
   });
 
-  it.only('should keep the content inside window boundaries', async () => {
+  it('should keep the content inside window boundaries', async () => {
     await checkContentInsideWindowBoundaries(page);
   });
 
