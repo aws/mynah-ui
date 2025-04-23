@@ -7,7 +7,7 @@ import {
     MynahUIDataModel,
     MynahUITabStoreTab,
     SourceLink,
-    Status
+    Status,
 } from '@aws/mynah-ui';
 import md0 from './sample-0.md';
 import md1 from './sample-1.md';
@@ -77,11 +77,11 @@ const progressiveFileListDefaults: ChatItem['fileList'] = {
     hideFileCount: true,
     fileTreeTitle: '',
     flatList: true,
-    collapsed: false,
+    collapsed: true,
     rootFolderTitle: 'Reading',
     rootFolderLabel: 'portfolio',
     rootFolderStatusIcon: 'progress',
-    rootFolderStatusIconForegroundStatus: 'info'
+    rootFolderStatusIconForegroundStatus: 'info',
 };
 
 export const sampleProgressiveFileList: Partial<ChatItem>[] = [
@@ -89,7 +89,9 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
         body: 'Thinking...',
         type: ChatItemType.ANSWER,
         shimmer: true,
-    }, {
+        canBeVoted: false,
+    },
+    {
         body: 'More thinking...',
     },
     {
@@ -99,16 +101,17 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
             fileTreeTitle: '',
             filePaths: ['portfolio'],
             details: {
-                'portfolio': {
+                portfolio: {
                     visibleName: 'Reading',
                     icon: 'folder',
                     labelIcon: 'progress',
                     labelIconForegroundStatus: 'info',
-                    label: 'portfolio'
-                }
-            }
-        }
-    },{
+                    label: 'portfolio',
+                },
+            },
+        },
+    },
+    {
         fileList: {
             ...progressiveFileListDefaults,
             filePaths: ['/qdev-wbr/pytest.ini'],
@@ -118,10 +121,11 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
                     label: 'Working on',
                     visibleName: '/qdev-wbr/pytest.ini',
                     iconForegroundStatus: 'info',
-                }
-            }
-        }
-    },{
+                },
+            },
+        },
+    },
+    {
         fileList: {
             ...progressiveFileListDefaults,
             filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts'],
@@ -136,10 +140,11 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
                     icon: 'progress',
                     label: 'Working on',
                     iconForegroundStatus: 'info',
-                }
-            }
-        }
-    },{
+                },
+            },
+        },
+    },
+    {
         fileList: {
             ...progressiveFileListDefaults,
             filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
@@ -162,11 +167,12 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
                 },
                 'tt.ts': {
                     icon: 'file',
-                    label: 'In queue'
-                }
-            }
-        }
-    },{
+                    label: 'In queue',
+                },
+            },
+        },
+    },
+    {
         fileList: {
             ...progressiveFileListDefaults,
             filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
@@ -190,11 +196,12 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
                 'tt.ts': {
                     icon: 'progress',
                     label: 'Working on',
-                    iconForegroundStatus: 'info'
-                }
-            }
-        }
-    },{
+                    iconForegroundStatus: 'info',
+                },
+            },
+        },
+    },
+    {
         fileList: {
             ...progressiveFileListDefaults,
             filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
@@ -223,13 +230,12 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
                     icon: 'cancel-circle',
                     label: 'Failed reading',
                     status: 'error',
-                    iconForegroundStatus: 'error'
-                }
-            }
-        }
+                    iconForegroundStatus: 'error',
+                },
+            },
+        },
     },
 ];
-
 
 export const sampleMarkdownList: Partial<ChatItem>[] = [
     { autoCollapse: true, body: `${sampleList0 as string}` },
@@ -291,9 +297,9 @@ export const tabbedData: ChatItemContent['tabbedContent'] = [
         icon: MynahIcons.PLAY,
         content: {
             body: `**Here are some examples you can find:**`,
-            customRenderer: `<img aspect-ratio src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_REV_SQ.8c88ac215fe4e441dc42865dd6962ed4f444a90d.png" alt="Powered by AWS">`
-        }
-    }
+            customRenderer: `<img aspect-ratio src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_REV_SQ.8c88ac215fe4e441dc42865dd6962ed4f444a90d.png" alt="Powered by AWS">`,
+        },
+    },
 ];
 
 export const exploreTabData: MynahUIDataModel = {
@@ -304,7 +310,7 @@ export const exploreTabData: MynahUIDataModel = {
     tabHeaderDetails: {
         icon: MynahIcons.ASTERISK,
         title: 'Amazon Q Developer Agents',
-        description: 'Software development'
+        description: 'Software development',
     },
     chatItems: [
         {
@@ -316,14 +322,14 @@ Generate code across files with a task description.
 `,
             icon: MynahIcons.CODE_BLOCK,
             footer: {
-                tabbedContent: tabbedData
+                tabbedContent: tabbedData,
             },
             buttons: [
                 {
                     status: 'clear',
                     id: 'user-guide-dev',
                     disabled: false,
-                    text: 'Read user guide'
+                    text: 'Read user guide',
                 },
                 {
                     status: 'main',
@@ -331,9 +337,9 @@ Generate code across files with a task description.
                     flash: 'once',
                     icon: MynahIcons.RIGHT_OPEN,
                     id: 'quick-start-dev',
-                    text: `Quick start with **/dev**`
-                }
-            ]
+                    text: `Quick start with **/dev**`,
+                },
+            ],
         },
         {
             type: ChatItemType.ANSWER,
@@ -343,14 +349,14 @@ Automatically write code and commit it.
 `,
             icon: MynahIcons.BUG,
             footer: {
-                tabbedContent: tabbedData
+                tabbedContent: tabbedData,
             },
             buttons: [
                 {
                     status: 'clear',
                     id: 'user-guide-write',
                     disabled: false,
-                    text: 'Read user guide'
+                    text: 'Read user guide',
                 },
                 {
                     disabled: false,
@@ -359,9 +365,9 @@ Automatically write code and commit it.
                     fillState: 'hover',
                     flash: 'once',
                     id: 'quick-start-write',
-                    text: `Quick start with **/write**`
-                }
-            ]
+                    text: `Quick start with **/write**`,
+                },
+            ],
         },
         {
             type: ChatItemType.ANSWER,
@@ -371,14 +377,14 @@ Generate code for selected codebase (supports python & java).
 `,
             icon: MynahIcons.CHECK_LIST,
             footer: {
-                tabbedContent: tabbedData
+                tabbedContent: tabbedData,
             },
             buttons: [
                 {
                     status: 'clear',
                     id: 'user-guide-generate',
                     disabled: false,
-                    text: 'Read user guide'
+                    text: 'Read user guide',
                 },
                 {
                     disabled: false,
@@ -387,9 +393,9 @@ Generate code for selected codebase (supports python & java).
                     fillState: 'hover',
                     flash: 'once',
                     id: 'quick-start-generate',
-                    text: `Quick start with **/generate**`
-                }
-            ]
+                    text: `Quick start with **/generate**`,
+                },
+            ],
         },
         {
             type: ChatItemType.ANSWER,
@@ -399,14 +405,14 @@ Transform your java project from an old version to a new one.
 `,
             icon: MynahIcons.TRANSFORM,
             footer: {
-                tabbedContent: tabbedData
+                tabbedContent: tabbedData,
             },
             buttons: [
                 {
                     status: 'clear',
                     id: 'user-guide-transform',
                     disabled: false,
-                    text: 'Read user guide'
+                    text: 'Read user guide',
                 },
                 {
                     disabled: false,
@@ -415,11 +421,11 @@ Transform your java project from an old version to a new one.
                     fillState: 'hover',
                     flash: 'once',
                     id: 'quick-start-transform',
-                    text: `Quick start with **/transform**`
-                }
-            ]
+                    text: `Quick start with **/transform**`,
+                },
+            ],
         },
-    ]
+    ],
 };
 
 export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
@@ -430,28 +436,28 @@ export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
                 command: '/dev',
                 icon: MynahIcons.CODE_BLOCK,
                 description: 'Generate code across files with a task description.',
-                placeholder: 'Type your question'
+                placeholder: 'Type your question',
             },
             {
                 command: '/write',
                 icon: MynahIcons.BUG,
                 description: 'Automatically write code and commit it',
-                placeholder: 'Type your question'
+                placeholder: 'Type your question',
             },
             {
                 command: '/generate',
                 icon: MynahIcons.CHECK_LIST,
                 description: 'Generate code for selected codebase (supports python & java)',
-                placeholder: 'Type your question'
+                placeholder: 'Type your question',
             },
             {
                 command: '/transform',
                 icon: MynahIcons.TRANSFORM,
                 description: 'Transform your java project',
-                placeholder: 'Type your question'
+                placeholder: 'Type your question',
             },
-        ]
-    }
+        ],
+    },
 ];
 
 export const welcomeScreenTabData: MynahUITabStoreTab = {
@@ -460,33 +466,35 @@ export const welcomeScreenTabData: MynahUITabStoreTab = {
         quickActionCommands: qAgentQuickActions,
         tabTitle: 'Welcome to Q',
         tabBackground: true,
-        chatItems: [{
-            type: ChatItemType.ANSWER,
-            icon: MynahIcons.ASTERISK,
-            messageId: 'new-welcome-card',
-            body: `#### Work on a task with Q Developer Agents
+        chatItems: [
+            {
+                type: ChatItemType.ANSWER,
+                icon: MynahIcons.ASTERISK,
+                messageId: 'new-welcome-card',
+                body: `#### Work on a task with Q Developer Agents
 _Generate code, scan for issues, and more._`,
-            buttons: [
-                {
-                    id: 'explore',
-                    disabled: false,
-                    text: 'Explore',
-                },
-                {
-                    id: 'quick-start',
-                    text: 'Quick start',
-                    disabled: false,
-                    status: 'main',
-                }
-            ]
-        }],
+                buttons: [
+                    {
+                        id: 'explore',
+                        disabled: false,
+                        text: 'Explore',
+                    },
+                    {
+                        id: 'quick-start',
+                        text: 'Quick start',
+                        disabled: false,
+                        status: 'main',
+                    },
+                ],
+            },
+        ],
         promptInputLabel: 'Or, start a chat',
         promptInputPlaceholder: 'Type your question',
         compactMode: true,
         tabHeaderDetails: {
             title: "Hi, I'm Amazon Q.",
             description: 'Where would you like to start?',
-            icon: MynahIcons.Q
+            icon: MynahIcons.Q,
         },
     },
 };
@@ -734,18 +742,18 @@ _To send the form, mandatory items should be filled._`,
                 {
                     label: 'Remote',
                     value: 'remote',
-                    icon: MynahIcons.STAR
+                    icon: MynahIcons.STAR,
                 },
                 {
                     label: 'Local',
                     value: 'local',
-                    icon: MynahIcons.SCROLL_DOWN
+                    icon: MynahIcons.SCROLL_DOWN,
                 },
                 {
                     label: 'Both',
                     value: 'both',
-                    icon: MynahIcons.STACK
-                }
+                    icon: MynahIcons.STACK,
+                },
             ],
         },
         {
@@ -761,7 +769,7 @@ _To send the form, mandatory items should be filled._`,
             label: 'Yes',
             icon: 'deploy',
             title: 'Are you working in a monorepo project?',
-            tooltip: "If you're working more on monorepos, check this"
+            tooltip: "If you're working more on monorepos, check this",
         },
         {
             id: 'working-hours',
@@ -776,7 +784,7 @@ _To send the form, mandatory items should be filled._`,
             title: `Email`,
             description: 'Your email will be used to get back to you',
             placeholder: 'Email',
-            checkModifierEnterKeyPress: true
+            checkModifierEnterKeyPress: true,
         },
         {
             id: 'name',
@@ -785,13 +793,16 @@ _To send the form, mandatory items should be filled._`,
             title: `Name (should contain "amazonq" and "aws" in the string)`,
             validationPatterns: {
                 operator: 'and',
-                patterns: [{
-                    pattern: 'amazonq',
-                    errorMessage: 'Should contain amazonq!'
-                }, {
-                    pattern: 'aws',
-                    errorMessage: 'Should contain aws!'
-                }]
+                patterns: [
+                    {
+                        pattern: 'amazonq',
+                        errorMessage: 'Should contain amazonq!',
+                    },
+                    {
+                        pattern: 'aws',
+                        errorMessage: 'Should contain aws!',
+                    },
+                ],
             },
             placeholder: 'Name and Surname',
         },
@@ -819,13 +830,17 @@ _To send the form, mandatory items should be filled._`,
             validationPatterns: {
                 operator: 'or',
                 genericValidationErrorMessage: 'Should contain one of "amazonq" or "aws"',
-                patterns: [{
-                    pattern: /amazonq/gi
-                }, {
-                    pattern: /aws/gi
-                }]
+                patterns: [
+                    {
+                        pattern: /amazonq/gi,
+                    },
+                    {
+                        pattern: /aws/gi,
+                    },
+                ],
             },
-            placeholder: 'Write your feelings about our tool. If the form is fully filled and valid, Enter will submit the form',
+            placeholder:
+                'Write your feelings about our tool. If the form is fully filled and valid, Enter will submit the form',
         },
     ],
     buttons: [
@@ -991,6 +1006,11 @@ You can also ask me any follow-up questions that you have or adjust any part by 
         fileList: {
             fileTreeTitle: '',
             filePaths: ['Refactor_analysis_[id].pdf'],
+            details: {
+                'Refactor_analysis_[id].pdf': {
+                    icon: 'file',
+                },
+            },
         },
     },
 ];
@@ -1171,7 +1191,11 @@ export const exampleDownloadFile: ChatItem = {
     },
 };
 
-export const exampleInformationCard = (statusType: null | Status, statusBody: string | null, snap?: boolean): ChatItem => {
+export const exampleInformationCard = (
+    statusType: null | Status,
+    statusBody: string | null,
+    snap?: boolean,
+): ChatItem => {
     return {
         messageId: generateUID(),
         snapToTop: snap === true,
@@ -1181,16 +1205,24 @@ export const exampleInformationCard = (statusType: null | Status, statusBody: st
             description: 'With a description below the title.',
             icon: MynahIcons.BUG,
             content: {
-                body: sampleList2 as string
+                body: sampleList2 as string,
             },
-            status: statusType === null || statusBody === null ? {} : {
-                status: statusType,
-                icon: statusType === 'warning' ? MynahIcons.WARNING : statusType === 'error' ? MynahIcons.ERROR : MynahIcons.THUMBS_UP,
-                body: statusBody
-            }
+            status:
+                statusType === null || statusBody === null
+                    ? {}
+                    : {
+                          status: statusType,
+                          icon:
+                              statusType === 'warning'
+                                  ? MynahIcons.WARNING
+                                  : statusType === 'error'
+                                    ? MynahIcons.ERROR
+                                    : MynahIcons.THUMBS_UP,
+                          body: statusBody,
+                      },
         },
     };
-}
+};
 
 export const exampleConfirmationButtons: ChatItem = {
     type: ChatItemType.ANSWER,
@@ -1202,17 +1234,17 @@ export const exampleConfirmationButtons: ChatItem = {
             text: `Cancel`,
             status: 'error',
             icon: MynahIcons.CANCEL_CIRCLE,
-            position: 'outside'
+            position: 'outside',
         },
         {
             id: 'confirmation-buttons-confirm',
             text: `Confirm`,
             status: 'success',
             icon: MynahIcons.OK_CIRCLED,
-            position: 'outside'
+            position: 'outside',
         },
-    ]
-}
+    ],
+};
 
 export const exampleButtons: ChatItem = {
     type: ChatItemType.ANSWER,
@@ -1223,7 +1255,7 @@ export const exampleButtons: ChatItem = {
             text: 'With Icon',
             id: 'action-1',
             status: 'info',
-            icon: MynahIcons.CHAT
+            icon: MynahIcons.CHAT,
         },
         {
             text: 'Default',
@@ -1270,7 +1302,7 @@ export const exampleButtons: ChatItem = {
             status: 'clear',
         },
     ],
-}
+};
 
 export const exampleStatusButtons: ChatItem = {
     type: ChatItemType.ANSWER,
@@ -1282,33 +1314,32 @@ export const exampleStatusButtons: ChatItem = {
             id: 'proceed',
             icon: MynahIcons.OK,
             status: 'success',
-            flash: 'infinite'
+            flash: 'infinite',
         },
         {
             text: 'Caution',
             id: 'caution',
             icon: MynahIcons.WARNING,
-            status: 'warning'
+            status: 'warning',
         },
         {
             text: 'Cancel',
             id: 'cancel',
             icon: MynahIcons.CANCEL,
-            status: 'error'
+            status: 'error',
         },
         {
             text: 'Change Folder',
             id: 'change-folder',
             icon: MynahIcons.REFRESH,
-            status: 'info'
+            status: 'info',
         },
         {
             text: 'Change Folder',
             id: 'change-folder',
             icon: MynahIcons.REFRESH,
-            status: 'info'
+            status: 'info',
         },
-
 
         // External buttons
         {
@@ -1318,7 +1349,7 @@ export const exampleStatusButtons: ChatItem = {
             position: 'outside',
             icon: MynahIcons.OK,
             status: 'success',
-            flash: 'infinite'
+            flash: 'infinite',
         },
         {
             text: 'Caution',
@@ -1326,7 +1357,7 @@ export const exampleStatusButtons: ChatItem = {
             position: 'outside',
             id: 'caution',
             icon: MynahIcons.WARNING,
-            status: 'warning'
+            status: 'warning',
         },
         {
             text: 'Cancel',
@@ -1334,7 +1365,7 @@ export const exampleStatusButtons: ChatItem = {
             position: 'outside',
             id: 'cancel',
             icon: MynahIcons.CANCEL,
-            status: 'error'
+            status: 'error',
         },
         {
             text: 'Change Folder',
@@ -1342,10 +1373,10 @@ export const exampleStatusButtons: ChatItem = {
             position: 'outside',
             id: 'change-folder',
             icon: MynahIcons.REFRESH,
-            status: 'info'
+            status: 'info',
         },
     ],
-}
+};
 
 export const exampleVoteChatItem: ChatItem = {
     messageId: new Date().getTime().toString(),
@@ -1362,18 +1393,21 @@ export const sampleHeaderTypes: ChatItem[] = [
         header: {
             icon: {
                 name: 'javascript',
-                base64Svg: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zLjEyIDAuMjRINC44MlY1QzQuODIgNi4wMjY2NyA0LjU4IDYuNzczMzMgNC4xIDcuMjRDMy42NiA3LjY2NjY3IDMgNy44OCAyLjEyIDcuODhDMS45MiA3Ljg4IDEuNyA3Ljg2NjY3IDEuNDYgNy44NEMxLjIyIDcuOCAxLjAyNjY3IDcuNzQ2NjcgMC44OCA3LjY4TDEuMDYgNi4zMkMxLjMxMzMzIDYuNDQgMS42MDY2NyA2LjUgMS45NCA2LjVDMi4zMTMzMyA2LjUgMi41OTMzMyA2LjQgMi43OCA2LjJDMy4wMDY2NyA1Ljk2IDMuMTIgNS41NiAzLjEyIDVWMC4yNFpNNi4zMiA2QzYuNTYgNi4xMzMzMyA2Ljg0IDYuMjQ2NjcgNy4xNiA2LjM0QzcuNTIgNi40NDY2NyA3Ljg2IDYuNSA4LjE4IDYuNUM4LjU4IDYuNSA4Ljg4IDYuNDMzMzMgOS4wOCA2LjNDOS4yOCA2LjE1MzMzIDkuMzggNS45NTMzMyA5LjM4IDUuN0M5LjM4IDUuNDQ2NjcgOS4yODY2NyA1LjI0NjY3IDkuMSA1LjFDOC45MTMzMyA0Ljk0IDguNTg2NjcgNC43OCA4LjEyIDQuNjJDNi43NDY2NyA0LjE0IDYuMDYgMy4zOTMzMyA2LjA2IDIuMzhDNi4wNiAxLjcxMzMzIDYuMzEzMzMgMS4xNzMzMyA2LjgyIDAuNzU5OTk5QzcuMzQgMC4zMzMzMzMgOC4wNDY2NyAwLjEyIDguOTQgMC4xMkM5LjY0NjY3IDAuMTIgMTAuMjkzMyAwLjI0NjY2NyAxMC44OCAwLjVMMTAuNSAxLjg4TDEwLjM4IDEuODJDMTAuMTQgMS43MjY2NyA5Ljk0NjY3IDEuNjYgOS44IDEuNjJDOS41MiAxLjU0IDkuMjMzMzMgMS41IDguOTQgMS41QzguNTggMS41IDguMyAxLjU3MzMzIDguMSAxLjcyQzcuOTEzMzMgMS44NTMzMyA3LjgyIDIuMDMzMzMgNy44MiAyLjI2QzcuODIgMi40ODY2NyA3LjkyNjY3IDIuNjczMzMgOC4xNCAyLjgyQzguMyAyLjk0IDguNjQ2NjcgMy4xMDY2NyA5LjE4IDMuMzJDOS44NDY2NyAzLjU3MzMzIDEwLjMzMzMgMy44OCAxMC42NCA0LjI0QzEwLjk2IDQuNiAxMS4xMiA1LjA0IDExLjEyIDUuNTZDMTEuMTIgNi4yMjY2NyAxMC44NjY3IDYuNzY2NjcgMTAuMzYgNy4xOEM5LjgxMzMzIDcuNjQ2NjcgOS4wNDY2NyA3Ljg4IDguMDYgNy44OEM3LjY3MzMzIDcuODggNy4yNjY2NyA3LjgyNjY3IDYuODQgNy43MkM2LjUwNjY3IDcuNjUzMzMgNi4yMDY2NyA3LjU2IDUuOTQgNy40NEw2LjMyIDZaIiBmaWxsPSIjQ0JDQjQxIi8+Cjwvc3ZnPgo='
+                base64Svg:
+                    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zLjEyIDAuMjRINC44MlY1QzQuODIgNi4wMjY2NyA0LjU4IDYuNzczMzMgNC4xIDcuMjRDMy42NiA3LjY2NjY3IDMgNy44OCAyLjEyIDcuODhDMS45MiA3Ljg4IDEuNyA3Ljg2NjY3IDEuNDYgNy44NEMxLjIyIDcuOCAxLjAyNjY3IDcuNzQ2NjcgMC44OCA3LjY4TDEuMDYgNi4zMkMxLjMxMzMzIDYuNDQgMS42MDY2NyA2LjUgMS45NCA2LjVDMi4zMTMzMyA2LjUgMi41OTMzMyA2LjQgMi43OCA2LjJDMy4wMDY2NyA1Ljk2IDMuMTIgNS41NiAzLjEyIDVWMC4yNFpNNi4zMiA2QzYuNTYgNi4xMzMzMyA2Ljg0IDYuMjQ2NjcgNy4xNiA2LjM0QzcuNTIgNi40NDY2NyA3Ljg2IDYuNSA4LjE4IDYuNUM4LjU4IDYuNSA4Ljg4IDYuNDMzMzMgOS4wOCA2LjNDOS4yOCA2LjE1MzMzIDkuMzggNS45NTMzMyA5LjM4IDUuN0M5LjM4IDUuNDQ2NjcgOS4yODY2NyA1LjI0NjY3IDkuMSA1LjFDOC45MTMzMyA0Ljk0IDguNTg2NjcgNC43OCA4LjEyIDQuNjJDNi43NDY2NyA0LjE0IDYuMDYgMy4zOTMzMyA2LjA2IDIuMzhDNi4wNiAxLjcxMzMzIDYuMzEzMzMgMS4xNzMzMyA2LjgyIDAuNzU5OTk5QzcuMzQgMC4zMzMzMzMgOC4wNDY2NyAwLjEyIDguOTQgMC4xMkM5LjY0NjY3IDAuMTIgMTAuMjkzMyAwLjI0NjY2NyAxMC44OCAwLjVMMTAuNSAxLjg4TDEwLjM4IDEuODJDMTAuMTQgMS43MjY2NyA5Ljk0NjY3IDEuNjYgOS44IDEuNjJDOS41MiAxLjU0IDkuMjMzMzMgMS41IDguOTQgMS41QzguNTggMS41IDguMyAxLjU3MzMzIDguMSAxLjcyQzcuOTEzMzMgMS44NTMzMyA3LjgyIDIuMDMzMzMgNy44MiAyLjI2QzcuODIgMi40ODY2NyA3LjkyNjY3IDIuNjczMzMgOC4xNCAyLjgyQzguMyAyLjk0IDguNjQ2NjcgMy4xMDY2NyA5LjE4IDMuMzJDOS44NDY2NyAzLjU3MzMzIDEwLjMzMzMgMy44OCAxMC42NCA0LjI0QzEwLjk2IDQuNiAxMS4xMiA1LjA0IDExLjEyIDUuNTZDMTEuMTIgNi4yMjY2NyAxMC44NjY3IDYuNzY2NjcgMTAuMzYgNy4xOEM5LjgxMzMzIDcuNjQ2NjcgOS4wNDY2NyA3Ljg4IDguMDYgNy44OEM3LjY3MzMzIDcuODggNy4yNjY2NyA3LjgyNjY3IDYuODQgNy43MkM2LjUwNjY3IDcuNjUzMzMgNi4yMDY2NyA3LjU2IDUuOTQgNy40NEw2LjMyIDZaIiBmaWxsPSIjQ0JDQjQxIi8+Cjwvc3ZnPgo=',
             },
             status: {
                 icon: MynahIcons.PROGRESS,
                 text: 'Working',
-                status: 'warning'
+                status: 'warning',
             },
-            buttons: [{
-                id: 'stop',
-                status: 'clear',
-                icon: MynahIcons.STOP,
-            }],
+            buttons: [
+                {
+                    id: 'stop',
+                    status: 'clear',
+                    icon: MynahIcons.STOP,
+                },
+            ],
             fileList: {
                 fileTreeTitle: '',
                 filePaths: ['package.json'],
@@ -1384,12 +1418,12 @@ export const sampleHeaderTypes: ChatItem[] = [
                         changes: {
                             added: 36,
                             deleted: 0,
-                            total: 36
-                        }
-                    }
-                }
-            }
-        }
+                            total: 36,
+                        },
+                    },
+                },
+            },
+        },
     },
     {
         type: ChatItemType.ANSWER,
@@ -1401,9 +1435,9 @@ export const sampleHeaderTypes: ChatItem[] = [
                 position: 'outside',
                 keepCardAfterClick: false,
                 icon: MynahIcons.UNDO,
-                text: 'Undo all changes'
-            }
-        ]
+                text: 'Undo all changes',
+            },
+        ],
     },
     {
         type: ChatItemType.ANSWER,
@@ -1414,7 +1448,7 @@ export const sampleHeaderTypes: ChatItem[] = [
             status: {
                 icon: MynahIcons.OK,
                 text: 'Accepted',
-                status: 'success'
+                status: 'success',
             },
             fileList: {
                 hideFileCount: true,
@@ -1427,12 +1461,12 @@ export const sampleHeaderTypes: ChatItem[] = [
                         changes: {
                             added: 36,
                             deleted: 0,
-                            total: 36
-                        }
-                    }
-                }
-            }
-        }
+                            total: 36,
+                        },
+                    },
+                },
+            },
+        },
     },
 
     {
@@ -1445,7 +1479,7 @@ export const sampleHeaderTypes: ChatItem[] = [
             status: {
                 icon: MynahIcons.OK,
                 text: 'Accepted',
-                status: 'success'
+                status: 'success',
             },
             fileList: {
                 hideFileCount: true,
@@ -1458,12 +1492,12 @@ export const sampleHeaderTypes: ChatItem[] = [
                         changes: {
                             added: 36,
                             deleted: 0,
-                            total: 36
-                        }
-                    }
-                }
-            }
-        }
+                            total: 36,
+                        },
+                    },
+                },
+            },
+        },
     },
 
     {
@@ -1477,13 +1511,13 @@ export const sampleHeaderTypes: ChatItem[] = [
                 {
                     icon: 'cancel',
                     status: 'clear',
-                    id: 'reject-file-change-on-header-card'
+                    id: 'reject-file-change-on-header-card',
                 },
                 {
                     icon: 'ok',
                     status: 'clear',
-                    id: 'accept-file-change-on-header-card'
-                }
+                    id: 'accept-file-change-on-header-card',
+                },
             ],
             fileList: {
                 hideFileCount: true,
@@ -1496,11 +1530,11 @@ export const sampleHeaderTypes: ChatItem[] = [
                         changes: {
                             added: 36,
                             deleted: 0,
-                            total: 36
-                        }
-                    }
-                }
-            }
+                            total: 36,
+                        },
+                    },
+                },
+            },
         },
         body: `
 \`\`\`diff-typescript
@@ -1535,9 +1569,9 @@ tabs: {
 \`\`\`
     `,
         codeBlockActions: {
-            'copy': null,
+            copy: null,
             'insert-to-cursor': null,
-        }
+        },
     },
 
     {
@@ -1548,22 +1582,22 @@ tabs: {
             icon: MynahIcons.SHELL,
             body: 'Terminal command',
             status: {
-                icon: MynahIcons.PROGRESS
+                icon: MynahIcons.PROGRESS,
             },
             buttons: [
                 {
                     status: 'clear',
                     icon: MynahIcons.STOP,
-                    id: 'stop-bash-command'
-                }
-            ]
+                    id: 'stop-bash-command',
+                },
+            ],
         },
         body: `
 \`\`\`bash
 mkdir -p src/ lalalaaaa
 \`\`\`
 `,
-        codeBlockActions: { copy: null, 'insert-to-cursor': null }
+        codeBlockActions: { copy: null, 'insert-to-cursor': null },
     },
 
     {
@@ -1577,16 +1611,16 @@ mkdir -p src/ lalalaaaa
                 {
                     status: 'clear',
                     icon: 'play',
-                    id: 'run-bash-command'
-                }
-            ]
+                    id: 'run-bash-command',
+                },
+            ],
         },
         body: `
 \`\`\`bash
 mkdir -p src/ lalalaaaa
 \`\`\`
 `,
-        codeBlockActions: { copy: null, 'insert-to-cursor': null }
+        codeBlockActions: { copy: null, 'insert-to-cursor': null },
     },
 
     {
@@ -1599,27 +1633,27 @@ mkdir -p src/ lalalaaaa
             status: {
                 icon: MynahIcons.WARNING,
                 status: 'warning',
-                description: 'This command may cause\nsignificant data loss or damage.'
+                description: 'This command may cause\nsignificant data loss or damage.',
             },
             buttons: [
                 {
                     status: 'clear',
                     icon: 'play',
                     text: 'Run',
-                    id: 'run-bash-command'
-                }
-            ]
+                    id: 'run-bash-command',
+                },
+            ],
         },
         body: `
 \`\`\`bash
 mkdir -p src/ lalalaaaa
 \`\`\`
 `,
-        codeBlockActions: { copy: null, 'insert-to-cursor': null }
+        codeBlockActions: { copy: null, 'insert-to-cursor': null },
     },
 
     {
         type: ChatItemType.DIRECTIVE,
-        body: '_Starting with a directive_'
-    }
+        body: '_Starting with a directive_',
+    },
 ];

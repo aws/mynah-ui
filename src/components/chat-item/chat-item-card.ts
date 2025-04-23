@@ -58,6 +58,7 @@ export class ChatItemCard {
   private chatButtonsInside: ChatItemButtonsWrapper | null = null;
   private chatButtonsOutside: ChatItemButtonsWrapper | null = null;
   private fileTreeWrapper: ChatItemTreeViewWrapper | null = null;
+  private fileTreeWrapperCollapsedState: boolean | null = null;
   private followUps: ChatItemFollowUpContainer | null = null;
   private readonly moreContentIndicator: MoreContentIndicator | null = null;
   private isMoreContentExpanded: boolean = false;
@@ -505,7 +506,7 @@ export class ChatItemCard {
         rootLabel: this.props.chatItem.fileList.rootFolderLabel,
         folderIcon: this.props.chatItem.fileList.folderIcon,
         hideFileCount: this.props.chatItem.fileList.hideFileCount ?? false,
-        collapsed: this.props.chatItem.fileList.collapsed ?? false,
+        collapsed: this.fileTreeWrapperCollapsedState != null ? this.fileTreeWrapperCollapsedState : this.props.chatItem.fileList.collapsed != null ? this.props.chatItem.fileList.collapsed : false,
         files: filePaths,
         deletedFiles,
         flatList,
@@ -513,8 +514,13 @@ export class ChatItemCard {
         details,
         references: this.props.chatItem.codeReference ?? [],
         referenceSuggestionLabel,
+        onRootCollapsedStateChange: (isRootCollapsed) => {
+          this.fileTreeWrapperCollapsedState = isRootCollapsed;
+        }
       });
       this.card?.render.insertChild('beforeend', this.fileTreeWrapper.render);
+    } else {
+      this.fileTreeWrapperCollapsedState = null;
     }
 
     /**
