@@ -6,7 +6,6 @@ import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
 import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
-// import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { renderQuickPicks } from './flows/quick-picks/render-quick-picks';
@@ -42,6 +41,9 @@ import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigate-prompt
 import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
 import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
 import { promptOptions } from './flows/prompt-options';
+import { renderIcons } from './flows/icons';
+import { renderMutedCards } from './flows/muted-cards';
+import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 // import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 
 describe('Open MynahUI', () => {
@@ -208,6 +210,14 @@ describe('Open MynahUI', () => {
     await renderButtons(page);
   });
 
+  it('should render (custom) icons correctly', async () => {
+    await renderIcons(page);
+  });
+
+  it('should render muted cards correctly', async () => {
+    await renderMutedCards(page);
+  });
+
   describe('Forms', () => {
     it('should render form elements correctly', async () => {
       await renderFormElements(page);
@@ -220,9 +230,9 @@ describe('Open MynahUI', () => {
     });
   });
 
-  // it('should keep the content inside window boundaries', async () => {
-  //   await checkContentInsideWindowBoundaries(page);
-  // });
+  it.only('should keep the content inside window boundaries', async () => {
+    await checkContentInsideWindowBoundaries(page);
+  });
 
   it('should parse markdown', async () => {
     await parseMarkdown(page);
