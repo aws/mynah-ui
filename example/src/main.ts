@@ -87,6 +87,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             },
         },
         onPromptInputOptionChange: (tabId, optionsValues) => {
+            if(optionsValues['pair-programmer-mode'] != null){
+                mynahUI.addChatItem(tabId, {
+                    type: ChatItemType.DIRECTIVE,
+                    contentHorizontalAlignment: 'center',
+                    body: `Pair programmer mode - ${optionsValues['pair-programmer-mode'] === 'true' ? 'ON' : 'OFF'}`,
+                });
+            }
             Log(`Prompt options change for tab <b>${tabId}</b>:<br/>
         ${
             optionsValues
@@ -1067,6 +1074,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             if (action.id === 'allow-readonly-tools') {
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
                     muted: true,
+                    icon: 'calendar',
                     header: {
                         body: '#### Allow read-only tools outside your workspace',
                         buttons: [

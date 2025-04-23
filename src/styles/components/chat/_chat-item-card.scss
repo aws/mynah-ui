@@ -28,6 +28,35 @@
         }
     }
 
+    &.mynah-chat-item-card-content-horizontal-align-center {
+        text-align: center;
+        > .mynah-card {
+            align-self: center;
+        }
+        &.mynah-chat-item-directive {
+            > .mynah-card {
+                background-color: var(--mynah-color-bg);
+                backface-visibility: hidden;
+                max-width: calc(100% - var(--mynah-sizing-18));
+                width: auto;
+                padding-left: var(--mynah-sizing-2);
+                padding-right: var(--mynah-sizing-2);
+                box-sizing: border-box;
+                z-index: 10;
+            }
+            &:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                background-color: var(--mynah-color-border-default);
+                height: var(--mynah-border-width);
+            }
+        }
+    }
+
     &.text-shimmer {
         p,
         span {

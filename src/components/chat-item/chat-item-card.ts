@@ -97,7 +97,6 @@ export class ChatItemCard {
       ];
     }
 
-    // this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM
     this.cardTitle = this.getCardTitle();
     this.cardHeader = this.getCardHeader();
     this.cardFooter = this.getCardFooter();
@@ -211,6 +210,7 @@ export class ChatItemCard {
       ...(this.props.chatItem.muted === true ? [ 'muted' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
+      `mynah-chat-item-card-content-horizontal-align-${this.props.chatItem.contentHorizontalAlignment ?? 'default'}`,
       'mynah-chat-item-card',
       `mynah-chat-item-${this.props.chatItem.type ?? ChatItemType.ANSWER}`,
       ...(!chatItemHasContent(this.props.chatItem) ? [ 'mynah-chat-item-empty' ] : []),
@@ -368,14 +368,13 @@ export class ChatItemCard {
     /**
      * Generate card icon if available
      */
-    if (this.props.chatItem.icon !== undefined) {
+    if (this.props.chatItem.icon != null) {
       if (this.cardIcon != null) {
         this.cardIcon.render.remove();
         this.cardIcon = null;
-      } else {
-        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, status: this.props.chatItem.iconForegroundStatus, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
-        this.card?.render.insertChild('beforeend', this.cardIcon.render);
       }
+      this.cardIcon = new Icon({ icon: this.props.chatItem.icon, status: this.props.chatItem.iconForegroundStatus, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
+      this.card?.render.insertChild('beforeend', this.cardIcon.render);
     }
 
     /**
