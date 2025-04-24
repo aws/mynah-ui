@@ -24,7 +24,6 @@ export class ProgressIndicator {
   private buttonsWrapper: ChatItemButtonsWrapper;
   private props: ProgressIndicatorProps;
   constructor (props: ProgressIndicatorProps) {
-    StyleLoader.getInstance().load('components/_collapsible-content.scss');
     StyleLoader.getInstance().load('components/_progress.scss');
     this.props = props;
     this.wrapper = DomBuilder.getInstance().build({

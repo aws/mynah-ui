@@ -42,7 +42,7 @@ export class TextAreaInternal extends TextAreaAbstract {
   private readyToValidate: boolean = false;
   render: ExtendedHTMLElement;
   constructor (props: TextAreaProps) {
-    StyleLoader.getInstance().load('styles/components/_form-input.scss');
+    StyleLoader.getInstance().load('components/_form-input.scss');
     super();
     this.props = props;
     this.validationErrorBlock = DomBuilder.getInstance().build({

@@ -39,7 +39,7 @@ export class Card {
   private previousMousePosition!: { x: number; y: number };
   private mouseDownInfo!: { x: number; y: number; time: number };
   constructor (props: CardProps) {
-    StyleLoader.getInstance().load('/components/card/_card.scss');
+    StyleLoader.getInstance().load('components/card/_card.scss');
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
