@@ -57,11 +57,10 @@
                     align-self: flex-start;
                     box-sizing: border-box;
                     flex-shrink: 0;
-                    line-height: var(--mynah-line-height);
+                    line-height: calc(var(--mynah-line-height) / 100* 80);
                     display: flex;
                     flex-flow: row nowrap;
                     align-items: center;
-
                     flex-shrink: 0;
 
                     &.hidden {
@@ -72,13 +71,13 @@
                         user-select: none;
                         cursor: pointer;
                         font-family: var(--mynah-font-family);
-                        font-size: var(--mynah-font-size-large);
+                        font-size: var(--mynah-font-size-medium);
                         color: var(--mynah-color-text-strong);
                         white-space: nowrap;
-                        max-width: calc(10 * var(--mynah-font-size-large));
-                        overflow: hidden;
+                        max-width: calc(10 * var(--mynah-font-size-medium));
                         text-overflow: ellipsis;
                         text-shadow: 0 0 1px var(--mynah-color-text-strong);
+
                     }
                 }
 
