@@ -71,7 +71,7 @@ export const fileListToTree = (
         const fileOrFolder = filePath[i];
         if (i === filePath.length - 1) {
           const filePathJoined = filePath.join('/');
-          (currentNode as FolderNode).children.push({
+          (currentNode as FolderNode).children?.push({
             type: 'file',
             name: fileOrFolder,
             filePath: filePathJoined,
@@ -82,12 +82,12 @@ export const fileListToTree = (
           });
           break;
         } else {
-          const oldItem = (currentNode as FolderNode).children.find(({ name }) => name === fileOrFolder);
+          const oldItem = (currentNode as FolderNode).children?.find(({ name }) => name === fileOrFolder);
           if (oldItem != null) {
             currentNode = oldItem;
           } else {
             const newItem: FolderNode = { name: fileOrFolder, type: 'folder', children: [] };
-            (currentNode as FolderNode).children.push(newItem);
+            (currentNode as FolderNode).children?.push(newItem);
             currentNode = newItem;
           }
         }
