@@ -159,13 +159,16 @@
     @import 'chat-items-container';
     @import 'chat-prompt-wrapper';
     &.loading {
+        &:before {
+            display: block;
+            animation: horizontal-roll 1250ms linear infinite both;
+        }
         > .mynah-chat-items-container {
             padding-bottom: var(--mynah-sizing-14);
             > .mynah-chat-items-conversation-container:last-child {
                 > .mynah-chat-item-card.mynah-chat-item-answer-stream {
                     &:last-child {
                         position: relative;
-                        @include chat-items-bottom-animator();
                         > .mynah-card {
                             min-width: 100px;
                             > .mynah-chat-item-card-footer {
@@ -177,25 +180,8 @@
                                 display: inline-flex;
                             }
                         }
-                        &:not(.mynah-chat-item-empty) {
-                            &:before {
-                                display: block;
-                                animation: horizontal-roll 1250ms linear infinite both;
-                            }
-                        }
                     }
                 }
-            }
-        }
-        > .mynah-chat-overflowing-intermediate-block {
-            display: flex;
-            flex-flow: column nowrap;
-            max-height: 0;
-            overflow: visible;
-            justify-content: flex-end;
-            z-index: 10000;
-            &:not(.hidden) > .mynah-chat-stop-chat-response-button {
-                display: inline-flex;
             }
         }
     }

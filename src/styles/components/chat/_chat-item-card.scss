@@ -249,12 +249,6 @@
         transform: translate3d(0, 0, 0) scale(1, 1);
     }
 
-    &.mynah-chat-item-answer-stream {
-        &.typewriter-animating {
-            @include chat-items-bottom-animator();
-        }
-    }
-
     .mynah-chat-item-card {
         max-width: 100%;
         width: 100%;
