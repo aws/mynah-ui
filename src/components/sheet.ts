@@ -6,10 +6,10 @@
 import testIds from '../helper/test-ids';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames } from '../main';
 import { cancelEvent, MynahUIGlobalEvents } from '../helper/events';
-import '../styles/components/_sheet.scss';
 import { Button } from './button';
 import { Icon } from './icon';
 import { CardBody } from './card/card-body';
+import { StyleLoader } from '../helper/style-loader';
 
 export interface SheetProps {
   title?: string;
@@ -25,6 +25,7 @@ export class Sheet {
   onClose: () => void;
 
   constructor () {
+    StyleLoader.getInstance().load('components/_sheet.scss');
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_SHEET, (data: SheetProps) => {
       if (this.sheetWrapper === undefined) {
         this.sheetWrapper = DomBuilder.getInstance().createPortal(

@@ -5,9 +5,9 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { StyleLoader } from '../../helper/style-loader';
 import { checkTextElementValidation } from '../../helper/validator';
 import { ValidationPattern } from '../../static';
-import '../../styles/components/_form-input.scss';
 import { Icon, MynahIcons, MynahIconsType } from '../icon';
 
 export interface TextInputProps {
@@ -45,6 +45,7 @@ export class TextInputInternal extends TextInputAbstract {
   private readyToValidate: boolean = false;
   render: ExtendedHTMLElement;
   constructor (props: TextInputProps) {
+    StyleLoader.getInstance().load('components/_form-input.scss');
     super();
     this.props = props;
     this.validationErrorBlock = DomBuilder.getInstance().build({

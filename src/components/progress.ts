@@ -5,10 +5,9 @@
 
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
-import '../styles/components/_collapsible-content.scss';
 import { ChatItemButton, ProgressField } from '../static';
 import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
-import '../styles/components/_progress.scss';
+import { StyleLoader } from '../helper/style-loader';
 
 interface ProgressIndicatorProps extends ProgressField{
   testId?: string;
@@ -25,6 +24,8 @@ export class ProgressIndicator {
   private buttonsWrapper: ChatItemButtonsWrapper;
   private props: ProgressIndicatorProps;
   constructor (props: ProgressIndicatorProps) {
+    StyleLoader.getInstance().load('components/_collapsible-content.scss');
+    StyleLoader.getInstance().load('components/_progress.scss');
     this.props = props;
     this.wrapper = DomBuilder.getInstance().build({
       type: 'div',

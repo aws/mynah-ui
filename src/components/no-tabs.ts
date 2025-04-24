@@ -10,12 +10,13 @@ import { cancelEvent } from '../helper/events';
 import { MynahUITabsStore } from '../helper/tabs-store';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
-import '../styles/components/_no-tabs.scss';
 import testIds from '../helper/test-ids';
+import { StyleLoader } from '../helper/style-loader';
 
 export class NoTabs {
   render: ExtendedHTMLElement;
   constructor () {
+    StyleLoader.getInstance().load('components/_no-tabs.scss');
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.noTabs.wrapper,

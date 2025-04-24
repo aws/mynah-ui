@@ -6,10 +6,10 @@
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { cancelEvent } from '../helper/events';
+import { StyleLoader } from '../helper/style-loader';
 import { Button } from './button';
 import { Icon, MynahIcons, MynahIconsType } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
-import '../styles/components/_tab.scss';
 
 export interface ToggleOption {
   label?: ExtendedHTMLElement | string | HTMLElement;
@@ -155,6 +155,7 @@ export class Tab {
   private currentValue?: string | null;
 
   constructor (props: TabProps) {
+    StyleLoader.getInstance().load('components/_tab.scss');
     this.props = { direction: 'horizontal', ...props };
     this.currentValue = this.props.value;
     this.render = DomBuilder.getInstance().build({

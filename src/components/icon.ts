@@ -4,8 +4,8 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { StyleLoader } from '../helper/style-loader';
 import { MynahUIIconImporter } from './icon/icon-importer';
-import '../styles/components/_icon.scss';
 
 export enum MynahIcons {
   Q = 'q',
@@ -86,6 +86,7 @@ export interface IconProps {
 export class Icon {
   render: ExtendedHTMLElement;
   constructor (props: IconProps) {
+    StyleLoader.getInstance().load('components/_icon.scss');
     MynahUIIconImporter.getInstance();
     this.render = DomBuilder.getInstance().build({
       type: 'i',

@@ -7,8 +7,8 @@ import { Config } from '../../helper/config';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import { generateUID } from '../../helper/guid';
+import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons, MynahIconsType } from '../icon';
-import '../../styles/components/_form-input.scss';
 
 interface SelectOption {
   value: string;
@@ -41,6 +41,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
   private readonly groupName: string = generateUID();
   render: ExtendedHTMLElement;
   constructor (props: RadioGroupProps) {
+    StyleLoader.getInstance().load('components/_form-input.scss');
     super();
     this.radioGroupElement = DomBuilder.getInstance().build({
       type: 'div',

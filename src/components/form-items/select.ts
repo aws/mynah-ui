@@ -5,8 +5,8 @@
 
 import { Config } from '../../helper/config';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons, MynahIconsType } from '../icon';
-import '../../styles/components/_form-input.scss';
 
 interface SelectOption {
   value: string;
@@ -40,6 +40,7 @@ export class SelectInternal {
   private readonly selectElement: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
   constructor (props: SelectProps) {
+    StyleLoader.getInstance().load('components/_form-input.scss');
     this.selectElement = DomBuilder.getInstance().build({
       type: 'select',
       testId: props.wrapperTestId,
