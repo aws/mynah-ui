@@ -6,8 +6,8 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
+import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons, MynahIconsType } from '../icon';
-import '../../styles/components/_form-input.scss';
 
 export interface CheckboxProps {
   type?: 'checkbox' | 'switch';
@@ -36,6 +36,7 @@ export class CheckboxInternal extends CheckboxAbstract {
   private readonly checkboxItem: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
   constructor (props: CheckboxProps) {
+    StyleLoader.getInstance().load('components/_form-input.scss');
     super();
     this.checkboxItem = DomBuilder.getInstance().build({
       type: 'input',

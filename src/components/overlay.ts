@@ -6,8 +6,8 @@
 /* eslint-disable @typescript-eslint/brace-style */
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
 import { generateUID } from '../helper/guid';
+import { StyleLoader } from '../helper/style-loader';
 import { MynahPortalNames } from '../static';
-import '../styles/components/_overlay.scss';
 
 export const OVERLAY_MARGIN = 8;
 /**
@@ -84,6 +84,7 @@ export class Overlay {
   private readonly onClose;
 
   constructor (props: OverlayProps) {
+    StyleLoader.getInstance().load('components/_overlay.scss');
     const horizontalDirection = props.horizontalDirection ?? OverlayHorizontalDirection.TO_RIGHT;
     const verticalDirection = props.verticalDirection ?? OverlayVerticalDirection.START_TO_BOTTOM;
     this.onClose = props.onClose;

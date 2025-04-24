@@ -5,13 +5,14 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { StyleLoader } from '../../helper/style-loader';
 import LOGO_BASE from './logo-base.svg';
 import LOGO_TEXT from './logo-text.svg';
-import '../../styles/components/_spinner.scss';
 
 export class Spinner {
   render: ExtendedHTMLElement;
   constructor () {
+    StyleLoader.getInstance().load('components/_spinner.scss');
     const portal = DomBuilder.getInstance().getPortal('mynah-ui-icons') ?? DomBuilder.getInstance().createPortal('mynah-ui-icons', {
       type: 'style',
       attributes: {

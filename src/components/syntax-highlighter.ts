@@ -19,9 +19,9 @@ import { copyToClipboard } from '../helper/chat-item';
 import testIds from '../helper/test-ids';
 import unescapeHTML from 'unescape-html';
 import hljs from 'highlight.js';
-import '../styles/components/_syntax-highlighter.scss';
 import { mergeHTMLPlugin } from '../helper/merge-html-plugin';
 import { MoreContentIndicator } from './more-content-indicator';
+import { StyleLoader } from '../helper/style-loader';
 
 export interface SyntaxHighlighterProps {
   codeStringWithMarkup: string;
@@ -45,6 +45,7 @@ export class SyntaxHighlighter {
   render: ExtendedHTMLElement;
 
   constructor (props: SyntaxHighlighterProps) {
+    StyleLoader.getInstance().load('components/_syntax-highlighter.scss');
     this.props = props;
 
     hljs.addPlugin(mergeHTMLPlugin);

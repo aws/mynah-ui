@@ -14,11 +14,11 @@ import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
 import { ChatPromptInputStickyCard } from './chat-prompt-input-sticky-card';
-import '../../styles/components/chat/_chat-wrapper.scss';
 import testIds from '../../helper/test-ids';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { GradientBackground } from '../background';
 import { MoreContentIndicator } from '../more-content-indicator';
+import { StyleLoader } from '../../helper/style-loader';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -45,6 +45,8 @@ export class ChatWrapper {
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
   render: ExtendedHTMLElement;
   constructor (props: ChatWrapperProps) {
+    StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
+
     this.props = props;
     this.footerSpacer = DomBuilder.getInstance().build({
       type: 'div',

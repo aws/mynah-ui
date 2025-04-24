@@ -1,4 +1,6 @@
 @import '../../scss-variables';
+@import '../chat/chat-items-bottom-animator';
+@import '../../mixins';
 .mynah-chat-item-card {
     display: inline-flex;
     flex-flow: column nowrap;
@@ -167,7 +169,7 @@
 
     &.mynah-chat-item-answer-stream {
         &.typewriter-animating {
-            @import 'chat-items-bottom-animator';
+            @include chat-items-bottom-animator();
         }
     }
 

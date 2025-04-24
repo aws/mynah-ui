@@ -54,6 +54,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
   let showChatAvatars: boolean = false;
 
   const mynahUI = new MynahUI({
+    loadStyles: true,
     splashScreenInitialStatus: {
       visible: true,
       text: 'Initializing'

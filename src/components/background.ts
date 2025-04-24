@@ -5,11 +5,12 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
-import '../styles/components/_background.scss';
+import { StyleLoader } from '../helper/style-loader';
 
 export class GradientBackground {
   render: ExtendedHTMLElement;
   constructor () {
+    StyleLoader.getInstance().load('components/_background.scss');
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-ui-gradient-background' ],

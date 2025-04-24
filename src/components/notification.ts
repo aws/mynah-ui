@@ -8,8 +8,8 @@ import { cancelEvent } from '../helper/events';
 import { NotificationType } from '../static';
 import { Icon, MynahIcons } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection, OVERLAY_MARGIN } from './overlay';
-import '../styles/components/_notification.scss';
 import testIds from '../helper/test-ids';
+import { StyleLoader } from '../helper/style-loader';
 
 type NotificationContentType = string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
 
@@ -31,6 +31,7 @@ export class Notification {
   private readonly props;
 
   constructor (props: NotificationProps) {
+    StyleLoader.getInstance().load('components/_notification.scss');
     this.duration = props.duration ?? DEFAULT_TIMEOUT;
     this.type = props.type ?? NotificationType.INFO;
     this.props = props;

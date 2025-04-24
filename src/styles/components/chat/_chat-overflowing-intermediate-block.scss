@@ -1,16 +1,3 @@
-&.loading {
-    > .mynah-chat-overflowing-intermediate-block {
-        display: flex;
-        flex-flow: column nowrap;
-        max-height: 0;
-        overflow: visible;
-        justify-content: flex-end;
-        z-index: 10000;
-        &:not(.hidden) > .mynah-chat-stop-chat-response-button {
-            display: inline-flex;
-        }
-    }
-}
 > .mynah-chat-overflowing-intermediate-block {
     display: flex;
     flex-flow: column nowrap;
