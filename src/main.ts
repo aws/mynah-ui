@@ -36,7 +36,6 @@ import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import { Config } from './helper/config';
 import { marked, Tokens } from 'marked';
-import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
@@ -44,6 +43,7 @@ import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet } from './components/sheet';
 import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
+import { StyleLoader } from './helper/style-loader';
 
 export { generateUID } from './helper/guid';
 export {
@@ -305,6 +305,7 @@ export class MynahUI {
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
+    StyleLoader.getInstance();
     // Apply global fix for marked listitem content is not getting parsed.
     marked.use({
       renderer: {
