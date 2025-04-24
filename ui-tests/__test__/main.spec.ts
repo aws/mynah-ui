@@ -248,7 +248,7 @@ describe('Open MynahUI', () => {
     await parseMarkdown(page);
   });
 
-  describe.only('Prompt navigation', () => {
+  describe('Prompt navigation', () => {
     it('should navigate up to previous prompt', async () => {
       await navigatePromptsUp(page);
     });
