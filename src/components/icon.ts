@@ -4,6 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { StyleLoader } from '../helper/style-loader';
 import { MynahUIIconImporter } from './icon/icon-importer';
 import '../styles/components/_icon.scss';
 import { Status } from '../static';
@@ -98,6 +99,7 @@ export interface IconProps {
 export class Icon {
   render: ExtendedHTMLElement;
   constructor (props: IconProps) {
+    StyleLoader.getInstance().load('components/_icon.scss');
     MynahUIIconImporter.getInstance();
 
     // Determine if the icon is a custom icon or a predefined one

@@ -6,8 +6,8 @@
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
 import { generateUID } from '../helper/guid';
+import { StyleLoader } from '../helper/style-loader';
 import { Icon, MynahIcons } from './icon';
-import '../styles/components/_collapsible-content.scss';
 
 interface CollapsibleContentProps {
   title: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
@@ -23,6 +23,7 @@ export class CollapsibleContent {
   private readonly uid: string;
   private icon: ExtendedHTMLElement;
   constructor (props: CollapsibleContentProps) {
+    StyleLoader.getInstance().load('components/_collapsible-content.scss');
     this.uid = generateUID();
     this.props = {
       initialCollapsedState: true,

@@ -5,8 +5,8 @@
 
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
+import { StyleLoader } from '../helper/style-loader';
 import { Icon, MynahIcons, MynahIconsType } from './icon';
-import '../styles/components/_title-description-icon.scss';
 
 interface TitleDescriptionWithIconProps {
   title?: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
@@ -19,6 +19,7 @@ export class TitleDescriptionWithIcon {
   render: ExtendedHTMLElement;
   private readonly props: TitleDescriptionWithIconProps;
   constructor (props: TitleDescriptionWithIconProps) {
+    StyleLoader.getInstance().load('components/_title-description-icon.scss');
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',

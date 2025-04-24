@@ -15,9 +15,9 @@ import { Icon, MynahIcons } from './icon';
 import { TabBarButtonsWrapper } from './navigation-tab-bar-buttons';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 import { Tab, ToggleOption } from './tabs';
-import '../styles/components/_nav-tabs.scss';
 import { DEFAULT_TIMEOUT } from './notification';
 import testIds from '../helper/test-ids';
+import { StyleLoader } from '../helper/style-loader';
 
 export interface TabsProps {
   onChange?: (selectedTabId: string) => void;
@@ -35,6 +35,7 @@ export class Tabs {
   private readonly props: TabsProps;
 
   constructor (props: TabsProps) {
+    StyleLoader.getInstance().load('components/_nav-tabs.scss');
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',

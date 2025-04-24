@@ -239,6 +239,7 @@
                 }
 
                 > span {
+                    opacity: 0.85;
                     white-space: nowrap;
                 }
             }
@@ -284,7 +285,7 @@
                 opacity: 0;
             }
             > .mynah-chat-item-tree-view-file-item-title > .mynah-chat-item-tree-view-file-item-title-text {
-                text-decoration: underline;
+                opacity: 1;
             }
         }
     }

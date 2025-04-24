@@ -1,19 +1,24 @@
-&:before {
-    content: '';
-    display: none;
-    pointer-events: none;
-    position: absolute;
-    overflow: hidden;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: auto;
-    height: 100%;
-    box-sizing: border-box;
-    z-index: 10000;
-    background-image: var(--mynah-color-gradient-semi-transparent);
-    background-position: 0% top;
-    background-size: 200% calc(2.5 * var(--mynah-border-width));
-    background-repeat: repeat-x;
-    animation: none;
+@mixin chat-items-bottom-animator {
+    &:before {
+        content: '';
+        display: none;
+        pointer-events: none;
+        position: absolute;
+        overflow: hidden;
+        border-bottom-right-radius: var(--mynah-card-radius);
+        border-bottom-left-radius: var(--mynah-card-radius-corner);
+        top: var(--mynah-border-width);
+        left: calc(-1 * var(--mynah-border-width));
+        right: calc(-1 * var(--mynah-border-width));
+        width: auto;
+        height: 100%;
+        box-sizing: border-box;
+        z-index: 10000;
+        background-image: var(--mynah-color-gradient-semi-transparent);
+        background-position: 0% top;
+        background-size: 200% calc(2.5 * var(--mynah-border-width));
+        background-repeat: repeat-x;
+        animation: none;
+        border-radius: var(--mynah-card-radius);
+    }
 }

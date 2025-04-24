@@ -138,8 +138,9 @@
                     min-width: calc(100% + var(--mynah-sizing-4));
                     border-left: none;
                     border-right: none;
-                    &:last-child {
-                        border-bottom: none;
+                    border-bottom: none;
+                    &:not(:first-child) {
+                        border-top: none;
                     }
                     > .mynah-syntax-highlighter-copy-buttons,
                     > pre {
@@ -249,12 +250,6 @@
     &.reveal {
         opacity: 1;
         transform: translate3d(0, 0, 0) scale(1, 1);
-    }
-
-    &.mynah-chat-item-answer-stream {
-        &.typewriter-animating {
-            @import 'chat-items-bottom-animator';
-        }
     }
 
     .mynah-chat-item-card {

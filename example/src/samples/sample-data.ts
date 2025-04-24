@@ -1537,6 +1537,9 @@ export const sampleHeaderTypes: ChatItem[] = [
             },
         },
         body: `
+\`\`\`bash
+hello
+\`\`\`
 \`\`\`diff-typescript
 const mynahUI = new MynahUI({
 tabs: {
@@ -1680,6 +1683,7 @@ and normal text again.
                 filePaths: ['maze_game.py'],
                 details: {
                     'maze_game.py': {
+                        description: 'Hello!',
                         icon: null,
                         changes: {
                             added: 131,

@@ -96,6 +96,7 @@ export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {
   rootSelector?: string;
+  loadStyles?: boolean;
   defaults?: MynahUITabStoreTab;
   splashScreenInitialStatus?: {
     visible: boolean;
@@ -313,7 +314,8 @@ export class MynahUI {
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
-    StyleLoader.getInstance();
+    StyleLoader.getInstance(props.loadStyles !== false).load('styles.scss');
+
     // Apply global fix for marked listitem content is not getting parsed.
     marked.use({
       renderer: {

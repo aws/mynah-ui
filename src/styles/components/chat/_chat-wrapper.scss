@@ -1,4 +1,5 @@
 @import '../../mixins';
+@import '../chat/chat-items-bottom-animator';
 .mynah-chat-prompt-overlay-buttons-container {
     display: inline-flex;
     flex-flow: column nowrap;
@@ -157,6 +158,33 @@
 
     @import 'chat-items-container';
     @import 'chat-prompt-wrapper';
+    &.loading {
+        &:before {
+            display: block;
+            animation: horizontal-roll 1250ms linear infinite both;
+        }
+        > .mynah-chat-items-container {
+            padding-bottom: var(--mynah-sizing-14);
+            > .mynah-chat-items-conversation-container:last-child {
+                > .mynah-chat-item-card.mynah-chat-item-answer-stream {
+                    &:last-child {
+                        position: relative;
+                        > .mynah-card {
+                            min-width: 100px;
+                            > .mynah-chat-item-card-footer {
+                                display: none;
+                            }
+                        }
+                        &.mynah-chat-item-empty {
+                            .mynah-chat-items-spinner {
+                                display: inline-flex;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 .mynah-overlay > .mynah-overlay-container > .mynah-overlay-inner-container {
