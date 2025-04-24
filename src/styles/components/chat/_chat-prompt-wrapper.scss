@@ -57,7 +57,7 @@
                     align-self: flex-start;
                     box-sizing: border-box;
                     flex-shrink: 0;
-                    line-height: calc(var(--mynah-line-height) / 100* 80);
+                    line-height: calc(var(--mynah-line-height) / 100 * 80);
                     display: flex;
                     flex-flow: row nowrap;
                     align-items: center;
@@ -77,7 +77,6 @@
                         max-width: calc(10 * var(--mynah-font-size-medium));
                         text-overflow: ellipsis;
                         text-shadow: 0 0 1px var(--mynah-color-text-strong);
-
                     }
                 }
 
