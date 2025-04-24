@@ -67,7 +67,7 @@ export class ChatItemTreeFile {
             tooltipText += marked(this.props.details?.description ?? '', { breaks: true }) as string;
           }
           if (tooltipText != null) {
-            this.showTooltip(tooltipText);
+            this.showTooltip(tooltipText, undefined, OverlayHorizontalDirection.START_TO_RIGHT, textContentSpan);
           }
         },
         mouseleave: this.hideTooltip
@@ -153,7 +153,7 @@ export class ChatItemTreeFile {
     });
   }
 
-  private readonly showTooltip = (content: string, vDir?: OverlayVerticalDirection, hDir?: OverlayHorizontalDirection): void => {
+  private readonly showTooltip = (content: string, vDir?: OverlayVerticalDirection, hDir?: OverlayHorizontalDirection, elm?: null | HTMLElement | ExtendedHTMLElement): void => {
     if (content.trim() !== '') {
       clearTimeout(this.fileTooltipTimeout);
       this.fileTooltipTimeout = setTimeout(() => {
@@ -162,7 +162,7 @@ export class ChatItemTreeFile {
           testId: testIds.chatItem.fileTree.fileTooltipWrapper,
           background: true,
           closeOnOutsideClick: false,
-          referenceElement: this.render,
+          referenceElement: elm ?? this.render,
           dimOutside: false,
           removeOtherOverlays: true,
           verticalDirection: vDir ?? OverlayVerticalDirection.TO_TOP,

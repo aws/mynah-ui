@@ -136,8 +136,9 @@
                     min-width: calc(100% + var(--mynah-sizing-4));
                     border-left: none;
                     border-right: none;
-                    &:last-child {
-                        border-bottom: none;
+                    border-bottom: none;
+                    &:not(:first-child) {
+                        border-top: none;
                     }
                     > .mynah-syntax-highlighter-copy-buttons,
                     > pre {
