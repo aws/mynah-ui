@@ -136,7 +136,7 @@
         box-sizing: border-box;
         overflow: hidden;
         text-overflow: ellipsis;
-        z-index: 100;
+        z-index: var(--mynah-z-1);
     }
 
     .mynah-chat-item-card:hover &.mynah-button-flash-by-parent-focus:not(:hover) {

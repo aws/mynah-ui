@@ -20,11 +20,11 @@
             left: calc(3 * var(--suppress));
             width: calc(100% - (6 * var(--suppress)));
             height: calc(100% - (6 * var(--suppress)));
-            z-index: 10;
+            z-index: var(--mynah-z-3);
         }
         &.backdrop {
             opacity: 0.25;
-            z-index: 1;
+            z-index: var(--mynah-z-1);
             filter: blur(5px);
             overflow: visible;
         }
@@ -33,7 +33,7 @@
             left: calc(1 * var(--suppress));
             width: calc(100% - (2 * var(--suppress)));
             height: calc(100% - (2 * var(--suppress)));
-            z-index: 2;
+            z-index: var(--mynah-z-2);
             > .mynah-ui-spinner-logo-mask {
                 overflow: visible;
                 &:after {

@@ -18,7 +18,7 @@
     justify-content: center;
     align-items: flex-end;
     overflow: hidden;
-    z-index: 0;
+    z-index: var(--mynah-z-0);
     background-color: var(--mynah-color-bg);
 
     &:before,
@@ -34,7 +34,7 @@
         background-repeat: no-repeat;
         background-position: bottom center;
         background-size: cover;
-        z-index: 10;
+        z-index: var(--mynah-z-2);
     }
     &:before {
         background-image: linear-gradient(
@@ -56,7 +56,7 @@
 
     > svg {
         min-width: 100vw;
-        z-index: 5;
+        z-index: var(--mynah-z-1);
         min-height: 200vw;
         opacity: 0.75;
     }

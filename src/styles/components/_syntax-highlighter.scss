@@ -40,7 +40,7 @@
         margin-block: 0 !important;
         position: relative;
         border-top: 1px solid var(--mynah-color-border-default);
-        z-index: 10000;
+        z-index: var(--mynah-z-2);
         &:empty {
             display: none;
         }
@@ -300,7 +300,7 @@
         margin-top: 0;
         box-shadow: none;
         background-color: var(--mynah-card-bg);
-        z-index: 20;
+        z-index: var(--mynah-z-1);
         margin-top: calc(-1 * var(--mynah-sizing-10));
         &:before {
             content: '';

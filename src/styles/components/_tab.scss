@@ -46,7 +46,7 @@
                 cursor: pointer;
                 pointer-events: all;
                 position: relative;
-                z-index: 100;
+                z-index: var(--mynah-z-1);
                 padding: 0 var(--mynah-sizing-4) 0 var(--mynah-sizing-4);
                 gap: var(--mynah-sizing-1);
                 height: 100%;

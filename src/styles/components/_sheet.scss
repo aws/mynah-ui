@@ -7,7 +7,7 @@
     right: var(--mynah-sizing-2);
     width: auto;
     box-sizing: border-box;
-    z-index: 100000;
+    z-index: var(--mynah-z-max);
     opacity: 0;
     transform: translate3d(0, 5vh, 0);
     transition: var(--mynah-bottom-panel-transition);
@@ -27,7 +27,7 @@
         pointer-events: none;
         transform: translate3d(0, 0, 0) scale(2);
         transform-origin: center center;
-        z-index: -1;
+        z-index: var(--mynah-z-sub);
     }
     & + #mynah-wrapper {
         transition: var(--mynah-bottom-panel-transition);
@@ -72,7 +72,7 @@
     gap: var(--mynah-sizing-4);
     align-items: stretch;
     transform-origin: right bottom;
-    z-index: 10;
+    z-index: var(--mynah-z-1);
     position: relative;
     border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
     border-top-right-radius: var(--mynah-card-radius);
