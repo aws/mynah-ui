@@ -42,7 +42,7 @@
                 padding-left: var(--mynah-sizing-2);
                 padding-right: var(--mynah-sizing-2);
                 box-sizing: border-box;
-                z-index: 10;
+                z-index: var(--mynah-z-2);
             }
             &:before {
                 content: '';
