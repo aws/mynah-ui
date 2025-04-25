@@ -1,5 +1,5 @@
 import { Page } from 'playwright/test';
-import { getSelector, waitForAnimationEnd } from '../helpers';
+import { getSelector, justWait, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 
 export const clickToFollowup = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
@@ -10,10 +10,11 @@ export const clickToFollowup = async (page: Page, skipScreenshots?: boolean): Pr
   await page.locator(`${getSelector(testIds.chatItem.chatItemFollowup.optionButton)}:nth-child(1)`).click();
   await page.mouse.move(0, 0);
 
-  const userCard = await page.waitForSelector(getSelector(testIds.chatItem.type.prompt));
+  const userCard = await page.waitForSelector(`${getSelector(testIds.chatItem.type.prompt)}:last-child`);
   expect(userCard).toBeDefined();
   await waitForAnimationEnd(page);
   await userCard.scrollIntoViewIfNeeded();
+  await justWait(50);
 
   if (skipScreenshots !== true) {
     expect(await userCard.screenshot()).toMatchImageSnapshot();

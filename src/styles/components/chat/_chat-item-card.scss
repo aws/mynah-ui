@@ -88,12 +88,14 @@
         }
 
         *:not(.mynah-chat-item-card-header, .mynah-card) {
-            filter: grayscale(100%);
+            filter: grayscale(100%) !important;
+            -webkit-filter: grayscale(100%) !important;
         }
 
         .mynah-chat-item-card-header-status,
         .mynah-chat-item-card-header-status * {
-            filter: none;
+            filter: none !important;
+            -webkit-filter: none !important;
         }
 
         .mynah-button {
