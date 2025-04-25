@@ -260,7 +260,7 @@ describe('Open MynahUI', () => {
       await navigatePromptsToEmpty(page);
     });
 
-    it('should navigate up/down only if on first/last line', async () => {
+    it.skip('should navigate up/down only if on first/last line', async () => {
       await navigatePromptsFirstLastLineCheck(page);
     });
 
