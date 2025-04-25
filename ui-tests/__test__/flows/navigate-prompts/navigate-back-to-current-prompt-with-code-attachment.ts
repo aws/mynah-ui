@@ -35,10 +35,15 @@ export const navigateBackToCurrentPromptWithCodeAttachment = async (page: Page, 
   await justWait(100);
 
   // we add .trim() because webpack test was failing otherwise, as it adds a \n at the end, like 'This is an unsent code attachment\n'
-  const codeAttachmentContent = (await page.locator(getSelector(testIds.prompt.attachment)).innerText()).trim();
+  const codeAttachmentContent = (await page.locator(getSelector(testIds.prompt.attachmentWrapper)).innerText()).trim();
   expect(codeAttachmentContent).toBe('This is an unsent code attachment');
 
+  // Move the mouse outside of the attachment
+  await page.mouse.move(0, 0);
+  await justWait(500);
+
   if (skipScreenshots !== true) {
-    expect(await promptInput.screenshot()).toMatchImageSnapshot();
+    const wrapper = page.locator(getSelector(testIds.prompt.wrapper));
+    expect(await wrapper.screenshot()).toMatchImageSnapshot();
   }
 };

@@ -18,7 +18,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   // Add content to create a scroll area
   await clickToFollowup(page, true);
 
-  justWait(500);
+  await justWait(500);
   chatItemsContainer.evaluate(elm => {
     elm.scrollTop = 1000000;
   });
@@ -41,7 +41,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
     height: 500
   });
 
-  justWait(100);
+  await justWait(100);
 
   // Check if the footer element exceeds from bottom
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
@@ -60,13 +60,15 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   // Revert viewport size
   await page.setViewportSize(DEFAULT_VIEWPORT);
 
-  justWait(100);
+  await justWait(100);
 
   // Check if the footer element exceeds from bottom
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 
-  justWait(500);
+  await justWait(500);
   await chatItemsContainer.evaluate(node => { node.scrollTop = 0; });
+
+  await justWait(100);
   // Snap
   expect(await page.screenshot()).toMatchImageSnapshot();
 };

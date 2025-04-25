@@ -274,7 +274,7 @@ describe('Open MynahUI', () => {
 
     it('should navigate back to current prompt with code attachment', async () => {
       await navigateBackToCurrentPromptWithCodeAttachment(page);
-    });
+    }, 25000);
   });
 
   describe('Feedback form', () => {
