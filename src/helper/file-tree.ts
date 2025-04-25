@@ -98,11 +98,15 @@ export const fileListToTree = (
       name: rootTitle ?? Config.getInstance().config.texts.changes,
       type: 'folder',
       children: [],
-      details: {
-        label: rootLabel,
-        icon: rootStatusIcon,
-        iconForegroundStatus: rootStatusIconForegroundStatus,
-      }
+      ...(rootLabel != null || rootStatusIcon != null || rootStatusIconForegroundStatus != null
+        ? {
+            details: {
+              label: rootLabel,
+              icon: rootStatusIcon,
+              iconForegroundStatus: rootStatusIconForegroundStatus,
+            }
+          }
+        : {})
     }
   );
 };
