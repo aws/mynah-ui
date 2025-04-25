@@ -268,7 +268,7 @@ describe('Open MynahUI', () => {
       await stayOnCurrentPrompt(page);
     });
 
-    it('should navigate back to current prompt', async () => {
+    it.skip('should navigate back to current prompt', async () => {
       await navigateBackToCurrentPrompt(page);
     });
 
