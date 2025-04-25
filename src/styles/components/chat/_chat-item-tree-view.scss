@@ -234,12 +234,11 @@
                 flex-shrink: 0.01;
 
                 > .mynah-ui-icon {
-                    opacity: 0.75;
                     flex-shrink: 0;
                 }
 
                 > span {
-                    opacity: 0.85;
+                    opacity: 0.75;
                     white-space: nowrap;
                 }
             }

@@ -179,8 +179,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 // Use for custom temporary checks
                 mynahUI.addChatItem(tabId, {
                     type: ChatItemType.ANSWER,
-                    icon: 'tools',
                     header: {
+                        icon: 'tools',
                         body: '#### Allow read-only tools outside your workspace',
                         status: {
                             icon: 'warning',
@@ -1077,8 +1077,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             if (action.id === 'allow-readonly-tools') {
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
                     muted: true,
-                    icon: 'tools',
                     header: {
+                      icon: 'tools',
                         body: '#### Allow read-only tools outside your workspace',
                         buttons: [
                             {

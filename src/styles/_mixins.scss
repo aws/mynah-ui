@@ -145,7 +145,7 @@
     background: linear-gradient(
         90deg,
         var(--mynah-color-text-default) 0%,
-        var(--mynah-color-text-disabled) 50%,
+        rgba(135, 135, 135, 0.4) 50%,
         var(--mynah-color-text-default) 100%
     );
     background-size: 50% 100%;

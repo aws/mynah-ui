@@ -31,7 +31,7 @@
         box-sizing: border-box;
         border: inset var(--mynah-border-width) solid transparent;
         background-color: var(--mynah-input-bg);
-        border-radius: var(--mynah-card-radius);
+        border-radius: var(--mynah-input-radius);
         padding: var(--mynah-sizing-2);
         position: relative;
 
@@ -169,7 +169,7 @@
                             width: auto;
                             height: calc(100%);
                             background-color: var(--mynah-color-button);
-                            border-radius: var(--mynah-input-radius);
+                            border-radius: inherit;
                             z-index: -1;
                         }
                     }

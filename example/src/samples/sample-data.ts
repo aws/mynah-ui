@@ -1671,12 +1671,14 @@ and normal text again.
         fullWidth: true,
         padding: false,
         header: {
-            buttons: [{
-                icon: 'undo',
-                text: 'Undo',
-                status: 'clear',
-                id: 'undo-change', // Or whatever ID you have
-            }],
+            buttons: [
+                {
+                    icon: 'undo',
+                    text: 'Undo',
+                    status: 'clear',
+                    id: 'undo-change', // Or whatever ID you have
+                },
+            ],
             fileList: {
                 hideFileCount: true,
                 fileTreeTitle: '',
@@ -1693,5 +1695,37 @@ and normal text again.
                 },
             },
         },
-    }
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        status: 'error',
+        body: 'To avoid errors, do not make weird things in the system!',
+        header: {
+            icon: 'cancel',
+            iconForegroundStatus: 'error',
+            body: '##### Error on blabla something bla!',
+        },
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        // status: '',
+        body: 'To avoid errors, do not make weird things in the system!',
+        header: {
+            icon: 'warning',
+            iconForegroundStatus: 'warning',
+            body: '##### Error on blabla something bla!',
+            buttons: [
+                {
+                    id: 'accept-warning',
+                    text: 'Accept',
+                    status: 'clear',
+                    icon: 'ok'
+                }
+            ]
+        },
+    },
 ];
