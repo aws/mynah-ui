@@ -5,9 +5,10 @@
  */
 
 import { DomBuilder } from '../../helper/dom';
-import { MynahIcons } from '../icon';
+import { CustomIcon, MynahIcons } from '../icon';
 // ICONS
 import Q from './icons/q.svg';
+import AT from './icons/at.svg';
 import MENU from './icons/menu.svg';
 import MINUS from './icons/minus.svg';
 import SEARCH from './icons/search.svg';
@@ -50,6 +51,7 @@ import STAR from './icons/star.svg';
 import STACK from './icons/stack.svg';
 import LIGHT_BULB from './icons/light-bulb.svg';
 import ENVELOPE_SEND from './icons/envelope-send.svg';
+import ENTER from './icons/enter.svg';
 import REFRESH from './icons/refresh.svg';
 import PROGRESS from './icons/progress.svg';
 import SCROLL_DOWN from './icons/scroll-down.svg';
@@ -61,7 +63,9 @@ import CODE_BLOCK from './icons/code-block.svg';
 import COPY from './icons/copy.svg';
 import CURSOR_INSERT from './icons/cursor-insert.svg';
 import TEXT_SELECT from './icons/text-select.svg';
+import TOOLS from './icons/tools.svg';
 import REVERT from './icons/revert.svg';
+import UNDO from './icons/undo.svg';
 import ROCKET from './icons/rocket.svg';
 import ASTERISK from './icons/asterisk.svg';
 import BUG from './icons/bug.svg';
@@ -71,102 +75,143 @@ import SHELL from './icons/shell.svg';
 import HELP from './icons/help.svg';
 import HISTORY from './icons/history.svg';
 import MESSAGE from './icons/message.svg';
+import MCP from './icons/mcp.svg';
 import TRASH from './icons/trash.svg';
 import TRANSFORM from './icons/transform.svg';
 
 export class MynahUIIconImporter {
   private static instance: MynahUIIconImporter;
+  private readonly customIcons: Map<string, string> = new Map();
+  private readonly portalId = 'mynah-ui-icons';
+  private readonly defaultIconMappings = {
+    Q,
+    AT,
+    MENU,
+    MINUS,
+    SEARCH,
+    PLUS,
+    PAPER_CLIP,
+    LIST_ADD,
+    FOLDER,
+    FILE,
+    FLASH,
+    TABS,
+    PENCIL,
+    CHAT,
+    LINK,
+    DOC,
+    EXTERNAL,
+    CANCEL,
+    CANCEL_CIRCLE,
+    CALENDAR,
+    COMMENT,
+    MEGAPHONE,
+    MAGIC,
+    NOTIFICATION,
+    EYE,
+    ELLIPSIS,
+    OK,
+    UP_OPEN,
+    DOWN_OPEN,
+    RIGHT_OPEN,
+    LEFT_OPEN,
+    RESIZE_FULL,
+    RESIZE_SMALL,
+    BLOCK,
+    OK_CIRCLED,
+    INFO,
+    WARNING,
+    ERROR,
+    THUMBS_UP,
+    THUMBS_DOWN,
+    STAR,
+    STACK,
+    LIGHT_BULB,
+    ENVELOPE_SEND,
+    ENTER,
+    REFRESH,
+    PROGRESS,
+    SCROLL_DOWN,
+    USER,
+    PLAY,
+    PAUSE,
+    STOP,
+    CODE_BLOCK,
+    COPY,
+    CURSOR_INSERT,
+    TEXT_SELECT,
+    TOOLS,
+    REVERT,
+    UNDO,
+    ROCKET,
+    ASTERISK,
+    BUG,
+    CHECK_LIST,
+    DEPLOY,
+    SHELL,
+    HELP,
+    MESSAGE,
+    MCP,
+    TRASH,
+    TRANSFORM,
+    HISTORY
+  };
+
   private constructor () {
-    const mynahIconMappings = {
-      Q,
-      MENU,
-      MINUS,
-      SEARCH,
-      PLUS,
-      PAPER_CLIP,
-      LIST_ADD,
-      FOLDER,
-      FILE,
-      FLASH,
-      TABS,
-      PENCIL,
-      CHAT,
-      LINK,
-      DOC,
-      EXTERNAL,
-      CANCEL,
-      CANCEL_CIRCLE,
-      CALENDAR,
-      COMMENT,
-      MEGAPHONE,
-      MAGIC,
-      NOTIFICATION,
-      EYE,
-      ELLIPSIS,
-      OK,
-      UP_OPEN,
-      DOWN_OPEN,
-      RIGHT_OPEN,
-      LEFT_OPEN,
-      RESIZE_FULL,
-      RESIZE_SMALL,
-      BLOCK,
-      OK_CIRCLED,
-      INFO,
-      WARNING,
-      ERROR,
-      THUMBS_UP,
-      THUMBS_DOWN,
-      STAR,
-      STACK,
-      LIGHT_BULB,
-      ENVELOPE_SEND,
-      REFRESH,
-      PROGRESS,
-      SCROLL_DOWN,
-      USER,
-      PLAY,
-      PAUSE,
-      STOP,
-      CODE_BLOCK,
-      COPY,
-      CURSOR_INSERT,
-      TEXT_SELECT,
-      REVERT,
-      ROCKET,
-      ASTERISK,
-      BUG,
-      CHECK_LIST,
-      DEPLOY,
-      SHELL,
-      HELP,
-      MESSAGE,
-      TRASH,
-      TRANSFORM,
-      HISTORY
-    };
+    this.initializeDefaultIcons();
+  }
+
+  private cleanupExistingPortal (): void {
+    const existingPortal = document.getElementById(this.portalId);
+    if (existingPortal != null) {
+      existingPortal.remove();
+    }
+  }
+
+  private initializeDefaultIcons (): void {
+    this.createIconStyles(this.defaultIconMappings);
+  }
+
+  public addCustomIcon (customIcon: CustomIcon): void {
+    // If icon already exists with same content, no need to proceed
+    if (this.customIcons.get(customIcon.name) === customIcon.base64Svg) {
+      return;
+    }
+
+    this.customIcons.set(customIcon.name, customIcon.base64Svg);
+
+    // Recreate all styles including both default and custom icons
+    this.cleanupExistingPortal();
+    this.createIconStyles({
+      ...this.defaultIconMappings,
+      ...Object.fromEntries(this.customIcons)
+    });
+  }
+
+  private createIconStyles (iconMappings: Record<string, string>): void {
     DomBuilder.getInstance().createPortal('mynah-ui-icons', {
       type: 'style',
       attributes: {
         type: 'text/css'
       },
       children: [ `
-      ${Object.keys(MynahIcons).map(iconKey => {
-        const iconName = MynahIcons[iconKey as keyof typeof MynahIcons];
-        return `
-        :root{
-          --mynah-ui-icon-${iconName}: url(${mynahIconMappings[iconKey as keyof typeof mynahIconMappings]});
-        }
-        .mynah-ui-icon-${iconName} {
-          -webkit-mask-image: var(--mynah-ui-icon-${iconName});
-          mask-image: var(--mynah-ui-icon-${iconName});
-        }
-        .mynah-ui-icon-${iconName}-subtract {
-          -webkit-mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
-          mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
-          mask-composite: subtract;
-        }`;
-      }).join('')}
+        ${Object.keys(iconMappings).map(iconKey => {
+          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+          const iconName = MynahIcons[iconKey as keyof typeof MynahIcons] || iconKey;
+          return `
+          :root{
+            --mynah-ui-icon-${iconName}: url(${iconMappings[iconKey]});
+          }
+          .mynah-ui-icon-${iconName} {
+            -webkit-mask-image: var(--mynah-ui-icon-${iconName});
+            mask-image: var(--mynah-ui-icon-${iconName});
+          }
+          .mynah-ui-icon-${iconName}-subtract {
+            -webkit-mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
+            mask-image: linear-gradient(#000000, #000000), var(--mynah-ui-icon-${iconName});
+            mask-composite: subtract;
+          }`;
+        }).join('')}
       ` ]
     }, 'beforebegin');
   }

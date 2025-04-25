@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { marked } from 'marked';
 import { Config } from '../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { cancelEvent } from '../helper/events';
@@ -11,6 +10,7 @@ import { MynahUITabsStore } from '../helper/tabs-store';
 import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
 import testIds from '../helper/test-ids';
+import { parseMarkdown } from '../helper/marked';
 import { StyleLoader } from '../helper/style-loader';
 
 export class NoTabs {
@@ -33,7 +33,7 @@ export class NoTabs {
         {
           type: 'div',
           classNames: [ 'mynah-no-tabs-info' ],
-          innerHTML: marked(Config.getInstance().config.texts.noTabsOpen ?? '', { breaks: true }) as string
+          innerHTML: parseMarkdown(Config.getInstance().config.texts.noTabsOpen ?? '')
         },
         {
           type: 'div',

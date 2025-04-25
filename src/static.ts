@@ -4,7 +4,7 @@
  */
 
 import { CheckboxAbstract, CheckboxProps } from './components/form-items/checkbox';
-import { MynahIcons, MynahIconsType } from './components/icon';
+import { CustomIcon, MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
 import {
   SelectAbstract,
@@ -201,6 +201,7 @@ export enum MynahEventNames {
   FORM_TEXTUAL_ITEM_KEYPRESS = 'formTextualItemKeyPress',
   FORM_CHANGE = 'formChange',
   ADD_ATTACHMENT = 'addAttachment',
+  CARD_DISMISS = 'cardDismiss',
   REMOVE_ATTACHMENT = 'removeAttachment',
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
@@ -305,7 +306,11 @@ export interface ProgressField {
 
 export interface TreeNodeDetails {
   status?: Status;
+  visibleName?: string;
   icon?: MynahIcons | MynahIconsType | null;
+  iconForegroundStatus?: Status;
+  labelIcon?: MynahIcons | MynahIconsType | null;
+  labelIconForegroundStatus?: Status;
   label?: string;
   changes?: {
     added?: number;
@@ -314,14 +319,17 @@ export interface TreeNodeDetails {
   };
   description?: string;
   clickable?: boolean;
+  data?: Record<string, string>;
 }
 
 export interface ChatItemContent {
   header?: (ChatItemContent & {
-    icon?: MynahIcons | MynahIconsType;
+    icon?: MynahIcons | MynahIconsType | CustomIcon;
     iconStatus?: 'main' | 'primary' | 'clear' | Status;
+    iconForegroundStatus?: Status;
     status?: {
       status?: Status;
+      description?: string;
       icon?: MynahIcons | MynahIconsType;
       text?: string;
     };
@@ -340,6 +348,9 @@ export interface ChatItemContent {
   fileList?: {
     fileTreeTitle?: string;
     rootFolderTitle?: string;
+    rootFolderStatusIcon?: MynahIcons | MynahIconsType;
+    rootFolderStatusIconForegroundStatus?: Status;
+    rootFolderLabel?: string;
     filePaths?: string[];
     deletedFiles?: string[];
     flatList?: boolean;
@@ -374,15 +385,19 @@ export interface ChatItem extends ChatItemContent {
   messageId?: string;
   snapToTop?: boolean;
   autoCollapse?: boolean;
+  contentHorizontalAlignment?: 'default' | 'center';
   canBeVoted?: boolean;
   canBeDismissed?: boolean;
   title?: string;
   fullWidth?: boolean;
   padding?: boolean;
-  icon?: MynahIcons | MynahIconsType;
+  muted?: boolean;
+  icon?: MynahIcons | MynahIconsType | CustomIcon;
+  iconForegroundStatus?: Status;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
   status?: Status;
+  shimmer?: boolean;
 }
 
 export interface ValidationPattern {
@@ -433,6 +448,7 @@ type CheckboxFormItem = BaseFormItem & {
   type: 'switch' | 'checkbox';
   value?: 'true' | 'false';
   label?: string;
+  alternateTooltip?: string;
 };
 
 export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;

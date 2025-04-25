@@ -15,9 +15,11 @@ export interface ChatItemTreeViewProps {
   hideFileCount?: boolean;
   collapsed?: boolean;
   folderIcon?: MynahIcons | MynahIconsType | null;
+  onRootCollapsedStateChange?: (isCollapsed: boolean) => void;
 }
 
 export class ChatItemTreeView {
+  private readonly props: ChatItemTreeViewProps;
   private readonly node: TreeNode;
   private readonly folderIcon: MynahIcons | MynahIconsType | null;
   private isOpen: boolean;
@@ -28,6 +30,7 @@ export class ChatItemTreeView {
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemTreeViewProps) {
+    this.props = props;
     this.node = props.node;
     this.folderIcon = props.folderIcon === null ? null : props.folderIcon ?? MynahIcons.FOLDER;
     this.tabId = props.tabId;
@@ -70,7 +73,7 @@ export class ChatItemTreeView {
             depth: this.depth + 1,
             tabId: this.tabId,
             hideFileCount: this.hideFileCount,
-            messageId: this.messageId
+            messageId: this.messageId,
           }).render ],
         })
       )
@@ -80,7 +83,6 @@ export class ChatItemTreeView {
 
   buildFolderNode (): ExtendedHTMLElement[] {
     if (this.node.type !== 'folder') return [];
-
     const folderItem = new Button({
       testId: testIds.chatItem.fileTree.folder,
       icon: new Icon({ icon: this.isOpen ? MynahIcons.DOWN_OPEN : MynahIcons.RIGHT_OPEN }).render,
@@ -94,6 +96,18 @@ export class ChatItemTreeView {
             type: 'span',
             children: [ this.node.name ]
           },
+          ...(this.node.details != null
+            ? [
+                ...(this.node.details.icon != null ? [ new Icon({ icon: this.node.details?.icon, status: this.node.details?.iconForegroundStatus }).render ] : []),
+                ...(this.node.details.label != null
+                  ? [ {
+                      type: 'span',
+                      classNames: [ 'mynah-chat-item-tree-view-button-weak-title' ],
+                      children: [ this.node.details.label ]
+                    } ]
+                  : []),
+              ]
+            : []),
           ...(this.hideFileCount
             ? []
             : [ {
@@ -107,6 +121,7 @@ export class ChatItemTreeView {
       onClick: e => {
         cancelEvent(e);
         this.isOpen = !this.isOpen;
+        this.props.onRootCollapsedStateChange?.(!this.isOpen);
         this.updateTree();
       },
     }).render;

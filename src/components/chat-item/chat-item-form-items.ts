@@ -219,7 +219,11 @@ export class ChatItemFormItemsWrapper {
                 mouseover: (e) => {
                   cancelEvent(e);
                   if (chatItemOption.tooltip != null && chatOption?.render != null) {
-                    this.showTooltip(chatItemOption.tooltip, chatOption.render);
+                    let tooltipToShow = chatItemOption.tooltip;
+                    if ((chatItemOption.type === 'checkbox' || chatItemOption.type === 'switch') && chatItemOption.alternateTooltip != null && chatOption.getValue() === 'false') {
+                      tooltipToShow = chatItemOption.alternateTooltip;
+                    }
+                    this.showTooltip(tooltipToShow, chatOption.render);
                   }
                 },
                 mouseleave: this.hideTooltip

@@ -11,15 +11,15 @@
         "type": "measurement",
         "description": "Base spacing value used on paddings, margins etc.",
         "units": ["px", "rem", ""],
-        "unit": "rem",
+        "unit": "px",
         "category": "sizing",
-        "value": "0.25"
+        "value": "4"
     },
     "--mynah-chat-wrapper-spacing": {
         "type": "text",
         "description": "Chat wrapper spacing value used on paddings and the distance between cards",
         "category": "sizing",
-        "value": "var(--mynah-sizing-6)"
+        "value": "var(--mynah-sizing-4)"
     },
     "--mynah-font-family": {
         "type": "text",
@@ -31,7 +31,7 @@
         "type": "text",
         "description": "Code blocks' font-family",
         "category": "font-family",
-        "value": "monospace"
+        "value": "consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono Courier New, monospace"
     },
     "--mynah-color-text-default": {
         "type": "color",
@@ -86,8 +86,8 @@
         "type": "color",
         "description": "Highlighted text background color",
         "category": "text-color",
-        "alpha": "10",
-        "value": "#ffb400"
+        "alpha": "100",
+        "value": "#fff3d6"
     },
     "--mynah-color-highlight-text": {
         "type": "color",
@@ -179,8 +179,8 @@
         "type": "color",
         "description": "Default background color of code blocks and inline code",
         "category": "syntax-color",
-        "alpha": "20",
-        "value": "#2878C8"
+        "alpha": "5",
+        "value": "#2878c8"
     },
     "--mynah-color-status-info": {
         "type": "color",
@@ -312,7 +312,7 @@
         "category": "font-size",
         "units": ["px", "rem", "em", ""],
         "unit": "rem",
-        "value": "1.25"
+        "value": "1.125"
     },
     "--mynah-font-size-xxsmall": {
         "type": "measurement",
@@ -320,7 +320,7 @@
         "category": "font-size",
         "units": ["px", "rem", ""],
         "unit": "rem",
-        "value": "0.75"
+        "value": "0.825"
     },
     "--mynah-font-size-xsmall": {
         "type": "measurement",
@@ -328,7 +328,7 @@
         "category": "font-size",
         "units": ["px", "rem", ""],
         "unit": "rem",
-        "value": "0.85"
+        "value": "0.875"
     },
     "--mynah-font-size-small": {
         "type": "measurement",
@@ -336,7 +336,7 @@
         "category": "font-size",
         "units": ["px", "rem", ""],
         "unit": "rem",
-        "value": "0.95"
+        "value": "0.925"
     },
     "--mynah-font-size-medium": {
         "type": "measurement",
@@ -360,7 +360,7 @@
         "category": "font-size",
         "units": ["px", "rem", "em", ""],
         "unit": "rem",
-        "value": "1.25"
+        "value": "1"
     },
     "--mynah-card-radius": {
         "type": "measurement",
@@ -368,7 +368,7 @@
         "category": "radius",
         "units": ["px", "rem", "em", ""],
         "unit": "",
-        "value": "var(--mynah-sizing-5)"
+        "value": "var(--mynah-sizing-2)"
     },
     "--mynah-card-radius-corner": {
         "type": "measurement",

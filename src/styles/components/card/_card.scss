@@ -8,13 +8,16 @@
     box-sizing: border-box;
     display: flex;
     flex-flow: column nowrap;
-    gap: var(--mynah-sizing-3);
+    gap: var(--mynah-sizing-2);
     transform: translate3d(0, 0, 0);
     flex: auto 0 0;
     width: 100%;
     overflow: hidden;
     border-radius: var(--mynah-card-radius);
     box-shadow: var(--mynah-shadow-card);
+    &:empty {
+        display: none;
+    }
 
     @for $i from 0 through 100 {
         > .mynah-card-inner-order-#{$i} {
@@ -33,7 +36,6 @@
                 @if $size == 'none' {
                     border-radius: 0;
                     padding: 0;
-                    gap: var(--mynah-sizing-1);
                 }
             }
         }
@@ -49,7 +51,7 @@
     }
 
     > * {
-        z-index: 10;
+        z-index: var(--mynah-z-1);
         position: relative;
     }
 

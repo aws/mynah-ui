@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { marked } from 'marked';
 import {
   DomBuilder,
   DomBuilderEventHandler,
@@ -19,6 +18,7 @@ import { Config } from '../helper/config';
 import { cancelEvent } from '../helper/events';
 import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
+import { parseMarkdown } from '../helper/marked';
 import { StyleLoader } from '../helper/style-loader';
 
 const TOOLTIP_DELAY = 350;
@@ -94,7 +94,7 @@ class ButtonInternal extends ButtonAbstract {
           const textContentSpan: HTMLSpanElement | null = this.render.querySelector('.mynah-button-label');
           let tooltipText;
           if (props.label != null && typeof props.label === 'string' && textContentSpan != null && textContentSpan.offsetWidth < textContentSpan.scrollWidth) {
-            tooltipText = marked(props.label ?? '', { breaks: true }) as string;
+            tooltipText = parseMarkdown(props.label ?? '', { includeLineBreaks: true });
           }
           if (props.tooltip !== undefined) {
             if (tooltipText != null) {
@@ -102,7 +102,7 @@ class ButtonInternal extends ButtonAbstract {
             } else {
               tooltipText = '';
             }
-            tooltipText += marked(props.tooltip ?? '', { breaks: true }) as string;
+            tooltipText += parseMarkdown(props.tooltip ?? '', { includeLineBreaks: true });
           }
           if (tooltipText != null) {
             this.showTooltip(tooltipText);
@@ -123,7 +123,7 @@ class ButtonInternal extends ButtonAbstract {
       if (typeof label !== 'string') {
         return [ { type: 'span', classNames: [ 'mynah-button-label' ], children: [ label ] } ];
       } else {
-        return [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: marked.parseInline(unescapeHTML(escapeHTML(label))) as string } ];
+        return [ { type: 'span', classNames: [ 'mynah-button-label' ], innerHTML: parseMarkdown(unescapeHTML(escapeHTML(label)), { inline: true }) } ];
       }
     }
     return [];

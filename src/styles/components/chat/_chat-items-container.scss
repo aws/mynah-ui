@@ -10,6 +10,7 @@
     padding: var(--mynah-chat-wrapper-spacing);
     padding-bottom: 0;
     gap: var(--mynah-chat-wrapper-spacing);
+    scroll-behavior: smooth;
 
     &.set-scroll {
         scroll-snap-type: y mandatory;
@@ -37,7 +38,7 @@
             width: auto;
             height: var(--mynah-sizing-1);
             background-color: transparent;
-            z-index: 99;
+            z-index: var(--mynah-z-4);
             pointer-events: none;
         }
 

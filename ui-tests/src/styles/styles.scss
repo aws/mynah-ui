@@ -29,11 +29,15 @@ body {
     position: relative;
     display: flex;
     flex-flow: row nowrap;
-    z-index: 100;
+    z-index: var(--mynah-z-1);
     flex: 1;
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     overflow: hidden;
     margin: 0 auto;
+}
+
+.mynah-chat-prompt-input {
+    caret-color: rgba(0, 0, 0, 0) !important;
 }

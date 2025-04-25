@@ -20,6 +20,9 @@ import { CardBody } from '../card/card-body';
 import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
 import { PromptOptions } from './prompt-input/prompt-options';
+import { PromptInputStopButton } from './prompt-input/prompt-input-stop-button';
+import { Button } from '../button';
+import { Icon, MynahIcons } from '../icon';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -35,6 +38,7 @@ export const INPUT_LENGTH_WARNING_THRESHOLD = (): number => {
 
 export interface ChatPromptInputProps {
   tabId: string;
+  onStopChatResponse?: (tabId: string) => void;
 }
 
 interface UserPrompt {
@@ -47,8 +51,10 @@ export class ChatPromptInput {
   private readonly props: ChatPromptInputProps;
   private readonly attachmentWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: PromptTextInput;
+  private readonly contextSelectorButton: Button;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly sendButton: PromptInputSendButton;
+  private readonly stopButton: PromptInputStopButton;
   private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
   private readonly promptOptions: PromptOptions;
@@ -81,6 +87,7 @@ export class ChatPromptInput {
     this.promptTextInput = new PromptTextInput({
       initMaxLength: MAX_USER_INPUT(),
       tabId: this.props.tabId,
+      children: [ this.promptTextInputCommand.render ],
       onKeydown: this.handleInputKeydown,
       onInput: () => this.updateAvailableCharactersIndicator(),
       onFocus: () => {
@@ -112,6 +119,14 @@ export class ChatPromptInput {
         this.sendPrompt();
       },
     });
+    this.stopButton = new PromptInputStopButton({
+      tabId: this.props.tabId,
+      onClick: () => {
+        if (this.props.onStopChatResponse != null) {
+          this.props.onStopChatResponse(this.props.tabId);
+        }
+      },
+    });
     this.progressIndicator = new PromptInputProgress({
       tabId: this.props.tabId,
     });
@@ -139,6 +154,29 @@ export class ChatPromptInput {
       ]
     });
 
+    this.contextSelectorButton = new Button({
+      icon: new Icon({ icon: MynahIcons.AT }).render,
+      status: 'clear',
+      disabled: ((MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? []).length === 0,
+      primary: false,
+      onClick: () => {
+        this.searchTerm = '';
+        this.quickPickType = 'context';
+        this.quickPickItemGroups = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+        this.quickPickTriggerIndex = this.promptTextInput.getCursorPos();
+        this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+        this.promptTextInput.insertEndSpace();
+        this.openQuickPick();
+      },
+    });
+
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'contextCommands', (contextCommands) => {
+      if (contextCommands?.length > 0) {
+        this.contextSelectorButton.setEnabled(true);
+      } else {
+        this.contextSelectorButton.setEnabled(false);
+      }
+    });
     this.chatPrompt = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-prompt' ],
@@ -149,18 +187,19 @@ export class ChatPromptInput {
           type: 'div',
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
-            this.promptTextInputCommand.render,
             this.promptTextInput.render,
             {
               type: 'div',
               classNames: [ 'mynah-chat-prompt-button-wrapper' ],
               children: [
+                this.promptOptions.render,
+                this.contextSelectorButton.render,
+                this.stopButton.render,
                 this.sendButton.render,
               ]
             },
           ]
         },
-        this.promptOptions.render,
         this.attachmentWrapper,
       ]
     });
@@ -302,26 +341,8 @@ export class ChatPromptInput {
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
         this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;
         this.quickPickTriggerIndex = this.quickPickType === 'context' ? this.promptTextInput.getCursorPos() : 1;
-
-        if (this.quickPickItemGroups.length > 0) {
-          this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
-          this.quickPick = new Overlay({
-            closeOnOutsideClick: true,
-            referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
-            dimOutside: false,
-            stretchWidth: true,
-            verticalDirection: OverlayVerticalDirection.TO_TOP,
-            horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
-            onClose: () => {
-              this.quickPickOpen = false;
-            },
-            children: [
-              this.getQuickPickItemGroups(this.filteredQuickPickItemGroups)
-            ],
-          });
-
-          this.quickPickOpen = true;
-        }
+        this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+        this.openQuickPick();
       } else if (navigationalKeys.includes(e.key)) {
         const cursorPosition = this.promptTextInput.getCursorPosition();
         if ((cursorPosition.isAtTheBeginning && e.key === KeyMap.ARROW_UP) || (cursorPosition.isAtTheEnd && e.key === KeyMap.ARROW_DOWN)) {
@@ -450,6 +471,27 @@ export class ChatPromptInput {
     }
   };
 
+  private readonly openQuickPick = (): void => {
+    if (this.quickPickItemGroups.length > 0) {
+      this.quickPick = new Overlay({
+        closeOnOutsideClick: true,
+        referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
+        dimOutside: false,
+        stretchWidth: true,
+        verticalDirection: OverlayVerticalDirection.TO_TOP,
+        horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+        onClose: () => {
+          this.quickPickOpen = false;
+        },
+        children: [
+          this.getQuickPickItemGroups(this.filteredQuickPickItemGroups)
+        ],
+      });
+
+      this.quickPickOpen = true;
+    }
+  };
+
   private readonly handleInputFocus = (): void => {
     // Show the character limit warning overlay if the threshold is hit
     this.updateAvailableCharactersIndicator();
@@ -476,23 +518,8 @@ export class ChatPromptInput {
         }
       });
 
-      if (this.quickPickItemGroups.length > 0) {
-        this.filteredQuickPickItemGroups = [ ...restorePreviousFilteredQuickPickItemGroups ];
-        this.quickPick = new Overlay({
-          closeOnOutsideClick: true,
-          referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
-          dimOutside: false,
-          stretchWidth: true,
-          verticalDirection: OverlayVerticalDirection.TO_TOP,
-          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
-          onClose: () => {
-            this.quickPickOpen = false;
-          },
-          children: [ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ],
-        });
-
-        this.quickPickOpen = true;
-      }
+      this.filteredQuickPickItemGroups = [ ...restorePreviousFilteredQuickPickItemGroups ];
+      this.openQuickPick();
     }
   };
 
@@ -500,6 +527,7 @@ export class ChatPromptInput {
     const detailedListItemsGroup = convertQuickActionCommandGroupsToDetailedListGroups(quickPickGroupList);
     if (this.quickPickItemsSelectorContainer == null) {
       this.quickPickItemsSelectorContainer = new DetailedListWrapper({
+        descriptionTextDirection: 'rtl',
         detailedList: {
           list: detailedListItemsGroup,
           selectable: true
@@ -525,7 +553,13 @@ export class ChatPromptInput {
         list: detailedListItemsGroup
       });
     }
-    return this.quickPickItemsSelectorContainer.render;
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-chat-prompt-quick-picks-overlay-wrapper' ],
+      children: [
+        this.quickPickItemsSelectorContainer.render
+      ]
+    });
   };
 
   private readonly handleQuickActionCommandSelection = (

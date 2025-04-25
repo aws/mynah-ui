@@ -22,7 +22,8 @@
         border-radius: inherit;
         color: var(--mynah-color-default);
         border-color: var(--mynah-color-default);
-        padding: var(--mynah-sizing-3) var(--mynah-sizing-2) var(--mynah-sizing-3) var(--mynah-sizing-2);
+        padding: var(--mynah-sizing-3);
+        padding-right: var(--mynah-sizing-1);
         box-sizing: border-box;
         gap: var(--mynah-sizing-2);
         overflow: hidden;
@@ -32,7 +33,7 @@
             animation: horizontal-roll 1750ms linear infinite both;
         }
         > * {
-            z-index: 10;
+            z-index: var(--mynah-z-2);
         }
         > .mynah-progress-indicator-value-bar {
             position: absolute;
@@ -44,7 +45,7 @@
             background-origin: border-box;
             height: auto;
             background-color: var(--mynah-color-gradient-start);
-            z-index: 1;
+            z-index: var(--mynah-z-1);
             opacity: 0.2;
             transition: var(--mynah-bottom-panel-transition);
         }

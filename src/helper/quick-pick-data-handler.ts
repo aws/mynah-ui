@@ -126,25 +126,7 @@ const calculateItemScore = (text: string, searchTerm: string): number => {
   if (isWordStartMatch) return 60;
   if (isContainsMatch) return 40;
 
-  return calculateScore(normalizedText, normalizedTerm);
-};
-
-const calculateScore = (text: string, term: string): number => {
-  let score = 0;
-  let termIndex = 0;
-  let consecutiveMatches = 0;
-
-  for (let i = 0; i < text.length && termIndex < term.length; i++) {
-    if (text[i] === term[termIndex]) {
-      score += 10 + consecutiveMatches;
-      consecutiveMatches++;
-      termIndex++;
-    } else {
-      consecutiveMatches = 0;
-    }
-  }
-
-  return termIndex === term.length ? score : 0;
+  return 0;
 };
 
 export const convertDetailedListGroupsToQuickActionCommandGroups = (detailedListItemGroups: DetailedListItemGroup[]): QuickActionCommandGroup[] => {

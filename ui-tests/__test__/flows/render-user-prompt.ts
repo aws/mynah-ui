@@ -1,5 +1,5 @@
 import { Page } from 'playwright/test';
-import { getSelector, waitForAnimationEnd } from '../helpers';
+import { getSelector, justWait, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 import { closeTab } from './close-tab';
 import { openNewTab } from './open-new-tab';
@@ -9,7 +9,7 @@ export const renderUserPrompt = async (page: Page, skipScreenshots?: boolean): P
   await openNewTab(page, false, true);
 
   await page.locator(getSelector(testIds.prompt.input)).fill('This is a user Prompt');
-  await page.locator(getSelector(testIds.prompt.send)).click();
+  await page.locator(getSelector(testIds.prompt.send)).nth(1).click();
   const promptInput = await page.waitForSelector(getSelector(testIds.prompt.input));
   expect(await promptInput.getAttribute('disabled')).toEqual('disabled');
 
@@ -19,6 +19,8 @@ export const renderUserPrompt = async (page: Page, skipScreenshots?: boolean): P
   await waitForAnimationEnd(page);
   await userCard.scrollIntoViewIfNeeded();
   expect(await promptInput.getAttribute('disabled')).toEqual(null);
+  await waitForAnimationEnd(page);
+  await justWait(50);
 
   if (skipScreenshots !== true) {
     expect(await userCard.screenshot()).toMatchImageSnapshot();

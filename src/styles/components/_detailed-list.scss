@@ -2,15 +2,12 @@
 .mynah-detailed-list {
     display: flex;
     box-sizing: border-box;
-    border-radius: var(--mynah-card-radius);
     width: 100%;
     flex-flow: column nowrap;
     align-items: stretch;
     justify-content: flex-start;
-    max-height: 80vh;
     overflow: hidden;
-    padding: var(--mynah-sizing-3);
-    gap: var(--mynah-sizing-3);
+    gap: var(--mynah-sizing-2);
     pointer-events: all;
 
     > .mynah-detailed-list-header-wrapper {
@@ -104,7 +101,7 @@
             > .mynah-detailed-list-items-block {
                 display: block;
                 overflow: hidden;
-                min-height: var(--mynah-sizing-10);
+                min-height: var(--mynah-sizing-8);
 
                 > .mynah-detailed-list-item {
                     display: flex;
@@ -114,10 +111,10 @@
                     width: 100%;
                     flex-flow: row nowrap;
                     align-items: center;
-                    min-height: var(--mynah-sizing-10);
+                    min-height: var(--mynah-sizing-8);
                     justify-content: flex-start;
                     overflow: hidden;
-                    padding: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
+                    padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
                     color: var(--mynah-color-text-default);
                     border-radius: var(--mynah-input-radius);
                     background-color: inherit;
@@ -203,7 +200,6 @@
                                 justify-content: flex-start;
                                 display: inline-block;
                                 white-space: nowrap;
-                                direction: rtl;
                                 text-align: left;
                                 text-overflow: ellipsis;
                                 padding-left: var(--mynah-sizing-1);
@@ -225,11 +221,10 @@
                             white-space: nowrap;
                             text-align: left;
                             text-overflow: ellipsis;
-
-                            p {
-                                margin: 0;
-                                text-overflow: ellipsis;
-                                overflow: hidden;
+                            margin: 0;
+                            &.rtl {
+                                direction: rtl;
+                                text-align: left;
                             }
                         }
                     }

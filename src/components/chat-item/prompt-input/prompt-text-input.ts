@@ -16,6 +16,7 @@ const PREVIEW_DELAY = 500;
 export interface PromptTextInputProps {
   tabId: string;
   initMaxLength: number;
+  children?: ExtendedHTMLElement[];
   onKeydown: (e: KeyboardEvent) => void;
   onInput?: (e: KeyboardEvent) => void;
   onFocus?: () => void;
@@ -46,7 +47,7 @@ export class PromptTextInput {
       classNames: [ 'mynah-chat-prompt-input', 'empty' ],
       innerHTML: '',
       attributes: {
-        contenteditable: 'true',
+        contenteditable: 'plaintext-only',
         ...(initialDisabledState ? { disabled: 'disabled' } : {}),
         tabindex: '0',
         rows: '1',
@@ -126,6 +127,7 @@ export class PromptTextInput {
       testId: testIds.prompt.inputWrapper,
       classNames: [ 'mynah-chat-prompt-input-inner-wrapper', 'no-text' ],
       children: [
+        ...(this.props.children ?? []),
         this.promptTextInput,
       ]
     });
@@ -138,7 +140,7 @@ export class PromptTextInput {
       } else {
         // Enable the input field and focus on it
         this.promptTextInput.removeAttribute('disabled');
-        this.promptTextInput.setAttribute('contenteditable', 'true');
+        this.promptTextInput.setAttribute('contenteditable', 'plaintext-only');
         if (Config.getInstance().config.autoFocus && document.hasFocus()) {
           this.promptTextInput.focus();
         }
@@ -205,7 +207,10 @@ export class PromptTextInput {
     maintainCursor: boolean = false
   ): void => {
     const selection = window.getSelection();
-    if (selection == null) return;
+    if (selection == null) {
+      this.promptTextInput.insertChild('beforeend', element as HTMLElement);
+      return;
+    }
 
     // Store original cursor position if we need to maintain it
     const originalRange = maintainCursor ? selection.getRangeAt(0).cloneRange() : null;
@@ -429,6 +434,10 @@ export class PromptTextInput {
   public readonly updateTextInputValue = (value: string): void => {
     this.promptTextInput.innerText = value;
     this.checkIsEmpty();
+  };
+
+  public readonly insertEndSpace = (): void => {
+    this.promptTextInput.insertAdjacentText('beforeend', ' ');
   };
 
   public readonly updateTextInputMaxLength = (maxLength: number): void => {

@@ -5,31 +5,41 @@
     font-family: var(--mynah-font-family, 'system-ui');
     --mynah-syntax-code-font-family: var(--vscode-editor-font-family);
 
+    // =======
+    // Sizings
+    // =======
+
     --mynah-max-width: 2560px;
-    --mynah-sizing-base: 0.25rem;
+    --mynah-sizing-base: 4px;
     --mynah-chat-wrapper-spacing: var(--mynah-sizing-4);
 
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
 
-    --mynah-color-text-default: var(--vscode-foreground);
-    --mynah-color-text-alternate: var(--mynah-color-button-reverse);
+    // ======
+    // Colors
+    // ======
+
+    --mynah-color-text-default: var(--vscode-foreground); // OK
+    --mynah-color-text-alternate: var(--vscode-foreground, var(--mynah-color-button-reverse));
     --mynah-color-text-strong: var(--vscode-input-foreground);
-    --mynah-color-text-weak: var(--vscode-disabledForeground);
+    --mynah-color-text-weak: var(--vscode-descriptionForeground, var(--vscode-disabledForeground));
+    --mynah-color-text-disabled: var(--vscode-disabledForeground, var(--mynah-color-text-weak));
     --mynah-color-text-link: var(--vscode-textLink-foreground);
     --mynah-color-text-link-alternate: var(--mynah-color-button-reverse);
     --mynah-color-text-input: var(--vscode-input-foreground);
+    --mynah-color-text-input-placeholder: var(--vscode-input-placeholderForeground, var(--mynah-color-text-disabled));
 
-    --mynah-color-bg: var(--vscode-sideBar-background);
+    --mynah-color-bg: var(--vscode-sideBar-background, var(--vscode-sideBar-background));
     --mynah-color-tab-active: var(--vscode-tab-activeBackground, var(--vscode-editor-background, var(--mynah-card-bg)));
     --mynah-color-light: rgba(0, 0, 0, 0.05);
     --mynah-color-border-default: var(--vscode-panel-border, var(--vscode-tab-border, rgba(0, 0, 0, 0.1)));
-    --mynah-color-highlight: rgba(255, 179, 0, 0.25);
+    --mynah-color-highlight: var(--vscode-editor-symbolHighlightBackground, #fff3d6);
     --mynah-color-highlight-text: #886411;
     --mynah-color-toggle: var(--vscode-sideBar-background);
     --mynah-color-toggle-reverse: rgba(0, 0, 0, 0.5);
 
-    --mynah-color-syntax-bg: var(--vscode-terminal-dropBackground, #fafafa);
+    --mynah-color-syntax-bg: var(--vscode-editor-background, #fafafa);
     --mynah-color-syntax-variable: var(--vscode-debugTokenExpression-number, #986801);
     --mynah-color-syntax-function: var(--vscode-debugTokenExpression-boolean, #e45649);
     --mynah-color-syntax-property: var(--vscode-terminal-ansiCyan, #0184bb);
@@ -45,7 +55,7 @@
     --mynah-color-status-info: #0971d3;
     --mynah-color-status-success: #037f03;
     --mynah-color-status-warning: #b2911c;
-    --mynah-color-status-error: #d91515;
+    --mynah-color-status-error: var(--vscode-editorError-foreground, #d91515);
 
     --mynah-color-gradient-alternate: #ffffff;
 
@@ -80,6 +90,13 @@
         var(--mynah-color-gradient-end),
         var(--mynah-color-gradient-start)
     );
+    --mynah-color-gradient-input: linear-gradient(
+        35deg,
+        var(--vscode-inputOption-activeBorder, var(--mynah-color-gradient-start)),
+        var(--vscode-inputOption-activeBorder, var(--mynah-color-gradient-mid)),
+        var(--vscode-inputOption-activeBorder, var(--mynah-color-gradient-end)),
+        var(--vscode-inputOption-activeBorder, var(--mynah-color-gradient-start))
+    );
     --mynah-color-gradient-main-half: linear-gradient(
         90deg,
         var(--mynah-color-gradient-start),
@@ -90,31 +107,40 @@
     --mynah-color-button-reverse: var(--vscode-button-foreground);
     --mynah-color-alternate: var(--vscode-button-secondaryBackground);
     --mynah-color-alternate-reverse: var(--vscode-button-secondaryForeground);
+    --mynah-input-bg: var(--vscode-input-background, var(--mynah-card-bg));
     --mynah-card-bg: var(--vscode-editor-background);
-    --mynah-card-bg-alternate: var(--mynah-color-button);
+    --mynah-card-bg-alternate: var(--vscode-editor-background, var(--mynah-color-button)); // OK
 
     --mynah-shadow-button: none;
     --mynah-shadow-card: none;
     --mynah-shadow-card-hover: 0 40px 25px -15px rgba(0, 0, 0, 0.35);
     --mynah-shadow-overlay: 0 0px 15px -5px rgba(0, 0, 0, 0.4);
 
-    --mynah-font-size-xxsmall: 0.8rem;
-    --mynah-font-size-xsmall: 0.9rem;
-    --mynah-font-size-small: 1rem;
-    --mynah-font-size-medium: 1.125rem;
-    --mynah-font-size-large: 1.25rem;
-    --mynah-font-size-xlarge: 1.4rem;
-    --mynah-font-size-xxlarge: 1.6rem;
-    --mynah-line-height: 1.25rem;
+    // ==========
+    // Font sizes
+    // ==========
 
-    --mynah-syntax-code-block-max-height: calc(25 * var(--mynah-syntax-code-line-height));
-    --mynah-syntax-code-line-height: 1.5rem;
-    --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
+    --mynah-font-size-xxsmall: 0.825rem;
+    --mynah-font-size-xsmall: 0.875rem;
+    --mynah-font-size-small: 0.925rem;
+    --mynah-font-size-medium: 1rem;
+    --mynah-font-size-large: 1.125rem;
+    --mynah-font-size-xlarge: 1.25rem;
+    --mynah-font-size-xxlarge: 1.5rem;
+    --mynah-line-height: 1.5rem;
+
+    --mynah-syntax-code-block-max-height: calc(25 * var(--mynah-syntax-code-font-size) * 118 / 100);
+    --mynah-syntax-code-line-height: 118%;
+    --mynah-syntax-code-font-size: var(--mynah-font-size-medium);
 
     --mynah-card-radius: var(--mynah-sizing-2);
     --mynah-input-radius: var(--mynah-sizing-1);
     --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);
+
+    // ===========
+    // Transitions
+    // ===========
 
     --mynah-main-wrapper-transition: all 350ms cubic-bezier(0.83, 0, 0.17, 1);
     --mynah-bottom-panel-transition: all 450ms cubic-bezier(0.25, 1, 0, 1);
@@ -125,4 +151,17 @@
     --mynah-short-transition-rev: all 280ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-short-transition-rev-opacity: opacity 350ms cubic-bezier(0.35, 1, 0, 1);
     --mynah-text-flow-transition: all 400ms cubic-bezier(0.35, 1, 0, 1), transform 400ms cubic-bezier(0.25, 1, 0, 1);
+
+    // =========
+    // Z-indices
+    // =========
+
+    --mynah-z-sub: -1; /* Below default layer */
+    --mynah-z-0: 0; /* Default state */
+    --mynah-z-1: 100; /* First layer */
+    --mynah-z-2: 200; /* Second layer */
+    --mynah-z-3: 300; /* Third layer */
+    --mynah-z-4: 400; /* Fourth layer */
+    --mynah-z-5: 500; /* Fifth layer */
+    --mynah-z-max: 999; /* Maximum layer - for critical elements */
 }

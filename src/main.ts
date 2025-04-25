@@ -28,6 +28,7 @@ import {
   PromptAttachmentType,
   QuickActionCommand,
   DetailedList,
+  TreeNodeDetails,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -35,7 +36,6 @@ import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import { Config } from './helper/config';
-import { marked, Tokens } from 'marked';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
@@ -43,6 +43,8 @@ import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet } from './components/sheet';
 import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
+import { configureMarked, parseMarkdown } from './helper/marked';
+import { MynahUIDataStore } from './helper/store';
 import { StyleLoader } from './helper/style-loader';
 
 export { generateUID } from './helper/guid';
@@ -274,6 +276,12 @@ export interface MynahUIProps {
     filePath: string,
     deleted: boolean,
     messageId?: string,
+    eventId?: string,
+    fileDetails?: TreeNodeDetails
+  ) => void;
+  onMessageDismiss?: (
+    tabId: string,
+    messageId: string,
     eventId?: string) => void;
   onFileActionClick?: (
     tabId: string,
@@ -307,24 +315,7 @@ export class MynahUI {
 
   constructor (props: MynahUIProps) {
     StyleLoader.getInstance(props.loadStyles !== false).load('styles.scss');
-
-    // Apply global fix for marked listitem content is not getting parsed.
-    marked.use({
-      renderer: {
-        listitem: (item: Tokens.ListItem) => `<li>
-${item.task ? `<input ${item.checked === true ? 'checked' : ''} disabled type="checkbox">` : ''}
-${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}
-</li>`,
-        link: (token) => {
-          const pattern = /^\[(?:\[([^\]]+)\]|([^\]]+))\]\(([^)]+)\)$/;
-          // Expect raw formatted only in [TEXT](URL)
-          if (!pattern.test(token.raw)) {
-            return token.href;
-          }
-          return `<a href="${token.href}" target="_blank" title="${token.title ?? token.text}">${token.text}</a>`;
-        }
-      },
-    });
+    configureMarked();
 
     this.props = props;
     Config.getInstance(props.config);
@@ -335,7 +326,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
     this.splashLoaderText = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-ui-splash-loader-text' ],
-      innerHTML: marked.parse(this.props.splashScreenInitialStatus?.text ?? '', { breaks: true }) as string,
+      innerHTML: parseMarkdown(this.props.splashScreenInitialStatus?.text ?? '', { includeLineBreaks: true }),
     });
     this.splashLoader = DomBuilder.getInstance().build({
       type: 'div',
@@ -724,7 +715,8 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           data.filePath,
           data.deleted,
           data.messageId,
-          this.getUserEventId());
+          this.getUserEventId(),
+          data.fileDetails);
       }
 
       if (this.props.onOpenDiff !== undefined) {
@@ -736,6 +728,13 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
           data.messageId,
           this.getUserEventId());
       }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CARD_DISMISS, (data) => {
+      this.props.onMessageDismiss?.(
+        data.tabId,
+        data.messageId,
+        this.getUserEventId());
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_ACTION_CLICK, (data) => {
@@ -804,7 +803,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
         this.addChatItem(tabId, {
           type: ChatItemType.ANSWER_STREAM,
           body: '',
-          messageId: generateUID()
+          messageId: generateUID(),
         });
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
       }
@@ -908,6 +907,14 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
   };
 
   /**
+   * Updates defaults of the tab store
+   * @param defaults MynahUITabStoreTab
+   */
+  public getTabDefaults = (): MynahUITabStoreTab => {
+    return MynahUITabsStore.getInstance().getTabDefaults();
+  };
+
+  /**
    * This function returns the selected tab id if there is any, otherwise returns undefined
    * @returns string selectedTabId or undefined
    */
@@ -922,7 +929,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
 
-  public getTabData = (tabId: string): any => MynahUITabsStore.getInstance().getTabDataStore(tabId);
+  public getTabData = (tabId: string): MynahUIDataStore => MynahUITabsStore.getInstance().getTabDataStore(tabId);
 
   /**
    * Toggles the visibility of the splash loader screen
@@ -936,7 +943,7 @@ ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) 
 
     if (text != null) {
       this.splashLoaderText.update({
-        innerHTML: marked.parse(text, { breaks: true }) as string
+        innerHTML: parseMarkdown(text, { includeLineBreaks: true })
       });
     }
   };

@@ -3,10 +3,12 @@
 // Since mynah-ui css custom properties are mapped to VSCode theme ones by default
 // here are some sample VSCode themes applied.
 @import 'themes/light+.scss';
+@import 'themes/light+tweaked.scss';
 @import 'themes/light-orange.scss';
 @import 'themes/light-quiet.scss';
 @import 'themes/light-solarized.scss';
 @import 'themes/dark-plus.scss';
+@import 'themes/dark+tweaked.scss';
 @import 'themes/dark-abyss.scss';
 @import 'themes/dark-ayu-mirage.scss';
 @import 'themes/dark-dracula.scss';
@@ -32,7 +34,7 @@ body {
         width: 100%;
         height: 100%;
         background-color: var(--mynah-color-syntax-bg);
-        z-index: 0;
+        z-index: var(--mynah-z-0);
         opacity: 0.25;
         pointer-events: none;
     }
@@ -56,7 +58,7 @@ body {
         border-radius: var(--mynah-card-radius);
         background-color: var(--mynah-card-bg) !important;
         border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-        z-index: 10;
+        z-index: var(--mynah-z-1);
         &:not(#header-var):before {
             padding-bottom: var(--mynah-sizing-5);
             font-size: 130%;
@@ -146,7 +148,6 @@ body {
         flex-flow: column nowrap;
         justify-content: center;
         align-items: stretch;
-        z-index: 100;
 
         > #amzn-mynah-website-wrapper {
             max-width: var(--mynah-max-width);
@@ -157,7 +158,6 @@ body {
             position: relative;
             display: flex;
             flex-flow: row nowrap;
-            z-index: 100;
             flex: 1;
             height: 100%;
             box-sizing: border-box;

@@ -1,4 +1,3 @@
-import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import testIds from '../../helper/test-ids';
@@ -6,9 +5,11 @@ import { ChatItemButton, DetailedListItem } from '../../static';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
+import { parseMarkdown } from '../../helper/marked';
 
 export interface DetailedListItemWrapperProps {
   listItem: DetailedListItem;
+  descriptionTextDirection?: 'ltr' | 'rtl';
   onSelect?: (detailedListItem: DetailedListItem) => void;
   onActionClick?: (action: ChatItemButton) => void;
   selectable?: boolean;
@@ -66,10 +67,8 @@ export class DetailedListItemWrapper {
             ...(this.props.listItem.description != null
               ? [ {
                   type: 'div',
-                  classNames: [ 'mynah-detailed-list-item-description' ],
-                  innerHTML: `<bdi>${marked.parse(this.props.listItem.description.replace(/ /g, '&nbsp;').replace(/\n\s*\n/g, ' '), {
-                    breaks: false,
-                        }) as string}</bdi>`
+                  classNames: [ 'mynah-detailed-list-item-description', this.props.descriptionTextDirection ?? 'ltr' ],
+                  innerHTML: `<bdi>${parseMarkdown(this.props.listItem.description.replace(/ /g, '&nbsp;').replace(/\n\s*\n/g, ' '), { includeLineBreaks: false, inline: true })}}</bdi>`
                 } ]
               : [])
           ]

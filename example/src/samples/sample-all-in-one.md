@@ -40,13 +40,17 @@ ___Bold and italic text___
 
 `inline code`.
 
+#### Code block without syntax
 ```
 no syntax declared
 ```
 
+#### Code block with syntax
 ```javascript
 const x;
 ```
+
+#### Table
 
 | left | center | right |
 | :----- | :-----: | -----: |

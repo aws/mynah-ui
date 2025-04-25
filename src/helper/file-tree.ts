@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FileNodeAction, TreeNodeDetails } from '../static';
+import { MynahIcons, MynahIconsType } from '../main';
+import { FileNodeAction, Status, TreeNodeDetails } from '../static';
 import { Config } from './config';
 
 export type TreeNode = FolderNode | FileNode;
@@ -58,7 +59,11 @@ export const fileListToTree = (
   deletedFilePaths: string[] = [],
   actions?: Record<string, FileNodeAction[]>,
   details?: Record<string, TreeNodeDetails>,
-  rootTitle?: string): TreeNode => {
+  rootTitle?: string,
+  rootStatusIcon?: MynahIcons | MynahIconsType,
+  rootStatusIconForegroundStatus?: Status,
+  rootLabel?: string,
+): TreeNode => {
   return [ ...splitFilePaths(modifiedFilePaths, false), ...splitFilePaths(deletedFilePaths, true) ].reduce<TreeNode>(
     (acc, { originalFilePath, filePath, deleted }) => {
       let currentNode = acc;
@@ -66,7 +71,7 @@ export const fileListToTree = (
         const fileOrFolder = filePath[i];
         if (i === filePath.length - 1) {
           const filePathJoined = filePath.join('/');
-          (currentNode as FolderNode).children.push({
+          (currentNode as FolderNode).children?.push({
             type: 'file',
             name: fileOrFolder,
             filePath: filePathJoined,
@@ -77,19 +82,32 @@ export const fileListToTree = (
           });
           break;
         } else {
-          const oldItem = (currentNode as FolderNode).children.find(({ name }) => name === fileOrFolder);
+          const oldItem = (currentNode as FolderNode).children?.find(({ name }) => name === fileOrFolder);
           if (oldItem != null) {
             currentNode = oldItem;
           } else {
             const newItem: FolderNode = { name: fileOrFolder, type: 'folder', children: [] };
-            (currentNode as FolderNode).children.push(newItem);
+            (currentNode as FolderNode).children?.push(newItem);
             currentNode = newItem;
           }
         }
       }
       return acc;
     },
-    { name: rootTitle ?? Config.getInstance().config.texts.changes, type: 'folder', children: [] }
+    {
+      name: rootTitle ?? Config.getInstance().config.texts.changes,
+      type: 'folder',
+      children: [],
+      ...(rootLabel != null || rootStatusIcon != null || rootStatusIconForegroundStatus != null
+        ? {
+            details: {
+              label: rootLabel,
+              icon: rootStatusIcon,
+              iconForegroundStatus: rootStatusIconForegroundStatus,
+            }
+          }
+        : {})
+    }
   );
 };
 

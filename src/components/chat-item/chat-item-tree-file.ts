@@ -1,4 +1,3 @@
-import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { FileNodeAction, MynahEventNames, TreeNodeDetails } from '../../static';
@@ -8,6 +7,7 @@ import { CardBody } from '../card/card-body';
 import { Icon, MynahIcons, MynahIconsType } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import testIds from '../../helper/test-ids';
+import { parseMarkdown } from '../../helper/marked';
 
 export interface ChatItemTreeFileProps {
   tabId: string;
@@ -47,6 +47,7 @@ export class ChatItemTreeFile {
               messageId: this.props.messageId,
               filePath: this.props.originalFilePath,
               deleted: this.props.deleted,
+              fileDetails: this.props.details
             });
           }
         },
@@ -55,7 +56,7 @@ export class ChatItemTreeFile {
           const textContentSpan: HTMLSpanElement | null = this.render.querySelector('.mynah-chat-item-tree-view-file-item-title-text');
           let tooltipText;
           if (textContentSpan != null && textContentSpan.offsetWidth < textContentSpan.scrollWidth) {
-            tooltipText = marked(this.props.fileName, { breaks: true }) as string;
+            tooltipText = parseMarkdown(this.props.fileName, { includeLineBreaks: true });
           }
           if (this.props.details?.description != null) {
             if (tooltipText != null) {
@@ -63,10 +64,10 @@ export class ChatItemTreeFile {
             } else {
               tooltipText = '';
             }
-            tooltipText += marked(this.props.details?.description ?? '', { breaks: true }) as string;
+            tooltipText += parseMarkdown(this.props.details?.description ?? '', { includeLineBreaks: true });
           }
           if (tooltipText != null) {
-            this.showTooltip(tooltipText);
+            this.showTooltip(tooltipText, undefined, OverlayHorizontalDirection.START_TO_RIGHT, textContentSpan);
           }
         },
         mouseleave: this.hideTooltip
@@ -86,11 +87,11 @@ export class ChatItemTreeFile {
             this.props.deleted === true ? 'mynah-chat-item-tree-view-file-item-deleted' : '',
           ],
           children: [
-            ...(this.props.details?.icon !== null ? [ new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE }).render ] : []),
+            ...(this.props.details?.icon !== null ? [ new Icon({ icon: this.props.details?.icon ?? MynahIcons.FILE, status: this.props.details?.iconForegroundStatus }).render ] : []),
             {
               type: 'span',
               classNames: [ 'mynah-chat-item-tree-view-file-item-title-text' ],
-              children: [ this.props.fileName ]
+              children: [ this.props.details?.visibleName ?? this.props.fileName ]
             } ]
         },
         {
@@ -109,11 +110,14 @@ export class ChatItemTreeFile {
                       ]
                     } ]
                   : []),
+                ...(this.props.details?.labelIcon != null ? [ new Icon({ icon: this.props.details?.labelIcon, status: this.props.details?.labelIconForegroundStatus }).render ] : []),
                 ...(this.props.details.label != null
                   ? [ {
                       type: 'span',
                       classNames: [ 'mynah-chat-item-tree-view-file-item-details-text' ],
-                      children: [ this.props.details.label ]
+                      children: [
+                        this.props.details.label
+                      ]
                     } ]
                   : []),
               ]
@@ -149,15 +153,16 @@ export class ChatItemTreeFile {
     });
   }
 
-  private readonly showTooltip = (content: string, vDir?: OverlayVerticalDirection, hDir?: OverlayHorizontalDirection): void => {
+  private readonly showTooltip = (content: string, vDir?: OverlayVerticalDirection, hDir?: OverlayHorizontalDirection, elm?: null | HTMLElement | ExtendedHTMLElement): void => {
     if (content.trim() !== '') {
       clearTimeout(this.fileTooltipTimeout);
       this.fileTooltipTimeout = setTimeout(() => {
+        clearTimeout(this.fileTooltipTimeout);
         this.fileTooltip = new Overlay({
           testId: testIds.chatItem.fileTree.fileTooltipWrapper,
           background: true,
           closeOnOutsideClick: false,
-          referenceElement: this.render,
+          referenceElement: elm ?? this.render,
           dimOutside: false,
           removeOtherOverlays: true,
           verticalDirection: vDir ?? OverlayVerticalDirection.TO_TOP,
