@@ -8,6 +8,7 @@ export enum Commands {
     HEADER_TYPES = '/cards-header-types',
     FORM_CARD = '/card-with-a-form',
     CARD_WITH_MARKDOWN_LIST = '/card-with-markdown-list',
+    CARD_WITH_PROGRESSIVE_FILE_LIST = '/card-with-progressive-file-list',
     CARD_WITH_ALL_MARKDOWN_TAGS = '/card-with-all-markdown-tags',
     CARD_RENDER_MARKDOWN_TABLE = '/card-render-markdown-table',
     CARD_SNAPS_TO_TOP = '/card-snaps-to-top',

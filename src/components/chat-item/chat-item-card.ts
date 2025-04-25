@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
-import { MynahUIGlobalEvents } from '../../helper/events';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames } from '../../static';
 import { CardBody, CardBodyProps } from '../card/card-body';
@@ -23,10 +23,12 @@ import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-
 import testIds from '../../helper/test-ids';
 import { ChatItemInformationCard } from './chat-item-information-card';
 import { ChatItemTabbedCard } from './chat-item-tabbed-card';
-import { Spinner } from '../spinner/spinner';
 import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
+import { marked } from 'marked';
 
+const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
   tabId: string;
   chatItem: ChatItem;
@@ -37,6 +39,8 @@ export interface ChatItemCardProps {
 export class ChatItemCard {
   readonly props: ChatItemCardProps;
   render: ExtendedHTMLElement;
+  private tooltipOverlay: Overlay | null;
+  private tooltipTimeout: ReturnType<typeof setTimeout>;
   private readonly card: Card | null = null;
   private readonly updateStack: Array<Partial<ChatItem>> = [];
   private readonly initialSpinner: ExtendedHTMLElement[] | null = null;
@@ -53,6 +57,7 @@ export class ChatItemCard {
   private chatButtonsInside: ChatItemButtonsWrapper | null = null;
   private chatButtonsOutside: ChatItemButtonsWrapper | null = null;
   private fileTreeWrapper: ChatItemTreeViewWrapper | null = null;
+  private fileTreeWrapperCollapsedState: boolean | null = null;
   private followUps: ChatItemFollowUpContainer | null = null;
   private readonly moreContentIndicator: MoreContentIndicator | null = null;
   private isMoreContentExpanded: boolean = false;
@@ -84,14 +89,13 @@ export class ChatItemCard {
         DomBuilder.getInstance().build({
           type: 'div',
           persistent: true,
-          classNames: [ 'mynah-chat-items-spinner' ],
-          children: [ new Spinner().render, { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
+          classNames: [ 'mynah-chat-items-spinner', 'text-shimmer' ],
+          children: [ { type: 'div', children: [ Config.getInstance().config.texts.spinnerText ] } ],
         }),
 
       ];
     }
 
-    // this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM
     this.cardTitle = this.getCardTitle();
     this.cardHeader = this.getCardHeader();
     this.cardFooter = this.getCardFooter();
@@ -197,6 +201,7 @@ export class ChatItemCard {
   private readonly getCardClasses = (): string[] => {
     return [
       ...(this.props.chatItem.hoverEffect !== undefined ? [ 'mynah-chat-item-hover-effect' ] : []),
+      ...(this.props.chatItem.shimmer === true ? [ 'text-shimmer' ] : []),
       ...(this.props.chatItem.icon !== undefined ? [ 'mynah-chat-item-card-has-icon' ] : []),
       ...(this.props.chatItem.fullWidth === true || this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM ? [ 'full-width' ] : []),
       ...(this.props.chatItem.padding === false ? [ 'no-padding' ] : []),
@@ -204,6 +209,7 @@ export class ChatItemCard {
       ...(this.props.chatItem.muted === true ? [ 'muted' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
+      `mynah-chat-item-card-content-horizontal-align-${this.props.chatItem.contentHorizontalAlignment ?? 'default'}`,
       'mynah-chat-item-card',
       `mynah-chat-item-${this.props.chatItem.type ?? ChatItemType.ANSWER}`,
       ...(!chatItemHasContent(this.props.chatItem) ? [ 'mynah-chat-item-empty' ] : []),
@@ -294,7 +300,8 @@ export class ChatItemCard {
             }
           },
           primary: false,
-          status: 'clear'
+          status: 'clear',
+          testId: testIds.chatItem.dismissButton
         }).render);
       }
       this.card?.render.insertChild('afterbegin', this.cardTitle);
@@ -339,7 +346,19 @@ export class ChatItemCard {
               children: [
                 ...(this.props.chatItem.header.status.icon != null ? [ new Icon({ icon: this.props.chatItem.header.status.icon }).render ] : []),
                 ...(this.props.chatItem.header.status.text != null ? [ { type: 'span', classNames: [ 'mynah-chat-item-card-header-status-text' ], children: [ this.props.chatItem.header.status.text ] } ] : []),
-              ]
+              ],
+              ...(this.props.chatItem.header.status?.description != null
+                ? {
+                    events: {
+                      mouseover: (e) => {
+                        cancelEvent(e);
+                        const tooltipText = marked(this.props.chatItem?.header?.status?.description ?? '', { breaks: true }) as string;
+                        this.showTooltip(tooltipText, e.target ?? e.currentTarget);
+                      },
+                      mouseleave: this.hideTooltip
+                    }
+                  }
+                : {})
             }));
           }
         }
@@ -349,14 +368,13 @@ export class ChatItemCard {
     /**
      * Generate card icon if available
      */
-    if (this.props.chatItem.icon !== undefined) {
+    if (this.props.chatItem.icon != null) {
       if (this.cardIcon != null) {
         this.cardIcon.render.remove();
         this.cardIcon = null;
-      } else {
-        this.cardIcon = new Icon({ icon: this.props.chatItem.icon, status: this.props.chatItem.iconForegroundStatus, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
-        this.card?.render.insertChild('beforeend', this.cardIcon.render);
       }
+      this.cardIcon = new Icon({ icon: this.props.chatItem.icon, status: this.props.chatItem.iconForegroundStatus, subtract: this.props.chatItem.iconStatus != null, classNames: [ 'mynah-chat-item-card-icon', 'mynah-card-inner-order-10', `icon-status-${this.props.chatItem.iconStatus ?? 'none'}` ] });
+      this.card?.render.insertChild('beforeend', this.cardIcon.render);
     }
 
     /**
@@ -368,7 +386,7 @@ export class ChatItemCard {
         hideCodeBlockLanguage: this.props.chatItem.padding === false,
         unlimitedCodeBlockHeight: this.props.chatItem.autoCollapse,
         classNames: [ 'mynah-card-inner-order-20' ],
-        renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM,
+        renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM || this.props.chatItem.type === ChatItemType.DIRECTIVE,
         codeReference: this.props.chatItem.codeReference ?? undefined,
         onAnimationStateChange: (isAnimating) => {
           if (isAnimating) {
@@ -397,6 +415,9 @@ export class ChatItemCard {
         this.contentBody = new ChatItemCardContent(updatedCardContentBodyProps);
         this.card?.render.insertChild('beforeend', this.contentBody.render);
       }
+    } else if (this.props.chatItem.body === null) {
+      this.contentBody?.render.remove();
+      this.contentBody = null;
     }
 
     /**
@@ -479,9 +500,12 @@ export class ChatItemCard {
         messageId: this.props.chatItem.messageId ?? '',
         cardTitle: this.props.chatItem.fileList.fileTreeTitle,
         rootTitle: this.props.chatItem.fileList.rootFolderTitle,
+        rootStatusIcon: this.props.chatItem.fileList.rootFolderStatusIcon,
+        rootIconForegroundStatus: this.props.chatItem.fileList.rootFolderStatusIconForegroundStatus,
+        rootLabel: this.props.chatItem.fileList.rootFolderLabel,
         folderIcon: this.props.chatItem.fileList.folderIcon,
         hideFileCount: this.props.chatItem.fileList.hideFileCount ?? false,
-        collapsed: this.props.chatItem.fileList.collapsed ?? false,
+        collapsed: this.fileTreeWrapperCollapsedState != null ? this.fileTreeWrapperCollapsedState : this.props.chatItem.fileList.collapsed != null ? this.props.chatItem.fileList.collapsed : false,
         files: filePaths,
         deletedFiles,
         flatList,
@@ -489,8 +513,13 @@ export class ChatItemCard {
         details,
         references: this.props.chatItem.codeReference ?? [],
         referenceSuggestionLabel,
+        onRootCollapsedStateChange: (isRootCollapsed) => {
+          this.fileTreeWrapperCollapsedState = isRootCollapsed;
+        }
       });
       this.card?.render.insertChild('beforeend', this.fileTreeWrapper.render);
+    } else {
+      this.fileTreeWrapperCollapsedState = null;
     }
 
     /**
@@ -652,6 +681,41 @@ export class ChatItemCard {
     });
 
   private readonly canShowAvatar = (): boolean => (this.props.chatItem.type === ChatItemType.ANSWER_STREAM || (this.props.inline !== true && chatItemHasContent({ ...this.props.chatItem, followUp: undefined })));
+
+  private readonly showTooltip = (content: string, elm: HTMLElement): void => {
+    if (content.trim() !== undefined) {
+      clearTimeout(this.tooltipTimeout);
+      this.tooltipTimeout = setTimeout(() => {
+        this.tooltipOverlay = new Overlay({
+          background: true,
+          closeOnOutsideClick: false,
+          referenceElement: elm,
+          dimOutside: false,
+          removeOtherOverlays: true,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.CENTER,
+          children: [
+            new Card({
+              border: false,
+              children: [
+                new CardBody({
+                  body: content
+                }).render
+              ]
+            }).render
+          ],
+        });
+      }, TOOLTIP_DELAY);
+    }
+  };
+
+  public readonly hideTooltip = (): void => {
+    clearTimeout(this.tooltipTimeout);
+    if (this.tooltipOverlay !== null) {
+      this.tooltipOverlay?.close();
+      this.tooltipOverlay = null;
+    }
+  };
 
   public readonly updateCard = (): void => {
     if (this.updateStack.length > 0) {

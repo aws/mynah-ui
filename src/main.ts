@@ -28,6 +28,7 @@ import {
   PromptAttachmentType,
   QuickActionCommand,
   DetailedList,
+  TreeNodeDetails,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -35,7 +36,6 @@ import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
 import { MynahUITabsStore } from './helper/tabs-store';
 import { Config } from './helper/config';
-import './styles/styles.scss';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
@@ -44,6 +44,8 @@ import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet } from './components/sheet';
 import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
 import { configureMarked, parseMarkdown } from './helper/marked';
+import { MynahUIDataStore } from './helper/store';
+import { StyleLoader } from './helper/style-loader';
 
 export { generateUID } from './helper/guid';
 export {
@@ -94,6 +96,7 @@ export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {
   rootSelector?: string;
+  loadStyles?: boolean;
   defaults?: MynahUITabStoreTab;
   splashScreenInitialStatus?: {
     visible: boolean;
@@ -273,7 +276,9 @@ export interface MynahUIProps {
     filePath: string,
     deleted: boolean,
     messageId?: string,
-    eventId?: string) => void;
+    eventId?: string,
+    fileDetails?: TreeNodeDetails
+  ) => void;
   onMessageDismiss?: (
     tabId: string,
     messageId: string,
@@ -309,6 +314,7 @@ export class MynahUI {
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
   constructor (props: MynahUIProps) {
+    StyleLoader.getInstance(props.loadStyles !== false).load('styles.scss');
     configureMarked();
 
     this.props = props;
@@ -709,7 +715,8 @@ export class MynahUI {
           data.filePath,
           data.deleted,
           data.messageId,
-          this.getUserEventId());
+          this.getUserEventId(),
+          data.fileDetails);
       }
 
       if (this.props.onOpenDiff !== undefined) {
@@ -796,7 +803,7 @@ export class MynahUI {
         this.addChatItem(tabId, {
           type: ChatItemType.ANSWER_STREAM,
           body: '',
-          messageId: generateUID()
+          messageId: generateUID(),
         });
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
       }
@@ -900,6 +907,14 @@ export class MynahUI {
   };
 
   /**
+   * Updates defaults of the tab store
+   * @param defaults MynahUITabStoreTab
+   */
+  public getTabDefaults = (): MynahUITabStoreTab => {
+    return MynahUITabsStore.getInstance().getTabDefaults();
+  };
+
+  /**
    * This function returns the selected tab id if there is any, otherwise returns undefined
    * @returns string selectedTabId or undefined
    */
@@ -914,7 +929,7 @@ export class MynahUI {
    */
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
 
-  public getTabData = (tabId: string): any => MynahUITabsStore.getInstance().getTabDataStore(tabId);
+  public getTabData = (tabId: string): MynahUIDataStore => MynahUITabsStore.getInstance().getTabDataStore(tabId);
 
   /**
    * Toggles the visibility of the splash loader screen

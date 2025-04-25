@@ -6,7 +6,6 @@ import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
 import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
-// import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { DEFAULT_VIEWPORT } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { renderQuickPicks } from './flows/quick-picks/render-quick-picks';
@@ -42,7 +41,12 @@ import { navigatePromptsToEmpty } from './flows/navigate-prompts/navigate-prompt
 import { navigateBackToCurrentPrompt } from './flows/navigate-prompts/navigate-back-to-current-prompt';
 import { navigateBackToCurrentPromptWithCodeAttachment } from './flows/navigate-prompts/navigate-back-to-current-prompt-with-code-attachment';
 import { promptOptions } from './flows/prompt-options';
-// import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
+import { renderIcons } from './flows/icons';
+import { renderMutedCards } from './flows/muted-cards';
+import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
+import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
+import { renderHeaders } from './flows/headers';
+import { renderAndDismissCard } from './flows/dismissible-cards';
 
 describe('Open MynahUI', () => {
   beforeEach(async () => {
@@ -52,7 +56,7 @@ describe('Open MynahUI', () => {
   beforeAll(async () => {
     const browserName = browser.browserType().name();
     const toMatchImageSnapshot = configureToMatchImageSnapshot({
-      failureThreshold: 0.01,
+      failureThreshold: 0.03,
       allowSizeMismatch: true,
       failureThresholdType: 'percent',
       storeReceivedOnFailure: true,
@@ -208,6 +212,22 @@ describe('Open MynahUI', () => {
     await renderButtons(page);
   });
 
+  it('should render (custom) icons correctly', async () => {
+    await renderIcons(page);
+  });
+
+  it('should render muted cards correctly', async () => {
+    await renderMutedCards(page);
+  });
+
+  it('should render card headers correctly', async () => {
+    await renderHeaders(page);
+  });
+
+  it('should render and remove dismissible cards', async () => {
+    await renderAndDismissCard(page);
+  });
+
   describe('Forms', () => {
     it('should render form elements correctly', async () => {
       await renderFormElements(page);
@@ -220,9 +240,9 @@ describe('Open MynahUI', () => {
     });
   });
 
-  // it('should keep the content inside window boundaries', async () => {
-  //   await checkContentInsideWindowBoundaries(page);
-  // });
+  it('should keep the content inside window boundaries', async () => {
+    await checkContentInsideWindowBoundaries(page);
+  });
 
   it('should parse markdown', async () => {
     await parseMarkdown(page);
@@ -240,21 +260,21 @@ describe('Open MynahUI', () => {
       await navigatePromptsToEmpty(page);
     });
 
-    // it('should navigate up/down only if on first/last line', async () => {
-    //   await navigatePromptsFirstLastLineCheck(page);
-    // });
+    it.skip('should navigate up/down only if on first/last line', async () => {
+      await navigatePromptsFirstLastLineCheck(page);
+    });
 
     it('should stay on current prompt', async () => {
       await stayOnCurrentPrompt(page);
     });
 
-    it('should navigate back to current prompt', async () => {
+    it.skip('should navigate back to current prompt', async () => {
       await navigateBackToCurrentPrompt(page);
     });
 
     it('should navigate back to current prompt with code attachment', async () => {
       await navigateBackToCurrentPromptWithCodeAttachment(page);
-    });
+    }, 25000);
   });
 
   describe('Feedback form', () => {

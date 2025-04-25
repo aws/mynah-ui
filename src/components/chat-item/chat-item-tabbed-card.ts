@@ -3,9 +3,9 @@ import { ChatItemContent, ChatItemType, MynahEventNames } from '../../static';
 import { Tab, ToggleOption } from '../tabs';
 import { ChatItemCard } from './chat-item-card';
 import testIds from '../../helper/test-ids';
-import '../../styles/components/chat/_chat-item-card-tabbed-card.scss';
 import { emptyChatItemContent } from '../../helper/chat-item';
 import { MynahUIGlobalEvents } from '../../helper/events';
+import { StyleLoader } from '../../helper/style-loader';
 
 export interface ChatItemTabbedCardProps {
   tabId: string;
@@ -20,6 +20,7 @@ export class ChatItemTabbedCard {
   props: ChatItemTabbedCardProps;
 
   constructor (props: ChatItemTabbedCardProps) {
+    StyleLoader.getInstance().load('components/chat/_chat-item-card-tabbed-card.scss');
     this.props = props;
     const toggleGroup = new Tab({
       options: props.tabbedCard,

@@ -22,6 +22,7 @@ import { DetailedListWrapper } from '../detailed-list/detailed-list';
 import { PromptOptions } from './prompt-input/prompt-options';
 import { PromptInputStopButton } from './prompt-input/prompt-input-stop-button';
 import { Button } from '../button';
+import { Icon, MynahIcons } from '../icon';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -50,6 +51,7 @@ export class ChatPromptInput {
   private readonly props: ChatPromptInputProps;
   private readonly attachmentWrapper: ExtendedHTMLElement;
   private readonly promptTextInput: PromptTextInput;
+  private readonly contextSelectorButton: Button;
   private readonly promptTextInputCommand: ChatPromptInputCommand;
   private readonly sendButton: PromptInputSendButton;
   private readonly stopButton: PromptInputStopButton;
@@ -152,6 +154,29 @@ export class ChatPromptInput {
       ]
     });
 
+    this.contextSelectorButton = new Button({
+      icon: new Icon({ icon: MynahIcons.AT }).render,
+      status: 'clear',
+      disabled: ((MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? []).length === 0,
+      primary: false,
+      onClick: () => {
+        this.searchTerm = '';
+        this.quickPickType = 'context';
+        this.quickPickItemGroups = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+        this.quickPickTriggerIndex = this.promptTextInput.getCursorPos();
+        this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+        this.promptTextInput.insertEndSpace();
+        this.openQuickPick();
+      },
+    });
+
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'contextCommands', (contextCommands) => {
+      if (contextCommands?.length > 0) {
+        this.contextSelectorButton.setEnabled(true);
+      } else {
+        this.contextSelectorButton.setEnabled(false);
+      }
+    });
     this.chatPrompt = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-prompt' ],
@@ -168,20 +193,7 @@ export class ChatPromptInput {
               classNames: [ 'mynah-chat-prompt-button-wrapper' ],
               children: [
                 this.promptOptions.render,
-                new Button({
-                  label: '@',
-                  status: 'clear',
-                  primary: false,
-                  onClick: () => {
-                    this.searchTerm = '';
-                    this.quickPickType = 'context';
-                    this.quickPickItemGroups = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
-                    this.quickPickTriggerIndex = this.promptTextInput.getCursorPos();
-                    this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
-                    this.promptTextInput.insertEndSpace();
-                    this.openQuickPick();
-                  },
-                }).render,
+                this.contextSelectorButton.render,
                 this.stopButton.render,
                 this.sendButton.render,
               ]

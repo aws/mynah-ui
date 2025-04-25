@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { StyleLoader } from '../../helper/style-loader';
 import { EngagementType } from '../../static';
-import '../../styles/components/card/_card.scss';
 
 /**
  * We'll not consider it as an engagement if the total spend time is lower than below constant and won't trigger the event
@@ -39,13 +39,14 @@ export class Card {
   private previousMousePosition!: { x: number; y: number };
   private mouseDownInfo!: { x: number; y: number; time: number };
   constructor (props: CardProps) {
+    StyleLoader.getInstance().load('components/card/_card.scss');
     this.props = props;
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: this.props.testId,
       classNames: [
         'mynah-card',
-        `padding-${props.padding ?? 'large'}`,
+        `padding-${props.padding ?? 'medium'}`,
         props.border !== false ? 'border' : '',
         props.background !== false ? 'background' : '',
         ...(props.classNames ?? [])

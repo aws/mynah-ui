@@ -1,4 +1,6 @@
 @import '../../scss-variables';
+@import '../../mixins';
+
 .mynah-chat-item-card {
     display: inline-flex;
     flex-flow: column nowrap;
@@ -26,12 +28,53 @@
         }
     }
 
+    &.mynah-chat-item-card-content-horizontal-align-center {
+        text-align: center;
+        > .mynah-card {
+            align-self: center;
+        }
+        &.mynah-chat-item-directive {
+            > .mynah-card {
+                background-color: var(--mynah-color-bg);
+                backface-visibility: hidden;
+                max-width: calc(100% - var(--mynah-sizing-18));
+                width: auto;
+                padding-left: var(--mynah-sizing-2);
+                padding-right: var(--mynah-sizing-2);
+                box-sizing: border-box;
+                z-index: 10;
+            }
+            &:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                background-color: var(--mynah-color-border-default);
+                height: var(--mynah-border-width);
+            }
+        }
+    }
+
+    &.text-shimmer {
+        p,
+        span {
+            @include text-shimmer;
+        }
+    }
+
     &.full-width {
         max-width: 100%;
         min-width: 100%;
 
         > .mynah-chat-item-buttons-container {
             justify-content: flex-start;
+        }
+        > .mynah-card {
+            > .mynah-chat-item-card-header {
+                @include full-width-header();
+            }
         }
     }
 
@@ -45,12 +88,14 @@
         }
 
         *:not(.mynah-chat-item-card-header, .mynah-card) {
-            filter: grayscale(100%);
+            filter: grayscale(100%) !important;
+            -webkit-filter: grayscale(100%) !important;
         }
 
         .mynah-chat-item-card-header-status,
         .mynah-chat-item-card-header-status * {
-            filter: none;
+            filter: none !important;
+            -webkit-filter: none !important;
         }
 
         .mynah-button {
@@ -85,27 +130,31 @@
                 }
             }
             > .mynah-card-body {
-                padding-bottom: 0;
-                padding-top: 0;
+                padding: 0 var(--mynah-sizing-2) var(--mynah-sizing-2) var(--mynah-sizing-2);
                 > .mynah-syntax-highlighter {
                     margin-left: calc(-1 * var(--mynah-sizing-2));
                     margin-right: calc(-1 * var(--mynah-sizing-2));
                     min-width: calc(100% + var(--mynah-sizing-4));
                     border-left: none;
                     border-right: none;
+                    border-bottom: none;
+                    &:not(:first-child) {
+                        border-top: none;
+                    }
                     &:last-child {
-                        border-bottom: none;
+                        margin-bottom: calc(-1 * var(--mynah-sizing-2));
                     }
                     > .mynah-syntax-highlighter-copy-buttons,
                     > pre {
-                        padding-left: var(--mynah-sizing-4);
-                        padding-right: var(--mynah-sizing-4);
+                        padding-left: var(--mynah-sizing-2);
+                        padding-right: var(--mynah-sizing-2);
                     }
                 }
             }
 
             > .mynah-chat-item-card-header {
-                padding: var(--mynah-sizing-1) var(--mynah-sizing-3);
+                min-height: var(--mynah-sizing-9);
+                padding: var(--mynah-sizing-1) var(--mynah-sizing-1) var(--mynah-sizing-1) var(--mynah-sizing-2);
                 @include full-width-header();
             }
         }
@@ -156,11 +205,17 @@
 
     &.mynah-chat-item-card-has-icon {
         > .mynah-card {
-            padding-left: var(--mynah-sizing-10);
+            &.padding-none {
+                > .mynah-chat-item-card-icon {
+                    left: 0;
+                    top: 0;
+                }
+            }
+            padding-left: var(--mynah-sizing-8);
             > .mynah-chat-item-card-icon {
                 position: absolute;
-                left: var(--mynah-sizing-4);
-                transform: translateY(calc(var(--mynah-line-height) / 2 - var(--mynah-border-width) * 2));
+                left: var(--mynah-sizing-3);
+                top: calc(var(--mynah-sizing-1) + var(--mynah-line-height));
 
                 &[class*='icon-status-']:not(.icon-status-none) {
                     padding: var(--mynah-sizing-2);
@@ -200,12 +255,6 @@
         transform: translate3d(0, 0, 0) scale(1, 1);
     }
 
-    &.mynah-chat-item-answer-stream {
-        &.typewriter-animating {
-            @import 'chat-items-bottom-animator';
-        }
-    }
-
     .mynah-chat-item-card {
         max-width: 100%;
         width: 100%;
@@ -241,12 +290,12 @@
             gap: var(--mynah-sizing-2);
             justify-content: flex-start;
             align-items: center;
-            transition: var(--mynah-very-short-transition);
             display: flex;
             flex-flow: row nowrap;
+            @include text-shimmer;
         }
         > .mynah-card-body {
-            padding: 0;
+            padding: var(--mynah-border-width);
             & > div {
                 > .mynah-syntax-highlighter {
                     filter: contrast(1.15) brightness(0.85);
@@ -263,7 +312,6 @@
             > .mynah-chat-item-card-related-content {
                 margin-top: var(--mynah-sizing-3);
                 padding-top: var(--mynah-sizing-4);
-                // border-top: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
                 > .mynah-chat-item-card-related-content-title {
                     color: var(--mynah-color-text-weak);
                     font-size: var(--mynah-font-size-xsmall);
@@ -282,7 +330,6 @@
             justify-content: space-between;
             align-items: center;
             padding-top: var(--mynah-sizing-3);
-            // border-top: var(--mynah-border-width) solid var(--mynah-color-border-default);
             &:empty {
                 display: none;
             }
@@ -345,6 +392,9 @@
                 gap: var(--mynah-sizing-1);
                 justify-content: flex-start;
                 align-items: center;
+                font-size: var(--mynah-font-size-large);
+                padding-right: var(--mynah-sizing-1);
+                min-height: var(--mynah-sizing-7);
                 @each $status in $mynah-statuses {
                     &.status-#{$status} {
                         color: var(--mynah-color-status-#{$status});
@@ -469,9 +519,10 @@
 
         .mynah-chat-item-card-related-content > .mynah-card,
         > .mynah-card {
-            padding: var(--mynah-sizing-4);
+            padding: var(--mynah-sizing-2);
             background-color: var(--mynah-card-bg-alternate);
             border-bottom-right-radius: var(--mynah-card-radius-corner);
+            border: none;
             &,
             > .mynah-card-body {
                 color: var(--mynah-color-text-alternate);

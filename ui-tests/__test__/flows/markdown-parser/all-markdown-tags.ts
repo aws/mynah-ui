@@ -44,7 +44,7 @@ ___Bold and italic text___
 \`\`\`
 no syntax declared
 \`\`\`
-
+&nbsp;
 \`\`\`javascript
 const x;
 \`\`\`

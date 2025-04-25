@@ -1,6 +1,6 @@
 import { Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
-import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, justWait, waitForAnimationEnd } from '../helpers';
+import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, justWait } from '../helpers';
 import { clickToFollowup } from './click-followup';
 import { closeTab } from './close-tab';
 import { openNewTab } from './open-new-tab';
@@ -18,7 +18,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   // Add content to create a scroll area
   await clickToFollowup(page, true);
 
-  justWait(500);
+  await justWait(500);
   chatItemsContainer.evaluate(elm => {
     elm.scrollTop = 1000000;
   });
@@ -41,9 +41,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
     height: 500
   });
 
-  // The reason we're waiting for the animations for resize actions
-  // is that we have a 1ms animation for the container which fixes the left screen edge shift for flex boxes
-  await waitForAnimationEnd(page);
+  await justWait(100);
 
   // Check if the footer element exceeds from bottom
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
@@ -62,15 +60,15 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   // Revert viewport size
   await page.setViewportSize(DEFAULT_VIEWPORT);
 
-  // The reason we're waiting for the animations for resize actions
-  // is that we have a 1ms animation for the container which fixes the left screen edge shift for flex boxes
-  await waitForAnimationEnd(page);
+  await justWait(100);
 
   // Check if the footer element exceeds from bottom
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 
-  justWait(500);
+  await justWait(500);
   await chatItemsContainer.evaluate(node => { node.scrollTop = 0; });
+
+  await justWait(100);
   // Snap
   expect(await page.screenshot()).toMatchImageSnapshot();
 };

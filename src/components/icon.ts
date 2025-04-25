@@ -4,12 +4,14 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { StyleLoader } from '../helper/style-loader';
 import { MynahUIIconImporter } from './icon/icon-importer';
 import '../styles/components/_icon.scss';
 import { Status } from '../static';
 
 export enum MynahIcons {
   Q = 'q',
+  AT = 'at',
   MENU = 'menu',
   MINUS = 'minus',
   SEARCH = 'search',
@@ -64,6 +66,7 @@ export enum MynahIcons {
   COPY = 'copy',
   CURSOR_INSERT = 'cursor-insert',
   TEXT_SELECT = 'text-select',
+  TOOLS = 'tools',
   REVERT = 'revert',
   UNDO = 'undo',
   ROCKET = 'rocket',
@@ -74,6 +77,7 @@ export enum MynahIcons {
   SHELL = 'shell',
   HELP = 'help',
   MESSAGE = 'message',
+  MCP = 'mcp',
   TRASH = 'trash',
   TRANSFORM = 'transform',
   HISTORY = 'history'
@@ -95,6 +99,7 @@ export interface IconProps {
 export class Icon {
   render: ExtendedHTMLElement;
   constructor (props: IconProps) {
+    StyleLoader.getInstance().load('components/_icon.scss');
     MynahUIIconImporter.getInstance();
 
     // Determine if the icon is a custom icon or a predefined one

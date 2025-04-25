@@ -1,8 +1,8 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { ChatItemContent, ChatItemType } from '../../static';
 import { ChatItemCard } from './chat-item-card';
-import '../../styles/components/chat/_chat-item-card-information-card.scss';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
+import { StyleLoader } from '../../helper/style-loader';
 
 export interface ChatItemInformationCardProps {
   tabId: string;
@@ -16,6 +16,8 @@ export class ChatItemInformationCard {
   render: ExtendedHTMLElement;
 
   constructor (props: ChatItemInformationCardProps) {
+    StyleLoader.getInstance().load('components/chat/_chat-item-card-information-card.scss');
+
     const mainContent = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-item-information-card-main' ],

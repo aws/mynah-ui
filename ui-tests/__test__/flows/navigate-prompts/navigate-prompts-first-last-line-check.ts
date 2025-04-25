@@ -1,5 +1,5 @@
 import { Page } from 'playwright/test';
-import { getSelector, waitForAnimationEnd } from '../../helpers';
+import { getSelector, justWait, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 import { closeTab } from '../close-tab';
 import { openNewTab } from '../open-new-tab';
@@ -12,7 +12,7 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
   const secondPrompt = 'This is the second user prompt.\nIt spans two separate lines.';
 
   const promptInput = page.locator(getSelector(testIds.prompt.input));
-  const sendButton = page.locator(getSelector(testIds.prompt.send));
+  const sendButton = page.locator(getSelector(testIds.prompt.send)).nth(1);
 
   await promptInput.fill(firstPrompt);
   await sendButton.click();
@@ -29,25 +29,25 @@ export const navigatePromptsFirstLastLineCheck = async (page: Page, skipScreensh
 
   // Input should remain the same as it is multiline
   await promptInput.press('ArrowDown');
-  await waitForAnimationEnd(page);
+  await justWait(100);
   expect(await promptInput.innerText()).toBe(secondPrompt);
 
   // Go back to the first line
   await promptInput.press('ArrowUp');
   // Go to the beginning of the line
   await promptInput.press('ArrowUp');
-  await waitForAnimationEnd(page);
+  await justWait(100);
 
   // Now that we're in the first line again, it should navigate to the first user prompt
   await promptInput.press('ArrowUp');
-  await waitForAnimationEnd(page);
+  await justWait(100);
   expect(await promptInput.innerText()).toBe(firstPrompt);
 
   // Given that this input only has one line, we should be able to go down to prompt 2 immediately again, after going to the end of the text
   await promptInput.press('ArrowDown');
-  await waitForAnimationEnd(page);
+  await justWait(100);
   await promptInput.press('ArrowDown');
-  await waitForAnimationEnd(page);
+  await justWait(100);
 
   expect(await promptInput.innerText()).toBe(secondPrompt);
 };

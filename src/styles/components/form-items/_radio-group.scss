@@ -17,8 +17,8 @@
         cursor: pointer;
 
         box-sizing: border-box;
-        min-width: var(--mynah-sizing-8);
-        min-height: var(--mynah-sizing-8);
+        min-width: var(--mynah-sizing-6);
+        min-height: var(--mynah-sizing-6);
 
         > input {
             position: absolute;
@@ -30,7 +30,7 @@
                 border-color: var(--mynah-color-button);
                 > .mynah-ui-icon {
                     transform: scale(0.75);
-                    color: var(--mynah-card-bg);
+                    color: var(--mynah-color-button-reverse);
                     opacity: 1;
                 }
                 &::after {

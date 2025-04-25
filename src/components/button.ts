@@ -17,9 +17,9 @@ import { CardBody } from './card/card-body';
 import { Config } from '../helper/config';
 import { cancelEvent } from '../helper/events';
 import escapeHTML from 'escape-html';
-import '../styles/components/_button.scss';
 import unescapeHTML from 'unescape-html';
 import { parseMarkdown } from '../helper/marked';
+import { StyleLoader } from '../helper/style-loader';
 
 const TOOLTIP_DELAY = 350;
 export interface ButtonProps {
@@ -59,6 +59,7 @@ class ButtonInternal extends ButtonAbstract {
   private tooltipOverlay: Overlay | null;
   private tooltipTimeout: ReturnType<typeof setTimeout>;
   constructor (props: ButtonProps) {
+    StyleLoader.getInstance().load('components/_button.scss');
     super();
     this.props = props;
     this.render = DomBuilder.getInstance().build({

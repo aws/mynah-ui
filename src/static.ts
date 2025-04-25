@@ -306,8 +306,11 @@ export interface ProgressField {
 
 export interface TreeNodeDetails {
   status?: Status;
+  visibleName?: string;
   icon?: MynahIcons | MynahIconsType | null;
   iconForegroundStatus?: Status;
+  labelIcon?: MynahIcons | MynahIconsType | null;
+  labelIconForegroundStatus?: Status;
   label?: string;
   changes?: {
     added?: number;
@@ -316,6 +319,7 @@ export interface TreeNodeDetails {
   };
   description?: string;
   clickable?: boolean;
+  data?: Record<string, string>;
 }
 
 export interface ChatItemContent {
@@ -325,6 +329,7 @@ export interface ChatItemContent {
     iconForegroundStatus?: Status;
     status?: {
       status?: Status;
+      description?: string;
       icon?: MynahIcons | MynahIconsType;
       text?: string;
     };
@@ -343,6 +348,9 @@ export interface ChatItemContent {
   fileList?: {
     fileTreeTitle?: string;
     rootFolderTitle?: string;
+    rootFolderStatusIcon?: MynahIcons | MynahIconsType;
+    rootFolderStatusIconForegroundStatus?: Status;
+    rootFolderLabel?: string;
     filePaths?: string[];
     deletedFiles?: string[];
     flatList?: boolean;
@@ -377,6 +385,7 @@ export interface ChatItem extends ChatItemContent {
   messageId?: string;
   snapToTop?: boolean;
   autoCollapse?: boolean;
+  contentHorizontalAlignment?: 'default' | 'center';
   canBeVoted?: boolean;
   canBeDismissed?: boolean;
   title?: string;
@@ -388,6 +397,7 @@ export interface ChatItem extends ChatItemContent {
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
   hoverEffect?: boolean;
   status?: Status;
+  shimmer?: boolean;
 }
 
 export interface ValidationPattern {

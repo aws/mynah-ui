@@ -6,8 +6,8 @@
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { Icon, MynahIcons, MynahIconsType } from './icon';
-import '../styles/components/_more-content-indicator.scss';
 import { Button } from './button';
+import { StyleLoader } from '../helper/style-loader';
 
 interface MoreContentIndicatorProps {
   icon?: MynahIcons | MynahIconsType;
@@ -22,6 +22,7 @@ export class MoreContentIndicator {
   private readonly uid: string;
   private readonly icon: ExtendedHTMLElement;
   constructor (props: MoreContentIndicatorProps) {
+    StyleLoader.getInstance().load('components/_more-content-indicator.scss');
     this.props = props;
     this.button = this.getButton();
     this.render = DomBuilder.getInstance().build({

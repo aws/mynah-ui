@@ -142,7 +142,7 @@ export class DetailedListWrapper {
               type: 'div',
               attributes: {
                 key: itemBlockKey,
-                style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-10) + var(--mynah-sizing-half)));`
+                style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-8) + var(--mynah-sizing-half)));`
               },
               classNames: [ 'mynah-detailed-list-items-block' ],
               children: index < 5

@@ -8,10 +8,10 @@
     mask-size: 100% 100%;
 }
 
-@mixin gradient-border($gradient: var(--mynah-color-gradient-main)) {
+@mixin gradient-border($gradient: var(--mynah-color-gradient-main), $background: var(--mynah-card-bg)) {
     background-clip: padding-box, border-box;
     background-origin: border-box;
-    background-image: linear-gradient(var(--mynah-card-bg), var(--mynah-card-bg)), $gradient;
+    background-image: linear-gradient($background, $background), $gradient;
     background-position: 0% bottom;
     background-size: 200% 100%;
     background-repeat: repeat-x;
@@ -73,7 +73,7 @@
 @mixin full-width-header() {
     min-width: 100%;
     box-sizing: border-box;
-    gap: var(--mynah-sizing-3);
+    gap: var(--mynah-sizing-1);
     > .mynah-ui-chat-item-small-card {
         flex: 1;
         > .mynah-card.padding-none {
@@ -81,10 +81,19 @@
             grid-template-columns: auto 1fr auto;
             grid-template-rows: auto;
             padding: 0;
-            column-gap: var(--mynah-sizing-3);
+            column-gap: 0;
+            align-items: center;
+            > .mynah-ui-icon {
+                margin-right: var(--mynah-sizing-2);
+                &[class*='icon-status'] + .mynah-card-body {
+                    align-self: center;
+                }
+            }
+            > .mynah-chat-item-buttons-container {
+                margin-left: var(--mynah-sizing-2);
+            }
             > * {
                 grid-column: 2;
-                align-self: center;
             }
             > .mynah-card-body {
                 &,
@@ -121,4 +130,27 @@
             }
         }
     }
+}
+
+@mixin text-shimmer {
+    @keyframes shimmer {
+        0% {
+            background-position: -100% 0;
+        }
+        100% {
+            background-position: 100% 0;
+        }
+    }
+
+    background: linear-gradient(
+        90deg,
+        var(--mynah-color-text-default) 0%,
+        rgba(135, 135, 135, 0.4) 50%,
+        var(--mynah-color-text-default) 100%
+    );
+    background-size: 50% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shimmer 3s infinite linear;
 }

@@ -4,8 +4,8 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons } from '../icon';
-import '../../styles/components/_form-input.scss';
 
 export type StarValues = 1 | 2 | 3 | 4 | 5;
 export interface StarsProps {
@@ -24,6 +24,7 @@ export class Stars {
   render: ExtendedHTMLElement;
 
   constructor (props: StarsProps) {
+    StyleLoader.getInstance().load('components/_form-input.scss');
     this.starsContainer = DomBuilder.getInstance().build({
       type: 'div',
       testId: props.wrapperTestId,
