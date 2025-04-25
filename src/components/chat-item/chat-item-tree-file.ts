@@ -1,4 +1,3 @@
-import { marked } from 'marked';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { FileNodeAction, MynahEventNames, TreeNodeDetails } from '../../static';
@@ -8,6 +7,7 @@ import { CardBody } from '../card/card-body';
 import { Icon, MynahIcons, MynahIconsType } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import testIds from '../../helper/test-ids';
+import { parseMarkdown } from '../../helper/marked';
 
 export interface ChatItemTreeFileProps {
   tabId: string;
@@ -56,7 +56,7 @@ export class ChatItemTreeFile {
           const textContentSpan: HTMLSpanElement | null = this.render.querySelector('.mynah-chat-item-tree-view-file-item-title-text');
           let tooltipText;
           if (textContentSpan != null && textContentSpan.offsetWidth < textContentSpan.scrollWidth) {
-            tooltipText = marked(this.props.fileName, { breaks: true }) as string;
+            tooltipText = parseMarkdown(this.props.fileName, { includeLineBreaks: true });
           }
           if (this.props.details?.description != null) {
             if (tooltipText != null) {
@@ -64,7 +64,7 @@ export class ChatItemTreeFile {
             } else {
               tooltipText = '';
             }
-            tooltipText += marked(this.props.details?.description ?? '', { breaks: true }) as string;
+            tooltipText += parseMarkdown(this.props.details?.description ?? '', { includeLineBreaks: true });
           }
           if (tooltipText != null) {
             this.showTooltip(tooltipText, undefined, OverlayHorizontalDirection.START_TO_RIGHT, textContentSpan);
