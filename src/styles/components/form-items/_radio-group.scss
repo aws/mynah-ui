@@ -69,9 +69,8 @@
             > .mynah-ui-icon {
                 position: relative;
                 transition: inherit;
-                transform: scale(0);
+                transform: scale(0.75);
                 transform-origin: center center;
-                color: var(--mynah-color-button);
                 z-index: var(--mynah-z-2);
             }
             &::after {
