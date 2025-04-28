@@ -16,6 +16,7 @@ export interface ChatItemCardContentProps {
   classNames?: string[];
   unlimitedCodeBlockHeight?: boolean;
   hideCodeBlockLanguage?: boolean;
+  wrapCode?: boolean;
   codeReference?: ReferenceTrackerInformation[] | null;
   onAnimationStateChange?: (isAnimating: boolean) => void;
   contentProperties?: {
@@ -49,6 +50,7 @@ export class ChatItemCardContent {
     return new CardBody({
       body: this.props.body ?? '',
       hideCodeBlockLanguage: this.props.hideCodeBlockLanguage,
+      wrapCode: this.props.wrapCode,
       unlimitedCodeBlockHeight: this.props.unlimitedCodeBlockHeight,
       testId: this.props.testId,
       useParts: this.props.renderAsStream,

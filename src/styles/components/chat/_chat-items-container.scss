@@ -1,3 +1,5 @@
+@import '../../_mixins.scss';
+
 > .mynah-chat-items-container {
     position: relative;
     display: flex;
@@ -11,6 +13,8 @@
     padding-bottom: 0;
     gap: var(--mynah-chat-wrapper-spacing);
     scroll-behavior: smooth;
+
+    @include list-fader-bottom();
 
     &.set-scroll {
         scroll-snap-type: y mandatory;

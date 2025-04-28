@@ -49,7 +49,7 @@
             font-size: var(--mynah-font-size-xsmall);
 
             > .mynah-ui-icon {
-                transform: scale(1);
+                transform: scale(1) !important;
                 color: inherit;
             }
             &::after {

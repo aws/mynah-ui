@@ -28,6 +28,7 @@ export interface SyntaxHighlighterProps {
   language?: string;
   showLineNumbers?: boolean;
   block?: boolean;
+  wrapCodeBlock?: boolean;
   startingLineNumber?: number;
   index?: number;
   codeBlockActions?: CodeBlockActions;
@@ -165,6 +166,7 @@ export class SyntaxHighlighter {
       testId: testIds.chatItem.syntaxHighlighter.wrapper,
       classNames: [ 'mynah-syntax-highlighter',
         ...(props.block !== true ? [ 'mynah-inline-code' ] : [ ]),
+        ...(props.wrapCodeBlock === true ? [ 'wrap-code-block' ] : [ ]),
         ...(props.unlimitedHeight === true ? [ 'no-max' ] : [ ]),
       ],
       children: [
