@@ -495,6 +495,10 @@
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
         }
+
+        &.no-padding > .mynah-card > .mynah-card-body {
+            padding: 0;
+        }
     }
 
     &.mynah-chat-item-system-prompt,
