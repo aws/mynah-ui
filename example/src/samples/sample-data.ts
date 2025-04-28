@@ -1728,4 +1728,27 @@ and normal text again.
             ]
         },
     },
+    {
+        fullWidth: true,
+        padding: false,
+        type: ChatItemType.ANSWER,
+        wrapCodes: true,
+        header: {
+            icon: MynahIcons.CODE_BLOCK,
+            body: 'Terminal command',
+            buttons: [
+                {
+                    status: 'clear',
+                    icon: 'play',
+                    id: 'run-bash-command',
+                },
+            ],
+        },
+        body: `
+\`\`\`bash
+mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjsadhf dskjkj hasdklf askdjfh kj sadhfksdaf
+\`\`\`
+`,
+        codeBlockActions: { copy: null, 'insert-to-cursor': null },
+    },
 ];

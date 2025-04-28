@@ -384,6 +384,7 @@ export interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
+  wrapCodes?: boolean;
   autoCollapse?: boolean;
   contentHorizontalAlignment?: 'default' | 'center';
   canBeVoted?: boolean;

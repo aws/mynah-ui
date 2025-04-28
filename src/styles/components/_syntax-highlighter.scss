@@ -114,6 +114,13 @@
         > pre {
             max-height: var(--mynah-syntax-code-block-max-height);
         }
+        &.wrap-code-block {
+            > pre,
+            > pre > code {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+        }
     }
     > pre {
         padding: var(--mynah-sizing-2);

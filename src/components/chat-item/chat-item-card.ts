@@ -384,6 +384,7 @@ export class ChatItemCard {
       const updatedCardContentBodyProps: ChatItemCardContentProps = {
         body: this.props.chatItem.body ?? '',
         hideCodeBlockLanguage: this.props.chatItem.padding === false,
+        wrapCode: this.props.chatItem.wrapCodes,
         unlimitedCodeBlockHeight: this.props.chatItem.autoCollapse,
         classNames: [ 'mynah-card-inner-order-20' ],
         renderAsStream: this.props.chatItem.type === ChatItemType.ANSWER_STREAM || this.props.chatItem.type === ChatItemType.DIRECTIVE,
