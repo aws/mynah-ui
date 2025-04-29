@@ -1740,7 +1740,14 @@ and normal text again.
                 {
                     status: 'clear',
                     icon: 'play',
+                    text: 'Run',
                     id: 'run-bash-command',
+                },
+                {
+                    status: 'dimmed-clear',
+                    icon: 'cancel',
+                    text: 'Reject',
+                    id: 'cancel-bash-command',
                 },
             ],
         },

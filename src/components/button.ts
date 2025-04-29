@@ -35,7 +35,7 @@ export interface ButtonProps {
   disabled?: boolean;
   primary?: boolean;
   border?: boolean;
-  status?: 'main' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'clear';
+  status?: 'main' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'clear' | 'dimmed-clear';
   fillState?: 'hover' | 'always';
   additionalEvents?: Partial<Record<GenericEvents, DomBuilderEventHandler | DomBuilderEventHandlerWithOptions>>;
   onClick: (e: Event) => void;

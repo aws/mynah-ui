@@ -474,7 +474,7 @@ export interface ChatItemAction extends ChatPrompt {
 export interface ChatItemButton extends Omit<Action, 'status'> {
   keepCardAfterClick?: boolean;
   waitMandatoryFormItems?: boolean;
-  status?: 'main' | 'primary' | 'clear' | Status;
+  status?: 'main' | 'primary' | 'clear' | 'dimmed-clear' | Status;
   flash?: 'infinite' | 'once';
   fillState?: 'hover' | 'always';
   position?: 'inside' | 'outside';

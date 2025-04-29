@@ -21,7 +21,7 @@
     }
 
     > .mynah-chat-items-conversation-container {
-        gap: var(--mynah-chat-wrapper-spacing);
+        gap: calc(var(--mynah-chat-wrapper-spacing) / 3 * 2);
         position: relative;
         display: flex;
         flex-shrink: 0;
@@ -48,7 +48,7 @@
 
         &:last-child {
             scroll-snap-align: start;
-            padding-bottom: var(--mynah-chat-wrapper-spacing);
+            padding-bottom: calc(var(--mynah-chat-wrapper-spacing) + var(--mynah-sizing-1));
             min-height: 100%;
         }
     }

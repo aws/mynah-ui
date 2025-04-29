@@ -197,6 +197,7 @@ export class ChatWrapper {
         this.tabHeaderDetails,
         this.chatItemsContainer,
         new MoreContentIndicator({
+          border: false,
           onClick: () => {
             this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
           }
