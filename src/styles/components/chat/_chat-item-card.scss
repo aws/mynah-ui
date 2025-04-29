@@ -138,6 +138,7 @@
                     border-left: none;
                     border-right: none;
                     border-bottom: none;
+                    border-radius: 0;
                     &:not(:first-child) {
                         border-top: none;
                     }
@@ -490,6 +491,10 @@
     }
     &.mynah-chat-item-directive {
         color: var(--mynah-color-text-weak);
+        margin-bottom: calc(var(--mynah-chat-wrapper-spacing) / 3 * 2);
+        > .mynah-card > .mynah-card-body {
+            font-size: var(--mynah-font-size-xsmall);
+        }
         &.mynah-chat-item-auto-collapse > .more-content-indicator {
             --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-color-bg);
             border-bottom-left-radius: 0;
@@ -523,7 +528,7 @@
 
         .mynah-chat-item-card-related-content > .mynah-card,
         > .mynah-card {
-            padding: var(--mynah-sizing-2);
+            padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
             background-color: var(--mynah-card-bg-alternate);
             border-bottom-right-radius: var(--mynah-card-radius-corner);
             border: none;

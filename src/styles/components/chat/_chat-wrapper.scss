@@ -148,7 +148,18 @@
             opacity: 0;
         }
     }
-
+    > .more-content-indicator {
+        > .mynah-button {
+            pointer-events: all;
+            &:after {
+                transform: translate3d(0%, 0, 0);
+                opacity: 0.1;
+            }
+            &:hover:after {
+                opacity: 0.15;
+            }
+        }
+    }
     &:not(.more-content) > .more-content-indicator {
         opacity: 0;
         > .mynah-button {

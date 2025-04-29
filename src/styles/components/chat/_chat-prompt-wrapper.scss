@@ -1,7 +1,8 @@
 @import '../../mixins';
 > .mynah-chat-prompt-wrapper {
     display: block;
-    padding: var(--mynah-chat-wrapper-spacing);
+    padding: calc(var(--mynah-chat-wrapper-spacing) / 2) var(--mynah-chat-wrapper-spacing)
+        var(--mynah-chat-wrapper-spacing) var(--mynah-chat-wrapper-spacing);
     &.hidden {
         display: none;
         &,
@@ -370,7 +371,7 @@
 
 > .mynah-chat-prompt-input-sticky-card {
     &:not(:empty) {
-        padding: var(--mynah-sizing-4);
+        padding: var(--mynah-chat-wrapper-spacing);
         padding-bottom: 0;
     }
 
@@ -389,13 +390,15 @@
     justify-content: center;
     box-sizing: border-box;
     overflow: hidden;
-    padding: var(--mynah-sizing-4);
+    padding: var(--mynah-chat-wrapper-spacing);
     text-align: center;
     flex-shrink: 0;
+    color: var(--mynah-color-text-weak);
 
     &,
     & * {
-        font-size: var(--mynah-font-size-xsmall) !important;
+        font-size: var(--mynah-font-size-xxsmall) !important;
+        line-height: 1rem;
     }
 
     &:empty {

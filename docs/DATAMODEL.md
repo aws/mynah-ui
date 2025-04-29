@@ -2380,7 +2380,7 @@ interface ChatItemButton {
   id: string; // id of the button, since when they are clicked they all call the same property onInBodyButtonClicked
   disabled?: boolean; // in any case if you want to make the button disabled (mandatory check will discard this)
   description?: string; // A text to be shown inside a tooltip and it can be markdown
-  status?: 'main' | 'primary' | 'clear' | Status;
+  status?: 'main' | 'primary' | 'clear' | 'dimmed-clear' | Status;
   flash?: 'infinite' | 'once'; // Flashes the card
   fillState?: 'hover' | 'always'; // background is filled always or only when hover
   icon?: MynahIcons; // in case if you want to put an icon to the button.
