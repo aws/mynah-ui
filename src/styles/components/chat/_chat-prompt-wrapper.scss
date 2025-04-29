@@ -359,7 +359,7 @@
     }
 
     &:not(.hidden) + .mynah-chat-wrapper-footer-spacer + .mynah-chat-prompt-input-info {
-        padding-top: calc(var(--mynah-chat-wrapper-spacing) / 3);
+        padding-top: 0;
     }
     & + .mynah-chat-wrapper-footer-spacer + .mynah-chat-prompt-input-info {
         margin-top: calc(-1 * var(--mynah-sizing-2));
