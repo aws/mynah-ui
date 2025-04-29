@@ -15,12 +15,8 @@ import { Icon, MynahIcons } from './icon';
 import { cancelEvent } from '../helper/events';
 import { highlightersWithTooltip } from './card/card-body';
 import escapeHTML from 'escape-html';
-import { copyToClipboard } from '../helper/chat-item';
 import testIds from '../helper/test-ids';
-import unescapeHTML from 'unescape-html';
-import hljs from 'highlight.js';
 import '../styles/components/_syntax-highlighter.scss';
-import { mergeHTMLPlugin } from '../helper/merge-html-plugin';
 import { MoreContentIndicator } from './more-content-indicator';
 // @ts-expect-error
 import ts from '@shikijs/langs/typescript';
@@ -43,8 +39,6 @@ export interface SyntaxHighlighterProps {
   onCopiedToClipboard?: (type?: CodeSelectionType, text?: string, codeBlockIndex?: number) => void;
   onCodeBlockAction?: OnCodeBlockActionFunction;
 }
-
-const DEFAULT_LANGUAGE = 'c';
 
 export class SyntaxHighlighter {
   private readonly props: SyntaxHighlighterProps;
