@@ -359,7 +359,7 @@
     }
 
     &:not(.hidden) + .mynah-chat-wrapper-footer-spacer + .mynah-chat-prompt-input-info {
-        padding-top: calc(var(--mynah-chat-wrapper-spacing) / 2);
+        padding-top: calc(var(--mynah-chat-wrapper-spacing) / 3);
     }
     & + .mynah-chat-wrapper-footer-spacer + .mynah-chat-prompt-input-info {
         margin-top: calc(-1 * var(--mynah-sizing-2));
@@ -371,7 +371,7 @@
 
 > .mynah-chat-prompt-input-sticky-card {
     &:not(:empty) {
-        padding: var(--mynah-sizing-4);
+        padding: var(--mynah-chat-wrapper-spacing);
         padding-bottom: 0;
     }
 
