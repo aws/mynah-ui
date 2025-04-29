@@ -67,26 +67,47 @@ export const fileListToTree = (
   return [ ...splitFilePaths(modifiedFilePaths, false), ...splitFilePaths(deletedFilePaths, true) ].reduce<TreeNode>(
     (acc, { originalFilePath, filePath, deleted }) => {
       let currentNode = acc;
+      const currentPathParts: string[] = [];
+
       for (let i = 0; i < filePath.length; i++) {
         const fileOrFolder = filePath[i];
+        currentPathParts.push(fileOrFolder);
+        const currentFullPath = currentPathParts.join('/');
+
         if (i === filePath.length - 1) {
-          const filePathJoined = filePath.join('/');
+          // Handle file (last item in path)
           (currentNode as FolderNode).children?.push({
             type: 'file',
             name: fileOrFolder,
-            filePath: filePathJoined,
-            deleted,
+            filePath: currentFullPath,
             originalFilePath,
-            actions: actions !== undefined ? actions[originalFilePath] : undefined,
-            details: details !== undefined ? details[originalFilePath] : undefined,
+            deleted,
+            actions: actions?.[originalFilePath],
+            details: details?.[originalFilePath],
           });
           break;
         } else {
-          const oldItem = (currentNode as FolderNode).children?.find(({ name }) => name === fileOrFolder);
+          // Handle folder
+          const oldItem = (currentNode as FolderNode).children?.find(
+            (item) =>
+              item.type === 'folder' &&
+              item.name === fileOrFolder &&
+              // Compare the current path depth
+              item.children.some(child =>
+                child.type === 'file'
+                  ? child.filePath.startsWith(currentFullPath + '/')
+                  : true
+              )
+          );
+
           if (oldItem != null) {
             currentNode = oldItem;
           } else {
-            const newItem: FolderNode = { name: fileOrFolder, type: 'folder', children: [] };
+            const newItem: FolderNode = {
+              name: fileOrFolder,
+              type: 'folder',
+              children: [],
+            };
             (currentNode as FolderNode).children?.push(newItem);
             currentNode = newItem;
           }
