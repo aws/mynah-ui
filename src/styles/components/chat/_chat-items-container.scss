@@ -21,7 +21,7 @@
     }
 
     > .mynah-chat-items-conversation-container {
-        gap: calc(var(--mynah-chat-wrapper-spacing) / 3 * 2);
+        gap: var(--mynah-chat-wrapper-spacing);
         position: relative;
         display: flex;
         flex-shrink: 0;

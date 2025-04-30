@@ -15,6 +15,7 @@ import { Checkbox } from '../form-items/checkbox';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
 import { Stars } from '../form-items/stars';
+import { Switch } from '../form-items/switch';
 import { TextArea } from '../form-items/text-area';
 import { TextInput } from '../form-items/text-input';
 import { Icon, MynahIcons } from '../icon';
@@ -110,11 +111,21 @@ export class ChatItemFormItemsWrapper {
             });
             break;
           case 'checkbox':
-          case 'switch':
             chatOption = new Checkbox({
-              type: chatItemOption.type,
               wrapperTestId: testIds.chatItem.chatItemForm.itemToggleWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemToggleOption,
+              title: label,
+              label: chatItemOption.label,
+              icon: chatItemOption.icon,
+              description,
+              value: value as 'true' | 'false',
+              optional: chatItemOption.mandatory !== true,
+              ...(this.getHandlers(chatItemOption))
+            });
+            break;
+          case 'switch':
+            chatOption = new Switch({
+              testId: testIds.chatItem.chatItemForm.itemSwitch,
               title: label,
               label: chatItemOption.label,
               icon: chatItemOption.icon,

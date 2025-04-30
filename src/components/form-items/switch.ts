@@ -9,7 +9,7 @@ import { cancelEvent } from '../../helper/events';
 import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons, MynahIconsType } from '../icon';
 
-export interface CheckboxProps {
+export interface SwitchProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   title?: HTMLElement | ExtendedHTMLElement | string;
@@ -19,26 +19,25 @@ export interface CheckboxProps {
   optional?: boolean;
   icon?: MynahIcons | MynahIconsType;
   onChange?: (value: 'true' | 'false') => void;
-  wrapperTestId?: string;
-  optionTestId?: string;
+  testId?: string;
 }
 
-export abstract class CheckboxAbstract {
+export abstract class SwitchAbstract {
   render: ExtendedHTMLElement;
   setValue = (value: 'true' | 'false'): void => {};
   getValue = (): 'true' | 'false' => 'false';
   setEnabled = (enabled: boolean): void => {};
 }
-export class CheckboxInternal extends CheckboxAbstract {
+export class SwitchInternal extends SwitchAbstract {
   private readonly checkboxWrapper: ExtendedHTMLElement;
   private readonly checkboxItem: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
-  constructor (props: CheckboxProps) {
+  constructor (props: SwitchProps) {
     StyleLoader.getInstance().load('components/_form-input.scss');
+    StyleLoader.getInstance().load('components/form-items/_switch.scss');
     super();
     this.checkboxItem = DomBuilder.getInstance().build({
       type: 'input',
-      classNames: [ 'as-checkbox' ],
       attributes: {
         type: 'checkbox',
       },
@@ -47,16 +46,15 @@ export class CheckboxInternal extends CheckboxAbstract {
 
     this.checkboxWrapper = DomBuilder.getInstance().build({
       type: 'div',
-      testId: props.wrapperTestId,
+      testId: props.testId,
       classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
       children: [
         {
           type: 'div',
-          classNames: [ 'mynah-form-input-radio-wrapper' ],
+          classNames: [ 'mynah-form-input-switch-wrapper' ],
           children: [ {
             type: 'label',
-            testId: props.optionTestId,
-            classNames: [ 'mynah-form-input-radio-label' ],
+            classNames: [ 'mynah-form-input-switch-label' ],
             events: {
               click: (e) => {
                 cancelEvent(e);
@@ -69,19 +67,21 @@ export class CheckboxInternal extends CheckboxAbstract {
               this.checkboxItem,
               {
                 type: 'span',
-                classNames: [ 'mynah-form-input-radio-check' ],
+                classNames: [ 'mynah-form-input-switch-check' ],
                 children: [
-                  new Icon({ icon: props.icon ?? MynahIcons.OK }).render
+                  new Icon({ icon: props.icon ?? MynahIcons.OK }).render,
                 ]
               },
-              ...(props.label != null
-                ? [ {
-                    type: 'span',
-                    children: [ props.label ]
-                  } ]
-                : [])
+              { type: 'div', classNames: [ 'mynah-form-input-switch-check-bg' ] }
             ]
-          } ]
+          },
+          ...(props.label != null
+            ? [ {
+                type: 'span',
+                children: [ props.label ]
+              } ]
+            : [])
+          ]
         } ]
     });
     this.render = DomBuilder.getInstance().build({
@@ -95,7 +95,7 @@ export class CheckboxInternal extends CheckboxAbstract {
         },
         {
           type: 'div',
-          classNames: [ 'mynah-form-input-container', 'mynah-form-input-radio-group', 'no-border' ],
+          classNames: [ 'mynah-form-input-container', 'no-border' ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
             this.checkboxWrapper,
@@ -125,12 +125,12 @@ export class CheckboxInternal extends CheckboxAbstract {
   };
 }
 
-export class Checkbox extends CheckboxAbstract {
+export class Switch extends SwitchAbstract {
   render: ExtendedHTMLElement;
 
-  constructor (props: CheckboxProps) {
+  constructor (props: SwitchProps) {
     super();
-    return new (Config.getInstance().config.componentClasses.Checkbox ?? CheckboxInternal)(props);
+    return new (Config.getInstance().config.componentClasses.Switch ?? SwitchInternal)(props);
   }
 
   setValue = (value: 'true' | 'false'): void => {};

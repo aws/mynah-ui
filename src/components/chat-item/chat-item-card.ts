@@ -31,6 +31,7 @@ import { marked } from 'marked';
 const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
   tabId: string;
+  initVisibility?: boolean;
   chatItem: ChatItem;
   inline?: boolean;
   small?: boolean;
@@ -69,7 +70,7 @@ export class ChatItemCard {
       ...props,
       chatItem: {
         ...props.chatItem,
-        fullWidth: props.chatItem.fullWidth != null ? props.chatItem.fullWidth : (props.chatItem.type === ChatItemType.DIRECTIVE),
+        fullWidth: props.chatItem.fullWidth,
         padding: props.chatItem.padding != null ? props.chatItem.padding : (props.chatItem.type !== ChatItemType.DIRECTIVE),
       }
     };
@@ -208,6 +209,7 @@ export class ChatItemCard {
       ...(this.props.inline === true ? [ 'mynah-ui-chat-item-inline-card' ] : []),
       ...(this.props.chatItem.muted === true ? [ 'muted' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),
+      ...(this.props.initVisibility === true ? [ 'reveal' ] : []),
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
       `mynah-chat-item-card-content-horizontal-align-${this.props.chatItem.contentHorizontalAlignment ?? 'default'}`,
       'mynah-chat-item-card',
@@ -307,61 +309,61 @@ export class ChatItemCard {
       this.card?.render.insertChild('afterbegin', this.cardTitle);
     }
 
-    // If no data is provided for the header
-    // skip removing and checking it
-    if (this.props.chatItem.header !== undefined) {
-      if (this.cardHeader != null) {
-        this.cardHeader.remove();
-        this.cardHeader = null;
-      }
-      if (this.props.chatItem.header != null) {
+    // Handle data updates with the update structure of the chat item itself
+    if (this.props.chatItem.header === null) {
+      this.cardHeader?.remove();
+      this.cardHeader = null;
+      this.header?.render.remove();
+      this.header = null;
+    } else if (this.props.chatItem.header != null) {
+      if (this.cardHeader != null && this.header != null) {
+        this.header.updateCardStack({
+          ...this.props.chatItem.header,
+          status: undefined,
+          type: ChatItemType.ANSWER,
+          messageId: this.props.chatItem.messageId,
+        } satisfies ChatItem);
+      } else {
+        this.cardHeader?.remove();
         this.cardHeader = this.getCardHeader();
         this.card?.render.insertChild('beforeend', this.cardHeader);
 
-        /**
-         * Generate header if available
-         */
-        if (this.header != null) {
-          this.header.render.remove();
-          this.header = null;
-        }
-        if (this.props.chatItem.header != null) {
-          this.header = new ChatItemCard({
-            tabId: this.props.tabId,
-            small: true,
-            inline: true,
-            chatItem: {
-              ...this.props.chatItem.header,
-              status: undefined,
-              type: ChatItemType.ANSWER,
-              messageId: this.props.chatItem.messageId,
-            },
-          });
-          this.cardHeader.insertChild('beforeend', this.header.render);
+        this.header = new ChatItemCard({
+          tabId: this.props.tabId,
+          small: true,
+          initVisibility: true,
+          inline: true,
+          chatItem: {
+            ...this.props.chatItem.header,
+            status: undefined,
+            type: ChatItemType.ANSWER,
+            messageId: this.props.chatItem.messageId,
+          },
+        });
+        this.cardHeader.insertChild('beforeend', this.header.render);
+      }
 
-          if (this.props.chatItem.header.status != null) {
-            this.cardHeader.insertAdjacentElement('beforeend', DomBuilder.getInstance().build({
-              type: 'span',
-              classNames: [ 'mynah-chat-item-card-header-status', `status-${this.props.chatItem.header.status.status ?? 'default'}` ],
-              children: [
-                ...(this.props.chatItem.header.status.icon != null ? [ new Icon({ icon: this.props.chatItem.header.status.icon }).render ] : []),
-                ...(this.props.chatItem.header.status.text != null ? [ { type: 'span', classNames: [ 'mynah-chat-item-card-header-status-text' ], children: [ this.props.chatItem.header.status.text ] } ] : []),
-              ],
-              ...(this.props.chatItem.header.status?.description != null
-                ? {
-                    events: {
-                      mouseover: (e) => {
-                        cancelEvent(e);
-                        const tooltipText = marked(this.props.chatItem?.header?.status?.description ?? '', { breaks: true }) as string;
-                        this.showTooltip(tooltipText, e.target ?? e.currentTarget);
-                      },
-                      mouseleave: this.hideTooltip
-                    }
-                  }
-                : {})
-            }));
-          }
-        }
+      if (this.props.chatItem.header.status != null) {
+        this.cardHeader.insertAdjacentElement(this.props.chatItem.header.status.position === 'left' ? 'afterbegin' : 'beforeend', DomBuilder.getInstance().build({
+          type: 'span',
+          classNames: [ 'mynah-chat-item-card-header-status', `status-${this.props.chatItem.header.status.status ?? 'default'}` ],
+          children: [
+            ...(this.props.chatItem.header.status.icon != null ? [ new Icon({ icon: this.props.chatItem.header.status.icon }).render ] : []),
+            ...(this.props.chatItem.header.status.text != null ? [ { type: 'span', classNames: [ 'mynah-chat-item-card-header-status-text' ], children: [ this.props.chatItem.header.status.text ] } ] : []),
+          ],
+          ...(this.props.chatItem.header.status?.description != null
+            ? {
+                events: {
+                  mouseover: (e) => {
+                    cancelEvent(e);
+                    const tooltipText = marked(this.props.chatItem?.header?.status?.description ?? '', { breaks: true }) as string;
+                    this.showTooltip(tooltipText, e.target ?? e.currentTarget);
+                  },
+                  mouseleave: this.hideTooltip
+                }
+              }
+            : {})
+        }));
       }
     }
 
