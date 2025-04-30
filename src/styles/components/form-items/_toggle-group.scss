@@ -7,6 +7,12 @@
         margin-right: 0;
     }
 
+    > .mynah-form-input-radio-label:has(input:checked) {
+        background-color: var(--mynah-color-button);
+    }
+    > .mynah-form-input-radio-label:not(:has(input:checked)) {
+        background-color: var(--mynah-color-bg);
+    }
     > .mynah-form-input-radio-label {
         display: inline-flex;
         flex-flow: row nowrap;
@@ -14,7 +20,7 @@
         align-items: center;
         position: relative;
         gap: var(--mynah-sizing-half);
-        padding: var(--mynah-sizing-1);
+        padding: calc(0.25 * var(--mynah-sizing-1));
         cursor: pointer;
         > input {
             position: absolute;
@@ -24,18 +30,33 @@
             width: 0;
             &:checked + .mynah-form-input-radio-check {
                 border-color: var(--mynah-color-button);
-                > .mynah-ui-icon {
-                    transform: scale(1);
-                    color: var(--mynah-color-button-reverse);
+                > div.mynah-form-input-radio-check-icon-wrapper {
+                    background-color: var(--mynah-color-alternate);
+                    > .mynah-ui-icon {
+                        transform: scale(1);
+                        color: var(--mynah-color-button-reverse);
+                    }
                 }
                 &::after {
                     transform: scale(1);
                     background-color: var(--mynah-color-button);
-                    opacity: 1;
+                    opacity: 0;
                 }
                 & + span {
                     color: var(--mynah-color-button-reverse);
                 }
+            }
+
+            /* Add padding to the right when switch is on (checked) */
+            &.as-switch:checked + .mynah-form-input-radio-check {
+                padding-left: var(--mynah-sizing-3);
+                padding-right: 0;
+            }
+
+            /* Add padding to the left when switch is off (unchecked) */
+            &.as-switch:not(:checked) + .mynah-form-input-radio-check {
+                padding-right: var(--mynah-sizing-3);
+                padding-left: 0;
             }
         }
         > .mynah-form-input-radio-check {
@@ -47,10 +68,21 @@
             box-sizing: border-box;
             border: none;
             font-size: var(--mynah-font-size-xsmall);
+            /* Add transition for smooth padding changes */
+            transition: padding 0.2s ease-in-out;
 
-            > .mynah-ui-icon {
-                transform: scale(1) !important;
-                color: inherit;
+            > div.mynah-form-input-radio-check-icon-wrapper {
+                display: inline-flex;
+                flex-flow: row nowrap;
+                justify-content: center;
+                align-items: center;
+                background-color: var(--mynah-color-alternate);
+                border-radius: var(--mynah-sizing-1);
+                padding: var(--mynah-sizing-1);
+                > .mynah-ui-icon {
+                    transform: scale(1) !important;
+                    color: var(--mynah-color-alternate-reverse);
+                }
             }
             &::after {
                 top: 0;

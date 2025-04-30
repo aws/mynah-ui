@@ -17,8 +17,8 @@
         cursor: pointer;
 
         box-sizing: border-box;
-        min-width: var(--mynah-sizing-6);
-        min-height: var(--mynah-sizing-6);
+        min-width: var(--mynah-sizing-8);
+        min-height: var(--mynah-sizing-5);
 
         > input {
             position: absolute;
@@ -66,12 +66,14 @@
             justify-content: center;
             align-items: center;
 
-            > .mynah-ui-icon {
-                position: relative;
-                transition: inherit;
-                transform: scale(0.75);
-                transform-origin: center center;
-                z-index: var(--mynah-z-2);
+            > div.mynah-form-input-radio-check-icon-wrapper {
+                > .mynah-ui-icon {
+                  position: relative;
+                  transition: inherit;
+                  transform: scale(0.75);
+                  transform-origin: center center;
+                  z-index: var(--mynah-z-2);
+                }
             }
             &::after {
                 $edgeSpace: calc(0 * var(--mynah-border-width));

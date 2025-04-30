@@ -72,7 +72,13 @@ export class CheckboxInternal extends CheckboxAbstract {
                 type: 'span',
                 classNames: [ 'mynah-form-input-radio-check' ],
                 children: [
-                  new Icon({ icon: props.icon ?? MynahIcons.OK }).render
+                  {
+                    type: 'div',
+                    classNames: [ 'mynah-form-input-radio-check-icon-wrapper' ],
+                    children: [
+                      new Icon({ icon: props.icon ?? MynahIcons.OK }).render
+                    ]
+                  },
                 ]
               },
               ...(props.label != null
