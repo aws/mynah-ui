@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatPrompt, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatItemButton, ChatPrompt, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -137,10 +137,17 @@ export class ChatPromptInput {
 
     this.promptOptions = new PromptOptions({
       filterOptions: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputOptions'),
+      buttons: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptInputButtons'),
       onFiltersChange: (formData) => {
         MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.PROMPT_INPUT_OPTIONS_CHANGE, {
           tabId: this.props.tabId,
           optionsValues: formData
+        });
+      },
+      onButtonClick: (buttonId) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.PROMPT_INPUT_BUTTON_CLICK, {
+          tabId: this.props.tabId,
+          buttonId
         });
       }
     });
@@ -215,6 +222,9 @@ export class ChatPromptInput {
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputOptions', (newFilterOptions: FilterOption[]) => {
       this.promptOptions.update(newFilterOptions);
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputButtons', (newButtons: ChatItemButton[]) => {
+      this.promptOptions.update(undefined, newButtons);
     });
 
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputLabel', (promptInputLabel: string) => {

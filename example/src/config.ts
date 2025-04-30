@@ -253,6 +253,12 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 icon: 'code-block',
             },
         ],
+        promptInputButtons: [{
+            id: 'test-prompt-input-button',
+            icon: 'bug',
+            description: 'HellO!',
+            status: 'clear'
+        }],
         chatItems: [
             {
                 type: ChatItemType.ANSWER,

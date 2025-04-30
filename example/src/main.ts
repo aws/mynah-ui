@@ -108,6 +108,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
         }
         `);
         },
+        onPromptInputButtonClick: (tabId, buttonId) => {
+            Log(`Prompt input button ${buttonId} clicked on tab <b>${tabId}</b>`);
+        },
         onFocusStateChanged: (focusState: boolean) => {
             Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
         },

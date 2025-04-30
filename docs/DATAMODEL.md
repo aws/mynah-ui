@@ -93,6 +93,10 @@ interface MynahUIDataModel {
   */
   promptInputOptions?: FilterOption[] | null;
   /**
+  * Prompt input button items
+  */
+  promptInputButtons?: ChatItemButton[] | null;
+  /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
@@ -808,6 +812,29 @@ mynahUI.updateStore('tab-1', {
 
 <p align="center">
   <img src="./img/data-model/tabStore/promptOptions.png" alt="promptOptions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+------
+
+### `promptInputButtons`
+
+Under the prompt input field, it is possible to add buttons too. To listen the click events on these options please check [onPromptInputButtonClick in Constructor properties](./PROPERTIES.md#onPromptInputButtonClick).
+
+To cleanup, simply set to `null` or an empty array.
+
+```typescript
+mynahUI.updateStore('tab-1', {
+  promptInputButtons: [
+    {
+      id: 'upgrade-q',
+      icon: 'bug',
+    }
+  ]
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptButtons.png" alt="promptButtons" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

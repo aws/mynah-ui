@@ -995,6 +995,25 @@ onPromptInputOptionChange: (tabId, optionsValues)=>{
 ---
 
 
+### `onPromptInputButtonClick`
+
+This event will be fired when user clicks any of the prompt input buttons. It will pass `tabId` and button's `id`. 
+
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptButtons.png" alt="promptButtons" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onPromptInputButtonClick: (tabId, buttonId)=>{
+  Log(`Prompt input button ${buttonId} clicked on tab <b>${tabId}</b>`);
+},
+...
+```
+---
+
+
 ### `onOpenDiff` [DEPRECATED: will be dropped after version 5.x.x]
 
 This event will be fired when user clicks to a file name on the file list inside a chat message body. It will pass `tabId`, `filePath` for the clicked file, `deleted` to identify if the file is deleted and `messageId` as the arguments.
