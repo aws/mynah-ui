@@ -83,6 +83,10 @@
             color: var(--mynah-color-text-weak) !important;
         }
 
+        .status-default {
+            color: var(--mynah-color-text-disabled) !important;
+        }
+
         .language-diff {
             display: none !important;
         }

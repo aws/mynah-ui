@@ -1504,6 +1504,36 @@ export const sampleHeaderTypes: ChatItem[] = [
         type: ChatItemType.ANSWER,
         fullWidth: true,
         padding: false,
+        muted: true,
+        header: {
+            icon: 'code-block',
+            status: {
+                icon: MynahIcons.CANCEL,
+                text: 'Rejected',
+            },
+            fileList: {
+                hideFileCount: true,
+                fileTreeTitle: '',
+                filePaths: ['package.json'],
+                details: {
+                    'package.json': {
+                        icon: null,
+                        label: 'Created',
+                        changes: {
+                            added: 36,
+                            deleted: 0,
+                            total: 36,
+                        },
+                    },
+                },
+            },
+        },
+    },
+
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
         messageId: generateUID(),
         header: {
             icon: 'code-block',
