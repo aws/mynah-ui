@@ -125,7 +125,7 @@ export interface MynahUIDataModel {
   /**
   * Prompt input options/form items
   */
-  promptInputOptions?: FilterOption[] | null;
+  promptInputOptions?: Array<FilterOption | ChatItemButton> | null;
   /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
