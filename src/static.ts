@@ -4,6 +4,7 @@
  */
 
 import { CheckboxAbstract, CheckboxProps } from './components/form-items/checkbox';
+import { SwitchAbstract, SwitchProps } from './components/form-items/switch';
 import { CustomIcon, MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
 import {
@@ -329,6 +330,7 @@ export interface ChatItemContent {
     iconForegroundStatus?: Status;
     status?: {
       status?: Status;
+      position?: 'left' | 'right';
       description?: string;
       icon?: MynahIcons | MynahIconsType;
       text?: string;
@@ -651,6 +653,7 @@ export interface ComponentOverrides {
   Button?: new(props: ButtonProps) => ExtractMethods<ButtonAbstract>;
   RadioGroup?: new(props: RadioGroupProps) => ExtractMethods<RadioGroupAbstract>;
   Checkbox?: new(props: CheckboxProps) => ExtractMethods<CheckboxAbstract>;
+  Switch?: new(props: SwitchProps) => ExtractMethods<SwitchAbstract>;
   Select?: new(props: SelectProps) => ExtractMethods<SelectAbstract>;
   TextInput?: new(props: TextInputProps) => ExtractMethods<TextInputAbstract>;
   TextArea?: new(props: TextAreaProps) => ExtractMethods<TextAreaAbstract>;

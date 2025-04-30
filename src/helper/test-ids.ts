@@ -76,7 +76,8 @@ export default {
       itemStars: 'chat-item-form-item-stars',
       itemTextArea: 'chat-item-form-item-textarea',
       itemToggleWrapper: 'chat-item-form-item-toggle-wrapper',
-      itemToggleOption: 'chat-item-form-item-toggle-option'
+      itemToggleOption: 'chat-item-form-item-toggle-option',
+      itemSwitch: 'chat-item-form-item-switch',
     },
     vote: {
       wrapper: 'chat-item-vote-wrapper',

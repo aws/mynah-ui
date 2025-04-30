@@ -92,18 +92,20 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 mynahUI.addChatItem(tabId, {
                     type: ChatItemType.DIRECTIVE,
                     contentHorizontalAlignment: 'center',
+                    fullWidth: true,
                     body: `Pair programmer mode - ${optionsValues['pair-programmer-mode'] === 'true' ? 'ON' : 'OFF'}`,
                 });
             }
             Log(`Prompt options change for tab <b>${tabId}</b>:<br/>
-        ${optionsValues
-                    ? `<br/>Options:<br/>${Object.keys(optionsValues)
-                        .map((optionId) => {
-                            return `<b>${optionId}</b>: ${(optionsValues as Record<string, string>)[optionId] ?? ''}`;
-                        })
-                        .join('<br/>')}`
-                    : ''
-                }
+        ${
+            optionsValues
+                ? `<br/>Options:<br/>${Object.keys(optionsValues)
+                      .map((optionId) => {
+                          return `<b>${optionId}</b>: ${(optionsValues as Record<string, string>)[optionId] ?? ''}`;
+                      })
+                      .join('<br/>')}`
+                : ''
+        }
         `);
         },
         onFocusStateChanged: (focusState: boolean) => {
@@ -988,10 +990,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>
-      options: <b>{${Object.keys(prompt.options ?? {})
-                    .map((op) => `'${op}': '${prompt.options?.[op] as string}'`)
-                    .join(',') ?? ''
-                }}</b><br/>
+      options: <b>{${
+          Object.keys(prompt.options ?? {})
+              .map((op) => `'${op}': '${prompt.options?.[op] as string}'`)
+              .join(',') ?? ''
+      }}</b><br/>
       context: <b>[${(prompt.context ?? []).map((ctx) => `${JSON.stringify(ctx)}`).join(']</b>, <b>[')}]`);
             if (tabId === 'tab-1') {
                 mynahUI.updateStore(tabId, {
@@ -1014,6 +1017,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             streamingMessageId = null;
             mynahUI.updateStore(tabId, {
                 loadingChat: false,
+            });
+            mynahUI.addChatItem(tabId, {
+                type: ChatItemType.DIRECTIVE,
+                contentHorizontalAlignment: 'center',
+                body: 'You stopped the chat response!',
             });
             Log(`Stop generating code: <b>${tabId}</b>`);
         },
@@ -1078,7 +1086,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
                     muted: true,
                     header: {
-                      icon: 'tools',
+                        icon: 'tools',
                         body: '#### Allow read-only tools outside your workspace',
                         buttons: [
                             {
@@ -1150,14 +1158,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             Log(`Body action clicked in message <b>${messageId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>
-      ${action.formItemValues
-                    ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
-                        .map((optionId) => {
-                            return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
-                        })
-                        .join('<br/>')}`
-                    : ''
-                }
+      ${
+          action.formItemValues
+              ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
+                    .map((optionId) => {
+                        return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+                    })
+                    .join('<br/>')}`
+              : ''
+      }
       `);
         },
         onQuickCommandGroupActionClick: (tabId: string, action) => {
@@ -1217,14 +1226,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 event.preventDefault();
                 event.stopImmediatePropagation();
                 Log(`Form keypress Enter submit on tab <b>${tabId}</b>:<br/>
-          ${formData
-                        ? `<br/>Options:<br/>${Object.keys(formData)
-                            .map((optionId) => {
-                                return `<b>${optionId}</b>: ${(formData as Record<string, string>)[optionId] ?? ''}`;
-                            })
-                            .join('<br/>')}`
-                        : ''
-                    }
+          ${
+              formData
+                  ? `<br/>Options:<br/>${Object.keys(formData)
+                        .map((optionId) => {
+                            return `<b>${optionId}</b>: ${(formData as Record<string, string>)[optionId] ?? ''}`;
+                        })
+                        .join('<br/>')}`
+                  : ''
+          }
           `);
                 return true;
             }
@@ -1234,14 +1244,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>
-      ${action.formItemValues
-                    ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
-                        .map((optionId) => {
-                            return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
-                        })
-                        .join('<br/>')}`
-                    : ''
-                }
+      ${
+          action.formItemValues
+              ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
+                    .map((optionId) => {
+                        return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+                    })
+                    .join('<br/>')}`
+              : ''
+      }
       `);
         },
         onChatItemEngagement: (tabId, messageId, engagement) => {
@@ -1598,13 +1609,13 @@ used as a context to generate this message.`,
                         mynahUI.updateStore(tabId, {
                             ...(optionalParts != null
                                 ? {
-                                    promptInputProgress: {
-                                        status: 'info',
-                                        ...(percentage > 50 ? { text: 'Almost done...' } : {}),
-                                        valueText: `${parseInt(percentage.toString())}%`,
-                                        value: percentage,
-                                    },
-                                }
+                                      promptInputProgress: {
+                                          status: 'info',
+                                          ...(percentage > 50 ? { text: 'Almost done...' } : {}),
+                                          valueText: `${parseInt(percentage.toString())}%`,
+                                          value: percentage,
+                                      },
+                                  }
                                 : {}),
                         });
                         return false;
@@ -1637,8 +1648,8 @@ used as a context to generate this message.`,
                     }
                     Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails)
-                            .map((key) => `${key}: <b>${cardDetails[key].toString()}</b>`)
-                            .join('<br/>')}
+              .map((key) => `${key}: <b>${cardDetails[key].toString()}</b>`)
+              .join('<br/>')}
           `);
                     mynahUI.addChatItem(tabId, { ...defaultFollowUps, messageId: generateUID() });
                     streamingMessageId = null;

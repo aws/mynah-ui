@@ -1387,6 +1387,7 @@ mynahUI.addChatItem(tabId, {
   header: {
     // icon: MynahIcons.CODE_BLOCK;
     // status: {
+    //  position: 'right',
     //  status: 'success',
     //  icon: MynahIcons.OK,
     //  text: 'Accepted',
@@ -1410,7 +1411,7 @@ mynahUI.addChatItem(tabId, {
   <img src="./img/data-model/chatItems/header.png" alt="header" style="max-width:600px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
-You can also provide an icon specifically for the header, as well as a separate status section on right. 
+You can also provide an icon specifically for the header, as well as a separate status section on right or left of the whole header defined by its `position` value with a tooltip too. 
 
 Here's another example for that:
 
@@ -1423,7 +1424,9 @@ mynahUI.addChatItem(tabId, {
   header: {
     icon: MynahIcons.CODE_BLOCK,
     status: {
+      position: 'right',
       icon: MynahIcons.PROGRESS,
+      description: 'Hello!',
       text: 'Working',
       status: 'warning'
     },
