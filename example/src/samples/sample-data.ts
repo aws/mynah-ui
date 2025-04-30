@@ -97,140 +97,152 @@ export const sampleProgressiveFileList: Partial<ChatItem>[] = [
     {
         body: null,
         shimmer: false,
-        fileList: {
-            fileTreeTitle: '',
-            filePaths: ['portfolio'],
-            details: {
-                portfolio: {
-                    visibleName: 'Reading',
-                    icon: 'folder',
-                    labelIcon: 'progress',
-                    labelIconForegroundStatus: 'info',
-                    label: 'portfolio',
+        header: {
+            fileList: {
+                fileTreeTitle: '',
+                filePaths: ['portfolio'],
+                details: {
+                    portfolio: {
+                        visibleName: 'Reading',
+                        icon: 'folder',
+                        labelIcon: 'progress',
+                        labelIconForegroundStatus: 'info',
+                        label: 'portfolio',
+                    },
                 },
             },
         },
     },
     {
-        fileList: {
-            ...progressiveFileListDefaults,
-            filePaths: ['/qdev-wbr/pytest.ini'],
-            details: {
-                '/qdev-wbr/pytest.ini': {
-                    icon: 'progress',
-                    label: 'Working on',
-                    visibleName: '/qdev-wbr/pytest.ini',
-                    iconForegroundStatus: 'info',
+        header: {
+            fileList: {
+                ...progressiveFileListDefaults,
+                filePaths: ['/qdev-wbr/pytest.ini'],
+                details: {
+                    '/qdev-wbr/pytest.ini': {
+                        icon: 'progress',
+                        label: 'Working on',
+                        visibleName: '/qdev-wbr/pytest.ini',
+                        iconForegroundStatus: 'info',
+                    },
                 },
             },
         },
     },
     {
-        fileList: {
-            ...progressiveFileListDefaults,
-            filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts'],
-            details: {
-                '/qdev-wbr/pytest.ini': {
-                    icon: 'ok-circled',
-                    visibleName: '/qdev-wbr/pytest.ini',
-                    label: 'Done',
-                    iconForegroundStatus: 'success',
-                },
-                'yy.ts': {
-                    icon: 'progress',
-                    label: 'Working on',
-                    iconForegroundStatus: 'info',
-                },
-            },
-        },
-    },
-    {
-        fileList: {
-            ...progressiveFileListDefaults,
-            filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
-            details: {
-                '/qdev-wbr/pytest.ini': {
-                    icon: 'ok-circled',
-                    visibleName: '/qdev-wbr/pytest.ini',
-                    label: 'Done',
-                    iconForegroundStatus: 'success',
-                },
-                'yy.ts': {
-                    icon: 'ok-circled',
-                    label: 'Done',
-                    iconForegroundStatus: 'success',
-                },
-                'zz.ts': {
-                    icon: 'progress',
-                    label: 'Working on',
-                    iconForegroundStatus: 'info',
-                },
-                'tt.ts': {
-                    icon: 'file',
-                    label: 'In queue',
+        header: {
+            fileList: {
+                ...progressiveFileListDefaults,
+                filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts'],
+                details: {
+                    '/qdev-wbr/pytest.ini': {
+                        icon: 'ok-circled',
+                        visibleName: '/qdev-wbr/pytest.ini',
+                        label: 'Done',
+                        iconForegroundStatus: 'success',
+                    },
+                    'yy.ts': {
+                        icon: 'progress',
+                        label: 'Working on',
+                        iconForegroundStatus: 'info',
+                    },
                 },
             },
         },
     },
     {
-        fileList: {
-            ...progressiveFileListDefaults,
-            filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
-            details: {
-                '/qdev-wbr/pytest.ini': {
-                    icon: 'ok-circled',
-                    visibleName: '/qdev-wbr/pytest.ini',
-                    label: 'Done',
-                    iconForegroundStatus: 'success',
-                },
-                'yy.ts': {
-                    icon: 'ok-circled',
-                    label: 'Done',
-                    iconForegroundStatus: 'success',
-                },
-                'zz.ts': {
-                    icon: 'ok-circled',
-                    label: 'Done',
-                    iconForegroundStatus: 'success',
-                },
-                'tt.ts': {
-                    icon: 'progress',
-                    label: 'Working on',
-                    iconForegroundStatus: 'info',
+        header: {
+            fileList: {
+                ...progressiveFileListDefaults,
+                filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
+                details: {
+                    '/qdev-wbr/pytest.ini': {
+                        icon: 'ok-circled',
+                        visibleName: '/qdev-wbr/pytest.ini',
+                        label: 'Done',
+                        iconForegroundStatus: 'success',
+                    },
+                    'yy.ts': {
+                        icon: 'ok-circled',
+                        label: 'Done',
+                        iconForegroundStatus: 'success',
+                    },
+                    'zz.ts': {
+                        icon: 'progress',
+                        label: 'Working on',
+                        iconForegroundStatus: 'info',
+                    },
+                    'tt.ts': {
+                        icon: 'file',
+                        label: 'In queue',
+                    },
                 },
             },
         },
     },
     {
-        fileList: {
-            ...progressiveFileListDefaults,
-            filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
-            rootFolderTitle: 'portfolio',
-            rootFolderLabel: undefined,
-            rootFolderStatusIconForegroundStatus: undefined,
-            rootFolderStatusIcon: undefined,
-            details: {
-                '/qdev-wbr/pytest.ini': {
-                    icon: 'ok-circled',
-                    label: 'Done',
-                    visibleName: '/qdev-wbr/pytest.ini',
-                    iconForegroundStatus: 'success',
+        header: {
+            fileList: {
+                ...progressiveFileListDefaults,
+                filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
+                details: {
+                    '/qdev-wbr/pytest.ini': {
+                        icon: 'ok-circled',
+                        visibleName: '/qdev-wbr/pytest.ini',
+                        label: 'Done',
+                        iconForegroundStatus: 'success',
+                    },
+                    'yy.ts': {
+                        icon: 'ok-circled',
+                        label: 'Done',
+                        iconForegroundStatus: 'success',
+                    },
+                    'zz.ts': {
+                        icon: 'ok-circled',
+                        label: 'Done',
+                        iconForegroundStatus: 'success',
+                    },
+                    'tt.ts': {
+                        icon: 'progress',
+                        label: 'Working on',
+                        iconForegroundStatus: 'info',
+                    },
                 },
-                'yy.ts': {
-                    icon: 'ok-circled',
-                    label: 'Done',
-                    iconForegroundStatus: 'success',
-                },
-                'zz.ts': {
-                    icon: 'ok-circled',
-                    label: 'Done',
-                    iconForegroundStatus: 'success',
-                },
-                'tt.ts': {
-                    icon: 'cancel-circle',
-                    label: 'Failed reading',
-                    status: 'error',
-                    iconForegroundStatus: 'error',
+            },
+        },
+    },
+    {
+        header: {
+            fileList: {
+                ...progressiveFileListDefaults,
+                filePaths: ['/qdev-wbr/pytest.ini', 'yy.ts', 'zz.ts', 'tt.ts'],
+                rootFolderTitle: 'portfolio',
+                rootFolderLabel: undefined,
+                rootFolderStatusIconForegroundStatus: undefined,
+                rootFolderStatusIcon: undefined,
+                details: {
+                    '/qdev-wbr/pytest.ini': {
+                        icon: 'ok-circled',
+                        label: 'Done',
+                        visibleName: '/qdev-wbr/pytest.ini',
+                        iconForegroundStatus: 'success',
+                    },
+                    'yy.ts': {
+                        icon: 'ok-circled',
+                        label: 'Done',
+                        iconForegroundStatus: 'success',
+                    },
+                    'zz.ts': {
+                        icon: 'ok-circled',
+                        label: 'Done',
+                        iconForegroundStatus: 'success',
+                    },
+                    'tt.ts': {
+                        icon: 'cancel-circle',
+                        label: 'Failed reading',
+                        status: 'error',
+                        iconForegroundStatus: 'error',
+                    },
                 },
             },
         },
@@ -250,7 +262,7 @@ export const sampleAllInOneList: Partial<ChatItem>[] = [{ body: `${SampleAllInOn
 export const sampleTableList: Partial<ChatItem>[] = [{ body: `${SampleTable as string}` }];
 
 export const exampleStreamParts: Partial<ChatItem>[] = [
-    { body: `${md0 as string}` },
+    { body: `${md0 as string}`, canBeVoted: false },
     { body: `${md1 as string}` },
     { body: `${md2 as string}` },
     { body: `${md3 as string}` },
@@ -1661,9 +1673,9 @@ mkdir -p src/ lalalaaaa
         padding: false,
         type: ChatItemType.ANSWER,
         header: {
-            icon: MynahIcons.CODE_BLOCK,
-            body: 'Terminal command',
+            body: 'Shell',
             status: {
+                position: 'left',
                 icon: MynahIcons.WARNING,
                 status: 'warning',
                 description: 'This command may cause\nsignificant data loss or damage.',
@@ -1674,6 +1686,12 @@ mkdir -p src/ lalalaaaa
                     icon: 'play',
                     text: 'Run',
                     id: 'run-bash-command',
+                },
+                {
+                    status: 'dimmed-clear',
+                    icon: 'cancel',
+                    text: 'Reject',
+                    id: 'reject-bash-command',
                 },
             ],
         },
@@ -1687,13 +1705,7 @@ mkdir -p src/ lalalaaaa
 
     {
         type: ChatItemType.DIRECTIVE,
-        body: `_Starting with a directive_
-After that some blockquote!
-
-> This is a blockquote.
-
-and normal text again.
-`,
+        body: `Starting with a directive with normal text.`,
     },
 
     {
@@ -1735,7 +1747,7 @@ and normal text again.
         header: {
             icon: 'cancel',
             iconForegroundStatus: 'error',
-            body: '##### Error on blabla something bla!',
+            body: '##### Error on something!',
         },
     },
     {
@@ -1743,19 +1755,23 @@ and normal text again.
         fullWidth: true,
         padding: false,
         // status: '',
-        body: 'To avoid errors, do not make weird things in the system!',
+        body: 'To avoid warnings, do not make weird things in the system!',
         header: {
-            icon: 'warning',
-            iconForegroundStatus: 'warning',
-            body: '##### Error on blabla something bla!',
+            status: {
+                icon: 'warning',
+                status: 'warning',
+                position: 'left',
+                description: 'There is an error!',
+            },
+            body: '##### Warning on something!',
             buttons: [
                 {
                     id: 'accept-warning',
                     text: 'Accept',
                     status: 'clear',
-                    icon: 'ok'
-                }
-            ]
+                    icon: 'ok',
+                },
+            ],
         },
     },
     {
