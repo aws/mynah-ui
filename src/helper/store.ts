@@ -32,6 +32,7 @@ const emptyDataModelObject: Required<MynahUIDataModel> = {
   promptInputDisabledState: false,
   promptInputProgress: null,
   promptInputOptions: [],
+  promptInputButtons: [],
   chatItems: [],
   selectedCodeSnippet: '',
   tabBarButtons: [],

@@ -26,6 +26,12 @@ export const promptOptions = async (page: Page): Promise<void> => {
               icon: 'flash'
             } ]
           }
+        ],
+        promptInputButtons: [
+          {
+            id: 'upgrade-q',
+            icon: 'bug',
+          }
         ]
       });
     }
@@ -42,7 +48,8 @@ export const promptOptions = async (page: Page): Promise<void> => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
       window.mynahUI.updateStore(selectedTabId, {
-        promptInputOptions: []
+        promptInputOptions: [],
+        promptInputButtons: []
       });
     }
   });

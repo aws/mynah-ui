@@ -127,6 +127,10 @@ export interface MynahUIDataModel {
   */
   promptInputOptions?: FilterOption[] | null;
   /**
+  * Prompt input button items
+  */
+  promptInputButtons?: ChatItemButton[] | null;
+  /**
   * List of chat item objects to be shown on the web suggestions search screen
   */
   chatItems?: ChatItem[];
@@ -198,6 +202,7 @@ export enum MynahEventNames {
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
   PROMPT_INPUT_OPTIONS_CHANGE = 'promptInputOptionsChange',
+  PROMPT_INPUT_BUTTON_CLICK = 'promptInputButtonClick',
   FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
   FORM_TEXTUAL_ITEM_KEYPRESS = 'formTextualItemKeyPress',
   FORM_CHANGE = 'formChange',

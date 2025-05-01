@@ -208,6 +208,10 @@
 
                     > .mynah-prompt-input-options {
                         flex: 1;
+                        display: flex;
+                        flex-flow: row nowrap;
+                        justify-content: flex-start;
+                        gap: var(--mynah-sizing-1);
                         &:empty {
                             display: none;
                         }

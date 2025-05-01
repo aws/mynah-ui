@@ -1,12 +1,17 @@
 import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
-import { FilterOption } from '../../../static';
+import { ChatItemButton, FilterOption } from '../../../static';
 import testIds from '../../../helper/test-ids';
 import { ChatItemFormItemsWrapper } from '../chat-item-form-items';
+import { Button } from '../../button';
+import { Icon } from '../../icon';
+import { OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay';
 
 export interface PromptOptionsProps {
   classNames?: string[];
   filterOptions: FilterOption[];
+  buttons: ChatItemButton[];
   onFiltersChange?: (filterFormData: Record<string, any>, isValid: boolean) => void;
+  onButtonClick?: (buttonId: string) => void;
 }
 
 export class PromptOptions {
@@ -24,6 +29,7 @@ export class PromptOptions {
   }
 
   private readonly getFilterOptionsWrapper = (): Array<ExtendedHTMLElement | string> => {
+    let result: Array<ExtendedHTMLElement | string> = [ '' ];
     if (this.props.filterOptions?.length > 0) {
       this.formItemsWrapper = new ChatItemFormItemsWrapper({
         tabId: '',
@@ -32,15 +38,40 @@ export class PromptOptions {
         },
         onFormChange: this.props.onFiltersChange
       });
-      return [
+      result = [
         this.formItemsWrapper.render
       ];
     }
-    return [ '' ];
+    if (this.props.buttons?.length > 0) {
+      this.props.buttons.forEach((button: ChatItemButton) => {
+        result.push(new Button({
+          onClick: () => {
+            this.props.onButtonClick?.(button.id);
+          },
+          border: false,
+          primary: false,
+          status: button.status,
+          label: button.text,
+          disabled: button.disabled,
+          tooltip: button.description,
+          fillState: 'always',
+          tooltipHorizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+          tooltipVerticalDirection: OverlayVerticalDirection.TO_TOP,
+          ...(button.icon != null ? { icon: new Icon({ icon: button.icon }).render } : {}),
+        }).render);
+      });
+    }
+
+    return result; // [ '' ];
   };
 
-  public readonly update = (filterOptions: FilterOption[]): void => {
-    this.props.filterOptions = filterOptions;
+  public readonly update = (filterOptions?: FilterOption[], buttons?: ChatItemButton[]): void => {
+    if (filterOptions != null) {
+      this.props.filterOptions = filterOptions;
+    }
+    if (buttons != null) {
+      this.props.buttons = buttons;
+    }
     this.render.update({
       children: this.getFilterOptionsWrapper()
     });

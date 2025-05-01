@@ -262,6 +262,10 @@ export interface MynahUIProps {
     tabId: string,
     optionsValues: Record<string, string>,
     eventId?: string) => void;
+  onPromptInputButtonClick?: (
+    tabId: string,
+    buttonId: string,
+    eventId?: string) => void;
   /**
    * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
    */
@@ -756,6 +760,10 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_OPTIONS_CHANGE, (data) => {
       this.props.onPromptInputOptionChange?.(data.tabId, data.optionsValues, this.getUserEventId());
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_BUTTON_CLICK, (data) => {
+      this.props.onPromptInputButtonClick?.(data.tabId, data.buttonId, this.getUserEventId());
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TAB_BAR_BUTTON_CLICK, (data) => {
