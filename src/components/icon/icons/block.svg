@@ -1,15 +1,13 @@
-<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<g clip-path="url(#clip0_471_4313)">
-		<path
-			d="M6 11.25C8.8995 11.25 11.25 8.8995 11.25 6C11.25 3.10051 8.8995 0.75 6 0.75C3.10051 0.75 0.75 3.10051 0.75 6C0.75 8.8995 3.10051 11.25 6 11.25Z"
-			stroke="#9BA7B6" stroke-width="2" stroke-linejoin="round" />
-		<path d="M8.25 6H3.75" stroke="#9BA7B6" stroke-width="2" stroke-miterlimit="10"
-			stroke-linecap="square" />
-	</g>
-	<defs>
-		<clipPath id="clip0_471_4313">
-			<rect width="12" height="12" fill="white" />
-		</clipPath>
-	</defs>
+<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" fill="none">
+ <defs>
+  <clipPath id="clip0_3418_6114">
+   <rect id="svg_1" fill="white" height="12" width="12"/>
+  </clipPath>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <g stroke="null" id="svg_2" clip-path="url(#clip0_3418_6114)">
+   <path stroke="null" id="svg_3" fill="#A0A0A0" d="m6.04239,0.54674c2.98835,0 5.41087,2.42253 5.41087,5.41087c0,2.98835 -2.42253,5.41087 -5.41087,5.41087c-2.98835,0 -5.41087,-2.42253 -5.41087,-5.41087c0,-2.98835 2.42253,-5.41087 5.41087,-5.41087zm0,0.94102c-2.46863,0 -4.46985,2.00122 -4.46985,4.46985c0,2.46863 2.00122,4.46985 4.46985,4.46985c2.46863,0 4.46985,-2.00122 4.46985,-4.46985c0,-2.46863 -2.00122,-4.46985 -4.46985,-4.46985zm2.58781,4.94036l-5.17562,0l0,-0.94102l5.17562,0l0,0.94102z"/>
+  </g>
+ </g>
 </svg>
-	

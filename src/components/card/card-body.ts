@@ -63,16 +63,21 @@ export class CardBody {
     StyleLoader.getInstance().load('components/card/_card.scss');
     this.codeBlockStartIndex = props.codeBlockStartIndex ?? 0;
     this.props = props;
+    const bodyChildren = this.getContentBodyChildren(this.props);
     const childList = [
-      ...this.getContentBodyChildren(this.props),
+      ...bodyChildren,
       ...(this.props.children != null
         ? this.props.processChildren === true
-          ? this.props.children.map(node => {
+          ? this.props.children.map((node, index) => {
             const processedNode = this.processNode(node as HTMLElement);
+            processedNode.setAttribute?.('render-index', (bodyChildren.length + index).toString());
             cleanupElement(processedNode);
             return processedNode;
           })
-          : this.props.children
+          : this.props.children.map((node, index): HTMLElement => {
+            (node as HTMLElement)?.setAttribute?.('render-index', (bodyChildren.length + index).toString());
+            return node as HTMLElement;
+          })
         : [])
     ];
     this.render = DomBuilder.getInstance().build({
@@ -299,8 +304,9 @@ export class CardBody {
             type: 'div',
             innerHTML: `${parseMarkdown(incomingBody, { includeLineBreaks: true })}`,
           }).childNodes
-        ).map(node => {
+        ).map((node, index) => {
           const processedNode = this.processNode(node as HTMLElement);
+          processedNode.setAttribute?.('render-index', index.toString());
           cleanupElement(processedNode);
           return processedNode;
         }))
