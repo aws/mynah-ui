@@ -1,6 +1,6 @@
 import { ChatItem } from '@aws/mynah-ui';
-const STREAM_DELAY = 250;
-const INITIAL_STREAM_DELAY = 1000;
+const STREAM_DELAY = 150;
+const INITIAL_STREAM_DELAY = 300;
 
 export class Connector {
   requestGenerativeAIAnswer = async (

@@ -27,9 +27,9 @@ export const waitForAnimationEnd = async (page: Page): Promise<any> => {
             // Give a delay to make the render complete
             setTimeout(() => {
               resolve();
-            }, 250);
+            }, 550);
           }
-        }, 350);
+        }, 550);
       });
     }),
   ]);
