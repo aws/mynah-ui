@@ -90,10 +90,35 @@ export class ChatItemCardContent {
           getTypewriterPartsCss(this.typewriterId, this.typewriterItemIndex, upcomingWords.length, timeForEach));
 
         this.props.onAnimationStateChange?.(true);
+        if (this.contentBody == null) {
+          this.contentBody = newCardContent;
+          this.render = this.contentBody.render;
+        }
+        Array.from(newCardContent.render.childNodes).forEach(node => {
+          const newElm = node as HTMLElement;
+          const currIndex = (node as HTMLElement).getAttribute('render-index');
+          const oldElm = this.render.querySelector(`[render-index="${currIndex ?? ''}"]`);
+          if (oldElm == null) {
+            this.render.insertChild('beforeend', node as HTMLElement);
+          } else if (newElm.innerHTML !== oldElm.innerHTML) {
+            if (newElm.classList.contains('mynah-syntax-highlighter')) {
+              // oldElm.classList.value = newElm.classList.value;
+              const newPreElm = newElm.querySelector('pre');
+              if (newPreElm?.childNodes != null) {
+                const oldElmPre = oldElm.querySelector('pre');
+                if (oldElmPre != null) {
+                  oldElmPre.replaceChildren(...Array.from(newPreElm.childNodes));
+                  if (!newElm.classList.contains('mynah-inline-code') && !newElm.classList.contains('no-max') && oldElmPre.scrollHeight > oldElmPre.clientHeight) {
+                    oldElm.classList.add('max-height-exceed');
+                  }
+                }
+              }
+            } else {
+              oldElm.replaceWith(newElm);
+            }
+          }
+        });
         this.contentBody = newCardContent;
-        this.render.replaceWith(this.contentBody.render);
-        this.render = this.contentBody.render;
-
         this.lastAnimationDuration = timeForEach * newWordsCount;
         this.typewriterItemIndex = upcomingWords.length;
 
