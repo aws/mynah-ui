@@ -102,7 +102,6 @@ export class ChatItemCardContent {
             this.render.insertChild('beforeend', node as HTMLElement);
           } else if (newElm.innerHTML !== oldElm.innerHTML) {
             if (newElm.classList.contains('mynah-syntax-highlighter')) {
-              // oldElm.classList.value = newElm.classList.value;
               const newPreElm = newElm.querySelector('pre');
               if (newPreElm?.childNodes != null) {
                 const oldElmPre = oldElm.querySelector('pre');
