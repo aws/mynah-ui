@@ -8,10 +8,11 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import testIds from '../../helper/test-ids';
 import { isMandatoryItemValid, isTextualFormItemValid } from '../../helper/validator';
-import { ChatItem, ChatItemFormItem, TextBasedFormItem } from '../../static';
+import { ChatItem, ChatItemFormItem, ListItemEntry, TextBasedFormItem } from '../../static';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
 import { Checkbox } from '../form-items/checkbox';
+import { FormItemList } from '../form-items/form-item-list';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
 import { Stars } from '../form-items/stars';
@@ -31,7 +32,7 @@ export interface ChatItemFormItemsWrapperProps {
 }
 export class ChatItemFormItemsWrapper {
   private readonly props: ChatItemFormItemsWrapperProps;
-  private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars | Checkbox> = {};
+  private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars | Checkbox | FormItemList> = {};
   private readonly validationItems: Record<string, boolean> = {};
   private isValid: boolean = false;
   private tooltipOverlay: Overlay | null;
@@ -47,7 +48,7 @@ export class ChatItemFormItemsWrapper {
       testId: testIds.chatItem.chatItemForm.wrapper,
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
-        let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | undefined;
+        let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | FormItemList | undefined;
         let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true ? '* ' : ''}${chatItemOption.title ?? ''}`;
         if (chatItemOption.mandatory === true) {
           label = DomBuilder.getInstance().build({
@@ -82,6 +83,16 @@ export class ChatItemFormItemsWrapper {
         };
         const value = chatItemOption.value?.toString();
         switch (chatItemOption.type) {
+          case 'list':
+            chatOption = new FormItemList({
+              wrapperTestId: testIds.chatItem.chatItemForm.itemList,
+              label,
+              description,
+              items: chatItemOption.items,
+              entries: chatItemOption.value,
+              ...(this.getHandlers(chatItemOption))
+            });
+            break;
           case 'select':
             chatOption = new Select({
               wrapperTestId: testIds.chatItem.chatItemForm.itemSelectWrapper,
@@ -288,7 +299,7 @@ export class ChatItemFormItemsWrapper {
     if (chatItemOption.mandatory === true ||
       ([ 'textarea', 'textinput', 'numericinput', 'email' ].includes(chatItemOption.type) && (chatItemOption as TextBasedFormItem).validationPatterns != null)) {
       // Set initial validation status
-      this.validationItems[chatItemOption.id] = this.isItemValid(chatItemOption.value ?? '', chatItemOption);
+      this.validationItems[chatItemOption.id] = this.isItemValid(chatItemOption.value as string ?? '', chatItemOption);
       return {
         onChange: (value: string | number) => {
           this.props.onFormChange?.(this.getAllValues(), this.isFormValid(), this.props.tabId);
@@ -337,8 +348,8 @@ export class ChatItemFormItemsWrapper {
     this.onAllFormItemsDisabled?.();
   };
 
-  getAllValues = (): Record<string, string> => {
-    const valueMap: Record<string, string> = {};
+  getAllValues = (): Record<string, string | ListItemEntry[]> => {
+    const valueMap: Record<string, string | ListItemEntry[]> = {};
     Object.keys(this.options).forEach(chatOptionId => {
       valueMap[chatOptionId] = this.options[chatOptionId].getValue();
     });

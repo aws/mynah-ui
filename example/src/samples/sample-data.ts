@@ -694,6 +694,9 @@ export const exampleFileListChatItemForUpdate: Partial<ChatItem> = {
     },
 };
 
+const itemId1 = generateUID();
+const itemId2 = generateUID();
+
 export const exampleFormChatItem: ChatItem = {
     type: ChatItemType.ANSWER,
     messageId: new Date().getTime().toString(),
@@ -789,6 +792,39 @@ _To send the form, mandatory items should be filled._`,
             type: 'numericinput',
             title: `How many hours are you using an IDE weekly?`,
             placeholder: 'IDE working hours',
+        },
+        {
+            id: generateUID(),
+            type: 'list',
+            title: 'Environment variables',
+            items: [
+                {
+                    id: itemId1,
+                    title: 'Name',
+                    type: 'textinput',
+                },
+                {
+                    id: itemId2,
+                    title: 'Value',
+                    type: 'textinput',
+                }
+            ],
+            value: [
+                {
+                    persistent: true,
+                    values: {
+                        [itemId1]: 'some_env',
+                        [itemId2]: 'AJSKJLE!@)(UD'
+                    }
+                },
+                {
+                    persistent: false,
+                    values: {
+                        [itemId1]: 'some_other_env',
+                        [itemId2]: '12kjlkj!dddaa'
+                    }
+                }
+            ]
         },
         {
             id: 'email',
