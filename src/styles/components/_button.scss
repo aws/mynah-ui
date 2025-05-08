@@ -1,6 +1,8 @@
 @import '../scss-variables';
 .mynah-button {
-    border: none;
+    &:not(.mynah-button-border) {
+        border: none;
+    }
     min-width: var(--mynah-sizing-7);
     min-height: var(--mynah-sizing-7);
     border-radius: var(--mynah-button-radius);
@@ -73,7 +75,9 @@
                 &::after {
                     color: var(--mynah-color-status-#{$status});
                 }
-                border: var(--mynah-border-width) solid var(--mynah-color-status-#{$status}) !important;
+                .mynah-button-border {
+                    border: var(--mynah-border-width) solid var(--mynah-color-status-#{$status}) !important;
+                }
             }
         }
     }

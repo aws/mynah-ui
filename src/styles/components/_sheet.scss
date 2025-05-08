@@ -69,7 +69,7 @@
     transform: translate3d(0, 0, 0);
     display: flex;
     flex-flow: column;
-    gap: var(--mynah-sizing-4);
+    gap: var(--mynah-sizing-3);
     align-items: stretch;
     transform-origin: right bottom;
     z-index: var(--mynah-z-1);
@@ -78,9 +78,10 @@
     border-top-right-radius: var(--mynah-card-radius);
     border-top-left-radius: var(--mynah-card-radius);
     border-bottom: none;
+    // TODO: Move to css-custom-properties
     box-shadow: 0px -25px 20px -25px rgba(0, 0, 0, 0.15);
     background-color: var(--mynah-color-bg);
-    padding: var(--mynah-sizing-4);
+    padding: var(--mynah-sizing-3);
     min-height: 20vh;
 
     &.mynah-sheet-fullscreen {

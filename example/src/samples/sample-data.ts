@@ -1854,9 +1854,9 @@ export const sampleMCPList: DetailedList = {
                     groupActions: false,
                     actions: [
                         {
-                            id: 'edit-mcp-git',
+                            id: 'open-mcp-xx',
                             text: 'Fix configuration',
-                            status: 'info',
+                            status: 'warning',
                             fillState: 'hover'
                         },
                         {

@@ -150,6 +150,7 @@ export class DetailedListItemWrapper {
       ...(showText === true ? { label: action.text } : {}),
       tooltip: action.description,
       primary: false,
+      border: false,
       status: action.status,
       onClick: (e) => {
         cancelEvent(e);
