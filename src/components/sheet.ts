@@ -4,7 +4,7 @@
  */
 
 import testIds from '../helper/test-ids';
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames } from '../main';
+import { ChatItemButton, DomBuilder, DomBuilderObject, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames } from '../main';
 import { cancelEvent, MynahUIGlobalEvents } from '../helper/events';
 import { Button } from './button';
 import { Icon } from './icon';
@@ -16,13 +16,19 @@ export interface SheetProps {
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   fullScreen?: boolean;
   description?: string;
+  actions?: ChatItemButton[];
   onClose: () => void;
+  onActionClick?: (action: ChatItemButton) => void;
 }
 
 export class Sheet {
+  private sheetTitle: ExtendedHTMLElement;
+  private sheetTitleActions: ExtendedHTMLElement;
+  private sheetDescription: ExtendedHTMLElement;
   sheetContainer: ExtendedHTMLElement;
   sheetWrapper: ExtendedHTMLElement;
   onClose: () => void;
+  onActionClick: ((action: ChatItemButton) => void) | undefined;
 
   constructor () {
     StyleLoader.getInstance().load('components/_sheet.scss');
@@ -43,6 +49,11 @@ export class Sheet {
 
       this.sheetWrapper.clear();
       this.onClose = data.onClose;
+      this.onActionClick = data.onActionClick;
+      this.sheetTitle = this.getTitle(data.title);
+      this.sheetDescription = this.getDescription(data.description);
+      this.sheetTitleActions = this.getTitleActions(data.actions);
+
       this.sheetWrapper.update({
         children: [
           DomBuilder.getInstance().build(
@@ -61,11 +72,8 @@ export class Sheet {
                   type: 'div',
                   classNames: [ 'mynah-sheet-header' ],
                   children: [
-                    {
-                      type: 'h4',
-                      testId: testIds.sheet.title,
-                      children: [ data.title ?? '' ],
-                    },
+                    this.sheetTitle,
+                    this.sheetTitleActions,
                     new Button({
                       testId: testIds.sheet.closeButton,
                       primary: false,
@@ -77,12 +85,7 @@ export class Sheet {
                     }).render
                   ]
                 },
-                ...(data.description !== undefined
-                  ? [ new CardBody({
-                      testId: testIds.sheet.description,
-                      body: data.description
-                    }).render ]
-                  : []),
+                this.sheetDescription,
                 {
                   type: 'div',
                   classNames: [ 'mynah-sheet-body' ],
@@ -101,7 +104,58 @@ export class Sheet {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CLOSE_SHEET, () => {
       this.close();
     });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_SHEET, (data: SheetProps) => {
+      if (data.title != null) {
+        const newTitle = this.getTitle(data.title);
+        this.sheetTitle.replaceWith(newTitle);
+        this.sheetTitle = newTitle;
+      }
+      if (data.description != null) {
+        const newDescription = this.getDescription(data.description);
+        this.sheetDescription.replaceWith(newDescription);
+        this.sheetDescription = newDescription;
+      }
+      if (data.actions != null) {
+        const newActions = this.getTitleActions(data.actions);
+        this.sheetTitleActions.replaceWith(newActions);
+        this.sheetTitleActions = newActions;
+      }
+      // this.close();
+    });
   }
+
+  private readonly getTitle = (title?: string): ExtendedHTMLElement => {
+    return DomBuilder.getInstance().build({
+      type: 'h4',
+      testId: testIds.sheet.title,
+      children: [ title ?? '' ],
+    });
+  };
+
+  private readonly getTitleActions = (actions?: ChatItemButton[]): ExtendedHTMLElement => {
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      testId: testIds.sheet.title,
+      classNames: [ 'mynah-sheet-header-actions-container' ],
+      children: actions?.map(action => new Button({
+        onClick: () => {
+          this.onActionClick?.(action);
+        },
+        ...(action.icon != null ? { icon: new Icon({ icon: action.icon }).render } : {}),
+        label: action.text,
+        status: action.status,
+        tooltip: action.description,
+        primary: action.status == null,
+        disabled: action.disabled,
+      }).render),
+    });
+  };
+
+  private readonly getDescription = (description?: string): ExtendedHTMLElement => new CardBody({
+    testId: testIds.sheet.description,
+    body: description ?? ''
+  }).render;
 
   close = (): void => {
     this.sheetWrapper.removeClass('mynah-sheet-show');

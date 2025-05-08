@@ -44,6 +44,7 @@ import {
     exampleVoteChatItem,
     sampleHeaderTypes,
     sampleProgressiveFileList,
+    sampleMCPList,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -118,9 +119,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             if (buttonId.match('mcp-')) {
                 if (buttonId === 'mcp-init') {
                     mcpButton.description = `No MCP servers.
-  
+
   Click to configure.`;
                     mcpButton.id = 'mcp-no-server';
+
                 } else if (buttonId === 'mcp-no-server') {
                     mcpButton.id = 'mcp-ok';
                     mcpButton.description = `MCP servers:
@@ -141,6 +143,75 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 mynahUI.updateTabDefaults({
                     store: {
                         tabBarButtons: [mcpButton, ...tabbarButtons],
+                    },
+                });
+
+                const mcpSheet = mynahUI.openDetailedList({
+                    detailedList: sampleMCPList,
+                    events: {
+                        onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {
+                            Log('Filter changed');
+                        },
+                        onKeyPress: (e) => {
+                            Log('Key pressed');
+                            if (e.key === KeyMap.ESCAPE) {
+                                close();
+                            }
+                        },
+                        onItemSelect: (detailedListItem) => {
+                            Log('Item selected');
+                        },
+                        onActionClick: (button) => {
+                            if (button.id === 'open-mcp-xx') {
+                                mcpSheet.update({
+                                    header: {
+                                        title: 'MCP: Edit Filesystem',
+                                        description: "Extend the capabilities of Q with [MCP servers](#). Q automatically uses any MCP server that has been added. All MCPs are defaulted to \"Ask before running\". [Learn more](#)",
+                                        actions: [{
+                                            id: 'back-to-mcp-list',
+                                            icon: 'left-open',
+                                            status: 'clear',
+                                            description: 'Back to MCP List',
+                                        }]
+                                    },
+                                    list: [],
+                                    filterOptions: [
+                                        {
+                                            type: 'select',
+                                            id: generateUID(),
+                                            title: 'Transport',
+                                            options: [{
+                                                label: 'Yes',
+                                                value: 'yes'
+                                            }, {
+                                                label: 'No',
+                                                value: 'no'
+                                            }]
+                                        },
+                                        {
+                                            type: 'textinput',
+                                            title: 'Command',
+                                            id: generateUID()
+                                        },
+                                        {
+                                            type: 'numericinput',
+                                            title: 'Timeout',
+                                            description: 'Seconds',
+                                            id: generateUID()
+                                        },
+                                    ],
+                                });
+                            }
+                            Log('Action clicked');
+                        },
+                        onClose: () => {
+                            Log('Sheet closed');
+                        },
+                        onTitleActionClick: (button)=>{
+                            if(button.id === 'back-to-mcp-list'){
+                                mcpSheet.update(sampleMCPList);
+                            }
+                        }
                     },
                 });
             } else if (buttonId === 'clear') {

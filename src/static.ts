@@ -197,6 +197,7 @@ export enum MynahEventNames {
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   OPEN_SHEET = 'openSheet',
   CLOSE_SHEET = 'closeSheet',
+  UPDATE_SHEET = 'updateSheet',
   FILE_CLICK = 'fileClick',
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
@@ -260,6 +261,7 @@ export interface DetailedList {
     title?: string;
     icon?: MynahIcons | MynahIconsType;
     description?: string;
+    actions?: Action[];
   };
   selectable?: boolean;
   textDirection?: 'row' | 'column';
@@ -281,6 +283,7 @@ export interface DetailedListItem {
   disabled?: boolean;
   followupText?: string;
   actions?: ChatItemButton[];
+  groupActions?: boolean;
   children?: DetailedListItemGroup[];
   keywords?: string[];
 }
@@ -491,7 +494,7 @@ export interface Action {
   id: string;
   disabled?: boolean;
   description?: string;
-  status?: Status;
+  status?: 'main' | 'primary' | 'clear' | 'dimmed-clear' | Status;
   icon?: MynahIcons | MynahIconsType;
 }
 export interface TabBarAction extends Action {}

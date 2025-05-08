@@ -2,6 +2,7 @@ import {
     ChatItem,
     ChatItemContent,
     ChatItemType,
+    DetailedList,
     generateUID,
     MynahIcons,
     MynahUIDataModel,
@@ -1805,3 +1806,124 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
         codeBlockActions: { copy: null, 'insert-to-cursor': null },
     },
 ];
+
+export const sampleMCPList: DetailedList = {
+    selectable: false,
+    header: {
+        title: 'MCP Servers',
+        description:
+            'Q automatically uses any MCP servers that have been added, so you don\'t have to add them as context. All MCPs are defaulted to "Ask before running".',
+        actions: [
+            {
+                id: 'add-new-mcp',
+                icon: 'plus',
+                status: 'clear',
+                description: 'Add new MCP',
+            },
+        ],
+    },
+    textDirection: 'row',
+    list: [
+        {
+            groupName: 'Active',
+            children: [
+                {
+                    title: 'Built-in',
+                    icon: 'ok-circled',
+                    actions: [
+                        {
+                            id: 'open-mcp-xx',
+                            icon: 'right-open',
+                        },
+                    ],
+                },
+                {
+                    title: 'Filesystem',
+                    icon: 'ok-circled',
+                    actions: [
+                        {
+                            id: 'open-mcp-xx',
+                            icon: 'right-open',
+                        },
+                    ],
+                },
+                {
+                    title: 'Git',
+                    icon: 'cancel-circle',
+                    description: 'Configuration is broken',
+                    groupActions: false,
+                    actions: [
+                        {
+                            id: 'edit-mcp-git',
+                            text: 'Fix configuration',
+                            status: 'info',
+                            fillState: 'hover'
+                        },
+                        {
+                            id: 'disable-mcp-git',
+                            icon: MynahIcons.BLOCK,
+                            description: 'Disable'
+                        },
+                        {
+                            id: 'delete-mcp-git',
+                            icon: MynahIcons.TRASH,
+                            description: 'Delete'
+                        },
+                        {
+                            id: 'open-mcp-xx',
+                            icon: 'right-open',
+                        },
+                    ],
+                },
+                {
+                    title: 'Github',
+                    icon: 'progress',
+                    groupActions: false,
+                    actions: [
+                        {
+                            id: 'disable-mcp-github',
+                            icon: MynahIcons.BLOCK,
+                            description: 'Disable'
+                        },
+                        {
+                            id: 'delete-mcp-github',
+                            icon: MynahIcons.TRASH,
+                            description: 'Delete'
+                        },
+                        {
+                            id: 'open-mcp-xx',
+                            icon: 'right-open',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            groupName: 'Disabled',
+            children: [
+                {
+                    title: 'Redis',
+                    icon: 'block',
+                    groupActions: false,
+                    actions: [
+                        {
+                            id: 'enable-mcp-redis',
+                            icon: MynahIcons.OK_CIRCLED,
+                            description: 'Enable'
+                        },
+                        {
+                            id: 'delete-mcp-redis',
+                            icon: MynahIcons.TRASH,
+                            description: 'Delete'
+                        },
+                        {
+                            id: 'open-mcp-xx',
+                            icon: 'right-open',
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+    filterOptions: [],
+};

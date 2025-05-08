@@ -85,7 +85,7 @@ export class DetailedListItemWrapper {
             ]
           : []),
         ...(this.props.listItem.actions != null
-          ? this.props.listItem.actions.length > 1
+          ? this.props.listItem.groupActions !== false && this.props.listItem.actions.length > 1
             ? [ {
                 type: 'div',
                 classNames: [ 'mynah-detailed-list-item-actions' ],
@@ -102,7 +102,7 @@ export class DetailedListItemWrapper {
             : [ {
                 type: 'div',
                 classNames: [ 'mynah-detailed-list-item-actions' ],
-                children: this.props.listItem.actions.map((action) => this.getActionButton(action, false))
+                children: this.props.listItem.actions.map((action) => this.getActionButton(action, (this.props.listItem.groupActions === false)))
               } ]
           : []),
       ]
@@ -147,11 +147,10 @@ export class DetailedListItemWrapper {
     return new Button({
       testId: testIds.detailedList.action,
       icon: action.icon ? new Icon({ icon: action.icon }).render : undefined,
-      ...(action.text !== undefined && showText === true ? { label: action.text } : {}),
-      attributes: {
-        title: action.description ?? ''
-      },
+      ...(showText === true ? { label: action.text } : {}),
+      tooltip: action.description,
       primary: false,
+      status: action.status,
       onClick: (e) => {
         cancelEvent(e);
         this.props.onActionClick?.(action);
