@@ -9,6 +9,7 @@ export interface DetailedListSheetProps {
     onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
     onKeyPress?: (e: KeyboardEvent) => void;
     onItemSelect?: (detailedListItem: DetailedListItem) => void;
+    onTitleActionClick?: (action: ChatItemButton) => void;
     onActionClick?: (action: ChatItemButton) => void;
     onClose?: () => void;
   };
@@ -39,10 +40,14 @@ export class DetailedListSheet {
       fullScreen: true,
       title: this.props.detailedList.header?.title,
       description: this.props.detailedList.header?.description,
+      actions: this.props.detailedList.header?.actions,
       children: [ this.detailedListWrapper.render ],
       onClose: () => {
         this.props.events?.onClose?.();
         window.removeEventListener('keydown', this.keyPressHandler);
+      },
+      onActionClick: (action: ChatItemButton) => {
+        this.props.events?.onTitleActionClick?.(action);
       }
     });
 
@@ -50,7 +55,15 @@ export class DetailedListSheet {
   };
 
   update = (detailedList: DetailedList): void => {
-    this.detailedListWrapper.update(detailedList);
+    this.props.detailedList = { ...this.props.detailedList, ...detailedList };
+    if (detailedList.header != null) {
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.UPDATE_SHEET, {
+        title: this.props.detailedList.header?.title,
+        description: this.props.detailedList.header?.description,
+        actions: this.props.detailedList.header?.actions
+      });
+    }
+    this.detailedListWrapper.update({ ...this.props.detailedList, header: undefined });
   };
 
   close = (): void => {
