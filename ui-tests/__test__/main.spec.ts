@@ -291,6 +291,7 @@ describe('Open MynahUI', () => {
       await renderFeedbackForm(page);
     });
     it('should cancel feedback form', async () => {
+      await justWait(200);
       await cancelFeedbackForm(page);
     });
     it('should submit feedback form', async () => {
