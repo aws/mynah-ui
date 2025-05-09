@@ -27,7 +27,7 @@ export interface FormItemListProps {
 export abstract class FormItemListAbstract {
   render: ExtendedHTMLElement;
   setValue = (value: ListItemEntry[]): void => {};
-  getValue = (): ListItemEntry[] => [];
+  getValue = (): string => '';
   setEnabled = (enabled: boolean): void => {};
 }
 
@@ -147,7 +147,7 @@ export class FormItemListInternal extends FormItemListAbstract {
 
     // Store the row reference
     this.rows.set(rowId, rowContainer);
-    this.props.onChange?.(this.getValue());
+    // this.props.onChange?.(this.getValue());
   }
 
   private removeRow (rowId: string): void {
@@ -155,7 +155,7 @@ export class FormItemListInternal extends FormItemListAbstract {
     if (row != null) {
       row.remove();
       this.rows.delete(rowId);
-      this.props.onChange?.(this.getValue());
+      // this.props.onChange?.(this.getValue());
     }
   }
 
@@ -172,7 +172,7 @@ export class FormItemListInternal extends FormItemListAbstract {
     }
   };
 
-  getValue = (): ListItemEntry[] => {
+  getValue = (): string => {
     // const result: ListItemEntry[] = [];
 
     // this.rows.forEach((row, rowId) => {
@@ -188,7 +188,7 @@ export class FormItemListInternal extends FormItemListAbstract {
     //   });
     // });
 
-    return [];
+    return '';
   };
 
   setEnabled = (enabled: boolean): void => {
@@ -221,6 +221,6 @@ export class FormItemList extends FormItemListAbstract {
   }
 
   setValue = (value: ListItemEntry[]): void => {};
-  getValue = (): ListItemEntry[] => [];
+  getValue = (): string => '';
   setEnabled = (enabled: boolean): void => {};
 }

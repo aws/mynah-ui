@@ -8,7 +8,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import testIds from '../../helper/test-ids';
 import { isMandatoryItemValid, isTextualFormItemValid } from '../../helper/validator';
-import { ChatItem, ChatItemFormItem, ListItemEntry, TextBasedFormItem } from '../../static';
+import { ChatItem, ChatItemFormItem, TextBasedFormItem } from '../../static';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
 import { Checkbox } from '../form-items/checkbox';
@@ -348,8 +348,8 @@ export class ChatItemFormItemsWrapper {
     this.onAllFormItemsDisabled?.();
   };
 
-  getAllValues = (): Record<string, string | ListItemEntry[]> => {
-    const valueMap: Record<string, string | ListItemEntry[]> = {};
+  getAllValues = (): Record<string, string> => {
+    const valueMap: Record<string, string> = {};
     Object.keys(this.options).forEach(chatOptionId => {
       valueMap[chatOptionId] = this.options[chatOptionId].getValue();
     });
