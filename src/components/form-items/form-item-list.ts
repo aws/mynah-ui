@@ -21,13 +21,13 @@ export interface FormItemListProps {
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
   wrapperTestId?: string;
-  onChange?: (values: string) => void;
+  onChange?: (values: string[]) => void;
 }
 
 export abstract class FormItemListAbstract {
   render: ExtendedHTMLElement;
   setValue = (value: ListItemEntry[]): void => { };
-  getValue = (): string => '';
+  getValue = (): string[] => [];
   setEnabled = (enabled: boolean): void => { };
 }
 
@@ -176,9 +176,8 @@ export class FormItemListInternal extends FormItemListAbstract {
     }
   };
 
-  getValue = (): string => {
-    // TODO: Implement this properly
-    return Object.values(this.formData).join(',');
+  getValue = (): string[] => {
+    return Object.values(this.formData);
   };
 
   setEnabled = (enabled: boolean): void => {
@@ -195,6 +194,6 @@ export class FormItemList extends FormItemListAbstract {
   }
 
   setValue = (value: ListItemEntry[]): void => { };
-  getValue = (): string => '';
+  getValue = (): string[] => [];
   setEnabled = (enabled: boolean): void => { };
 }

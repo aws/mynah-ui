@@ -348,8 +348,8 @@ export class ChatItemFormItemsWrapper {
     this.onAllFormItemsDisabled?.();
   };
 
-  getAllValues = (): Record<string, string> => {
-    const valueMap: Record<string, string> = {};
+  getAllValues = (): Record<string, string | string[]> => {
+    const valueMap: Record<string, string | string[]> = {};
     Object.keys(this.options).forEach(chatOptionId => {
       valueMap[chatOptionId] = this.options[chatOptionId].getValue();
     });

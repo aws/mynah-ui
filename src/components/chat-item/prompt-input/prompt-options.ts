@@ -77,7 +77,7 @@ export class PromptOptions {
     });
   };
 
-  public readonly getOptionValues = (): Record<string, string> => {
+  public readonly getOptionValues = (): Record<string, string | string[]> => {
     return this.formItemsWrapper?.getAllValues() ?? {};
   };
 }

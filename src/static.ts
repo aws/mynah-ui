@@ -489,7 +489,7 @@ export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
-  options?: Record<string, string>;
+  options?: Record<string, string | string[]>;
   context?: string[] | QuickActionCommand[];
 }
 
