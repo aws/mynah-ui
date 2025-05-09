@@ -1,0 +1,57 @@
+name: E2E Tests
+on:
+  pull_request:
+    branches: [main, feature/*, fix/*]
+    types: [opened, reopened, ready_for_review, synchronize]
+jobs:
+  chromium-e2e:
+    name: Chromium E2E Tests
+    if: github.event.pull_request.draft == false
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            fetch-depth: 20
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@aws'
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Run Chromium E2E tests
+        run: cd ./ui-tests && npm install && npm run prepare && BROWSER=chromium jest --detectOpenHandles --config=./jest.config.js
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: chromium-test-snapshots
+          path: ./ui-tests/__test__/__image_snapshots__/chromium
+          retention-days: 30
+
+  webkit-e2e:
+    name: Webkit E2E Tests
+    if: github.event.pull_request.draft == false
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            fetch-depth: 20
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@aws'
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Run Webkit E2E tests
+        run: cd ./ui-tests && npm install && npm run prepare && BROWSER=webkit jest --detectOpenHandles --config=./jest.config.js
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: webkit-test-snapshots
+          path: ./ui-tests/__test__/__image_snapshots__/webkit
+          retention-days: 30
