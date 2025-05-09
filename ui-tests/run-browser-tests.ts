@@ -7,7 +7,7 @@ import { execSync } from 'child_process';
 type BrowserType = 'all' | 'chromium' | 'webkit';
 
 // Get the browser from environment variable or use default
-const browser = ((process.env.BROWSER != null) || 'all') as BrowserType;
+const browser = (process.env.BROWSER ?? 'all') as BrowserType;
 
 console.log(`Running tests for browser: ${browser}`);
 
