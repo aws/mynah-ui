@@ -280,6 +280,7 @@ export interface DetailedListItem {
   name?: string;
   id?: string;
   icon?: MynahIcons | MynahIconsType;
+  iconForegroundStatus?: Status;
   description?: string;
   disabled?: boolean;
   followupText?: string;
