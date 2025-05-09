@@ -23,6 +23,7 @@ export enum Commands {
 
     NOTIFY = '/show-notification',
     CLEAR = '/clear',
+    CLEAR_CONTEXT_ITEMS = '/clear-context-items',
     CLEAR_LOGS = '/clear-logs',
     SHOW_CUSTOM_FORM = '/show-custom-form',
     VOTE = '/vote'

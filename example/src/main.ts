@@ -1302,6 +1302,11 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                         chatItems: [],
                     });
                     break;
+                case Commands.CLEAR_CONTEXT_ITEMS:
+                    mynahUI.updateStore(tabId, {
+                        contextCommands: [],
+                    });
+                    break;
                 case Commands.CLEAR_LOGS:
                     LogClear();
                     break;

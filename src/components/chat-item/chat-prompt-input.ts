@@ -165,6 +165,7 @@ export class ChatPromptInput {
       icon: new Icon({ icon: MynahIcons.AT }).render,
       status: 'clear',
       disabled: ((MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? []).length === 0,
+      classNames: ((MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? []).length === 0 ? [ 'hidden' ] : [],
       primary: false,
       onClick: () => {
         this.searchTerm = '';
@@ -180,8 +181,10 @@ export class ChatPromptInput {
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'contextCommands', (contextCommands) => {
       if (contextCommands?.length > 0) {
         this.contextSelectorButton.setEnabled(true);
+        this.contextSelectorButton.render.removeClass('hidden');
       } else {
         this.contextSelectorButton.setEnabled(false);
+        this.contextSelectorButton.render.addClass('hidden');
       }
     });
     this.chatPrompt = DomBuilder.getInstance().build({
