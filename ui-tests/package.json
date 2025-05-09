@@ -7,6 +7,8 @@
         "clean": "rm -rf build dist node_modules",
         "prepare": "webpack --config webpack.config.js --mode development",
         "e2e": "npm run prepare && jest --detectOpenHandles --config=./jest.config.js",
+        "e2e:chromium": "npm run prepare && jest --detectOpenHandles --config=./jest.chromium.config.js",
+        "e2e:webkit": "npm run prepare && jest --detectOpenHandles --config=./jest.webkit.config.js",
         "postinstall": "npx playwright install webkit chromium --with-deps"
     },
     "dependencies": {
