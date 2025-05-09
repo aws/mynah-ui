@@ -23,6 +23,7 @@ export class DetailedListWrapper {
   render: ExtendedHTMLElement;
   private readonly detailedListItemGroupsContainer: ExtendedHTMLElement;
   private readonly filtersContainer: ExtendedHTMLElement;
+  private readonly filterActionsContainer: ExtendedHTMLElement;
   private readonly headerContainer: ExtendedHTMLElement;
   private readonly props: DetailedListWrapperProps;
   private detailedListItemsBlockData: Array<{
@@ -43,6 +44,11 @@ export class DetailedListWrapper {
       type: 'div',
       classNames: [ 'mynah-detailed-list-filters-wrapper' ],
       children: this.getFilters()
+    });
+    this.filterActionsContainer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-detailed-list-filter-actions-wrapper' ],
+      children: this.getFilterActions()
     });
     this.detailedListItemGroupsContainer = DomBuilder.getInstance().build({
       type: 'div',
@@ -78,6 +84,7 @@ export class DetailedListWrapper {
         this.headerContainer,
         this.filtersContainer,
         this.detailedListItemGroupsContainer,
+        this.filterActionsContainer
       ]
     });
   }
@@ -104,6 +111,13 @@ export class DetailedListWrapper {
       }).render ];
     }
     return [ '' ];
+  };
+
+  private readonly getFilterActions = (): ExtendedHTMLElement[] => {
+    return [ new ChatItemButtonsWrapper({
+      buttons: this.props.detailedList.filterActions ?? [],
+      // onActionClick: this.props.onActionClick ?? ((action) => {}),
+    }).render ];
   };
 
   private readonly getDetailedListItemGroups = (): Array<ExtendedHTMLElement | string> => {
@@ -225,6 +239,13 @@ export class DetailedListWrapper {
       this.props.detailedList.filterOptions = detailedList.filterOptions;
       this.filtersContainer.update({
         children: this.getFilters()
+      });
+    }
+
+    if (detailedList.filterActions != null) {
+      this.props.detailedList.filterActions = detailedList.filterActions;
+      this.filterActionsContainer.update({
+        children: this.getFilterActions()
       });
     }
 

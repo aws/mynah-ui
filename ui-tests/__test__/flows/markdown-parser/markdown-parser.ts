@@ -86,7 +86,7 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
   // Reference hover
   const markPosition = await answerCard.evaluate(node => node.querySelectorAll('pre')[2]?.querySelector(':scope > code > mark')?.getBoundingClientRect());
   if (markPosition != null) {
-    await page.mouse.move(markPosition?.top + 2, markPosition?.left + 2);
+    await page.mouse.move(Number(markPosition.top) + 2, Number(markPosition.left) + 2);
     await waitForAnimationEnd(page);
   }
   expect(page.getByText('Hello Reference Tracker')).toBeDefined();

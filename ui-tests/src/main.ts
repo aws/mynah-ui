@@ -80,7 +80,7 @@ export const createMynahUI = (): MynahUI => {
     onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
       if (tabId === 'tab-1') {
         mynahUI.updateStore(tabId, {
-          tabCloseConfirmationMessage: `Working on "${prompt.prompt != null ? (prompt.prompt) : ''}"`,
+          tabCloseConfirmationMessage: `Working on "${prompt.prompt != null ? String(prompt.prompt) : ''}"`,
         });
       }
       onChatPrompt(tabId, prompt);
@@ -110,14 +110,14 @@ export const createMynahUI = (): MynahUI => {
       mynahUI.addChatItem(tabId, {
         type: ChatItemType.ANSWER,
         messageId: generateUID(),
-        body: `file ${filePath} clicked`,
+        body: `file ${String(filePath)} clicked`,
       });
     },
     onFileActionClick: (tabId, messageId, filePath, actionName) => {
       mynahUI.addChatItem(tabId, {
         type: ChatItemType.ANSWER,
         messageId: generateUID(),
-        body: `file ${filePath} action button ${actionName} clicked`,
+        body: `file ${String(filePath)} action button ${String(actionName)} clicked`,
       });
     },
     onCustomFormAction: (tabId, action) => {
@@ -156,7 +156,7 @@ export const createMynahUI = (): MynahUI => {
           mynahUI.addChatItem(tabId, {
             type: ChatItemType.PROMPT,
             messageId: generateUID(),
-            body: `**${(prompt.command != null ? prompt.command : '').replace('/', '')}**\n${(prompt.escapedPrompt != null ? prompt.escapedPrompt : '')}`,
+            body: `**${(prompt.command != null ? String(prompt.command) : '').replace('/', '')}**\n${(prompt.escapedPrompt != null ? String(prompt.escapedPrompt) : '')}`,
           });
           getGenerativeAIAnswer(tabId);
           break;
@@ -165,7 +165,7 @@ export const createMynahUI = (): MynahUI => {
       mynahUI.addChatItem(tabId, {
         type: ChatItemType.PROMPT,
         messageId: generateUID(),
-        body: `${prompt.escapedPrompt as string}`,
+        body: `${String(prompt.escapedPrompt)}`,
       });
       getGenerativeAIAnswer(tabId);
     }

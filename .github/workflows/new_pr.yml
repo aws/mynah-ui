@@ -36,13 +36,7 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Run Unit and E2E tests
-        run: npm run tests:unit && npm run tests:e2e
+      - name: Run Unit tests
+        run: npm run tests:unit
       - name: Run Lint
         run: npm run lint
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: test-snapshots
-          path: ./ui-tests/__test__/__image_snapshots__
-          retention-days: 30

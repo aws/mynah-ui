@@ -1,0 +1,40 @@
+.mynah-form-item-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    > .mynah-form-item-list-rows-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        > .mynah-form-item-list-row {
+            display: flex;
+            align-items: center;
+
+            &:has(.mynah-chat-item-form-items-container .mynah-form-input-label:not(:empty)) {
+                > .mynah-form-item-list-row-remove-button {
+                    margin-top: var(--mynah-sizing-5);
+                }
+            }
+
+            > .mynah-form-item-list-row-items-container {
+                width: 100%;
+                display: flex;
+                gap: var(--mynah-sizing-2);
+
+                > .mynah-chat-item-form-items-container {
+                    width: 100%;
+
+                    .mynah-form-input-label {
+                        color: var(--mynah-color-text-weak);
+                    }
+                }
+            }
+        }
+    }
+
+    > .mynah-form-item-list-add-button {
+        width: fit-content;
+    }
+}

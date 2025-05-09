@@ -47,7 +47,8 @@ export class DetailedListItemWrapper {
                 classNames: [ 'mynah-detailed-list-icon' ],
                 children: [
                   new Icon({
-                    icon: this.props.listItem.icon
+                    icon: this.props.listItem.icon,
+                    status: this.props.listItem.iconForegroundStatus
                   }).render
                 ]
               }

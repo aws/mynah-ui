@@ -4,6 +4,7 @@
  */
 
 import { CheckboxAbstract, CheckboxProps } from './components/form-items/checkbox';
+import { FormItemListAbstract, FormItemListProps } from './components/form-items/form-item-list';
 import { SwitchAbstract, SwitchProps } from './components/form-items/switch';
 import { CustomIcon, MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
@@ -256,6 +257,7 @@ export enum ChatItemType {
 
 export interface DetailedList {
   filterOptions?: FilterOption[] | null;
+  filterActions?: ChatItemButton[];
   list?: DetailedListItemGroup[];
   header?: {
     title?: string;
@@ -279,6 +281,7 @@ export interface DetailedListItem {
   name?: string;
   id?: string;
   icon?: MynahIcons | MynahIconsType;
+  iconForegroundStatus?: Status;
   description?: string;
   disabled?: boolean;
   followupText?: string;
@@ -462,8 +465,25 @@ type CheckboxFormItem = BaseFormItem & {
   alternateTooltip?: string;
 };
 
-export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;
+export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem | ListFormItem;
 export type FilterOption = ChatItemFormItem;
+
+export interface ListFormItem {
+  type: 'list';
+  id: string;
+  mandatory?: boolean;
+  title?: string;
+  description?: string;
+  tooltip?: string;
+  icon?: MynahIcons | MynahIconsType;
+  items: ChatItemFormItem[];
+  value: ListItemEntry[];
+};
+
+export interface ListItemEntry {
+  persistent: boolean;
+  values: {[key: string]: string};
+}
 
 export interface ChatPrompt {
   prompt?: string;
@@ -665,6 +685,7 @@ export interface ComponentOverrides {
   Select?: new(props: SelectProps) => ExtractMethods<SelectAbstract>;
   TextInput?: new(props: TextInputProps) => ExtractMethods<TextInputAbstract>;
   TextArea?: new(props: TextAreaProps) => ExtractMethods<TextAreaAbstract>;
+  FormItemList?: new(props: FormItemListProps) => ExtractMethods<FormItemListAbstract>;
 };
 export interface ConfigOptions {
   feedbackOptions: Array<{
