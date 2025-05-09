@@ -41,6 +41,9 @@
             gap: var(--mynah-sizing-3);
         }
     }
+    > .mynah-detailed-list-filter-actions-wrapper {
+        align-self: flex-end;
+    }
     > .mynah-detailed-list-item-groups-wrapper {
         flex: 1;
         display: flex;

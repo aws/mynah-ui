@@ -257,6 +257,7 @@ export enum ChatItemType {
 
 export interface DetailedList {
   filterOptions?: FilterOption[] | null;
+  filterActions?: ChatItemButton[];
   list?: DetailedListItemGroup[];
   header?: {
     title?: string;

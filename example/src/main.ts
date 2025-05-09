@@ -179,6 +179,17 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         }]
                                     },
                                     list: [],
+                                    filterActions: [
+                                        {
+                                            id: 'cancel-mcp',
+                                            text: 'Cancel',
+                                        },
+                                        {
+                                            id: 'save-mcp',
+                                            text: 'Save',
+                                            status: 'primary'
+                                        }
+                                    ],
                                     filterOptions: [
                                         {
                                             type: 'select',
