@@ -21,14 +21,14 @@ export interface FormItemListProps {
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
   wrapperTestId?: string;
-  onChange?: (value: ListItemEntry[]) => void;
+  onChange?: (values: string) => void;
 }
 
 export abstract class FormItemListAbstract {
   render: ExtendedHTMLElement;
-  setValue = (value: ListItemEntry[]): void => {};
+  setValue = (value: ListItemEntry[]): void => { };
   getValue = (): string => '';
-  setEnabled = (enabled: boolean): void => {};
+  setEnabled = (enabled: boolean): void => { };
 }
 
 export class FormItemListInternal extends FormItemListAbstract {
@@ -36,6 +36,7 @@ export class FormItemListInternal extends FormItemListAbstract {
   private readonly addButton: ExtendedHTMLElement;
   private readonly props: FormItemListProps;
   private readonly rows: Map<string, ExtendedHTMLElement> = new Map();
+  private formData: Record<string, string> = {};
   render: ExtendedHTMLElement;
 
   constructor (props: FormItemListProps) {
@@ -127,7 +128,10 @@ export class FormItemListInternal extends FormItemListAbstract {
         chatItem: {
           formItems: [ item ]
         },
-        onFormChange: () => {}
+        onFormChange: (formData: Record<string, string>) => {
+          this.formData = formData;
+          this.props.onChange?.(this.getValue());
+        },
       }).render);
     });
 
@@ -147,7 +151,7 @@ export class FormItemListInternal extends FormItemListAbstract {
 
     // Store the row reference
     this.rows.set(rowId, rowContainer);
-    // this.props.onChange?.(this.getValue());
+    this.props.onChange?.(this.getValue());
   }
 
   private removeRow (rowId: string): void {
@@ -155,7 +159,7 @@ export class FormItemListInternal extends FormItemListAbstract {
     if (row != null) {
       row.remove();
       this.rows.delete(rowId);
-      // this.props.onChange?.(this.getValue());
+      this.props.onChange?.(this.getValue());
     }
   }
 
@@ -173,42 +177,12 @@ export class FormItemListInternal extends FormItemListAbstract {
   };
 
   getValue = (): string => {
-    // const result: ListItemEntry[] = [];
-
-    // this.rows.forEach((row, rowId) => {
-    //   const values: { [key: string]: string } = {};
-
-    //   row.forEach((formItem, itemId) => {
-    //     values[itemId] = formItem.getValue();
-    //   });
-
-    //   result.push({
-    //     persistent: false,
-    //     values
-    //   });
-    // });
-
-    return '';
+    // TODO: Implement this properly
+    return Object.values(this.formData).join(',');
   };
 
   setEnabled = (enabled: boolean): void => {
-    // if (enabled) {
-    //   this.addButton.removeAttribute('disabled');
-    //   this.rows.forEach(row => {
-    //     row.forEach(formItem => {
-    //       formItem.setEnabled(true);
-    //     });
-    //     row.querySelector('.mynah-form-item-list-remove-button')?.removeAttribute('disabled');
-    //   });
-    // } else {
-    //   this.addButton.setAttribute('disabled', 'disabled');
-    //   this.rows.forEach(row => {
-    //     row.forEach(formItem => {
-    //       formItem.setEnabled(false);
-    //     });
-    //     row.querySelector('.mynah-form-item-list-remove-button')?.setAttribute('disabled', 'disabled');
-    //   });
-    // }
+    // TODO: Implement
   };
 }
 
@@ -220,7 +194,7 @@ export class FormItemList extends FormItemListAbstract {
     return new (Config.getInstance().config.componentClasses.FormItemList ?? FormItemListInternal)(props);
   }
 
-  setValue = (value: ListItemEntry[]): void => {};
+  setValue = (value: ListItemEntry[]): void => { };
   getValue = (): string => '';
-  setEnabled = (enabled: boolean): void => {};
+  setEnabled = (enabled: boolean): void => { };
 }
