@@ -229,6 +229,11 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
                 description: 'Clears all the messages in this tab.',
             },
             {
+                command: Commands.CLEAR_CONTEXT_ITEMS,
+                icon: MynahIcons.TRASH,
+                description: 'Clears all context items for this tab.',
+            },
+            {
                 command: Commands.CLEAR_LOGS,
                 icon: MynahIcons.CANCEL,
                 description: 'Clears logs on the bottom left.',

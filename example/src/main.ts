@@ -1361,6 +1361,11 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         chatItems: [],
                     });
                     break;
+                case Commands.CLEAR_CONTEXT_ITEMS:
+                    mynahUI.updateStore(tabId, {
+                        contextCommands: [],
+                    });
+                    break;
                 case Commands.CLEAR_LOGS:
                     LogClear();
                     break;
