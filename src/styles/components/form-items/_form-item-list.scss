@@ -13,11 +13,11 @@
             align-items: center;
 
             &:has(.mynah-chat-item-form-items-container .mynah-form-input-label:not(:empty)) {
-              > .mynah-form-item-list-row-remove-button {
-                  height: 75%;
-                  align-self: self-end;
-              }
-          }
+                > .mynah-form-item-list-row-remove-button {
+                    height: 75%;
+                    align-self: self-end;
+                }
+            }
 
             > .mynah-form-item-list-row-items-container {
                 width: 100%;
