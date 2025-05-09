@@ -1866,6 +1866,7 @@ export const sampleMCPList: DetailedList = {
                 {
                     title: 'Built-in',
                     icon: 'ok-circled',
+                    iconForegroundStatus: 'success',
                     actions: [
                         {
                             id: 'open-mcp-xx',
@@ -1876,6 +1877,7 @@ export const sampleMCPList: DetailedList = {
                 {
                     title: 'Filesystem',
                     icon: 'ok-circled',
+                    iconForegroundStatus: 'success',
                     actions: [
                         {
                             id: 'open-mcp-xx',
@@ -1886,6 +1888,7 @@ export const sampleMCPList: DetailedList = {
                 {
                     title: 'Git',
                     icon: 'cancel-circle',
+                    iconForegroundStatus: 'error',
                     description: 'Configuration is broken',
                     groupActions: false,
                     actions: [
@@ -1940,6 +1943,7 @@ export const sampleMCPList: DetailedList = {
                 {
                     title: 'Redis',
                     icon: 'block',
+                    iconForegroundStatus: 'error',
                     groupActions: false,
                     actions: [
                         {
