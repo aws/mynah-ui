@@ -328,8 +328,8 @@ export const exploreTabData: MynahUIDataModel = {
     chatItems: [
         {
             type: ChatItemType.ANSWER,
-            snapToTop: true,
             hoverEffect: true,
+            fullWidth: true,
             body: `### Feature development
 Generate code across files with a task description.
 `,
@@ -357,6 +357,7 @@ Generate code across files with a task description.
         {
             type: ChatItemType.ANSWER,
             hoverEffect: true,
+            fullWidth: true,
             body: `### Write
 Automatically write code and commit it.
 `,
@@ -385,6 +386,7 @@ Automatically write code and commit it.
         {
             type: ChatItemType.ANSWER,
             hoverEffect: true,
+            fullWidth: true,
             body: `### Generation
 Generate code for selected codebase (supports python & java).
 `,
@@ -413,6 +415,7 @@ Generate code for selected codebase (supports python & java).
         {
             type: ChatItemType.ANSWER,
             hoverEffect: true,
+            fullWidth: true,
             body: `### Transform
 Transform your java project from an old version to a new one.
 `,
