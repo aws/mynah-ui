@@ -9,6 +9,7 @@ import { chunkArray } from '../../helper/quick-pick-data-handler';
 import { ChatItemFormItemsWrapper } from '../chat-item/chat-item-form-items';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { generateUID } from '../../main';
+import { Card } from '../card/card';
 
 export interface DetailedListWrapperProps {
   detailedList: DetailedList;
@@ -95,7 +96,25 @@ export class DetailedListWrapper {
   private readonly getHeader = (): Array<ExtendedHTMLElement | string> => {
     if (this.props.detailedList.header != null) {
       return [ new TitleDescriptionWithIcon({
-        description: this.props.detailedList.header.description,
+        description: DomBuilder.getInstance().build({
+          type: 'div',
+          children: [
+            this.props.detailedList.header.description ?? '',
+            ...(this.props.detailedList.header.status != null
+              ? [ new Card({
+                  testId: testIds.sheet.description,
+                  border: true,
+                  padding: 'medium',
+                  status: this.props.detailedList.header.status?.status,
+                  children: [ new TitleDescriptionWithIcon({
+                    description: this.props.detailedList.header.status?.description,
+                    title: this.props.detailedList.header.status?.title,
+                    icon: this.props.detailedList.header.status?.icon
+                  }).render ],
+                }).render ]
+              : [])
+          ]
+        }),
         icon: this.props.detailedList.header.icon,
         title: this.props.detailedList.header.title,
       }).render ];

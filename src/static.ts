@@ -221,7 +221,8 @@ export enum MynahPortalNames {
   WRAPPER = 'wrapper',
   SIDE_NAV = 'sideNav',
   OVERLAY = 'overlay',
-  SHEET = 'sheet'
+  SHEET = 'sheet',
+  LOADER = 'loader',
 };
 
 export type PromptAttachmentType = 'code' | 'markdown';
@@ -262,6 +263,12 @@ export interface DetailedList {
   header?: {
     title?: string;
     icon?: MynahIcons | MynahIconsType;
+    status?: {
+      icon?: MynahIcons | MynahIconsType;
+      title: string;
+      description?: string;
+      status?: Status;
+    };
     description?: string;
     actions?: TabBarMainAction[];
   };
@@ -471,6 +478,7 @@ type CheckboxFormItem = BaseFormItem & {
   alternateTooltip?: string;
 };
 
+export type SingularFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;
 export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem | ListFormItem;
 export type FilterOption = ChatItemFormItem;
 
@@ -482,20 +490,20 @@ export interface ListFormItem {
   description?: string;
   tooltip?: string;
   icon?: MynahIcons | MynahIconsType;
-  items: ChatItemFormItem[];
+  items: SingularFormItem[];
   value: ListItemEntry[];
 };
 
 export interface ListItemEntry {
-  persistent: boolean;
-  values: {[key: string]: string};
+  persistent?: boolean;
+  value: Record<string, string>;
 }
 
 export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
-  options?: Record<string, string | string[]>;
+  options?: Record<string, string | Array<Record<string, string>>>;
   context?: string[] | QuickActionCommand[];
 }
 

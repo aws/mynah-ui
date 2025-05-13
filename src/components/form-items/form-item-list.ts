@@ -8,26 +8,26 @@ import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
 import { generateUID } from '../../helper/guid';
 import { StyleLoader } from '../../helper/style-loader';
-import { ChatItemFormItem, ListItemEntry } from '../../static';
+import { ListItemEntry, SingularFormItem } from '../../static';
 import { Button } from '../button';
 import { ChatItemFormItemsWrapper } from '../chat-item/chat-item-form-items';
 import { Icon, MynahIcons } from '../icon';
 
 export interface FormItemListProps {
-  items: ChatItemFormItem[];
-  entries: ListItemEntry[];
+  items: SingularFormItem[];
+  value?: ListItemEntry[];
   classNames?: string[];
   attributes?: Record<string, string>;
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
   wrapperTestId?: string;
-  onChange?: (values: string[]) => void;
+  onChange?: (values: Array< Record<string, string | Array<Record<string, string>>>>) => void;
 }
 
 export abstract class FormItemListAbstract {
   render: ExtendedHTMLElement;
   setValue = (value: ListItemEntry[]): void => { };
-  getValue = (): string[] => [];
+  getValue = (): Array< Record<string, string>> => [];
   setEnabled = (enabled: boolean): void => { };
 }
 
@@ -35,8 +35,7 @@ export class FormItemListInternal extends FormItemListAbstract {
   private readonly rowWrapper: ExtendedHTMLElement;
   private readonly addButton: ExtendedHTMLElement;
   private readonly props: FormItemListProps;
-  private readonly rows: Map<string, ExtendedHTMLElement> = new Map();
-  private formData: Record<string, string> = {};
+  private readonly rows: Map<string, {rowElm: ExtendedHTMLElement; rowForm: ChatItemFormItemsWrapper}> = new Map();
   render: ExtendedHTMLElement;
 
   constructor (props: FormItemListProps) {
@@ -86,8 +85,8 @@ export class FormItemListInternal extends FormItemListAbstract {
     });
 
     // Initialize with existing values or add an empty row
-    if (props.entries.length > 0) {
-      props.entries.forEach(entry => this.addRow(entry));
+    if (props.value != null && props.value.length > 0) {
+      props.value?.forEach(entry => this.addRow(entry));
     } else {
       this.addRow();
     }
@@ -95,6 +94,7 @@ export class FormItemListInternal extends FormItemListAbstract {
 
   private addRow (entry?: ListItemEntry): void {
     const rowId = generateUID();
+    const formItems: SingularFormItem[] = [];
 
     // Create form items container
     const formItemsContainer = DomBuilder.getInstance().build({
@@ -114,26 +114,32 @@ export class FormItemListInternal extends FormItemListAbstract {
       icon: new Icon({ icon: MynahIcons.CANCEL }).render
     }).render;
 
-    // Render form items
+    // Create form items
     this.props.items.forEach(item => {
       item = { ...item, title: this.rows.size === 0 ? item.title : '' };
+      formItems.push({
+        ...item,
+        value: entry?.value[item.id] as any
+      });
 
-      const value = entry?.values[item.id];
+      const value = entry?.value[item.id];
       if (value != null) {
         item.value = value;
       }
-
-      formItemsContainer.appendChild(new ChatItemFormItemsWrapper({
-        tabId: '',
-        chatItem: {
-          formItems: [ item ]
-        },
-        onFormChange: (formData: Record<string, string>) => {
-          this.formData = formData;
-          this.props.onChange?.(this.getValue());
-        },
-      }).render);
     });
+
+    // Create form render
+    const newForm = new ChatItemFormItemsWrapper({
+      tabId: '',
+      chatItem: {
+        formItems
+      },
+      onFormChange: (formData: Record<string, string>) => {
+        // this.formData = formData;
+        this.props.onChange?.(this.getValue());
+      },
+    });
+    formItemsContainer.appendChild(newForm.render);
 
     // Create row container and add it to the wrapper
     const rowContainer = DomBuilder.getInstance().build({
@@ -150,14 +156,14 @@ export class FormItemListInternal extends FormItemListAbstract {
     this.rowWrapper.appendChild(rowContainer);
 
     // Store the row reference
-    this.rows.set(rowId, rowContainer);
+    this.rows.set(rowId, { rowElm: rowContainer, rowForm: newForm });
     this.props.onChange?.(this.getValue());
   }
 
   private removeRow (rowId: string): void {
     const row = this.rows.get(rowId);
     if (row != null) {
-      row.remove();
+      row.rowElm.remove();
       this.rows.delete(rowId);
       this.props.onChange?.(this.getValue());
     }
@@ -165,7 +171,7 @@ export class FormItemListInternal extends FormItemListAbstract {
 
   setValue = (value: ListItemEntry[]): void => {
     // Clear existing rows
-    this.rows.forEach(row => row.remove());
+    this.rows.forEach(row => row.rowElm.remove());
     this.rows.clear();
 
     // Add new rows
@@ -176,12 +182,32 @@ export class FormItemListInternal extends FormItemListAbstract {
     }
   };
 
-  getValue = (): string[] => {
-    return Object.values(this.formData);
+  getValue = (): Array< Record<string, string>> => {
+    const values: Array< Record<string, string>> = [];
+    this.rows.forEach(row => values.push(row.rowForm.getAllValues() as Record<string, string>));
+    return values;
   };
 
   setEnabled = (enabled: boolean): void => {
-    // TODO: Implement
+    if (enabled) {
+      this.render.removeAttribute('disabled');
+      this.rows.forEach(row => {
+        row.rowForm.enableAll();
+      });
+    } else {
+      this.render.setAttribute('disabled', 'disabled');
+      this.rows.forEach(row => {
+        row.rowForm.disableAll();
+      });
+    }
+  };
+
+  isFormValid = (): boolean => {
+    let isValid = true;
+    this.rows.forEach(row => {
+      isValid = isValid && row.rowForm.isFormValid();
+    });
+    return isValid;
   };
 }
 
@@ -194,6 +220,6 @@ export class FormItemList extends FormItemListAbstract {
   }
 
   setValue = (value: ListItemEntry[]): void => { };
-  getValue = (): string[] => [];
+  getValue = (): Array< Record<string, string>> => [];
   setEnabled = (enabled: boolean): void => { };
 }

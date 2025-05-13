@@ -46,6 +46,7 @@ export class DetailedListSheet {
       fullScreen: true,
       title: this.props.detailedList.header?.title,
       description: this.props.detailedList.header?.description,
+      status: this.props.detailedList.header?.status,
       actions: this.props.detailedList.header?.actions,
       children: [ this.detailedListWrapper.render ],
       showBackButton,
@@ -70,6 +71,7 @@ export class DetailedListSheet {
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.UPDATE_SHEET, {
         title: this.props.detailedList.header?.title,
         description: this.props.detailedList.header?.description,
+        status: this.props.detailedList.header?.status,
         showBackButton,
         actions: this.props.detailedList.header?.actions
       } satisfies Partial<SheetProps>);

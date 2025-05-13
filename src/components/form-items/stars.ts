@@ -64,6 +64,7 @@ export class Stars {
           classNames: [ 'mynah-form-input-label' ],
           children: [ ...(props.label !== undefined ? [ props.label ] : []) ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
           classNames: [ 'mynah-form-input-container', 'no-border' ],
@@ -77,8 +78,7 @@ export class Stars {
               ]
             },
           ]
-        },
-        ...[ props.description !== undefined ? props.description : '' ]
+        }
       ]
     });
   }

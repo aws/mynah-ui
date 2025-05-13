@@ -39,13 +39,13 @@ import { Config } from './helper/config';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
-import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet } from './components/sheet';
 import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
 import { configureMarked, parseMarkdown } from './helper/marked';
 import { MynahUIDataStore } from './helper/store';
 import { StyleLoader } from './helper/style-loader';
+import { Icon } from './components/icon';
 
 export { generateUID } from './helper/guid';
 export {
@@ -332,17 +332,6 @@ export class MynahUI {
       classNames: [ 'mynah-ui-splash-loader-text' ],
       innerHTML: parseMarkdown(this.props.splashScreenInitialStatus?.text ?? '', { includeLineBreaks: true }),
     });
-    this.splashLoader = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-ui-splash-loader-wrapper' ],
-      children: [
-        new Spinner().render,
-        this.splashLoaderText
-      ]
-    });
-    if (this.props.splashScreenInitialStatus?.visible === true) {
-      this.splashLoader.addClass('visible');
-    }
 
     const initTabs = MynahUITabsStore.getInstance().getAllTabs();
     this.tabContentsWrapper = DomBuilder.getInstance().build({
@@ -401,11 +390,24 @@ export class MynahUI {
           this.tabsWrapper ?? '',
           ...(Config.getInstance().config.maxTabs > 1 ? [ new NoTabs().render ] : []),
           this.tabContentsWrapper,
-          this.splashLoader
         ]
       },
       'afterbegin'
     );
+    this.splashLoader = DomBuilder.getInstance().createPortal(
+      MynahPortalNames.LOADER,
+      {
+        type: 'div',
+        classNames: [ 'mynah-ui-splash-loader-wrapper' ],
+        children: [
+          new Icon({ icon: 'progress' }).render,
+          this.splashLoaderText
+        ]
+      },
+      'beforeend');
+    if (this.props.splashScreenInitialStatus?.visible === true) {
+      this.splashLoader.addClass('visible');
+    }
 
     MynahUITabsStore.getInstance().addListener('add', (tabId: string) => {
       this.chatWrappers[tabId] = new ChatWrapper({

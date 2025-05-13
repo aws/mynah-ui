@@ -162,7 +162,7 @@ export class FeedbackForm {
     chatItem: Partial<ChatItem>;
     title?: string;
     description?: string;
-    onFormAction?: (actionName: string, formData: Record<string, string | string[]>) => void;
+    onFormAction?: (actionName: string, formData: Record<string, string | Array<Record<string, string>>>) => void;
     onFormDisabled?: () => void;
     onCloseButtonClick?: (e: Event) => void;
   }): Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject> => {

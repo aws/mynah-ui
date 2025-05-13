@@ -4,13 +4,16 @@
  */
 
 import testIds from '../helper/test-ids';
-import { ChatItemButton, DomBuilder, DomBuilderObject, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames, TabBarAction, TabBarMainAction } from '../main';
+import { ChatItemButton, DomBuilder, DomBuilderObject, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames, Status, TabBarAction, TabBarMainAction } from '../main';
 import { cancelEvent, MynahUIGlobalEvents } from '../helper/events';
 import { Button } from './button';
-import { Icon } from './icon';
+import { Icon, MynahIconsType } from './icon';
 import { CardBody } from './card/card-body';
 import { StyleLoader } from '../helper/style-loader';
 import { TabBarButtonWithMultipleOptions } from './navigation-tab-bar-buttons';
+import { Card } from './card/card';
+import { TitleDescriptionWithIcon } from './title-description-with-icon';
+import { parseMarkdown } from '../helper/marked';
 
 export interface SheetProps {
   title?: string;
@@ -18,6 +21,12 @@ export interface SheetProps {
   fullScreen?: boolean;
   showBackButton?: boolean;
   description?: string;
+  status?: {
+    icon?: MynahIcons | MynahIconsType;
+    title: string;
+    description?: string;
+    status?: Status;
+  };
   actions?: TabBarAction[];
   onClose: () => void;
   onBack: () => void;
@@ -28,6 +37,7 @@ export class Sheet {
   private backButton: Button;
   private sheetTitle: ExtendedHTMLElement;
   private sheetTitleActions: ExtendedHTMLElement;
+  private sheetStatus: ExtendedHTMLElement;
   private sheetDescription: ExtendedHTMLElement;
   sheetContainer: ExtendedHTMLElement;
   sheetWrapper: ExtendedHTMLElement;
@@ -67,6 +77,7 @@ export class Sheet {
       });
       this.sheetTitle = this.getTitle(data.title);
       this.sheetDescription = this.getDescription(data.description);
+      this.sheetStatus = this.getStatus(data.status);
       this.sheetTitleActions = this.getTitleActions(data.actions);
 
       this.sheetWrapper.update({
@@ -101,6 +112,7 @@ export class Sheet {
                     }).render
                   ]
                 },
+                this.sheetStatus,
                 this.sheetDescription,
                 {
                   type: 'div',
@@ -129,6 +141,11 @@ export class Sheet {
         const newTitle = this.getTitle(data.title);
         this.sheetTitle.replaceWith(newTitle);
         this.sheetTitle = newTitle;
+      }
+      if (data.status != null) {
+        const newStatus = this.getStatus(data.status);
+        this.sheetStatus.replaceWith(newStatus);
+        this.sheetStatus = newStatus;
       }
       if (data.description != null) {
         const newDescription = this.getDescription(data.description);
@@ -169,8 +186,31 @@ export class Sheet {
 
   private readonly getDescription = (description?: string): ExtendedHTMLElement => new CardBody({
     testId: testIds.sheet.description,
-    body: description ?? ''
+    body: description ?? '',
   }).render;
+
+  private readonly getStatus = (status?: {
+    icon?: MynahIcons | MynahIconsType;
+    title: string;
+    description?: string;
+    status?: Status;
+  }): ExtendedHTMLElement => status?.title != null || status?.description != null
+    ? new Card({
+      testId: testIds.sheet.description,
+      border: true,
+      padding: 'medium',
+      classNames: [ 'mynah-sheet-header-status' ],
+      status: status?.status,
+      children: [
+        ...(status.title != null
+          ? [ new TitleDescriptionWithIcon({
+              title: status?.title != null ? DomBuilder.getInstance().build({ classNames: [ 'mynah-sheet-header-status-title' ], type: 'div', innerHTML: parseMarkdown(status.title, { includeLineBreaks: false }) }) : undefined,
+              icon: status?.icon
+            }).render ]
+          : []),
+        ...(status.description != null ? [ new CardBody({ body: status.description }).render ] : []) ],
+    }).render
+    : DomBuilder.getInstance().build({ type: 'span' });
 
   close = (): void => {
     this.sheetWrapper.removeClass('mynah-sheet-show');

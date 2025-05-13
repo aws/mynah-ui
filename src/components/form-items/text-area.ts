@@ -97,6 +97,7 @@ export class TextAreaInternal extends TextAreaAbstract {
           classNames: [ 'mynah-form-input-label' ],
           children: [ ...(props.label !== undefined ? [ props.label ] : []) ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
           classNames: [ 'mynah-form-input-container' ],
@@ -105,7 +106,6 @@ export class TextAreaInternal extends TextAreaAbstract {
             this.inputElement,
           ]
         },
-        ...[ props.description !== undefined ? props.description : '' ],
         this.validationErrorBlock
       ]
     });

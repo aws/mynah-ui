@@ -89,7 +89,7 @@ export class ChatItemFormItemsWrapper {
               label,
               description,
               items: chatItemOption.items,
-              entries: chatItemOption.value,
+              value: chatItemOption.value,
               ...(this.getHandlers(chatItemOption))
             });
             break;
@@ -348,8 +348,12 @@ export class ChatItemFormItemsWrapper {
     this.onAllFormItemsDisabled?.();
   };
 
-  getAllValues = (): Record<string, string | string[]> => {
-    const valueMap: Record<string, string | string[]> = {};
+  enableAll = (): void => {
+    Object.keys(this.options).forEach(chatOptionId => this.options[chatOptionId].setEnabled(true));
+  };
+
+  getAllValues = (): Record<string, string | Array<Record<string, string>>> => {
+    const valueMap: Record<string, string | Array<Record<string, string>>> = {};
     Object.keys(this.options).forEach(chatOptionId => {
       valueMap[chatOptionId] = this.options[chatOptionId].getValue();
     });

@@ -78,6 +78,7 @@ export class SelectInternal {
           classNames: [ 'mynah-form-input-label' ],
           children: [ ...(props.label !== undefined ? [ props.label ] : []) ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
           classNames: [ 'mynah-form-input-container' ],
@@ -88,8 +89,7 @@ export class SelectInternal {
               : []),
             this.selectElement,
             new Icon({ icon: props.handleIcon ?? MynahIcons.DOWN_OPEN, classNames: [ 'mynah-select-handle' ] }).render ]
-        },
-        ...[ props.description !== undefined ? props.description : '' ]
+        }
       ]
     });
   }

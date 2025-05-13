@@ -155,6 +155,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                         onFilterActionClick: (action, filterValues?: Record<string, any>, isValid?: boolean) => {
                             Log(`Filter action clicked: <b>${action.id}</b>`);
                             Log(`Filters: <b>${JSON.stringify(filterValues ?? {})}</b>`);
+                            if (action.id === 'cancel-mcp') {
+                                mcpSheet.update(sampleMCPList, false);
+                            } else if (action.id === 'save-mcp') {
+                                mynahUI.toggleSplashLoader(true, 'Saving **the MCP**');
+                                setTimeout(() => {
+                                    mynahUI.toggleSplashLoader(false);
+                                    mcpSheet.update(sampleMCPList, false);
+                                }, 3000);
+                            }
                         },
                         onKeyPress: (e) => {
                             Log('Key pressed');
@@ -227,7 +236,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
                 setTimeout(() => {
                     mynahUI.toggleSplashLoader(false);
-                }, 10000);
+                }, 5000);
             } else if (buttonId === 'custom-data-check') {
                 // Use for custom temporary checks
                 mynahUI.addChatItem(tabId, {

@@ -25,6 +25,12 @@
 
                 > .mynah-chat-item-form-items-container {
                     width: 100%;
+                    flex-flow: row nowrap;
+                    justify-content: stretch;
+                    gap: var(--mynah-sizing-1);
+                    > .mynah-form-input-wrapper {
+                        flex: 1;
+                    }
 
                     .mynah-form-input-label {
                         color: var(--mynah-color-text-weak);

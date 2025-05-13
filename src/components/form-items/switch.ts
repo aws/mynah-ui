@@ -93,6 +93,7 @@ export class SwitchInternal extends SwitchAbstract {
           classNames: [ 'mynah-form-input-label' ],
           children: [ ...(props.title != null ? [ props.title ] : []) ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
           classNames: [ 'mynah-form-input-container', 'no-border' ],
@@ -100,8 +101,7 @@ export class SwitchInternal extends SwitchAbstract {
           children: [
             this.checkboxWrapper,
           ]
-        },
-        ...[ props.description !== undefined ? props.description : '' ]
+        }
       ]
     });
   }

@@ -815,14 +815,13 @@ _To send the form, mandatory items should be filled._`,
             value: [
                 {
                     persistent: true,
-                    values: {
+                    value: {
                         [itemId1]: 'some_env',
                         [itemId2]: 'AJSKJLE!@)(UD',
                     },
                 },
                 {
-                    persistent: false,
-                    values: {
+                    value: {
                         [itemId1]: 'some_other_env',
                         [itemId2]: '12kjlkj!dddaa',
                     },
@@ -1850,6 +1849,7 @@ export const sampleMCPList: DetailedList = {
     selectable: 'clickable',
     header: {
         title: 'MCP Servers',
+        status: {},
         description:
             'Q automatically uses any MCP servers that have been added, so you don\'t have to add them as context. All MCPs are defaulted to "Ask before running".',
         actions: [
@@ -1955,7 +1955,7 @@ export const sampleMCPList: DetailedList = {
                                 cancelButtonText: 'Cancel',
                                 confirmButtonText: 'Delete',
                                 title:'Delete Filesystem MCP server',
-                                description: 'This configuration will be deleted and no longer available in Q. \n\n This cannot be undone.'
+                                description: 'This configuration will be deleted and no longer available in Q. \n\n **This cannot be undone.**'
                             }
                         },
                         {
@@ -1976,6 +1976,11 @@ export const sampleMCPDetails = (title: string): DetailedList => {
     return {
         header: {
             title: `MCP: ${title}`,
+            status: {
+                title: 'Detail of the issue',
+                icon: 'cancel-circle',
+                status: 'error'
+            },
             description:
                 'Extend the capabilities of Q with [MCP servers](#). Q automatically uses any MCP server that has been added. All MCPs are defaulted to "Ask before running". [Learn more](#)',
             actions: [
@@ -2061,25 +2066,22 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                 value: [
                     {
                         persistent: true,
-                        values: {
+                        value: {
                             'arg_key': '-y',
                         },
                     },
                     {
-                        persistent: false,
-                        values: {
+                        value: {
                             'arg_key': '@modelcontextprotocol/server-filesystem',
                         },
                     },
                     {
-                        persistent: false,
-                        values: {
+                        value: {
                             'arg_key': '/Users/username/Desktop',
                         },
                     },
                     {
-                        persistent: false,
-                        values: {
+                        value: {
                             'arg_key': '/path/to/other/allowed/dir',
                         },
                     },
@@ -2103,15 +2105,13 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                 ],
                 value: [
                     {
-                        persistent: true,
-                        values: {
+                        value: {
                             'env_var_name': 'some_env',
                             'env_var_value': 'AJSKJLE!@)(UD',
                         },
                     },
                     {
-                        persistent: false,
-                        values: {
+                        value: {
                             'env_var_name': 'some_other_env',
                             'env_var_value': '12kjlkj!dddaa',
                         },
