@@ -4,30 +4,35 @@
  */
 
 import testIds from '../helper/test-ids';
-import { ChatItemButton, DomBuilder, DomBuilderObject, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames } from '../main';
+import { ChatItemButton, DomBuilder, DomBuilderObject, ExtendedHTMLElement, MynahEventNames, MynahIcons, MynahPortalNames, TabBarAction, TabBarMainAction } from '../main';
 import { cancelEvent, MynahUIGlobalEvents } from '../helper/events';
 import { Button } from './button';
 import { Icon } from './icon';
 import { CardBody } from './card/card-body';
 import { StyleLoader } from '../helper/style-loader';
+import { TabBarButtonWithMultipleOptions } from './navigation-tab-bar-buttons';
 
 export interface SheetProps {
   title?: string;
   children?: Array<ExtendedHTMLElement | HTMLElement | string | DomBuilderObject>;
   fullScreen?: boolean;
+  showBackButton?: boolean;
   description?: string;
-  actions?: ChatItemButton[];
+  actions?: TabBarAction[];
   onClose: () => void;
-  onActionClick?: (action: ChatItemButton) => void;
+  onBack: () => void;
+  onActionClick?: (action: TabBarAction) => void;
 }
 
 export class Sheet {
+  private backButton: Button;
   private sheetTitle: ExtendedHTMLElement;
   private sheetTitleActions: ExtendedHTMLElement;
   private sheetDescription: ExtendedHTMLElement;
   sheetContainer: ExtendedHTMLElement;
   sheetWrapper: ExtendedHTMLElement;
   onClose: () => void;
+  onBack: () => void;
   onActionClick: ((action: ChatItemButton) => void) | undefined;
 
   constructor () {
@@ -49,7 +54,17 @@ export class Sheet {
 
       this.sheetWrapper.clear();
       this.onClose = data.onClose;
+      this.onBack = data.onBack;
       this.onActionClick = data.onActionClick;
+      this.backButton = new Button({
+        icon: new Icon({ icon: 'left-open' }).render,
+        status: 'clear',
+        classNames: [ 'mynah-sheet-back-button' ],
+        primary: false,
+        border: false,
+        hidden: data.showBackButton !== true,
+        onClick: this.onBack
+      });
       this.sheetTitle = this.getTitle(data.title);
       this.sheetDescription = this.getDescription(data.description);
       this.sheetTitleActions = this.getTitleActions(data.actions);
@@ -72,6 +87,7 @@ export class Sheet {
                   type: 'div',
                   classNames: [ 'mynah-sheet-header' ],
                   children: [
+                    this.backButton.render,
                     this.sheetTitle,
                     this.sheetTitleActions,
                     new Button({
@@ -106,6 +122,9 @@ export class Sheet {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.UPDATE_SHEET, (data: SheetProps) => {
+      if (data.showBackButton != null) {
+        this.backButton.setHidden(!data.showBackButton);
+      }
       if (data.title != null) {
         const newTitle = this.getTitle(data.title);
         this.sheetTitle.replaceWith(newTitle);
@@ -121,7 +140,6 @@ export class Sheet {
         this.sheetTitleActions.replaceWith(newActions);
         this.sheetTitleActions = newActions;
       }
-      // this.close();
     });
   }
 
@@ -138,17 +156,14 @@ export class Sheet {
       type: 'div',
       testId: testIds.sheet.title,
       classNames: [ 'mynah-sheet-header-actions-container' ],
-      children: actions?.map(action => new Button({
-        onClick: () => {
-          this.onActionClick?.(action);
-        },
-        ...(action.icon != null ? { icon: new Icon({ icon: action.icon }).render } : {}),
-        label: action.text,
-        status: action.status,
-        tooltip: action.description,
-        primary: action.status == null,
-        disabled: action.disabled,
-      }).render),
+      children: actions?.map((actionItem: TabBarMainAction) => {
+        return new TabBarButtonWithMultipleOptions({
+          onButtonClick: (tabBarAction) => {
+            this.onActionClick?.(tabBarAction);
+          },
+          tabBarActionButton: actionItem
+        }).render;
+      })
     });
   };
 

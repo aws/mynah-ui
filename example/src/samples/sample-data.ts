@@ -810,24 +810,24 @@ _To send the form, mandatory items should be filled._`,
                     id: itemId2,
                     title: 'Value',
                     type: 'textinput',
-                }
+                },
             ],
             value: [
                 {
                     persistent: true,
                     values: {
                         [itemId1]: 'some_env',
-                        [itemId2]: 'AJSKJLE!@)(UD'
-                    }
+                        [itemId2]: 'AJSKJLE!@)(UD',
+                    },
                 },
                 {
                     persistent: false,
                     values: {
                         [itemId1]: 'some_other_env',
-                        [itemId2]: '12kjlkj!dddaa'
-                    }
-                }
-            ]
+                        [itemId2]: '12kjlkj!dddaa',
+                    },
+                },
+            ],
         },
         {
             id: 'email',
@@ -1847,7 +1847,7 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
 ];
 
 export const sampleMCPList: DetailedList = {
-    selectable: false,
+    selectable: 'clickable',
     header: {
         title: 'MCP Servers',
         description:
@@ -1858,6 +1858,11 @@ export const sampleMCPList: DetailedList = {
                 icon: 'plus',
                 status: 'clear',
                 description: 'Add new MCP',
+            },{
+                id: 'refresh-mcp-list',
+                icon: 'refresh',
+                status: 'clear',
+                description: 'Refresh MCP servers',
             },
         ],
     },
@@ -1869,6 +1874,10 @@ export const sampleMCPList: DetailedList = {
                 {
                     title: 'Built-in',
                     icon: 'ok-circled',
+                    status: {
+                        icon: 'tools',
+                        text: '8',
+                    },
                     iconForegroundStatus: 'success',
                     actions: [
                         {
@@ -1880,6 +1889,10 @@ export const sampleMCPList: DetailedList = {
                 {
                     title: 'Filesystem',
                     icon: 'ok-circled',
+                    status: {
+                        icon: 'tools',
+                        text: '26',
+                    },
                     iconForegroundStatus: 'success',
                     actions: [
                         {
@@ -1898,21 +1911,11 @@ export const sampleMCPList: DetailedList = {
                         {
                             id: 'open-mcp-xx',
                             text: 'Fix configuration',
-                            status: 'warning',
-                            fillState: 'hover'
-                        },
-                        {
-                            id: 'disable-mcp-git',
-                            icon: MynahIcons.BLOCK,
-                            description: 'Disable'
-                        },
-                        {
-                            id: 'delete-mcp-git',
-                            icon: MynahIcons.TRASH,
-                            description: 'Delete'
+                            icon: 'pencil',
                         },
                         {
                             id: 'open-mcp-xx',
+                            disabled: true,
                             icon: 'right-open',
                         },
                     ],
@@ -1920,18 +1923,9 @@ export const sampleMCPList: DetailedList = {
                 {
                     title: 'Github',
                     icon: 'progress',
+                    iconForegroundStatus: 'info',
                     groupActions: false,
                     actions: [
-                        {
-                            id: 'disable-mcp-github',
-                            icon: MynahIcons.BLOCK,
-                            description: 'Disable'
-                        },
-                        {
-                            id: 'delete-mcp-github',
-                            icon: MynahIcons.TRASH,
-                            description: 'Delete'
-                        },
                         {
                             id: 'open-mcp-xx',
                             icon: 'right-open',
@@ -1946,21 +1940,27 @@ export const sampleMCPList: DetailedList = {
                 {
                     title: 'Redis',
                     icon: 'block',
-                    iconForegroundStatus: 'error',
                     groupActions: false,
                     actions: [
                         {
-                            id: 'enable-mcp-redis',
-                            icon: MynahIcons.OK_CIRCLED,
-                            description: 'Enable'
+                            id: 'mcp-enable-tool',
+                            icon: MynahIcons.OK,
+                            text: 'Enable',
                         },
                         {
-                            id: 'delete-mcp-redis',
+                            id: 'mcp-delete-tool',
                             icon: MynahIcons.TRASH,
-                            description: 'Delete'
+                            text: 'Delete',
+                            confirmation: {
+                                cancelButtonText: 'Cancel',
+                                confirmButtonText: 'Delete',
+                                title:'Delete Filesystem MCP server',
+                                description: 'This configuration will be deleted and no longer available in Q. \n\n This cannot be undone.'
+                            }
                         },
                         {
                             id: 'open-mcp-xx',
+                            disabled: true,
                             icon: 'right-open',
                         },
                     ],
@@ -1969,4 +1969,155 @@ export const sampleMCPList: DetailedList = {
         },
     ],
     filterOptions: [],
+    filterActions: [],
+};
+
+export const sampleMCPDetails = (title: string): DetailedList => {
+    return {
+        header: {
+            title: `MCP: ${title}`,
+            description:
+                'Extend the capabilities of Q with [MCP servers](#). Q automatically uses any MCP server that has been added. All MCPs are defaulted to "Ask before running". [Learn more](#)',
+            actions: [
+                {
+                    icon: 'pencil',
+                    text: 'Edit setup',
+                    id: 'mcp-edit-setup',
+                },
+                {
+                    icon: 'ellipsis-h',
+                    id: 'mcp-details-menu',
+                    items: [
+                        {
+                            id: 'mcp-disable-tool',
+                            text: `Disable ${title}`,
+                            icon: 'block',
+                        },
+                        {
+                            id: 'mcp-delete-tool',
+                            confirmation: {
+                                cancelButtonText: 'Cancel',
+                                confirmButtonText: 'Delete',
+                                title:'Delete Filesystem MCP server',
+                                description: 'This configuration will be deleted and no longer available in Q. \n\n This cannot be undone.'
+                            },
+                            text: `Delete ${title}`,
+                            icon: 'trash',
+                        },
+                    ],
+                },
+            ],
+        },
+        list: [],
+        filterActions: [
+            {
+                id: 'cancel-mcp',
+                text: 'Cancel',
+            },
+            {
+                id: 'save-mcp',
+                text: 'Save',
+                status: 'primary',
+            },
+        ],
+        filterOptions: [
+            {
+                type: 'select',
+                id: 'transport',
+                title: 'Transport',
+                options: [
+                    {
+                        label: 'Yes',
+                        value: 'yes',
+                    },
+                    {
+                        label: 'No',
+                        value: 'no',
+                    },
+                ],
+            },
+            {
+                type: 'textinput',
+                title: 'Command',
+                id: 'command',
+            },
+            {
+                type: 'numericinput',
+                title: 'Timeout',
+                description: 'Seconds',
+                id: 'timeout',
+            },
+            {
+                id: 'args',
+                type: 'list',
+                title: 'Arguments',
+                mandatory: false,
+                items: [
+                    {
+                        id: 'arg_key',
+                        type: 'textinput',
+                    },
+                ],
+                value: [
+                    {
+                        persistent: true,
+                        values: {
+                            'arg_key': '-y',
+                        },
+                    },
+                    {
+                        persistent: false,
+                        values: {
+                            'arg_key': '@modelcontextprotocol/server-filesystem',
+                        },
+                    },
+                    {
+                        persistent: false,
+                        values: {
+                            'arg_key': '/Users/username/Desktop',
+                        },
+                    },
+                    {
+                        persistent: false,
+                        values: {
+                            'arg_key': '/path/to/other/allowed/dir',
+                        },
+                    },
+                ],
+            },
+            {
+                id: 'env_variables',
+                type: 'list',
+                title: 'Environment variables',
+                items: [
+                    {
+                        id: 'env_var_name',
+                        title: 'Name',
+                        type: 'textinput',
+                    },
+                    {
+                        id: 'env_var_value',
+                        title: 'Value',
+                        type: 'textinput',
+                    },
+                ],
+                value: [
+                    {
+                        persistent: true,
+                        values: {
+                            'env_var_name': 'some_env',
+                            'env_var_value': 'AJSKJLE!@)(UD',
+                        },
+                    },
+                    {
+                        persistent: false,
+                        values: {
+                            'env_var_name': 'some_other_env',
+                            'env_var_value': '12kjlkj!dddaa',
+                        },
+                    },
+                ],
+            },
+        ],
+    };
 };

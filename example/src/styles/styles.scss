@@ -183,6 +183,7 @@ body {
         grid-column-start: 3;
         grid-row-end: 2;
         grid-column-end: 3;
+        z-index: 9;
 
         #console-content {
             flex: 1;

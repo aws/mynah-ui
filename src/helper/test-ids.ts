@@ -127,7 +127,8 @@ export default {
   },
   detailedList: {
     action: 'detailed-list-action',
-    actionMenu: 'detailed-list-action-menu'
+    actionMenu: 'detailed-list-action-menu',
+    status: 'detailed-list-status'
   },
   tabBar: {
     wrapper: 'tab-bar-wrapper',

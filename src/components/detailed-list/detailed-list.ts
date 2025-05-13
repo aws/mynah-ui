@@ -16,12 +16,15 @@ export interface DetailedListWrapperProps {
   onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
   onGroupActionClick?: (action: ChatItemButton) => void;
   onItemSelect?: (detailedListItem: DetailedListItem) => void;
-  onItemActionClick?: (action: ChatItemButton) => void;
+  onItemClick?: (detailedListItem: DetailedListItem) => void;
+  onItemActionClick?: (action: ChatItemButton, detailedListItem?: DetailedListItem) => void;
+  onFilterActionClick?: (action: ChatItemButton, filterValues?: Record<string, any>, isValid?: boolean) => void;
 }
 
 export class DetailedListWrapper {
   render: ExtendedHTMLElement;
   private readonly detailedListItemGroupsContainer: ExtendedHTMLElement;
+  private filterForm: ChatItemFormItemsWrapper;
   private readonly filtersContainer: ExtendedHTMLElement;
   private readonly filterActionsContainer: ExtendedHTMLElement;
   private readonly headerContainer: ExtendedHTMLElement;
@@ -102,21 +105,24 @@ export class DetailedListWrapper {
 
   private readonly getFilters = (): Array<ExtendedHTMLElement | string> => {
     if (this.props.detailedList.filterOptions != null && this.props.detailedList.filterOptions.length > 0) {
-      return [ new ChatItemFormItemsWrapper({
+      this.filterForm = new ChatItemFormItemsWrapper({
         tabId: '',
         chatItem: {
           formItems: this.props.detailedList.filterOptions
         },
         onFormChange: this.props.onFilterValueChange
-      }).render ];
+      });
+      return [ this.filterForm.render ];
     }
     return [ '' ];
   };
 
   private readonly getFilterActions = (): ExtendedHTMLElement[] => {
     return [ new ChatItemButtonsWrapper({
+      onActionClick: (action) => {
+        this.props.onFilterActionClick?.(action, this.filterForm?.getAllValues(), this.filterForm?.isFormValid());
+      },
       buttons: this.props.detailedList.filterActions ?? [],
-      // onActionClick: this.props.onActionClick ?? ((action) => {}),
     }).render ];
   };
 
@@ -181,8 +187,10 @@ export class DetailedListWrapper {
       const detailedListItemElement = new DetailedListItemWrapper({
         listItem: detailedListItem,
         onSelect: this.props.onItemSelect,
+        onClick: this.props.onItemClick,
         onActionClick: this.props.onItemActionClick,
-        selectable: this.props.detailedList.selectable,
+        selectable: this.props.detailedList.selectable === true,
+        clickable: this.props.detailedList.selectable === 'clickable',
         textDirection: this.props.detailedList.textDirection,
         descriptionTextDirection: this.props.descriptionTextDirection
       });

@@ -263,9 +263,9 @@ export interface DetailedList {
     title?: string;
     icon?: MynahIcons | MynahIconsType;
     description?: string;
-    actions?: Action[];
+    actions?: TabBarMainAction[];
   };
-  selectable?: boolean;
+  selectable?: boolean | 'clickable';
   textDirection?: 'row' | 'column';
 }
 
@@ -289,6 +289,12 @@ export interface DetailedListItem {
   groupActions?: boolean;
   children?: DetailedListItemGroup[];
   keywords?: string[];
+  status?: {
+    status?: Status;
+    description?: string;
+    icon?: MynahIcons | MynahIconsType;
+    text?: string;
+  };
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
@@ -514,6 +520,12 @@ export interface Action {
   id: string;
   disabled?: boolean;
   description?: string;
+  confirmation?: {
+    confirmButtonText: string;
+    cancelButtonText: string;
+    title: string;
+    description?: string;
+  };
   status?: 'main' | 'primary' | 'clear' | 'dimmed-clear' | Status;
   icon?: MynahIcons | MynahIconsType;
 }

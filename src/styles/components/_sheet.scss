@@ -98,6 +98,14 @@
         display: flex;
         box-sizing: border-box;
         align-items: center;
+        > .mynah-sheet-back-button {
+            min-width: auto;
+            max-width: fit-content;
+            padding-left: 0;
+            &::after {
+                display: none;
+            }
+        }
         > h4 {
             flex: 1;
             margin: 0;

@@ -45,6 +45,7 @@ import {
     sampleHeaderTypes,
     sampleProgressiveFileList,
     sampleMCPList,
+    sampleMCPDetails,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -98,14 +99,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 });
             }
             Log(`Prompt options change for tab <b>${tabId}</b>:<br/>
-        ${optionsValues
-                    ? `<br/>Options:<br/>${Object.keys(optionsValues)
-                        .map((optionId) => {
-                            return `<b>${optionId}</b>: ${(optionsValues as Record<string, string>)[optionId] ?? ''}`;
-                        })
-                        .join('<br/>')}`
-                    : ''
-                }
+        ${
+            optionsValues
+                ? `<br/>Options:<br/>${Object.keys(optionsValues)
+                      .map((optionId) => {
+                          return `<b>${optionId}</b>: ${(optionsValues as Record<string, string>)[optionId] ?? ''}`;
+                      })
+                      .join('<br/>')}`
+                : ''
+        }
         `);
         },
         onPromptInputButtonClick: (tabId, buttonId) => {
@@ -121,7 +123,6 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
 
   Click to configure.`;
                     mcpButton.id = 'mcp-no-server';
-
                 } else if (buttonId === 'mcp-no-server') {
                     mcpButton.id = 'mcp-ok';
                     mcpButton.description = `MCP servers:
@@ -145,16 +146,15 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     },
                 });
 
-                const argumentsItemId1 = generateUID();
-
-                const envItemId1 = generateUID();
-                const envItemId2 = generateUID();
-
                 const mcpSheet = mynahUI.openDetailedList({
                     detailedList: sampleMCPList,
                     events: {
                         onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {
                             Log('Filter changed');
+                        },
+                        onFilterActionClick: (action, filterValues?: Record<string, any>, isValid?: boolean) => {
+                            Log(`Filter action clicked: <b>${action.id}</b>`);
+                            Log(`Filters: <b>${JSON.stringify(filterValues ?? {})}</b>`);
                         },
                         onKeyPress: (e) => {
                             Log('Key pressed');
@@ -165,128 +165,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                         onItemSelect: (detailedListItem) => {
                             Log('Item selected');
                         },
-                        onActionClick: (button) => {
+                        onItemClick: (detailedListItem) => {
+                            Log(`Item clicked: <b>${detailedListItem.name}</b>`);
+                            mcpSheet.update(sampleMCPDetails(detailedListItem.title ?? ''), true);
+                        },
+                        onActionClick: (button, detailedListItem) => {
                             if (button.id === 'open-mcp-xx') {
-                                mcpSheet.update({
-                                    header: {
-                                        title: 'MCP: Edit Filesystem',
-                                        description: "Extend the capabilities of Q with [MCP servers](#). Q automatically uses any MCP server that has been added. All MCPs are defaulted to \"Ask before running\". [Learn more](#)",
-                                        actions: [{
-                                            id: 'back-to-mcp-list',
-                                            icon: 'left-open',
-                                            status: 'clear',
-                                            description: 'Back to MCP List',
-                                        }]
-                                    },
-                                    list: [],
-                                    filterActions: [
-                                        {
-                                            id: 'cancel-mcp',
-                                            text: 'Cancel',
-                                        },
-                                        {
-                                            id: 'save-mcp',
-                                            text: 'Save',
-                                            status: 'primary'
-                                        }
-                                    ],
-                                    filterOptions: [
-                                        {
-                                            type: 'select',
-                                            id: generateUID(),
-                                            title: 'Transport',
-                                            options: [{
-                                                label: 'Yes',
-                                                value: 'yes'
-                                            }, {
-                                                label: 'No',
-                                                value: 'no'
-                                            }]
-                                        },
-                                        {
-                                            type: 'textinput',
-                                            title: 'Command',
-                                            id: generateUID()
-                                        },
-                                        {
-                                            type: 'numericinput',
-                                            title: 'Timeout',
-                                            description: 'Seconds',
-                                            id: generateUID()
-                                        },
-                                        {
-                                            id: generateUID(),
-                                            type: 'list',
-                                            title: 'Arguments',
-                                            mandatory: false,
-                                            items: [
-                                                {
-                                                    id: argumentsItemId1,
-                                                    type: 'textinput',
-                                                },
-                                            ],
-                                            value: [
-                                                {
-                                                    persistent: true,
-                                                    values: {
-                                                        [argumentsItemId1]: '-y',
-                                                    }
-                                                },
-                                                {
-                                                    persistent: false,
-                                                    values: {
-                                                        [argumentsItemId1]: '@modelcontextprotocol/server-filesystem',
-                                                    }
-                                                },
-                                                {
-                                                    persistent: false,
-                                                    values: {
-                                                        [argumentsItemId1]: '/Users/username/Desktop',
-                                                    }
-                                                },
-                                                {
-                                                    persistent: false,
-                                                    values: {
-                                                        [argumentsItemId1]: '/path/to/other/allowed/dir',
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            id: generateUID(),
-                                            type: 'list',
-                                            title: 'Environment variables',
-                                            items: [
-                                                {
-                                                    id: envItemId1,
-                                                    title: 'Name',
-                                                    type: 'textinput',
-                                                },
-                                                {
-                                                    id: envItemId2,
-                                                    title: 'Value',
-                                                    type: 'textinput',
-                                                }
-                                            ],
-                                            value: [
-                                                {
-                                                    persistent: true,
-                                                    values: {
-                                                        [envItemId1]: 'some_env',
-                                                        [envItemId2]: 'AJSKJLE!@)(UD'
-                                                    }
-                                                },
-                                                {
-                                                    persistent: false,
-                                                    values: {
-                                                        [envItemId1]: 'some_other_env',
-                                                        [envItemId2]: '12kjlkj!dddaa'
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                    ],
-                                });
+                                mcpSheet.update(sampleMCPDetails(detailedListItem?.title ?? ''), true);
                             }
                             Log('Action clicked');
                         },
@@ -297,7 +182,13 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                             if (button.id === 'back-to-mcp-list') {
                                 mcpSheet.update(sampleMCPList);
                             }
-                        }
+                            if (button.id === 'mcp-delete-tool') {
+                                mcpSheet.update(sampleMCPList, false);
+                            }
+                        },
+                        onBackClick: () => {
+                            mcpSheet.update(sampleMCPList, false);
+                        },
                     },
                 });
             } else if (buttonId === 'clear') {
@@ -1138,10 +1029,11 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>
-      options: <b>{${Object.keys(prompt.options ?? {})
-                    .map((op) => `'${op}': '${prompt.options?.[op] as string}'`)
-                    .join(',') ?? ''
-                }}</b><br/>
+      options: <b>{${
+          Object.keys(prompt.options ?? {})
+              .map((op) => `'${op}': '${prompt.options?.[op] as string}'`)
+              .join(',') ?? ''
+      }}</b><br/>
       context: <b>[${(prompt.context ?? []).map((ctx) => `${JSON.stringify(ctx)}`).join(']</b>, <b>[')}]`);
             if (tabId === 'tab-1') {
                 mynahUI.updateStore(tabId, {
@@ -1305,14 +1197,15 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             Log(`Body action clicked in message <b>${messageId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>
-      ${action.formItemValues
-                    ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
-                        .map((optionId) => {
-                            return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
-                        })
-                        .join('<br/>')}`
-                    : ''
-                }
+      ${
+          action.formItemValues
+              ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
+                    .map((optionId) => {
+                        return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+                    })
+                    .join('<br/>')}`
+              : ''
+      }
       `);
         },
         onQuickCommandGroupActionClick: (tabId: string, action) => {
@@ -1372,14 +1265,15 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 event.preventDefault();
                 event.stopImmediatePropagation();
                 Log(`Form keypress Enter submit on tab <b>${tabId}</b>:<br/>
-          ${formData
-                        ? `<br/>Options:<br/>${Object.keys(formData)
-                            .map((optionId) => {
-                                return `<b>${optionId}</b>: ${(formData as Record<string, string>)[optionId] ?? ''}`;
-                            })
-                            .join('<br/>')}`
-                        : ''
-                    }
+          ${
+              formData
+                  ? `<br/>Options:<br/>${Object.keys(formData)
+                        .map((optionId) => {
+                            return `<b>${optionId}</b>: ${(formData as Record<string, string>)[optionId] ?? ''}`;
+                        })
+                        .join('<br/>')}`
+                  : ''
+          }
           `);
                 return true;
             }
@@ -1389,14 +1283,15 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>
-      ${action.formItemValues
-                    ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
-                        .map((optionId) => {
-                            return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
-                        })
-                        .join('<br/>')}`
-                    : ''
-                }
+      ${
+          action.formItemValues
+              ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
+                    .map((optionId) => {
+                        return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+                    })
+                    .join('<br/>')}`
+              : ''
+      }
       `);
         },
         onChatItemEngagement: (tabId, messageId, engagement) => {
@@ -1758,13 +1653,13 @@ used as a context to generate this message.`,
                         mynahUI.updateStore(tabId, {
                             ...(optionalParts != null
                                 ? {
-                                    promptInputProgress: {
-                                        status: 'info',
-                                        ...(percentage > 50 ? { text: 'Almost done...' } : {}),
-                                        valueText: `${parseInt(percentage.toString())}%`,
-                                        value: percentage,
-                                    },
-                                }
+                                      promptInputProgress: {
+                                          status: 'info',
+                                          ...(percentage > 50 ? { text: 'Almost done...' } : {}),
+                                          valueText: `${parseInt(percentage.toString())}%`,
+                                          value: percentage,
+                                      },
+                                  }
                                 : {}),
                         });
                         return false;
@@ -1797,8 +1692,8 @@ used as a context to generate this message.`,
                     }
                     Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails)
-                            .map((key) => `${key}: <b>${cardDetails[key].toString()}</b>`)
-                            .join('<br/>')}
+              .map((key) => `${key}: <b>${cardDetails[key].toString()}</b>`)
+              .join('<br/>')}
           `);
                     mynahUI.addChatItem(tabId, { ...defaultFollowUps, messageId: generateUID() });
                     streamingMessageId = null;

@@ -1012,8 +1012,9 @@ export class MynahUI {
 
   public openDetailedList = (
     data: DetailedListSheetProps,
+    showBackButton?: boolean,
   ): {
-      update: (data: DetailedList) => void;
+      update: (data: DetailedList, showBackButton?: boolean) => void;
       close: () => void;
       changeTarget: (direction: 'up' | 'down', snapOnLastAndFirst?: boolean) => void;
       getTargetElementId: () => string | undefined;
@@ -1022,7 +1023,7 @@ export class MynahUI {
       detailedList: data.detailedList,
       events: data.events
     });
-    detailedListSheet.open();
+    detailedListSheet.open(showBackButton);
 
     const getTargetElementId = (): string | undefined => {
       const targetElement = detailedListSheet.detailedListWrapper.getTargetElement();

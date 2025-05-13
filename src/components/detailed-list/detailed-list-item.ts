@@ -6,18 +6,26 @@ import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { parseMarkdown } from '../../helper/marked';
+import { Card } from '../card/card';
+import { CardBody } from '../card/card-body';
+
+const TOOLTIP_DELAY = 350;
 
 export interface DetailedListItemWrapperProps {
   listItem: DetailedListItem;
   descriptionTextDirection?: 'ltr' | 'rtl';
   onSelect?: (detailedListItem: DetailedListItem) => void;
-  onActionClick?: (action: ChatItemButton) => void;
+  onClick?: (detailedListItem: DetailedListItem) => void;
+  onActionClick?: (action: ChatItemButton, detailedListItem?: DetailedListItem) => void;
   selectable?: boolean;
+  clickable?: boolean;
   textDirection?: 'row' | 'column';
 }
 
 export class DetailedListItemWrapper {
   render: ExtendedHTMLElement;
+  private tooltipOverlay: Overlay | null;
+  private tooltipTimeout: ReturnType<typeof setTimeout>;
   private readonly props: DetailedListItemWrapperProps;
   private actionMenuOverlay: Overlay | undefined;
 
@@ -30,12 +38,16 @@ export class DetailedListItemWrapper {
       attributes: {
         disabled: this.props.listItem.disabled ?? 'false',
         selectable: this.props.selectable ?? 'true',
+        clickable: this.props.clickable ?? 'false',
       },
       events: {
         click: (e) => {
           cancelEvent(e);
           if (this.props.listItem.disabled !== true && this.props.selectable !== false) {
             this.props.onSelect?.(this.props.listItem);
+          }
+          if (this.props.listItem.disabled !== true && this.props.clickable !== false) {
+            this.props.onClick?.(this.props.listItem);
           }
         }
       },
@@ -85,6 +97,32 @@ export class DetailedListItemWrapper {
               }
             ]
           : []),
+        ...(this.props.listItem.status != null
+          ? [
+              DomBuilder.getInstance().build({
+                type: 'div',
+                classNames: [
+                  'mynah-detailed-list-item-status',
+                `status-${this.props.listItem.status.status ?? 'default'}`,
+                ],
+                children: [
+                  ...(this.props.listItem.status.text != null ? [ { type: 'span', children: [ this.props.listItem.status.text ] } ] : []),
+                  ...(this.props.listItem.status.icon != null ? [ new Icon({ icon: this.props.listItem.status.icon }).render ] : []),
+                ],
+                ...(this.props.listItem.status.description != null
+                  ? {
+                      events: {
+                        mouseover: (e) => {
+                          cancelEvent(e);
+                          this.showTooltip(e.currentTarget, parseMarkdown(this.props.listItem.status?.description ?? '', { includeLineBreaks: true }));
+                        },
+                        mouseleave: this.hideTooltip
+                      }
+                    }
+                  : {})
+              })
+            ]
+          : []),
         ...(this.props.listItem.actions != null
           ? this.props.listItem.groupActions !== false && this.props.listItem.actions.length > 1
             ? [ {
@@ -96,19 +134,54 @@ export class DetailedListItemWrapper {
                   primary: false,
                   onClick: (e) => {
                     cancelEvent(e);
-                    this.showActionMenuOverlay();
+                    this.showActionMenuOverlay(this.props.listItem);
                   },
                 }).render ]
               } ]
             : [ {
                 type: 'div',
                 classNames: [ 'mynah-detailed-list-item-actions' ],
-                children: this.props.listItem.actions.map((action) => this.getActionButton(action, (this.props.listItem.groupActions === false)))
+                children: this.props.listItem.actions.map((action) => this.getActionButton(action, (this.props.listItem.groupActions === false), this.props.listItem))
               } ]
           : []),
       ]
     });
   }
+
+  private readonly showTooltip = (elm: HTMLElement, content: string): void => {
+    if (content.trim() !== undefined) {
+      clearTimeout(this.tooltipTimeout);
+      this.tooltipTimeout = setTimeout(() => {
+        this.tooltipOverlay = new Overlay({
+          background: true,
+          closeOnOutsideClick: false,
+          referenceElement: elm,
+          dimOutside: false,
+          removeOtherOverlays: false,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.CENTER,
+          children: [
+            new Card({
+              border: false,
+              children: [
+                new CardBody({
+                  body: content
+                }).render
+              ]
+            }).render
+          ],
+        });
+      }, TOOLTIP_DELAY);
+    }
+  };
+
+  public readonly hideTooltip = (): void => {
+    clearTimeout(this.tooltipTimeout);
+    if (this.tooltipOverlay !== null) {
+      this.tooltipOverlay?.close();
+      this.tooltipOverlay = null;
+    }
+  };
 
   public readonly setFocus = (isFocused: boolean, scrollIntoView: boolean): void => {
     if (isFocused) {
@@ -125,7 +198,7 @@ export class DetailedListItemWrapper {
     return this.props.listItem;
   };
 
-  private readonly showActionMenuOverlay = (): void => {
+  private readonly showActionMenuOverlay = (listItem?: DetailedListItem): void => {
     this.actionMenuOverlay = new Overlay({
       background: true,
       closeOnOutsideClick: true,
@@ -138,27 +211,35 @@ export class DetailedListItemWrapper {
         {
           type: 'div',
           classNames: [ 'mynah-detailed-list-item-actions-overlay' ],
-          children: this.props.listItem.actions?.map((action) => this.getActionButton(action, true))
+          children: this.props.listItem.actions?.map((action) => this.getActionButton(action, true, listItem))
         }
       ],
     });
   };
 
-  private getActionButton (action: ChatItemButton, showText?: boolean): ExtendedHTMLElement {
-    return new Button({
-      testId: testIds.detailedList.action,
-      icon: action.icon ? new Icon({ icon: action.icon }).render : undefined,
-      ...(showText === true ? { label: action.text } : {}),
-      tooltip: action.description,
-      primary: false,
-      border: false,
-      status: action.status,
-      onClick: (e) => {
-        cancelEvent(e);
-        this.props.onActionClick?.(action);
-        this.hideActionMenuOverlay();
-      },
-    }).render;
+  private getActionButton (action: ChatItemButton, showText?: boolean, listItem?: DetailedListItem): ExtendedHTMLElement {
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-detailed-list-item-actions-item' ],
+      children: [
+        new Button({
+          testId: testIds.detailedList.action,
+          icon: action.icon ? new Icon({ icon: action.icon }).render : undefined,
+          ...(showText === true ? { label: action.text } : {}),
+          tooltip: action.description,
+          disabled: action.disabled,
+          primary: false,
+          border: false,
+          confirmation: action.confirmation,
+          status: action.status,
+          onClick: (e) => {
+            cancelEvent(e);
+            this.props.onActionClick?.(action, listItem);
+            this.hideActionMenuOverlay();
+          },
+        }).render
+      ]
+    });
   }
 
   private readonly hideActionMenuOverlay = (): void => {
