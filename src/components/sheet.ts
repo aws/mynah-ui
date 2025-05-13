@@ -23,7 +23,7 @@ export interface SheetProps {
   description?: string;
   status?: {
     icon?: MynahIcons | MynahIconsType;
-    title: string;
+    title?: string;
     description?: string;
     status?: Status;
   };
@@ -191,7 +191,7 @@ export class Sheet {
 
   private readonly getStatus = (status?: {
     icon?: MynahIcons | MynahIconsType;
-    title: string;
+    title?: string;
     description?: string;
     status?: Status;
   }): ExtendedHTMLElement => status?.title != null || status?.description != null

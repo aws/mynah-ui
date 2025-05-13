@@ -265,7 +265,7 @@ export interface DetailedList {
     icon?: MynahIcons | MynahIconsType;
     status?: {
       icon?: MynahIcons | MynahIconsType;
-      title: string;
+      title?: string;
       description?: string;
       status?: Status;
     };
