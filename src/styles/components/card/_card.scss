@@ -52,7 +52,7 @@
 
     @each $status in $mynah-statuses {
         &.status-#{$status} {
-            &:before{
+            &:before {
                 content: '';
                 z-index: 0;
                 background-color: var(--mynah-color-status-#{$status});
