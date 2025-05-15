@@ -70,7 +70,7 @@
             background-color: var(--mynah-card-bg);
             color: var(--mynah-color-text-weak);
             z-index: var(--mynah-z-2);
-            transform: translateX(var(--mynah-border-width));
+            transform: translateX(calc(2 * var(--mynah-border-width)));
 
             > .mynah-ui-icon {
                 position: relative;
