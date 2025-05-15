@@ -310,6 +310,11 @@
                         &:first-child {
                             margin-top: 0;
                         }
+
+                        &:first-child,
+                        & + h#{$i} {
+                            margin-block-start: 0em;
+                        }
                     }
                 }
             }
