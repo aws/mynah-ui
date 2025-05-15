@@ -400,25 +400,30 @@ export interface ChatItemContent {
     icon?: MynahIcons | MynahIconsType;
     content: ChatItemContent;
   } | null;
+  summary?: {
+    isCollapsed?: boolean;
+    content?: ChatItemContent;
+    collapsedContent?: ChatItemContent[];
+  } | null;
   tabbedContent?: Array<ToggleOption & {
     content: ChatItemContent;
   }> | null;
   codeBlockActions?: CodeBlockActions | null;
+  fullWidth?: boolean;
+  padding?: boolean;
+  wrapCodes?: boolean;
+  muted?: boolean;
 }
 
 export interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
-  wrapCodes?: boolean;
   autoCollapse?: boolean;
   contentHorizontalAlignment?: 'default' | 'center';
   canBeVoted?: boolean;
   canBeDismissed?: boolean;
   title?: string;
-  fullWidth?: boolean;
-  padding?: boolean;
-  muted?: boolean;
   icon?: MynahIcons | MynahIconsType | CustomIcon;
   iconForegroundStatus?: Status;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
@@ -678,6 +683,7 @@ export interface ConfigTexts {
   save: string;
   cancel: string;
   submit: string;
+  add: string;
   pleaseSelect: string;
   stopGenerating: string;
   copyToClipboard: string;

@@ -8,6 +8,7 @@ import { DomBuilder } from '../../helper/dom';
 import { CustomIcon, MynahIcons } from '../icon';
 // ICONS
 import Q from './icons/q.svg';
+import DOT from './icons/dot.svg';
 import AT from './icons/at.svg';
 import MENU from './icons/menu.svg';
 import MINUS from './icons/minus.svg';
@@ -87,6 +88,7 @@ export class MynahUIIconImporter {
   private readonly portalId = 'mynah-ui-icons';
   private readonly defaultIconMappings = {
     Q,
+    DOT,
     AT,
     MENU,
     MINUS,

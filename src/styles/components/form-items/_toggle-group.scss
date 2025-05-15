@@ -29,7 +29,6 @@
                     color: var(--mynah-color-button-reverse);
                 }
                 &::after {
-                    transform: scale(1);
                     background-color: var(--mynah-color-button);
                     opacity: 1;
                 }
@@ -53,10 +52,19 @@
                 color: inherit;
             }
             &::after {
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
+                content: '';
+                transition: inherit;
+                position: absolute;
+                top: var(--mynah-border-width);
+                right: var(--mynah-border-width);
+                bottom: var(--mynah-border-width);
+                left: var(--mynah-border-width);
+                height: auto;
+                width: auto;
+                background-color: var(--mynah-color-border-default);
+                opacity: 0;
+                border-radius: inherit;
+                z-index: var(--mynah-z-1);
             }
             & + span {
                 position: relative;

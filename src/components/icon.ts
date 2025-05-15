@@ -26,6 +26,7 @@ export enum MynahIcons {
   FILE = 'file',
   FLASH = 'flash',
   DOC = 'doc',
+  DOT = 'dot',
   EXTERNAL = 'external',
   CANCEL = 'cancel',
   CANCEL_CIRCLE = 'cancel-circle',
@@ -100,19 +101,14 @@ export interface IconProps {
 }
 export class Icon {
   render: ExtendedHTMLElement;
+  props: IconProps;
   constructor (props: IconProps) {
+    this.props = props;
     StyleLoader.getInstance().load('components/_icon.scss');
     MynahUIIconImporter.getInstance();
 
     // Determine if the icon is a custom icon or a predefined one
-    const iconName = this.isCustomIcon(props.icon)
-      ? props.icon.name
-      : props.icon;
-
-    // If it's a custom icon, register it first
-    if (this.isCustomIcon(props.icon)) {
-      MynahUIIconImporter.getInstance().addCustomIcon(props.icon);
-    }
+    const iconName = this.getIconName();
 
     this.render = DomBuilder.getInstance().build({
       type: 'i',
@@ -125,7 +121,27 @@ export class Icon {
     });
   }
 
+  private readonly getIconName = (): string => {
+    // If it's a custom icon, register it first
+    if (this.isCustomIcon(this.props.icon)) {
+      MynahUIIconImporter.getInstance().addCustomIcon(this.props.icon);
+    }
+
+    return this.isCustomIcon(this.props.icon)
+      ? this.props.icon.name
+      : this.props.icon;
+  };
+
   private isCustomIcon (icon: MynahIcons | MynahIconsType | CustomIcon): icon is CustomIcon {
     return typeof icon === 'object' && 'base64Svg' in icon && 'name' in icon;
   }
+
+  public update = (icon: MynahIcons | MynahIconsType | CustomIcon): void => {
+    const oldIconName = this.getIconName();
+    this.render.removeClass(`mynah-ui-icon-${oldIconName}${this.props.subtract === true ? '-subtract' : ''}`);
+
+    this.props.icon = icon;
+    const newIconName = this.getIconName();
+    this.render.addClass(`mynah-ui-icon-${newIconName}${this.props.subtract === true ? '-subtract' : ''}`);
+  };
 }

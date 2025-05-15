@@ -6,6 +6,7 @@ export enum Commands {
     REPLACE_FOLLOWUPS = '/replace-followups',
     STATUS_CARDS = '/cards-with-status-colors',
     HEADER_TYPES = '/cards-header-types',
+    SUMMARY_CARD = '/cards-summary',
     FORM_CARD = '/card-with-a-form',
     CARD_WITH_MARKDOWN_LIST = '/card-with-markdown-list',
     CARD_WITH_PROGRESSIVE_FILE_LIST = '/card-with-progressive-file-list',

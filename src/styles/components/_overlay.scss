@@ -131,13 +131,13 @@
             overflow: hidden;
             z-index: var(--mynah-z-1);
             position: relative;
-            transform: translate3d(0, 0, 0) scale(0.85);
+            transform: translate3d(0, 0, 0) scale(0.95);
             transform-origin: var(--overlayInnerHorizontalOrigin) var(--overlayInnerVerticalOrigin);
             transition: var(--mynah-short-transition-rev);
             width: 100%;
         }
         &:before {
-            transform: translate3d(0, 0, 0) scale(0.85);
+            transform: translate3d(0, 0, 0) scale(0.95);
             transition: var(--mynah-short-transition-rev);
         }
         > .mynah-overlay-inner-container,

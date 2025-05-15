@@ -46,6 +46,8 @@ import {
     sampleProgressiveFileList,
     sampleMCPList,
     sampleMCPDetails,
+    mcpToolRunSampleCard,
+    mcpToolRunSampleCardInit,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -1415,6 +1417,17 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     break;
                 case Commands.HEADER_TYPES:
                     sampleHeaderTypes.forEach((ci) => mynahUI.addChatItem(tabId, ci));
+                    break;
+                case Commands.SUMMARY_CARD:
+                    const cardId = generateUID();
+                    mynahUI.addChatItem(tabId, {
+                        ...mcpToolRunSampleCardInit,
+                        messageId: cardId
+                    });
+                    setTimeout(()=>{
+                        mynahUI.updateChatAnswerWithMessageId(tabId, cardId, mcpToolRunSampleCard);
+                        mynahUI.addChatItem(tabId, defaultFollowUps);
+                    }, 3000)
                     break;
                 case Commands.STATUS_CARDS:
                     mynahUI.addChatItem(tabId, {

@@ -411,6 +411,27 @@
                 }
             }
         }
+
+        > .mynah-chat-item-card-summary {
+            display: flex;
+            flex-flow: column nowrap;
+            > .mynah-chat-item-card-summary-content {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+                > .mynah-chat-item-summary-button {
+                    margin-right: calc(-1 * var(--mynah-sizing-1));
+                }
+            }
+            > .mynah-chat-item-card-summary-collapsed-content {
+                display: none;
+                flex-flow: column nowrap;
+                gap: var(--mynah-chat-wrapper-spacing);
+            }
+            &.show-summary > .mynah-chat-item-card-summary-collapsed-content {
+                display: flex;
+            }
+        }
     }
 
     > .mynah-chat-item-followup-question {
@@ -498,11 +519,10 @@
         max-width: 100%;
         min-width: 100%;
         color: var(--mynah-color-text-weak);
-        &:not(.full-width):not(.mynah-chat-item-card-content-horizontal-align-center) {
-            margin-bottom: calc(-1 * var(--mynah-chat-wrapper-spacing) / 2);
-        }
+
         > .mynah-card > .mynah-card-body {
             font-size: var(--mynah-font-size-xsmall);
+            color: var(--mynah-color-text-weak);
         }
         &.mynah-chat-item-auto-collapse > .more-content-indicator {
             --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-color-bg);

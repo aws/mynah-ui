@@ -80,7 +80,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
                 type: 'span',
                 classNames: [ 'mynah-form-input-radio-check' ],
                 children: [
-                  new Icon({ icon: option.icon ?? MynahIcons.OK }).render
+                  new Icon({ icon: option.icon ?? MynahIcons.DOT }).render
                 ]
               },
               ...(option.label != null

@@ -49,6 +49,17 @@ export class ChatItemCard {
   private cardHeader: ExtendedHTMLElement | null = null;
   private cardTitle: ExtendedHTMLElement | null = null;
   private informationCard: ChatItemInformationCard | null = null;
+  private summary: {
+    wrapper: ExtendedHTMLElement;
+    visibleContent: ChatItemCard;
+    collapsedContent: ExtendedHTMLElement;
+    stateIcon: Icon;
+    showSummary: boolean;
+  } | null = null;
+
+  // private summaryContent: ExtendedHTMLElement | null = null;
+  // private summaryStateIcon: Icon | null = null;
+  // private showSummary: boolean = false;
   private tabbedCard: ChatItemTabbedCard | null = null;
   private cardIcon: Icon | null = null;
   private contentBody: ChatItemCardContent | null = null;
@@ -540,6 +551,102 @@ export class ChatItemCard {
         informationCard: this.props.chatItem.informationCard ?? {}
       });
       this.card?.render.insertChild('beforeend', this.informationCard.render);
+    }
+
+    /**
+     * Generate summary content if available
+     */
+    if (this.props.chatItem.summary === null && this.summary != null) {
+      this.summary.stateIcon?.render.remove();
+      this.summary.collapsedContent.remove();
+      this.summary.visibleContent.render.remove();
+      this.summary.wrapper.remove();
+      this.summary = null;
+    }
+    if (this.props.chatItem.summary != null) {
+      if (this.summary === null) {
+        const showSummary = !(this.props.chatItem.summary.isCollapsed !== false);
+        const collapsedContent = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-chat-item-card-summary-collapsed-content' ],
+          children: []
+        });
+        const visibleContent = new ChatItemCard({
+          tabId: this.props.tabId,
+          chatItem: {
+            type: ChatItemType.ANSWER,
+            ...this.props.chatItem.summary.content,
+            messageId: this.props.chatItem.messageId,
+          }
+        });
+        const stateIcon = new Icon({ icon: showSummary ? 'down-open' : 'right-open' });
+        this.summary = {
+          showSummary,
+          stateIcon,
+          collapsedContent,
+          visibleContent,
+          wrapper: DomBuilder.getInstance().build({
+            type: 'div',
+            classNames: [ 'mynah-chat-item-card-summary', 'mynah-card-inner-order-65', ...(showSummary ? [ 'show-summary' ] : []) ],
+            children: [
+              {
+                type: 'div',
+                classNames: [ 'mynah-chat-item-card-summary-content' ],
+                children: [
+                  new Button({
+                    classNames: [ 'mynah-chat-item-summary-button' ],
+                    status: 'clear',
+                    primary: false,
+                    onClick: () => {
+                      if (this.summary != null) {
+                        this.summary.showSummary = !this.summary.showSummary;
+                        if (this.summary.showSummary) {
+                          this.summary.wrapper.addClass('show-summary');
+                          this.summary.stateIcon?.update('down-open');
+                        } else {
+                          this.summary.wrapper.removeClass('show-summary');
+                          this.summary.stateIcon?.update('right-open');
+                        }
+                      }
+                    },
+                    icon: stateIcon.render
+                  }).render,
+                  visibleContent.render
+                ]
+              },
+              collapsedContent
+            ]
+          })
+        };
+      }
+
+      if (this.props.chatItem.summary.content != null) {
+        this.summary.visibleContent.updateCardStack(this.props.chatItem.summary.content);
+      }
+      if (this.props.chatItem.summary.collapsedContent != null) {
+        this.summary.collapsedContent.update({
+          children: this.props.chatItem.summary.collapsedContent?.map(summaryChatItem => new ChatItemCard({
+            tabId: this.props.tabId,
+            chatItem: {
+              type: ChatItemType.ANSWER,
+              ...summaryChatItem,
+              messageId: this.props.chatItem.messageId,
+            }
+          }).render)
+        });
+      }
+      if (this.props.chatItem.summary.isCollapsed != null) {
+        this.summary.showSummary = !this.props.chatItem.summary.isCollapsed;
+        if (this.summary.showSummary) {
+          this.summary.wrapper.addClass('show-summary');
+          this.summary.stateIcon?.update('down-open');
+        } else {
+          this.summary.wrapper.removeClass('show-summary');
+          this.summary.stateIcon?.update('right-open');
+        }
+      }
+
+      this.card?.render.insertChild('beforeend', this.summary.wrapper);
     }
 
     /**

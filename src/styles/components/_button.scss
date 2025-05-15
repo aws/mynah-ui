@@ -3,8 +3,8 @@
     &:not(.mynah-button-border) {
         border: none;
     }
-    min-width: var(--mynah-sizing-7);
-    min-height: var(--mynah-sizing-7);
+    min-width: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
+    min-height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
     border-radius: var(--mynah-button-radius);
     font-family: var(--mynah-font-family);
     font-size: var(--mynah-font-size-medium) !important;
@@ -17,7 +17,7 @@
     overflow: hidden;
     position: relative;
     transform: translateZ(0px);
-    padding: var(--mynah-sizing-1) calc(var(--mynah-sizing-1) + var(--mynah-sizing-half));
+    padding: var(--mynah-sizing-half) calc(var(--mynah-sizing-1) + var(--mynah-sizing-half));
     gap: var(--mynah-sizing-1);
     opacity: 1;
     background-color: transparent;
@@ -191,9 +191,6 @@
             margin: 0;
             flex: 1;
         }
-    }
-    > .mynah-button-confirmation-dialog-body {
-        //
     }
     > .mynah-button-confirmation-dialog-buttons {
         display: flex;

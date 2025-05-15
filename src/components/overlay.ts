@@ -65,6 +65,7 @@ export enum OverlayVerticalDirection {
 export interface OverlayProps {
   testId?: string;
   referenceElement?: HTMLElement | ExtendedHTMLElement;
+  removeIfReferenceElementRemoved?: boolean;
   referencePoint?: { top: number; left: number };
   children: Array<HTMLElement | ExtendedHTMLElement | DomBuilderObject>;
   horizontalDirection?: OverlayHorizontalDirection;
@@ -158,6 +159,22 @@ export class Overlay {
     } // Check right exceeding
     else if (lastContainerRect.left + lastContainerRect.width + OVERLAY_MARGIN > winWidth) {
       this.container.style.left = `${effectiveLeft - (lastContainerRect.left + lastContainerRect.width + OVERLAY_MARGIN - winWidth)}px`;
+    }
+
+    // Check if reference element is still on dom tree
+    if (MutationObserver != null && props.removeIfReferenceElementRemoved !== false && props.referenceElement != null) {
+      const observer = new MutationObserver(() => {
+        if (!document.contains(props.referenceElement as HTMLElement)) {
+          this.close();
+          observer.disconnect();
+        }
+      });
+
+      // Observe the document body for any subtree modifications
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
     }
 
     // we need to delay the class toggle

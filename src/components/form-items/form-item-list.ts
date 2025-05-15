@@ -47,14 +47,52 @@ export class FormItemListInternal extends FormItemListAbstract {
       type: 'div',
       classNames: [ 'mynah-form-item-list-rows-wrapper' ],
       children: [
-        this.addButton
+        DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-form-item-list-row' ],
+          children: [
+            ...this.props.items.filter(item => item.description != null || item.title != null).map(item => DomBuilder.getInstance().build({
+              type: 'div',
+              classNames: [ 'mynah-form-item-list-row-header' ],
+              children: [
+                ...(item.title !== undefined
+                  ? [ {
+                      type: 'span',
+                      classNames: [ 'mynah-form-input-label' ],
+                      children: [
+                        ...(item.title !== undefined ? [ item.title ] : []),
+                      ]
+                    } ]
+                  : []),
+                ...(item.description !== undefined
+                  ? [ {
+                      type: 'span',
+                      classNames: [ 'mynah-ui-form-item-description' ],
+                      children: [
+                        ...(item.description !== undefined ? [ item.description ] : []),
+                      ]
+                    } ]
+                  : []),
+              ]
+            })),
+            new Button({
+              classNames: [ 'mynah-form-item-list-row-remove-all-button' ],
+              primary: false,
+              disabled: true,
+              onClick: (e) => {
+                // Maybe remove all?
+              },
+              icon: new Icon({ icon: MynahIcons.CANCEL }).render
+            }).render
+          ]
+        })
       ]
     });
 
     this.addButton = new Button({
       classNames: [ 'mynah-form-item-list-add-button' ],
       primary: false,
-      label: 'Add',
+      label: Config.getInstance().config.texts.add,
       onClick: (e) => {
         cancelEvent(e);
         this.addRow();
@@ -69,8 +107,11 @@ export class FormItemListInternal extends FormItemListAbstract {
         {
           type: 'span',
           classNames: [ 'mynah-form-input-label' ],
-          children: [ ...(props.label !== undefined ? [ props.label ] : []) ]
+          children: [
+            ...(props.label !== undefined ? [ props.label ] : []),
+          ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
           classNames: [ 'mynah-form-item-list-wrapper' ],
@@ -80,7 +121,6 @@ export class FormItemListInternal extends FormItemListAbstract {
             this.addButton
           ]
         },
-        ...[ props.description !== undefined ? props.description : '' ]
       ]
     });
 
@@ -116,7 +156,7 @@ export class FormItemListInternal extends FormItemListAbstract {
 
     // Create form items
     this.props.items.forEach(item => {
-      item = { ...item, title: this.rows.size === 0 ? item.title : '' };
+      item = { ...item, title: undefined, description: undefined };
       formItems.push({
         ...item,
         value: entry?.value[item.id] as any

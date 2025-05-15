@@ -33,14 +33,15 @@
         justify-content: flex-end;
         align-items: center;
         z-index: var(--mynah-z-0);
-        min-width: var(--mynah-sizing-7);
-        min-height: var(--mynah-sizing-7);
+        min-width: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
+        min-height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
 
         &:not(.no-border) {
-            padding: var(--mynah-sizing-3);
+            padding: var(--mynah-sizing-2);
             border: var(--mynah-border-width) solid var(--mynah-color-border-default);
             background-color: var(--mynah-card-bg);
             border-radius: var(--mynah-input-radius);
+            transform: translateZ(0px);
         }
 
         &:has(.mynah-form-input:disabled) {

@@ -137,6 +137,11 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
                 description: 'ChatItem cards with different headers, padding, fullWidth and directive types.',
             },
             {
+                command: Commands.SUMMARY_CARD,
+                icon: MynahIcons.RIGHT_OPEN,
+                description: 'ChatItem card with summary field.',
+            },
+            {
                 command: Commands.FORM_CARD,
                 icon: MynahIcons.LIST_ADD,
                 description: 'ChatItem cards can have forms inside, including several input items and buttons!',

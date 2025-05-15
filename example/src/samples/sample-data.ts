@@ -565,6 +565,10 @@ export const defaultFollowUps: ChatItem = {
                 pillText: 'Cards with headers',
             },
             {
+                command: Commands.SUMMARY_CARD,
+                pillText: 'Card with summary field',
+            },
+            {
                 command: Commands.FORM_CARD,
                 pillText: 'Form items',
             },
@@ -786,7 +790,7 @@ _To send the form, mandatory items should be filled._`,
             id: 'is-monorepo',
             type: 'switch',
             label: 'Yes',
-            icon: 'deploy',
+            icon: 'code-block',
             title: 'Are you working in a monorepo project?',
             tooltip: "If you're working more on monorepos, check this",
         },
@@ -804,11 +808,13 @@ _To send the form, mandatory items should be filled._`,
                 {
                     id: itemId1,
                     title: 'Name',
+                    description: 'Variable key',
                     type: 'textinput',
                 },
                 {
                     id: itemId2,
                     title: 'Value',
+                    description: 'Variable value',
                     type: 'textinput',
                 },
             ],
@@ -1845,6 +1851,131 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
     },
 ];
 
+
+export const mcpToolRunSampleCardInit:ChatItem = // Summary Card
+{
+    padding: false,
+    type: ChatItemType.ANSWER,
+    summary: {
+        content: {
+            padding: false,
+            wrapCodes: true,
+            header: {
+                icon: MynahIcons.TOOLS,
+                fileList: {
+                    hideFileCount: true,
+                    fileTreeTitle: '',
+                    filePaths: ['Running'],
+                    details: {
+                        'Running': {
+                            description: 'Work in progress!',
+                            icon: null,
+                            labelIcon: 'progress',
+                            labelIconForegroundStatus: 'info',
+                            label: 'Filesystem tool search-files'
+                        },
+                    },
+                },
+            },
+        },
+        collapsedContent: [
+            {
+                fullWidth: true,
+                padding: false,
+                muted: true,
+                wrapCodes: true,
+                header: {
+                    body: 'Parameters',
+                },
+                body: `
+\`\`\`json
+{
+"query": "user:zakiyav",
+"perPage": 100,
+"page": 1
+}
+\`\`\`
+    `,
+                codeBlockActions: { copy: null, 'insert-to-cursor': null },
+            },
+        ],
+    },
+};
+export const mcpToolRunSampleCard:ChatItem = // Summary Card
+{
+    padding: false,
+    type: ChatItemType.ANSWER,
+    summary: {
+        content: {
+            padding: false,
+            wrapCodes: true,
+            header: {
+                icon: MynahIcons.TOOLS,
+                body: 'Ran Filesystem tool search-files',
+                fileList: null
+            },
+        },
+        collapsedContent: [
+            {
+                fullWidth: true,
+                padding: false,
+                muted: true,
+                wrapCodes: true,
+                header: {
+                    body: 'Parameters',
+                },
+                body: `
+\`\`\`json
+{
+"query": "user:zakiyav",
+"perPage": 100,
+"page": 1
+}
+\`\`\`
+    `,
+                codeBlockActions: { copy: null, 'insert-to-cursor': null },
+            },
+            {
+                fullWidth: true,
+                padding: false,
+                muted: true,
+                wrapCodes: false,
+                header: {
+                    body: 'Results',
+                },
+                body: `
+\`\`\`json
+{ 
+  "total_count": 1, 
+  "incomplete_results": false, 
+  "items": [
+    { 
+        "id": 69836433, 
+        "node_id": "MDasflJlcG9zaXRvcasdnk2OTgzN", 
+        "name": "Repo1", 
+        "full_name": "zakiyav/Repo1", 
+        "private": true, 
+        "owner": { 
+            "login": "zakiyav", 
+            "id": 5873805510, 
+            "node_id": "MasDQgb6VjXNlcjQ5MzU1sfasMTA=", 
+            "avatar_url": "https://avatars.githubus?v=4", 
+            "url": "https://api.github.com/users/zakiyav", 
+            "html_url": "https://github.com/zakiyav", 
+            "type": "User" 
+        } 
+        "default_branch": "master" 
+    } 
+  ]
+}
+\`\`\`
+    `,
+                codeBlockActions: { copy: null, 'insert-to-cursor': null },
+            },
+        ],
+    },
+};
+
 export const sampleMCPList: DetailedList = {
     selectable: 'clickable',
     header: {
@@ -1858,7 +1989,8 @@ export const sampleMCPList: DetailedList = {
                 icon: 'plus',
                 status: 'clear',
                 description: 'Add new MCP',
-            },{
+            },
+            {
                 id: 'refresh-mcp-list',
                 icon: 'refresh',
                 status: 'clear',
@@ -1875,6 +2007,7 @@ export const sampleMCPList: DetailedList = {
                     title: 'Built-in',
                     icon: 'ok-circled',
                     status: {
+                        description: '8 available tools',
                         icon: 'tools',
                         text: '8',
                     },
@@ -1891,6 +2024,7 @@ export const sampleMCPList: DetailedList = {
                     icon: 'ok-circled',
                     status: {
                         icon: 'tools',
+                        description: '26 available tools',
                         text: '26',
                     },
                     iconForegroundStatus: 'success',
@@ -1954,9 +2088,10 @@ export const sampleMCPList: DetailedList = {
                             confirmation: {
                                 cancelButtonText: 'Cancel',
                                 confirmButtonText: 'Delete',
-                                title:'Delete Filesystem MCP server',
-                                description: 'This configuration will be deleted and no longer available in Q. \n\n **This cannot be undone.**'
-                            }
+                                title: 'Delete Filesystem MCP server',
+                                description:
+                                    'This configuration will be deleted and no longer available in Q. \n\n **This cannot be undone.**',
+                            },
                         },
                         {
                             id: 'open-mcp-xx',
@@ -1979,7 +2114,7 @@ export const sampleMCPDetails = (title: string): DetailedList => {
             status: {
                 title: 'Detail of the issue',
                 icon: 'cancel-circle',
-                status: 'error'
+                status: 'error',
             },
             description:
                 'Extend the capabilities of Q with [MCP servers](#). Q automatically uses any MCP server that has been added. All MCPs are defaulted to "Ask before running". [Learn more](#)',
@@ -2003,8 +2138,9 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                             confirmation: {
                                 cancelButtonText: 'Cancel',
                                 confirmButtonText: 'Delete',
-                                title:'Delete Filesystem MCP server',
-                                description: 'This configuration will be deleted and no longer available in Q. \n\n This cannot be undone.'
+                                title: 'Delete Filesystem MCP server',
+                                description:
+                                    'This configuration will be deleted and no longer available in Q. \n\n This cannot be undone.',
                             },
                             text: `Delete ${title}`,
                             icon: 'trash',
@@ -2067,22 +2203,22 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                     {
                         persistent: true,
                         value: {
-                            'arg_key': '-y',
+                            arg_key: '-y',
                         },
                     },
                     {
                         value: {
-                            'arg_key': '@modelcontextprotocol/server-filesystem',
+                            arg_key: '@modelcontextprotocol/server-filesystem',
                         },
                     },
                     {
                         value: {
-                            'arg_key': '/Users/username/Desktop',
+                            arg_key: '/Users/username/Desktop',
                         },
                     },
                     {
                         value: {
-                            'arg_key': '/path/to/other/allowed/dir',
+                            arg_key: '/path/to/other/allowed/dir',
                         },
                     },
                 ],
@@ -2106,14 +2242,14 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                 value: [
                     {
                         value: {
-                            'env_var_name': 'some_env',
-                            'env_var_value': 'AJSKJLE!@)(UD',
+                            env_var_name: 'some_env',
+                            env_var_value: 'AJSKJLE!@)(UD',
                         },
                     },
                     {
                         value: {
-                            'env_var_name': 'some_other_env',
-                            'env_var_value': '12kjlkj!dddaa',
+                            env_var_name: 'some_other_env',
+                            env_var_value: '12kjlkj!dddaa',
                         },
                     },
                 ],
