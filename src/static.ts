@@ -459,8 +459,18 @@ export type TextBasedFormItem = BaseFormItem & {
   };
 };
 
-type OtherFormItem = BaseFormItem & {
-  type: 'select' | 'stars';
+type DropdownFormItem = BaseFormItem & {
+  type: 'select';
+  border?: boolean;
+  autoWidth?: boolean;
+  options?: Array<{
+    value: string;
+    label: string;
+  }>;
+};
+
+type Stars = BaseFormItem & {
+  type: 'stars';
   options?: Array<{
     value: string;
     label: string;
@@ -483,8 +493,8 @@ type CheckboxFormItem = BaseFormItem & {
   alternateTooltip?: string;
 };
 
-export type SingularFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;
-export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem | ListFormItem;
+export type SingularFormItem = TextBasedFormItem | DropdownFormItem | RadioGroupFormItem | CheckboxFormItem | Stars;
+export type ChatItemFormItem = TextBasedFormItem | DropdownFormItem | RadioGroupFormItem | CheckboxFormItem | ListFormItem | Stars;
 export type FilterOption = ChatItemFormItem;
 
 export interface ListFormItem {

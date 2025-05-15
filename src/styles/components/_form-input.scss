@@ -123,6 +123,18 @@
             }
         }
 
+        > .select-auto-width-sizer {
+            opacity: 0;
+            color: transparent;
+            padding-right: calc(var(--mynah-sizing-2) + 1em);
+            & + select {
+                position: absolute;
+                left: 0;
+                width: 100%;
+                cursor: pointer;
+            }
+        }
+
         &.mynah-form-input-toggle-group {
             justify-content: flex-start;
             > .mynah-form-input {

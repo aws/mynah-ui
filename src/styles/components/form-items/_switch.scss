@@ -21,7 +21,7 @@
         box-sizing: border-box;
         min-width: var(--mynah-sizing-9);
         min-height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
-        padding: calc(2 * var(--mynah-border-width));
+        padding: var(--mynah-border-width);
 
         > input {
             position: absolute;
@@ -70,6 +70,7 @@
             background-color: var(--mynah-card-bg);
             color: var(--mynah-color-text-weak);
             z-index: var(--mynah-z-2);
+            transform: translateX(var(--mynah-border-width));
 
             > .mynah-ui-icon {
                 position: relative;

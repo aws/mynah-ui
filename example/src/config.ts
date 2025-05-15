@@ -262,6 +262,27 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 value: 'false',
                 icon: 'code-block',
             },
+            {
+                type: 'select',
+                border: false,
+                autoWidth: true,
+                id: 'model-select',
+                placeholder: 'Auto',
+                options: [
+                    {
+                        label: 'Fast',
+                        value: 'fast'
+                    },
+                    {
+                        label: 'Fast 2.0 (Exp.)',
+                        value: 'fast-2-experimental'
+                    },
+                    {
+                        label: 'Decisive',
+                        value: 'decisive'
+                    },
+                ]
+            }
         ],
         promptInputButtons: [{
             id: 'test-prompt-input-button',

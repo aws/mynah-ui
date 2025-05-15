@@ -98,6 +98,8 @@ export class ChatItemFormItemsWrapper {
               wrapperTestId: testIds.chatItem.chatItemForm.itemSelectWrapper,
               optionTestId: testIds.chatItem.chatItemForm.itemSelect,
               label,
+              border: chatItemOption.border,
+              autoWidth: chatItemOption.autoWidth,
               description,
               value,
               icon: chatItemOption.icon,

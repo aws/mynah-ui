@@ -97,7 +97,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     type: ChatItemType.DIRECTIVE,
                     contentHorizontalAlignment: 'center',
                     fullWidth: true,
-                    body: `Pair programmer mode - ${optionsValues['pair-programmer-mode'] === 'true' ? 'ON' : 'OFF'}`,
+                    body: `
+Pair programmer mode - ${optionsValues['pair-programmer-mode'] === 'true' ? 'ON' : 'OFF'}
+Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] : 'auto'}
+`,
                 });
             }
             Log(`Prompt options change for tab <b>${tabId}</b>:<br/>
