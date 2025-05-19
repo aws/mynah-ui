@@ -2662,6 +2662,27 @@ mynahUI.addChatItem(tabId, {
   <img src="./img/data-model/chatItems/fillState-hover.png" alt="button fill when hover (on hover)" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
+#### Button / Action confirmations
+You can add confirmations on any `Action` by e.g. specifying the following for an Action:
+
+```typescript
+{
+    id: 'mcp-delete-tool',
+    icon: MynahIcons.TRASH,
+    text: 'Delete',
+    confirmation: {
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Delete',
+        title: 'Delete Filesystem MCP server',
+        description:
+            'This configuration will be deleted and no longer available in Q. \n\n **This cannot be undone.**',
+    },
+},
+```
+<p align="center">
+  <img src="./img/data-model/chatItems/confirmation.png" alt="confirmation" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
 ---
 
 ## `formItems`
