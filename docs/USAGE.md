@@ -581,10 +581,10 @@ mynahUI.updateTabDefaults({store: {
 
 # Show splash screen spinner (`toggleSplashLoader`)
 
-You can enable or disable window wide splash screen spinner with or without text.
+You can enable or disable window wide splash overlay with or without text.
 
 ```typescript
-mynahUI.toggleSplashLoader(true, 'Initializing');
+mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
 ```
 <p align="center">
   <img src="./img/splashLoader.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
