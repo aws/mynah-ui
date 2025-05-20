@@ -76,6 +76,9 @@
                 white-space: nowrap;
                 overflow: hidden;
             }
+            option {
+                background-color: var(--mynah-card-bg);
+            }
             option.empty-option {
                 font-style: italic;
                 opacity: 0.5;
