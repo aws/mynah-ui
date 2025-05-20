@@ -8,13 +8,33 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::935785792371:role/GithubNpmPublishAction
+          role-session-name: language-server-runtimes-github
+          aws-region: us-east-1
+        if: ${{ fromJson(steps.release.outputs.releases_created) }}
+
+      - name: Get npm access token
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            npmjs/github_automation
+          parse-json-secrets: true
+        if: ${{ fromJson(steps.release.outputs.releases_created) }}
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
+        if: ${{ fromJson(steps.release.outputs.releases_created) }}
+
+      - name: Set token
+        run: echo "NODE_AUTH_TOKEN=${{ env.NPMJS_GITHUB_AUTOMATION_TOKEN }}" >> $GITHUB_ENV
+        if: ${{ fromJson(steps.release.outputs.releases_created) }}
       - run: npm ci
       - run: npm run build
       - run: npm publish --tag beta --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
