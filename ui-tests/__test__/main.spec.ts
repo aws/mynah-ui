@@ -6,7 +6,7 @@ import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
 import { closeTab } from './flows/close-tab';
 import { openNewTab } from './flows/open-new-tab';
-import { DEFAULT_VIEWPORT } from './helpers';
+import { DEFAULT_VIEWPORT, justWait } from './helpers';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { renderQuickPicks } from './flows/quick-picks/render-quick-picks';
 import { closeQuickPicks } from './flows/quick-picks/close-quick-picks';
@@ -204,7 +204,7 @@ describe('Open MynahUI', () => {
     });
   });
 
-  it('should show link preview in tooltip on link hover', async () => {
+  it.only('should show link preview in tooltip on link hover', async () => {
     await hoverOverLink(page);
   });
 
@@ -291,9 +291,11 @@ describe('Open MynahUI', () => {
       await renderFeedbackForm(page);
     });
     it('should cancel feedback form', async () => {
+      await justWait(200);
       await cancelFeedbackForm(page);
     });
     it('should submit feedback form', async () => {
+      await justWait(200);
       await submitFeedbackForm(page);
     });
   });

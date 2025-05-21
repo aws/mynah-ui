@@ -1,8 +1,10 @@
 @import '../scss-variables';
 .mynah-button {
-    border: none;
-    min-width: var(--mynah-sizing-7);
-    min-height: var(--mynah-sizing-7);
+    &:not(.mynah-button-border) {
+        border: none;
+    }
+    min-width: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
+    min-height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
     border-radius: var(--mynah-button-radius);
     font-family: var(--mynah-font-family);
     font-size: var(--mynah-font-size-medium) !important;
@@ -15,7 +17,7 @@
     overflow: hidden;
     position: relative;
     transform: translateZ(0px);
-    padding: var(--mynah-sizing-1) calc(var(--mynah-sizing-1) + var(--mynah-sizing-half));
+    padding: var(--mynah-sizing-half) calc(var(--mynah-sizing-1) + var(--mynah-sizing-half));
     gap: var(--mynah-sizing-1);
     opacity: 1;
     background-color: transparent;
@@ -73,7 +75,9 @@
                 &::after {
                     color: var(--mynah-color-status-#{$status});
                 }
-                border: var(--mynah-border-width) solid var(--mynah-color-status-#{$status}) !important;
+                .mynah-button-border {
+                    border: var(--mynah-border-width) solid var(--mynah-color-status-#{$status}) !important;
+                }
             }
         }
     }
@@ -164,5 +168,35 @@
         display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
+    }
+}
+
+.mynah-button-confirmation-dialog-container {
+    padding: var(--mynah-sizing-3);
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--mynah-sizing-1);
+    max-width: 90vw;
+    > .mynah-button-confirmation-dialog-header {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: var(--mynah-sizing-2);
+        > i:first-child {
+            color: var(--mynah-color-status-warning);
+            flex-shrink: 0;
+        }
+        > h4:nth-child(2) {
+            margin: 0;
+            flex: 1;
+        }
+    }
+    > .mynah-button-confirmation-dialog-buttons {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-end;
+        align-items: center;
+        gap: var(--mynah-sizing-2);
     }
 }

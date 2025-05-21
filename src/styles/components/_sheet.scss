@@ -69,7 +69,7 @@
     transform: translate3d(0, 0, 0);
     display: flex;
     flex-flow: column;
-    gap: var(--mynah-sizing-4);
+    gap: var(--mynah-sizing-3);
     align-items: stretch;
     transform-origin: right bottom;
     z-index: var(--mynah-z-1);
@@ -78,9 +78,10 @@
     border-top-right-radius: var(--mynah-card-radius);
     border-top-left-radius: var(--mynah-card-radius);
     border-bottom: none;
+    // TODO: Move to css-custom-properties
     box-shadow: 0px -25px 20px -25px rgba(0, 0, 0, 0.15);
     background-color: var(--mynah-color-bg);
-    padding: var(--mynah-sizing-4);
+    padding: var(--mynah-sizing-3);
     min-height: 20vh;
 
     &.mynah-sheet-fullscreen {
@@ -97,9 +98,32 @@
         display: flex;
         box-sizing: border-box;
         align-items: center;
+        > .mynah-sheet-back-button {
+            min-width: auto;
+            max-width: fit-content;
+            padding-left: 0;
+            &::after {
+                display: none;
+            }
+        }
         > h4 {
             flex: 1;
             margin: 0;
+        }
+
+        & + .mynah-sheet-header-status {
+            box-shadow: none;
+            > .mynah-ui-title-description-icon-wrapper {
+                row-gap: 0;
+                > .mynah-ui-title-description-icon-title > .mynah-sheet-header-status-title {
+                    > *:first-child {
+                        margin-top: 0;
+                    }
+                    > *:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+            }
         }
     }
     > .mynah-sheet-description {

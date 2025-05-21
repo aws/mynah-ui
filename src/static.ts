@@ -4,6 +4,7 @@
  */
 
 import { CheckboxAbstract, CheckboxProps } from './components/form-items/checkbox';
+import { FormItemListAbstract, FormItemListProps } from './components/form-items/form-item-list';
 import { SwitchAbstract, SwitchProps } from './components/form-items/switch';
 import { CustomIcon, MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
@@ -197,6 +198,7 @@ export enum MynahEventNames {
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   OPEN_SHEET = 'openSheet',
   CLOSE_SHEET = 'closeSheet',
+  UPDATE_SHEET = 'updateSheet',
   FILE_CLICK = 'fileClick',
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
@@ -219,7 +221,8 @@ export enum MynahPortalNames {
   WRAPPER = 'wrapper',
   SIDE_NAV = 'sideNav',
   OVERLAY = 'overlay',
-  SHEET = 'sheet'
+  SHEET = 'sheet',
+  LOADER = 'loader',
 };
 
 export type PromptAttachmentType = 'code' | 'markdown';
@@ -255,13 +258,21 @@ export enum ChatItemType {
 
 export interface DetailedList {
   filterOptions?: FilterOption[] | null;
+  filterActions?: ChatItemButton[];
   list?: DetailedListItemGroup[];
   header?: {
     title?: string;
     icon?: MynahIcons | MynahIconsType;
+    status?: {
+      icon?: MynahIcons | MynahIconsType;
+      title?: string;
+      description?: string;
+      status?: Status;
+    };
     description?: string;
+    actions?: TabBarMainAction[];
   };
-  selectable?: boolean;
+  selectable?: boolean | 'clickable';
   textDirection?: 'row' | 'column';
 }
 
@@ -277,12 +288,20 @@ export interface DetailedListItem {
   name?: string;
   id?: string;
   icon?: MynahIcons | MynahIconsType;
+  iconForegroundStatus?: Status;
   description?: string;
   disabled?: boolean;
   followupText?: string;
   actions?: ChatItemButton[];
+  groupActions?: boolean;
   children?: DetailedListItemGroup[];
   keywords?: string[];
+  status?: {
+    status?: Status;
+    description?: string;
+    icon?: MynahIcons | MynahIconsType;
+    text?: string;
+  };
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
@@ -381,25 +400,30 @@ export interface ChatItemContent {
     icon?: MynahIcons | MynahIconsType;
     content: ChatItemContent;
   } | null;
+  summary?: {
+    isCollapsed?: boolean;
+    content?: ChatItemContent;
+    collapsedContent?: ChatItemContent[];
+  } | null;
   tabbedContent?: Array<ToggleOption & {
     content: ChatItemContent;
   }> | null;
   codeBlockActions?: CodeBlockActions | null;
+  fullWidth?: boolean;
+  padding?: boolean;
+  wrapCodes?: boolean;
+  muted?: boolean;
 }
 
 export interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
   snapToTop?: boolean;
-  wrapCodes?: boolean;
   autoCollapse?: boolean;
   contentHorizontalAlignment?: 'default' | 'center';
   canBeVoted?: boolean;
   canBeDismissed?: boolean;
   title?: string;
-  fullWidth?: boolean;
-  padding?: boolean;
-  muted?: boolean;
   icon?: MynahIcons | MynahIconsType | CustomIcon;
   iconForegroundStatus?: Status;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
@@ -435,8 +459,18 @@ export type TextBasedFormItem = BaseFormItem & {
   };
 };
 
-type OtherFormItem = BaseFormItem & {
-  type: 'select' | 'stars';
+type DropdownFormItem = BaseFormItem & {
+  type: 'select';
+  border?: boolean;
+  autoWidth?: boolean;
+  options?: Array<{
+    value: string;
+    label: string;
+  }>;
+};
+
+type Stars = BaseFormItem & {
+  type: 'stars';
   options?: Array<{
     value: string;
     label: string;
@@ -459,14 +493,32 @@ type CheckboxFormItem = BaseFormItem & {
   alternateTooltip?: string;
 };
 
-export type ChatItemFormItem = TextBasedFormItem | OtherFormItem | RadioGroupFormItem | CheckboxFormItem;
+export type SingularFormItem = TextBasedFormItem | DropdownFormItem | RadioGroupFormItem | CheckboxFormItem | Stars;
+export type ChatItemFormItem = TextBasedFormItem | DropdownFormItem | RadioGroupFormItem | CheckboxFormItem | ListFormItem | Stars;
 export type FilterOption = ChatItemFormItem;
+
+export interface ListFormItem {
+  type: 'list';
+  id: string;
+  mandatory?: boolean;
+  title?: string;
+  description?: string;
+  tooltip?: string;
+  icon?: MynahIcons | MynahIconsType;
+  items: SingularFormItem[];
+  value: ListItemEntry[];
+};
+
+export interface ListItemEntry {
+  persistent?: boolean;
+  value: Record<string, string>;
+}
 
 export interface ChatPrompt {
   prompt?: string;
   escapedPrompt?: string;
   command?: string;
-  options?: Record<string, string>;
+  options?: Record<string, string | Array<Record<string, string>>>;
   context?: string[] | QuickActionCommand[];
 }
 
@@ -491,7 +543,13 @@ export interface Action {
   id: string;
   disabled?: boolean;
   description?: string;
-  status?: Status;
+  confirmation?: {
+    confirmButtonText: string;
+    cancelButtonText: string;
+    title: string;
+    description?: string;
+  };
+  status?: 'main' | 'primary' | 'clear' | 'dimmed-clear' | Status;
   icon?: MynahIcons | MynahIconsType;
 }
 export interface TabBarAction extends Action {}
@@ -635,6 +693,7 @@ export interface ConfigTexts {
   save: string;
   cancel: string;
   submit: string;
+  add: string;
   pleaseSelect: string;
   stopGenerating: string;
   copyToClipboard: string;
@@ -662,6 +721,7 @@ export interface ComponentOverrides {
   Select?: new(props: SelectProps) => ExtractMethods<SelectAbstract>;
   TextInput?: new(props: TextInputProps) => ExtractMethods<TextInputAbstract>;
   TextArea?: new(props: TextAreaProps) => ExtractMethods<TextAreaAbstract>;
+  FormItemList?: new(props: FormItemListProps) => ExtractMethods<FormItemListAbstract>;
 };
 export interface ConfigOptions {
   feedbackOptions: Array<{

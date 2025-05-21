@@ -44,6 +44,10 @@ import {
     exampleVoteChatItem,
     sampleHeaderTypes,
     sampleProgressiveFileList,
+    sampleMCPList,
+    sampleMCPDetails,
+    mcpToolRunSampleCard,
+    mcpToolRunSampleCardInit,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -93,7 +97,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     type: ChatItemType.DIRECTIVE,
                     contentHorizontalAlignment: 'center',
                     fullWidth: true,
-                    body: `Pair programmer mode - ${optionsValues['pair-programmer-mode'] === 'true' ? 'ON' : 'OFF'}`,
+                    body: `
+Pair programmer mode - ${optionsValues['pair-programmer-mode'] === 'true' ? 'ON' : 'OFF'}
+Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] : 'auto'}
+`,
                 });
             }
             Log(`Prompt options change for tab <b>${tabId}</b>:<br/>
@@ -118,7 +125,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             if (buttonId.match('mcp-')) {
                 if (buttonId === 'mcp-init') {
                     mcpButton.description = `No MCP servers.
-  
+
   Click to configure.`;
                     mcpButton.id = 'mcp-no-server';
                 } else if (buttonId === 'mcp-no-server') {
@@ -141,6 +148,61 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 mynahUI.updateTabDefaults({
                     store: {
                         tabBarButtons: [mcpButton, ...tabbarButtons],
+                    },
+                });
+
+                const mcpSheet = mynahUI.openDetailedList({
+                    detailedList: sampleMCPList,
+                    events: {
+                        onFilterValueChange: (filterValues: Record<string, any>, isValid: boolean) => {
+                            Log('Filter changed');
+                        },
+                        onFilterActionClick: (action, filterValues?: Record<string, any>, isValid?: boolean) => {
+                            Log(`Filter action clicked: <b>${action.id}</b>`);
+                            Log(`Filters: <b>${JSON.stringify(filterValues ?? {})}</b>`);
+                            if (action.id === 'cancel-mcp') {
+                                mcpSheet.update(sampleMCPList, false);
+                            } else if (action.id === 'save-mcp') {
+                                mynahUI.toggleSplashLoader(true, 'Saving **the MCP**');
+                                setTimeout(() => {
+                                    mynahUI.toggleSplashLoader(false);
+                                    mcpSheet.update(sampleMCPList, false);
+                                }, 3000);
+                            }
+                        },
+                        onKeyPress: (e) => {
+                            Log('Key pressed');
+                            if (e.key === KeyMap.ESCAPE) {
+                                close();
+                            }
+                        },
+                        onItemSelect: (detailedListItem) => {
+                            Log('Item selected');
+                        },
+                        onItemClick: (detailedListItem) => {
+                            Log(`Item clicked: <b>${detailedListItem.name}</b>`);
+                            mcpSheet.update(sampleMCPDetails(detailedListItem.title ?? ''), true);
+                        },
+                        onActionClick: (button, detailedListItem) => {
+                            if (button.id === 'open-mcp-xx') {
+                                mcpSheet.update(sampleMCPDetails(detailedListItem?.title ?? ''), true);
+                            }
+                            Log('Action clicked');
+                        },
+                        onClose: () => {
+                            Log('Sheet closed');
+                        },
+                        onTitleActionClick: (button) => {
+                            if (button.id === 'back-to-mcp-list') {
+                                mcpSheet.update(sampleMCPList);
+                            }
+                            if (button.id === 'mcp-delete-tool') {
+                                mcpSheet.update(sampleMCPList, false);
+                            }
+                        },
+                        onBackClick: () => {
+                            mcpSheet.update(sampleMCPList, false);
+                        },
                     },
                 });
             } else if (buttonId === 'clear') {
@@ -179,7 +241,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                 mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
                 setTimeout(() => {
                     mynahUI.toggleSplashLoader(false);
-                }, 10000);
+                }, 5000);
             } else if (buttonId === 'custom-data-check') {
                 // Use for custom temporary checks
                 mynahUI.addChatItem(tabId, {
@@ -291,20 +353,8 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                     {
                                         id: generateUID(),
                                         icon: MynahIcons.CHECK_LIST,
-                                        description: `
-                  \`some very long markdown string goes
-                  \n
-                  here to see if it gets cut off properly as expected, with an ellipsis through css.some very long markdown 
-                  \n
-                  string goes here to see if it gets cut off properly as expected, with an ellipsis through css.some very 
-                  
-                  long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.some v
-                  
-                  ery long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.som
-                  
-                  e very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.some
-                  
-                  very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.\``,
+                                        description: `some very long markdown string goes
+here to see if it gets cut off properly as expected, with an ellipsis through css.some very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.some very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css. some very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css. some very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css. some very long markdown string goes here to see if it gets cut off properly as expected, with an ellipsis through css.`,
                                         actions: [
                                             {
                                                 id: generateUID(),
@@ -593,7 +643,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                 groupName: 'Today',
                                 children: [
                                     {
-                                        title: '“Always add comments to my lines of Rust”',
+                                        title: 'Always add comments to my lines of Rust',
                                         description: 'Created by *user* at **2:45pm** on 1/2/24',
                                         actions: [
                                             {
@@ -609,7 +659,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Always add comments to my lines of Rust”',
+                                        title: 'Always add comments to my lines of Rust',
                                         description: 'Created by user at **2:45pm** on 1/2/24',
                                         actions: [
                                             {
@@ -630,7 +680,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                 groupName: 'Yesterday',
                                 children: [
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -646,7 +696,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -662,7 +712,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -678,7 +728,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -699,7 +749,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                 groupName: '4 days ago',
                                 children: [
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -715,7 +765,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -736,7 +786,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                 groupName: 'Last week',
                                 children: [
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -752,7 +802,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -768,7 +818,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -784,7 +834,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -800,7 +850,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                                         ],
                                     },
                                     {
-                                        title: '“Another memory”',
+                                        title: 'Another memory',
                                         description: 'Inferred by Q at 2:45pm on 1/2/24',
                                         actions: [
                                             {
@@ -1370,6 +1420,17 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
                     break;
                 case Commands.HEADER_TYPES:
                     sampleHeaderTypes.forEach((ci) => mynahUI.addChatItem(tabId, ci));
+                    break;
+                case Commands.SUMMARY_CARD:
+                    const cardId = generateUID();
+                    mynahUI.addChatItem(tabId, {
+                        ...mcpToolRunSampleCardInit,
+                        messageId: cardId
+                    });
+                    setTimeout(()=>{
+                        mynahUI.updateChatAnswerWithMessageId(tabId, cardId, mcpToolRunSampleCard);
+                        mynahUI.addChatItem(tabId, defaultFollowUps);
+                    }, 3000)
                     break;
                 case Commands.STATUS_CARDS:
                     mynahUI.addChatItem(tabId, {

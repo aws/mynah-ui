@@ -72,6 +72,7 @@ export default {
       itemRadioWrapper: 'chat-item-form-item-radio-wrapper',
       itemRadio: 'chat-item-form-item-radio',
       itemInput: 'chat-item-form-item-text-input',
+      itemList: 'chat-item-form-item-list',
       itemStarsWrapper: 'chat-item-form-item-stars-wrapper',
       itemStars: 'chat-item-form-item-stars',
       itemTextArea: 'chat-item-form-item-textarea',
@@ -126,7 +127,8 @@ export default {
   },
   detailedList: {
     action: 'detailed-list-action',
-    actionMenu: 'detailed-list-action-menu'
+    actionMenu: 'detailed-list-action-menu',
+    status: 'detailed-list-status'
   },
   tabBar: {
     wrapper: 'tab-bar-wrapper',

@@ -17,11 +17,13 @@ export interface SelectProps {
   classNames?: string[];
   attributes?: Record<string, string>;
   handleIcon?: MynahIcons | MynahIconsType;
+  border?: boolean;
   icon?: MynahIcons | MynahIconsType;
   label?: HTMLElement | ExtendedHTMLElement | string;
   description?: ExtendedHTMLElement;
   value?: string;
   optional?: boolean;
+  autoWidth?: boolean;
   options?: SelectOption[];
   placeholder?: string;
   onChange?: (value: string) => void;
@@ -37,19 +39,31 @@ export abstract class SelectAbstract {
 }
 
 export class SelectInternal {
+  private readonly props: SelectProps;
   private readonly selectElement: ExtendedHTMLElement;
+  private readonly autoWidthSizer: ExtendedHTMLElement;
   render: ExtendedHTMLElement;
   constructor (props: SelectProps) {
+    this.props = props;
     StyleLoader.getInstance().load('components/_form-input.scss');
+    this.autoWidthSizer = DomBuilder.getInstance().build({
+      type: 'span',
+      classNames: [ 'select-auto-width-sizer' ],
+      children: [ this.props.options?.find(option => option.value === this.props.value)?.label ?? this.props.placeholder ?? '' ]
+    });
     this.selectElement = DomBuilder.getInstance().build({
       type: 'select',
       testId: props.wrapperTestId,
-      classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
+      classNames: [ 'mynah-form-input', ...(props.classNames ?? []), ...(props.autoWidth === true ? [ 'auto-width' ] : []) ],
       events: {
         change: (e) => {
+          const value = (e.currentTarget as HTMLSelectElement).value;
           if (props.onChange !== undefined) {
-            props.onChange((e.currentTarget as HTMLSelectElement).value);
+            props.onChange(value);
           }
+          this.autoWidthSizer.update({
+            children: [ this.props.options?.find(option => option.value === value)?.label ?? this.props.placeholder ?? '' ]
+          });
         }
       },
       children:
@@ -78,24 +92,28 @@ export class SelectInternal {
           classNames: [ 'mynah-form-input-label' ],
           children: [ ...(props.label !== undefined ? [ props.label ] : []) ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
-          classNames: [ 'mynah-form-input-container' ],
+          classNames: [ 'mynah-form-input-container', ...(props.border === false ? [ 'no-border' ] : []) ],
           ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
           children: [
             ...(props.icon
               ? [ new Icon({ icon: props.icon, classNames: [ 'mynah-form-input-icon' ] }).render ]
               : []),
+            ...(props.autoWidth !== undefined ? [ this.autoWidthSizer ] : []),
             this.selectElement,
             new Icon({ icon: props.handleIcon ?? MynahIcons.DOWN_OPEN, classNames: [ 'mynah-select-handle' ] }).render ]
-        },
-        ...[ props.description !== undefined ? props.description : '' ]
+        }
       ]
     });
   }
 
   setValue = (value: string): void => {
     this.selectElement.value = value;
+    this.autoWidthSizer.update({
+      children: [ this.props.options?.find(option => option.value === value)?.label ?? this.props.placeholder ?? '' ]
+    });
   };
 
   getValue = (): string => {

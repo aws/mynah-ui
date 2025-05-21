@@ -46,6 +46,10 @@ export class SourceLinkHeader {
                 this.showLinkPreview(e, props.sourceLink);
               },
               mouseleave: this.hideLinkPreview,
+              focus: (e) => {
+                this.showLinkPreview(e, props.sourceLink);
+              },
+              blur: this.hideLinkPreview,
             }
           }
         : {}),

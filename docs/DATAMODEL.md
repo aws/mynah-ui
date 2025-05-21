@@ -1063,18 +1063,84 @@ interface ChatItemButton {
   icon?: MynahIcons;
 }
 
-interface ChatItemFormItem {
+type ChatItemFormItem = TextBasedFormItem | DropdownFormItem | RadioGroupFormItem | CheckboxFormItem | ListFormItem | Stars;
+
+export interface ValidationPattern {
+  pattern: string | RegExp;
+  errorMessage?: string;
+}
+
+interface BaseFormItem {
   id: string;
-  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup';
   mandatory?: boolean;
-  icon?: MynahIcons;
   title?: string;
   placeholder?: string;
   value?: string;
+  description?: string;
+  tooltip?: string;
+  icon?: MynahIcons | MynahIconsType;
+}
+
+export type TextBasedFormItem = BaseFormItem & {
+  type: 'textarea' | 'textinput' | 'numericinput' | 'email';
+  autoFocus?: boolean;
+  checkModifierEnterKeyPress?: boolean;
+  validationPatterns?: {
+    operator?: 'and' | 'or';
+    genericValidationErrorMessage?: string;
+    patterns: ValidationPattern[];
+  };
+};
+
+type DropdownFormItem = BaseFormItem & {
+  type: 'select';
+  border?: boolean;
+  autoWidth?: boolean;
   options?: Array<{
     value: string;
     label: string;
   }>;
+};
+
+type Stars = BaseFormItem & {
+  type: 'stars';
+  options?: Array<{
+    value: string;
+    label: string;
+  }>;
+};
+
+type RadioGroupFormItem = BaseFormItem & {
+  type: 'radiogroup' | 'toggle';
+  options?: Array<{
+    value: string;
+    label?: string;
+    icon?: MynahIcons | MynahIconsType;
+  }>;
+};
+
+type CheckboxFormItem = BaseFormItem & {
+  type: 'switch' | 'checkbox';
+  value?: 'true' | 'false';
+  label?: string;
+  alternateTooltip?: string;
+};
+
+export interface ListFormItem {
+  type: 'list';
+  id: string;
+  mandatory?: boolean;
+  title?: string;
+  description?: string;
+  tooltip?: string;
+  icon?: MynahIcons | MynahIconsType;
+  items: SingularFormItem[];
+  value: ListItemEntry[];
+};
+
+export interface ListItemEntry {
+  persistent?: boolean;
+  value: Record<string, string>;
 }
 
 interface FileNodeAction {
@@ -1141,10 +1207,13 @@ type CodeBlockActions = Record<'copy' | 'insert-to-cursor' | string, CodeBlockAc
 // ################################# 
 interface ChatItemContent {
   header?: (ChatItemContent & {
-    icon?: MynahIcons | MynahIconsType;
+    icon?: MynahIcons | MynahIconsType | CustomIcon;
     iconStatus?: 'main' | 'primary' | 'clear' | Status;
+    iconForegroundStatus?: Status;
     status?: {
       status?: Status;
+      position?: 'left' | 'right';
+      description?: string;
       icon?: MynahIcons | MynahIconsType;
       text?: string;
     };
@@ -1163,6 +1232,9 @@ interface ChatItemContent {
   fileList?: {
     fileTreeTitle?: string;
     rootFolderTitle?: string;
+    rootFolderStatusIcon?: MynahIcons | MynahIconsType;
+    rootFolderStatusIconForegroundStatus?: Status;
+    rootFolderLabel?: string;
     filePaths?: string[];
     deletedFiles?: string[];
     flatList?: boolean;
@@ -1179,17 +1251,26 @@ interface ChatItemContent {
     title?: string;
     status?: {
       status?: Status;
-      icon?: MynahIcons;
+      icon?: MynahIcons | MynahIconsType;
       body?: string;
     };
     description?: string;
-    icon?: MynahIcons;
+    icon?: MynahIcons | MynahIconsType;
     content: ChatItemContent;
+  } | null;
+  summary?: {
+    isCollapsed?: boolean;
+    content?: ChatItemContent;
+    collapsedContent?: ChatItemContent[];
   } | null;
   tabbedContent?: Array<ToggleOption & {
     content: ChatItemContent;
   }> | null;
   codeBlockActions?: CodeBlockActions | null;
+  fullWidth?: boolean;
+  padding?: boolean;
+  wrapCodes?: boolean;
+  muted?: boolean;
 }
 
 interface ChatItem extends ChatItemContent {
@@ -1197,12 +1278,10 @@ interface ChatItem extends ChatItemContent {
   messageId?: string;
   snapToTop?: boolean;
   autoCollapse?: boolean;
+  contentHorizontalAlignment?: 'default' | 'center';
   canBeVoted?: boolean;
   canBeDismissed?: boolean;
   title?: string;
-  fullWidth?: boolean;
-  padding?: boolean;
-  muted?: boolean;
   icon?: MynahIcons | MynahIconsType | CustomIcon;
   iconForegroundStatus?: Status;
   iconStatus?: 'main' | 'primary' | 'clear' | Status;
@@ -2017,6 +2096,8 @@ mynahUI.addChatItem(tabId, {
   <img src="./img/data-model/chatItems/shimmer.gif" alt="shimmer" style="max-width:200px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
+---
+
 ## `padding`
 It will allow you to control the padding, by default it is `true`. If you set it to `false`, it will not show any paddings around the contents.
 
@@ -2038,6 +2119,31 @@ mkdir -p src/ lalalaaaa
 
 **Note:** Keep in mind that, if the `padding` is set to `false`, code blocks inside body will not show language if there are also no actions specified for them. So, if you turn of `copy` and `insert-to-cursor` by setting them to `null` in `codeBlockActions`, it will also hide the language bar if the card padding is false.
 
+---
+
+## `summary`
+Specifying summary will render a clickable header with collapsible content.
+
+```typescript
+mynahUI.addChatItem(tabId, {
+  padding: false,
+  type: ChatItemType.ANSWER,
+  summary: {
+      content: {
+        // Some ChatItem here
+      },
+      collapsedContent: [
+        // One or multiple ChatItems here
+      ]
+  }
+});
+`,
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/summary.png" alt="summary" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ---
 
@@ -2554,6 +2660,27 @@ mynahUI.addChatItem(tabId, {
 <p align="center">
   <img src="./img/data-model/chatItems/fillState.png" alt="button fill when hover" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
   <img src="./img/data-model/chatItems/fillState-hover.png" alt="button fill when hover (on hover)" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+#### Button / Action confirmations
+You can add confirmations on any `Action` by e.g. specifying the following for an Action:
+
+```typescript
+{
+    id: 'mcp-delete-tool',
+    icon: MynahIcons.TRASH,
+    text: 'Delete',
+    confirmation: {
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Delete',
+        title: 'Delete Filesystem MCP server',
+        description:
+            'This configuration will be deleted and no longer available in Q. \n\n **This cannot be undone.**',
+    },
+},
+```
+<p align="center">
+  <img src="./img/data-model/chatItems/confirmation.png" alt="confirmation" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---

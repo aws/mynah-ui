@@ -100,6 +100,7 @@ export class TextInputInternal extends TextInputAbstract {
           classNames: [ 'mynah-form-input-label' ],
           children: [ ...(props.label !== undefined ? [ props.label ] : []) ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
           classNames: [ 'mynah-form-input-container' ],
@@ -111,7 +112,6 @@ export class TextInputInternal extends TextInputAbstract {
             this.inputElement,
           ]
         },
-        ...[ props.description !== undefined ? props.description : '' ],
         this.validationErrorBlock
       ]
     });

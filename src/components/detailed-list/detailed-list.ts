@@ -9,6 +9,7 @@ import { chunkArray } from '../../helper/quick-pick-data-handler';
 import { ChatItemFormItemsWrapper } from '../chat-item/chat-item-form-items';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { generateUID } from '../../main';
+import { Card } from '../card/card';
 
 export interface DetailedListWrapperProps {
   detailedList: DetailedList;
@@ -16,13 +17,17 @@ export interface DetailedListWrapperProps {
   onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
   onGroupActionClick?: (action: ChatItemButton) => void;
   onItemSelect?: (detailedListItem: DetailedListItem) => void;
-  onItemActionClick?: (action: ChatItemButton) => void;
+  onItemClick?: (detailedListItem: DetailedListItem) => void;
+  onItemActionClick?: (action: ChatItemButton, detailedListItem?: DetailedListItem) => void;
+  onFilterActionClick?: (action: ChatItemButton, filterValues?: Record<string, any>, isValid?: boolean) => void;
 }
 
 export class DetailedListWrapper {
   render: ExtendedHTMLElement;
   private readonly detailedListItemGroupsContainer: ExtendedHTMLElement;
+  private filterForm: ChatItemFormItemsWrapper;
   private readonly filtersContainer: ExtendedHTMLElement;
+  private readonly filterActionsContainer: ExtendedHTMLElement;
   private readonly headerContainer: ExtendedHTMLElement;
   private readonly props: DetailedListWrapperProps;
   private detailedListItemsBlockData: Array<{
@@ -43,6 +48,11 @@ export class DetailedListWrapper {
       type: 'div',
       classNames: [ 'mynah-detailed-list-filters-wrapper' ],
       children: this.getFilters()
+    });
+    this.filterActionsContainer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-detailed-list-filter-actions-wrapper' ],
+      children: this.getFilterActions()
     });
     this.detailedListItemGroupsContainer = DomBuilder.getInstance().build({
       type: 'div',
@@ -78,6 +88,7 @@ export class DetailedListWrapper {
         this.headerContainer,
         this.filtersContainer,
         this.detailedListItemGroupsContainer,
+        this.filterActionsContainer
       ]
     });
   }
@@ -85,7 +96,25 @@ export class DetailedListWrapper {
   private readonly getHeader = (): Array<ExtendedHTMLElement | string> => {
     if (this.props.detailedList.header != null) {
       return [ new TitleDescriptionWithIcon({
-        description: this.props.detailedList.header.description,
+        description: DomBuilder.getInstance().build({
+          type: 'div',
+          children: [
+            this.props.detailedList.header.description ?? '',
+            ...(this.props.detailedList.header.status != null
+              ? [ new Card({
+                  testId: testIds.sheet.description,
+                  border: true,
+                  padding: 'medium',
+                  status: this.props.detailedList.header.status?.status,
+                  children: [ new TitleDescriptionWithIcon({
+                    description: this.props.detailedList.header.status?.description,
+                    title: this.props.detailedList.header.status?.title,
+                    icon: this.props.detailedList.header.status?.icon
+                  }).render ],
+                }).render ]
+              : [])
+          ]
+        }),
         icon: this.props.detailedList.header.icon,
         title: this.props.detailedList.header.title,
       }).render ];
@@ -95,15 +124,25 @@ export class DetailedListWrapper {
 
   private readonly getFilters = (): Array<ExtendedHTMLElement | string> => {
     if (this.props.detailedList.filterOptions != null && this.props.detailedList.filterOptions.length > 0) {
-      return [ new ChatItemFormItemsWrapper({
+      this.filterForm = new ChatItemFormItemsWrapper({
         tabId: '',
         chatItem: {
           formItems: this.props.detailedList.filterOptions
         },
         onFormChange: this.props.onFilterValueChange
-      }).render ];
+      });
+      return [ this.filterForm.render ];
     }
     return [ '' ];
+  };
+
+  private readonly getFilterActions = (): ExtendedHTMLElement[] => {
+    return [ new ChatItemButtonsWrapper({
+      onActionClick: (action) => {
+        this.props.onFilterActionClick?.(action, this.filterForm?.getAllValues(), this.filterForm?.isFormValid());
+      },
+      buttons: this.props.detailedList.filterActions ?? [],
+    }).render ];
   };
 
   private readonly getDetailedListItemGroups = (): Array<ExtendedHTMLElement | string> => {
@@ -167,8 +206,10 @@ export class DetailedListWrapper {
       const detailedListItemElement = new DetailedListItemWrapper({
         listItem: detailedListItem,
         onSelect: this.props.onItemSelect,
+        onClick: this.props.onItemClick,
         onActionClick: this.props.onItemActionClick,
-        selectable: this.props.detailedList.selectable,
+        selectable: this.props.detailedList.selectable === true,
+        clickable: this.props.detailedList.selectable === 'clickable',
         textDirection: this.props.detailedList.textDirection,
         descriptionTextDirection: this.props.descriptionTextDirection
       });
@@ -225,6 +266,13 @@ export class DetailedListWrapper {
       this.props.detailedList.filterOptions = detailedList.filterOptions;
       this.filtersContainer.update({
         children: this.getFilters()
+      });
+    }
+
+    if (detailedList.filterActions != null) {
+      this.props.detailedList.filterActions = detailedList.filterActions;
+      this.filterActionsContainer.update({
+        children: this.getFilterActions()
       });
     }
 

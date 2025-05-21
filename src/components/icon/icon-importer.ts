@@ -8,9 +8,11 @@ import { DomBuilder } from '../../helper/dom';
 import { CustomIcon, MynahIcons } from '../icon';
 // ICONS
 import Q from './icons/q.svg';
+import DOT from './icons/dot.svg';
 import AT from './icons/at.svg';
 import MENU from './icons/menu.svg';
 import MINUS from './icons/minus.svg';
+import MINUS_CIRCLE from './icons/minus-circled.svg';
 import SEARCH from './icons/search.svg';
 import PLUS from './icons/plus.svg';
 import PAPER_CLIP from './icons/paper-clip.svg';
@@ -33,6 +35,7 @@ import MAGIC from './icons/magic.svg';
 import NOTIFICATION from './icons/notification.svg';
 import EYE from './icons/eye.svg';
 import ELLIPSIS from './icons/ellipsis.svg';
+import ELLIPSIS_H from './icons/ellipsis-h.svg';
 import OK from './icons/ok.svg';
 import UP_OPEN from './icons/up-open.svg';
 import DOWN_OPEN from './icons/down-open.svg';
@@ -85,9 +88,11 @@ export class MynahUIIconImporter {
   private readonly portalId = 'mynah-ui-icons';
   private readonly defaultIconMappings = {
     Q,
+    DOT,
     AT,
     MENU,
     MINUS,
+    MINUS_CIRCLE,
     SEARCH,
     PLUS,
     PAPER_CLIP,
@@ -110,6 +115,7 @@ export class MynahUIIconImporter {
     NOTIFICATION,
     EYE,
     ELLIPSIS,
+    ELLIPSIS_H,
     OK,
     UP_OPEN,
     DOWN_OPEN,

@@ -18,7 +18,9 @@
             height: 100%;
             background-color: var(--mynah-color-bg);
             transition: var(--mynah-short-transition-rev-opacity);
-            opacity: 0.45;
+            opacity: 0.85;
+            pointer-events: all;
+            z-index: var(--mynah-sizing-10);
         }
     }
     > .mynah-overlay-container {
@@ -34,6 +36,8 @@
         height: max-content;
         max-width: calc(100vw - var(--mynah-sizing-16)) !important;
         max-height: calc(100vh - var(--mynah-sizing-16)) !important;
+        pointer-events: all;
+        z-index: var(--mynah-z-max);
 
         .mynah-card,
         .mynah-card * {
@@ -127,13 +131,13 @@
             overflow: hidden;
             z-index: var(--mynah-z-1);
             position: relative;
-            transform: translate3d(0, 0, 0) scale(0.85);
+            transform: translate3d(0, 0, 0) scale(0.95);
             transform-origin: var(--overlayInnerHorizontalOrigin) var(--overlayInnerVerticalOrigin);
             transition: var(--mynah-short-transition-rev);
             width: 100%;
         }
         &:before {
-            transform: translate3d(0, 0, 0) scale(0.85);
+            transform: translate3d(0, 0, 0) scale(0.95);
             transition: var(--mynah-short-transition-rev);
         }
         > .mynah-overlay-inner-container,
