@@ -107,11 +107,12 @@ class TabItem {
             dblclick: (e) => {
               cancelEvent(e);
             },
-            auxclick: () => {
-              if (this.props.onRemove !== undefined && this.props.pinned !== true) {
+            auxclick: (e) => {
+              // only close on middle click
+              if (e.button === 1 && this.props.onRemove !== undefined && this.props.pinned !== true) {
                 this.props.onRemove(this.props.value, this.render);
               }
-            }
+            },
           },
           children: [
             this.props.icon != null ? new Icon({ icon: props.icon as MynahIcons }).render : '',
