@@ -57,9 +57,6 @@ export class ChatItemCard {
     showSummary: boolean;
   } | null = null;
 
-  // private summaryContent: ExtendedHTMLElement | null = null;
-  // private summaryStateIcon: Icon | null = null;
-  // private showSummary: boolean = false;
   private tabbedCard: ChatItemTabbedCard | null = null;
   private cardIcon: Icon | null = null;
   private contentBody: ChatItemCardContent | null = null;

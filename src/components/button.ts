@@ -161,7 +161,6 @@ class ButtonInternal extends ButtonAbstract {
                 verticalDirection: OverlayVerticalDirection.CENTER,
                 referencePoint: { top: window.innerHeight / 2, left: window.innerWidth / 2 }
               });
-              // confirmationOverlay.toggleHidden(false);
             } else {
               props.onClick(e);
             }
