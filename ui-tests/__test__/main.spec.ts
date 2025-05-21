@@ -204,7 +204,7 @@ describe('Open MynahUI', () => {
     });
   });
 
-  it.only('should show link preview in tooltip on link hover', async () => {
+  it('should show link preview in tooltip on link hover', async () => {
     await hoverOverLink(page);
   });
 
