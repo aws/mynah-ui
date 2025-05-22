@@ -208,7 +208,7 @@ export class DetailedListWrapper {
         onSelect: this.props.onItemSelect,
         onClick: this.props.onItemClick,
         onActionClick: this.props.onItemActionClick,
-        selectable: this.props.detailedList.selectable === true,
+        selectable: this.props.detailedList.selectable !== false && this.props.detailedList.selectable !== 'clickable',
         clickable: this.props.detailedList.selectable === 'clickable',
         textDirection: this.props.detailedList.textDirection,
         descriptionTextDirection: this.props.descriptionTextDirection
