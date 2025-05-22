@@ -9,6 +9,7 @@
     overflow: hidden;
     gap: var(--mynah-sizing-2);
     pointer-events: all;
+    flex-shrink: 0;
 
     > .mynah-detailed-list-header-wrapper {
         flex-shrink: 0;

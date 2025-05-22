@@ -10,7 +10,7 @@
     height: auto;
     opacity: 0;
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -51,24 +51,49 @@
     > * {
         z-index: 2;
     }
-    > .mynah-ui-icon {
-        color: var(--mynah-color-status-info);
+    > .mynah-ui-splash-loader-container {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        gap: var(--mynah-sizing-3);
+        > .mynah-ui-icon {
+            color: var(--mynah-color-status-info);
+        }
+        > .mynah-ui-splash-loader-text {
+            &:empty {
+                display: none;
+            }
+            font-size: var(--mynah-font-size-medium);
+            color: var(--mynah-color-text-default);
+        }
+        > .mynah-ui-spinner-container {
+            width: min(30vw, 30vh, 200px);
+            height: min(30vw, 30vh, 200px);
+            > .mynah-ui-spinner-logo-part.backdrop {
+                filter: blur(30px);
+            }
+            > .mynah-ui-spinner-logo-part.semi-backdrop::before {
+                filter: blur(30px);
+            }
+        }
     }
-    > .mynah-ui-splash-loader-text {
+
+    > .mynah-ui-splash-loader-buttons {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        gap: var(--mynah-sizing-3);
         &:empty {
             display: none;
         }
-        font-size: var(--mynah-font-size-medium);
-        color: var(--mynah-color-text-default);
-    }
-    > .mynah-ui-spinner-container {
-        width: min(30vw, 30vh, 200px);
-        height: min(30vw, 30vh, 200px);
-        > .mynah-ui-spinner-logo-part.backdrop {
-            filter: blur(30px);
-        }
-        > .mynah-ui-spinner-logo-part.semi-backdrop::before {
-            filter: blur(30px);
+        > .mynah-button,
+        > .mynah-button * {
+            pointer-events: all;
+            cursor: pointer;
         }
     }
 }

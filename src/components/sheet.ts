@@ -112,12 +112,14 @@ export class Sheet {
                     }).render
                   ]
                 },
-                this.sheetStatus,
-                this.sheetDescription,
                 {
                   type: 'div',
                   classNames: [ 'mynah-sheet-body' ],
-                  children: data.children
+                  children: [
+                    this.sheetStatus,
+                    this.sheetDescription,
+                    ...(data.children ?? [])
+                  ]
                 },
               ],
             })
