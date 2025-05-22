@@ -343,18 +343,7 @@ export class MynahUI {
     this.splashLoaderActions = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-ui-splash-loader-buttons' ],
-      children: (this.props.splashScreenInitialStatus?.actions ?? []).map(action => new Button({
-        onClick: () => {
-          this.props.onSplashLoaderActionClick?.(action, this.getUserEventId());
-        },
-        label: action.text,
-        status: action.status,
-        primary: action.status === 'primary',
-        icon: action.icon != null ? new Icon({ icon: action.icon }).render : undefined,
-        confirmation: action.confirmation,
-        disabled: action.disabled,
-        tooltip: action.description
-      }).render)
+      children: this.getSplashLoaderActions(this.props.splashScreenInitialStatus?.actions)
     });
 
     const initTabs = MynahUITabsStore.getInstance().getAllTabs();
@@ -476,6 +465,21 @@ export class MynahUI {
       this.props.onReady();
     }
   }
+
+  private readonly getSplashLoaderActions = (actions?: Action[]): ExtendedHTMLElement[] => {
+    return (actions ?? []).map(action => new Button({
+      onClick: () => {
+        this.props.onSplashLoaderActionClick?.(action, this.getUserEventId());
+      },
+      label: action.text,
+      status: action.status,
+      primary: action.status === 'primary',
+      icon: action.icon != null ? new Icon({ icon: action.icon }).render : undefined,
+      confirmation: action.confirmation,
+      disabled: action.disabled,
+      tooltip: action.description
+    }).render);
+  };
 
   private readonly getUserEventId = (): string => {
     this.lastEventId = generateUID();
@@ -990,18 +994,7 @@ export class MynahUI {
 
     this.splashLoaderActions.clear();
     this.splashLoaderActions.update({
-      children: (actions ?? []).map(action => new Button({
-        onClick: () => {
-          this.props.onSplashLoaderActionClick?.(action, this.getUserEventId());
-        },
-        label: action.text,
-        status: action.status,
-        primary: action.status === 'primary',
-        icon: action.icon != null ? new Icon({ icon: action.icon }).render : undefined,
-        confirmation: action.confirmation,
-        disabled: action.disabled,
-        tooltip: action.description
-      }).render)
+      children: this.getSplashLoaderActions(actions)
     });
   };
 
