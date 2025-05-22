@@ -88,7 +88,8 @@
         border: none;
         border-radius: 0;
         height: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: scroll;
     }
 
     > .mynah-card-body {
@@ -140,7 +141,13 @@
         gap: var(--mynah-sizing-4);
         align-items: stretch;
         flex: 1;
-        overflow: hidden;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        > .mynah-detailed-list {
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
 
         > .mynah-feedback-form-comment {
             background-color: transparent;
