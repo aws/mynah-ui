@@ -6,6 +6,11 @@ export interface MynahUIProps {
   defaults?: MynahUITabStoreTab;
   tabs?: MynahUITabStoreModel;
   config?: Partial<ConfigModel>;
+  splashScreenInitialStatus?: {
+    visible: boolean;
+    text?: string;
+    actions?: Action[];
+  };
   onShowMoreWebResultsClick?: (
     tabId: string,
     messageId: string,
@@ -169,6 +174,9 @@ export interface MynahUIProps {
     tabId: string,
     buttonId: string,
     eventId?: string) => void;
+  onSplashLoaderActionClick?: (
+    action: Action,
+    eventId?: string) => void;
 }
 ```
 _Let's deep dive into each property you can set._
@@ -207,6 +215,23 @@ defaults: {
 ...
 ```
 **For more information about what is the data model for the store attribute please refer to [Data Model Documentation](./DATAMODEL.md)**
+
+---
+
+### splashScreenInitialStatus
+_(default: `undefined`)_
+
+To initially show the splash loader with some text and actions, you can use this property. Even before the rest of the data is initialized, it will show you the splash loader.
+
+```typescript
+...
+splashScreenInitialStatus?: {
+  visible: boolean;
+  text?: string;
+  actions?: Action[];
+}, // default: undefined
+...
+```
 
 ---
 
@@ -1115,6 +1140,31 @@ onTabBarButtonClick?: (
     eventId?: string):void => {
       console.log(`Sent from tab: ${tabId}`);
       console.log(`Button ID: ${buttonId}`);
+    };
+...
+```
+
+
+---
+
+### onSplashLoaderActionClick
+
+This event will be fired when user clicks to an action inside the splash loader. 
+
+
+<p align="center">
+  <img src="./img/splashLoaderActions.png" alt="splashLoaderActions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+```typescript
+...
+onSplashLoaderActionClick?: (
+    action: Action,
+    eventId?: string) => void;
+onSplashLoaderActionClick?: (
+    action: Action,
+    eventId?: string)):void => {
+      console.log(`Splash loader action click ${action.id}`);
     };
 ...
 ```

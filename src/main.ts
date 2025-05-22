@@ -29,6 +29,7 @@ import {
   QuickActionCommand,
   DetailedList,
   TreeNodeDetails,
+  Action,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -46,6 +47,7 @@ import { configureMarked, parseMarkdown } from './helper/marked';
 import { MynahUIDataStore } from './helper/store';
 import { StyleLoader } from './helper/style-loader';
 import { Icon } from './components/icon';
+import { Button } from './components/button';
 
 export { generateUID } from './helper/guid';
 export {
@@ -100,7 +102,8 @@ export interface MynahUIProps {
   defaults?: MynahUITabStoreTab;
   splashScreenInitialStatus?: {
     visible: boolean;
-    text: string;
+    text?: string;
+    actions?: Action[];
   };
   tabs?: MynahUITabStoreModel;
   config?: Partial<ConfigModel>;
@@ -303,6 +306,9 @@ export interface MynahUIProps {
       id: string;
     },
     eventId?: string) => void;
+  onSplashLoaderActionClick?: (
+    action: Action,
+    eventId?: string) => void;
 }
 
 export class MynahUI {
@@ -311,6 +317,7 @@ export class MynahUI {
   private readonly props: MynahUIProps;
   private readonly splashLoader: ExtendedHTMLElement;
   private readonly splashLoaderText: ExtendedHTMLElement;
+  private readonly splashLoaderActions: ExtendedHTMLElement;
   private readonly tabsWrapper: ExtendedHTMLElement;
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
@@ -331,6 +338,23 @@ export class MynahUI {
       type: 'div',
       classNames: [ 'mynah-ui-splash-loader-text' ],
       innerHTML: parseMarkdown(this.props.splashScreenInitialStatus?.text ?? '', { includeLineBreaks: true }),
+    });
+
+    this.splashLoaderActions = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-ui-splash-loader-buttons' ],
+      children: (this.props.splashScreenInitialStatus?.actions ?? []).map(action => new Button({
+        onClick: () => {
+          this.props.onSplashLoaderActionClick?.(action, this.getUserEventId());
+        },
+        label: action.text,
+        status: action.status,
+        primary: action.status === 'primary',
+        icon: action.icon != null ? new Icon({ icon: action.icon }).render : undefined,
+        confirmation: action.confirmation,
+        disabled: action.disabled,
+        tooltip: action.description
+      }).render)
     });
 
     const initTabs = MynahUITabsStore.getInstance().getAllTabs();
@@ -400,8 +424,15 @@ export class MynahUI {
         type: 'div',
         classNames: [ 'mynah-ui-splash-loader-wrapper' ],
         children: [
-          new Icon({ icon: 'progress' }).render,
-          this.splashLoaderText
+          {
+            type: 'div',
+            classNames: [ 'mynah-ui-splash-loader-container' ],
+            children: [
+              new Icon({ icon: 'progress' }).render,
+              this.splashLoaderText
+            ]
+          },
+          this.splashLoaderActions
         ]
       },
       'beforeend');
@@ -944,7 +975,7 @@ export class MynahUI {
   /**
    * Toggles the visibility of the splash loader screen
    */
-  public toggleSplashLoader = (visible: boolean, text?: string): void => {
+  public toggleSplashLoader = (visible: boolean, text?: string, actions?: Action[]): void => {
     if (visible) {
       this.splashLoader.addClass('visible');
     } else {
@@ -956,6 +987,22 @@ export class MynahUI {
         innerHTML: parseMarkdown(text, { includeLineBreaks: true })
       });
     }
+
+    this.splashLoaderActions.clear();
+    this.splashLoaderActions.update({
+      children: (actions ?? []).map(action => new Button({
+        onClick: () => {
+          this.props.onSplashLoaderActionClick?.(action, this.getUserEventId());
+        },
+        label: action.text,
+        status: action.status,
+        primary: action.status === 'primary',
+        icon: action.icon != null ? new Icon({ icon: action.icon }).render : undefined,
+        confirmation: action.confirmation,
+        disabled: action.disabled,
+        tooltip: action.description
+      }).render)
+    });
   };
 
   /**

@@ -115,6 +115,25 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
         }
         `);
         },
+        onSplashLoaderActionClick: (action) => {
+            Log(`Splash loader action click <b>${action.id}</b>`);
+            mynahUI.toggleSplashLoader(false);
+            if (action.id === 'cancel-mcp-save') {
+                mynahUI.notify({
+                    duration: 3000,
+                    content: 'MCP save',
+                    title: 'Saving operation is cancelled.',
+                    type: NotificationType.ERROR
+                });
+            } else if (action.id === 'hide-mcp-save') {
+                mynahUI.notify({
+                    duration: 3000,
+                    content: 'MCP save',
+                    title: 'Save progress goes on in the background',
+                    type: NotificationType.INFO
+                });
+            }
+        },
         onPromptInputButtonClick: (tabId, buttonId) => {
             Log(`Prompt input button ${buttonId} clicked on tab <b>${tabId}</b>`);
         },
@@ -163,11 +182,22 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                             if (action.id === 'cancel-mcp') {
                                 mcpSheet.update(sampleMCPList, false);
                             } else if (action.id === 'save-mcp') {
-                                mynahUI.toggleSplashLoader(true, 'Saving **the MCP**');
+                                mynahUI.toggleSplashLoader(true, 'Saving **the MCP**', [
+                                    {
+                                        id: 'hide-mcp-save',
+                                        status: 'clear',
+                                        text: 'Hide',
+                                    },
+                                    {
+                                        id: 'cancel-mcp-save',
+                                        status: 'primary',
+                                        text: 'Cancel',
+                                    },
+                                ]);
                                 setTimeout(() => {
                                     mynahUI.toggleSplashLoader(false);
                                     mcpSheet.update(sampleMCPList, false);
-                                }, 3000);
+                                }, 5000);
                             }
                         },
                         onKeyPress: (e) => {
@@ -1425,12 +1455,12 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     const cardId = generateUID();
                     mynahUI.addChatItem(tabId, {
                         ...mcpToolRunSampleCardInit,
-                        messageId: cardId
+                        messageId: cardId,
                     });
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         mynahUI.updateChatAnswerWithMessageId(tabId, cardId, mcpToolRunSampleCard);
                         mynahUI.addChatItem(tabId, defaultFollowUps);
-                    }, 3000)
+                    }, 3000);
                     break;
                 case Commands.STATUS_CARDS:
                     mynahUI.addChatItem(tabId, {
