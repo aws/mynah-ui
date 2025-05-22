@@ -16,6 +16,8 @@ export interface DetailedListItemWrapperProps {
   descriptionTextDirection?: 'ltr' | 'rtl';
   onSelect?: (detailedListItem: DetailedListItem) => void;
   onClick?: (detailedListItem: DetailedListItem) => void;
+  onHover?: (detailedListItem: DetailedListItem) => void;
+  onUnhover?: (detailedListItem: DetailedListItem) => void;
   onActionClick?: (action: ChatItemButton, detailedListItem?: DetailedListItem) => void;
   selectable?: boolean;
   clickable?: boolean;
@@ -49,6 +51,12 @@ export class DetailedListItemWrapper {
           if (this.props.listItem.disabled !== true && this.props.clickable !== false) {
             this.props.onClick?.(this.props.listItem);
           }
+        },
+        mouseover: (e) => {
+          this.props.onHover?.(this.props.listItem);
+        },
+        mouseleave: (e) => {
+          this.props.onUnhover?.(this.props.listItem);
         }
       },
       children: [

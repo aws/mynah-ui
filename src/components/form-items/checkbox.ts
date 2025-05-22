@@ -16,6 +16,7 @@ export interface CheckboxProps {
   label?: string;
   description?: ExtendedHTMLElement;
   value?: 'true' | 'false';
+  indeterminate?: boolean;
   optional?: boolean;
   icon?: MynahIcons | MynahIconsType;
   onChange?: (value: 'true' | 'false') => void;
@@ -71,7 +72,7 @@ export class CheckboxInternal extends CheckboxAbstract {
                 type: 'span',
                 classNames: [ 'mynah-form-input-radio-check' ],
                 children: [
-                  new Icon({ icon: props.icon ?? MynahIcons.OK }).render
+                  new Icon({ icon: props.icon ?? (props.indeterminate === true ? MynahIcons.MINUS : MynahIcons.OK) }).render
                 ]
               },
               ...(props.label != null

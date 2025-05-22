@@ -1,0 +1,24 @@
+@import '../../mixins';
+
+> .mynah-prompt-input-top-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: visible;
+    box-sizing: border-box;
+    gap: var(--mynah-sizing-2);
+    align-items: flex-start;
+    position: relative;
+    width: 100%;
+
+    > span.title {
+        color: var(--mynah-color-text-weak);
+        cursor: pointer;
+    }
+
+    > span.placeholder {
+        color: var(--mynah-color-text-input-placeholder);
+        text-align: center;
+    }
+
+    @import 'chat-prompt-top-bar-context';
+}

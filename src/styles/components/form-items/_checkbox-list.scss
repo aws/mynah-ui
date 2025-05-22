@@ -1,0 +1,12 @@
+.nested-checkbox-list {
+    > .nested-checkbox-list-parent {
+        font-weight: bold;
+    }
+
+    > .nested-checkbox-list-children {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-left: 24px;
+    }
+}

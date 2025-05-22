@@ -132,6 +132,7 @@ export class ChatItemFormItemsWrapper {
               icon: chatItemOption.icon,
               description,
               value: value as 'true' | 'false',
+              indeterminate: chatItemOption.indeterminate,
               optional: chatItemOption.mandatory !== true,
               ...(this.getHandlers(chatItemOption))
             });

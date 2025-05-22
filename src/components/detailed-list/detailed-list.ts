@@ -20,6 +20,8 @@ export interface DetailedListWrapperProps {
   onItemClick?: (detailedListItem: DetailedListItem) => void;
   onItemActionClick?: (action: ChatItemButton, detailedListItem?: DetailedListItem) => void;
   onFilterActionClick?: (action: ChatItemButton, filterValues?: Record<string, any>, isValid?: boolean) => void;
+  onItemHover?: (detailedListItem: DetailedListItem) => void;
+  onItemUnHover?: (detailedListItem: DetailedListItem) => void;
 }
 
 export class DetailedListWrapper {
@@ -208,6 +210,8 @@ export class DetailedListWrapper {
         onSelect: this.props.onItemSelect,
         onClick: this.props.onItemClick,
         onActionClick: this.props.onItemActionClick,
+        onHover: this.props.onItemHover,
+        onUnhover: this.props.onItemUnHover,
         selectable: this.props.detailedList.selectable === true,
         clickable: this.props.detailedList.selectable === 'clickable',
         textDirection: this.props.detailedList.textDirection,

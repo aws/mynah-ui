@@ -57,7 +57,7 @@
             > .mynah-ui-icon {
                 position: relative;
                 transition: inherit;
-                opacity: 0.25;
+                opacity: 0; // no visible check in unchecked stats
                 font-size: 85%;
                 z-index: var(--mynah-z-2);
             }

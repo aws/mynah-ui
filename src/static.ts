@@ -39,6 +39,14 @@ export interface QuickActionCommandGroup {
   actions?: Action[];
   commands: QuickActionCommand[];
 }
+
+/**
+ * Data model for nested checkbox list
+ */
+export interface CheckboxFormItemGroup {
+  groupName?: CheckboxFormItem;
+  items: CheckboxFormItem[];
+}
 /**
  * data store model to update the mynah ui partially or fully
  */
@@ -95,6 +103,19 @@ export interface MynahUIDataModel {
   * Placeholder to be shown on prompt input
   */
   promptInputPlaceholder?: string;
+  /**
+   * Placeholder to be shown on prompt top bar
+   */
+  promptTopBarPlaceholder?: string;
+
+  /**
+   * Title to be shown on prompt top bar
+   */
+  promptTopBarTitle?: string;
+  /**
+ * Items to be pinned in prompt top bar
+ */
+  promptTopBarContextItems?: QuickActionCommand[];
   /**
   * Prompt input text
   */
@@ -489,6 +510,7 @@ type RadioGroupFormItem = BaseFormItem & {
 type CheckboxFormItem = BaseFormItem & {
   type: 'switch' | 'checkbox';
   value?: 'true' | 'false';
+  indeterminate?: boolean;
   label?: string;
   alternateTooltip?: string;
 };

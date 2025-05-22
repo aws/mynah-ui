@@ -483,6 +483,7 @@ export class MynahUI {
       tabId: string;
       promptInputCallback: (insert: boolean) => void;
     }) => {
+      // todo: this sends a message to consumer that context was selected. will likely have to add pinned to this message
       data.promptInputCallback(this.props.onContextSelected === undefined || this.props.onContextSelected(data.contextItem, data.tabId, this.getUserEventId()));
     });
 
