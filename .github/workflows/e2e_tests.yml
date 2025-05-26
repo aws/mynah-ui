@@ -1,5 +1,7 @@
 name: E2E Tests
 on:
+  push:
+    tags: ['v*.*']
   pull_request:
     branches: [main, feature/*, fix/*]
     types: [opened, reopened, ready_for_review, synchronize]
