@@ -1,12 +1,8 @@
 import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
-import { closeTab } from '../close-tab';
-import { openNewTab } from '../open-new-tab';
 
 export const renderQuickPicks = async (page: Page, mode?: 'command' | 'context', skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
   await waitForAnimationEnd(page);
 
   // Clear the input
