@@ -3,7 +3,10 @@ on:
   push:
     tags: ['v*.*']
 jobs:
+  call-e2e-tests:
+    uses: ./.github/workflows/e2e_tests.yml
   build:
+    needs: call-e2e-tests
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
