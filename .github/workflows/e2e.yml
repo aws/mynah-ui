@@ -49,7 +49,6 @@ jobs:
     
           # Extract test results from Docker container
           - name: Extract test results from Docker container
-            if: ${{ !failure() }}
             run: npm run docker:extract
               
           # Upload an artifact of all the results
