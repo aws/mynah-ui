@@ -29,8 +29,8 @@ RUN mkdir -p /app/ui-tests/__snapshots__/chromium \
     && mkdir -p /app/ui-tests/__snapshots__/webkit \
     && mkdir -p /app/ui-tests/__results__
 
-# Try to copy snapshots if they exist (won't fail if directory doesn't exist)
-COPY ./ui-tests/__snapshots__/* /app/ui-tests/__snapshots__/ 2>/dev/null || true
+# Copy snapshots
+COPY ./ui-tests/__snapshots__/* /app/ui-tests/__snapshots__/
 
 # Install dependencies and build MynahUI
 RUN npm install
