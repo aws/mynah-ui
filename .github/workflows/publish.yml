@@ -17,8 +17,6 @@ jobs:
           scope: '@aws'
       - name: Run unit tests
         run: npm run tests:unit
-      - name: Run E2E tests
-        uses: ./.github/workflows/e2e.yml
       - name: Build demo app
         run: npm run packdemo
       - name: Get release info
