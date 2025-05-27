@@ -3,7 +3,10 @@ on:
   push:
     tags: ['v*.*']
 jobs:
+  call-e2e-tests:
+    uses: ./.github/workflows/e2e.yml
   build:
+    needs: call-e2e-tests
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,19 +15,12 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
-      # Install      
-      - name: Run E2E tests
-        uses: ./.github/workflows/e2e.yml
       - name: Run unit tests
         run: npm run tests:unit
+      - name: Run E2E tests
+        uses: ./.github/workflows/e2e.yml
       - name: Build demo app
         run: npm run packdemo
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: test-snapshots
-          path: ./ui-tests/__test__/__image_snapshots__
-          retention-days: 30
       - name: Get release info
         id: get_release
         uses: bruceadams/get-release@v1.3.2
