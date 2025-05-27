@@ -25,9 +25,9 @@ COPY ./ui-tests/__test__ /app/ui-tests/__test__
 COPY ./ui-tests/src /app/ui-tests/src
 
 # # Create necessary directories
-# RUN mkdir -p /app/ui-tests/__snapshots__/chromium \
-#     && mkdir -p /app/ui-tests/__snapshots__/webkit \
-#     && mkdir -p /app/ui-tests/__results__
+RUN mkdir -p /app/ui-tests/__snapshots__/chromium \
+    && mkdir -p /app/ui-tests/__snapshots__/webkit \
+    && mkdir -p /app/ui-tests/__results__
 
 # Copy snapshots
 COPY ./ui-tests/__snapshots__ /app/ui-tests/__snapshots__
