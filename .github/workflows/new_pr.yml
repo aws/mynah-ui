@@ -1,7 +1,6 @@
 name: New PR created
 on:
   pull_request:
-    branches: [main, feature/*, fix/*]
     types: [opened, reopened, ready_for_review, synchronize]
 jobs:
   notify:
