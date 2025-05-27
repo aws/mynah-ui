@@ -4,11 +4,15 @@
     "description": "",
     "main": "webpack.media.config.js",
     "scripts": {
-        "clean": "rm -rf build dist node_modules",
+        "clean": "rm -rf build dist node_modules __results__",
         "prepare": "webpack --config webpack.config.js --mode development",
-        "e2e": "npm run prepare && playwright test --workers=6",
-        "postinstall": "npx playwright install webkit chromium --with-deps",
-        "trace": "npx playwright show-trace"
+        "e2e": "playwright test --workers=12",
+        "e2e:update": "playwright test --update-snapshots --workers=12",
+        "e2e:chromium": "playwright test --project=chromium --workers=12",
+        "e2e:webkit": "playwright test --project=webkit --workers=12",
+        "e2e:update:chromium": "playwright test --project=chromium --update-snapshots --workers=12",
+        "e2e:update:webkit": "playwright test --project=webkit --update-snapshots --workers=12",
+        "trace": "playwright show-trace"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../"

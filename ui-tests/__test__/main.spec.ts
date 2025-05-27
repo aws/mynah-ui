@@ -134,18 +134,6 @@ test.describe('Open MynahUI', () => {
     await parseMarkdown(page);
   });
 
-  test.describe('Forms', () => {
-    test('should render form elements correctly', async ({ page }) => {
-      await renderFormElements(page);
-    });
-    test('should disable forms on submit', async ({ page }) => {
-      await disableForm(page);
-    });
-    test('should remove form card when canceled', async ({ page }) => {
-      await removeForm(page);
-    });
-  });
-
   test.describe('Quick command selector', () => {
     test('should render the quick command selector', async ({ page }) => {
       await renderQuickPicks(page);

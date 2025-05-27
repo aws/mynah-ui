@@ -10,5 +10,5 @@ node_modules
 package-lock.json
 .gitcommit
 .vscode
-__reports__/
+__results__/
 e2e-results/

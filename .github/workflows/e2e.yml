@@ -68,21 +68,6 @@ jobs:
               name: snapshots
               path: ./ui-tests/__results__
               retention-days: 30
-    
-          # Your commented out snapshot replacement section preserved
-          # - name: Replace Snapshots in PR Branch
-          #   if: ${{ !failure() }}
-          #   run: |
-          #     git config user.name "github-actions[bot]"
-          #     git config user.email "github-actions[bot]@users.noreply.github.com"
-          #     git fetch origin
-          #     git checkout ${{ github.head_ref }}
-          #     git add ./ui-tests/__results__/__snapshots__
-          #     git diff --staged --quiet || git commit -m "[Docker] Update E2E image snapshots"
-          #     git push origin ${{ github.head_ref }}
-          #   env:
-          #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     report:
       needs: e2e
       if: always()

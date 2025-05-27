@@ -2,19 +2,21 @@ import { defineConfig } from '@playwright/test';
 import { DEFAULT_VIEWPORT } from './__test__/helpers';
 
 const isHeadless = process.env.HEADLESS !== 'false';
+const updateSnapshots = process.env.UPDATE_SNAPSHOTS === 'true';
 
 export default defineConfig({
   testDir: './__test__',
   testMatch: [ '**/?(*.)+(spec|test).[t]s' ],
   testIgnore: [ '/node_modules/', 'dist', 'src' ],
   timeout: 15000,
-  snapshotDir: './__results__/__snapshots__',
-  outputDir: './__results__/__reports__',
+  snapshotDir: './__snapshots__',
+  outputDir: './__results__',
   snapshotPathTemplate: '{snapshotDir}{/projectName}/{testName}/{arg}{ext}',
   fullyParallel: true,
   use: {
     headless: isHeadless,
     trace: 'retain-on-failure', // Capture trace only on failure
+    screenshot: 'only-on-failure',
     viewport: DEFAULT_VIEWPORT // Enforce the default viewport
   },
   expect: {
@@ -26,8 +28,9 @@ export default defineConfig({
     { name: 'chromium', use: { browserName: 'chromium' } },
     { name: 'webkit', use: { browserName: 'webkit' } },
   ],
+  updateSnapshots: updateSnapshots ? 'all' : 'none',
   reporter: [
     [ 'list' ],
-    [ 'junit', { outputFile: './__results__/__reports__/junit.xml' } ],
+    [ 'junit', { outputFile: './__results__/junit.xml' } ],
   ],
 });

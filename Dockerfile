@@ -1,5 +1,8 @@
-# Use a base Node image
-FROM node:22
+# Use the official Playwright image which includes browsers
+FROM mcr.microsoft.com/playwright:v1.52.0
+
+# Set environment variable to skip browser download
+# ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 # Set working directory
 WORKDIR /app
@@ -22,7 +25,7 @@ COPY ./ui-tests/webpack.config.js /app/ui-tests/
 
 # Copy the __test__, __results__, and src directories from ui-tests
 COPY ./ui-tests/__test__ /app/ui-tests/__test__
-COPY ./ui-tests/__results__/__snapshots__ /app/ui-tests/__results__/__snapshots__
+COPY ./ui-tests/__snapshots__ /app/ui-tests/__snapshots__
 COPY ./ui-tests/src /app/ui-tests/src
 
 # Install dependencies and build MynahUI
@@ -31,4 +34,4 @@ RUN npm run build
 RUN cd ./ui-tests && npm install && npm run prepare
 
 # Default command to run the tests
-CMD ["npm", "run", "docker:internal"]
+CMD cd ./ui-tests && npm run e2e${BROWSER:+:$BROWSER}
