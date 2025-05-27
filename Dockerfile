@@ -20,16 +20,9 @@ COPY ./ui-tests/playwright.config.ts /app/ui-tests/
 COPY ./ui-tests/tsconfig.json /app/ui-tests/
 COPY ./ui-tests/webpack.config.js /app/ui-tests/
 
-# Copy the __test__, and src directories from ui-tests
+# Copy the directories from ui-tests
 COPY ./ui-tests/__test__ /app/ui-tests/__test__
 COPY ./ui-tests/src /app/ui-tests/src
-
-# # Create necessary directories
-RUN mkdir -p /app/ui-tests/__snapshots__/chromium \
-    && mkdir -p /app/ui-tests/__snapshots__/webkit \
-    && mkdir -p /app/ui-tests/__results__
-
-# Copy snapshots
 COPY ./ui-tests/__snapshots__ /app/ui-tests/__snapshots__
 
 # Install dependencies and build MynahUI
