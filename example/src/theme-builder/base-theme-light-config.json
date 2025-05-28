@@ -68,6 +68,20 @@
         "alpha": "100",
         "value": "#006ab1"
     },
+    "--mynah-color-text-input-border": {
+        "type": "color",
+        "description": "Border of the chat input textbox, when it does not have focus",
+        "category": "border-style",
+        "alpha": "100",
+        "value": "#fafcff"
+    },
+    "--mynah-color-text-input-border-focused": {
+        "type": "color",
+        "description": "Border of the chat input textbox, when it has focus",
+        "category": "border-style",
+        "alpha": "100",
+        "value": "#e6e8eb"
+    },
     "--mynah-color-text-input": {
         "type": "color",
         "description": "Input text color used in input fields",
