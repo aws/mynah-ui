@@ -229,7 +229,7 @@ test.describe('Open MynahUI', () => {
   });
 
   test.describe('Prompt navigation', () => {
-    test.only('should navigate up to previous prompt', async ({ page }) => {
+    test('should navigate up to previous prompt', async ({ page }) => {
       await navigatePromptsUp(page);
     });
     test('should navigate down to next prompt', async ({ page }) => {
