@@ -16,7 +16,6 @@ export default defineConfig({
   use: {
     headless: isHeadless,
     trace: 'retain-on-failure', // Capture trace only on failure
-    screenshot: 'only-on-failure',
     viewport: DEFAULT_VIEWPORT // Enforce the default viewport
   },
   expect: {
@@ -28,7 +27,7 @@ export default defineConfig({
     { name: 'chromium', use: { browserName: 'chromium' } },
     { name: 'webkit', use: { browserName: 'webkit' } },
   ],
-  updateSnapshots: updateSnapshots ? 'all' : 'none',
+  updateSnapshots: updateSnapshots ? 'all' : 'missing',
   reporter: [
     [ 'list' ],
     [ 'junit', { outputFile: './__results__/__reports__/junit.xml' } ],
