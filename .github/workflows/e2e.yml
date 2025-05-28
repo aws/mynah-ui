@@ -22,7 +22,7 @@ jobs:
             uses: actions/cache@v3
             with:
               path: /tmp/.buildx-cache
-              key: ${{ runner.os }}-buildx-${{ hashFiles('**/package-lock.json', '**/ui-tests/package-lock.json', 'Dockerfile') }}
+              key: ${{ runner.os }}-buildx-${{ github.sha }}
               restore-keys: |
                 ${{ runner.os }}-buildx-
 
@@ -36,6 +36,8 @@ jobs:
               tags: mynah-ui-e2e:latest
               cache-from: type=local,src=/tmp/.buildx-cache
               cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+              build-args: |
+                BUILDKIT_INLINE_CACHE=1
 
           # Move cache to prevent unlimited growth
           - name: Move cache
