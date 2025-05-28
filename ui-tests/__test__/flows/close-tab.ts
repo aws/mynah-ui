@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
 import { getSelector } from '../helpers';
 
@@ -15,6 +15,6 @@ export const closeTab = async (page: Page, withDblClick?: boolean, skipScreensho
 
   if (skipScreenshots !== true) {
     // No tabs snap
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };
