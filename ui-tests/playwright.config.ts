@@ -10,7 +10,7 @@ export default defineConfig({
   testIgnore: [ '/node_modules/', 'dist', 'src' ],
   timeout: 15000,
   snapshotDir: './__snapshots__',
-  outputDir: './__results__',
+  outputDir: './__results__/__reports__',
   snapshotPathTemplate: '{snapshotDir}{/projectName}/{testName}/{arg}{ext}',
   fullyParallel: true,
   use: {
@@ -31,6 +31,6 @@ export default defineConfig({
   updateSnapshots: updateSnapshots ? 'all' : 'none',
   reporter: [
     [ 'list' ],
-    [ 'junit', { outputFile: './__results__/junit.xml' } ],
+    [ 'junit', { outputFile: './__results__/__reports__/junit.xml' } ],
   ],
 });

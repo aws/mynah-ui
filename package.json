@@ -32,7 +32,7 @@
         "docker:run": "docker run --name mynah-ui-e2e-container mynah-ui-e2e",
         "docker:run:chromium": "docker run -e BROWSER=chromium --name mynah-ui-e2e-container mynah-ui-e2e",
         "docker:run:webkit": "docker run -e BROWSER=webkit --name mynah-ui-e2e-container mynah-ui-e2e",
-        "docker:extract": "docker export mynah-ui-e2e-container | tar -xf - app/ui-tests/__snapshots__ app/ui-tests/__results__ && mv app/ui-tests/__snapshots__ ./ui-tests/ && mv app/ui-tests/__results__ ./ui-tests/ && rm -rf ./app",
+        "docker:extract": "docker cp mynah-ui-e2e-container:/app/ui-tests/__results__ ./ui-tests/ && docker cp mynah-ui-e2e-container:/app/ui-tests/__snapshots__ ./ui-tests/__results__/__snapshots__",
         "tests:e2e": "npm run docker:clean && npm run docker:build && npm run docker:run",
         "tests:e2e:chromium": "npm run docker:clean && npm run docker:build && npm run docker:run:chromium",
         "tests:e2e:webkit": "npm run docker:clean && npm run docker:build && npm run docker:run:webkit",
