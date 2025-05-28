@@ -17,10 +17,10 @@ try {
     execSync('jest --detectOpenHandles --config=./jest.config.js', { stdio: 'inherit' });
   } else if (browser === 'chromium') {
     // Run tests for Chromium only
-    execSync('jest --detectOpenHandles --config=./jest.chromium.config.js', { stdio: 'inherit' });
+    execSync('jest --updateSnapshot --detectOpenHandles --config=./jest.chromium.config.js', { stdio: 'inherit' });
   } else if (browser === 'webkit') {
     // Run tests for Webkit only
-    execSync('jest --detectOpenHandles --config=./jest.webkit.config.js', { stdio: 'inherit' });
+    execSync('jest --updateSnapshot --detectOpenHandles --config=./jest.webkit.config.js', { stdio: 'inherit' });
   } else {
     process.exit(1);
   }
