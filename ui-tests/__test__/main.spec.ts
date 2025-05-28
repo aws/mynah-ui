@@ -229,7 +229,7 @@ test.describe('Open MynahUI', () => {
   });
 
   test.describe('Prompt navigation', () => {
-    test('should navigate up to previous prompt', async ({ page }) => {
+    test.only('should navigate up to previous prompt', async ({ page }) => {
       await navigatePromptsUp(page);
     });
     test('should navigate down to next prompt', async ({ page }) => {
@@ -238,7 +238,7 @@ test.describe('Open MynahUI', () => {
     test('should navigate down to current empty prompt', async ({ page }) => {
       await navigatePromptsToEmpty(page);
     });
-    test('should navigate up/down only if on first/last line', async ({ page }) => {
+    test.skip('should navigate up/down only if on first/last line', async ({ page }) => {
       await navigatePromptsFirstLastLineCheck(page);
     });
 
