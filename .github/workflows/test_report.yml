@@ -13,8 +13,8 @@ jobs:
       
     - uses: dorny/test-reporter@v2.0.0
       with:
-        artifact: /test-results-(.*)/
-        name: 'Test report $1'
-        path: '/__reports__/junit.xml'
+        name: E2E Tests Report
+        artifact: test-results
+        path: ./__reports__/junit.xml
         reporter: jest-junit
         fail-on-error: false
