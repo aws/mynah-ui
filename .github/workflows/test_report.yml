@@ -10,6 +10,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    # - name: Download test results
+    #   uses: actions/download-artifact@v4
+    #   with:
+    #     name: test-results
+    #     path: ./ui-tests/__results__
       
     - uses: dorny/test-reporter@v2.0.0
       with:

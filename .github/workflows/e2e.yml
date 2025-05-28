@@ -52,12 +52,21 @@ jobs:
             if: always()
             run: npm run docker:extract
               
-          # Upload an artifact of all the results
-          - name: Upload E2E results
+          # Upload snapshots as artifact
+          - name: Upload snapshots
             uses: actions/upload-artifact@v4
             if: always()
             with:
               name: snapshots
+              path: ./ui-tests/__snapshots__
+              retention-days: 30
+              
+          # Upload test results as artifact
+          - name: Upload test results
+            uses: actions/upload-artifact@v4
+            if: always()
+            with:
+              name: test-results
               path: ./ui-tests/__results__
               retention-days: 30
     report:
