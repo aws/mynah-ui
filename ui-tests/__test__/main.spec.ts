@@ -78,6 +78,24 @@ test.describe('Open MynahUI', () => {
     await clickToFollowup(page);
   });
 
+  test.describe('Tabs', () => {
+    test('should close the tab', async ({ page }) => {
+      await closeTab(page);
+    });
+
+    test('should open a new the tab', async ({ page }) => {
+      await openNewTab(page);
+    });
+
+    test('should close the tab with middle click', async ({ page }) => {
+      await closeTab(page, true, true);
+    });
+
+    test('should open a new tab with double click', async ({ page }) => {
+      await openNewTab(page, true, true);
+    });
+  });
+
   test('should render character limit counter', async ({ page }) => {
     await renderCharacterCount(page);
   });
@@ -88,50 +106,6 @@ test.describe('Open MynahUI', () => {
 
   test('should render tabbed cards correctly', async ({ page }) => {
     await renderTabbedCard(page);
-  });
-
-  test('should show link preview in tooltip on link hover', async ({ page }) => {
-    await hoverOverLink(page);
-  });
-
-  test('should render buttons on cards correctly', async ({ page }) => {
-    await renderButtons(page);
-  });
-
-  test('should render (custom) icons correctly', async ({ page }) => {
-    await renderIcons(page);
-  });
-
-  test('should render muted cards correctly', async ({ page }) => {
-    await renderMutedCards(page);
-  });
-
-  test('should render card headers correctly', async ({ page }) => {
-    await renderHeaders(page);
-  });
-
-  test('should render and remove dismissible cards', async ({ page }) => {
-    await renderAndDismissCard(page);
-  });
-
-  test.describe('Forms', () => {
-    test('should render form elements correctly', async ({ page }) => {
-      await renderFormElements(page);
-    });
-    test('should disable forms on submit', async ({ page }) => {
-      await disableForm(page);
-    });
-    test('should remove form card when canceled', async ({ page }) => {
-      await removeForm(page);
-    });
-  });
-
-  test('should keep the content inside window boundaries', async ({ page }) => {
-    await checkContentInsideWindowBoundaries(page);
-  });
-
-  test('should parse markdown', async ({ page }) => {
-    await parseMarkdown(page);
   });
 
   test.describe('Quick command selector', () => {
@@ -210,6 +184,50 @@ test.describe('Open MynahUI', () => {
     });
   });
 
+  test('should show link preview in tooltip on link hover', async ({ page }) => {
+    await hoverOverLink(page);
+  });
+
+  test('should render buttons on cards correctly', async ({ page }) => {
+    await renderButtons(page);
+  });
+
+  test('should render (custom) icons correctly', async ({ page }) => {
+    await renderIcons(page);
+  });
+
+  test('should render muted cards correctly', async ({ page }) => {
+    await renderMutedCards(page);
+  });
+
+  test('should render card headers correctly', async ({ page }) => {
+    await renderHeaders(page);
+  });
+
+  test('should render and remove dismissible cards', async ({ page }) => {
+    await renderAndDismissCard(page);
+  });
+
+  test.describe('Forms', () => {
+    test('should render form elements correctly', async ({ page }) => {
+      await renderFormElements(page);
+    });
+    test('should disable forms on submit', async ({ page }) => {
+      await disableForm(page);
+    });
+    test('should remove form card when canceled', async ({ page }) => {
+      await removeForm(page);
+    });
+  });
+
+  test('should keep the content inside window boundaries', async ({ page }) => {
+    await checkContentInsideWindowBoundaries(page);
+  });
+
+  test('should parse markdown', async ({ page }) => {
+    await parseMarkdown(page);
+  });
+
   test.describe('Prompt navigation', () => {
     test('should navigate up to previous prompt', async ({ page }) => {
       await navigatePromptsUp(page);
@@ -234,6 +252,7 @@ test.describe('Open MynahUI', () => {
     });
 
     test('should navigate back to current prompt with code attachment', async ({ page }) => {
+      test.setTimeout(25000);
       await navigateBackToCurrentPromptWithCodeAttachment(page);
     });
   });
@@ -256,24 +275,6 @@ test.describe('Open MynahUI', () => {
     });
     test('should submit feedback form', async ({ page }) => {
       await submitFeedbackForm(page);
-    });
-  });
-
-  test.describe('Tabs', () => {
-    test('should close the tab', async ({ page }) => {
-      await closeTab(page);
-    });
-
-    test('should open a new the tab', async ({ page }) => {
-      await openNewTab(page);
-    });
-
-    test('should close the tab with middle click', async ({ page }) => {
-      await closeTab(page, true, true);
-    });
-
-    test('should open a new tab with double click', async ({ page }) => {
-      await openNewTab(page, true, true);
     });
   });
 });

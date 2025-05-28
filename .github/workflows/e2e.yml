@@ -1,9 +1,7 @@
 name: Run E2E Tests
 on: workflow_call
 jobs:
-    e2e:
-        # Prevents the workflow running from snapshot updates committed by the bot
-        if: github.actor != 'github-actions[bot]'
+    build-image:
         runs-on: ubuntu-latest
         steps:
           # Checkout the PR branch
@@ -45,24 +43,27 @@ jobs:
               rm -rf /tmp/.buildx-cache
               mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-          # Run the Docker container
-          - name: Run E2E tests Docker Container
-            run: npm run docker:run
-    
-          # Extract test results from Docker container
-          - name: Extract test results from Docker container
-            if: always()
-            run: npm run docker:extract
-              
-          # Upload test results as artifact
-          - name: Upload test results
+          # Save the image as a tar file
+          - name: Save Docker image
+            run: docker save mynah-ui-e2e:latest > mynah-ui-e2e.tar
+            
+          # Upload the image as an artifact
+          - name: Upload Docker image
             uses: actions/upload-artifact@v4
-            if: always()
             with:
-              name: test-results
-              path: ./ui-tests/__results__
+              name: docker-image
+              path: mynah-ui-e2e.tar
               retention-days: 30
+
+    chromium:
+        needs: build-image
+        uses: ./.github/workflows/e2e_chromium.yml
+        
+    webkit:
+        needs: build-image
+        uses: ./.github/workflows/e2e_webkit.yml
+    
     report:
-      needs: e2e
+      needs: [chromium, webkit]
       if: always()
       uses: ./.github/workflows/test_report.yml

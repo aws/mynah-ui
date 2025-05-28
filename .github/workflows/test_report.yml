@@ -10,16 +10,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Download test results
-      uses: actions/download-artifact@v4
-      with:
-        name: test-results
-        path: ./ui-tests/__results__
       
     - uses: dorny/test-reporter@v2.0.0
       with:
-        name: E2E Tests Report
-        path: ./ui-tests/__results__/__reports__/junit.xml
+        artifact: /test-results-(.*)/
+        name: 'Test report $1'
+        path: '/__reports__/junit.xml'
         reporter: jest-junit
         fail-on-error: false
