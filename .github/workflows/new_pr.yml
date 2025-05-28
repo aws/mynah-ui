@@ -22,5 +22,5 @@ jobs:
             }
   lint:
     uses: ./.github/workflows/lint.yml
-  e2e:
-    uses: ./.github/workflows/e2e.yml
+  e2e-linux:
+    uses: ./.github/workflows/e2e-linux.yml

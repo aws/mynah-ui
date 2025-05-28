@@ -1,7 +1,7 @@
-name: Run E2E Tests
+name: Run E2E Tests (Linux)
 on: workflow_call
 jobs:
-    e2e:
+    e2e-linux:
         runs-on: ubuntu-latest
         permissions:
           contents: read
@@ -55,6 +55,6 @@ jobs:
               path: ./ui-tests/__results__
               retention-days: 30
     report:
-      needs: e2e
+      needs: e2e-linux
       if: always()
       uses: ./.github/workflows/test_report.yml

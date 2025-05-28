@@ -233,7 +233,6 @@ test.describe('Open MynahUI', () => {
       await navigatePromptsUp(page);
     });
     test('should navigate down to next prompt', async ({ page }) => {
-      test.setTimeout(25000);
       await navigatePromptsDown(page);
     });
     test('should navigate down to current empty prompt', async ({ page }) => {
@@ -252,7 +251,6 @@ test.describe('Open MynahUI', () => {
     });
 
     test('should navigate back to current prompt with code attachment', async ({ page }) => {
-      test.setTimeout(25000);
       await navigateBackToCurrentPromptWithCodeAttachment(page);
     });
   });
