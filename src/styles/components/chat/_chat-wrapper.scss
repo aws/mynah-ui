@@ -216,6 +216,15 @@
         padding: var(--mynah-sizing-2);
         flex: 1;
     }
+
+    &.mynah-context-list {
+        padding: var(--mynah-sizing-2);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+
+        @import 'chat-prompt-top-bar-context';
+    }
 }
 
 .mynah-chat-items-container,

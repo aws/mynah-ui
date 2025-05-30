@@ -39,6 +39,7 @@ export interface QuickActionCommandGroup {
   actions?: Action[];
   commands: QuickActionCommand[];
 }
+
 /**
  * data store model to update the mynah ui partially or fully
  */
@@ -95,6 +96,24 @@ export interface MynahUIDataModel {
   * Placeholder to be shown on prompt input
   */
   promptInputPlaceholder?: string;
+  /**
+   * Placeholder to be shown on prompt top bar
+   */
+  promptTopBarPlaceholder?: string;
+
+  /**
+   * Title to be shown on prompt top bar
+   */
+  promptTopBarTitle?: string;
+
+  /**
+   * Overlay to be shown when prompt top bar action is clicked
+   */
+  promptTopBarActionOverlay?: DetailedList;
+  /**
+ * Items to be pinned in prompt top bar
+ */
+  promptTopBarContextItems?: QuickActionCommand[];
   /**
   * Prompt input text
   */
@@ -198,6 +217,7 @@ export enum MynahEventNames {
   SHOW_FEEDBACK_FORM = 'showFeedbackForm',
   OPEN_SHEET = 'openSheet',
   CLOSE_SHEET = 'closeSheet',
+  FILE_DRAGGED = 'fileDragged',
   UPDATE_SHEET = 'updateSheet',
   FILE_CLICK = 'fileClick',
   FILE_ACTION_CLICK = 'fileActionClick',
@@ -214,7 +234,13 @@ export enum MynahEventNames {
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
   ROOT_RESIZE = 'rootResize',
-  CONTEXT_SELECTED = 'contextSelected'
+  CONTEXT_SELECTED = 'contextSelected',
+  TOP_BAR_ITEM_ADD = 'promptInputTopBarItemAdd',
+  TOP_BAR_ITEM_REMOVE = 'promptInputTopBarItemRemove',
+  TOP_BAR_ACTION_CLICK = 'promptInputTopBarActionClick',
+  TOP_BAR_ACTION_GROUP_CLICK = 'promptInputTopBarActionGroupClick',
+  TOP_BAR_ACTION_ITEM_CLICK = 'promptInputTopBarActionItemClick',
+  CLOSE_TOP_BAR_ACTION_OVERLAY = 'closePromptInputTopBarActionOverlay'
 };
 
 export enum MynahPortalNames {
@@ -274,6 +300,7 @@ export interface DetailedList {
   };
   selectable?: boolean | 'clickable';
   textDirection?: 'row' | 'column';
+  compact?: boolean;
 }
 
 export interface DetailedListItemGroup {
@@ -281,6 +308,7 @@ export interface DetailedListItemGroup {
   actions?: Action[];
   icon?: MynahIcons | MynahIconsType;
   children?: DetailedListItem[];
+  childrenIndented?: boolean;
 }
 
 export interface DetailedListItem {
@@ -489,6 +517,7 @@ type RadioGroupFormItem = BaseFormItem & {
 type CheckboxFormItem = BaseFormItem & {
   type: 'switch' | 'checkbox';
   value?: 'true' | 'false';
+  indeterminate?: boolean;
   label?: string;
   alternateTooltip?: string;
 };

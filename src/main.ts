@@ -30,6 +30,7 @@ import {
   DetailedList,
   TreeNodeDetails,
   Action,
+  DetailedListItem,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -269,6 +270,15 @@ export interface MynahUIProps {
     tabId: string,
     buttonId: string,
     eventId?: string) => void;
+  onPromptTopBarItemAdded?: (tabId: string,
+    item: QuickActionCommand, eventId?: string) => void;
+  onPromptTopBarItemRemoved?: (tabId: string,
+    item: QuickActionCommand, eventId?: string) => void;
+  onPromptTopBarActionClick?: (tabId: string, action: QuickActionCommand, eventId?: string) => void;
+  onPromptTopBarActionItemClick?: (tabId: string,
+    item: DetailedListItem, eventId?: string) => void;
+  onPromptTopBarActionGroupClick?: (tabId: string,
+    groupName: string, eventId?: string) => void;
   /**
    * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
    */
@@ -799,6 +809,22 @@ export class MynahUI {
       this.props.onPromptInputOptionChange?.(data.tabId, data.optionsValues, this.getUserEventId());
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_ADD, (data) => {
+      this.props.onPromptTopBarItemAdded?.(data.tabId, data.contextItem, this.getUserEventId());
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_REMOVE, (data) => {
+      this.props.onPromptTopBarItemRemoved?.(data.tabId, data.contextItem, this.getUserEventId());
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ACTION_CLICK, (data) => {
+      this.props.onPromptTopBarActionClick?.(data.tabId, data.item, this.getUserEventId());
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ACTION_GROUP_CLICK, (data) => {
+      this.props.onPromptTopBarActionGroupClick?.(data.tabId, data.groupName, this.getUserEventId());
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ACTION_ITEM_CLICK, (data) => {
+      this.props.onPromptTopBarActionItemClick?.(data.tabId, data.item, this.getUserEventId());
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_BUTTON_CLICK, (data) => {
       this.props.onPromptInputButtonClick?.(data.tabId, data.buttonId, this.getUserEventId());
     });
@@ -1050,6 +1076,10 @@ export class MynahUI {
         formItems
       },
     });
+  };
+
+  public closeActionPillOverlay = (): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CLOSE_TOP_BAR_ACTION_OVERLAY);
   };
 
   public openDetailedList = (
