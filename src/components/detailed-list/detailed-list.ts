@@ -10,12 +10,14 @@ import { ChatItemFormItemsWrapper } from '../chat-item/chat-item-form-items';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { generateUID } from '../../main';
 import { Card } from '../card/card';
+import { cancelEvent } from '../../helper/events';
 
 export interface DetailedListWrapperProps {
   detailedList: DetailedList;
   descriptionTextDirection?: 'ltr' | 'rtl';
   onFilterValueChange?: (filterValues: Record<string, any>, isValid: boolean) => void;
-  onGroupActionClick?: (action: ChatItemButton) => void;
+  onGroupActionClick?: (action: ChatItemButton, groupName?: string) => void;
+  onGroupClick?: (groupName: string) => void;
   onItemSelect?: (detailedListItem: DetailedListItem) => void;
   onItemClick?: (detailedListItem: DetailedListItem) => void;
   onItemActionClick?: (action: ChatItemButton, detailedListItem?: DetailedListItem) => void;
@@ -150,17 +152,18 @@ export class DetailedListWrapper {
       return DomBuilder.getInstance().build({
         type: 'div',
         testId: testIds.prompt.quickPicksGroup,
-        classNames: [ 'mynah-detailed-list-group' ],
+        classNames: [ 'mynah-detailed-list-group', this.props.detailedList.compact === true ? 'mynah-detailed-list-group-compact' : '' ],
         children: [
           ...(detailedListGroup.groupName !== undefined
             ? [ DomBuilder.getInstance().build({
                 type: 'div',
                 testId: testIds.prompt.quickPicksGroupTitle,
-                classNames: [ 'mynah-detailed-list-group-title' ],
+                classNames: [ 'mynah-detailed-list-group-title', this.props.detailedList.compact === true ? 'compact' : '' ],
                 children: [
                   ...(detailedListGroup.icon != null ? [ new Icon({ icon: detailedListGroup.icon }).render ] : []),
                   new CardBody({
-                    body: detailedListGroup.groupName
+                    body: detailedListGroup.groupName,
+                    classNames: [ this.props.onGroupActionClick != null ? 'mynah-ui-clickable-item' : '' ]
                   }).render,
                   new ChatItemButtonsWrapper({
                     buttons: (detailedListGroup.actions ?? []).map(action => ({
@@ -170,9 +173,17 @@ export class DetailedListWrapper {
                       text: action.text,
                       disabled: false
                     })),
-                    onActionClick: this.props.onGroupActionClick
+                    onActionClick: (action) => { this.props.onGroupActionClick?.(action, detailedListGroup.groupName); }
                   }).render
-                ]
+                ],
+                events: {
+                  click: (e) => {
+                    if (this.props.onGroupClick != null && detailedListGroup.groupName != null) {
+                      cancelEvent(e);
+                      this.props.onGroupClick(detailedListGroup.groupName);
+                    }
+                  }
+                }
               }) ]
             : []),
           ...((chunkArray(detailedListGroup.children ?? [], 100)).map((detailedListItemPart, index) => {
@@ -183,7 +194,7 @@ export class DetailedListWrapper {
                 key: itemBlockKey,
                 style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-8) + var(--mynah-sizing-half)));`
               },
-              classNames: [ 'mynah-detailed-list-items-block' ],
+              classNames: [ 'mynah-detailed-list-items-block', (detailedListGroup.groupName !== undefined && detailedListGroup.childrenIndented === true) ? 'indented' : '' ],
               children: index < 5
                 ? this.getDetailedListItemElements(detailedListItemPart)
                 : []
@@ -211,7 +222,8 @@ export class DetailedListWrapper {
         selectable: this.props.detailedList.selectable !== false && this.props.detailedList.selectable !== 'clickable',
         clickable: this.props.detailedList.selectable === 'clickable',
         textDirection: this.props.detailedList.textDirection,
-        descriptionTextDirection: this.props.descriptionTextDirection
+        descriptionTextDirection: this.props.descriptionTextDirection,
+        compact: this.props.detailedList.compact
       });
       if (detailedListItem.disabled !== true) {
         this.allSelectableDetailedListElements.push(detailedListItemElement);

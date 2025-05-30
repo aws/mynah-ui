@@ -20,6 +20,7 @@ export interface DetailedListItemWrapperProps {
   selectable?: boolean;
   clickable?: boolean;
   textDirection?: 'row' | 'column';
+  compact?: boolean;
 }
 
 export class DetailedListItemWrapper {
@@ -34,7 +35,7 @@ export class DetailedListItemWrapper {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.quickPickItem,
-      classNames: [ 'mynah-detailed-list-item' ],
+      classNames: [ 'mynah-detailed-list-item', props.compact === true ? 'compact' : '' ],
       attributes: {
         disabled: this.props.listItem.disabled ?? 'false',
         selectable: this.props.selectable ?? 'true',

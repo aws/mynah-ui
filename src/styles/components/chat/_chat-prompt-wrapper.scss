@@ -45,6 +45,8 @@
             align-items: flex-start;
             position: relative;
 
+            @import 'chat-prompt-top-bar';
+
             > .mynah-chat-prompt-input-inner-wrapper {
                 display: flex;
                 flex: 1;
