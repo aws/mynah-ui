@@ -367,14 +367,13 @@
             pointer-events: none;
         }
         &::before {
-            opacity: 0;
-            @include gradient-border($gradient: var(--mynah-color-gradient-input), $background: var(--mynah-input-bg));
+            border: var(--mynah-border-width) solid var(--mynah-color-text-input-border);
         }
     }
 
     &.input-has-focus > .mynah-chat-prompt {
         &::before {
-            opacity: 1;
+            border: var(--mynah-border-width) solid var(--mynah-color-text-input-border-focused);
         }
     }
 
