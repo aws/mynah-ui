@@ -170,14 +170,13 @@
     --mynah-z-5: 500; /* Fifth layer */
     --mynah-z-max: 999; /* Maximum layer - for critical elements */
 
-
     // New set of granular theming
     // Input
     --mynah-color-input-border: var(--mynah-color-border-default);
     --mynah-color-input-placeholder: var(--mynah-color-text-input-placeholder);
     --mynah-color-input-foreground: var(--mynah-color-text-input);
     --mynah-color-input-background: transparent;
-    
+
     --mynah-color-input-border-active: var(--mynah-color-button);
     --mynah-color-input-placeholder-active: var(--mynah-color-button-reverse);
     --mynah-color-input-foreground-active: var(--mynah-color-button-reverse);
@@ -209,6 +208,4 @@
     --mynah-color-overlay-border: var(--mynah-color-border-default);
     --mynah-color-overlay-background: var(--mynah-card-bg);
     --mynah-color-overlay-foreground: var(--mynah-color-text-input-border-focused);
-
-
 }
