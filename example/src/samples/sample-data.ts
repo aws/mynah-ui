@@ -798,6 +798,7 @@ _To send the form, mandatory items should be filled._`,
             id: 'working-hours',
             type: 'numericinput',
             title: `How many hours are you using an IDE weekly?`,
+            icon: 'history',
             placeholder: 'IDE working hours',
         },
         {

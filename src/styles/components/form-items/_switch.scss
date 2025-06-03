@@ -32,9 +32,9 @@
             &:checked {
                 & + .mynah-form-input-switch-check {
                     transform: translateX(var(--mynah-sizing-3));
-                    border-color: var(--mynah-color-button);
-                    background-color: var(--mynah-color-button);
-                    color: var(--mynah-color-button-reverse);
+                    border-color: var(--mynah-color-input-border-active);
+                    background-color: var(--mynah-color-input-background-active);
+                    color: var(--mynah-color-input-foreground-active);
                 }
             }
         }
@@ -48,11 +48,10 @@
             left: 0;
             width: auto;
             height: auto;
-            background-color: var(--mynah-color-bg);
             border-radius: inherit;
             z-index: var(--mynah-z-1);
             border-radius: var(--mynah-input-radius);
-            border: solid var(--mynah-border-width) var(--mynah-color-border-default);
+            border: var(--mynah-border-width) solid var(--mynah-color-input-border);
         }
         > .mynah-form-input-switch-check {
             position: relative;
@@ -67,8 +66,8 @@
             flex-flow: row nowrap;
             justify-content: center;
             align-items: center;
-            background-color: var(--mynah-card-bg);
-            color: var(--mynah-color-text-weak);
+            background-color: var(--mynah-color-input-background);
+            color: var(--mynah-color-input-placeholder);
             z-index: var(--mynah-z-2);
             transform: translateX(calc(2 * var(--mynah-border-width)));
 

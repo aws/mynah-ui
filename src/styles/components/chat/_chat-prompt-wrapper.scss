@@ -228,13 +228,15 @@
                                 }
                                 > .mynah-form-input-container.no-border {
                                     > .select-auto-width-sizer {
-                                        padding-right: calc(var(--mynah-sizing-half) + 1em);
+                                        padding-right: calc(var(--mynah-sizing-half) + 1.75em);
                                     }
                                     > select {
                                         width: auto;
                                         min-width: auto;
                                         color: var(--mynah-color-text-weak);
                                         font-size: var(--mynah-font-size-small);
+                                        padding: 0;
+                                        border: none;
                                         & + i {
                                             font-size: var(--mynah-font-size-xsmall);
                                         }
@@ -367,13 +369,13 @@
             pointer-events: none;
         }
         &::before {
-            border: var(--mynah-border-width) solid var(--mynah-color-text-input-border);
+            border: var(--mynah-border-width) solid var(--mynah-color-input-border);
         }
     }
 
     &.input-has-focus > .mynah-chat-prompt {
         &::before {
-            border: var(--mynah-border-width) solid var(--mynah-color-text-input-border-focused);
+            border: var(--mynah-border-width) solid var(--mynah-color-input-border-active);
         }
     }
 

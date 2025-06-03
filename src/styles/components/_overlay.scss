@@ -65,7 +65,7 @@
                 pointer-events: none;
                 box-sizing: border-box;
                 opacity: 0;
-                border: var(--mynah-button-border-width) solid var(--mynah-color-border-default);
+                border: var(--mynah-button-border-width) solid var(--mynah-color-overlay-border);
                 z-index: var(--mynah-z-5);
                 box-shadow: var(--mynah-shadow-overlay);
                 transform-origin: left bottom;
@@ -81,7 +81,7 @@
                 top: 0;
                 opacity: 0;
                 border: var(--mynah-sizing-4);
-                background-color: var(--mynah-card-bg);
+                background-color: var(--mynah-color-overlay-background);
                 border-radius: inherit;
                 transition: var(--mynah-short-transition-rev);
                 transition-delay: 20ms;

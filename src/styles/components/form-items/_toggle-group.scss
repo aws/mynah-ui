@@ -23,17 +23,17 @@
             height: 0;
             width: 0;
             &:checked + .mynah-form-input-radio-check {
-                border-color: var(--mynah-color-button);
+                border-color: var(--mynah-color-input-border-active);
                 > .mynah-ui-icon {
                     transform: scale(1);
-                    color: var(--mynah-color-button-reverse);
+                    color: var(--mynah-color-input-foreground-active);
                 }
                 &::after {
-                    background-color: var(--mynah-color-button);
+                    background-color: var(--mynah-color-input-background-active);
                     opacity: 1;
                 }
                 & + span {
-                    color: var(--mynah-color-button-reverse);
+                    color: var(--mynah-color-input-foreground-active);
                 }
             }
         }
@@ -61,7 +61,7 @@
                 left: var(--mynah-border-width);
                 height: auto;
                 width: auto;
-                background-color: var(--mynah-color-border-default);
+                background-color: var(--mynah-color-input-border);
                 opacity: 0;
                 border-radius: inherit;
                 z-index: var(--mynah-z-1);

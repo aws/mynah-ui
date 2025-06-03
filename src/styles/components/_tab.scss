@@ -55,10 +55,12 @@
                 overflow: hidden;
                 justify-content: stretch;
                 align-items: center;
-                color: var(--mynah-color-text-weak);
-                border-right: 1px solid var(--mynah-color-border-default);
-                border-top: 1px solid transparent;
-                background-color: var(--mynah-color-bg);
+                border-right: 1px solid var(--mynah-color-border-default); // next item separation
+                
+                border-top: 1px solid var(--mynah-color-tab-border);
+                background-color: var(--mynah-color-tab-background);
+                color: var(--mynah-color-tab-foreground);
+
                 opacity: 0.75;
                 max-width: 100%;
                 &,
@@ -86,10 +88,10 @@
                 }
             }
             &:checked + .mynah-tab-item-label {
-                border-top-color: var(--mynah-color-button);
-                color: var(--mynah-color-text-default);
+                border-top-color: var(--mynah-color-tab-border-active);
+                background-color: var(--mynah-color-tab-background-active);
+                color: var(--mynah-color-tab-foreground-active);
                 opacity: 1;
-                background-color: var(--mynah-color-tab-active);
             }
             &[disabled='disabled'] {
                 pointer-events: none !important;

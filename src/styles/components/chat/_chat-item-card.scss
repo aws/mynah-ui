@@ -35,7 +35,7 @@
         }
         &.mynah-chat-item-directive.full-width {
             > .mynah-card {
-                background-color: var(--mynah-color-bg);
+                background-color: var(--mynah-color-bg); // to not let the side dividers to overlap with text
                 backface-visibility: hidden;
                 max-width: calc(100% - var(--mynah-sizing-18));
                 width: auto;
@@ -51,7 +51,7 @@
                 right: 0;
                 top: 50%;
                 transform: translateY(-50%);
-                background-color: var(--mynah-color-border-default);
+                background-color: var(--mynah-color-card-answer-border);
                 height: var(--mynah-border-width);
             }
         }
@@ -541,8 +541,8 @@
         > .mynah-chat-item-card-icon-wrapper {
             align-self: flex-end;
             margin-bottom: calc(-2 * var(--mynah-sizing-1));
-            background-color: var(--mynah-card-bg-alternate);
-            color: var(--mynah-color-text-alternate);
+            background-color: var(--mynah-color-card-prompt-background);
+            color: var(--mynah-color-card-prompt-foreground);
         }
         .mynah-chat-item-followup-question,
         .mynah-chat-item-card-related-content {
@@ -558,12 +558,13 @@
         .mynah-chat-item-card-related-content > .mynah-card,
         > .mynah-card {
             padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
-            background-color: var(--mynah-card-bg-alternate);
+            background-color: var(--mynah-color-card-prompt-background);
+            color: var(--mynah-color-card-prompt-foreground);
+            border: var(--mynah-border-width) solid var(--mynah-color-card-prompt-border);
             border-bottom-right-radius: var(--mynah-card-radius-corner);
-            border: none;
             &,
             > .mynah-card-body {
-                color: var(--mynah-color-text-alternate);
+                color: var(--mynah-color-card-prompt-foreground);
                 overflow-wrap: break-word;
 
                 a {
@@ -576,18 +577,20 @@
         }
 
         &.mynah-chat-item-auto-collapse > .more-content-indicator {
-            --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-card-bg-alternate);
-            color: var(--mynah-color-text-alternate);
+            --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-color-card-prompt-background);
+            color: var(--mynah-color-card-prompt-foreground);
             border-bottom-right-radius: var(--mynah-card-radius-corner);
             border-bottom-left-radius: var(--mynah-card-radius);
         }
     }
     &.mynah-chat-item-system-prompt {
         &.mynah-chat-item-auto-collapse > .more-content-indicator {
-            --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-color-status-warning);
+            --mynah-chat-item-more-content-indicator-bg-color: var(--mynah-color-card-system-background);
         }
         > .mynah-card {
-            background-color: var(--mynah-color-status-warning);
+            color: var(--mynah-color-card-system-foreground);
+            background-color: var(--mynah-color-card-system-background);
+            border: var(--mynah-border-width) solid var(--mynah-color-card-system-border);
         }
     }
 
@@ -611,9 +614,9 @@
         > .mynah-chat-item-card-icon-wrapper {
             align-self: flex-start;
             margin-bottom: calc(-2 * var(--mynah-sizing-1));
-            background-color: var(--mynah-card-bg);
-            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-            color: var(--mynah-color-text-default);
+            background-color: var(--mynah-color-card-answer-background);
+            border: var(--mynah-border-width) solid var(--mynah-color-card-answer-border);
+            color: var(--mynah-color-card-answer-foreground);
         }
         > .mynah-chat-item-card-related-content {
             > .mynah-chat-item-card-related-content-item > .mynah-card-compact {

@@ -169,4 +169,46 @@
     --mynah-z-4: 400; /* Fourth layer */
     --mynah-z-5: 500; /* Fifth layer */
     --mynah-z-max: 999; /* Maximum layer - for critical elements */
+
+
+    // New set of granular theming
+    // Input
+    --mynah-color-input-border: var(--mynah-color-border-default);
+    --mynah-color-input-placeholder: var(--mynah-color-text-input-placeholder);
+    --mynah-color-input-foreground: var(--mynah-color-text-input);
+    --mynah-color-input-background: transparent;
+    
+    --mynah-color-input-border-active: var(--mynah-color-button);
+    --mynah-color-input-placeholder-active: var(--mynah-color-button-reverse);
+    --mynah-color-input-foreground-active: var(--mynah-color-button-reverse);
+    --mynah-color-input-background-active: var(--mynah-color-button);
+
+    // Tab ✅
+    --mynah-color-tab-border: transparent;
+    --mynah-color-tab-foreground: var(--mynah-color-text-weak);
+    --mynah-color-tab-background: var(--mynah-color-bg);
+
+    --mynah-color-tab-border-active: var(--mynah-color-button);
+    --mynah-color-tab-foreground-active: var(--mynah-color-text-default);
+    --mynah-color-tab-background-active: var(--mynah-color-text-input-border);
+
+    // Card ✅
+    --mynah-color-card-answer-border: var(--mynah-color-border-default);
+    --mynah-color-card-answer-background: var(--mynah-card-bg);
+    --mynah-color-card-answer-foreground: var(--mynah-color-text-default);
+
+    --mynah-color-card-prompt-border: var(--mynah-card-bg-alternate);
+    --mynah-color-card-prompt-background: var(--mynah-card-bg-alternate);
+    --mynah-color-card-prompt-foreground: var(--mynah-color-text-alternate);
+
+    --mynah-color-card-system-border: var(--mynah-color-status-warning);
+    --mynah-color-card-system-background: var(--mynah-color-status-warning);
+    --mynah-color-card-system-foreground: var(--mynah-color-text-alternate);
+
+    // Overlay ✅
+    --mynah-color-overlay-border: var(--mynah-color-border-default);
+    --mynah-color-overlay-background: var(--mynah-card-bg);
+    --mynah-color-overlay-foreground: var(--mynah-color-text-input-border-focused);
+
+
 }

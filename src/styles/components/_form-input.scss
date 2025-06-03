@@ -24,7 +24,7 @@
     }
     .mynah-ui-form-item-description {
         font-size: var(--mynah-font-size-small);
-        color: var(--mynah-color-text-weak);
+        color: var(--mynah-color-input-placeholder);
     }
     .mynah-form-input-container {
         position: relative;
@@ -37,11 +37,16 @@
         min-height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
 
         &:not(.no-border) {
-            padding: var(--mynah-sizing-2);
-            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-            background-color: var(--mynah-card-bg);
-            border-radius: var(--mynah-input-radius);
+            background-color: var(--mynah-color-input-background);
             transform: translateZ(0px);
+            > .mynah-form-input {
+                border-radius: var(--mynah-input-radius);
+                border: var(--mynah-border-width) solid var(--mynah-color-input-border);
+                &:focus,
+                &:active {
+                    border-color: var(--mynah-color-input-border-active);
+                }
+            }
         }
 
         &:has(.mynah-form-input:disabled) {
@@ -62,8 +67,8 @@
         > .mynah-form-input {
             width: 100%;
             left: 0;
-            color: var(--mynah-color-text-default);
-            background-color: transparent;
+            color: var(--mynah-color-input-foreground);
+            background-color: var(--mynah-color-input-background);
 
             &[disabled] {
                 pointer-events: none;
@@ -71,13 +76,14 @@
             }
 
             &::placeholder {
-                color: var(--mynah-color-text-input-placeholder);
+                color: var(--mynah-color-input-placeholder);
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
             }
             option {
                 background-color: var(--mynah-card-bg);
+                color: var(--mynah-color-text-default);
             }
             option.empty-option {
                 font-style: italic;
@@ -86,10 +92,9 @@
 
             -webkit-appearance: none;
             appearance: none;
-            padding: 0;
-            border: none;
             text-overflow: clip;
             outline: none;
+            padding: var(--mynah-sizing-2);
 
             > {
                 @import './form-items/radio-group';
@@ -103,7 +108,7 @@
                 > .mynah-feedback-form-star {
                     cursor: pointer;
                     padding-right: var(--mynah-sizing-1);
-                    color: var(--mynah-color-button);
+                    color: var(--mynah-color-input-background-active);
                     font-size: 1.5rem;
                     transition: var(--mynah-very-short-transition);
                     > .mynah-ui-icon {
@@ -125,6 +130,9 @@
                 border-color: var(--mynah-color-status-error);
             }
         }
+        > div.mynah-form-input {
+            padding: 0;
+        }
 
         > .select-auto-width-sizer {
             opacity: 0;
@@ -142,7 +150,6 @@
             justify-content: flex-start;
             > .mynah-form-input {
                 width: auto;
-                // padding: var(--mynah-sizing-half);
                 border-radius: var(--mynah-input-radius);
                 background-color: var(--mynah-color-bg);
                 border: var(--mynah-border-width) solid var(--mynah-color-border-default);
@@ -160,18 +167,23 @@
             font-family: var(--mynah-font-family);
             resize: none;
             font-size: var(--mynah-font-size-medium);
-            color: var(--mynah-color-text-input);
+            color: var(--mynah-color-input-foreground);
             outline: none;
         }
         > .mynah-form-input-icon {
-            color: var(--mynah-color-text-weak);
-            margin-right: var(--mynah-sizing-2);
+            color: var(--mynah-color-input-placeholder);
+            position: absolute;
+            z-index: var(--mynah-z-2);
+            left: var(--mynah-sizing-2);
+            & + .mynah-form-input {
+                padding-left: var(--mynah-sizing-7);
+            }
         }
         > .mynah-select-handle {
             position: absolute;
-            color: var(--mynah-color-text-weak);
+            color: var(--mynah-color-input-placeholder);
             pointer-events: none;
-            transform: translateX(-25%);
+            transform: translateX(-100%);
         }
         & ~ .mynah-form-input-validation-error-block {
             display: flex;
