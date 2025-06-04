@@ -68,6 +68,7 @@ const configDefaults: ConfigFullModel = {
     save: 'Save',
     cancel: 'Cancel',
     submit: 'Submit',
+    add: 'Add',
     pleaseSelect: 'Please select...',
     stopGenerating: 'Stop',
     copyToClipboard: 'Copied to clipboard',

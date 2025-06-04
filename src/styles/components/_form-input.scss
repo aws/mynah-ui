@@ -33,14 +33,15 @@
         justify-content: flex-end;
         align-items: center;
         z-index: var(--mynah-z-0);
-        min-width: var(--mynah-sizing-7);
-        min-height: var(--mynah-sizing-7);
+        min-width: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
+        min-height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
 
         &:not(.no-border) {
-            padding: var(--mynah-sizing-3);
+            padding: var(--mynah-sizing-2);
             border: var(--mynah-border-width) solid var(--mynah-color-border-default);
             background-color: var(--mynah-card-bg);
             border-radius: var(--mynah-input-radius);
+            transform: translateZ(0px);
         }
 
         &:has(.mynah-form-input:disabled) {
@@ -85,7 +86,6 @@
 
             -webkit-appearance: none;
             appearance: none;
-            padding: 0;
             border: none;
             text-overflow: clip;
             outline: none;
@@ -125,6 +125,22 @@
             }
         }
 
+        select.mynah-form-input {
+            padding: 0px var(--mynah-sizing-2);
+        }
+
+        > .select-auto-width-sizer {
+            opacity: 0;
+            color: transparent;
+            padding-right: calc(var(--mynah-sizing-2) + 1em);
+            & + select {
+                position: absolute;
+                left: 0;
+                width: 100%;
+                cursor: pointer;
+            }
+        }
+
         &.mynah-form-input-toggle-group {
             justify-content: flex-start;
             > .mynah-form-input {
@@ -152,10 +168,9 @@
         }
         > .mynah-form-input-icon {
             color: var(--mynah-color-text-weak);
-            margin-right: var(--mynah-sizing-2);
         }
         > .mynah-select-handle {
-            position: absolute;
+            position: relative;
             color: var(--mynah-color-text-weak);
             pointer-events: none;
             transform: translateX(-25%);
@@ -169,6 +184,15 @@
             opacity: 0.75;
             &:empty {
                 display: none;
+            }
+        }
+    }
+
+    &[disabled='disabled'] {
+        > .mynah-form-item-list-wrapper {
+            > .mynah-button,
+            > .mynah-form-item-list-rows-wrapper > .mynah-form-item-list-row > .mynah-button {
+                display: none !important;
             }
         }
     }

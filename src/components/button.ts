@@ -20,6 +20,7 @@ import escapeHTML from 'escape-html';
 import unescapeHTML from 'unescape-html';
 import { parseMarkdown } from '../helper/marked';
 import { StyleLoader } from '../helper/style-loader';
+import { Icon } from './icon';
 
 const TOOLTIP_DELAY = 350;
 export interface ButtonProps {
@@ -28,11 +29,18 @@ export interface ButtonProps {
   icon?: HTMLElement | ExtendedHTMLElement;
   testId?: string;
   label?: HTMLElement | ExtendedHTMLElement | string;
+  confirmation?: {
+    confirmButtonText: string;
+    cancelButtonText: string;
+    title: string;
+    description?: string;
+  };
   tooltip?: string;
   tooltipVerticalDirection?: OverlayVerticalDirection;
   tooltipHorizontalDirection?: OverlayHorizontalDirection;
   children?: Array<HTMLElement | ExtendedHTMLElement | string>;
   disabled?: boolean;
+  hidden?: boolean;
   primary?: boolean;
   border?: boolean;
   status?: 'main' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'clear' | 'dimmed-clear';
@@ -44,6 +52,9 @@ export interface ButtonProps {
 export abstract class ButtonAbstract {
   render: ExtendedHTMLElement;
   updateLabel = (label: HTMLElement | ExtendedHTMLElement | string): void => {
+  };
+
+  setHidden = (hidden: boolean): void => {
   };
 
   setEnabled = (enabled: boolean): void => {
@@ -68,6 +79,7 @@ class ButtonInternal extends ButtonAbstract {
         'mynah-button',
         ...(props.primary === false ? [ 'mynah-button-secondary' ] : []),
         ...(props.border === true ? [ 'mynah-button-border' ] : []),
+        ...(props.hidden === true ? [ 'hidden' ] : []),
         ...([ `fill-state-${props.fillState ?? 'always'}` ]),
         ...(props.status != null ? [ `status-${props.status}` ] : []),
         ...(props.classNames !== undefined ? props.classNames : []),
@@ -82,8 +94,76 @@ class ButtonInternal extends ButtonAbstract {
         ...props.additionalEvents,
         click: (e) => {
           this.hideTooltip();
+          cancelEvent(e);
           if (this.props.disabled !== true) {
-            props.onClick(e);
+            if (this.props.confirmation != null) {
+              const confirmationOverlay = new Overlay({
+                onClose: () => {
+                },
+                children: [
+                  {
+                    type: 'div',
+                    classNames: [ 'mynah-button-confirmation-dialog-container' ],
+                    children: [
+                      {
+                        type: 'div',
+                        classNames: [ 'mynah-button-confirmation-dialog-header' ],
+                        children: [
+                          new Icon({ icon: 'warning' }).render,
+                          {
+                            type: 'h4',
+                            children: [ this.props.confirmation.title ]
+                          },
+                          new Button({
+                            icon: new Icon({ icon: 'cancel' }).render,
+                            onClick: () => {
+                              confirmationOverlay.close();
+                            },
+                            primary: false,
+                            status: 'clear',
+                          }).render,
+                        ]
+                      },
+                      {
+                        type: 'div',
+                        classNames: [ 'mynah-button-confirmation-dialog-body' ],
+                        innerHTML: parseMarkdown(this.props.confirmation.description ?? '')
+                      },
+                      {
+                        type: 'div',
+                        classNames: [ 'mynah-button-confirmation-dialog-buttons' ],
+                        children: [
+                          new Button({
+                            label: this.props.confirmation.cancelButtonText,
+                            onClick: () => {
+                              confirmationOverlay.close();
+                            },
+                            primary: false,
+                            status: 'clear',
+                          }).render,
+                          new Button({
+                            label: this.props.confirmation.confirmButtonText,
+                            onClick: () => {
+                              confirmationOverlay.close();
+                              props.onClick(e);
+                            },
+                            primary: true,
+                          }).render
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                background: true,
+                closeOnOutsideClick: false,
+                dimOutside: true,
+                horizontalDirection: OverlayHorizontalDirection.CENTER,
+                verticalDirection: OverlayVerticalDirection.CENTER,
+                referencePoint: { top: window.innerHeight / 2, left: window.innerWidth / 2 }
+              });
+            } else {
+              props.onClick(e);
+            }
           }
         },
         mouseover: (e) => {
@@ -179,6 +259,15 @@ class ButtonInternal extends ButtonAbstract {
       this.render.setAttribute('disabled', 'disabled');
     }
   };
+
+  public readonly setHidden = (hidden: boolean): void => {
+    this.props.hidden = hidden;
+    if (hidden) {
+      this.render.classList.add('hidden');
+    } else {
+      this.render.classList.remove('hidden');
+    }
+  };
 }
 
 export class Button extends ButtonAbstract {
@@ -193,6 +282,9 @@ export class Button extends ButtonAbstract {
   };
 
   setEnabled = (enabled: boolean): void => {
+  };
+
+  setHidden = (hidden: boolean): void => {
   };
 
   hideTooltip = (): void => {

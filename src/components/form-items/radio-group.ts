@@ -80,7 +80,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
                 type: 'span',
                 classNames: [ 'mynah-form-input-radio-check' ],
                 children: [
-                  new Icon({ icon: option.icon ?? MynahIcons.OK }).render
+                  new Icon({ icon: option.icon ?? MynahIcons.DOT }).render
                 ]
               },
               ...(option.label != null
@@ -102,6 +102,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
           classNames: [ 'mynah-form-input-label' ],
           children: [ ...(props.label != null ? [ props.label ] : []) ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
           classNames: [ 'mynah-form-input-container', `mynah-form-input-${props.type === 'radiogroup' ? 'radio' : 'toggle'}-group`, 'no-border' ],
@@ -109,8 +110,7 @@ export class RadioGroupInternal extends RadioGroupAbstract {
           children: [
             this.radioGroupElement,
           ]
-        },
-        ...[ props.description !== undefined ? props.description : '' ]
+        }
       ]
     });
   }

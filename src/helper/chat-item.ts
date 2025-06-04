@@ -9,6 +9,7 @@ export const emptyChatItemContent: ChatItemContent = {
   customRenderer: null,
   fileList: null,
   followUp: null,
+  summary: null,
   footer: null,
   formItems: null,
   informationCard: null,
@@ -21,6 +22,8 @@ export const chatItemHasContent = (chatItem: Partial<ChatItem>): boolean => (
   chatItem.fileList != null ||
   chatItem.formItems != null ||
   chatItem.header != null ||
+  chatItem.footer != null ||
+  chatItem.summary != null ||
   chatItem.customRenderer != null ||
   chatItem.informationCard != null ||
   chatItem.buttons != null);

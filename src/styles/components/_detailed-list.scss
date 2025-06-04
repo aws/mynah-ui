@@ -9,6 +9,7 @@
     overflow: hidden;
     gap: var(--mynah-sizing-2);
     pointer-events: all;
+    flex-shrink: 0;
 
     > .mynah-detailed-list-header-wrapper {
         flex-shrink: 0;
@@ -40,6 +41,9 @@
         > .mynah-chat-item-form-items-container {
             gap: var(--mynah-sizing-3);
         }
+    }
+    > .mynah-detailed-list-filter-actions-wrapper {
+        align-self: flex-end;
     }
     > .mynah-detailed-list-item-groups-wrapper {
         flex: 1;
@@ -120,7 +124,8 @@
                     background-color: inherit;
                     margin-bottom: var(--mynah-sizing-half);
 
-                    &[selectable='true'] {
+                    &[selectable='true'],
+                    &[clickable='true'] {
                         cursor: pointer;
                     }
 
@@ -229,8 +234,38 @@
                         }
                     }
 
+                    > .mynah-detailed-list-item-status {
+                        flex-shrink: 0;
+                        display: inline-flex;
+                        flex-flow: row nowrap;
+                        gap: var(--mynah-sizing-1);
+                        justify-content: flex-start;
+                        align-items: center;
+                        font-size: var(--mynah-font-size-large);
+                        padding-right: var(--mynah-sizing-1);
+                        min-height: var(--mynah-sizing-7);
+                        @each $status in $mynah-statuses {
+                            &.status-#{$status} {
+                                color: var(--mynah-color-status-#{$status});
+                            }
+                        }
+                        > span {
+                            font-size: var(--mynah-font-size-small);
+                        }
+                    }
                     > .mynah-detailed-list-item-actions {
                         flex-shrink: 0;
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: center;
+                        justify-content: flex-end;
+
+                        > .mynah-detailed-list-item-actions-item {
+                            padding: 0 var(--mynah-sizing-half);
+                            & + .mynah-detailed-list-item-actions-item:not(:last-child) {
+                                border-left: var(--mynah-border-width) solid var(--mynah-color-border-default);
+                            }
+                        }
                     }
 
                     > .mynah-detailed-list-item-arrow-icon {
@@ -293,5 +328,17 @@
                 flex-shrink: 0;
             }
         }
+    }
+}
+
+.mynah-sheet
+    > .mynah-sheet-body
+    > .mynah-detailed-list
+    > .mynah-detailed-list-item-groups-wrapper
+    > .mynah-detailed-list-group {
+    > .mynah-detailed-list-group-title,
+    > .mynah-detailed-list-items-block > .mynah-detailed-list-item[selectable='false'] {
+        padding-left: 0;
+        padding-right: 0;
     }
 }

@@ -28,35 +28,23 @@
             width: 0;
             &:checked + .mynah-form-input-radio-check {
                 border-color: var(--mynah-color-button);
+                background-color: var(--mynah-color-button);
                 > .mynah-ui-icon {
-                    transform: scale(0.75);
                     color: var(--mynah-color-button-reverse);
-                    opacity: 1;
-                }
-                &::after {
-                    transform: scale(1);
-                    background-color: var(--mynah-color-button);
                     opacity: 1;
                 }
             }
             &[type='checkbox'].as-checkbox {
-                & + .mynah-form-input-radio-check,
-                & + .mynah-form-input-radio-check:after {
-                    border-radius: var(--mynah-input-radius);
-                }
-                & + .mynah-form-input-radio-check:after {
-                    top: calc(-2 * var(--mynah-border-width));
-                    right: calc(-2 * var(--mynah-border-width));
-                    bottom: calc(-2 * var(--mynah-border-width));
-                    left: calc(-2 * var(--mynah-border-width));
+                & + .mynah-form-input-radio-check {
+                    border-radius: 25%;
                 }
             }
         }
         > .mynah-form-input-radio-check {
             position: relative;
             transition: var(--mynah-bottom-panel-transition);
-            width: var(--mynah-sizing-6);
-            height: var(--mynah-sizing-6);
+            width: var(--mynah-sizing-4);
+            height: var(--mynah-sizing-4);
             border-radius: 100%;
             overflow: hidden;
             box-sizing: border-box;
@@ -69,25 +57,9 @@
             > .mynah-ui-icon {
                 position: relative;
                 transition: inherit;
-                transform: scale(0.75);
-                transform-origin: center center;
+                opacity: 0.25;
+                font-size: 85%;
                 z-index: var(--mynah-z-2);
-            }
-            &::after {
-                $edgeSpace: calc(0 * var(--mynah-border-width));
-                content: '';
-                transition: inherit;
-                position: absolute;
-                top: $edgeSpace;
-                right: $edgeSpace;
-                bottom: $edgeSpace;
-                left: $edgeSpace;
-                background-color: var(--mynah-color-border-default);
-                transform: scale(0.5);
-                transform-origin: center center;
-                opacity: 0;
-                border-radius: inherit;
-                z-index: var(--mynah-z-1);
             }
 
             & + span:empty {

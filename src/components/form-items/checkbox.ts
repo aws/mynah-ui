@@ -93,6 +93,7 @@ export class CheckboxInternal extends CheckboxAbstract {
           classNames: [ 'mynah-form-input-label' ],
           children: [ ...(props.title != null ? [ props.title ] : []) ]
         },
+        ...[ props.description !== undefined ? props.description : '' ],
         {
           type: 'div',
           classNames: [ 'mynah-form-input-container', 'mynah-form-input-radio-group', 'no-border' ],
@@ -101,7 +102,6 @@ export class CheckboxInternal extends CheckboxAbstract {
             this.checkboxWrapper,
           ]
         },
-        ...[ props.description !== undefined ? props.description : '' ]
       ]
     });
   }

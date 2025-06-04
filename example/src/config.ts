@@ -137,6 +137,11 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
                 description: 'ChatItem cards with different headers, padding, fullWidth and directive types.',
             },
             {
+                command: Commands.SUMMARY_CARD,
+                icon: MynahIcons.RIGHT_OPEN,
+                description: 'ChatItem card with summary field.',
+            },
+            {
                 command: Commands.FORM_CARD,
                 icon: MynahIcons.LIST_ADD,
                 description: 'ChatItem cards can have forms inside, including several input items and buttons!',
@@ -257,6 +262,27 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 value: 'false',
                 icon: 'code-block',
             },
+            {
+                type: 'select',
+                border: false,
+                autoWidth: true,
+                id: 'model-select',
+                placeholder: 'Auto',
+                options: [
+                    {
+                        label: 'Fast',
+                        value: 'fast'
+                    },
+                    {
+                        label: 'Fast 2.0 (Exp.)',
+                        value: 'fast-2-experimental'
+                    },
+                    {
+                        label: 'Decisive',
+                        value: 'decisive'
+                    },
+                ]
+            }
         ],
         promptInputButtons: [{
             id: 'test-prompt-input-button',

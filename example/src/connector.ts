@@ -1,6 +1,6 @@
 import { ChatItem } from '@aws/mynah-ui';
 import { Log } from './logger';
-const STREAM_DELAY = 250;
+const STREAM_DELAY = 550;
 export const INITIAL_STREAM_DELAY = 350;
 
 export class Connector {

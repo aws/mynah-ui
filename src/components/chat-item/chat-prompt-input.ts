@@ -588,6 +588,9 @@ export class ChatPromptInput {
     if (quickActionCommand.placeholder !== undefined) {
       this.promptTextInputCommand.setCommand(this.selectedCommand);
       this.promptTextInput.updateTextInputPlaceholder(quickActionCommand.placeholder);
+      if (Config.getInstance().config.autoFocus) {
+        this.promptTextInput.focus();
+      }
     } else if (method === 'enter' || method === 'click') {
       this.sendPrompt();
     } else {
@@ -597,9 +600,6 @@ export class ChatPromptInput {
       this.render.addClass('awaits-confirmation');
     }
     this.quickPick.close();
-    if (Config.getInstance().config.autoFocus) {
-      this.promptTextInput.focus();
-    }
   };
 
   private readonly handleContextCommandSelection = (dirtyContextCommand: QuickActionCommand): void => {

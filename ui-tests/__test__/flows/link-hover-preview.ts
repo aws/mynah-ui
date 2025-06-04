@@ -44,7 +44,8 @@ clamato nescisse.`,
   }
 
   const linkWrapperLocator = page.locator(getSelector(testIds.chatItem.relatedLinks.linkWrapper));
-  await linkWrapperLocator.hover();
+  await linkWrapperLocator.dispatchEvent('mouseenter', { bubbles: true, cancelable: true });
+
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
@@ -53,7 +54,7 @@ clamato nescisse.`,
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlay)).count()).toEqual(1);
   expect(await page.locator(getSelector(testIds.chatItem.relatedLinks.linkPreviewOverlayCard)).count()).toEqual(1);
 
-  page.mouse.move(0, 0);
+  await linkWrapperLocator.first().dispatchEvent('mouseleave');
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {

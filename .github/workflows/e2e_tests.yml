@@ -1,5 +1,6 @@
 name: E2E Tests
 on:
+  workflow_call:
   pull_request:
     branches: [main, feature/*, fix/*]
     types: [opened, reopened, ready_for_review, synchronize]

@@ -223,6 +223,22 @@
                             > .mynah-form-input-wrapper {
                                 > .mynah-form-input-container:not(.no-border) {
                                     padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
+                                    width: auto;
+                                    min-width: auto;
+                                }
+                                > .mynah-form-input-container.no-border {
+                                    > .select-auto-width-sizer {
+                                        padding-right: calc(var(--mynah-sizing-half) + 1em);
+                                    }
+                                    > select {
+                                        width: auto;
+                                        min-width: auto;
+                                        color: var(--mynah-color-text-weak);
+                                        font-size: var(--mynah-font-size-small);
+                                        & + i {
+                                            font-size: var(--mynah-font-size-xsmall);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -351,14 +367,13 @@
             pointer-events: none;
         }
         &::before {
-            opacity: 0;
-            @include gradient-border($gradient: var(--mynah-color-gradient-input), $background: var(--mynah-input-bg));
+            border: var(--mynah-border-width) solid var(--mynah-color-text-input-border);
         }
     }
 
     &.input-has-focus > .mynah-chat-prompt {
         &::before {
-            opacity: 1;
+            border: var(--mynah-border-width) solid var(--mynah-color-text-input-border-focused);
         }
     }
 

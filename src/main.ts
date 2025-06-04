@@ -29,6 +29,7 @@ import {
   QuickActionCommand,
   DetailedList,
   TreeNodeDetails,
+  Action,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -39,13 +40,14 @@ import { Config } from './helper/config';
 import { generateUID } from './helper/guid';
 import { NoTabs } from './components/no-tabs';
 import { copyToClipboard } from './helper/chat-item';
-import { Spinner } from './components/spinner/spinner';
 import { serializeHtml, serializeMarkdown } from './helper/serialize-chat';
 import { Sheet } from './components/sheet';
 import { DetailedListSheet, DetailedListSheetProps } from './components/detailed-list/detailed-list-sheet';
 import { configureMarked, parseMarkdown } from './helper/marked';
 import { MynahUIDataStore } from './helper/store';
 import { StyleLoader } from './helper/style-loader';
+import { Icon } from './components/icon';
+import { Button } from './components/button';
 
 export { generateUID } from './helper/guid';
 export {
@@ -100,7 +102,8 @@ export interface MynahUIProps {
   defaults?: MynahUITabStoreTab;
   splashScreenInitialStatus?: {
     visible: boolean;
-    text: string;
+    text?: string;
+    actions?: Action[];
   };
   tabs?: MynahUITabStoreModel;
   config?: Partial<ConfigModel>;
@@ -303,6 +306,9 @@ export interface MynahUIProps {
       id: string;
     },
     eventId?: string) => void;
+  onSplashLoaderActionClick?: (
+    action: Action,
+    eventId?: string) => void;
 }
 
 export class MynahUI {
@@ -311,6 +317,7 @@ export class MynahUI {
   private readonly props: MynahUIProps;
   private readonly splashLoader: ExtendedHTMLElement;
   private readonly splashLoaderText: ExtendedHTMLElement;
+  private readonly splashLoaderActions: ExtendedHTMLElement;
   private readonly tabsWrapper: ExtendedHTMLElement;
   private readonly tabContentsWrapper: ExtendedHTMLElement;
   private readonly feedbackForm?: FeedbackForm;
@@ -332,17 +339,12 @@ export class MynahUI {
       classNames: [ 'mynah-ui-splash-loader-text' ],
       innerHTML: parseMarkdown(this.props.splashScreenInitialStatus?.text ?? '', { includeLineBreaks: true }),
     });
-    this.splashLoader = DomBuilder.getInstance().build({
+
+    this.splashLoaderActions = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-ui-splash-loader-wrapper' ],
-      children: [
-        new Spinner().render,
-        this.splashLoaderText
-      ]
+      classNames: [ 'mynah-ui-splash-loader-buttons' ],
+      children: this.getSplashLoaderActions(this.props.splashScreenInitialStatus?.actions)
     });
-    if (this.props.splashScreenInitialStatus?.visible === true) {
-      this.splashLoader.addClass('visible');
-    }
 
     const initTabs = MynahUITabsStore.getInstance().getAllTabs();
     this.tabContentsWrapper = DomBuilder.getInstance().build({
@@ -401,11 +403,31 @@ export class MynahUI {
           this.tabsWrapper ?? '',
           ...(Config.getInstance().config.maxTabs > 1 ? [ new NoTabs().render ] : []),
           this.tabContentsWrapper,
-          this.splashLoader
         ]
       },
       'afterbegin'
     );
+    this.splashLoader = DomBuilder.getInstance().createPortal(
+      MynahPortalNames.LOADER,
+      {
+        type: 'div',
+        classNames: [ 'mynah-ui-splash-loader-wrapper' ],
+        children: [
+          {
+            type: 'div',
+            classNames: [ 'mynah-ui-splash-loader-container' ],
+            children: [
+              new Icon({ icon: 'progress' }).render,
+              this.splashLoaderText
+            ]
+          },
+          this.splashLoaderActions
+        ]
+      },
+      'beforeend');
+    if (this.props.splashScreenInitialStatus?.visible === true) {
+      this.splashLoader.addClass('visible');
+    }
 
     MynahUITabsStore.getInstance().addListener('add', (tabId: string) => {
       this.chatWrappers[tabId] = new ChatWrapper({
@@ -443,6 +465,21 @@ export class MynahUI {
       this.props.onReady();
     }
   }
+
+  private readonly getSplashLoaderActions = (actions?: Action[]): ExtendedHTMLElement[] => {
+    return (actions ?? []).map(action => new Button({
+      onClick: () => {
+        this.props.onSplashLoaderActionClick?.(action, this.getUserEventId());
+      },
+      label: action.text,
+      status: action.status,
+      primary: action.status === 'primary',
+      icon: action.icon != null ? new Icon({ icon: action.icon }).render : undefined,
+      confirmation: action.confirmation,
+      disabled: action.disabled,
+      tooltip: action.description
+    }).render);
+  };
 
   private readonly getUserEventId = (): string => {
     this.lastEventId = generateUID();
@@ -942,7 +979,7 @@ export class MynahUI {
   /**
    * Toggles the visibility of the splash loader screen
    */
-  public toggleSplashLoader = (visible: boolean, text?: string): void => {
+  public toggleSplashLoader = (visible: boolean, text?: string, actions?: Action[]): void => {
     if (visible) {
       this.splashLoader.addClass('visible');
     } else {
@@ -954,6 +991,11 @@ export class MynahUI {
         innerHTML: parseMarkdown(text, { includeLineBreaks: true })
       });
     }
+
+    this.splashLoaderActions.clear();
+    this.splashLoaderActions.update({
+      children: this.getSplashLoaderActions(actions)
+    });
   };
 
   /**
@@ -1012,8 +1054,9 @@ export class MynahUI {
 
   public openDetailedList = (
     data: DetailedListSheetProps,
+    showBackButton?: boolean,
   ): {
-      update: (data: DetailedList) => void;
+      update: (data: DetailedList, showBackButton?: boolean) => void;
       close: () => void;
       changeTarget: (direction: 'up' | 'down', snapOnLastAndFirst?: boolean) => void;
       getTargetElementId: () => string | undefined;
@@ -1022,7 +1065,7 @@ export class MynahUI {
       detailedList: data.detailedList,
       events: data.events
     });
-    detailedListSheet.open();
+    detailedListSheet.open(showBackButton);
 
     const getTargetElementId = (): string | undefined => {
       const targetElement = detailedListSheet.detailedListWrapper.getTargetElement();

@@ -365,6 +365,13 @@
         }
     }
 }
+li > .mynah-syntax-highlighter:not(.mynah-inline-code) {
+    margin-block-end: calc(var(--mynah-line-height) / 3);
+}
+
+li > p + .mynah-syntax-highlighter:not(.mynah-inline-code) {
+    margin-block-start: calc(var(--mynah-line-height) / 3);
+}
 
 .mynah-ui-syntax-highlighter-highlight-tooltip {
     max-width: 80vw;

@@ -581,14 +581,39 @@ mynahUI.updateTabDefaults({store: {
 
 # Show splash screen spinner (`toggleSplashLoader`)
 
-You can enable or disable window wide splash screen spinner with or without text.
+You can enable or disable window wide splash overlay with or without text.
 
 ```typescript
-mynahUI.toggleSplashLoader(true, 'Initializing');
+mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
 ```
 <p align="center">
-  <img src="./img/splashLoader.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/splashLoader.png" alt="splashLoader" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+In case, if you want to add actions, you can use the actions field.
+
+```typescript
+mynahUI.toggleSplashLoader(
+  true, 
+  'Saving **the MCP**', 
+  [
+      {
+          id: 'hide-mcp-save',
+          status: 'clear',
+          text: 'Hide',
+      },
+      {
+          id: 'cancel-mcp-save',
+          status: 'primary',
+          text: 'Cancel',
+      },
+  ]);
+```
+<p align="center">
+  <img src="./img/splashLoaderActions.png" alt="splashLoaderActions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+For the initial setup, please see [PROPERTIES / splashScreenInitialStatus](./PROPERTIES.md#splashScreenInitialStatus) and for the event handling see [PROPERTIES / onSplashLoaderActionClick](./PROPERTIES.md#onSplashLoaderActionClick)
 
 # Destroy Mynah UI State (`destroy`)
 

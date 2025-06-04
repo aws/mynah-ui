@@ -4,7 +4,7 @@
  */
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { StyleLoader } from '../../helper/style-loader';
-import { EngagementType } from '../../static';
+import { EngagementType, Status } from '../../static';
 
 /**
  * We'll not consider it as an engagement if the total spend time is lower than below constant and won't trigger the event
@@ -19,6 +19,7 @@ const ENGAGEMENT_MIN_CLICK_DURATION = 300;
 export interface CardProps extends Partial<DomBuilderObject> {
   border?: boolean;
   background?: boolean;
+  status?: Status;
   padding?: 'small' | 'medium' | 'large' | 'none';
   children?: Array<HTMLElement | ExtendedHTMLElement | string>;
   onCardEngaged?: (engagement: {
@@ -47,6 +48,7 @@ export class Card {
       classNames: [
         'mynah-card',
         `padding-${props.padding ?? 'medium'}`,
+        `status-${props.status ?? 'default'}`,
         props.border !== false ? 'border' : '',
         props.background !== false ? 'background' : '',
         ...(props.classNames ?? [])

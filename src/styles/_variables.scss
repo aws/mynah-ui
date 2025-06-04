@@ -30,6 +30,8 @@
     --mynah-color-text-disabled: var(--vscode-disabledForeground, var(--mynah-color-text-weak));
     --mynah-color-text-link: var(--vscode-textLink-foreground);
     --mynah-color-text-link-alternate: var(--mynah-color-button-reverse);
+    --mynah-color-text-input-border: var(--mynah-color-bg);
+    --mynah-color-text-input-border-focused: var(--mynah-color-border-default);
     --mynah-color-text-input: var(--vscode-input-foreground);
     --mynah-color-text-input-placeholder: var(--vscode-input-placeholderForeground, var(--mynah-color-text-disabled));
 
@@ -136,7 +138,7 @@
     --mynah-syntax-code-line-height: 118%;
     --mynah-syntax-code-font-size: var(--vscode-editor-font-size, var(--mynah-font-size-medium));
 
-    --mynah-card-radius: var(--mynah-sizing-2);
+    --mynah-card-radius: var(--mynah-sizing-1);
     --mynah-input-radius: var(--mynah-sizing-1);
     --mynah-card-radius-corner: 0;
     --mynah-button-radius: var(--mynah-sizing-1);

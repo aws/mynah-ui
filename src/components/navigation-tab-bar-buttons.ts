@@ -70,10 +70,10 @@ export class TabBarButtonsWrapper {
       }
     }
     return tabBarButtons.map((tabBarButton: TabBarMainAction) => new TabBarButtonWithMultipleOptions({
-      onButtonClick: (buttonId) => {
-        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TAB_BAR_BUTTON_CLICK, { tabId: selectedTabId, buttonId });
+      onButtonClick: (tabBarAction) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TAB_BAR_BUTTON_CLICK, { tabId: selectedTabId, buttonId: tabBarAction.id });
         if (this.props.onButtonClick != null) {
-          this.props.onButtonClick(selectedTabId, buttonId);
+          this.props.onButtonClick(selectedTabId, tabBarAction.id);
         }
       },
       tabBarActionButton: tabBarButton
@@ -82,10 +82,10 @@ export class TabBarButtonsWrapper {
 }
 
 interface TabBarButtonWithMultipleOptionsProps {
-  onButtonClick: (buttonId: string) => void;
+  onButtonClick: (action: TabBarAction) => void;
   tabBarActionButton: TabBarMainAction;
 }
-class TabBarButtonWithMultipleOptions {
+export class TabBarButtonWithMultipleOptions {
   render: ExtendedHTMLElement;
   private buttonOptionsOverlay: Overlay | undefined;
   private readonly props: TabBarButtonWithMultipleOptionsProps;
@@ -96,6 +96,7 @@ class TabBarButtonWithMultipleOptions {
       testId: (this.props.tabBarActionButton.items != null && this.props.tabBarActionButton.items?.length > 0) ? testIds.tabBar.menuButton : testIds.tabBar.button,
       label: this.props.tabBarActionButton.text,
       tooltip: this.props.tabBarActionButton.description,
+      // confirmation: this.props.tabBarActionButton.confirmation,
       disabled: this.props.tabBarActionButton.disabled,
       tooltipVerticalDirection: OverlayVerticalDirection.TO_BOTTOM,
       tooltipHorizontalDirection: OverlayHorizontalDirection.CENTER,
@@ -105,7 +106,7 @@ class TabBarButtonWithMultipleOptions {
         if (this.props.tabBarActionButton.items != null && this.props.tabBarActionButton.items?.length > 0) {
           this.showButtonOptionsOverlay(this.props.tabBarActionButton.items);
         } else {
-          this.props.onButtonClick(this.props.tabBarActionButton.id);
+          this.props.onButtonClick(this.props.tabBarActionButton);
         }
       }
     }).render;
@@ -126,12 +127,13 @@ class TabBarButtonWithMultipleOptions {
           classNames: [ 'mynah-nav-tabs-bar-buttons-wrapper-overlay' ],
           children: items.map(item => new Button({
             testId: testIds.tabBar.menuOption,
+            confirmation: item.confirmation,
             label: item.text,
             icon: item.icon != null ? new Icon({ icon: item.icon }).render : undefined,
             primary: false,
             onClick: () => {
               this.hideButtonOptionsOverlay();
-              this.props.onButtonClick(item.id);
+              this.props.onButtonClick(item);
             }
           }).render)
         }

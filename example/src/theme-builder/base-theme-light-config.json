@@ -38,14 +38,14 @@
         "description": "Default text color used in various places",
         "category": "text-color",
         "alpha": "100",
-        "value": "#517185"
+        "value": "#597688"
     },
     "--mynah-color-text-alternate": {
         "type": "color",
         "description": "Alternate text color used in various places",
         "category": "text-color",
         "alpha": "100",
-        "value": "#517185"
+        "value": "#ffffff"
     },
     "--mynah-color-text-strong": {
         "type": "color",
@@ -59,7 +59,7 @@
         "description": "Light text color used in various places",
         "category": "text-color",
         "alpha": "100",
-        "value": "#a9bed0"
+        "value": "#bacad8"
     },
     "--mynah-color-text-link": {
         "type": "color",
@@ -68,12 +68,33 @@
         "alpha": "100",
         "value": "#006ab1"
     },
+    "--mynah-color-text-input-border": {
+        "type": "color",
+        "description": "Border of the chat input textbox, when it does not have focus",
+        "category": "border-style",
+        "alpha": "100",
+        "value": "#fafcff"
+    },
+    "--mynah-color-text-input-border-focused": {
+        "type": "color",
+        "description": "Border of the chat input textbox, when it has focus",
+        "category": "border-style",
+        "alpha": "100",
+        "value": "#e6e8eb"
+    },
     "--mynah-color-text-input": {
         "type": "color",
         "description": "Input text color used in input fields",
         "category": "text-color",
         "alpha": "100",
         "value": "#517185"
+    },
+    "--mynah-color-text-input-placeholder": {
+        "type": "color",
+        "description": "Link text color",
+        "category": "text-color",
+        "alpha": "100",
+        "value": "#bacad8"
     },
     "--mynah-color-light": {
         "type": "color",
@@ -100,8 +121,8 @@
         "type": "color",
         "description": "Default border color used in several places",
         "category": "border-style",
-        "alpha": "15",
-        "value": "#779db6"
+        "alpha": "100",
+        "value": "#e6e8eb"
     },
     "--mynah-button-border-width": {
         "type": "measurement",
@@ -180,7 +201,7 @@
         "description": "Default background color of code blocks and inline code",
         "category": "syntax-color",
         "alpha": "100",
-        "value": "#eff4fa"
+        "value": "#fafcff"
     },
     "--mynah-color-status-info": {
         "type": "color",
@@ -215,7 +236,7 @@
         "description": "Main background color ",
         "category": "background-color",
         "alpha": "100",
-        "value": "#fafbfc"
+        "value": "#fafcff"
     },
     "--mynah-color-tab-active": {
         "type": "color",
@@ -278,7 +299,7 @@
         "description": "Card alternate background color",
         "category": "background-color",
         "alpha": "100",
-        "value": "#eaf0f5"
+        "value": "#a1b6d3"
     },
     "--mynah-shadow-button": {
         "type": "text",
@@ -311,8 +332,8 @@
         "description": "Line height for texts inside cards",
         "category": "font-size",
         "units": ["px", "rem", "em", ""],
-        "unit": "rem",
-        "value": "1.125"
+        "unit": "",
+        "value": "118%"
     },
     "--mynah-font-size-xxsmall": {
         "type": "measurement",
@@ -359,8 +380,8 @@
         "description": "Line height for texts inside cards",
         "category": "font-size",
         "units": ["px", "rem", "em", ""],
-        "unit": "rem",
-        "value": "1"
+        "unit": "",
+        "value": "150%"
     },
     "--mynah-card-radius": {
         "type": "measurement",
@@ -368,15 +389,15 @@
         "category": "radius",
         "units": ["px", "rem", "em", ""],
         "unit": "",
-        "value": "var(--mynah-sizing-2)"
+        "value": "var(--mynah-sizing-5)"
     },
     "--mynah-card-radius-corner": {
         "type": "measurement",
         "description": "Border radius used on all Chat card edge bottom corner",
         "category": "radius",
         "units": ["px", "rem", "em", ""],
-        "unit": "",
-        "value": "var(--mynah-sizing-1)"
+        "unit": "px",
+        "value": "0"
     },
     "--mynah-button-radius": {
         "type": "measurement",
@@ -384,7 +405,7 @@
         "category": "radius",
         "units": ["px", "rem", "em", ""],
         "unit": "",
-        "value": "var(--mynah-sizing-5)"
+        "value": "var(--mynah-sizing-4)"
     },
     "--mynah-input-radius": {
         "type": "measurement",

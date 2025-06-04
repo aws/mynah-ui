@@ -3,7 +3,10 @@ on:
   push:
     tags: ['v*.*']
 jobs:
+  call-e2e-tests:
+    uses: ./.github/workflows/e2e_tests.yml
   build:
+    needs: call-e2e-tests
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,18 +18,10 @@ jobs:
       - run: npm ci
       - name: Build mynah-ui
         run: npm run build
-      - name: Run tests
-        run: npm run tests:unit && npm run tests:e2e
-      - name: Check lint
-        run: npm run lint
+      - name: Run tests unit
+        run: npm run tests:unit
       - name: Build demo app
         run: npm run packdemo
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: test-snapshots
-          path: ./ui-tests/__test__/__image_snapshots__
-          retention-days: 30
       - name: Get release info
         id: get_release
         uses: bruceadams/get-release@v1.3.2
