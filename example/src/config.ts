@@ -267,7 +267,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 border: false,
                 autoWidth: true,
                 id: 'model-select',
-                placeholder: 'Auto',
+                mandatory: true,
                 options: [
                     {
                         label: 'Fast',

@@ -49,17 +49,19 @@ export class ChatItemFormItemsWrapper {
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
         let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | FormItemList | undefined;
-        let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true ? '* ' : ''}${chatItemOption.title ?? ''}`;
+        let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true && chatItemOption.title !== undefined ? '* ' : ''}${chatItemOption.title ?? ''}`;
         if (chatItemOption.mandatory === true) {
-          label = DomBuilder.getInstance().build({
-            type: 'div',
-            testId: testIds.chatItem.chatItemForm.title,
-            classNames: [ 'mynah-ui-form-item-mandatory-title' ],
-            children: [
-              new Icon({ icon: MynahIcons.ASTERISK }).render,
-              chatItemOption.title ?? '',
-            ]
-          });
+          if (chatItemOption.title !== undefined) {
+            label = DomBuilder.getInstance().build({
+              type: 'div',
+              testId: testIds.chatItem.chatItemForm.title,
+              classNames: [ 'mynah-ui-form-item-mandatory-title' ],
+              children: [
+                new Icon({ icon: MynahIcons.ASTERISK }).render,
+                chatItemOption.title,
+              ]
+            });
+          }
           // Since the field is mandatory, default the selected value to the first option
           if (chatItemOption.type === 'select' && chatItemOption.value === undefined) {
             chatItemOption.value = chatItemOption.options?.[0]?.value;
