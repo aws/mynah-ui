@@ -50,6 +50,7 @@ export class TabBarButtonsWrapper {
     }
     this.tabBarButtonsSubscription = {
       subsId: MynahUITabsStore.getInstance().addListenerToDataStore(this.selectedTabId, 'tabBarButtons', (tabBarButtons) => {
+        console.log('tabBarButtons change detected', tabBarButtons);
         this.render.clear();
         this.render.update({
           children: this.getTabsBarButtonsRender(this.selectedTabId, tabBarButtons)
@@ -65,6 +66,7 @@ export class TabBarButtonsWrapper {
       tabBarButtons = givenTabBarButtons;
     } else {
       const tabBarButtonsFromTabStore = MynahUITabsStore.getInstance().getTabDataStore(selectedTabId)?.getValue('tabBarButtons');
+      console.log('tab bar buttons retrieved from store', tabBarButtonsFromTabStore);
       if (tabBarButtonsFromTabStore != null && tabBarButtonsFromTabStore.length > 0) {
         tabBarButtons = tabBarButtonsFromTabStore;
       }

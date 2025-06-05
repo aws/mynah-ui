@@ -80,13 +80,21 @@
                 overflow: hidden;
                 display: flex;
                 align-items: center;
-                align-items: baseline;
                 gap: var(--mynah-sizing-2);
+
+                &.compact {
+                    padding: 0;
+                }
+
                 > .mynah-card-body {
                     flex: 1;
                     * {
                         margin: 0;
                         padding-bottom: 0 !important;
+                    }
+
+                    &.mynah-ui-clickable-item {
+                        cursor: pointer;
                     }
                 }
                 > .mynah-chat-item-buttons-container > .mynah-button {
@@ -107,6 +115,10 @@
                 overflow: hidden;
                 min-height: var(--mynah-sizing-8);
 
+                &.indented {
+                    padding-left: var(--mynah-sizing-3);
+                }
+
                 > .mynah-detailed-list-item {
                     display: flex;
                     gap: var(--mynah-sizing-half);
@@ -123,6 +135,10 @@
                     border-radius: var(--mynah-input-radius);
                     background-color: inherit;
                     margin-bottom: var(--mynah-sizing-half);
+
+                    &.compact {
+                        padding: 0;
+                    }
 
                     &[selectable='true'],
                     &[clickable='true'] {
@@ -274,6 +290,14 @@
                         font-size: var(--mynah-font-size-small);
                     }
                 }
+            }
+        }
+
+        > .mynah-detailed-list-group-compact {
+            & + .mynah-detailed-list-group-compact {
+                margin-top: var(--mynah-sizing-1);
+                padding-top: var(--mynah-sizing-2);
+                // border-top: var(--mynah-border-width) solid var(--mynah-color-border-default);
             }
         }
     }

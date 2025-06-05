@@ -21,6 +21,10 @@ export default {
     stickyCard: 'prompt-input-sticky-card',
     progress: 'prompt-input-progress-wrapper',
     label: 'prompt-input-label',
+    topBar: 'prompt-input-top-bar',
+    tobBarOverflowOverlay: 'prompt-input-top-bar-overflow-overlay',
+    tobBarActionOverlay: 'prompt-input-top-bar-action-overlay'
+
   },
   chat: {
     wrapper: 'chat-wrapper',

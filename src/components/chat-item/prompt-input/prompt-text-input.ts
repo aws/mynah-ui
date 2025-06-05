@@ -9,7 +9,7 @@ import { Card } from '../../card/card';
 import { CardBody } from '../../card/card-body';
 import testIds from '../../../helper/test-ids';
 import { generateUID } from '../../../main';
-import { Icon } from '../../icon';
+import { Icon, MynahIcons } from '../../icon';
 
 const PREVIEW_DELAY = 500;
 
@@ -355,17 +355,17 @@ export class PromptTextInput {
     }
   };
 
-  public readonly insertContextItem = (contextItem: QuickActionCommand, position: number): void => {
+  public readonly insertContextItem = (contextItem: QuickActionCommand, position: number, topBarHidden?: boolean): void => {
     const temporaryId = generateUID();
     this.selectedContext[temporaryId] = contextItem;
     const contextSpanElement = DomBuilder.getInstance().build({
       type: 'span',
       children: [
-        ...(contextItem.icon != null ? [ new Icon({ icon: contextItem.icon }).render ] : [ ]),
+        new Icon({ icon: contextItem.icon ?? MynahIcons.AT, hidden: contextItem.icon == null }).render,
         { type: 'span', classNames: [ 'at-char' ], innerHTML: '@' },
         `${contextItem.command.replace(/^@?(.*)$/, '$1')}`
       ],
-      classNames: [ 'context' ],
+      classNames: [ 'context', topBarHidden === true ? 'no-hover' : '' ],
       attributes: {
         'context-tmp-id': temporaryId,
         contenteditable: 'false'
@@ -374,7 +374,13 @@ export class PromptTextInput {
         mouseenter: (e) => {
           this.showContextTooltip(e, contextItem);
         },
-        mouseleave: this.hideContextTooltip,
+        mouseleave: () => {
+          this.hideContextTooltip();
+        },
+        click: () => {
+          this.hideContextTooltip();
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_PINNED, { tabId: this.props.tabId, contextItem });
+        }
       }
     });
     this.insertElementToGivenPosition(contextSpanElement, position, this.getCursorPos());
