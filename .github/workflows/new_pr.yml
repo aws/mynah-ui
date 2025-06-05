@@ -15,11 +15,11 @@ jobs:
           url: '${{ secrets.SLACK_WEBHOOK_URL }}'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          payload: |
+          data: |
             {
-              "title": ${{ toJson(github.event.pull_request.title) }},
-              "author": ${{ toJson(github.event.pull_request.user.login) }},
-              "link": ${{ toJson(github.event.pull_request.html_url) }},
+              "title": "${{ toJson(github.event.pull_request.title) }}",
+              "author": "${{ toJson(github.event.pull_request.user.login) }}",
+              "link": "${{ toJson(github.event.pull_request.html_url) }}",
             }
   build:
     runs-on: macos-latest
