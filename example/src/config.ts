@@ -268,6 +268,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 autoWidth: true,
                 id: 'model-select',
                 mandatory: true,
+                hideMandatoryIcon: true,
                 options: [
                     {
                         label: 'Fast',

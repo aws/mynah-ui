@@ -38,13 +38,14 @@ describe('chat-item-form-items', () => {
     expect(titleElement?.textContent?.includes('Test Title')).toBeTruthy();
   });
 
-  it('should handle mandatory form item with undefined title correctly', () => {
+  it('should hide mandatory icon when hideMandatoryIcon is true', () => {
     const mockChatItem = createMockChatItem([
       {
         id: 'test-item',
         type: 'textinput',
+        title: 'Test Title',
         mandatory: true,
-        title: undefined
+        hideMandatoryIcon: true
       }
     ]);
 
@@ -53,9 +54,34 @@ describe('chat-item-form-items', () => {
       chatItem: mockChatItem
     });
 
-    // There should be no mandatory title element since title is undefined
+    // There should be no mandatory title element with asterisk since hideMandatoryIcon is true
     const titleElement = formItemsWrapper.render.querySelector('.mynah-ui-form-item-mandatory-title');
     expect(titleElement).toBeNull();
+  });
+
+  it('should show mandatory icon when hideMandatoryIcon is false', () => {
+    const mockChatItem = createMockChatItem([
+      {
+        id: 'test-item',
+        type: 'textinput',
+        title: 'Test Title',
+        mandatory: true,
+        hideMandatoryIcon: false
+      }
+    ]);
+
+    const formItemsWrapper = new ChatItemFormItemsWrapper({
+      tabId: 'tab-1',
+      chatItem: mockChatItem
+    });
+
+    // The mandatory title element should be present with asterisk
+    const titleElement = formItemsWrapper.render.querySelector('.mynah-ui-form-item-mandatory-title');
+    expect(titleElement).not.toBeNull();
+
+    // Check that it contains the asterisk icon
+    const asteriskIcon = titleElement?.querySelector('i.mynah-ui-icon');
+    expect(asteriskIcon).not.toBeNull();
   });
 
   it('should set default value for mandatory select items', () => {

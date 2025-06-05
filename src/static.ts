@@ -440,6 +440,7 @@ export interface ValidationPattern {
 interface BaseFormItem {
   id: string;
   mandatory?: boolean;
+  hideMandatoryIcon?: boolean;
   title?: string;
   placeholder?: string;
   value?: string;
@@ -501,6 +502,7 @@ export interface ListFormItem {
   type: 'list';
   id: string;
   mandatory?: boolean;
+  hideMandatoryIcon?: boolean;
   title?: string;
   description?: string;
   tooltip?: string;

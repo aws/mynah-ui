@@ -49,16 +49,16 @@ export class ChatItemFormItemsWrapper {
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
         let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | FormItemList | undefined;
-        let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true && chatItemOption.title !== undefined ? '* ' : ''}${chatItemOption.title ?? ''}`;
+        let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}`;
         if (chatItemOption.mandatory === true) {
-          if (chatItemOption.title !== undefined) {
+          if (chatItemOption.hideMandatoryIcon !== true) {
             label = DomBuilder.getInstance().build({
               type: 'div',
               testId: testIds.chatItem.chatItemForm.title,
               classNames: [ 'mynah-ui-form-item-mandatory-title' ],
               children: [
                 new Icon({ icon: MynahIcons.ASTERISK }).render,
-                chatItemOption.title,
+                chatItemOption.title ?? '',
               ]
             });
           }
