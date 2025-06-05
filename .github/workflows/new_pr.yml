@@ -9,11 +9,12 @@ jobs:
     name: Slack notification
     runs-on: [ubuntu-latest]
     steps:
-      - name: Post message
-        uses: slackapi/slack-github-action@v1.25.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Inform channels
+        uses: fjogeleit/http-request-action@v1
         with:
+          url: '${{ secrets.SLACK_WEBHOOK_URL }}'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
           payload: |
             {
               "title": ${{ toJson(github.event.pull_request.title) }},
