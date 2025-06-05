@@ -7,7 +7,7 @@ jobs:
   notify:
     if: github.event.pull_request.draft == false
     name: Slack notification
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Inform channels
         uses: fjogeleit/http-request-action@v1
