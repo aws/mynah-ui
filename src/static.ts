@@ -96,6 +96,25 @@ export interface MynahUIDataModel {
   */
   promptInputPlaceholder?: string;
   /**
+   * Placeholder to be shown on prompt top bar
+   */
+  promptTopBarPlaceholder?: string;
+
+  /**
+   * Title to be shown on prompt top bar
+   */
+  promptTopBarTitle?: string;
+
+  /**
+ * Items to be pinned in prompt top bar
+ */
+  promptTopBarContextItems?: QuickActionCommand[];
+
+  /**
+ * Button to display at end of prompt top bar
+ */
+  promptTopBarButton?: ChatItemButton | null;
+  /**
   * Prompt input text
   */
   promptInputText?: string;
@@ -214,7 +233,11 @@ export enum MynahEventNames {
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
   ROOT_RESIZE = 'rootResize',
-  CONTEXT_SELECTED = 'contextSelected'
+  CONTEXT_SELECTED = 'contextSelected',
+  TOP_BAR_ITEM_ADD = 'promptInputTopBarItemAdd',
+  TOP_BAR_ITEM_REMOVE = 'promptInputTopBarItemRemove',
+  TOP_BAR_ACTION_CLICK = 'promptInputTopBarActionClick',
+  CONTEXT_PINNED = 'contextPinned'
 };
 
 export enum MynahPortalNames {
@@ -274,6 +297,7 @@ export interface DetailedList {
   };
   selectable?: boolean | 'clickable';
   textDirection?: 'row' | 'column';
+  compact?: boolean;
 }
 
 export interface DetailedListItemGroup {
@@ -281,6 +305,7 @@ export interface DetailedListItemGroup {
   actions?: Action[];
   icon?: MynahIcons | MynahIconsType;
   children?: DetailedListItem[];
+  childrenIndented?: boolean;
 }
 
 export interface DetailedListItem {

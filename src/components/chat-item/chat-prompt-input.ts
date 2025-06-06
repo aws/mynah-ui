@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemButton, ChatPrompt, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -21,6 +21,8 @@ import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandG
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
 import { PromptOptions } from './prompt-input/prompt-options';
 import { PromptInputStopButton } from './prompt-input/prompt-input-stop-button';
+import { PromptTopBar } from './prompt-input/prompt-top-bar/prompt-top-bar';
+import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 
@@ -58,6 +60,7 @@ export class ChatPromptInput {
   private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
   private readonly promptOptions: PromptOptions;
+  private readonly promptTopBar: PromptTopBar;
   private readonly chatPrompt: ExtendedHTMLElement;
   private quickPickItemsSelectorContainer: DetailedListWrapper;
   private promptTextInputLabel: ExtendedHTMLElement;
@@ -65,6 +68,7 @@ export class ChatPromptInput {
   private quickPickTriggerIndex: number;
   private quickPickType: 'quick-action' | 'context';
   private quickPickItemGroups: QuickActionCommandGroup[];
+  private topBarButtonClicked: boolean = false;
   private filteredQuickPickItemGroups: QuickActionCommandGroup[];
   private searchTerm: string = '';
   private quickPick: Overlay;
@@ -152,6 +156,34 @@ export class ChatPromptInput {
       }
     });
 
+    this.promptTopBar = new PromptTopBar({
+      tabId: this.props.tabId,
+      title: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptTopBarTitle'),
+      placeholder: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptTopBarPlaceholder'),
+      topBarButton: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptTopBarButton'),
+      contextItems: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptTopBarContextItems'),
+      onTopBarTitleClick: this.onTopBarTitleClick,
+      onContextItemAdd: (contextItem: QuickActionCommand) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TOP_BAR_ITEM_ADD, {
+          tabId: this.props.tabId,
+          contextItem
+        });
+      },
+      onContextItemRemove: (contextItem: QuickActionCommand) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TOP_BAR_ITEM_REMOVE, {
+          tabId: this.props.tabId,
+          contextItem
+        });
+      },
+      onTopBarButtonClick: (action: ChatItemButton) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TOP_BAR_ACTION_CLICK, {
+          tabId: this.props.tabId,
+          item: action
+        });
+      }
+
+    });
+
     this.attachmentWrapper = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.attachmentWrapper,
@@ -179,7 +211,7 @@ export class ChatPromptInput {
     });
 
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'contextCommands', (contextCommands) => {
-      if (contextCommands?.length > 0) {
+      if (contextCommands?.length > 0 && this.promptTopBar.isHidden()) {
         this.contextSelectorButton.setEnabled(true);
         this.contextSelectorButton.render.removeClass('hidden');
       } else {
@@ -197,6 +229,7 @@ export class ChatPromptInput {
           type: 'div',
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
+            this.promptTopBar.render,
             this.promptTextInput.render,
             {
               type: 'div',
@@ -228,6 +261,23 @@ export class ChatPromptInput {
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputButtons', (newButtons: ChatItemButton[]) => {
       this.promptOptions.update(undefined, newButtons);
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptTopBarPlaceholder', (placeholder: string) => {
+      this.promptTopBar.update({ placeholder });
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptTopBarContextItems', (newCommands: QuickActionCommand[]) => {
+      this.promptTopBar.update({ contextItems: newCommands });
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptTopBarTitle', (newTitle: string) => {
+      this.promptTopBar.update({ title: newTitle });
+
+      if (!this.promptTopBar.isHidden()) {
+        this.contextSelectorButton.setEnabled(false);
+        this.contextSelectorButton.render.addClass('hidden');
+      }
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptTopBarButton', (newButton: ChatItemButton) => {
+      this.promptTopBar.update({ topBarButton: newButton });
     });
 
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputLabel', (promptInputLabel: string) => {
@@ -290,6 +340,16 @@ export class ChatPromptInput {
       this.updateAvailableCharactersIndicator();
     });
   }
+
+  private readonly onTopBarTitleClick = (): void => {
+    this.searchTerm = '';
+    this.quickPickType = 'context';
+    this.quickPickItemGroups = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+    this.quickPickTriggerIndex = this.promptTextInput.getCursorPos();
+    this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+    this.promptTextInput.insertEndSpace();
+    this.openQuickPick(true);
+  };
 
   private readonly updateAvailableCharactersIndicator = (): void => {
     const characterAmount = MAX_USER_INPUT() - Math.max(0, (this.promptTextInput.promptTextInputMaxLength - this.promptTextInput.getTextInputValue().trim().length));
@@ -408,7 +468,7 @@ export class ChatPromptInput {
         }
       }
     } else {
-      const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
+      const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH, KeyMap.ALT ] as string[];
       if (blockedKeys.includes(e.key)) {
         e.preventDefault();
         if (e.key === KeyMap.ESCAPE) {
@@ -423,7 +483,7 @@ export class ChatPromptInput {
             const commandToSend = convertDetailedListItemToQuickActionCommand(targetDetailedListItem);
             if (this.quickPickType === 'context') {
               if (commandToSend.command !== '') {
-                this.handleContextCommandSelection(commandToSend);
+                this.handleContextCommandSelection(commandToSend, e.altKey);
               } else {
                 // Otherwise pass the given text by user
                 const command = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
@@ -484,7 +544,8 @@ export class ChatPromptInput {
     }
   };
 
-  private readonly openQuickPick = (): void => {
+  private readonly openQuickPick = (topBarButtonClick?: boolean): void => {
+    this.topBarButtonClicked = topBarButtonClick === true;
     if (this.quickPickItemGroups.length > 0) {
       this.quickPick = new Overlay({
         closeOnOutsideClick: true,
@@ -602,7 +663,7 @@ export class ChatPromptInput {
     this.quickPick.close();
   };
 
-  private readonly handleContextCommandSelection = (dirtyContextCommand: QuickActionCommand): void => {
+  private readonly handleContextCommandSelection = (dirtyContextCommand: QuickActionCommand, addToTopBar?: boolean): void => {
     const contextCommand: QuickActionCommand = {
       ...dirtyContextCommand,
       command: dirtyContextCommand.command.replace(this.markerRemovalRegex, '')
@@ -621,9 +682,14 @@ export class ChatPromptInput {
         tabId: this.props.tabId,
         promptInputCallback: (insert: boolean) => {
           if (insert) {
-            this.promptTextInput.insertContextItem({
-              ...contextCommand,
-            }, this.quickPickTriggerIndex);
+            if (!this.promptTopBar.isHidden() && (this.topBarButtonClicked || addToTopBar === true)) {
+              this.promptTopBar.addContextPill(contextCommand);
+              this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos()); // think about topBarButtonClicked
+            } else {
+              this.promptTextInput.insertContextItem({
+                ...contextCommand,
+              }, this.quickPickTriggerIndex, this.promptTopBar.isHidden());
+            }
           } else {
             this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           }
@@ -726,5 +792,17 @@ export class ChatPromptInput {
       tabId: this.props.tabId,
       type
     });
+  };
+
+  public readonly openTopBarActionItemOverlay = (data: TopBarButtonOverlayProps): void => {
+    this.promptTopBar.topBarButton.showOverlay(data);
+  };
+
+  public readonly updateTopBarActionItemOverlay = (data: DetailedList): void => {
+    this.promptTopBar.topBarButton.onTopBarButtonOverlayChanged(data);
+  };
+
+  public readonly closeTopBarActionItemOverlay = (): void => {
+    this.promptTopBar.topBarButton.closeOverlay();
   };
 }

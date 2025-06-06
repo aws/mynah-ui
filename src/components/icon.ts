@@ -18,6 +18,7 @@ export enum MynahIcons {
   SEARCH = 'search',
   PLUS = 'plus',
   PAPER_CLIP = 'paper-clip',
+  PIN = 'pin',
   LIST_ADD = 'list-add',
   TABS = 'tabs',
   CHAT = 'chat',
@@ -98,6 +99,7 @@ export interface IconProps {
   subtract?: boolean;
   classNames?: string[];
   status?: Status;
+  hidden?: boolean;
 }
 export class Icon {
   render: ExtendedHTMLElement;
@@ -119,6 +121,8 @@ export class Icon {
                 ...(props.classNames !== undefined ? props.classNames : []),
       ]
     });
+
+    this.render.hidden = props.hidden ?? false;
   }
 
   private readonly getIconName = (): string => {
@@ -136,12 +140,14 @@ export class Icon {
     return typeof icon === 'object' && 'base64Svg' in icon && 'name' in icon;
   }
 
-  public update = (icon: MynahIcons | MynahIconsType | CustomIcon): void => {
+  public update = (icon: MynahIcons | MynahIconsType | CustomIcon, hidden?: boolean): void => {
     const oldIconName = this.getIconName();
     this.render.removeClass(`mynah-ui-icon-${oldIconName}${this.props.subtract === true ? '-subtract' : ''}`);
 
     this.props.icon = icon;
     const newIconName = this.getIconName();
     this.render.addClass(`mynah-ui-icon-${newIconName}${this.props.subtract === true ? '-subtract' : ''}`);
+
+    this.render.hidden = hidden ?? false;
   };
 }
