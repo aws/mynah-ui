@@ -1,5 +1,5 @@
 # Use the official Playwright image which includes browsers
-FROM mcr.microsoft.com/playwright:v1.52.0
+FROM mcr.microsoft.com/playwright:v1.52.0-arm64
 
 # Set working directory
 WORKDIR /app
