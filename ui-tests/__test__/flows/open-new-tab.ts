@@ -1,5 +1,5 @@
 import { Page } from 'playwright';
-import { getSelector } from '../helpers';
+import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 import { expect } from 'playwright/test';
 
@@ -12,6 +12,8 @@ export const openNewTab = async (page: Page, withMiddleClick?: boolean, skipScre
     await page.locator(getSelector(testIds.tabBar.wrapper)).dblclick({ position: { x: 100, y: 10 } });
   }
   await page.mouse.move(0, 0);
+
+  await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
     // snap

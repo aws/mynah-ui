@@ -74,7 +74,7 @@ test.describe('Open MynahUI', () => {
     await renderUserPrompt(page);
   });
 
-  test.skip('should render new card when followup click', async ({ page }) => {
+  test('should render new card when followup click', async ({ page }) => {
     await clickToFollowup(page);
   });
 
@@ -83,7 +83,7 @@ test.describe('Open MynahUI', () => {
       await closeTab(page);
     });
 
-    test('should open a new the tab', async ({ page }) => {
+    test('should open a new tab', async ({ page }) => {
       await openNewTab(page);
     });
 
@@ -220,7 +220,7 @@ test.describe('Open MynahUI', () => {
     });
   });
 
-  test.skip('should keep the content inside window boundaries', async ({ page }) => {
+  test('should keep the content inside window boundaries', async ({ page }) => {
     await checkContentInsideWindowBoundaries(page);
   });
 
@@ -246,7 +246,7 @@ test.describe('Open MynahUI', () => {
       await stayOnCurrentPrompt(page);
     });
 
-    test('should navigate back to current prompt', async ({ page }) => {
+    test.skip('should navigate back to current prompt', async ({ page }) => {
       await navigateBackToCurrentPrompt(page);
     });
 
