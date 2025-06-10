@@ -7,20 +7,15 @@ jobs:
   notify:
     if: github.event.pull_request.draft == false
     name: Slack notification
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
-      - name: Post message
-        uses: slackapi/slack-github-action@v1.25.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Inform channels
+        uses: fjogeleit/http-request-action@v1
         with:
-          payload: |
-            {
-              "title": ${{ toJson(github.event.pull_request.title) }},
-              "author": ${{ toJson(github.event.pull_request.user.login) }},
-              "link": ${{ toJson(github.event.pull_request.html_url) }},
-              "repository": "FlareChatUI" 
-            }
+          url: '${{ secrets.SLACK_WEBHOOK_URL }}'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{ "title": "${{ github.event.pull_request.title }}", "author": "${{ github.event.pull_request.user.login }}", "link": "${{ github.event.pull_request.html_url }}"}'
   build:
     runs-on: macos-latest
     steps:
