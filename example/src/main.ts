@@ -1521,6 +1521,11 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     mynahUI.updateStore(tabId, {
                         promptInputStickyCard: {
                             messageId: 'sticky-card',
+                            header: {
+                                icon: 'code-block',
+                                iconStatus: 'info',
+                                body: '### Terms and Conditions',
+                            },
                             body: `Our [Terms and Conditions](#) are updated. Please review and read it. To accept please hit the **Acknowledge** button.`,
                             buttons: [
                                 {

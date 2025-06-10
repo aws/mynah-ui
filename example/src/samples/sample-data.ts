@@ -625,6 +625,10 @@ export const defaultFollowUps: ChatItem = {
                 command: Commands.BUTTONS,
             },
             {
+                pillText: 'Sticky card',
+                command: Commands.SHOW_STICKY_CARD,
+            },
+            {
                 pillText: 'Some auto reply',
                 prompt: 'Some random auto reply here.',
             },
