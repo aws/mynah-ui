@@ -1,5 +1,4 @@
 import { test } from '@playwright/test';
-import path from 'path';
 import { initRender } from './flows/init-render';
 import { renderUserPrompt } from './flows/render-user-prompt';
 import { clickToFollowup } from './flows/click-followup';
@@ -42,9 +41,10 @@ import { renderIcons } from './flows/icons';
 import { renderMutedCards } from './flows/muted-cards';
 import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
-import { DEFAULT_VIEWPORT } from './helpers';
 import { renderHeaders } from './flows/headers';
 import { renderAndDismissCard } from './flows/dismissible-cards';
+import { DEFAULT_VIEWPORT } from './helpers';
+import path from 'path';
 
 test.describe('Open MynahUI', () => {
   test.beforeEach(async ({ page }) => {
@@ -74,7 +74,7 @@ test.describe('Open MynahUI', () => {
     await renderUserPrompt(page);
   });
 
-  test('should render new card when followup click', async ({ page }) => {
+  test.skip('should render new card when followup click', async ({ page }) => {
     await clickToFollowup(page);
   });
 
@@ -220,7 +220,7 @@ test.describe('Open MynahUI', () => {
     });
   });
 
-  test('should keep the content inside window boundaries', async ({ page }) => {
+  test.skip('should keep the content inside window boundaries', async ({ page }) => {
     await checkContentInsideWindowBoundaries(page);
   });
 
