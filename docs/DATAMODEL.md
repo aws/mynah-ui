@@ -1073,6 +1073,7 @@ export interface ValidationPattern {
 interface BaseFormItem {
   id: string;
   mandatory?: boolean;
+  hideMandatoryIcon?: boolean;
   title?: string;
   placeholder?: string;
   value?: string;
@@ -1130,6 +1131,7 @@ export interface ListFormItem {
   type: 'list';
   id: string;
   mandatory?: boolean;
+  hideMandatoryIcon?: boolean;
   title?: string;
   description?: string;
   tooltip?: string;
@@ -2696,6 +2698,7 @@ interface ChatItemFormItem {
   id: string; // id is mandatory to understand to get the specific values for each form item when a button is clicked
   type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup' | 'toggle' | 'checkbox' | 'switch' ; // type (see below for each of them)
   mandatory?: boolean; // If it is set to true, buttons in the same card with waitMandatoryFormItems set to true will wait them to be filled
+  hideMandatoryIcon?: boolean; // If it is set to true, it won't render an asterisk icon next to the form label
   title?: string; // Label of the input
   autoFocus: boolean; // focus to the input when it is created, default=> false. (Only for textual form items)
   description?: string; // The description, showing under the input field itself

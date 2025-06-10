@@ -140,6 +140,7 @@
                         }
                     }
                     &:hover:not([disabled='true']):not([selectable='false']),
+                    &:hover:not([disabled='true'])[clickable='true'],
                     &.target-command:not([disabled='true']):not([selectable='false']) {
                         background-color: var(--mynah-color-button);
                         &,
