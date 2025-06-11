@@ -3,6 +3,7 @@ import { Page } from 'playwright';
 import testIds from '../../../../src/helper/test-ids';
 import { showFileTree } from './show-file-tree';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
+import { expect } from 'playwright/test';
 
 export const triggerFileActions = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await showFileTree(page, true);
@@ -15,7 +16,7 @@ export const triggerFileActions = async (page: Page, skipScreenshots?: boolean):
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 
   // Hover over a file to show sub actions
@@ -25,7 +26,7 @@ export const triggerFileActions = async (page: Page, skipScreenshots?: boolean):
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 
   // Click on a file action button to trigger sub action
@@ -34,6 +35,6 @@ export const triggerFileActions = async (page: Page, skipScreenshots?: boolean):
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

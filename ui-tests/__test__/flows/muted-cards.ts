@@ -1,14 +1,9 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
-import { closeTab } from './close-tab';
-import { openNewTab } from './open-new-tab';
 import { ChatItemType } from '../../../dist/main';
 
 export const renderMutedCards = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
   await page.evaluate((body) => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
@@ -70,12 +65,12 @@ export const renderMutedCards = async (page: Page, skipScreenshots?: boolean): P
   const locator1 = page.locator(answerCardSelector).nth(0);
   await locator1.scrollIntoViewIfNeeded();
   if (skipScreenshots !== true) {
-    expect(await locator1.screenshot()).toMatchImageSnapshot();
+    expect(await locator1.screenshot()).toMatchSnapshot();
   }
 
   const locator2 = page.locator(answerCardSelector).nth(1);
   await locator2.scrollIntoViewIfNeeded();
   if (skipScreenshots !== true) {
-    expect(await locator2.screenshot()).toMatchImageSnapshot();
+    expect(await locator2.screenshot()).toMatchSnapshot();
   }
 };

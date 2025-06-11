@@ -4,25 +4,24 @@
     "description": "",
     "main": "webpack.media.config.js",
     "scripts": {
-        "clean": "rm -rf build dist node_modules",
+        "clean": "rm -rf build dist node_modules __results__",
         "prepare": "webpack --config webpack.config.js --mode development",
-        "e2e": "npm run prepare && jest --detectOpenHandles --config=./jest.config.js",
-        "e2e:chromium": "npm run prepare && ts-node run-browser-tests.ts",
-        "e2e:webkit": "npm run prepare && BROWSER=webkit ts-node run-browser-tests.ts",
-        "postinstall": "npx playwright install webkit chromium --with-deps"
+        "e2e": "playwright test --workers=12",
+        "e2e:update": "playwright test --update-snapshots --workers=12",
+        "e2e:chromium": "playwright test --project=chromium --workers=12",
+        "e2e:webkit": "playwright test --project=webkit --workers=12",
+        "e2e:update:chromium": "playwright test --project=chromium --update-snapshots --workers=12",
+        "e2e:update:webkit": "playwright test --project=webkit --update-snapshots --workers=12",
+        "trace": "playwright show-trace"
     },
     "dependencies": {
         "@aws/mynah-ui": "file:../"
     },
     "devDependencies": {
-        "@types/jest": "^29.5.12",
-        "@types/jest-image-snapshot": "^6.4.0",
+        "@playwright/test": "^1.50.0",
         "css-loader": "^6.6.0",
         "html-webpack-plugin": "^5.5.0",
-        "jest": "^29.7.0",
-        "jest-image-snapshot": "^6.4.0",
-        "jest-playwright-preset": "^4.0.0",
-        "playwright": "1.52.0",
+        "playwright": "^1.52.0",
         "raw-loader": "^4.0.2",
         "sass": "^1.49.8",
         "sass-loader": "^12.6.0",

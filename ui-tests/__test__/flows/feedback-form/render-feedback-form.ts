@@ -1,4 +1,4 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
@@ -19,28 +19,28 @@ export const renderFeedbackForm = async (page: Page, skipScreenshots?: boolean):
     }
   });
 
-  const thumbsDown = page.locator(getSelector(testIds.chatItem.vote.downvoteLabel));
-  expect(thumbsDown).toBeDefined();
-  await thumbsDown.click();
-  await waitForAnimationEnd(page);
-
-  const reportButton = page.locator(getSelector(testIds.chatItem.vote.reportButton));
-  expect(reportButton).toBeDefined();
-  await reportButton.click();
-  await waitForAnimationEnd(page);
-
-  const commentInput = page.locator(getSelector(testIds.feedbackForm.comment));
-  expect(commentInput).toBeDefined();
-  await commentInput.fill('This is some feedback comment');
-  await waitForAnimationEnd(page);
-
-  const submitButton = page.locator(getSelector(testIds.feedbackForm.submitButton));
-  expect(submitButton).toBeDefined();
-
-  const cancelButton = page.locator(getSelector(testIds.feedbackForm.cancelButton));
-  expect(cancelButton).toBeDefined();
-
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    const thumbsDown = page.locator(getSelector(testIds.chatItem.vote.downvoteLabel));
+    expect(thumbsDown).toBeDefined();
+    await thumbsDown.click();
+    await waitForAnimationEnd(page);
+
+    const reportButton = page.locator(getSelector(testIds.chatItem.vote.reportButton));
+    expect(reportButton).toBeDefined();
+    await reportButton.click();
+    await waitForAnimationEnd(page);
+
+    const commentInput = page.locator(getSelector(testIds.feedbackForm.comment));
+    expect(commentInput).toBeDefined();
+    await commentInput.fill('This is some feedback comment');
+    await waitForAnimationEnd(page);
+
+    const submitButton = page.locator(getSelector(testIds.feedbackForm.submitButton));
+    expect(submitButton).toBeDefined();
+
+    const cancelButton = page.locator(getSelector(testIds.feedbackForm.cancelButton));
+    expect(cancelButton).toBeDefined();
+
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

@@ -1,13 +1,9 @@
 import { Page } from 'playwright';
-import { closeTab } from '../close-tab';
-import { openNewTab } from '../open-new-tab';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
+import { expect } from 'playwright/test';
 
 export const showFileTree = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
   await page.evaluate(() => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
@@ -54,6 +50,6 @@ export const showFileTree = async (page: Page, skipScreenshots?: boolean): Promi
   const fileWrapperLocator = page.locator(getSelector(testIds.chatItem.fileTree.wrapper));
   expect(await fileWrapperLocator.count()).toEqual(1);
   if (skipScreenshots !== true) {
-    expect(await fileWrapperLocator.screenshot()).toMatchImageSnapshot();
+    expect(await fileWrapperLocator.screenshot()).toMatchSnapshot();
   }
 };

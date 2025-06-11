@@ -1,13 +1,8 @@
-import { Page } from 'playwright/test';
-import { getSelector, isVisible } from '../helpers';
+import { expect, Page } from 'playwright/test';
+import { getSelector, isVisible, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
-import { closeTab } from './close-tab';
-import { openNewTab } from './open-new-tab';
 
 export const renderCharacterCount = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
   const characterCounter = page.locator(getSelector(testIds.prompt.remainingCharsIndicator));
   expect(characterCounter).toBeDefined();
 
@@ -24,7 +19,9 @@ export const renderCharacterCount = async (page: Page, skipScreenshots?: boolean
   // Check that the value is set to 3500/4000
   expect(await characterCounter.innerText()).toBe('3500/4000');
 
+  await waitForAnimationEnd(page);
+
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

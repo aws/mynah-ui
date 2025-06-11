@@ -1,14 +1,9 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
-import { closeTab } from './close-tab';
-import { openNewTab } from './open-new-tab';
 
 export const renderTabbedCard = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
-  await page.evaluate((body) => {
+  await page.evaluate(() => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
       window.mynahUI.updateStore(selectedTabId, {
@@ -57,15 +52,15 @@ export const renderTabbedCard = async (page: Page, skipScreenshots?: boolean): P
   await answerCard.scrollIntoViewIfNeeded();
 
   if (skipScreenshots !== true) {
-    await expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 
   // Change selected item, check for content change
-  const locator = await page.locator(getSelector(`${testIds.chatItem.tabbedCard.tabs}-option-wrapper`)).last();
+  const locator = page.locator(`${getSelector(`${testIds.chatItem.tabbedCard.tabs}-option-wrapper`)}`).last();
   await locator.click();
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    await expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

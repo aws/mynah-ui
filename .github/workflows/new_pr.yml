@@ -1,7 +1,6 @@
-name: Check Lint, Tests and Build
+name: New PR created
 on:
   pull_request:
-    branches: [main, feature/*, fix/*]
     types: [opened, reopened, ready_for_review, synchronize]
 jobs:
   notify:
@@ -16,22 +15,7 @@ jobs:
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
           data: '{ "title": "${{ github.event.pull_request.title }}", "author": "${{ github.event.pull_request.user.login }}", "link": "${{ github.event.pull_request.html_url }}"}'
-  build:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-            fetch-depth: 20
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@aws'
-      - name: Install
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Run Unit tests
-        run: npm run tests:unit
-      - name: Run Lint
-        run: npm run lint
+  lint:
+    uses: ./.github/workflows/lint.yml
+  e2e-linux:
+    uses: ./.github/workflows/e2e-linux.yml

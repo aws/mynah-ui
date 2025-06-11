@@ -3,6 +3,7 @@ import { Page } from 'playwright';
 import testIds from '../../../../src/helper/test-ids';
 import { showFileTree } from './show-file-tree';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
+import { expect } from 'playwright/test';
 
 export const collapseExpandFileTree = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await showFileTree(page, true);
@@ -18,7 +19,7 @@ export const collapseExpandFileTree = async (page: Page, skipScreenshots?: boole
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await fileWrapperLocator.screenshot()).toMatchImageSnapshot();
+    expect(await fileWrapperLocator.screenshot()).toMatchSnapshot();
   }
 
   // Collapse the outermost folder
@@ -27,7 +28,7 @@ export const collapseExpandFileTree = async (page: Page, skipScreenshots?: boole
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await fileWrapperLocator.screenshot()).toMatchImageSnapshot();
+    expect(await fileWrapperLocator.screenshot()).toMatchSnapshot();
   }
 
   // Expand the outermost folder
@@ -36,6 +37,6 @@ export const collapseExpandFileTree = async (page: Page, skipScreenshots?: boole
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await fileWrapperLocator.screenshot()).toMatchImageSnapshot();
+    expect(await fileWrapperLocator.screenshot()).toMatchSnapshot();
   }
 };

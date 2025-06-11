@@ -14,6 +14,8 @@ export const getOffsetHeight = (boxRect: {
   return boxRect != null ? (boxRect?.y ?? 0) + (boxRect?.height ?? 0) : 0;
 };
 
+export const normalizeText = (text: string): string => text.replace(/\r\n/g, '\n').trim();
+
 export const waitForAnimationEnd = async (page: Page): Promise<any> => {
   return await Promise.race([
     new Promise((resolve) => setTimeout(resolve, 10000)),

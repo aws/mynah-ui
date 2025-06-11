@@ -2,7 +2,7 @@ import { Page } from 'playwright';
 import { getSelector, waitForAnimationEnd } from '../helpers';
 import testIds from '../../../src/helper/test-ids';
 import { closeTab } from './close-tab';
-import { openNewTab } from './open-new-tab';
+import { expect } from 'playwright/test';
 
 export const welcomeMode = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await closeTab(page, false, true);
@@ -36,7 +36,7 @@ export const welcomeMode = async (page: Page, skipScreenshots?: boolean): Promis
 
   if (skipScreenshots !== true) {
     // snap
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await chatWrapper.screenshot()).toMatchSnapshot();
   }
 
   await page.evaluate((tabId) => {
@@ -63,9 +63,6 @@ export const welcomeMode = async (page: Page, skipScreenshots?: boolean): Promis
 
   if (skipScreenshots !== true) {
     // snap
-    expect(await page.screenshot()).toMatchImageSnapshot({});
+    expect(await chatWrapper.screenshot()).toMatchSnapshot();
   }
-
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
 };

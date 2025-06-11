@@ -1,13 +1,8 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import { waitForAnimationEnd } from '../../helpers';
-import { openNewTab } from '../open-new-tab';
-import { closeTab } from '../close-tab';
 
 export const renderFormElements = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
-  await page.evaluate((body) => {
+  await page.evaluate(() => {
     const selectedTabId = window.mynahUI.getSelectedTabId();
     if (selectedTabId != null) {
       window.mynahUI.updateStore(selectedTabId, {
@@ -165,6 +160,6 @@ _To send the form, mandatory items should be filled._`,
   await waitForAnimationEnd(page);
 
   if (skipScreenshots !== true) {
-    expect(await page.screenshot()).toMatchImageSnapshot();
+    expect(await page.screenshot()).toMatchSnapshot();
   }
 };

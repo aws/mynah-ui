@@ -1,14 +1,9 @@
-import { Page } from 'playwright/test';
+import { expect, Page } from 'playwright/test';
 import testIds from '../../../src/helper/test-ids';
 import { DEFAULT_VIEWPORT, getOffsetHeight, getSelector, justWait } from '../helpers';
 import { clickToFollowup } from './click-followup';
-import { closeTab } from './close-tab';
-import { openNewTab } from './open-new-tab';
 
 export const checkContentInsideWindowBoundaries = async (page: Page): Promise<void> => {
-  await closeTab(page, false, true);
-  await openNewTab(page, false, true);
-
   await page.mouse.move(0, 0);
   const chatItemsContainer = await page.waitForSelector(getSelector(testIds.chat.chatItemsContainer));
   const footerPanel = await page.waitForSelector(getSelector(testIds.prompt.footerInfo));
@@ -27,7 +22,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 
   // Snap
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchSnapshot();
 
   // Scroll to top to the init message
   await (await page.waitForSelector(`${getSelector(testIds.chatItem.type.answer)}[messageid="welcome-message"]`)).scrollIntoViewIfNeeded();
@@ -47,7 +42,7 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
   expect(getOffsetHeight(await footerPanel.boundingBox())).toBeLessThanOrEqual(page.viewportSize()?.height ?? 0);
 
   // Snap
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchSnapshot();
 
   // Set viewport size to
   await page.setViewportSize({
@@ -70,5 +65,5 @@ export const checkContentInsideWindowBoundaries = async (page: Page): Promise<vo
 
   await justWait(100);
   // Snap
-  expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchSnapshot();
 };
