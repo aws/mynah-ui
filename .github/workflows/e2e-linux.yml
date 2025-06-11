@@ -2,7 +2,7 @@ name: Run E2E Tests (Linux)
 on: workflow_call
 jobs:
     e2e-linux:
-        runs-on: ubuntu-24.04-arm
+        runs-on: ubuntu-latest
         permissions:
           contents: read
           packages: write
