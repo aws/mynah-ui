@@ -10,6 +10,7 @@ export const clickToFollowup = async (page: Page, skipScreenshots?: boolean): Pr
   await page.locator(`${getSelector(testIds.chatItem.chatItemFollowup.optionButton)}:nth-child(1)`).click();
   await page.mouse.move(0, 0);
 
+  waitForAnimationEnd(page);
   const userCard = await page.waitForSelector(`${getSelector(testIds.chatItem.type.prompt)}:last-child`);
   expect(userCard).toBeDefined();
   await waitForAnimationEnd(page);

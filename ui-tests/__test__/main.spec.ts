@@ -74,7 +74,7 @@ test.describe('Open MynahUI', () => {
     await renderUserPrompt(page);
   });
 
-  test('should render new card when followup click', async ({ page }) => {
+  test.only('should render new card when followup click', async ({ page }) => {
     await clickToFollowup(page);
   });
 
