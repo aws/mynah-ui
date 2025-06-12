@@ -573,36 +573,30 @@ export class ChatPromptInput {
     // Add context header for quick actions if available
     if (this.quickPickType === 'quick-action') {
       const quickActionContextHeader = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionContextHeader') as ChatItem;
-      if (quickActionContextHeader) {
-        const contextHeaderCard = new ChatItemCard({
-          tabId: this.props.tabId,
-          chatItem: quickActionContextHeader,
-          small: true,
-          inline: true,
-          initVisibility: true
-        });
-        children.unshift(contextHeaderCard.render);
-      }
+      const contextHeaderCard = new ChatItemCard({
+        tabId: this.props.tabId,
+        chatItem: quickActionContextHeader,
+        small: true,
+        inline: true,
+        initVisibility: true
+      });
+      children.unshift(contextHeaderCard.render);
     }
-
     // Add context header for context commands if available
     if (this.quickPickType === 'context') {
       const contextHeader = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextHeader') as ChatItem;
-      if (contextHeader) {
-        const contextHeaderCard = new ChatItemCard({
-          tabId: this.props.tabId,
-          chatItem: contextHeader,
-          small: true,
-          inline: true,
-          initVisibility: true
-        });
-        children.unshift(contextHeaderCard.render);
-      }
+      const contextHeaderCard = new ChatItemCard({
+        tabId: this.props.tabId,
+        chatItem: contextHeader,
+        small: true,
+        inline: true,
+        initVisibility: true
+      });
+      children.unshift(contextHeaderCard.render);
     }
-
     // Add contextHeader from individual QuickActionCommandGroups
     quickPickGroupList.forEach((group, index) => {
-      if (group.contextHeader) {
+      if (group.contextHeader != null) {
         const groupContextHeaderCard = new ChatItemCard({
           tabId: this.props.tabId,
           chatItem: group.contextHeader,

@@ -408,7 +408,7 @@ export interface ChatItemContent {
     };
     description?: string;
     icon?: MynahIcons | MynahIconsType;
-        content: ChatItemContent;
+    content: ChatItemContent;
   } | null;
   summary?: {
     isCollapsed?: boolean;

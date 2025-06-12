@@ -13,7 +13,7 @@ export const emptyChatItemContent: ChatItemContent = {
   footer: null,
   formItems: null,
   informationCard: null,
-    relatedContent: null,
+  relatedContent: null,
   tabbedContent: null,
 };
 

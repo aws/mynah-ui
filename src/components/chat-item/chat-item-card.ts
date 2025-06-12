@@ -27,8 +27,6 @@ import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { marked } from 'marked';
-
-
 const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
   tabId: string;
@@ -121,7 +119,6 @@ export class ChatItemCard {
 
     /**
      * Generate/update more content indicator if available
-     * Only create if the card has autoCollapse or title (collapsible content)
      */
     if (this.props.chatItem.autoCollapse === true || this.props.chatItem.title != null) {
       this.moreContentIndicator = new MoreContentIndicator({
@@ -554,9 +551,6 @@ export class ChatItemCard {
       });
       this.card?.render.insertChild('beforeend', this.informationCard.render);
     }
-
-
-
     /**
      * Generate summary content if available
      */
