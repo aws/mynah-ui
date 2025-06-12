@@ -32,12 +32,14 @@ export interface QuickActionCommand {
   placeholder?: string;
   children?: QuickActionCommandGroup[];
   route?: string[];
+  contextHeader?: ChatItem;
 }
 export interface QuickActionCommandGroup {
   groupName?: string;
   icon?: MynahIcons | MynahIconsType;
   actions?: Action[];
   commands: QuickActionCommand[];
+  contextHeader?: ChatItem;
 }
 /**
  * data store model to update the mynah ui partially or fully
@@ -88,9 +90,17 @@ export interface MynahUIDataModel {
   */
   quickActionCommands?: QuickActionCommandGroup[];
   /**
+  * Context header to show above quick action commands when user hits /
+  */
+  quickActionContextHeader?: ChatItem;
+  /**
   * Context commands to show when user hits @ to the input any point
   */
   contextCommands?: QuickActionCommandGroup[];
+  /**
+  * Context header to show above context commands when user hits @
+  */
+  contextHeader?: ChatItem;
   /**
   * Placeholder to be shown on prompt input
   */
@@ -398,7 +408,7 @@ export interface ChatItemContent {
     };
     description?: string;
     icon?: MynahIcons | MynahIconsType;
-    content: ChatItemContent;
+        content: ChatItemContent;
   } | null;
   summary?: {
     isCollapsed?: boolean;
@@ -430,6 +440,8 @@ export interface ChatItem extends ChatItemContent {
   hoverEffect?: boolean;
   status?: Status;
   shimmer?: boolean;
+  border?: boolean;
+  collapse?: boolean;
 }
 
 export interface ValidationPattern {
@@ -522,6 +534,7 @@ export interface ChatPrompt {
   command?: string;
   options?: Record<string, string | Array<Record<string, string>>>;
   context?: string[] | QuickActionCommand[];
+  contextHeader?: ChatItem;
 }
 
 export interface ChatItemAction extends ChatPrompt {

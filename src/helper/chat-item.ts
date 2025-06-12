@@ -13,8 +13,8 @@ export const emptyChatItemContent: ChatItemContent = {
   footer: null,
   formItems: null,
   informationCard: null,
-  relatedContent: null,
-  tabbedContent: null
+    relatedContent: null,
+  tabbedContent: null,
 };
 
 export const chatItemHasContent = (chatItem: Partial<ChatItem>): boolean => (

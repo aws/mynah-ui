@@ -4,12 +4,13 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemButton, ChatPrompt, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatItem, ChatItemButton, ChatPrompt, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
+import { ChatItemCard } from './chat-item-card';
 import { PromptAttachment } from './prompt-input/prompt-attachment';
 import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
@@ -566,12 +567,58 @@ export class ChatPromptInput {
         list: detailedListItemsGroup
       });
     }
+
+    const children = [ this.quickPickItemsSelectorContainer.render ];
+
+    // Add context header for quick actions if available
+    if (this.quickPickType === 'quick-action') {
+      const quickActionContextHeader = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionContextHeader') as ChatItem;
+      if (quickActionContextHeader) {
+        const contextHeaderCard = new ChatItemCard({
+          tabId: this.props.tabId,
+          chatItem: quickActionContextHeader,
+          small: true,
+          inline: true,
+          initVisibility: true
+        });
+        children.unshift(contextHeaderCard.render);
+      }
+    }
+
+    // Add context header for context commands if available
+    if (this.quickPickType === 'context') {
+      const contextHeader = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextHeader') as ChatItem;
+      if (contextHeader) {
+        const contextHeaderCard = new ChatItemCard({
+          tabId: this.props.tabId,
+          chatItem: contextHeader,
+          small: true,
+          inline: true,
+          initVisibility: true
+        });
+        children.unshift(contextHeaderCard.render);
+      }
+    }
+
+    // Add contextHeader from individual QuickActionCommandGroups
+    quickPickGroupList.forEach((group, index) => {
+      if (group.contextHeader) {
+        const groupContextHeaderCard = new ChatItemCard({
+          tabId: this.props.tabId,
+          chatItem: group.contextHeader,
+          small: true,
+          inline: true,
+          initVisibility: true
+        });
+        // Insert the header before the corresponding group (index + 1 because the main list is at index 0)
+        children.splice(index + 1, 0, groupContextHeaderCard.render);
+      }
+    });
+
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-prompt-quick-picks-overlay-wrapper' ],
-      children: [
-        this.quickPickItemsSelectorContainer.render
-      ]
+      children
     });
   };
 
