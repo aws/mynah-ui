@@ -332,6 +332,12 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                         description: 'Reference all code in workspace.',
                     },
                     {
+                        command: 'image',
+                        icon: MynahIcons.IMAGE,
+                        description: 'Add an image to the context',
+                        placeholder: 'Select an image file'
+                    },
+                    {
                         command: 'folder',
                         icon: MynahIcons.FOLDER,
                         children: [

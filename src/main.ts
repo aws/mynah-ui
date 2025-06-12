@@ -315,6 +315,11 @@ export interface MynahUIProps {
   onSplashLoaderActionClick?: (
     action: Action,
     eventId?: string) => void;
+  onOpenFileDialogClick?: (
+    tabId: string,
+    fileType: string,
+    insertPosition: number
+  ) => void;
 }
 
 export class MynahUI {
@@ -824,6 +829,10 @@ export class MynahUI {
         this.props.onTabBarButtonClick(data.tabId, data.buttonId, this.getUserEventId());
       }
     });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_FILE_SYSTEM, (data) => {
+      this.props.onOpenFileDialogClick?.(data.tabId, data.type, data.insertPosition);
+    });
   };
 
   public addToUserPrompt = (tabId: string, attachmentContent: string, type?: PromptAttachmentType): void => {
@@ -846,6 +855,12 @@ export class MynahUI {
           chatItem
         ]
       });
+    }
+  };
+
+  public appendContextCommands = (tabId: string, contextCommands: QuickActionCommand[], insertPosition: number): void => {
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_IMAGE_CONTEXT, { tabId, contextCommands, insertPosition });
     }
   };
 

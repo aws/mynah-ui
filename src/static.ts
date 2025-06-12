@@ -230,10 +230,12 @@ export enum MynahEventNames {
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
   ROOT_RESIZE = 'rootResize',
   CONTEXT_SELECTED = 'contextSelected',
+  OPEN_FILE_SYSTEM = 'openFileSystem',
+  INSERT_IMAGE_CONTEXT = 'insertImageContext',
   TOP_BAR_ITEM_ADD = 'promptInputTopBarItemAdd',
   TOP_BAR_ITEM_REMOVE = 'promptInputTopBarItemRemove',
   TOP_BAR_BUTTON_CLICK = 'promptInputTopBarButtonClick',
-  CONTEXT_PINNED = 'contextPinned'
+  CONTEXT_PINNED = 'contextPinned',
 };
 
 export enum MynahPortalNames {
