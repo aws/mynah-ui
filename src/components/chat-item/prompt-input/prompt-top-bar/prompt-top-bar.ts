@@ -151,6 +151,7 @@ export class PromptTopBar {
       return this.getVisibleContextItems().map((contextItem) => {
         return DomBuilder.getInstance().build({
           type: 'span',
+          testId: testIds.prompt.topBarContextPill,
           children: [
             new Icon({ icon: MynahIcons.CANCEL, classNames: [ 'hover-icon' ] }).render,
             new Icon({ icon: contextItem.icon ?? MynahIcons.AT }).render,
@@ -184,7 +185,6 @@ export class PromptTopBar {
       const elm: HTMLElement = e.target as HTMLElement;
 
       this.contextTooltip = new Overlay({
-        testId: testIds.prompt.contextTooltip,
         background: true,
         closeOnOutsideClick: false,
         referenceElement: elm,
@@ -195,7 +195,7 @@ export class PromptTopBar {
         children: [
           DomBuilder.getInstance().build({
             type: 'div',
-            testId: testIds.prompt.contextTooltip,
+            testId: testIds.prompt.topBarContextTooltip,
             classNames: [ 'mynah-chat-prompt-context-tooltip' ],
             children: [
               ...(contextItem.icon !== undefined
@@ -271,6 +271,7 @@ export class PromptTopBar {
     if (this.overflowButton == null) {
       this.overflowButton = DomBuilder.getInstance().build({
         type: 'span',
+        testId: testIds.prompt.tobBarOverflowPill,
         children: [
         `+${this.getOverflowCount()}`
         ],

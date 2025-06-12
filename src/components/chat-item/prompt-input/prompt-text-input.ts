@@ -310,7 +310,6 @@ export class PromptTextInput {
     this.contextTooltipTimeout = setTimeout(() => {
       const elm: HTMLElement = e.target as HTMLElement;
       this.contextTooltip = new Overlay({
-        testId: testIds.prompt.contextTooltip,
         background: true,
         closeOnOutsideClick: false,
         referenceElement: elm,

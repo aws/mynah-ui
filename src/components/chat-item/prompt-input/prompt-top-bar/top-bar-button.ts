@@ -29,6 +29,7 @@ export class TopBarButton {
     this.props = props;
 
     this.render = DomBuilder.getInstance().build({
+      testId: testIds.prompt.topBarButton,
       type: 'span',
       children: this.getTopBarButtonChildren(),
       classNames: [ 'top-bar-button' ],
