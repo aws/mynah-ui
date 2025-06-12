@@ -83,7 +83,8 @@ export enum MynahIcons {
   MCP = 'mcp',
   TRASH = 'trash',
   TRANSFORM = 'transform',
-  HISTORY = 'history'
+  HISTORY = 'history',
+  IMAGE = 'image'
 }
 
 export interface CustomIcon {
