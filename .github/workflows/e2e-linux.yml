@@ -59,4 +59,4 @@ jobs:
     report:
       needs: e2e-linux
       if: always()
-      uses: ./.github/workflows/test_report.yml
+      uses: ./.github/workflows/test-report.yml
