@@ -37,7 +37,7 @@
         "tests:e2e:chromium": "npm run docker:clean && npm run docker:build && npm run docker:run:chromium",
         "tests:e2e:webkit": "npm run docker:clean && npm run docker:build && npm run docker:run:webkit",
         "tests:e2e:trace": "cd ./ui-tests && npm run trace",
-        "tests:unit": "jest",
+        "tests:unit": "jest --collect-coverage",
         "api-docs": "npx typedoc src/main.ts --out ./api-docs",
         "api-doc-deploy": "npx typedoc src/main.ts --out ./example/dist/api-doc",
         "postinstall": "node postinstall.js",

@@ -12,3 +12,4 @@ package-lock.json
 .vscode
 __results__/
 e2e-results/
+coverage/
