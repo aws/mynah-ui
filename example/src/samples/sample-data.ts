@@ -3,6 +3,7 @@ import {
     ChatItemContent,
     ChatItemType,
     DetailedList,
+    DetailedListItemGroup,
     generateUID,
     MynahIcons,
     MynahUIDataModel,
@@ -2261,3 +2262,9 @@ export const sampleMCPDetails = (title: string): DetailedList => {
         ],
     };
 };
+
+
+export const sampleRulesList: DetailedList = {selectable: 'clickable', list: [{children: [{id: 'README', icon: MynahIcons.MAGIC, 
+    description: 'README',actions: [{ id: 'README.md', icon: MynahIcons.OK, status: 'clear' }]}]}, 
+    {groupName: '.amazonq/rules', childrenIndented: true, icon: MynahIcons.FOLDER , actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }], children: [{id: 'java-expert.md', icon: MynahIcons.MAGIC, 
+    description: 'java-expert',actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }]}]}]}

@@ -48,6 +48,7 @@ import { MynahUIDataStore } from './helper/store';
 import { StyleLoader } from './helper/style-loader';
 import { Icon } from './components/icon';
 import { Button } from './components/button';
+import { TopBarButtonOverlayProps } from './components/chat-item/prompt-input/prompt-top-bar/top-bar-button';
 
 export { generateUID } from './helper/guid';
 export {
@@ -269,6 +270,11 @@ export interface MynahUIProps {
     tabId: string,
     buttonId: string,
     eventId?: string) => void;
+  onPromptTopBarItemAdded?: (tabId: string,
+    item: QuickActionCommand, eventId?: string) => void;
+  onPromptTopBarItemRemoved?: (tabId: string,
+    item: QuickActionCommand, eventId?: string) => void;
+  onPromptTopBarButtonClick?: (tabId: string, action: QuickActionCommand, eventId?: string) => void;
   /**
    * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
    */
@@ -799,6 +805,16 @@ export class MynahUI {
       this.props.onPromptInputOptionChange?.(data.tabId, data.optionsValues, this.getUserEventId());
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_ADD, (data) => {
+      this.props.onPromptTopBarItemAdded?.(data.tabId, data.contextItem, this.getUserEventId());
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_REMOVE, (data) => {
+      this.props.onPromptTopBarItemRemoved?.(data.tabId, data.contextItem, this.getUserEventId());
+    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ACTION_CLICK, (data) => {
+      this.props.onPromptTopBarButtonClick?.(data.tabId, data.item, this.getUserEventId());
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_BUTTON_CLICK, (data) => {
       this.props.onPromptInputButtonClick?.(data.tabId, data.buttonId, this.getUserEventId());
     });
@@ -1050,6 +1066,19 @@ export class MynahUI {
         formItems
       },
     });
+  };
+
+  public openTopBarButtonOverlay = (data: TopBarButtonOverlayProps,
+  ): {
+      update: (data: DetailedList) => void;
+      close: () => void;
+
+    } => {
+    if (data.tabId != null) { this.chatWrappers[data.tabId].openTopBarActionItemOverlay(data); }
+    return {
+      update: this.chatWrappers[data.tabId].updateTopBarActionItemOverlay,
+      close: this.chatWrappers[data.tabId].closeTopBarActionItemOverlay
+    };
   };
 
   public openDetailedList = (

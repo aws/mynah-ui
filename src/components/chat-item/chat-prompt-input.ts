@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemButton, ChatPrompt, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -21,6 +21,8 @@ import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandG
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
 import { PromptOptions } from './prompt-input/prompt-options';
 import { PromptInputStopButton } from './prompt-input/prompt-input-stop-button';
+import { PromptTopBar } from './prompt-input/prompt-top-bar/prompt-top-bar';
+import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
 
@@ -58,13 +60,22 @@ export class ChatPromptInput {
   private readonly progressIndicator: PromptInputProgress;
   private readonly promptAttachment: PromptAttachment;
   private readonly promptOptions: PromptOptions;
+  private readonly promptTopBar: PromptTopBar;
   private readonly chatPrompt: ExtendedHTMLElement;
-  private quickPickItemsSelectorContainer: DetailedListWrapper;
+  private quickPickItemsSelectorContainer: DetailedListWrapper | null;
   private promptTextInputLabel: ExtendedHTMLElement;
-  private remainingCharsOverlay: Overlay;
+  private remainingCharsOverlay: Overlay | null;
+  /**
+   * Preserves cursor position when `@` key is pressed
+   */
   private quickPickTriggerIndex: number;
+  /**
+   * Preserves selection range when `@` key is pressed
+   */
+  private quickPickTriggerRange?: Range;
   private quickPickType: 'quick-action' | 'context';
   private quickPickItemGroups: QuickActionCommandGroup[];
+  private topBarTitleClicked: boolean = false;
   private filteredQuickPickItemGroups: QuickActionCommandGroup[];
   private searchTerm: string = '';
   private quickPick: Overlay;
@@ -152,6 +163,35 @@ export class ChatPromptInput {
       }
     });
 
+    this.promptTopBar = new PromptTopBar({
+      tabId: this.props.tabId,
+      title: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptTopBarTitle'),
+      topBarButton: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptTopBarButton'),
+      contextItems: MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('promptTopBarContextItems'),
+      onTopBarTitleClick: () => {
+        this.onContextSelectorButtonClick(true);
+      },
+      onContextItemAdd: (contextItem: QuickActionCommand) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TOP_BAR_ITEM_ADD, {
+          tabId: this.props.tabId,
+          contextItem
+        });
+      },
+      onContextItemRemove: (contextItem: QuickActionCommand) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TOP_BAR_ITEM_REMOVE, {
+          tabId: this.props.tabId,
+          contextItem
+        });
+      },
+      onTopBarButtonClick: (action: ChatItemButton) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TOP_BAR_ACTION_CLICK, {
+          tabId: this.props.tabId,
+          item: action
+        });
+      }
+
+    });
+
     this.attachmentWrapper = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.attachmentWrapper,
@@ -161,25 +201,21 @@ export class ChatPromptInput {
       ]
     });
 
+    const noContextCommands = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] ?? []).length === 0;
+
     this.contextSelectorButton = new Button({
       icon: new Icon({ icon: MynahIcons.AT }).render,
       status: 'clear',
-      disabled: ((MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? []).length === 0,
-      classNames: ((MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? []).length === 0 ? [ 'hidden' ] : [],
+      disabled: noContextCommands,
+      classNames: (noContextCommands || !this.promptTopBar.isHidden()) ? [ 'hidden' ] : [],
       primary: false,
       onClick: () => {
-        this.searchTerm = '';
-        this.quickPickType = 'context';
-        this.quickPickItemGroups = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
-        this.quickPickTriggerIndex = this.promptTextInput.getCursorPos();
-        this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
-        this.promptTextInput.insertEndSpace();
-        this.openQuickPick();
+        this.onContextSelectorButtonClick();
       },
     });
 
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'contextCommands', (contextCommands) => {
-      if (contextCommands?.length > 0) {
+      if (contextCommands?.length > 0 && this.promptTopBar.isHidden()) {
         this.contextSelectorButton.setEnabled(true);
         this.contextSelectorButton.render.removeClass('hidden');
       } else {
@@ -197,6 +233,7 @@ export class ChatPromptInput {
           type: 'div',
           classNames: [ 'mynah-chat-prompt-input-wrapper' ],
           children: [
+            this.promptTopBar.render,
             this.promptTextInput.render,
             {
               type: 'div',
@@ -228,6 +265,21 @@ export class ChatPromptInput {
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputButtons', (newButtons: ChatItemButton[]) => {
       this.promptOptions.update(undefined, newButtons);
+    });
+
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptTopBarContextItems', (newCommands: QuickActionCommand[]) => {
+      this.promptTopBar.update({ contextItems: newCommands });
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptTopBarTitle', (newTitle: string) => {
+      this.promptTopBar.update({ title: newTitle });
+
+      if (!this.promptTopBar.isHidden()) {
+        this.contextSelectorButton.setEnabled(false);
+        this.contextSelectorButton.render.addClass('hidden');
+      }
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptTopBarButton', (newButton: ChatItemButton) => {
+      this.promptTopBar.update({ topBarButton: newButton });
     });
 
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'promptInputLabel', (promptInputLabel: string) => {
@@ -291,6 +343,16 @@ export class ChatPromptInput {
     });
   }
 
+  private readonly onContextSelectorButtonClick = (topBarTitleClicked?: boolean): void => {
+    this.searchTerm = '';
+    this.quickPickType = 'context';
+    this.quickPickItemGroups = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+    this.quickPickTriggerIndex = this.promptTextInput.getCursorPos();
+    this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+    if (topBarTitleClicked !== true) { this.promptTextInput.insertEndSpace(); }
+    this.openQuickPick(topBarTitleClicked);
+  };
+
   private readonly updateAvailableCharactersIndicator = (): void => {
     const characterAmount = MAX_USER_INPUT() - Math.max(0, (this.promptTextInput.promptTextInputMaxLength - this.promptTextInput.getTextInputValue().trim().length));
     const charTextElm = DomBuilder.getInstance().build({
@@ -353,12 +415,24 @@ export class ChatPromptInput {
         this.searchTerm = '';
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
         this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;
+        this.quickPickTriggerRange = window.getSelection()?.getRangeAt(0);
         this.quickPickTriggerIndex = this.quickPickType === 'context' ? this.promptTextInput.getCursorPos() : 1;
         this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
         this.openQuickPick();
       } else if (navigationalKeys.includes(e.key)) {
         const cursorPosition = this.promptTextInput.getCursorPosition();
-        if ((cursorPosition.isAtTheBeginning && e.key === KeyMap.ARROW_UP) || (cursorPosition.isAtTheEnd && e.key === KeyMap.ARROW_DOWN)) {
+
+        // Only enter history navigation if:
+        // 1. Going up and there's history to go up to, or we're at the beginning of history navigation
+        // 2. Going down and we're not already at the bottom of history
+        const shouldNavigateUp = cursorPosition.isAtTheBeginning && e.key === KeyMap.ARROW_UP &&
+                                (this.userPromptHistoryIndex > 0 || this.userPromptHistoryIndex === -1) &&
+                                this.userPromptHistory.length > 0;
+        const shouldNavigateDown = cursorPosition.isAtTheEnd && e.key === KeyMap.ARROW_DOWN &&
+                                  this.userPromptHistoryIndex !== -1 &&
+                                  this.userPromptHistoryIndex < this.userPromptHistory.length;
+
+        if (shouldNavigateUp || shouldNavigateDown) {
           if (this.userPromptHistoryIndex === -1 || this.userPromptHistoryIndex === this.userPromptHistory.length) {
             this.lastUnsentUserPrompt = {
               inputText: this.promptTextInput.getTextInputValue(),
@@ -408,7 +482,7 @@ export class ChatPromptInput {
         }
       }
     } else {
-      const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH ] as string[];
+      const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH, KeyMap.ALT ] as string[];
       if (blockedKeys.includes(e.key)) {
         e.preventDefault();
         if (e.key === KeyMap.ESCAPE) {
@@ -418,11 +492,15 @@ export class ChatPromptInput {
           this.quickPick?.close();
         } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
           this.searchTerm = '';
-          const targetDetailedListItem = this.quickPickItemsSelectorContainer.getTargetElement();
+          const targetDetailedListItem = this.quickPickItemsSelectorContainer?.getTargetElement();
           if (targetDetailedListItem != null) {
             const commandToSend = convertDetailedListItemToQuickActionCommand(targetDetailedListItem);
             if (this.quickPickType === 'context') {
               if (commandToSend.command !== '') {
+                // Add context item to top bar if Alt-Enter is pressed on an item
+                if (e.altKey && !this.promptTopBar.isHidden() && (commandToSend.children == null || commandToSend.children[0] == null)) {
+                  this.topBarTitleClicked = true;
+                }
                 this.handleContextCommandSelection(commandToSend);
               } else {
                 // Otherwise pass the given text by user
@@ -446,7 +524,7 @@ export class ChatPromptInput {
         }
       } else if (navigationalKeys.includes(e.key)) {
         cancelEvent(e);
-        this.quickPickItemsSelectorContainer.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down', true, true);
+        this.quickPickItemsSelectorContainer?.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down', true, true);
       } else {
         if (this.quickPick != null) {
           if (this.promptTextInput.getTextInputValue() === '') {
@@ -484,7 +562,33 @@ export class ChatPromptInput {
     }
   };
 
-  private readonly openQuickPick = (): void => {
+  private readonly tabBarTitleOverlayKeyPressHandler = (e: KeyboardEvent): void => {
+    if (e.key === KeyMap.ARROW_UP || e.key === KeyMap.ARROW_DOWN) {
+      cancelEvent(e);
+      this.quickPickItemsSelectorContainer?.changeTarget(e.key === KeyMap.ARROW_UP ? 'up' : 'down', true, true);
+    } else if (e.key === KeyMap.ENTER) {
+      const detailedListItem = this.quickPickItemsSelectorContainer?.getTargetElement();
+      if (detailedListItem != null) {
+        const quickPickCommand: QuickActionCommand = convertDetailedListItemToQuickActionCommand(detailedListItem);
+        this.handleContextCommandSelection(quickPickCommand);
+      }
+    } else if (e.key === KeyMap.ESCAPE) {
+      this.quickPick.close();
+      if (Config.getInstance().config.autoFocus) {
+        this.promptTextInput.focus();
+      }
+    }
+  };
+
+  private readonly openQuickPick = (topBarTitleClicked?: boolean): void => {
+    this.topBarTitleClicked = topBarTitleClicked === true;
+
+    this.quickPickItemsSelectorContainer = null;
+
+    if (this.topBarTitleClicked) {
+      window.addEventListener('keydown', this.tabBarTitleOverlayKeyPressHandler);
+    }
+
     if (this.quickPickItemGroups.length > 0) {
       this.quickPick = new Overlay({
         closeOnOutsideClick: true,
@@ -495,6 +599,7 @@ export class ChatPromptInput {
         horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
         onClose: () => {
           this.quickPickOpen = false;
+          window.removeEventListener('keydown', this.tabBarTitleOverlayKeyPressHandler);
         },
         children: [
           this.getQuickPickItemGroups(this.filteredQuickPickItemGroups)
@@ -543,8 +648,41 @@ export class ChatPromptInput {
         descriptionTextDirection: 'rtl',
         detailedList: {
           list: detailedListItemsGroup,
-          selectable: true
+          selectable: true,
+          ...(this.topBarTitleClicked
+            ? {
+                filterOptions: [
+                  {
+                    type: 'textinput',
+                    icon: MynahIcons.SEARCH,
+                    id: 'search',
+                    placeholder: 'Search context',
+                    autoFocus: true,
+                  },
+                ],
+
+              }
+            : !this.promptTopBar.isHidden()
+                ? {
+                    header: {
+                      description: 'Pin context with ⌥ Enter',
+                    }
+                  }
+                : {})
         },
+        ...(this.topBarTitleClicked
+          ? {
+              onFilterValueChange: (filterValues) => {
+                const searchTerm = filterValues?.search ?? '';
+                if (searchTerm.length > 0) { this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], searchTerm, this.topBarTitleClicked); } else {
+                  this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+                }
+                const results = convertQuickActionCommandGroupsToDetailedListGroups(this.filteredQuickPickItemGroups);
+                const emptyResults = results.length === 0 || (results.length === 1 && results[0].children?.length === 0);
+                this.quickPickItemsSelectorContainer?.update({ list: emptyResults ? [ { groupName: 'No matches found' } ] : results });
+              },
+            }
+          : {}),
         onGroupActionClick: (action) => {
           this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.QUICK_COMMAND_GROUP_ACTION_CLICK, {
@@ -555,6 +693,11 @@ export class ChatPromptInput {
         onItemSelect: (detailedListItem) => {
           const quickPickCommand: QuickActionCommand = convertDetailedListItemToQuickActionCommand(detailedListItem);
           if (this.quickPickType === 'context') {
+            if (this.quickPickTriggerRange != null) {
+              // Restore range so element is inserted in correct position
+              this.promptTextInput.restoreRange(this.quickPickTriggerRange);
+            }
+
             this.handleContextCommandSelection(quickPickCommand);
           } else {
             this.handleQuickActionCommandSelection(quickPickCommand, 'click');
@@ -621,9 +764,14 @@ export class ChatPromptInput {
         tabId: this.props.tabId,
         promptInputCallback: (insert: boolean) => {
           if (insert) {
-            this.promptTextInput.insertContextItem({
-              ...contextCommand,
-            }, this.quickPickTriggerIndex);
+            if (!this.promptTopBar.isHidden() && (this.topBarTitleClicked)) {
+              this.promptTopBar.addContextPill(contextCommand);
+              this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
+            } else {
+              this.promptTextInput.insertContextItem({
+                ...contextCommand,
+              }, this.quickPickTriggerIndex, this.promptTopBar.isHidden());
+            }
           } else {
             this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
           }
@@ -726,5 +874,17 @@ export class ChatPromptInput {
       tabId: this.props.tabId,
       type
     });
+  };
+
+  public readonly openTopBarActionItemOverlay = (data: TopBarButtonOverlayProps): void => {
+    this.promptTopBar.topBarButton.showOverlay(data);
+  };
+
+  public readonly updateTopBarActionItemOverlay = (data: DetailedList): void => {
+    this.promptTopBar.topBarButton.onTopBarButtonOverlayChanged(data);
+  };
+
+  public readonly closeTopBarActionItemOverlay = (): void => {
+    this.promptTopBar.topBarButton.closeOverlay();
   };
 }

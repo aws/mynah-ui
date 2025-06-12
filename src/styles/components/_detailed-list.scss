@@ -80,8 +80,21 @@
                 overflow: hidden;
                 display: flex;
                 align-items: center;
-                align-items: baseline;
                 gap: var(--mynah-sizing-2);
+
+                &.mynah-group-title-clickable {
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: var(--mynah-color-button);
+                        color: var(--mynah-color-button-reverse);
+
+                        * {
+                            color: var(--mynah-color-button-reverse);
+                        }
+                    }
+                }
+
                 > .mynah-card-body {
                     flex: 1;
                     * {
@@ -106,6 +119,10 @@
                 display: block;
                 overflow: hidden;
                 min-height: var(--mynah-sizing-8);
+
+                &.indented {
+                    padding-left: var(--mynah-sizing-3);
+                }
 
                 > .mynah-detailed-list-item {
                     display: flex;
