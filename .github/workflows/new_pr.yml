@@ -17,5 +17,7 @@ jobs:
           data: '{ "title": "${{ github.event.pull_request.title }}", "author": "${{ github.event.pull_request.user.login }}", "link": "${{ github.event.pull_request.html_url }}"}'
   lint:
     uses: ./.github/workflows/lint.yml
+  unit-tests:
+    uses: ./.github/workflows/unit-tests.yml
   e2e-linux:
     uses: ./.github/workflows/e2e-linux.yml
