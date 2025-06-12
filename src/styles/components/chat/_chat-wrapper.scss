@@ -217,7 +217,7 @@
     // Context header card styling for quick actions
     > .mynah-chat-item-card {
         margin: var(--mynah-sizing-3) var(--mynah-sizing-3) 0 var(--mynah-sizing-3);
-        
+
         > .mynah-card {
             border: none;
             border-radius: 0;
@@ -228,7 +228,7 @@
             flex-direction: row;
             align-items: flex-start;
             gap: var(--mynah-sizing-3);
-            
+
             > .mynah-chat-item-card-icon {
                 position: static !important;
                 color: #f39c12 !important; // Yellow color
@@ -236,16 +236,16 @@
                 margin-top: 2px; // Slight adjustment to align with text
                 flex-shrink: 0;
             }
-            
+
             > .mynah-card-body {
                 padding: 0;
                 flex: 1;
-                
+
                 > div {
                     // Title styling
                     > p:first-child {
                         margin: 0;
-                        
+
                         strong {
                             font-weight: 600;
                             color: var(--mynah-color-text-strong);
@@ -255,7 +255,7 @@
                             margin-bottom: var(--mynah-sizing-2);
                         }
                     }
-                    
+
                     // Body text styling - handle the second paragraph
                     > p:nth-child(2) {
                         color: var(--mynah-color-text-weak);
@@ -266,7 +266,7 @@
                 }
             }
         }
-        
+
         // Override default icon positioning for borderless layout
         &.mynah-chat-item-card-has-icon > .mynah-card {
             padding-left: var(--mynah-sizing-3); // Reset to normal padding
