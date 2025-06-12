@@ -172,10 +172,10 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
             onKeyPress: (e) => {Log(`Key pressed on top bar overlay`);      if (e.key === KeyMap.ESCAPE) {
                                 topBarOverlay.close();
                             }}
-        
+
         }})
-            
-            
+
+
         },
         onTabBarButtonClick: (tabId: string, buttonId: string) => {
             if (buttonId.match('mcp-')) {
@@ -1032,6 +1032,52 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         onTabAdd: (tabId: string) => {
             Log(`New tab added: <b>${tabId}</b>`);
         },
+        onOpenFileDialogClick: (tabId: string, fileType: string, insertPosition: number) => {
+
+            if (fileType === 'image') {
+                // Get the current selected tab
+                const selectedTab = Object.entries(mynahUI.getAllTabs()).find(([_, tab]) => tab.isSelected)?.[0];
+                if (!selectedTab) return false;
+
+                // Create a file input element
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.style.display = 'none';
+
+                // Add it to the document
+                document.body.appendChild(fileInput);
+
+                // Handle file selection
+                fileInput.onchange = (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0];
+                    if (file) {
+                        // Create a context item for the selected file
+                        const contextItem: QuickActionCommand = {
+                            command: file.name,
+                            icon: MynahIcons.IMAGE,
+                            label: 'image',
+                            route: [file.name],
+                            description: '/User/Sample/' + file.name
+                        };
+
+                        mynahUI.appendContextCommands(tabId, [contextItem], insertPosition);
+                        // Return true to allow the context item to be inserted
+                        // The original context item will be replaced with our file context item
+                        return true;
+                    }
+
+                    // Clean up
+                    document.body.removeChild(fileInput);
+                    return false;
+                };
+
+                // Trigger the file dialog
+                fileInput.click();
+                return false;
+            }
+        },
+
         onContextSelected(contextItem) {
             if (contextItem.command === 'Add Prompt') {
                 Log('Custom context action triggered for adding a prompt!');

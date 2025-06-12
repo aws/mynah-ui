@@ -4,8 +4,17 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
-import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
+import {
+  ChatItemButton,
+  ChatPrompt,
+  FilterOption,
+  KeyMap,
+  MynahEventNames,
+  PromptAttachmentType,
+  QuickActionCommand,
+  QuickActionCommandGroup
+} from '../../static';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
@@ -17,7 +26,13 @@ import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
 import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
-import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
+import {
+  convertDetailedListItemToQuickActionCommand,
+  convertQuickActionCommandGroupsToDetailedListGroups,
+  filterQuickPickItems,
+  MARK_CLOSE,
+  MARK_OPEN
+} from '../../helper/quick-pick-data-handler';
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
 import { PromptOptions } from './prompt-input/prompt-options';
 import { PromptInputStopButton } from './prompt-input/prompt-input-stop-button';
@@ -743,6 +758,14 @@ export class ChatPromptInput {
       ...dirtyContextCommand,
       command: dirtyContextCommand.command.replace(this.markerRemovalRegex, '')
     };
+    if (contextCommand.command === 'image') {
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_FILE_SYSTEM, {
+        tabId: this.props.tabId,
+        type: 'image',
+        insertPosition: this.quickPickTriggerIndex,
+      });
+      return;
+    }
     // Check if the selected command has children
     if (contextCommand.children?.[0] != null) {
       // If user types '@fi', and then selects a command with children (ex: file command), remove 'fi' from prompt

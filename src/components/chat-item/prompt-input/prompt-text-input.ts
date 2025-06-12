@@ -2,7 +2,7 @@ import { Config } from '../../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
 import { MynahUIGlobalEvents } from '../../../helper/events';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
-import { MynahEventNames, QuickActionCommand } from '../../../static';
+import { MynahEventNames, QuickActionCommand, QuickActionCommandGroup } from '../../../static';
 import { MAX_USER_INPUT } from '../chat-prompt-input';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay';
 import { Card } from '../../card/card';
@@ -12,7 +12,7 @@ import { generateUID } from '../../../main';
 import { Icon, MynahIcons } from '../../icon';
 
 const PREVIEW_DELAY = 500;
-
+const IMAGE_CONTEXT_SELECT_KEYWORD = '@image:';
 export interface PromptTextInputProps {
   tabId: string;
   initMaxLength: number;
@@ -73,6 +73,45 @@ export class PromptTextInput {
         },
         keyup: (e: KeyboardEvent) => {
           this.lastCursorIndex = this.updateCursorPos();
+
+          // Check if image command exists in context commands to make the feature consistent
+          const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
+          const hasImageCommand = contextCommands?.some(group =>
+            group.commands.some(cmd => cmd.command === 'image')
+          );
+
+          if (hasImageCommand ?? false) {
+            const text = this.promptTextInput.textContent ?? '';
+            if (text.includes(IMAGE_CONTEXT_SELECT_KEYWORD)) {
+              // Dispatch event to open file system
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_FILE_SYSTEM, {
+                tabId: this.props.tabId,
+                type: 'image',
+                insertPosition: this.lastCursorIndex - IMAGE_CONTEXT_SELECT_KEYWORD.length
+              });
+
+              // Remove the trigger text
+              const selection = window.getSelection();
+              if ((selection?.rangeCount) != null) {
+                const range = selection.getRangeAt(0);
+                const textNodes = Array.from(this.promptTextInput.childNodes).filter((node): node is Text => node.nodeType === Node.TEXT_NODE);
+
+                // Find the node containing "@image:"
+                for (const node of textNodes) {
+                  const nodeText = node.textContent ?? '';
+                  const imageTagIndex = nodeText.indexOf(IMAGE_CONTEXT_SELECT_KEYWORD);
+
+                  if (imageTagIndex !== -1) {
+                    // Create a range that selects "@image:"
+                    range.setStart(node, imageTagIndex);
+                    range.setEnd(node, imageTagIndex + IMAGE_CONTEXT_SELECT_KEYWORD.length);
+                    range.deleteContents();
+                    break;
+                  }
+                }
+              }
+            }
+          }
         },
         input: (e: KeyboardEvent) => {
           if (this.props.onInput !== undefined) {
@@ -153,6 +192,14 @@ export class PromptTextInput {
           attributes: {
             placeholder: placeholderText
           }
+        });
+      }
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INSERT_IMAGE_CONTEXT, (data: { tabId: string; contextCommands: QuickActionCommand[]; insertPosition: number }) => {
+      if (data.tabId === this.props.tabId) {
+        data.contextCommands.forEach((command) => {
+          return this.insertContextItem(command, data.insertPosition);
         });
       }
     });
