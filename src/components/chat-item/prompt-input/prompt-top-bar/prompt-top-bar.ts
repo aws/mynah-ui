@@ -69,6 +69,7 @@ export class PromptTopBar {
     });
 
     // Use setTimeout to ensure the DOM is fully rendered before measuring
+    // TODO: Switch to an IntersectionObserver
     setTimeout(() => {
       this.recalculateVisibleItems();
     }, 100);
