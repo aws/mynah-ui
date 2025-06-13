@@ -28,11 +28,11 @@ export const promptTopBarTooltip = async (page: Page): Promise<void> => {
   await waitForAnimationEnd(page);
 
   // Hover over the context pill to show the tooltip
-  const contextPill = page.locator('.pinned-context-pill').first();
+  const contextPill = page.locator(getSelector(testIds.prompt.topBarContextPill)).first();
   await contextPill.hover();
 
   // Wait for the tooltip to appear (using the delay defined in the component)
-  await page.waitForTimeout(550); // PREVIEW_DELAY in the component
+  await page.waitForTimeout(1000); // Wait for tooltip to be displayed
 
   // Check if tooltip is visible
   const tooltip = page.locator(getSelector(testIds.prompt.topBarContextTooltip));

@@ -21,7 +21,7 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
   await waitForAnimationEnd(page);
 
   // Click the top bar button to open the overlay
-  const topBarButton = page.locator('.top-bar-button .mynah-button');
+  const topBarButton = page.locator(getSelector(testIds.prompt.topBarButton));
   await topBarButton.click();
   await waitForAnimationEnd(page);
 
@@ -72,7 +72,7 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
   expect(await actionOverlay.isVisible()).toBeTruthy();
 
   // Check if the group title is visible
-  const groupTitle = page.locator('.mynah-detailed-list-group-title');
+  const groupTitle = page.locator(getSelector(testIds.prompt.quickPicksGroupTitle));
   expect(await groupTitle.isVisible()).toBeTruthy();
 
   // Take a screenshot of the overlay with the group
