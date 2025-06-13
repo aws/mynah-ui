@@ -1,5 +1,5 @@
 import { expect, Page } from 'playwright/test';
-import { getSelector, waitForAnimationEnd } from '../../helpers';
+import { getSelector, justWait, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
 export const renderPromptTopBar = async (page: Page): Promise<void> => {
@@ -138,6 +138,9 @@ export const renderPromptTopBar = async (page: Page): Promise<void> => {
   // Click the overflow button to show the overlay
   await overflowButton.click();
   await waitForAnimationEnd(page);
+
+  // Wait for overlay to appear
+  await justWait(1000);
 
   // Take a screenshot of the overflow overlay
   const overflowOverlay = page.locator(getSelector(testIds.prompt.tobBarOverflowOverlay));

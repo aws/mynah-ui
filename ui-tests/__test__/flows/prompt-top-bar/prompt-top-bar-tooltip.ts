@@ -1,5 +1,5 @@
 import { expect, Page } from 'playwright/test';
-import { getSelector, waitForAnimationEnd } from '../../helpers';
+import { getSelector, justWait, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
 
 export const promptTopBarTooltip = async (page: Page): Promise<void> => {
@@ -31,8 +31,8 @@ export const promptTopBarTooltip = async (page: Page): Promise<void> => {
   const contextPill = page.locator(getSelector(testIds.prompt.topBarContextPill)).first();
   await contextPill.hover();
 
-  // Wait for the tooltip to appear (using the delay defined in the component)
-  await page.waitForTimeout(1000); // Wait for tooltip to be displayed
+  // Wait for tooltip to be displayed
+  await justWait(1000);
 
   // Check if tooltip is visible
   const tooltip = page.locator(getSelector(testIds.prompt.topBarContextTooltip));
