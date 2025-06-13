@@ -211,7 +211,68 @@
     max-height: 70vh;
     height: auto;
     display: flex;
+    flex-direction: column;
     overflow: hidden;
+
+    // Context header card styling for quick actions
+    > .mynah-chat-item-card {
+        margin: var(--mynah-sizing-3) var(--mynah-sizing-3) 0 var(--mynah-sizing-3);
+
+        > .mynah-card {
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            background-color: transparent;
+            padding: var(--mynah-sizing-3);
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: var(--mynah-sizing-3);
+
+            > .mynah-chat-item-card-icon {
+                position: static !important;
+                color: #f39c12 !important; // Yellow color
+                font-size: var(--mynah-font-size-large);
+                margin-top: 2px; // Slight adjustment to align with text
+                flex-shrink: 0;
+            }
+
+            > .mynah-card-body {
+                padding: 0;
+                flex: 1;
+
+                > div {
+                    // Title styling
+                    > p:first-child {
+                        margin: 0;
+
+                        strong {
+                            font-weight: 600;
+                            color: var(--mynah-color-text-strong);
+                            font-size: var(--mynah-font-size-medium);
+                            line-height: 1.3;
+                            display: block;
+                            margin-bottom: var(--mynah-sizing-2);
+                        }
+                    }
+
+                    // Body text styling - handle the second paragraph
+                    > p:nth-child(2) {
+                        color: var(--mynah-color-text-weak);
+                        font-size: var(--mynah-font-size-small);
+                        line-height: 1.4;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+
+        // Override default icon positioning for borderless layout
+        &.mynah-chat-item-card-has-icon > .mynah-card {
+            padding-left: var(--mynah-sizing-3); // Reset to normal padding
+        }
+    }
+
     > .mynah-detailed-list {
         padding: var(--mynah-sizing-2);
         flex: 1;
