@@ -487,8 +487,9 @@ You've created an actuall and usable component. To remind you again about what i
   - Never create doms other with methods than `DomBuilder`
   - Use `MynahUITabsStore` data store carefully, do not duplicate anything and never use it for non tab or chat content related things.
   - Always clearly define your types
-- **Tests**
+- **Tests (see `TESTING.MD`)**
   - Add your unit tests to check the basic functionality of it works or not
+  - Add E2E tests to test the user flows
 - **Documentation**
   - Each change on `mynah-ui` has to go into the related documentation if it adds/changes/removes anything exposed. 
 
