@@ -61,24 +61,7 @@ export class DetailedListWrapper {
       classNames: [ 'mynah-detailed-list-item-groups-wrapper' ],
       children: this.getDetailedListItemGroups(),
       events: {
-        scroll: () => {
-          const wrapperOffsetHeight = this.detailedListItemGroupsContainer.offsetHeight;
-          const wrapperScrollTop = this.detailedListItemGroupsContainer.scrollTop;
-          this.detailedListItemsBlockData.forEach(itemsBlock => {
-            const itemBlockTop = itemsBlock.element.offsetTop;
-            const itemBlockBottom = itemsBlock.element.offsetTop + itemsBlock.element.offsetHeight;
-            if (itemsBlock.element.childNodes.length === 0 &&
-              (itemBlockTop < wrapperScrollTop + wrapperOffsetHeight) &&
-              (itemBlockBottom > wrapperScrollTop - wrapperOffsetHeight)) {
-              itemsBlock.element.update({
-                children: this.getDetailedListItemElements(itemsBlock.data)
-              });
-            } else if ((itemBlockTop > wrapperScrollTop + wrapperOffsetHeight) ||
-            (itemBlockBottom < wrapperScrollTop - wrapperOffsetHeight)) {
-              itemsBlock.element.clear();
-            }
-          });
-        }
+        scroll: this.handleScroll
       }
     });
 
@@ -94,6 +77,37 @@ export class DetailedListWrapper {
       ]
     });
   }
+
+  /**
+   * Handles scroll events to implement virtualization for the detailed list:
+   *
+   * 1. Initially creating empty placeholder blocks with appropriate height for each chunk of list items
+   * 2. On scroll, determining which blocks are visible in the viewport (or near it)
+   * 3. Dynamically rendering content only for visible blocks by:
+   *    - Adding DOM elements for blocks entering the viewport
+   *    - Removing DOM elements for blocks that are no longer visible
+   *
+   */
+  private readonly handleScroll = (): void => {
+    const wrapperOffsetHeight = this.detailedListItemGroupsContainer.offsetHeight;
+    const wrapperScrollTop = this.detailedListItemGroupsContainer.scrollTop;
+    this.detailedListItemsBlockData.forEach(itemsBlock => {
+      const itemBlockTop = itemsBlock.element.offsetTop;
+      const itemBlockBottom = itemsBlock.element.offsetTop + itemsBlock.element.offsetHeight;
+      if (itemsBlock.element.childNodes.length === 0 &&
+      (itemBlockTop < wrapperScrollTop + wrapperOffsetHeight) &&
+      (itemBlockBottom > wrapperScrollTop - wrapperOffsetHeight)) {
+        // Block is visible but not rendered yet - add DOM elements
+        itemsBlock.element.update({
+          children: this.getDetailedListItemElements(itemsBlock.data)
+        });
+      } else if ((itemBlockTop > wrapperScrollTop + wrapperOffsetHeight) ||
+    (itemBlockBottom < wrapperScrollTop - wrapperOffsetHeight)) {
+        // Block is no longer visible - remove DOM elements to save memory
+        itemsBlock.element.clear();
+      }
+    });
+  };
 
   private readonly getHeader = (): Array<ExtendedHTMLElement | string> => {
     if (this.props.detailedList.header != null) {
@@ -158,7 +172,7 @@ export class DetailedListWrapper {
             ? [ DomBuilder.getInstance().build({
                 type: 'div',
                 testId: testIds.prompt.quickPicksGroupTitle,
-                classNames: [ 'mynah-detailed-list-group-title', this.props.onGroupClick != null ? 'mynah-group-title-clickable' : '' ],
+                classNames: [ 'mynah-detailed-list-group-title', (this.props.onGroupClick != null && this.props.detailedList.selectable === 'clickable') ? 'mynah-group-title-clickable' : '' ],
                 children: [
                   ...(detailedListGroup.icon != null ? [ new Icon({ icon: detailedListGroup.icon }).render ] : []),
                   new CardBody({
@@ -177,7 +191,7 @@ export class DetailedListWrapper {
                 ],
                 events: {
                   click: (e) => {
-                    if (this.props.onGroupClick != null && detailedListGroup.groupName != null) {
+                    if (this.props.onGroupClick != null && detailedListGroup.groupName != null && this.props.detailedList.selectable === 'clickable') {
                       cancelEvent(e);
                       this.props.onGroupClick(detailedListGroup.groupName);
                     }
@@ -264,7 +278,7 @@ export class DetailedListWrapper {
     return null;
   };
 
-  public readonly update = (detailedList: DetailedList): void => {
+  public readonly update = (detailedList: DetailedList, preserveScrollPosition?: boolean): void => {
     if (detailedList.header != null) {
       this.props.detailedList.header = detailedList.header;
       this.headerContainer.update({
@@ -287,14 +301,35 @@ export class DetailedListWrapper {
     }
 
     if (detailedList.list != null) {
+      // Save current scroll position if preserveScrollPosition is true
+      const scrollTop = preserveScrollPosition === true ? this.detailedListItemGroupsContainer.scrollTop : 0;
+      if (detailedList.selectable != null) {
+        this.props.detailedList.selectable = detailedList.selectable;
+      }
+
+      // Clear and recreate the list structure
       this.detailedListItemsBlockData = [];
       this.detailedListItemGroupsContainer.clear();
       this.activeTargetElementIndex = 0;
       this.allSelectableDetailedListElements = [];
       this.props.detailedList.list = detailedList.list;
+
+      // Update with new content
       this.detailedListItemGroupsContainer.update({
         children: this.getDetailedListItemGroups()
       });
+
+      // Restore scroll position after DOM update if preserveScrollPosition is true
+      if (preserveScrollPosition === true) {
+      // Use requestAnimationFrame to ensure the DOM has been updated
+        requestAnimationFrame(() => {
+        // Set the scroll position
+          this.detailedListItemGroupsContainer.scrollTop = scrollTop;
+
+          // Trigger the virtualization logic using the existing handler
+          this.handleScroll();
+        });
+      }
     }
   };
 }

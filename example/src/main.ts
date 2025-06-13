@@ -15,6 +15,7 @@ import {
     KeyMap,
     TreeNodeDetails,
     QuickActionCommand,
+    ChatItemButton,
 } from '@aws/mynah-ui';
 import { mcpButton, mynahUIDefaults, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
@@ -161,12 +162,19 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                                     promptTopBarContextItems:(mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command)
                                 });
         },
-        onPromptTopBarButtonClick: (tabId: string, item: QuickActionCommand) => {
-                                        Log(`Top bar action <b>${item.command}</b> on tab <b>${tabId}</b>`);
+        onPromptTopBarButtonClick: (tabId: string, button: ChatItemButton) => {
+                                        Log(`Top bar button <b>${button.id}</b> clicked on tab <b>${tabId}</b>`);
 
          const topBarOverlay =   mynahUI.openTopBarButtonOverlay({tabId, topBarButtonOverlay: sampleRulesList,
-            onTopBarButtonOverlayGroupClick: (group) => {Log(`Top bar overlay group clicked <b>${group}</b> on tab <b>${tabId}</b>`)},
-            onTopBarButtonOverlayItemClick: (item) => {  Log(`Top bar overlay item clicked <b>${item.id}</b> on tab <b>${tabId}</b>`); topBarOverlay.update(sampleRulesList)}})
+            events: {
+            onClose: () => {Log(`Top bar overlay closed on tab <b>${tabId}</b>`)},
+            onGroupClick: (group) => {Log(`Top bar overlay group clicked <b>${group}</b> on tab <b>${tabId}</b>`)},
+            onItemClick: (item) => {  Log(`Top bar overlay item clicked <b>${item.id}</b> on tab <b>${tabId}</b>`); topBarOverlay.update(sampleRulesList)},
+            onKeyPress: (e) => {Log(`Key pressed on top bar overlay`);      if (e.key === KeyMap.ESCAPE) {
+                                topBarOverlay.close();
+                            }}
+        
+        }})
             
             
         },

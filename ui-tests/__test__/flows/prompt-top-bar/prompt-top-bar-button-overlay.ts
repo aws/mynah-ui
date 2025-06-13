@@ -36,23 +36,31 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
           list: [
             {
               groupName: 'Test Group',
+              childrenIndented: true,
+              actions: [ { id: 'Test Group', icon: 'minus', status: 'clear' } ],
               children: [
                 {
                   id: 'test-item-1',
                   title: 'Test Item 1',
-                  description: 'Description for test item 1'
+                  description: 'Description for test item 1',
+                  actions: [ { id: 'test-item-1', icon: 'ok', status: 'clear' } ],
                 },
                 {
                   id: 'test-item-2',
                   title: 'Test Item 2',
-                  description: 'Description for test item 2'
+                  description: 'Description for test item 2',
+                  actions: [ { id: 'test-item-2', status: 'clear' } ],
+
                 }
               ]
             }
           ]
         },
-        onTopBarButtonOverlayGroupClick: () => {},
-        onTopBarButtonOverlayItemClick: () => {}
+        events: {
+          onGroupClick: () => {},
+          onItemClick: () => {},
+          onClose: () => {}
+        }
       });
     }
   });
@@ -77,11 +85,15 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
       list: [
         {
           groupName: 'Updated Group',
+          childrenIndented: true,
+          actions: [ { id: 'Test Group', icon: 'ok', status: 'clear' } ],
           children: [
             {
               id: 'updated-item-1',
               title: 'Updated Item 1',
-              description: 'Updated description'
+              description: 'Updated description',
+              actions: [ { id: 'updated-item-1', icon: 'ok', status: 'clear' } ],
+
             }
           ]
         }

@@ -8,8 +8,12 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 export interface TopBarButtonOverlayProps {
   tabId: string;
   topBarButtonOverlay: DetailedList;
-  onTopBarButtonOverlayItemClick?: (detailedListItem: DetailedListItem) => void;
-  onTopBarButtonOverlayGroupClick?: (groupName: string) => void;
+  events?: {
+    onKeyPress?: (e: KeyboardEvent) => void;
+    onGroupClick?: (groupName: string) => void;
+    onItemClick?: (detailedListItem: DetailedListItem) => void;
+    onClose?: () => void;
+  };
 }
 
 export interface TopBarButtonProps {
@@ -24,6 +28,7 @@ export class TopBarButton {
   private checklistSelectorContainer: DetailedListWrapper;
   private overlayData: TopBarButtonOverlayProps;
   private topBarButton: Button;
+  private keyPressHandler: (e: KeyboardEvent) => void;
 
   constructor (props: TopBarButtonProps) {
     this.props = props;
@@ -56,19 +61,25 @@ export class TopBarButton {
     this.overlayData = topBarButtonOverlay;
 
     if (this.overlay == null) {
+      this.keyPressHandler = (e: KeyboardEvent): void => {
+        this.overlayData.events?.onKeyPress?.(e);
+      };
+
       this.overlay = new Overlay({
         testId: testIds.prompt.tobBarActionOverlay,
         background: true,
         closeOnOutsideClick: true,
-        referenceElement: document.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
-        stretchWidth: true,
+        referenceElement: this.topBarButton.render,
         dimOutside: false,
-        onClose: () => { this.overlay = undefined; },
+        onClose: () => {
+          this.overlay = undefined; this.overlayData.events?.onClose?.(); window.removeEventListener('keydown', this.keyPressHandler);
+        },
         removeOtherOverlays: true,
         verticalDirection: OverlayVerticalDirection.TO_TOP,
         horizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
         children: [ this.getItemGroups() ]
       });
+      window.addEventListener('keydown', this.keyPressHandler);
     } else {
       this.overlay.updateContent([ this.getItemGroups() ]);
     }
@@ -102,13 +113,13 @@ export class TopBarButton {
     if (this.checklistSelectorContainer == null) {
       this.checklistSelectorContainer = new DetailedListWrapper({
         detailedList: this.overlayData.topBarButtonOverlay,
-        onGroupClick: this.overlayData.onTopBarButtonOverlayGroupClick,
-        onGroupActionClick: (_, groupName) => { if (groupName != null) this.overlayData.onTopBarButtonOverlayGroupClick?.(groupName); },
-        onItemClick: this.overlayData.onTopBarButtonOverlayItemClick,
-        onItemActionClick: (_, detailedListItem) => { if (detailedListItem != null) this.overlayData.onTopBarButtonOverlayItemClick?.(detailedListItem); },
+        onGroupClick: this.overlayData.events?.onGroupClick,
+        onGroupActionClick: (_, groupName) => { if (groupName != null) this.overlayData.events?.onGroupClick?.(groupName); },
+        onItemClick: this.overlayData.events?.onItemClick,
+        onItemActionClick: (_, detailedListItem) => { if (detailedListItem != null) this.overlayData.events?.onItemClick?.(detailedListItem); },
       });
     } else {
-      this.checklistSelectorContainer?.update(this.overlayData.topBarButtonOverlay);
+      this.checklistSelectorContainer?.update(this.overlayData.topBarButtonOverlay, true);
     }
 
     return DomBuilder.getInstance().build({
@@ -118,7 +129,6 @@ export class TopBarButton {
     });
   };
 
-  // connect this to main.ts props
   onTopBarButtonOverlayChanged (topBarButtonOverlay: DetailedList): void {
     this.overlayData.topBarButtonOverlay = topBarButtonOverlay;
     if (this.overlay != null) {

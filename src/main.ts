@@ -274,7 +274,7 @@ export interface MynahUIProps {
     item: QuickActionCommand, eventId?: string) => void;
   onPromptTopBarItemRemoved?: (tabId: string,
     item: QuickActionCommand, eventId?: string) => void;
-  onPromptTopBarButtonClick?: (tabId: string, action: QuickActionCommand, eventId?: string) => void;
+  onPromptTopBarButtonClick?: (tabId: string, button: ChatItemButton, eventId?: string) => void;
   /**
    * @deprecated since version 4.6.3. Will be dropped after version 5.x.x. Use {@link onFileClick} instead
    */
@@ -811,8 +811,8 @@ export class MynahUI {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_REMOVE, (data) => {
       this.props.onPromptTopBarItemRemoved?.(data.tabId, data.contextItem, this.getUserEventId());
     });
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ACTION_CLICK, (data) => {
-      this.props.onPromptTopBarButtonClick?.(data.tabId, data.item, this.getUserEventId());
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_BUTTON_CLICK, (data) => {
+      this.props.onPromptTopBarButtonClick?.(data.tabId, data.button, this.getUserEventId());
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_BUTTON_CLICK, (data) => {
@@ -1074,10 +1074,12 @@ export class MynahUI {
       close: () => void;
 
     } => {
-    if (data.tabId != null) { this.chatWrappers[data.tabId].openTopBarActionItemOverlay(data); }
+    if (data.tabId != null) {
+      this.chatWrappers[data.tabId].openTopBarButtonItemOverlay(data);
+    }
     return {
-      update: this.chatWrappers[data.tabId].updateTopBarActionItemOverlay,
-      close: this.chatWrappers[data.tabId].closeTopBarActionItemOverlay
+      update: this.chatWrappers[data.tabId].updateTopBarButtonItemOverlay,
+      close: this.chatWrappers[data.tabId].closeTopBarButtonItemOverlay
     };
   };
 

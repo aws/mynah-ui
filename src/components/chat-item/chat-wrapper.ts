@@ -392,15 +392,15 @@ export class ChatWrapper {
     this.promptInput.addAttachment(textToAdd, type);
   };
 
-  public openTopBarActionItemOverlay = (data: TopBarButtonOverlayProps): void => {
-    this.promptInput.openTopBarActionItemOverlay(data);
+  public openTopBarButtonItemOverlay = (data: TopBarButtonOverlayProps): void => {
+    this.promptInput.openTopBarButtonItemOverlay(data);
   };
 
-  public updateTopBarActionItemOverlay = (data: DetailedList): void => {
-    this.promptInput.updateTopBarActionItemOverlay(data);
+  public updateTopBarButtonItemOverlay = (data: DetailedList): void => {
+    this.promptInput.updateTopBarButtonItemOverlay(data);
   };
 
-  public closeTopBarActionItemOverlay = (): void => {
-    this.promptInput.closeTopBarActionItemOverlay();
+  public closeTopBarButtonItemOverlay = (): void => {
+    this.promptInput.closeTopBarButtonItemOverlay();
   };
 }

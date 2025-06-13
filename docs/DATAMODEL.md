@@ -635,7 +635,7 @@ mynahUI.updateStore('tab-1', {
 
 ### `promptTopBarButton` (default: `null`)
 
-This is a button displayed at the end of the prompt top bar. Clicking on the button will call onPromptTopBarActionClick(). Button only appears when `promptTopBarTitle` is not empty.
+This is a button displayed at the end of the prompt top bar. Clicking on the button will call onPromptTopBarButtonClick(). Button only appears when `promptTopBarTitle` is not empty.
 
 ```typescript
 const mynahUI = new MynahUI({

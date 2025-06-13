@@ -183,10 +183,10 @@ export class ChatPromptInput {
           contextItem
         });
       },
-      onTopBarButtonClick: (action: ChatItemButton) => {
-        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TOP_BAR_ACTION_CLICK, {
+      onTopBarButtonClick: (button: ChatItemButton) => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.TOP_BAR_BUTTON_CLICK, {
           tabId: this.props.tabId,
-          item: action
+          button
         });
       }
 
@@ -348,6 +348,7 @@ export class ChatPromptInput {
     this.quickPickType = 'context';
     this.quickPickItemGroups = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
     this.quickPickTriggerIndex = this.promptTextInput.getCursorPos();
+    this.quickPickTriggerRange = window.getSelection()?.getRangeAt(0);
     this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
     if (topBarTitleClicked !== true) { this.promptTextInput.insertEndSpace(); }
     this.openQuickPick(topBarTitleClicked);
@@ -498,10 +499,7 @@ export class ChatPromptInput {
             if (this.quickPickType === 'context') {
               if (commandToSend.command !== '') {
                 // Add context item to top bar if Alt-Enter is pressed on an item
-                if (e.altKey && !this.promptTopBar.isHidden() && (commandToSend.children == null || commandToSend.children[0] == null)) {
-                  this.topBarTitleClicked = true;
-                }
-                this.handleContextCommandSelection(commandToSend);
+                this.handleContextCommandSelection(commandToSend, e.altKey);
               } else {
                 // Otherwise pass the given text by user
                 const command = this.promptTextInput.getTextInputValue().substring(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
@@ -693,11 +691,6 @@ export class ChatPromptInput {
         onItemSelect: (detailedListItem) => {
           const quickPickCommand: QuickActionCommand = convertDetailedListItemToQuickActionCommand(detailedListItem);
           if (this.quickPickType === 'context') {
-            if (this.quickPickTriggerRange != null) {
-              // Restore range so element is inserted in correct position
-              this.promptTextInput.restoreRange(this.quickPickTriggerRange);
-            }
-
             this.handleContextCommandSelection(quickPickCommand);
           } else {
             this.handleQuickActionCommandSelection(quickPickCommand, 'click');
@@ -745,28 +738,35 @@ export class ChatPromptInput {
     this.quickPick.close();
   };
 
-  private readonly handleContextCommandSelection = (dirtyContextCommand: QuickActionCommand): void => {
+  private readonly handleContextCommandSelection = (dirtyContextCommand: QuickActionCommand, topBarHotKey?: boolean): void => {
     const contextCommand: QuickActionCommand = {
       ...dirtyContextCommand,
       command: dirtyContextCommand.command.replace(this.markerRemovalRegex, '')
     };
     // Check if the selected command has children
     if (contextCommand.children?.[0] != null) {
-      this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex + 1, this.promptTextInput.getCursorPos());
+      // If user types '@fi', and then selects a command with children (ex: file command), remove 'fi' from prompt
+      if (!this.topBarTitleClicked) { this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex + 1, this.promptTextInput.getCursorPos()); }
       this.quickPickItemGroups = [ ...contextCommand.children ];
       this.quickPick.updateContent([
         this.getQuickPickItemGroups(contextCommand.children)
       ]);
     } else {
+      if (this.quickPickTriggerRange != null) {
+        // Restore cursor position so element is inserted in correct position
+        this.promptTextInput.restoreRange(this.quickPickTriggerRange);
+      }
       this.quickPick.close();
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_SELECTED, {
         contextItem: contextCommand,
         tabId: this.props.tabId,
         promptInputCallback: (insert: boolean) => {
           if (insert) {
-            if (!this.promptTopBar.isHidden() && (this.topBarTitleClicked)) {
+            // Add command to top bar if top bar is visible, and either top bar title was clicked or topBarHotKey used
+            if (!this.promptTopBar.isHidden() && (this.topBarTitleClicked || topBarHotKey === true)) {
               this.promptTopBar.addContextPill(contextCommand);
-              this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos());
+              // If user types `@foo` to add context but used topBarHotKey, remove `@foo` from prompt
+              if (topBarHotKey === true && !this.topBarTitleClicked) { this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex, this.promptTextInput.getCursorPos()); }
             } else {
               this.promptTextInput.insertContextItem({
                 ...contextCommand,
@@ -876,15 +876,15 @@ export class ChatPromptInput {
     });
   };
 
-  public readonly openTopBarActionItemOverlay = (data: TopBarButtonOverlayProps): void => {
+  public readonly openTopBarButtonItemOverlay = (data: TopBarButtonOverlayProps): void => {
     this.promptTopBar.topBarButton.showOverlay(data);
   };
 
-  public readonly updateTopBarActionItemOverlay = (data: DetailedList): void => {
+  public readonly updateTopBarButtonItemOverlay = (data: DetailedList): void => {
     this.promptTopBar.topBarButton.onTopBarButtonOverlayChanged(data);
   };
 
-  public readonly closeTopBarActionItemOverlay = (): void => {
+  public readonly closeTopBarButtonItemOverlay = (): void => {
     this.promptTopBar.topBarButton.closeOverlay();
   };
 }

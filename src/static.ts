@@ -232,7 +232,7 @@ export enum MynahEventNames {
   CONTEXT_SELECTED = 'contextSelected',
   TOP_BAR_ITEM_ADD = 'promptInputTopBarItemAdd',
   TOP_BAR_ITEM_REMOVE = 'promptInputTopBarItemRemove',
-  TOP_BAR_ACTION_CLICK = 'promptInputTopBarActionClick',
+  TOP_BAR_BUTTON_CLICK = 'promptInputTopBarButtonClick',
   CONTEXT_PINNED = 'contextPinned'
 };
 
