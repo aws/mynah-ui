@@ -392,6 +392,12 @@
     &:not(:empty) {
         padding: var(--mynah-chat-wrapper-spacing);
         background-color: var(--mynah-card-bg);
+        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+        border-radius: var(--mynah-input-radius);
+        box-sizing: border-box;
+        margin: var(--mynah-chat-wrapper-spacing);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: calc(100% - 2 * var(--mynah-chat-wrapper-spacing));
     }
 
     > .mynah-chat-item-card {
@@ -399,6 +405,8 @@
         width: 100%;
         > .mynah-card {
             border-bottom-left-radius: 0 !important;
+            border: none;
+            box-shadow: none;
         }
     }
 }
