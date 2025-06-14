@@ -129,7 +129,14 @@ export class Overlay {
           ...(closeOnOutsideClick ? [ 'mynah-overlay-close-on-outside-click' ] : []),
         ],
         events: {
-          click: closeOnOutsideClick ? this.close : () => {},
+          click: closeOnOutsideClick
+            ? (event: MouseEvent) => {
+                // Only close if the click is outside the overlay
+                if (event.target === event.currentTarget) {
+                  this.close();
+                }
+              }
+            : () => {},
         },
         children: [ this.container ],
       },

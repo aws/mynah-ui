@@ -50,6 +50,7 @@ import WARNING from './icons/warning.svg';
 import ERROR from './icons/error.svg';
 import THUMBS_UP from './icons/thumbs-up.svg';
 import THUMBS_DOWN from './icons/thumbs-down.svg';
+import PIN from './icons/pin.svg';
 import STAR from './icons/star.svg';
 import STACK from './icons/stack.svg';
 import LIGHT_BULB from './icons/light-bulb.svg';
@@ -160,7 +161,8 @@ export class MynahUIIconImporter {
     MCP,
     TRASH,
     TRANSFORM,
-    HISTORY
+    HISTORY,
+    PIN
   };
 
   private constructor () {

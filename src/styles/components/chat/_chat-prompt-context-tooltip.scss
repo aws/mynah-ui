@@ -34,10 +34,17 @@
             font-family: var(--mynah-font-family);
             font-weight: bold;
             flex: 0 1 0%;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         > .mynah-chat-prompt-context-tooltip-description {
             color: var(--mynah-color-text-weak);
             flex: 1 0 100%;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 }

@@ -18,6 +18,7 @@ export enum MynahIcons {
   SEARCH = 'search',
   PLUS = 'plus',
   PAPER_CLIP = 'paper-clip',
+  PIN = 'pin',
   LIST_ADD = 'list-add',
   TABS = 'tabs',
   CHAT = 'chat',
