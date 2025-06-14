@@ -1521,6 +1521,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     mynahUI.updateStore(tabId, {
                         promptInputStickyCard: {
                             messageId: 'sticky-card',
+                            canBeDismissed: true,
                             header: {
                                 icon: 'code-block',
                                 iconStatus: 'info',
