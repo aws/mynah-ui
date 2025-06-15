@@ -19,6 +19,7 @@ export enum Commands {
     CUSTOM_RENDERER_CARDS = '/cards-with-custom-renderers',
     FOLLOWUPS_AT_RIGHT = '/followups-at-right',
     INFORMATION_CARDS = '/information-cards',
+    REROUTE_CARDS = '/reroute-cards',
     CONFIRMATION_BUTTONS = '/confirmation-buttons',
     BUTTONS = '/buttons',
 
