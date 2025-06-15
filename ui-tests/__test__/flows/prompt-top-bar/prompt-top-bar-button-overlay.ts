@@ -12,7 +12,7 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
         promptTopBarButton: {
           id: 'rules-button',
           text: 'Rules',
-          icon: 'menu'
+          icon: 'check-list'
         }
       });
     }
@@ -36,17 +36,20 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
           list: [
             {
               groupName: 'Test Group',
+              icon: 'folder',
               childrenIndented: true,
               actions: [ { id: 'Test Group', icon: 'minus', status: 'clear' } ],
               children: [
                 {
                   id: 'test-item-1',
+                  icon: 'check-list',
                   title: 'Test Item 1',
                   description: 'Description for test item 1',
                   actions: [ { id: 'test-item-1', icon: 'ok', status: 'clear' } ],
                 },
                 {
                   id: 'test-item-2',
+                  icon: 'check-list',
                   title: 'Test Item 2',
                   description: 'Description for test item 2',
                   actions: [ { id: 'test-item-2', status: 'clear' } ],
@@ -85,11 +88,13 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
       list: [
         {
           groupName: 'Updated Group',
+          icon: 'folder',
           childrenIndented: true,
           actions: [ { id: 'Test Group', icon: 'ok', status: 'clear' } ],
           children: [
             {
               id: 'updated-item-1',
+              icon: 'check-list',
               title: 'Updated Item 1',
               description: 'Updated description',
               actions: [ { id: 'updated-item-1', icon: 'ok', status: 'clear' } ],

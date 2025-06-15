@@ -2264,7 +2264,7 @@ export const sampleMCPDetails = (title: string): DetailedList => {
 };
 
 
-export const sampleRulesList: DetailedList = {selectable: 'clickable', list: [{children: [{id: 'README', icon: MynahIcons.MAGIC, 
+export const sampleRulesList: DetailedList = {selectable: 'clickable', list: [{children: [{id: 'README', icon: MynahIcons.CHECK_LIST, 
     description: 'README',actions: [{ id: 'README.md', icon: MynahIcons.OK, status: 'clear' }]}]}, 
-    {groupName: '.amazonq/rules', childrenIndented: true, icon: MynahIcons.FOLDER , actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }], children: [{id: 'java-expert.md', icon: MynahIcons.MAGIC, 
+    {groupName: '.amazonq/rules', childrenIndented: true, icon: MynahIcons.FOLDER , actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }], children: [{id: 'java-expert.md', icon: MynahIcons.CHECK_LIST, 
     description: 'java-expert',actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }]}]}]}

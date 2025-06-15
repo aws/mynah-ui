@@ -14,7 +14,7 @@ export const mcpButton: TabBarMainAction = {
     icon: 'mcp',
 };
 
-export const rulesButton: ChatItemButton = {id: 'Rules', status: 'clear', text: 'Rules'}
+export const rulesButton: ChatItemButton = {id: 'Rules', status: 'clear', text: 'Rules', icon: 'check-list'}
 
 
 export const tabbarButtons: TabBarMainAction[] = [

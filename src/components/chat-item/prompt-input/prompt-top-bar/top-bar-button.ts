@@ -3,6 +3,7 @@ import testIds from '../../../../helper/test-ids';
 import { DetailedList, DetailedListItem, ChatItemButton } from '../../../../static';
 import { Button } from '../../../button';
 import { DetailedListWrapper } from '../../../detailed-list/detailed-list';
+import { Icon } from '../../../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../../overlay';
 
 export interface TopBarButtonOverlayProps {
@@ -86,25 +87,17 @@ export class TopBarButton {
   }
 
   getTopBarButtonChildren (): Array<string | ExtendedHTMLElement> {
-    if (this.topBarButton == null) {
-      this.topBarButton = new Button({
-        onClick: () => {
-          if (this.props.topBarButton != null) this.props.onTopBarButtonClick?.(this.props.topBarButton);
-        },
-        primary: false,
-        status: 'clear',
-        border: false,
-        label: this.props.topBarButton?.text ?? '',
-        hidden: this.props.topBarButton == null
-      });
-    } else {
-      if (this.props.topBarButton == null) {
-        this.topBarButton.setHidden(true);
-      } else {
-        this.topBarButton.updateLabel(this.props.topBarButton.text ?? '');
-        this.topBarButton.setHidden(false);
-      }
-    }
+    this.topBarButton = new Button({
+      onClick: () => {
+        if (this.props.topBarButton != null) this.props.onTopBarButtonClick?.(this.props.topBarButton);
+      },
+      primary: false,
+      status: 'clear',
+      border: false,
+      icon: this.props.topBarButton?.icon ? new Icon({ icon: this.props.topBarButton.icon }).render : undefined,
+      label: this.props.topBarButton?.text ?? '',
+      hidden: this.props.topBarButton == null
+    });
 
     return [ this.topBarButton.render ];
   }
