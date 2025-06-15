@@ -622,3 +622,60 @@ You can use this method to tear down the existing Mynah UI state. This is useful
 ```typescript
 mynahUI.destroy();
 ```
+
+---
+
+# Opening a Top Bar Button Overlay (`openTopBarButtonOverlay`)
+
+You can programmatically open an overlay for a top bar button using the `openTopBarButtonOverlay` function. This is useful when you want to display a detailed list or other content associated with a specific top bar button.
+
+```typescript
+mynahUI.openTopBarButtonOverlay(
+  tabId,           // The ID of the tab containing the top bar button
+  topBarButtonId,  // The ID of the top bar button to open the overlay for
+  {
+    topBarButtonOverlay: {
+      // DetailedList configuration for the overlay content
+      list: [
+        {
+          groupName: 'Group 1',
+          children: [
+            {
+              title: 'Item 1',
+              description: 'Description for item 1'
+            },
+            {
+              title: 'Item 2',
+              description: 'Description for item 2'
+            }
+          ]
+        }
+      ],
+      selectable: 'clickable'
+    },
+    events: {
+      onGroupClick: (groupName) => {
+        console.log(`Group clicked: ${groupName}`);
+      },
+      onItemClick: (detailedListItem) => {
+        console.log(`Item clicked: ${detailedListItem.title}`);
+      },
+      onKeyPress: (e) => {
+        // Handle keyboard events
+        if (e.key === 'Escape') {
+          // Close the overlay
+        }
+      },
+      onClose: () => {
+        console.log('Overlay closed');
+      }
+    }
+  }
+);
+```
+
+The overlay will appear positioned relative to the specified top bar button, displaying the detailed list content you've provided. Users can interact with the items in the list, and you can handle these interactions through the event callbacks.
+
+<p align="center">
+  <img src="./img/topBarButtonOverlay.png" alt="Top Bar Button Overlay" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>

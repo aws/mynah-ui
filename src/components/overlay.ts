@@ -129,7 +129,14 @@ export class Overlay {
           ...(closeOnOutsideClick ? [ 'mynah-overlay-close-on-outside-click' ] : []),
         ],
         events: {
-          click: closeOnOutsideClick ? this.close : () => {},
+          click: closeOnOutsideClick
+            ? (event: MouseEvent) => {
+                // Only close if the click is outside the overlay
+                if (event.target === event.currentTarget) {
+                  this.close();
+                }
+              }
+            : () => {},
         },
         children: [ this.container ],
       },
@@ -161,6 +168,8 @@ export class Overlay {
       this.container.style.left = `${effectiveLeft - (lastContainerRect.left + lastContainerRect.width + OVERLAY_MARGIN - winWidth)}px`;
     }
 
+    this.preventTransformBlur();
+
     // Check if reference element is still on dom tree
     if (MutationObserver != null && props.removeIfReferenceElementRemoved !== false && props.referenceElement != null) {
       const observer = new MutationObserver(() => {
@@ -189,6 +198,30 @@ export class Overlay {
       }
     }, 10);
   }
+
+  /**
+   * Applying a transform with a fractional pixel value causes bluriness on certain displays.
+   *
+   * Since transform uses --overlayTopPos which is a percentage of the overlay's height, and the height can be a fractional
+   * pixel value if line-height is fractional, this function rounds --overlayTopPos to an integer pixel value to prevent bluriness.
+   */
+  private readonly preventTransformBlur = (): void => {
+    if (ResizeObserver != null) {
+      const observer = new ResizeObserver(() => {
+        const lastContainerRect = this.container.getBoundingClientRect();
+        const height = lastContainerRect.height;
+
+        const style = getComputedStyle(this.container);
+        const shiftPercent = parseFloat(style.getPropertyValue('--overlayTopPos'));
+
+        const shiftPixels = Math.round(height * shiftPercent / 100);
+
+        this.container.style.transform = `translate3d(var(--overlayLeftPos), ${shiftPixels}px, 0)`;
+      });
+
+      observer.observe(this.container);
+    }
+  };
 
   close = (): void => {
     this.render.removeClass('mynah-overlay-open');

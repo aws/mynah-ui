@@ -1,0 +1,42 @@
+@import '../../mixins';
+
+> .mynah-prompt-input-top-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: visible;
+    box-sizing: border-box;
+    gap: var(--mynah-sizing-2);
+    align-items: flex-start;
+    position: relative;
+    width: 100%;
+
+    &.hidden {
+        display: none;
+    }
+
+    > span.title {
+        color: var(--mynah-color-text-weak);
+        cursor: pointer;
+    }
+
+    > span.placeholder {
+        color: var(--mynah-color-text-input-placeholder);
+        text-align: center;
+    }
+
+    > .mynah-button {
+        min-height: 0;
+        min-width: var(--mynah-sizing-5);
+        padding-inline: var(--mynah-sizing-half);
+    }
+
+    > span.top-bar-button {
+        margin-left: auto;
+
+        > .mynah-button {
+            min-height: 0;
+        }
+    }
+
+    @import 'chat-prompt-top-bar-context';
+}

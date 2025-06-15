@@ -177,6 +177,18 @@ export interface MynahUIProps {
   onSplashLoaderActionClick?: (
     action: Action,
     eventId?: string) => void;
+  onPromptTopBarItemAdded?: (
+    tabId: string,
+    topBarItem: ChatItemButton,
+    eventId?: string) => void;
+  onPromptTopBarItemRemoved?: (
+    tabId: string,
+    topBarItemId: string,
+    eventId?: string) => void;
+  onPromptTopBarButtonClick?: (
+    tabId: string,
+    topBarButton: ChatItemButton,
+    eventId?: string) => void;
 }
 ```
 _Let's deep dive into each property you can set._
@@ -1160,11 +1172,64 @@ This event will be fired when user clicks to an action inside the splash loader.
 ...
 onSplashLoaderActionClick?: (
     action: Action,
-    eventId?: string) => void;
-onSplashLoaderActionClick?: (
-    action: Action,
     eventId?: string)):void => {
       console.log(`Splash loader action click ${action.id}`);
+    };
+...
+```
+
+---
+
+### onPromptTopBarItemAdded
+
+This event will be fired when a new item is added to the prompt top bar. It passes the `tabId`, the added `topBarItem` object, and the `eventId`.
+
+```typescript
+...
+onPromptTopBarItemAdded?: (
+    tabId: string,
+    topBarItem: ChatItemButton,
+    eventId?: string):void => {
+      console.log(`Top bar item added to tab: ${tabId}`);
+      console.log(`Item ID: ${topBarItem.id}`);
+      console.log(`Item text: ${topBarItem.text}`);
+    };
+...
+```
+
+---
+
+### onPromptTopBarItemRemoved
+
+This event will be fired when an item is removed from the prompt top bar. It passes the `tabId`, the `topBarItemId` of the removed item, and the `eventId`.
+
+```typescript
+...
+onPromptTopBarItemRemoved?: (
+    tabId: string,
+    topBarItemId: string,
+    eventId?: string):void => {
+      console.log(`Top bar item removed from tab: ${tabId}`);
+      console.log(`Removed item ID: ${topBarItemId}`);
+    };
+...
+```
+
+---
+
+### onPromptTopBarButtonClick
+
+This event will be fired when a user clicks on a button in the prompt top bar. It passes the `tabId`, the clicked `topBarButton` object, and the `eventId`.
+
+```typescript
+...
+onPromptTopBarButtonClick?: (
+    tabId: string,
+    topBarButton: ChatItemButton,
+    eventId?: string):void => {
+      console.log(`Top bar button clicked on tab: ${tabId}`);
+      console.log(`Button ID: ${topBarButton.id}`);
+      console.log(`Button text: ${topBarButton.text}`);
     };
 ...
 ```

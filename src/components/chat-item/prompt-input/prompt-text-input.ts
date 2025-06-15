@@ -9,7 +9,7 @@ import { Card } from '../../card/card';
 import { CardBody } from '../../card/card-body';
 import testIds from '../../../helper/test-ids';
 import { generateUID } from '../../../main';
-import { Icon } from '../../icon';
+import { Icon, MynahIcons } from '../../icon';
 
 const PREVIEW_DELAY = 500;
 
@@ -166,6 +166,15 @@ export class PromptTextInput {
     this.clear();
   }
 
+  public readonly restoreRange = (range: Range): void => {
+    const selection = window.getSelection();
+    if (selection != null) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+      this.updateCursorPos();
+    }
+  };
+
   private readonly updateCursorPos = (): number => {
     const selection = window.getSelection();
     if ((selection == null) || (selection.rangeCount === 0)) return 0;
@@ -276,6 +285,8 @@ export class PromptTextInput {
       range.collapse(true);
       selection.removeAllRanges();
       selection.addRange(range);
+      // Update lastCursorIndex with new cursor position so getCursorPos is accurate
+      this.lastCursorIndex = this.updateCursorPos();
     } else if (originalRange != null) {
       // Restore original cursor position
       selection.removeAllRanges();
@@ -299,7 +310,6 @@ export class PromptTextInput {
     this.contextTooltipTimeout = setTimeout(() => {
       const elm: HTMLElement = e.target as HTMLElement;
       this.contextTooltip = new Overlay({
-        testId: testIds.prompt.contextTooltip,
         background: true,
         closeOnOutsideClick: false,
         referenceElement: elm,
@@ -355,17 +365,18 @@ export class PromptTextInput {
     }
   };
 
-  public readonly insertContextItem = (contextItem: QuickActionCommand, position: number): void => {
+  public readonly insertContextItem = (contextItem: QuickActionCommand, position: number, topBarHidden?: boolean): void => {
     const temporaryId = generateUID();
     this.selectedContext[temporaryId] = contextItem;
     const contextSpanElement = DomBuilder.getInstance().build({
       type: 'span',
       children: [
-        ...(contextItem.icon != null ? [ new Icon({ icon: contextItem.icon }).render ] : [ ]),
+        ...(topBarHidden !== true ? [ new Icon({ icon: MynahIcons.PIN, classNames: [ 'hover-icon' ] }).render ] : []),
+        new Icon({ icon: contextItem.icon ?? MynahIcons.AT }).render,
         { type: 'span', classNames: [ 'at-char' ], innerHTML: '@' },
         `${contextItem.command.replace(/^@?(.*)$/, '$1')}`
       ],
-      classNames: [ 'context' ],
+      classNames: [ 'context', topBarHidden === true ? 'no-hover' : '' ],
       attributes: {
         'context-tmp-id': temporaryId,
         contenteditable: 'false'
@@ -374,7 +385,13 @@ export class PromptTextInput {
         mouseenter: (e) => {
           this.showContextTooltip(e, contextItem);
         },
-        mouseleave: this.hideContextTooltip,
+        mouseleave: () => {
+          this.hideContextTooltip();
+        },
+        click: () => {
+          this.hideContextTooltip();
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_PINNED, { tabId: this.props.tabId, contextItem });
+        }
       }
     });
     this.insertElementToGivenPosition(contextSpanElement, position, this.getCursorPos());

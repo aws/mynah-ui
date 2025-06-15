@@ -41,6 +41,8 @@ export class DetailedListItemWrapper {
         clickable: this.props.clickable ?? 'false',
       },
       events: {
+        // Prevent mousedown from stealing focus from the input
+        mousedown: (e) => { cancelEvent(e); },
         click: (e) => {
           cancelEvent(e);
           if (this.props.listItem.disabled !== true && this.props.selectable !== false) {

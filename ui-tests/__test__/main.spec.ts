@@ -45,6 +45,11 @@ import { renderHeaders } from './flows/headers';
 import { renderAndDismissCard } from './flows/dismissible-cards';
 import { DEFAULT_VIEWPORT } from './helpers';
 import path from 'path';
+import {
+  renderPromptTopBar,
+  promptTopBarTooltip,
+  promptTopBarButtonOverlay,
+} from './flows/prompt-top-bar';
 
 test.describe('Open MynahUI', () => {
   test.beforeEach(async ({ page }) => {
@@ -159,6 +164,20 @@ test.describe('Open MynahUI', () => {
     });
     test('should select context selector item with enter', async ({ page }) => {
       await selectQuickPicks(page, 'Enter', 'context');
+    });
+  });
+
+  test.describe('Prompt Top Bar', () => {
+    test('should render prompt top bar with title, context items, and button', async ({ page }) => {
+      await renderPromptTopBar(page);
+    });
+
+    test('should show tooltip when hovering over pinned context items', async ({ page }) => {
+      await promptTopBarTooltip(page);
+    });
+
+    test('should show overlay when clicking top bar button', async ({ page }) => {
+      await promptTopBarButtonOverlay(page);
     });
   });
 

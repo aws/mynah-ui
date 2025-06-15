@@ -14,8 +14,10 @@ import {
     generateUID,
     KeyMap,
     TreeNodeDetails,
+    QuickActionCommand,
+    ChatItemButton,
 } from '@aws/mynah-ui';
-import { mcpButton, mynahUIDefaults, tabbarButtons } from './config';
+import { mcpButton, mynahUIDefaults, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
 import {
     exampleCodeBlockToInsert,
@@ -48,16 +50,19 @@ import {
     sampleMCPDetails,
     mcpToolRunSampleCard,
     mcpToolRunSampleCardInit,
+    sampleRulesList,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
 import { ThemeBuilder } from './theme-builder/theme-builder';
 import { Commands } from './commands';
+import { group } from 'console';
 
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     const connector = new Connector();
     let streamingMessageId: string | null;
     let showChatAvatars: boolean = false;
+    let showPinnedContext: boolean = false;
 
     const mynahUI = new MynahUI({
         loadStyles: true,
@@ -139,6 +144,39 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
         },
         onFocusStateChanged: (focusState: boolean) => {
             Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
+        },
+        onPromptTopBarItemAdded: (tabId: string, item: QuickActionCommand) => {
+                                        Log(`Prompt top bar item <b>${item.command}</b> added on tab <b>${tabId}</b>`);
+
+            mynahUI.updateStore(tabId, {
+                                    promptTopBarContextItems: [
+                                        ...((mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command) ?? []),
+                                        item,
+                                    ],
+                                });
+        },
+        onPromptTopBarItemRemoved: (tabId: string, item: QuickActionCommand) => {
+                                        Log(`Prompt top bar item <b>${item.command}</b> removed on tab <b>${tabId}</b>`);
+
+            mynahUI.updateStore(tabId, {
+                                    promptTopBarContextItems:(mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command)
+                                });
+        },
+        onPromptTopBarButtonClick: (tabId: string, button: ChatItemButton) => {
+                                        Log(`Top bar button <b>${button.id}</b> clicked on tab <b>${tabId}</b>`);
+
+         const topBarOverlay =   mynahUI.openTopBarButtonOverlay({tabId, topBarButtonOverlay: sampleRulesList,
+            events: {
+            onClose: () => {Log(`Top bar overlay closed on tab <b>${tabId}</b>`)},
+            onGroupClick: (group) => {Log(`Top bar overlay group clicked <b>${group}</b> on tab <b>${tabId}</b>`)},
+            onItemClick: (item) => {  Log(`Top bar overlay item clicked <b>${item.id}</b> on tab <b>${tabId}</b>`); topBarOverlay.update(sampleRulesList)},
+            onKeyPress: (e) => {Log(`Key pressed on top bar overlay`);      if (e.key === KeyMap.ESCAPE) {
+                                topBarOverlay.close();
+                            }}
+        
+        }})
+            
+            
         },
         onTabBarButtonClick: (tabId: string, buttonId: string) => {
             if (buttonId.match('mcp-')) {
@@ -267,6 +305,21 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                         showChatAvatars: showChatAvatars,
                     }),
                 );
+            } else if (buttonId === 'show-pinned-context') {
+                showPinnedContext = !showPinnedContext;
+                if (showPinnedContext){
+                Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
+                    mynahUI.updateStore(tabIdFromStore, {
+                        promptTopBarTitle: `@Pin Context`,
+                        promptTopBarButton: rulesButton,
+                    }),
+                ); } else {
+                         Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
+                    mynahUI.updateStore(tabIdFromStore, {
+                        promptTopBarTitle: ``,
+                    }),
+                )
+                }
             } else if (buttonId === 'splash-loader') {
                 mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
                 setTimeout(() => {
