@@ -352,7 +352,6 @@ export class PromptTopBar {
   }
 
   private setupResizeObserver (): void {
-    // Use the existing MynahUIGlobalEvents system to listen for ROOT_RESIZE events
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ROOT_RESIZE, () => {
       this.recalculateVisibleItems();
     });
