@@ -214,8 +214,10 @@ export enum MynahEventNames {
   TAB_BAR_BUTTON_CLICK = 'tabBarButtonClick',
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
   ROOT_RESIZE = 'rootResize',
-  CONTEXT_SELECTED = 'contextSelected'
-};
+  CONTEXT_SELECTED = 'contextSelected',
+  OPEN_FILE_SYSTEM = 'openFileSystem',
+  INSERT_IMAGE_CONTEXT = 'insertImageContext',
+}
 
 export enum MynahPortalNames {
   WRAPPER = 'wrapper',
