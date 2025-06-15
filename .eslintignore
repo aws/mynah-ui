@@ -22,3 +22,4 @@ THIRD-PARTY-LICENSES
 NOTICE
 Dockerfile
 e2e-results
+coverage/
