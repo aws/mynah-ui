@@ -206,19 +206,21 @@ export class Overlay {
    * pixel value if line-height is fractional, this function rounds --overlayTopPos to an integer pixel value to prevent bluriness.
    */
   private readonly preventTransformBlur = (): void => {
-    const observer = new ResizeObserver(() => {
-      const lastContainerRect = this.container.getBoundingClientRect();
-      const height = lastContainerRect.height;
+    if (ResizeObserver != null) {
+      const observer = new ResizeObserver(() => {
+        const lastContainerRect = this.container.getBoundingClientRect();
+        const height = lastContainerRect.height;
 
-      const style = getComputedStyle(this.container);
-      const shiftPercent = parseFloat(style.getPropertyValue('--overlayTopPos'));
+        const style = getComputedStyle(this.container);
+        const shiftPercent = parseFloat(style.getPropertyValue('--overlayTopPos'));
 
-      const shiftPixels = Math.round(height * shiftPercent / 100);
+        const shiftPixels = Math.round(height * shiftPercent / 100);
 
-      this.container.style.transform = `translate3d(var(--overlayLeftPos), ${shiftPixels}px, 0)`;
-    });
+        this.container.style.transform = `translate3d(var(--overlayLeftPos), ${shiftPixels}px, 0)`;
+      });
 
-    observer.observe(this.container);
+      observer.observe(this.container);
+    }
   };
 
   close = (): void => {
