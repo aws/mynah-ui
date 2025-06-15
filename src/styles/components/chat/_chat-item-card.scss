@@ -360,6 +360,7 @@
             }
             > .mynah-button {
                 flex-shrink: 0;
+                margin-left: auto;
             }
             & + .mynah-chat-item-card-header {
                 @include full-width-header();

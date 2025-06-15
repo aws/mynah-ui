@@ -51,6 +51,7 @@ Please refer to the following guides:
 * [Data model](./docs/DATAMODEL.md)
 * [Usage](./docs/USAGE.md)
 * [Styling](./docs/STYLING.md)
+* [Testing](./docs/TESTING.md)
 * [Developer guidelines (contribution)](./docs/DEVELOPER.md)
 
 #### Preview
