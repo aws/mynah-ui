@@ -1,7 +1,6 @@
-import { ChatItemType, MynahIcons } from '@aws/mynah-ui';
+import { ChatItemType, MynahIcons, ChatItemButton, MynahUITabStoreTab, QuickActionCommandGroup, TabBarMainAction } from '@aws/mynah-ui';
 import { defaultFollowUps } from './samples/sample-data';
 import { Commands } from './commands';
-import { ChatItemButton, MynahUITabStoreTab, QuickActionCommandGroup, TabBarMainAction } from '../../dist/static';
 export const WelcomeMessage = `Hi, this is \`MynahUI\` and it is a **data and event driven** web based chat interface library and it is independent from any framework like react or vue etc.
 In this example web app which uses mynah-ui as its renderer, we're simulating its capabilities with some static content with an IDE look&feel.
 
