@@ -7,7 +7,7 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { CardRenderDetails, ChatItem, ChatItemType, PromptAttachmentType, TabHeaderDetails } from '../../static';
+import { CardRenderDetails, ChatItem, ChatItemType, DetailedList, PromptAttachmentType, TabHeaderDetails } from '../../static';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
@@ -17,6 +17,7 @@ import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { GradientBackground } from '../background';
 import { MoreContentIndicator } from '../more-content-indicator';
 import { StyleLoader } from '../../helper/style-loader';
+import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -389,5 +390,17 @@ export class ChatWrapper {
 
   public addAttachmentToPrompt = (textToAdd: string, type?: PromptAttachmentType): void => {
     this.promptInput.addAttachment(textToAdd, type);
+  };
+
+  public openTopBarButtonItemOverlay = (data: TopBarButtonOverlayProps): void => {
+    this.promptInput.openTopBarButtonItemOverlay(data);
+  };
+
+  public updateTopBarButtonItemOverlay = (data: DetailedList): void => {
+    this.promptInput.updateTopBarButtonItemOverlay(data);
+  };
+
+  public closeTopBarButtonItemOverlay = (): void => {
+    this.promptInput.closeTopBarButtonItemOverlay();
   };
 }

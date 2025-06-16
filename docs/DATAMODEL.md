@@ -574,6 +574,92 @@ mynahUI.updateStore('tab-1', {
 </p>
 
 ---
+### `promptTopBarTitle` (default: `''`)
+
+This is the title displayed in the prompt top bar. When set, it enables a top bar that can be used for pinned context items.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    promptTopBarTitle: '@Pin Context'
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptTopBarTitle.png" alt="prompt top bar title" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `promptTopBarContextItems` (default: `[]`)
+
+These are the context items pinned to the prompt top bar. They appear as pills that can be removed by the user. Top bar only appears when `promptTopBarTitle` is not empty.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    promptTopBarContextItems: [
+        {
+            command: 'ex-dom.ts',
+            icon: MynahIcons.FILE,
+            description: '.src/helper'
+        },
+        {
+            command: 'main',
+            icon: MynahIcons.FOLDER,
+            description: '.src/'
+        }
+    ]
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptTopBarContextItems.png" alt="prompt top bar context items" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `promptTopBarButton` (default: `null`)
+
+This is a button displayed at the end of the prompt top bar. Clicking on the button will call onPromptTopBarButtonClick(). Button only appears when `promptTopBarTitle` is not empty.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    promptTopBarButton: {
+        id: 'project-rules',
+        icon: MynahIcons.CHECK_LIST,
+        text: 'Rules'
+    }
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/promptTopBarButton.png" alt="prompt top bar button" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
 
 ### `promptInputText` (default: `''`)
 

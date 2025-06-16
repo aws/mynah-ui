@@ -45,6 +45,8 @@
             align-items: flex-start;
             position: relative;
 
+            @import 'chat-prompt-top-bar';
+
             > .mynah-chat-prompt-input-inner-wrapper {
                 display: flex;
                 flex: 1;
@@ -139,14 +141,13 @@
                     }
                     > span.context {
                         position: relative;
-                        color: var(--mynah-color-button-reverse);
                         border-radius: calc(var(--mynah-input-radius) / 2);
                         display: inline;
                         white-space: nowrap;
                         overflow-wrap: break-word;
                         z-index: var(--mynah-z-1);
                         cursor: pointer;
-                        padding: 0.05em 0.2em 0.05em 0.2em;
+                        padding: 0.2em 0.3em 0.05em 0.3em;
                         margin-bottom: var(--mynah-border-width);
                         display: inline-flex;
                         flex-flow: row nowrap;
@@ -156,7 +157,26 @@
                         font-size: var(--mynah-font-size-small);
                         > .mynah-ui-icon {
                             font-size: var(--mynah-font-size-xxsmall);
-                            & + span.at-char {
+                        }
+
+                        > .at-char {
+                            display: none;
+                        }
+
+                        // Hide hover icons by default
+                        > .mynah-ui-icon.hover-icon {
+                            display: none;
+                        }
+
+                        // Hover state
+                        &:not(.no-hover):hover {
+                            // Show hover icon
+                            > .mynah-ui-icon.hover-icon {
+                                display: inline-flex;
+                            }
+
+                            // Hide normal icon and @-char
+                            > .mynah-ui-icon:not(.hover-icon) {
                                 display: none;
                             }
                         }
@@ -169,8 +189,9 @@
                             bottom: 0;
                             width: auto;
                             height: calc(100%);
-                            background-color: var(--mynah-color-button);
                             border-radius: inherit;
+                            border-width: var(--mynah-button-border-width);
+                            border-style: solid;
                             z-index: var(--mynah-z-sub);
                         }
                     }

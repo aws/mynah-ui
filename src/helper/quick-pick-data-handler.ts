@@ -2,7 +2,7 @@ import escapeHTML from 'escape-html';
 import { DetailedListItem, DetailedListItemGroup, QuickActionCommand, QuickActionCommandGroup } from '../static';
 import { MynahIcons } from '../main';
 
-export const filterQuickPickItems = (commands: QuickActionCommandGroup[], searchTerm: string): QuickActionCommandGroup[] => {
+export const filterQuickPickItems = (commands: QuickActionCommandGroup[], searchTerm: string, hideSearchGroup?: boolean): QuickActionCommandGroup[] => {
   if (searchTerm.trim() === '') {
     return commands;
   }
@@ -46,7 +46,7 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroup[], search
     returnGroup.commands = matchedCommands.sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .map((item) => item.command);
   }
-  returnGroup.groupName = `### ${searchTerm}: (${returnGroup.commands.length})`;
+  if (hideSearchGroup !== true) { returnGroup.groupName = `### ${searchTerm}: (${returnGroup.commands.length})`; }
   return [ returnGroup ];
 };
 
