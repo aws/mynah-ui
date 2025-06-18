@@ -20,6 +20,7 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons } from '../icon';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
+import { QuickActionCommandGroup, QuickActionCommand } from '../../static';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -183,6 +184,7 @@ export class ChatWrapper {
       persistent: true,
       events: {
         dragenter: (e: DragEvent) => {
+          if (!this.hasImageContextCommand()) return;
           e.preventDefault();
           e.stopPropagation();
           if ((e.dataTransfer?.types.includes('Files')) === true) {
@@ -213,10 +215,12 @@ export class ChatWrapper {
           }
         },
         dragover: (e: DragEvent) => {
+          if (!this.hasImageContextCommand()) return;
           e.preventDefault();
           e.stopPropagation();
         },
         dragleave: (e: DragEvent) => {
+          if (!this.hasImageContextCommand()) return;
           e.preventDefault();
           e.stopPropagation();
           // Only remove if we're leaving the wrapper entirely (not just moving to a child element)
@@ -235,6 +239,7 @@ export class ChatWrapper {
           }
         },
         drop: (e: DragEvent) => {
+          if (!this.hasImageContextCommand()) return;
           e.preventDefault();
           e.stopPropagation();
           this.render.removeClass('drag-over');
@@ -489,4 +494,14 @@ export class ChatWrapper {
   public getPromptInputCursorPosition = (): number => {
     return this.promptInput.getCursorPosition();
   };
+
+  /**
+   * Returns true if the current tab has an image context command available.
+   */
+  private hasImageContextCommand (): boolean {
+    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
+    return !((contextCommands?.some(group =>
+      group.commands.some((cmd: QuickActionCommand) => cmd.command === 'image')
+    )) === false);
+  }
 }

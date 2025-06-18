@@ -57,7 +57,6 @@ import escapeHTML from 'escape-html';
 import './styles/styles.scss';
 import { ThemeBuilder } from './theme-builder/theme-builder';
 import { Commands } from './commands';
-import { ImageQuickActionCommand } from '../../src/static';
 
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     const connector = new Connector();
@@ -1062,10 +1061,9 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                             route: [file.name],
                             description: '/User/Sample/' + file.name
                         };
-
-                        mynahUI.appendContextCommands(tabId, [contextItem], insertPosition);
                         // Return true to allow the context item to be inserted
                         // The original context item will be replaced with our file context item
+                        mynahUI.addCustomContextToPrompt(selectedTab, [contextItem], insertPosition)
                         return true;
                     }
 
@@ -1080,7 +1078,44 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             }
         },
 
-        onContextSelected(contextItem) {
+        onContextSelected(contextItem, tabId) {
+            if (contextItem.command === 'image') {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.style.display = 'none';
+
+                // Add it to the document
+                document.body.appendChild(fileInput);
+
+                // Handle file selection
+                fileInput.onchange = (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0];
+                    if (file) {
+                        // Create a context item for the selected file
+                        const contextItem: QuickActionCommand = {
+                            command: file.name,
+                            icon: MynahIcons.IMAGE,
+                            label: 'image',
+                            route: [file.name],
+                            description: '/User/Sample/' + file.name
+                        };
+
+                        mynahUI.addCustomContextToPrompt(tabId, [contextItem])
+                        // Return true to allow the context item to be inserted
+                        // The original context item will be replaced with our file context item
+                        return false;
+                    }
+
+                    // Clean up
+                    document.body.removeChild(fileInput);
+                    return false;
+                };
+
+                // Trigger the file dialog
+                fileInput.click();
+                return false;
+            }
             if (contextItem.command === 'Add Prompt') {
                 Log('Custom context action triggered for adding a prompt!');
                 return false;
@@ -1283,7 +1318,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 }
             }
             console.log(commands)
-            mynahUI.appendContextCommands(tabId, commands, insertPosition);
+            mynahUI.addCustomContextToPrompt(tabId, commands, insertPosition);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
             if (action.id === 'allow-readonly-tools') {

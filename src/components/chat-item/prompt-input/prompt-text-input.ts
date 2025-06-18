@@ -196,10 +196,11 @@ export class PromptTextInput {
       }
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.INSERT_IMAGE_CONTEXT, (data: { tabId: string; contextCommands: QuickActionCommand[]; insertPosition: number }) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ADD_CUSTOM_CONTEXT, (data: { tabId: string; contextCommands: QuickActionCommand[]; insertPosition?: number}) => {
       if (data.tabId === this.props.tabId) {
         data.contextCommands.forEach((command) => {
-          return this.insertContextItem(command, data.insertPosition);
+          const insertPos = data.insertPosition ?? this.lastCursorIndex;
+          return this.insertContextItem(command, insertPos);
         });
       }
     });
