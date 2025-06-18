@@ -867,9 +867,9 @@ export class MynahUI {
     }
   };
 
-  public appendContextCommands = (tabId: string, contextCommands: QuickActionCommand[], insertPosition: number): void => {
+  public addCustomContextToPrompt = (tabId: string, contextItem: QuickActionCommand[], insertPosition?: number): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.INSERT_IMAGE_CONTEXT, { tabId, contextCommands, insertPosition });
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CUSTOM_CONTEXT, { tabId, contextCommands: contextItem, insertPosition });
     }
   };
 

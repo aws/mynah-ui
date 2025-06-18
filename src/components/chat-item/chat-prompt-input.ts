@@ -758,14 +758,6 @@ export class ChatPromptInput {
       ...dirtyContextCommand,
       command: dirtyContextCommand.command.replace(this.markerRemovalRegex, '')
     };
-    if (contextCommand.command === 'image') {
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_FILE_SYSTEM, {
-        tabId: this.props.tabId,
-        type: 'image',
-        insertPosition: this.quickPickTriggerIndex,
-      });
-      return;
-    }
     // Check if the selected command has children
     if (contextCommand.children?.[0] != null) {
       // If user types '@fi', and then selects a command with children (ex: file command), remove 'fi' from prompt

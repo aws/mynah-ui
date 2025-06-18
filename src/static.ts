@@ -235,7 +235,7 @@ export enum MynahEventNames {
   ROOT_RESIZE = 'rootResize',
   CONTEXT_SELECTED = 'contextSelected',
   OPEN_FILE_SYSTEM = 'openFileSystem',
-  INSERT_IMAGE_CONTEXT = 'insertImageContext',
+  ADD_CUSTOM_CONTEXT = 'addCustomContext',
   TOP_BAR_ITEM_ADD = 'promptInputTopBarItemAdd',
   TOP_BAR_ITEM_REMOVE = 'promptInputTopBarItemRemove',
   TOP_BAR_BUTTON_CLICK = 'promptInputTopBarButtonClick',
