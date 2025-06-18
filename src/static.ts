@@ -33,6 +33,10 @@ export interface QuickActionCommand {
   children?: QuickActionCommandGroup[];
   route?: string[];
 }
+export interface ImageQuickActionCommand extends QuickActionCommand {
+  content: Uint8Array;
+}
+
 export interface QuickActionCommandGroup {
   groupName?: string;
   icon?: MynahIcons | MynahIconsType;
@@ -236,7 +240,8 @@ export enum MynahEventNames {
   TOP_BAR_ITEM_REMOVE = 'promptInputTopBarItemRemove',
   TOP_BAR_BUTTON_CLICK = 'promptInputTopBarButtonClick',
   CONTEXT_PINNED = 'contextPinned',
-};
+  FILES_DROPPED = 'filesDropped'
+}
 
 export enum MynahPortalNames {
   WRAPPER = 'wrapper',

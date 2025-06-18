@@ -320,6 +320,11 @@ export interface MynahUIProps {
     fileType: string,
     insertPosition: number
   ) => void;
+  onFilesDropped?: (
+    tabId: string,
+    files: FileList,
+    insertPosition: number
+  ) => void;
 }
 
 export class MynahUI {
@@ -832,6 +837,10 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_FILE_SYSTEM, (data) => {
       this.props.onOpenFileDialogClick?.(data.tabId, data.type, data.insertPosition);
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILES_DROPPED, (data) => {
+      this.props.onFilesDropped?.(data.tabId, data.files, data.insertPosition);
     });
   };
 
