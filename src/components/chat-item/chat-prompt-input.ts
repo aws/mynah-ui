@@ -5,14 +5,14 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import {
-  ChatItemButton,
-  ChatPrompt,
-  FilterOption,
-  KeyMap,
-  MynahEventNames,
-  PromptAttachmentType,
-  QuickActionCommand,
-  QuickActionCommandGroup
+    ChatItemButton,
+    ChatPrompt, DetailedList,
+    FilterOption,
+    KeyMap,
+    MynahEventNames,
+    PromptAttachmentType,
+    QuickActionCommand,
+    QuickActionCommandGroup
 } from '../../static';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
@@ -889,6 +889,10 @@ export class ChatPromptInput {
       this.promptAttachment.clear();
     }
     this.updateAvailableCharactersIndicator();
+  };
+
+  public readonly getCursorPosition = (): number => {
+    return this.promptTextInput.getCursorPos();
   };
 
   public readonly addAttachment = (attachmentContent: string, type?: PromptAttachmentType): void => {

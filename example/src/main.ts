@@ -16,6 +16,7 @@ import {
     TreeNodeDetails,
     QuickActionCommand,
     ChatItemButton,
+    ImageQuickActionCommand
 } from '@aws/mynah-ui';
 import { mcpButton, mynahUIDefaults, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
@@ -56,6 +57,7 @@ import escapeHTML from 'escape-html';
 import './styles/styles.scss';
 import { ThemeBuilder } from './theme-builder/theme-builder';
 import { Commands } from './commands';
+import { ImageQuickActionCommand } from '../../src/static';
 
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     const connector = new Connector();
@@ -1261,6 +1263,27 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         Message Id: <b>${messageId}</b><br/>
         Content tabId: <b>${contentTabId}</b><br/>
         `);
+        },
+        onFilesDropped: async (tabId: string, files: FileList, insertPosition: number) => {
+            const allowedFileTypes = ["image/png", "image/jpeg", "image/gif", "image/webp"];
+            const commands: QuickActionCommand[] = [];
+            for (const file of Array.from(files)) {
+                if (allowedFileTypes.includes(file.type)) {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const bytes = new Uint8Array(arrayBuffer);
+                    const contextItem: ImageQuickActionCommand = {
+                        command: file.name,
+                        icon: MynahIcons.IMAGE,
+                        label: 'image',
+                        route: [file.name],
+                        description: '/User/Sample/' + file.name,
+                        content: bytes
+                    };
+                    commands.push(contextItem);
+                }
+            }
+            console.log(commands)
+            mynahUI.appendContextCommands(tabId, commands, insertPosition);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
             if (action.id === 'allow-readonly-tools') {

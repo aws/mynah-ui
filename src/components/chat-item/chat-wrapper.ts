@@ -7,7 +7,7 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { CardRenderDetails, ChatItem, ChatItemType, DetailedList, PromptAttachmentType, TabHeaderDetails } from '../../static';
+import { CardRenderDetails, ChatItem, ChatItemType, DetailedList, PromptAttachmentType, TabHeaderDetails, MynahEventNames } from '../../static';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
@@ -17,6 +17,8 @@ import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { GradientBackground } from '../background';
 import { MoreContentIndicator } from '../more-content-indicator';
 import { StyleLoader } from '../../helper/style-loader';
+import { Icon, MynahIcons } from '../icon';
+import { MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
 
 export const CONTAINER_GAP = 12;
@@ -179,6 +181,86 @@ export class ChatWrapper {
         'mynah-tab-id': this.props.tabId,
       },
       persistent: true,
+      events: {
+        dragenter: (e: DragEvent) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if ((e.dataTransfer?.types.includes('Files')) === true) {
+            this.render.addClass('drag-over');
+            // Only create overlay if it doesn't already exist
+            const existingOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
+            const existingBlurOverlays = this.render.getElementsByClassName('mynah-drag-blur-overlay');
+            if (existingOverlays.length === 0) {
+              // Create and show drag overlay content
+              const dragOverlay = DomBuilder.getInstance().build({
+                type: 'div',
+                classNames: [ 'mynah-drag-overlay-content' ],
+                children: [
+                  new Icon({ icon: MynahIcons.IMAGE }).render,
+                  { type: 'span', children: [ 'Add image to context' ] }
+                ]
+              });
+              this.render.appendChild(dragOverlay);
+            }
+            if (existingBlurOverlays.length === 0) {
+              // Create blur background overlay
+              const blurOverlay = DomBuilder.getInstance().build({
+                type: 'div',
+                classNames: [ 'mynah-drag-blur-overlay' ]
+              });
+              this.render.appendChild(blurOverlay);
+            }
+          }
+        },
+        dragover: (e: DragEvent) => {
+          e.preventDefault();
+          e.stopPropagation();
+        },
+        dragleave: (e: DragEvent) => {
+          e.preventDefault();
+          e.stopPropagation();
+          // Only remove if we're leaving the wrapper entirely (not just moving to a child element)
+          if (e.relatedTarget === null || !this.render.contains(e.relatedTarget as Node)) {
+            this.render.removeClass('drag-over');
+            // Remove drag overlay content
+            const dragOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
+            while (dragOverlays.length > 0) {
+              dragOverlays[0].remove();
+            }
+            // Remove blur overlay
+            const blurOverlays = this.render.getElementsByClassName('mynah-drag-blur-overlay');
+            while (blurOverlays.length > 0) {
+              blurOverlays[0].remove();
+            }
+          }
+        },
+        drop: (e: DragEvent) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.render.removeClass('drag-over');
+          // Remove drag overlay content
+          const dragOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
+          while (dragOverlays.length > 0) {
+            dragOverlays[0].remove();
+          }
+          // Remove blur overlay
+          const blurOverlays = this.render.getElementsByClassName('mynah-drag-blur-overlay');
+          while (blurOverlays.length > 0) {
+            blurOverlays[0].remove();
+          }
+
+          const files = Array.from(e.dataTransfer?.files ?? []);
+          files.filter(file => file.type.startsWith('image/'));
+          // Get the current cursor position of prompt input
+          const cursorPosition = this.getPromptInputCursorPosition();
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILES_DROPPED, {
+            tabId: this.props.tabId,
+            insertPosition: cursorPosition,
+            files: files
+          });
+        }
+
+      },
       children: [
         {
           type: 'style',
@@ -402,5 +484,9 @@ export class ChatWrapper {
 
   public closeTopBarButtonItemOverlay = (): void => {
     this.promptInput.closeTopBarButtonItemOverlay();
+  };
+
+  public getPromptInputCursorPosition = (): number => {
+    return this.promptInput.getCursorPosition();
   };
 }
