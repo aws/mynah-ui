@@ -27,16 +27,15 @@ function getPlaywrightVersion() {
         const uiTestsPackagePath = path.join(__dirname, '../ui-tests/package.json');
         if (fs.existsSync(uiTestsPackagePath)) {
             const packageJson = JSON.parse(fs.readFileSync(uiTestsPackagePath, 'utf8'));
-            
+
             // Check both playwright and @playwright/test dependencies
-            const playwrightVersion = packageJson.devDependencies?.playwright || 
-                                    packageJson.dependencies?.playwright;
-            const playwrightTestVersion = packageJson.devDependencies?.['@playwright/test'] || 
-                                        packageJson.dependencies?.['@playwright/test'];
-            
+            const playwrightVersion = packageJson.devDependencies?.playwright || packageJson.dependencies?.playwright;
+            const playwrightTestVersion =
+                packageJson.devDependencies?.['@playwright/test'] || packageJson.dependencies?.['@playwright/test'];
+
             // Prefer @playwright/test version if available, otherwise use playwright
             const version = playwrightTestVersion || playwrightVersion;
-            
+
             if (version) {
                 // Remove ^ or ~ prefix and get clean version
                 const cleanVersion = version.replace(/[\^~]/, '');
@@ -49,7 +48,6 @@ function getPlaywrightVersion() {
         // 3. Fallback to latest
         console.log('No specific version found, using latest');
         return 'latest';
-
     } catch (error) {
         console.error('Error detecting Playwright version:', error.message);
         return 'latest';

@@ -17,27 +17,28 @@ function setupPlaywright(targetDir = null) {
 
         // Determine target directory
         const uiTestsPath = targetDir || path.join(__dirname, '../ui-tests');
-        
+
         // Ensure target directory exists
         if (!fs.existsSync(uiTestsPath)) {
             throw new Error(`Target directory does not exist: ${uiTestsPath}`);
         }
-        
-        const installCommand = version === 'latest' 
-            ? 'npm install @playwright/test@latest playwright@latest --save-dev'
-            : `npm install @playwright/test@${version} playwright@${version} --save-dev`;
+
+        const installCommand =
+            version === 'latest'
+                ? 'npm install @playwright/test@latest playwright@latest --save-dev'
+                : `npm install @playwright/test@${version} playwright@${version} --save-dev`;
 
         console.log(`Installing Playwright in ${uiTestsPath}...`);
-        execSync(installCommand, { 
-            stdio: 'inherit', 
-            cwd: uiTestsPath 
+        execSync(installCommand, {
+            stdio: 'inherit',
+            cwd: uiTestsPath,
         });
 
         // Install Playwright browsers
         console.log('Installing Playwright browsers...');
-        execSync('npx playwright install', { 
-            stdio: 'inherit', 
-            cwd: uiTestsPath 
+        execSync('npx playwright install', {
+            stdio: 'inherit',
+            cwd: uiTestsPath,
         });
 
         console.log('Playwright setup completed successfully!');

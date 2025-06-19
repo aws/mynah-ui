@@ -14,12 +14,12 @@ function buildDockerImage() {
 
         // Use the detected version or fallback to latest
         const dockerVersion = version === 'latest' ? 'latest' : version;
-        
+
         const buildCommand = `docker build --build-arg PLAYWRIGHT_VERSION=${dockerVersion} -t mynah-ui-e2e .`;
-        
+
         console.log(`Executing: ${buildCommand}`);
         execSync(buildCommand, { stdio: 'inherit' });
-        
+
         console.log('Docker image built successfully!');
     } catch (error) {
         console.error('Error building Docker image:', error.message);
