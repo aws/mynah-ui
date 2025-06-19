@@ -33,7 +33,7 @@ export interface QuickActionCommand {
   children?: QuickActionCommandGroup[];
   route?: string[];
 }
-export interface ImageQuickActionCommand extends QuickActionCommand {
+export interface CustomQuickActionCommand extends QuickActionCommand {
   content: Uint8Array;
 }
 
@@ -176,6 +176,8 @@ export interface MynahUIDataModel {
    * application state management for that purpose.
    */
   tabMetadata?: { [key: string]: string | boolean | number };
+
+  customContextCommand?: QuickActionCommand[];
 }
 
 export interface MynahUITabStoreTab {
