@@ -276,6 +276,7 @@ export class PromptTextInput {
 
     const range = document.createRange();
     let currentPos = 0;
+    let inserted = false;
 
     // Find the correct text node and offset
     for (const node of this.promptTextInput.childNodes) {
@@ -322,10 +323,16 @@ export class PromptTextInput {
           } else {
             range.setStartAfter(element);
           }
+          inserted = true;
           break;
         }
       }
       currentPos += length;
+    }
+
+    // Fallback: if nothing was inserted (e.g., prompt is empty), insert at the beginning
+    if (!inserted) {
+      this.promptTextInput.insertChild('afterbegin', element as HTMLElement);
     }
 
     if (!maintainCursor) {

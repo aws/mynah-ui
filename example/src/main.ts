@@ -16,7 +16,7 @@ import {
     TreeNodeDetails,
     QuickActionCommand,
     ChatItemButton,
-    ImageQuickActionCommand
+    CustomQuickActionCommand
 } from '@aws/mynah-ui';
 import { mcpButton, mynahUIDefaults, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
@@ -1205,6 +1205,9 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
       `);
         },
         onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
+
+            
+
             Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>
@@ -1306,7 +1309,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 if (allowedFileTypes.includes(file.type)) {
                     const arrayBuffer = await file.arrayBuffer();
                     const bytes = new Uint8Array(arrayBuffer);
-                    const contextItem: ImageQuickActionCommand = {
+                    const contextItem: CustomQuickActionCommand = {
                         command: file.name,
                         icon: MynahIcons.IMAGE,
                         label: 'image',
