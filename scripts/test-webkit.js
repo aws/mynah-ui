@@ -10,23 +10,23 @@ const path = require('path');
 function testWebKit() {
     try {
         console.log('Testing WebKit browser availability...');
-        
+
         const uiTestsPath = path.join(__dirname, '../ui-tests');
-        
+
         // Check if WebKit is installed
         console.log('Checking WebKit installation...');
         execSync('npx playwright install webkit --with-deps', {
             stdio: 'inherit',
             cwd: uiTestsPath,
         });
-        
+
         // Run a simple WebKit test
         console.log('Running WebKit test...');
         execSync('npx playwright test --project=webkit --grep "should render initial data"', {
             stdio: 'inherit',
             cwd: uiTestsPath,
         });
-        
+
         console.log('WebKit test completed successfully!');
         return true;
     } catch (error) {
