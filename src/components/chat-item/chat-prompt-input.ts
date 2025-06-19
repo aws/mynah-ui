@@ -4,14 +4,13 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItem, ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
 import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
-import { ChatItemCard } from './chat-item-card';
 import { PromptAttachment } from './prompt-input/prompt-attachment';
 import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
@@ -643,17 +642,11 @@ export class ChatPromptInput {
 
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
     // Extract info card data and filter out special commands
-    let infoCardTitle = '';
-    let infoCardDescription = '';
-    let hasInfoCard = false;
     const filteredQuickPickGroupList = quickPickGroupList.map(group => ({
       ...group,
       // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       commands: group.commands?.filter(cmd => {
         if (cmd.command === '__info_card__') {
-          hasInfoCard = true;
-          infoCardTitle = 'Q Developer agentic capabilities';
-          infoCardDescription = '/dev, /test, and /doc are going away. With agentic coding, you can now ask Q directly in the chat to generate code, documentation, and unit tests.';
           return false; // Filter out this command
         }
         return true; // Keep other commands
@@ -732,9 +725,9 @@ export class ChatPromptInput {
       const infoHeader = new TitleDescriptionWithIcon({
         icon: quickPickSelectorInfo.icon,
         description: quickPickSelectorInfo.body != null ? new CardBody({ body: quickPickSelectorInfo.body }).render : undefined,
-        classNames: [ 
+        classNames: [
           'mynah-quick-pick-selector-info',
-          ...(quickPickSelectorInfo.status != null ? [ `status-${quickPickSelectorInfo.status}` ] : [])
+          ...(quickPickSelectorInfo.status != null ? [ `status-${String(quickPickSelectorInfo.status)}` ] : [])
         ]
       });
       children.unshift(infoHeader.render);
