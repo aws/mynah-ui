@@ -28,7 +28,6 @@ export default defineConfig({
       name: 'chromium',
       use: {
         browserName: 'chromium',
-        // Chromium-specific settings for headless testing
         launchOptions: {
           args: [
             '--disable-features=VizDisplayCompositor',
@@ -38,14 +37,7 @@ export default defineConfig({
         },
       }
     },
-    {
-      name: 'webkit',
-      use: {
-        browserName: 'webkit',
-        // WebKit doesn't support the same launch arguments as Chromium
-        // Keep it simple for WebKit
-      }
-    },
+    { name: 'webkit', use: { browserName: 'webkit' } },
   ],
   updateSnapshots: updateSnapshots ? 'all' : 'missing',
   reporter: [
