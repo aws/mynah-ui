@@ -13,7 +13,8 @@ function buildDockerImage() {
         console.log(`Building Docker image with Playwright version: ${version}`);
 
         // Use the detected version or fallback to latest
-        const dockerVersion = version === 'latest' ? 'latest' : version;
+        // Add 'v' prefix for version numbers, but not for 'latest'
+        const dockerVersion = version === 'latest' ? 'latest' : `v${version}`;
 
         const buildCommand = `docker build --build-arg PLAYWRIGHT_VERSION=${dockerVersion} -t mynah-ui-e2e .`;
 

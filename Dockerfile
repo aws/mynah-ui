@@ -1,7 +1,7 @@
 # Version-agnostic Dockerfile for Mynah UI E2E Tests
 # Supports dynamic Playwright version detection
 ARG PLAYWRIGHT_VERSION=latest
-FROM mcr.microsoft.com/playwright:v${PLAYWRIGHT_VERSION}
+FROM mcr.microsoft.com/playwright:${PLAYWRIGHT_VERSION}
 
 # Set working directory
 WORKDIR /app
