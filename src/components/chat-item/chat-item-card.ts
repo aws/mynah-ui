@@ -27,7 +27,6 @@ import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { marked } from 'marked';
-
 const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
   tabId: string;
@@ -112,7 +111,7 @@ export class ChatItemCard {
       testId: testIds.chatItem.card,
       children: this.initialSpinner ?? [],
       background: this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE && !(this.props.chatItem.fullWidth !== true && (this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM)),
-      border: this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE && !(this.props.chatItem.fullWidth !== true && (this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM)),
+      border: this.props.chatItem.border !== undefined ? this.props.chatItem.border : (this.props.inline !== true && this.props.chatItem.type !== ChatItemType.DIRECTIVE && !(this.props.chatItem.fullWidth !== true && (this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM))),
       padding: this.props.inline === true || this.props.chatItem.padding === false || (this.props.chatItem.fullWidth !== true && (this.props.chatItem.type === ChatItemType.ANSWER || this.props.chatItem.type === ChatItemType.ANSWER_STREAM)) ? 'none' : undefined,
     });
     this.updateCardContent();
@@ -121,23 +120,25 @@ export class ChatItemCard {
     /**
      * Generate/update more content indicator if available
      */
-    this.moreContentIndicator = new MoreContentIndicator({
-      icon: MynahIcons.DOWN_OPEN,
-      border: false,
-      onClick: () => {
-        if (this.isMoreContentExpanded) {
-          this.isMoreContentExpanded = false;
-          this.render.addClass('mynah-chat-item-collapsed');
-          this.moreContentIndicator?.update({ icon: MynahIcons.DOWN_OPEN });
-        } else {
-          this.isMoreContentExpanded = true;
-          this.render.removeClass('mynah-chat-item-collapsed');
-          this.moreContentIndicator?.update({ icon: MynahIcons.UP_OPEN });
-        }
-      },
-      testId: testIds.chatItem.moreContentIndicator
-    });
-    this.render.insertChild('beforeend', this.moreContentIndicator.render);
+    if (this.props.chatItem.autoCollapse === true || this.props.chatItem.title != null) {
+      this.moreContentIndicator = new MoreContentIndicator({
+        icon: MynahIcons.DOWN_OPEN,
+        border: false,
+        onClick: () => {
+          if (this.isMoreContentExpanded) {
+            this.isMoreContentExpanded = false;
+            this.render.addClass('mynah-chat-item-collapsed');
+            this.moreContentIndicator?.update({ icon: MynahIcons.DOWN_OPEN });
+          } else {
+            this.isMoreContentExpanded = true;
+            this.render.removeClass('mynah-chat-item-collapsed');
+            this.moreContentIndicator?.update({ icon: MynahIcons.UP_OPEN });
+          }
+        },
+        testId: testIds.chatItem.moreContentIndicator
+      });
+      this.render.insertChild('beforeend', this.moreContentIndicator.render);
+    }
 
     if (this.props.chatItem.autoCollapse === true) {
       this.render.addClass('mynah-chat-item-collapsed');
@@ -218,6 +219,7 @@ export class ChatItemCard {
       ...(this.props.chatItem.muted === true ? [ 'muted' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),
       ...(this.props.initVisibility === true ? [ 'reveal' ] : []),
+      ...(this.props.chatItem.border === true ? [ 'border' ] : []),
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
       `mynah-chat-item-card-content-horizontal-align-${this.props.chatItem.contentHorizontalAlignment ?? 'default'}`,
       'mynah-chat-item-card',
@@ -549,7 +551,6 @@ export class ChatItemCard {
       });
       this.card?.render.insertChild('beforeend', this.informationCard.render);
     }
-
     /**
      * Generate summary content if available
      */

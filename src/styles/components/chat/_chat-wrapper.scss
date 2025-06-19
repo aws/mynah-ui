@@ -211,7 +211,34 @@
     max-height: 70vh;
     height: auto;
     display: flex;
+    flex-direction: column;
     overflow: hidden;
+
+    // Quick pick selector info header styling
+    > .mynah-quick-pick-selector-info {
+        padding: var(--mynah-sizing-3);
+        border-bottom: var(--mynah-border-width) solid var(--mynah-color-border-default);
+        background-color: var(--mynah-color-bg);
+
+        &.status-info .mynah-ui-title-description-icon-icon {
+            color: var(--mynah-color-status-info);
+        }
+
+        &.status-warning .mynah-ui-title-description-icon-icon {
+            color: var(--mynah-color-status-warning);
+        }
+
+        &.status-error .mynah-ui-title-description-icon-icon {
+            color: var(--mynah-color-status-error);
+        }
+
+
+        .mynah-ui-title-description-icon-description {
+            font-size: var(--mynah-font-size-small);
+
+        }
+    }
+
     > .mynah-detailed-list {
         padding: var(--mynah-sizing-2);
         flex: 1;

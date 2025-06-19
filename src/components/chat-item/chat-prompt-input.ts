@@ -4,12 +4,14 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatItem, ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
+import { ChatItemCard } from './chat-item-card';
 import { PromptAttachment } from './prompt-input/prompt-attachment';
 import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
 import { PromptTextInput } from './prompt-input/prompt-text-input';
@@ -624,7 +626,7 @@ export class ChatPromptInput {
           const searchTerm = inputValue.substring(this.quickPickTriggerIndex).match(/\S*/gi)?.[0];
           const promptRegex = new RegExp(searchTerm ?? '', 'gi');
           newQuickPickCommandGroup.commands = newQuickPickCommandGroup.commands.filter(command =>
-            command.command.match(promptRegex)
+            command.command !== '__info_card__' && command.command.match(promptRegex)
           );
           if (newQuickPickCommandGroup.commands.length > 0) {
             restorePreviousFilteredQuickPickItemGroups.push(newQuickPickCommandGroup);
@@ -640,7 +642,26 @@ export class ChatPromptInput {
   };
 
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
-    const detailedListItemsGroup = convertQuickActionCommandGroupsToDetailedListGroups(quickPickGroupList);
+    // Extract info card data and filter out special commands
+    let infoCardTitle = '';
+    let infoCardDescription = '';
+    let hasInfoCard = false;
+    const filteredQuickPickGroupList = quickPickGroupList.map(group => ({
+      ...group,
+      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+      commands: group.commands?.filter(cmd => {
+        if (cmd.command === '__info_card__') {
+          hasInfoCard = true;
+          infoCardTitle = 'Q Developer agentic capabilities';
+          infoCardDescription = '/dev, /test, and /doc are going away. With agentic coding, you can now ask Q directly in the chat to generate code, documentation, and unit tests.';
+          return false; // Filter out this command
+        }
+        return true; // Keep other commands
+      }) || []
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    })).filter(group => group.commands && group.commands.length > 0);
+
+    const detailedListItemsGroup = convertQuickActionCommandGroupsToDetailedListGroups(filteredQuickPickGroupList);
     if (this.quickPickItemsSelectorContainer == null) {
       this.quickPickItemsSelectorContainer = new DetailedListWrapper({
         descriptionTextDirection: 'rtl',
@@ -702,12 +723,27 @@ export class ChatPromptInput {
         list: detailedListItemsGroup
       });
     }
+
+    const children = [ this.quickPickItemsSelectorContainer.render ];
+
+    // Add global quick pick selector info header if available
+    const quickPickSelectorInfo = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickPickSelectorInfo');
+    if (quickPickSelectorInfo != null) {
+      const infoHeader = new TitleDescriptionWithIcon({
+        icon: quickPickSelectorInfo.icon,
+        description: quickPickSelectorInfo.body != null ? new CardBody({ body: quickPickSelectorInfo.body }).render : undefined,
+        classNames: [ 
+          'mynah-quick-pick-selector-info',
+          ...(quickPickSelectorInfo.status != null ? [ `status-${quickPickSelectorInfo.status}` ] : [])
+        ]
+      });
+      children.unshift(infoHeader.render);
+    }
+
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-prompt-quick-picks-overlay-wrapper' ],
-      children: [
-        this.quickPickItemsSelectorContainer.render
-      ]
+      children
     });
   };
 

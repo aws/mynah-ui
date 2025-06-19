@@ -15,6 +15,75 @@
     transform-origin: center bottom;
     gap: var(--mynah-sizing-4);
     z-index: var(--mynah-z-1);
+    &.border {
+        margin: var(--mynah-sizing-4) 0;
+        > .mynah-card {
+            border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+            border-radius: var(--mynah-card-radius);
+            box-shadow: var(--mynah-shadow-card-border);
+            background-color: var(--mynah-card-bg);
+            padding: var(--mynah-sizing-4);
+
+            // Better spacing for bordered info cards
+            > .mynah-card-body {
+                padding: 0;
+
+                // Improve text formatting
+                p {
+                    margin: 0 0 var(--mynah-sizing-2) 0;
+                    line-height: 1.5;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    // Make the title more prominent
+                    strong {
+                        font-weight: 600;
+                        color: var(--mynah-color-text-strong);
+                        font-size: var(--mynah-font-size-medium);
+                        display: block;
+                        margin-bottom: var(--mynah-sizing-3);
+                    }
+                }
+
+                // Handle markdown formatting
+                > div {
+                    line-height: 1.5;
+
+                    // Title styling
+                    > p:first-child strong {
+                        font-weight: 600;
+                        color: var(--mynah-color-text-strong);
+                        font-size: var(--mynah-font-size-medium);
+                        display: block;
+                        margin-bottom: var(--mynah-sizing-3);
+                    }
+
+                    // Body text styling
+                    > p:not(:first-child) {
+                        color: var(--mynah-color-text-default);
+                        font-size: var(--mynah-font-size-small);
+                        margin: 0;
+                        line-height: 1.5;
+                    }
+                }
+            }
+        }
+
+        // Adjust icon positioning for bordered cards
+        &.mynah-chat-item-card-has-icon > .mynah-card {
+            padding-left: var(--mynah-sizing-10);
+
+            > .mynah-chat-item-card-icon {
+                left: var(--mynah-sizing-4);
+                top: var(--mynah-sizing-4);
+                color: var(--mynah-color-text-weak);
+                font-size: var(--mynah-font-size-medium);
+            }
+        }
+    }
+
     &-status {
         @each $status in $mynah-statuses {
             &-#{$status} {
@@ -354,9 +423,11 @@
             display: flex;
             flex-flow: row nowrap;
             align-items: center;
+            margin-top: calc(-1 * var(--mynah-sizing-6));
             > .mynah-chat-item-card-title-text {
                 flex: 1;
                 color: var(--mynah-color-text-weak);
+                order: 1;
             }
             > .mynah-button {
                 flex-shrink: 0;
@@ -636,4 +707,6 @@
             }
         }
     }
+
+
 }
