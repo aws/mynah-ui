@@ -1,5 +1,7 @@
-# Use the official Playwright image which includes browsers
-FROM mcr.microsoft.com/playwright:v1.53.0
+# Version-agnostic Dockerfile for Mynah UI E2E Tests
+# Supports dynamic Playwright version detection
+ARG PLAYWRIGHT_VERSION=latest
+FROM mcr.microsoft.com/playwright:v${PLAYWRIGHT_VERSION}
 
 # Set working directory
 WORKDIR /app
@@ -13,6 +15,9 @@ COPY ./package-lock.json /app
 COPY ./postinstall.js /app
 COPY ./webpack.config.js /app
 COPY ./tsconfig.json /app
+
+# Copy scripts directory for version-agnostic setup
+COPY ./scripts /app/scripts
 
 # Copy required files from ui-tests
 COPY ./ui-tests/package.json /app/ui-tests/
@@ -28,7 +33,9 @@ COPY ./ui-tests/__snapshots__ /app/ui-tests/__snapshots__
 # Install dependencies and build MynahUI
 RUN npm install
 RUN npm run build
-RUN cd ./ui-tests && npm install && npm run prepare
+
+# Setup Playwright with version-agnostic approach
+RUN cd ./ui-tests && node ../scripts/setup-playwright.js && npm run prepare
 
 # Default command to run the tests
 CMD ["sh", "-c", "cd ./ui-tests && npm run e2e${BROWSER:+:$BROWSER}"]
