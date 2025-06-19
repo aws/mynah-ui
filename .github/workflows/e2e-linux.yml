@@ -54,6 +54,8 @@ jobs:
             run: npm run docker:run
             env:
               WEBKIT_FORCE_COMPLEX_TEXT: 0
+              WEBKIT_DISABLE_COMPOSITING_MODE: 1
+              PLAYWRIGHT_BROWSERS_PATH: 0
     
           # Extract test results from Docker container
           - name: Extract test results from Docker container

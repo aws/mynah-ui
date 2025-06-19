@@ -34,9 +34,9 @@ function setupPlaywright(targetDir = null) {
             cwd: uiTestsPath,
         });
 
-        // Install Playwright browsers
-        console.log('Installing Playwright browsers...');
-        execSync('npx playwright install', {
+        // Install Playwright browsers with dependencies
+        console.log('Installing Playwright browsers with dependencies...');
+        execSync('npx playwright install --with-deps', {
             stdio: 'inherit',
             cwd: uiTestsPath,
         });

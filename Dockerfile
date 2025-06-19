@@ -37,5 +37,15 @@ RUN npm run build
 # Setup Playwright with version-agnostic approach
 RUN cd ./ui-tests && node ../scripts/setup-playwright.js && npm run prepare
 
+# Ensure all browsers are installed with dependencies
+RUN cd ./ui-tests && npx playwright install --with-deps
+
+# Run health check to verify installation
+RUN cd ./ui-tests && node ../scripts/docker-health-check.js
+
+# Set environment variables for WebKit
+ENV WEBKIT_FORCE_COMPLEX_TEXT=0
+ENV WEBKIT_DISABLE_COMPOSITING_MODE=1
+
 # Default command to run the tests
 CMD ["sh", "-c", "cd ./ui-tests && npm run e2e${BROWSER:+:$BROWSER}"]
