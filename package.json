@@ -41,7 +41,6 @@
         "tests:e2e:webkit": "npm run docker:clean && npm run docker:build && npm run docker:run:webkit",
         "tests:e2e:webkit:local": "npm run playwright:pre-test && cd ui-tests && npm run e2e:webkit",
         "tests:webkit:check": "node scripts/test-webkit.js",
-        "debug:browsers": "node scripts/debug-browsers.js",
         "tests:e2e:local": "npm run playwright:pre-test && cd ui-tests && npm run e2e",
         "tests:e2e:trace": "cd ./ui-tests && npm run trace",
         "tests:unit": "jest --collect-coverage",

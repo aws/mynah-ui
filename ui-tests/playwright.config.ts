@@ -8,7 +8,7 @@ export default defineConfig({
   testDir: './__test__',
   testMatch: [ '**/?(*.)+(spec|test).[t]s' ],
   testIgnore: [ '/node_modules/', 'dist', 'src' ],
-  timeout: 60000,
+  timeout: 30000,
   snapshotDir: './__snapshots__',
   outputDir: './__results__/__reports__',
   snapshotPathTemplate: '{snapshotDir}{/projectName}/{testName}/{arg}{ext}',
