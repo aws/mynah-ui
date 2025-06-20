@@ -28,7 +28,7 @@ import { GradientBackground } from '../background';
 import { MoreContentIndicator } from '../more-content-indicator';
 import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons } from '../icon';
-import { MynahUIGlobalEvents } from '../../helper/events';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
 
 export const CONTAINER_GAP = 12;
@@ -194,8 +194,7 @@ export class ChatWrapper {
       events: {
         dragenter: (e: DragEvent) => {
           if (!this.hasImageContextCommand()) return;
-          e.preventDefault();
-          e.stopPropagation();
+          cancelEvent(e);
           if ((e.dataTransfer?.types.includes('Files')) === true) {
             this.render.addClass('drag-over');
             // Only create overlay if it doesn't already exist
@@ -225,13 +224,11 @@ export class ChatWrapper {
         },
         dragover: (e: DragEvent) => {
           if (!this.hasImageContextCommand()) return;
-          e.preventDefault();
-          e.stopPropagation();
+          cancelEvent(e);
         },
         dragleave: (e: DragEvent) => {
           if (!this.hasImageContextCommand()) return;
-          e.preventDefault();
-          e.stopPropagation();
+          cancelEvent(e);
           // Only remove if we're leaving the wrapper entirely (not just moving to a child element)
           if (e.relatedTarget === null || !this.render.contains(e.relatedTarget as Node)) {
             this.render.removeClass('drag-over');
@@ -249,8 +246,7 @@ export class ChatWrapper {
         },
         drop: (e: DragEvent) => {
           if (!this.hasImageContextCommand()) return;
-          e.preventDefault();
-          e.stopPropagation();
+          cancelEvent(e);
           this.render.removeClass('drag-over');
           // Remove drag overlay content
           const dragOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
