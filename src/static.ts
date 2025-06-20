@@ -34,7 +34,7 @@ export interface QuickActionCommand {
   route?: string[];
 }
 export interface CustomQuickActionCommand extends QuickActionCommand {
-  content: Uint8Array;
+  content?: Uint8Array;
 }
 
 export interface QuickActionCommandGroup {

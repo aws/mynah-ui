@@ -34,6 +34,7 @@ export class PromptTextInput {
   private readonly selectedContext: Record<string, QuickActionCommand> = {};
   private contextTooltip: Overlay | null;
   private contextTooltipTimeout: ReturnType<typeof setTimeout>;
+  private mutationObserver: MutationObserver | null = null;
 
   constructor (props: PromptTextInputProps) {
     this.props = props;
@@ -171,6 +172,9 @@ export class PromptTextInput {
       ]
     });
 
+    // Set up MutationObserver to detect context span removals
+    this.setupContextRemovalObserver();
+
     MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputDisabledState', (isDisabled: boolean) => {
       if (isDisabled) {
         this.promptTextInput.setAttribute('disabled', 'disabled');
@@ -213,6 +217,84 @@ export class PromptTextInput {
 
     this.clear();
   }
+
+  private readonly setupContextRemovalObserver = (): void => {
+    if (MutationObserver != null) {
+      this.mutationObserver = new MutationObserver((mutations) => {
+        let contextRemoved = false;
+        const removedContextIds: string[] = [];
+
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'childList') {
+            mutation.removedNodes.forEach((node) => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                const element = node as Element;
+                if (element.classList.contains('context')) {
+                  const contextId = element.getAttribute('context-tmp-id');
+                  if (contextId != null && contextId !== '') {
+                    removedContextIds.push(contextId);
+                    contextRemoved = true;
+                  }
+                }
+                // Also check for context spans within removed nodes
+                const contextSpans = element.querySelectorAll('.context');
+                contextSpans.forEach((span) => {
+                  const contextId = span.getAttribute('context-tmp-id');
+                  if (contextId != null && contextId !== '') {
+                    removedContextIds.push(contextId);
+                    contextRemoved = true;
+                  }
+                });
+              }
+            });
+          }
+        });
+
+        if (contextRemoved) {
+          this.handleContextRemoval(removedContextIds);
+        }
+      });
+
+      this.mutationObserver.observe(this.promptTextInput, {
+        childList: true,
+        subtree: true
+      });
+    }
+  };
+
+  private readonly handleContextRemoval = (removedContextIds: string[]): void => {
+    const currentCustomContext = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('customContextCommand') as QuickActionCommand[] ?? [];
+    const removedContexts: QuickActionCommand[] = [];
+
+    // Find the removed contexts from our selectedContext map
+    removedContextIds.forEach((contextId) => {
+      const removedContext = this.selectedContext[contextId];
+      if (removedContext != null) {
+        removedContexts.push(removedContext);
+      }
+    });
+
+    // Clean up the selectedContext map by creating a new object without the removed keys
+    const updatedSelectedContext = Object.fromEntries(
+      Object.entries(this.selectedContext).filter(([ key ]) => !removedContextIds.includes(key))
+    );
+    Object.assign(this.selectedContext, updatedSelectedContext);
+
+    // Remove the contexts from the data store
+    if (removedContexts.length > 0) {
+      const updatedCustomContext = currentCustomContext.filter((context) => {
+        return !removedContexts.some((removed) =>
+          removed.command === context.command &&
+          removed.icon === context.icon &&
+          removed.description === context.description
+        );
+      });
+
+      MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+        customContextCommand: updatedCustomContext
+      });
+    }
+  };
 
   public readonly restoreRange = (range: Range): void => {
     const selection = window.getSelection();
@@ -616,5 +698,12 @@ export class PromptTextInput {
     return Array.from(this.promptTextInput.querySelectorAll('span.context')).map((context) => {
       return this.selectedContext[context.getAttribute('context-tmp-id') ?? ''] ?? {};
     });
+  };
+
+  public readonly destroy = (): void => {
+    if (this.mutationObserver != null) {
+      this.mutationObserver.disconnect();
+      this.mutationObserver = null;
+    }
   };
 }
