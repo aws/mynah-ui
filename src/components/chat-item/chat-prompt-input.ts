@@ -358,6 +358,10 @@ export class ChatPromptInput {
     });
   }
 
+  public isTopBarHidden = (): boolean => {
+    return this.promptTopBar.isHidden();
+  };
+
   private readonly onContextSelectorButtonClick = (topBarTitleClicked?: boolean): void => {
     this.searchTerm = '';
     this.quickPickType = 'context';
