@@ -176,7 +176,9 @@ export interface MynahUIDataModel {
    * application state management for that purpose.
    */
   tabMetadata?: { [key: string]: string | boolean | number };
-
+  /**
+   * Custom context commands to be inserted into the prompt input.
+   */
   customContextCommand?: QuickActionCommand[];
 }
 

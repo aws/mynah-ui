@@ -189,6 +189,16 @@ export interface MynahUIProps {
     tabId: string,
     topBarButton: ChatItemButton,
     eventId?: string) => void;
+  onOpenFileDialogClick?: (
+    tabId: string,
+    fileType: string,
+    insertPosition: number
+  ) => void;
+  onFilesDropped?: (
+    tabId: string,
+    files: FileList,
+    insertPosition: number
+  ) => void;
 }
 ```
 _Let's deep dive into each property you can set._
@@ -1233,3 +1243,56 @@ onPromptTopBarButtonClick?: (
     };
 ...
 ```
+
+---
+
+### `onOpenFileDialogClick`
+
+This event will be fired when the user triggers the open file dialog action (for example, by typing `@image:`). It passes the `tabId` of the current tab, the `fileType` (such as 'image', 'file', etc.), and the `insertPosition` indicating where in the prompt input the file should be inserted.
+
+```typescript
+...
+onOpenFileDialogClick?: (
+  tabId: string,
+  fileType: string,
+  insertPosition: number
+) => void;
+...
+```
+
+**Example:**
+```typescript
+onOpenFileDialogClick: (tabId, fileType, insertPosition) => {
+  console.log(`Open file dialog for type '${fileType}' in tab '${tabId}' at position ${insertPosition}`);
+  // You can open your own file picker here
+},
+```
+
+---
+
+### `onFilesDropped`
+
+This event will be fired when the user drops files into the chat window. It passes the `tabId` of the current tab, the `files` (as a FileList), and the `insertPosition` indicating where in the prompt input the files should be inserted.
+
+```typescript
+...
+onFilesDropped?: (
+  tabId: string,
+  files: FileList,
+  insertPosition: number
+) => void;
+...
+```
+
+**Example:**
+```typescript
+onFilesDropped: (tabId, files, insertPosition) => {
+  console.log(`Files dropped in tab '${tabId}' at position ${insertPosition}`);
+  for (const file of files) {
+    console.log(`File: ${file.name}`);
+  }
+  // Handle the dropped files as needed
+},
+```
+
+---

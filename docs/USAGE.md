@@ -29,6 +29,7 @@ mynahUI.notify(...);
 mynahUI.showCustomForm(...);
 mynahUI.updateTabDefaults(...);
 mynahUI.toggleSplashLoader(...);
+mynahUI.addCustomContextToPrompt(...);
 mynahUI.destroy();
 ```
 
@@ -679,3 +680,33 @@ The overlay will appear positioned relative to the specified top bar button, dis
 <p align="center">
   <img src="./img/topBarButtonOverlay.png" alt="Top Bar Button Overlay" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+# Adding Custom Context to Prompt (`addCustomContextToPrompt`)
+
+You can programmatically add custom context items to the prompt input of a specific tab using the `addCustomContextToPrompt` function. This is useful for injecting custom context directly into the user's prompt field, and ensures the context is also tracked in the tab's data store.
+
+```typescript
+mynahUI.addCustomContextToPrompt(
+  tabId, // The ID of the tab to add the context to
+  [
+    {
+      command: 'sampleimage.png',
+      label: 'image',
+      description: 'This is a custom context item.',
+      icon: MynahIcons.IMAGE,
+    },
+    // ... more QuickActionCommand objects if needed
+  ],
+  0 // (Optional) Insert position in the prompt input. If omitted, appends to the end.
+);
+```
+
+- **tabId**: The string ID of the tab where the context should be added.
+- **contextItem**: An array of `QuickActionCommand` objects to insert. Each object can include `command`, `label`, `description`, `icon`, and other properties as defined in the data model.
+- **insertPosition** (optional): The position in the prompt input where the context should be inserted. If not provided, the context is appended to the end.
+
+When called, this function will:
+- Insert the provided context items as context pills in the prompt input field of the specified tab.
+- Update the tab's data store so that the custom context is tracked and can be referenced or removed later.
+
+**Note:** If the prompt input is not currently visible or the tab does not exist, the function will have no effect.
