@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
+import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup, QuickActionCommandsHeader } from '../../static';
 import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
@@ -25,6 +25,7 @@ import { PromptTopBar } from './prompt-input/prompt-top-bar/prompt-top-bar';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
 import { Button } from '../button';
 import { Icon, MynahIcons } from '../icon';
+import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 
 // 96 extra is added as a threshold to allow for attachments
 // We ignore this for the textual character limit
@@ -702,10 +703,38 @@ export class ChatPromptInput {
         list: detailedListItemsGroup
       });
     }
+
+    const headerInfo: QuickActionCommandsHeader = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommandsHeader');
+
+    // MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('quickActionCommandsHeader', (newHeader) => {
+    //   // new header
+    // });
+
+    let headerComponent = new TitleDescriptionWithIcon({
+      ...headerInfo,
+      classNames: [ 'mynah-chat-prompt-quick-picks-header', `status-${headerInfo.status ?? 'default'}` ]
+    }).render;
+
+    // const subscriptionId =
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'quickActionCommandsHeader', (newHeader: QuickActionCommandsHeader) => {
+      // MynahUITabsStore.getInstance().removeListenerFromDataStore(this.props.tabId, subscriptionId as string, 'quickActionCommandsHeader');
+
+      const newHeaderComponent = new TitleDescriptionWithIcon({
+        ...newHeader,
+        classNames: [ 'mynah-chat-prompt-quick-picks-header', `status-${newHeader.status ?? 'default'}` ]
+      }).render;
+
+      headerComponent.replaceWith(newHeaderComponent);
+      headerComponent = newHeaderComponent;
+    });
+
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-prompt-quick-picks-overlay-wrapper' ],
       children: [
+        ...(this.quickPickType === 'quick-action' && headerInfo != null
+          ? [ headerComponent ]
+          : []),
         this.quickPickItemsSelectorContainer.render
       ]
     });

@@ -22,6 +22,7 @@ const emptyDataModelObject: Required<MynahUIDataModel> = {
   cancelButtonWhenLoading: true,
   showChatAvatars: false,
   quickActionCommands: [],
+  quickActionCommandsHeader: {},
   contextCommands: [],
   promptInputPlaceholder: '',
   promptTopBarContextItems: [],

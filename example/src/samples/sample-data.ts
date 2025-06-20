@@ -481,6 +481,12 @@ export const welcomeScreenTabData: MynahUITabStoreTab = {
     isSelected: true,
     store: {
         quickActionCommands: qAgentQuickActions,
+        quickActionCommandsHeader: {
+            description: 'Description of the quick action selector.',
+            title: 'Title of the qas',
+            icon: 'info',
+            status: 'info'
+        },
         tabTitle: 'Welcome to Q',
         tabBackground: true,
         chatItems: [

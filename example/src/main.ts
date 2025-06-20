@@ -119,6 +119,18 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
         }
         `);
         },
+        onReady: ()=>{
+            setTimeout(()=>{
+                mynahUI.updateStore('tab-1', {
+                    quickActionCommandsHeader: {
+                        status: 'error',
+                        icon: 'asterisk',
+                        title: 'Hey',
+                        description: 'Hola!!!'
+                    }
+                })
+            },5000)
+        },
         onSplashLoaderActionClick: (action) => {
             Log(`Splash loader action click <b>${action.id}</b>`);
             mynahUI.toggleSplashLoader(false);

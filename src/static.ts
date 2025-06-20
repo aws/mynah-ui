@@ -33,6 +33,13 @@ export interface QuickActionCommand {
   children?: QuickActionCommandGroup[];
   route?: string[];
 }
+
+export interface QuickActionCommandsHeader {
+  icon?: MynahIcons | MynahIconsType;
+  title?: string;
+  description?: string;
+  status?: Status;
+}
 export interface QuickActionCommandGroup {
   groupName?: string;
   icon?: MynahIcons | MynahIconsType;
@@ -87,6 +94,10 @@ export interface MynahUIDataModel {
   * Quick Action commands to show when user hits / to the input initially
   */
   quickActionCommands?: QuickActionCommandGroup[];
+  /**
+  * Quick Action commands header information block
+  */
+  quickActionCommandsHeader?: QuickActionCommandsHeader;
   /**
   * Context commands to show when user hits @ to the input any point
   */

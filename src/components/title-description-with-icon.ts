@@ -6,12 +6,14 @@
 // eslint-disable @typescript-eslint/restrict-template-expressions
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
+import { Status } from '../static';
 import { Icon, MynahIcons, MynahIconsType } from './icon';
 
 interface TitleDescriptionWithIconProps {
   title?: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
   description?: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject;
   icon?: MynahIcons | MynahIconsType;
+  status?: Status;
   testId?: string;
   classNames?: string[];
 }
@@ -55,4 +57,8 @@ export class TitleDescriptionWithIcon {
       ]
     }); ;
   }
+
+  public readonly update = (props: TitleDescriptionWithIconProps): void => {
+    // TODO Add each element in the component to be udpated.
+  };
 }
