@@ -516,4 +516,9 @@ export class ChatWrapper {
       this.observer = null;
     }
   };
+
+  public isPromptTopBarHidden (): boolean {
+    // promptInput and promptTopBar are private, but accessible here
+    return this.promptInput.isTopBarHidden();
+  }
 }

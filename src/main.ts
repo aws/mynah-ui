@@ -869,14 +869,24 @@ export class MynahUI {
 
   public addCustomContextToPrompt = (tabId: string, contextItem: QuickActionCommand[], insertPosition?: number): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      // Update the data store's customContextCommand field
-      const currentCustomContext = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('customContextCommand') as QuickActionCommand[] ?? [];
-      MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
-        customContextCommand: [ ...currentCustomContext, ...contextItem ]
-      });
+      // Check if promptTopBar is shown for this tab
+      const chatWrapper = this.chatWrappers[tabId];
+      const isTopBarShown = !chatWrapper?.isPromptTopBarHidden();
 
-      // Dispatch the event for UI updates
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CUSTOM_CONTEXT, { tabId, contextCommands: contextItem, insertPosition });
+      if (isTopBarShown) {
+        // If top bar is shown, pin the context directly to the top bar
+        contextItem.forEach(item => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_PINNED, { tabId, contextItem: item });
+        });
+      } else {
+        // Otherwise, add as custom context in the prompt input
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CUSTOM_CONTEXT, { tabId, contextCommands: contextItem, insertPosition });
+        // Update the data store's customContextCommand field
+        const currentCustomContext = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('customContextCommand') as QuickActionCommand[] ?? [];
+        MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
+          customContextCommand: [ ...currentCustomContext, ...contextItem ]
+        });
+      }
     }
   };
 
