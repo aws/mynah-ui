@@ -67,7 +67,7 @@ export class TitleDescriptionWithIcon {
     if (props.icon != null) {
       this.iconElement.update({
         children: [ new Icon({
-          icon: this.props.icon ?? 'asterisk'
+          icon: props.icon
         }).render ]
       });
     }

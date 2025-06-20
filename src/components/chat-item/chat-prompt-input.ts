@@ -710,22 +710,18 @@ export class ChatPromptInput {
     //   // new header
     // });
 
-    let headerComponent = new TitleDescriptionWithIcon({
+    const headerComponent = new TitleDescriptionWithIcon({
       ...headerInfo,
       classNames: [ 'mynah-chat-prompt-quick-picks-header', `status-${headerInfo.status ?? 'default'}` ]
-    }).render;
+    });
 
     // const subscriptionId =
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'quickActionCommandsHeader', (newHeader: QuickActionCommandsHeader) => {
       // MynahUITabsStore.getInstance().removeListenerFromDataStore(this.props.tabId, subscriptionId as string, 'quickActionCommandsHeader');
 
-      const newHeaderComponent = new TitleDescriptionWithIcon({
+      headerComponent.update({
         ...newHeader,
-        classNames: [ 'mynah-chat-prompt-quick-picks-header', `status-${newHeader.status ?? 'default'}` ]
-      }).render;
-
-      headerComponent.replaceWith(newHeaderComponent);
-      headerComponent = newHeaderComponent;
+      });
     });
 
     return DomBuilder.getInstance().build({
@@ -733,7 +729,7 @@ export class ChatPromptInput {
       classNames: [ 'mynah-chat-prompt-quick-picks-overlay-wrapper' ],
       children: [
         ...(this.quickPickType === 'quick-action' && headerInfo != null
-          ? [ headerComponent ]
+          ? [ headerComponent.render ]
           : []),
         this.quickPickItemsSelectorContainer.render
       ]
