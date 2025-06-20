@@ -517,8 +517,7 @@ export class ChatWrapper {
     }
   };
 
-  public isPromptTopBarHidden (): boolean {
-    // promptInput and promptTopBar are private, but accessible here
-    return this.promptInput.isTopBarHidden();
+  public getCurrentTriggerSource (): 'top-bar' | 'prompt-input' {
+    return this.promptInput?.getCurrentTriggerSource?.() ?? 'prompt-input';
   }
 }

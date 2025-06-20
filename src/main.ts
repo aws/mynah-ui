@@ -869,24 +869,28 @@ export class MynahUI {
 
   public addCustomContextToPrompt = (tabId: string, contextItem: QuickActionCommand[], insertPosition?: number): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      // Check if promptTopBar is shown for this tab
+      // Get the current trigger source from the chat wrapper
       const chatWrapper = this.chatWrappers[tabId];
-      const isTopBarShown = !chatWrapper?.isPromptTopBarHidden();
+      const currentTriggerSource = chatWrapper?.getCurrentTriggerSource?.() ?? 'prompt-input';
 
-      if (isTopBarShown) {
-        // If top bar is shown, pin the context directly to the top bar
+      if (currentTriggerSource === 'top-bar') {
+        // If triggered from top bar, add to top bar instead
         contextItem.forEach(item => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_PINNED, { tabId, contextItem: item });
         });
       } else {
-        // Otherwise, add as custom context in the prompt input
-        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CUSTOM_CONTEXT, { tabId, contextCommands: contextItem, insertPosition });
         // Update the data store's customContextCommand field
         const currentCustomContext = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('customContextCommand') as QuickActionCommand[] ?? [];
         MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
           customContextCommand: [ ...currentCustomContext, ...contextItem ]
         });
+
+        // Dispatch the event for UI updates
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CUSTOM_CONTEXT, { tabId, contextCommands: contextItem, insertPosition });
       }
+
+      // Dispatch event to signal context has been inserted
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_INSERTED, { tabId });
     }
   };
 

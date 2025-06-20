@@ -1102,8 +1102,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         };
 
                         mynahUI.addCustomContextToPrompt(tabId, [contextItem])
-                        // Return true to allow the context item to be inserted
-                        // The original context item will be replaced with our file context item
+                        // avoid insert of context
                         return false;
                     }
 

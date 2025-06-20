@@ -96,6 +96,7 @@ export class ChatPromptInput {
   private quickPick: Overlay;
   private quickPickOpen: boolean = false;
   private selectedCommand: string = '';
+  private currentTriggerSource: 'top-bar' | 'prompt-input' = 'prompt-input';
   private readonly userPromptHistory: UserPrompt[] = [];
   private userPromptHistoryIndex: number = -1;
   private lastUnsentUserPrompt: UserPrompt;
@@ -356,11 +357,14 @@ export class ChatPromptInput {
       // Update the limit on prompt text given the selected code
       this.updateAvailableCharactersIndicator();
     });
-  }
 
-  public isTopBarHidden = (): boolean => {
-    return this.promptTopBar.isHidden();
-  };
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_INSERTED, (data: { tabId: string }) => {
+      if (this.props.tabId === data.tabId) {
+        // Reset trigger source to prompt-input after context is inserted
+        this.currentTriggerSource = 'prompt-input';
+      }
+    });
+  }
 
   private readonly onContextSelectorButtonClick = (topBarTitleClicked?: boolean): void => {
     this.searchTerm = '';
@@ -599,6 +603,7 @@ export class ChatPromptInput {
 
   private readonly openQuickPick = (topBarTitleClicked?: boolean): void => {
     this.topBarTitleClicked = topBarTitleClicked === true;
+    this.currentTriggerSource = topBarTitleClicked === true ? 'top-bar' : 'prompt-input';
 
     this.quickPickItemsSelectorContainer = null;
 
@@ -913,5 +918,9 @@ export class ChatPromptInput {
 
   public readonly destroy = (): void => {
     this.promptTextInput.destroy();
+  };
+
+  public readonly getCurrentTriggerSource = (): 'top-bar' | 'prompt-input' => {
+    return this.currentTriggerSource;
   };
 }
