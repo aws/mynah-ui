@@ -869,6 +869,13 @@ export class MynahUI {
 
   public addCustomContextToPrompt = (tabId: string, contextItem: QuickActionCommand[], insertPosition?: number): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      // Update the data store's customContextCommand field
+      const currentCustomContext = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('customContextCommand') as QuickActionCommand[] ?? [];
+      MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
+        customContextCommand: [ ...currentCustomContext, ...contextItem ]
+      });
+
+      // Dispatch the event for UI updates
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CUSTOM_CONTEXT, { tabId, contextCommands: contextItem, insertPosition });
     }
   };
@@ -1135,6 +1142,11 @@ export class MynahUI {
   };
 
   public destroy = (): void => {
+    // Destroy all chat wrappers
+    Object.values(this.chatWrappers).forEach(chatWrapper => {
+      chatWrapper.destroy();
+    });
+
     Config.getInstance().destroy();
     MynahUITabsStore.getInstance().destroy();
     MynahUIGlobalEvents.getInstance().destroy();

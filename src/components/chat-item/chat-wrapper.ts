@@ -7,7 +7,17 @@ import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
-import { CardRenderDetails, ChatItem, ChatItemType, DetailedList, PromptAttachmentType, TabHeaderDetails, MynahEventNames } from '../../static';
+import {
+  CardRenderDetails,
+  ChatItem,
+  ChatItemType,
+  DetailedList,
+  PromptAttachmentType,
+  TabHeaderDetails,
+  MynahEventNames,
+  QuickActionCommandGroup,
+  QuickActionCommand
+} from '../../static';
 import { ChatItemCard } from './chat-item-card';
 import { ChatPromptInput } from './chat-prompt-input';
 import { ChatPromptInputInfo } from './chat-prompt-input-info';
@@ -20,7 +30,6 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons } from '../icon';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
-import { QuickActionCommandGroup, QuickActionCommand } from '../../static';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -261,7 +270,7 @@ export class ChatWrapper {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILES_DROPPED, {
             tabId: this.props.tabId,
             insertPosition: cursorPosition,
-            files: files
+            files
           });
         }
 
@@ -504,4 +513,11 @@ export class ChatWrapper {
       group.commands.some((cmd: QuickActionCommand) => cmd.command === 'image')
     )) === false);
   }
+
+  public destroy = (): void => {
+    if (this.observer != null) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+  };
 }

@@ -5,14 +5,14 @@
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import {
-    ChatItemButton,
-    ChatPrompt, DetailedList,
-    FilterOption,
-    KeyMap,
-    MynahEventNames,
-    PromptAttachmentType,
-    QuickActionCommand,
-    QuickActionCommandGroup
+  ChatItemButton,
+  ChatPrompt, DetailedList,
+  FilterOption,
+  KeyMap,
+  MynahEventNames,
+  PromptAttachmentType,
+  QuickActionCommand,
+  QuickActionCommandGroup
 } from '../../static';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
@@ -905,5 +905,9 @@ export class ChatPromptInput {
 
   public readonly closeTopBarButtonItemOverlay = (): void => {
     this.promptTopBar.topBarButton.closeOverlay();
+  };
+
+  public readonly destroy = (): void => {
+    this.promptTextInput.destroy();
   };
 }
