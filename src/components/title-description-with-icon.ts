@@ -19,24 +19,28 @@ interface TitleDescriptionWithIconProps {
 }
 export class TitleDescriptionWithIcon {
   render: ExtendedHTMLElement;
+  private readonly iconElement: ExtendedHTMLElement;
   private readonly props: TitleDescriptionWithIconProps;
   constructor (props: TitleDescriptionWithIconProps) {
     StyleLoader.getInstance().load('components/_title-description-icon.scss');
     this.props = props;
+
+    this.iconElement = DomBuilder.getInstance().build({
+      type: 'div',
+      testId: `${props.testId ?? ''}-icon`,
+      classNames: [ 'mynah-ui-title-description-icon-icon' ],
+      children: [ new Icon({
+        icon: this.props.icon ?? 'asterisk'
+      }).render ]
+    });
+
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: props.testId,
       classNames: [ 'mynah-ui-title-description-icon-wrapper', ...(this.props.classNames ?? []) ],
       children: [
         ...(this.props.icon !== undefined
-          ? [ {
-              type: 'div',
-              testId: `${props.testId ?? ''}-icon`,
-              classNames: [ 'mynah-ui-title-description-icon-icon' ],
-              children: [ new Icon({
-                icon: this.props.icon
-              }).render ]
-            } ]
+          ? [ this.iconElement ]
           : []),
         ...(this.props.title !== undefined
           ? [ {
@@ -60,5 +64,12 @@ export class TitleDescriptionWithIcon {
 
   public readonly update = (props: TitleDescriptionWithIconProps): void => {
     // TODO Add each element in the component to be udpated.
+    if (props.icon != null) {
+      this.iconElement.update({
+        children: [ new Icon({
+          icon: this.props.icon ?? 'asterisk'
+        }).render ]
+      });
+    }
   };
 }
