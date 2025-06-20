@@ -70,4 +70,4 @@ ___
 <summary>Summary</summary>
 Detail
 </details>
-` as string;
+`;

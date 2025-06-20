@@ -24,7 +24,19 @@ export default defineConfig({
     },
   },
   projects: [
-    { name: 'chromium', use: { browserName: 'chromium' } },
+    {
+      name: 'chromium',
+      use: {
+        browserName: 'chromium',
+        launchOptions: {
+          args: [
+            '--disable-features=VizDisplayCompositor',
+            '--disable-dev-shm-usage',
+            '--no-sandbox',
+          ],
+        },
+      }
+    },
     { name: 'webkit', use: { browserName: 'webkit' } },
   ],
   updateSnapshots: updateSnapshots ? 'all' : 'missing',
