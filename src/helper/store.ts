@@ -41,7 +41,8 @@ const emptyDataModelObject: Required<MynahUIDataModel> = {
   tabBarButtons: [],
   compactMode: false,
   tabHeaderDetails: null,
-  tabMetadata: {}
+  tabMetadata: {},
+  customContextCommand: []
 };
 const dataModelKeys = Object.keys(emptyDataModelObject);
 export class EmptyMynahUIDataModel {

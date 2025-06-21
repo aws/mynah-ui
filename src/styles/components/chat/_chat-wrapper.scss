@@ -167,6 +167,45 @@
         }
     }
 
+    .mynah-drag-overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: calc(var(--mynah-z-max) + 2);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--mynah-sizing-3);
+        color: var(--mynah-color-text-default);
+        font-size: var(--mynah-font-size-large);
+        text-align: center;
+        pointer-events: none;
+
+        > .mynah-ui-icon {
+            font-size: var(--mynah-font-size-xxlarge);
+            opacity: 0.8;
+        }
+    }
+
+    .mynah-drag-blur-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(136, 136, 136, 0.2);
+        backdrop-filter: blur(3px);
+        z-index: calc(var(--mynah-z-max) + 1);
+        pointer-events: none;
+    }
+
+    &.drag-over {
+        .mynah-drag-overlay-content {
+            z-index: calc(var(--mynah-z-max) + 2);
+        }
+    }
+
     @import 'chat-items-container';
     @import 'chat-prompt-wrapper';
     &.loading {

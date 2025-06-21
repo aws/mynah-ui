@@ -2,7 +2,7 @@ import { Config } from '../../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../../helper/dom';
 import { MynahUIGlobalEvents } from '../../../helper/events';
 import { MynahUITabsStore } from '../../../helper/tabs-store';
-import { MynahEventNames, QuickActionCommand } from '../../../static';
+import { MynahEventNames, QuickActionCommand, QuickActionCommandGroup } from '../../../static';
 import { MAX_USER_INPUT } from '../chat-prompt-input';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../../overlay';
 import { Card } from '../../card/card';
@@ -12,7 +12,7 @@ import { generateUID } from '../../../main';
 import { Icon, MynahIcons } from '../../icon';
 
 const PREVIEW_DELAY = 500;
-
+const IMAGE_CONTEXT_SELECT_KEYWORD = '@image:';
 export interface PromptTextInputProps {
   tabId: string;
   initMaxLength: number;
@@ -34,6 +34,7 @@ export class PromptTextInput {
   private readonly selectedContext: Record<string, QuickActionCommand> = {};
   private contextTooltip: Overlay | null;
   private contextTooltipTimeout: ReturnType<typeof setTimeout>;
+  private mutationObserver: MutationObserver | null = null;
 
   constructor (props: PromptTextInputProps) {
     this.props = props;
@@ -73,6 +74,45 @@ export class PromptTextInput {
         },
         keyup: (e: KeyboardEvent) => {
           this.lastCursorIndex = this.updateCursorPos();
+
+          // Check if image command exists in context commands to make the feature consistent
+          const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
+          const hasImageCommand = contextCommands?.some(group =>
+            group.commands.some(cmd => cmd.command === 'image')
+          );
+
+          if (hasImageCommand ?? false) {
+            const text = this.promptTextInput.textContent ?? '';
+            if (text.includes(IMAGE_CONTEXT_SELECT_KEYWORD)) {
+              // Dispatch event to open file system
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.OPEN_FILE_SYSTEM, {
+                tabId: this.props.tabId,
+                type: 'image',
+                insertPosition: this.lastCursorIndex - IMAGE_CONTEXT_SELECT_KEYWORD.length
+              });
+
+              // Remove the trigger text
+              const selection = window.getSelection();
+              if ((selection?.rangeCount) != null) {
+                const range = selection.getRangeAt(0);
+                const textNodes = Array.from(this.promptTextInput.childNodes).filter((node): node is Text => node.nodeType === Node.TEXT_NODE);
+
+                // Find the node containing "@image:"
+                for (const node of textNodes) {
+                  const nodeText = node.textContent ?? '';
+                  const imageTagIndex = nodeText.indexOf(IMAGE_CONTEXT_SELECT_KEYWORD);
+
+                  if (imageTagIndex !== -1) {
+                    // Create a range that selects "@image:"
+                    range.setStart(node, imageTagIndex);
+                    range.setEnd(node, imageTagIndex + IMAGE_CONTEXT_SELECT_KEYWORD.length);
+                    range.deleteContents();
+                    break;
+                  }
+                }
+              }
+            }
+          }
         },
         input: (e: KeyboardEvent) => {
           if (this.props.onInput !== undefined) {
@@ -132,6 +172,9 @@ export class PromptTextInput {
       ]
     });
 
+    // Set up MutationObserver to detect context span removals
+    this.setupContextRemovalObserver();
+
     MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputDisabledState', (isDisabled: boolean) => {
       if (isDisabled) {
         this.promptTextInput.setAttribute('disabled', 'disabled');
@@ -157,6 +200,15 @@ export class PromptTextInput {
       }
     });
 
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ADD_CUSTOM_CONTEXT, (data: { tabId: string; contextCommands: QuickActionCommand[]; insertPosition?: number}) => {
+      if (data.tabId === this.props.tabId) {
+        data.contextCommands.forEach((command) => {
+          const insertPos = data.insertPosition ?? this.lastCursorIndex;
+          return this.insertContextItem(command, insertPos);
+        });
+      }
+    });
+
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TAB_FOCUS, (data) => {
       if (data.tabId === this.props.tabId) {
         this.promptTextInput.focus();
@@ -165,6 +217,84 @@ export class PromptTextInput {
 
     this.clear();
   }
+
+  private readonly setupContextRemovalObserver = (): void => {
+    if (MutationObserver != null) {
+      this.mutationObserver = new MutationObserver((mutations) => {
+        let contextRemoved = false;
+        const removedContextIds: string[] = [];
+
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'childList') {
+            mutation.removedNodes.forEach((node) => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                const element = node as Element;
+                if (element.classList.contains('context')) {
+                  const contextId = element.getAttribute('context-tmp-id');
+                  if (contextId != null && contextId !== '') {
+                    removedContextIds.push(contextId);
+                    contextRemoved = true;
+                  }
+                }
+                // Also check for context spans within removed nodes
+                const contextSpans = element.querySelectorAll('.context');
+                contextSpans.forEach((span) => {
+                  const contextId = span.getAttribute('context-tmp-id');
+                  if (contextId != null && contextId !== '') {
+                    removedContextIds.push(contextId);
+                    contextRemoved = true;
+                  }
+                });
+              }
+            });
+          }
+        });
+
+        if (contextRemoved) {
+          this.handleContextRemoval(removedContextIds);
+        }
+      });
+
+      this.mutationObserver.observe(this.promptTextInput, {
+        childList: true,
+        subtree: true
+      });
+    }
+  };
+
+  private readonly handleContextRemoval = (removedContextIds: string[]): void => {
+    const currentCustomContext = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('customContextCommand') as QuickActionCommand[] ?? [];
+    const removedContexts: QuickActionCommand[] = [];
+
+    // Find the removed contexts from our selectedContext map
+    removedContextIds.forEach((contextId) => {
+      const removedContext = this.selectedContext[contextId];
+      if (removedContext != null) {
+        removedContexts.push(removedContext);
+      }
+    });
+
+    // Clean up the selectedContext map by creating a new object without the removed keys
+    const updatedSelectedContext = Object.fromEntries(
+      Object.entries(this.selectedContext).filter(([ key ]) => !removedContextIds.includes(key))
+    );
+    Object.assign(this.selectedContext, updatedSelectedContext);
+
+    // Remove the contexts from the data store
+    if (removedContexts.length > 0) {
+      const updatedCustomContext = currentCustomContext.filter((context) => {
+        return !removedContexts.some((removed) =>
+          removed.command === context.command &&
+          removed.icon === context.icon &&
+          removed.description === context.description
+        );
+      });
+
+      MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).updateStore({
+        customContextCommand: updatedCustomContext
+      });
+    }
+  };
 
   public readonly restoreRange = (range: Range): void => {
     const selection = window.getSelection();
@@ -228,6 +358,7 @@ export class PromptTextInput {
 
     const range = document.createRange();
     let currentPos = 0;
+    let inserted = false;
 
     // Find the correct text node and offset
     for (const node of this.promptTextInput.childNodes) {
@@ -274,10 +405,16 @@ export class PromptTextInput {
           } else {
             range.setStartAfter(element);
           }
+          inserted = true;
           break;
         }
       }
       currentPos += length;
+    }
+
+    // Fallback: if nothing was inserted (e.g., prompt is empty), insert at the beginning
+    if (!inserted) {
+      this.promptTextInput.insertChild('afterbegin', element as HTMLElement);
     }
 
     if (!maintainCursor) {
@@ -561,5 +698,12 @@ export class PromptTextInput {
     return Array.from(this.promptTextInput.querySelectorAll('span.context')).map((context) => {
       return this.selectedContext[context.getAttribute('context-tmp-id') ?? ''] ?? {};
     });
+  };
+
+  public readonly destroy = (): void => {
+    if (this.mutationObserver != null) {
+      this.mutationObserver.disconnect();
+      this.mutationObserver = null;
+    }
   };
 }

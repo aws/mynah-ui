@@ -16,6 +16,7 @@ import {
     TreeNodeDetails,
     QuickActionCommand,
     ChatItemButton,
+    CustomQuickActionCommand
 } from '@aws/mynah-ui';
 import { mcpButton, mynahUIDefaults, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
@@ -172,10 +173,10 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
             onKeyPress: (e) => {Log(`Key pressed on top bar overlay`);      if (e.key === KeyMap.ESCAPE) {
                                 topBarOverlay.close();
                             }}
-        
+
         }})
-            
-            
+
+
         },
         onTabBarButtonClick: (tabId: string, buttonId: string) => {
             if (buttonId.match('mcp-')) {
@@ -1032,7 +1033,88 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         onTabAdd: (tabId: string) => {
             Log(`New tab added: <b>${tabId}</b>`);
         },
-        onContextSelected(contextItem) {
+        onOpenFileDialogClick: (tabId: string, fileType: string, insertPosition: number) => {
+
+            if (fileType === 'image') {
+                // Get the current selected tab
+                const selectedTab = Object.entries(mynahUI.getAllTabs()).find(([_, tab]) => tab.isSelected)?.[0];
+                if (!selectedTab) return false;
+
+                // Create a file input element
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.style.display = 'none';
+
+                // Add it to the document
+                document.body.appendChild(fileInput);
+
+                // Handle file selection
+                fileInput.onchange = (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0];
+                    if (file) {
+                        // Create a context item for the selected file
+                        const contextItem: QuickActionCommand = {
+                            command: file.name,
+                            icon: MynahIcons.IMAGE,
+                            label: 'image',
+                            route: [file.name],
+                            description: '/User/Sample/' + file.name
+                        };
+                        // Return true to allow the context item to be inserted
+                        // The original context item will be replaced with our file context item
+                        mynahUI.addCustomContextToPrompt(selectedTab, [contextItem], insertPosition)
+                        return true;
+                    }
+
+                    // Clean up
+                    document.body.removeChild(fileInput);
+                    return false;
+                };
+
+                // Trigger the file dialog
+                fileInput.click();
+                return false;
+            }
+        },
+
+        onContextSelected(contextItem, tabId) {
+            if (contextItem.command === 'image') {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*';
+                fileInput.style.display = 'none';
+
+                // Add it to the document
+                document.body.appendChild(fileInput);
+
+                // Handle file selection
+                fileInput.onchange = (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0];
+                    if (file) {
+                        // Create a context item for the selected file
+                        const contextItem: QuickActionCommand = {
+                            command: file.name,
+                            icon: MynahIcons.IMAGE,
+                            label: 'image',
+                            route: [file.name],
+                            description: '/User/Sample/' + file.name
+                        };
+
+                        mynahUI.addCustomContextToPrompt(tabId, [contextItem])
+                        // avoid insert of context
+                        return false;
+                    }
+
+                    // Clean up
+                    document.body.removeChild(fileInput);
+                    return false;
+                };
+
+                // Trigger the file dialog
+                fileInput.click();
+                return false;
+            }
             if (contextItem.command === 'Add Prompt') {
                 Log('Custom context action triggered for adding a prompt!');
                 return false;
@@ -1122,6 +1204,9 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
       `);
         },
         onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
+
+            
+
             Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>
@@ -1215,6 +1300,27 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         Message Id: <b>${messageId}</b><br/>
         Content tabId: <b>${contentTabId}</b><br/>
         `);
+        },
+        onFilesDropped: async (tabId: string, files: FileList, insertPosition: number) => {
+            const allowedFileTypes = ["image/png", "image/jpeg", "image/gif", "image/webp"];
+            const commands: QuickActionCommand[] = [];
+            for (const file of Array.from(files)) {
+                if (allowedFileTypes.includes(file.type)) {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const bytes = new Uint8Array(arrayBuffer);
+                    const contextItem: CustomQuickActionCommand = {
+                        command: file.name,
+                        icon: MynahIcons.IMAGE,
+                        label: 'image',
+                        route: [file.name],
+                        description: '/User/Sample/' + file.name,
+                        content: bytes
+                    };
+                    commands.push(contextItem);
+                }
+            }
+            console.log(commands)
+            mynahUI.addCustomContextToPrompt(tabId, commands, insertPosition);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
             if (action.id === 'allow-readonly-tools') {

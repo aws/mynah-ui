@@ -315,6 +315,16 @@ export interface MynahUIProps {
   onSplashLoaderActionClick?: (
     action: Action,
     eventId?: string) => void;
+  onOpenFileDialogClick?: (
+    tabId: string,
+    fileType: string,
+    insertPosition: number
+  ) => void;
+  onFilesDropped?: (
+    tabId: string,
+    files: FileList,
+    insertPosition: number
+  ) => void;
 }
 
 export class MynahUI {
@@ -824,6 +834,14 @@ export class MynahUI {
         this.props.onTabBarButtonClick(data.tabId, data.buttonId, this.getUserEventId());
       }
     });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_FILE_SYSTEM, (data) => {
+      this.props.onOpenFileDialogClick?.(data.tabId, data.type, data.insertPosition);
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILES_DROPPED, (data) => {
+      this.props.onFilesDropped?.(data.tabId, data.files, data.insertPosition);
+    });
   };
 
   public addToUserPrompt = (tabId: string, attachmentContent: string, type?: PromptAttachmentType): void => {
@@ -846,6 +864,33 @@ export class MynahUI {
           chatItem
         ]
       });
+    }
+  };
+
+  public addCustomContextToPrompt = (tabId: string, contextItem: QuickActionCommand[], insertPosition?: number): void => {
+    if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      // Get the current trigger source from the chat wrapper
+      const chatWrapper = this.chatWrappers[tabId];
+      const currentTriggerSource = chatWrapper?.getCurrentTriggerSource?.() ?? 'prompt-input';
+
+      if (currentTriggerSource === 'top-bar') {
+        // If triggered from top bar, add to top bar instead
+        contextItem.forEach(item => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_PINNED, { tabId, contextItem: item });
+        });
+      } else {
+        // Update the data store's customContextCommand field
+        const currentCustomContext = MynahUITabsStore.getInstance().getTabDataStore(tabId).getValue('customContextCommand') as QuickActionCommand[] ?? [];
+        MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
+          customContextCommand: [ ...currentCustomContext, ...contextItem ]
+        });
+
+        // Dispatch the event for UI updates
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_CUSTOM_CONTEXT, { tabId, contextCommands: contextItem, insertPosition });
+      }
+
+      // Dispatch event to signal context has been inserted
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_INSERTED, { tabId });
     }
   };
 
@@ -1111,6 +1156,11 @@ export class MynahUI {
   };
 
   public destroy = (): void => {
+    // Destroy all chat wrappers
+    Object.values(this.chatWrappers).forEach(chatWrapper => {
+      chatWrapper.destroy();
+    });
+
     Config.getInstance().destroy();
     MynahUITabsStore.getInstance().destroy();
     MynahUIGlobalEvents.getInstance().destroy();
