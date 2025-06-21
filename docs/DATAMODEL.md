@@ -53,6 +53,14 @@ interface MynahUIDataModel {
   */
   quickActionCommands?: QuickActionCommandGroup[];
   /**
+  * Information block to show on top of quick pick selector
+  */
+  quickPickSelectorInfo?: {
+    status?: Status;
+    icon?: MynahIcons | MynahIconsType;
+    body?: string; // [MARKDOWN]
+  };
+  /**
   * Context commands to show when user hits @ to the input any point
   */
   contextCommands?: QuickActionCommandGroup[];
@@ -548,6 +556,40 @@ const mynahUI = new MynahUI({
     }
 });
 ```
+
+---
+
+### `quickPickSelectorInfo` (default: `undefined`)
+
+This is a global information header that appears at the top of the quick pick selector overlay for both quick action commands (`/`)
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    quickPickSelectorInfo: {
+        status: 'info',
+        icon: MynahIcons.INFO,
+        body: '**Quick tip:** Use `/dev`, `/test`, and `/doc` commands for agentic coding capabilities. You can also use `@` to reference specific files and folders.'
+    }
+})
+```
+
+**Status Options:**
+- `'info'` - Blue informational styling
+- `'warning'` - Orange/yellow warning styling  
+- `'error'` - Red error styling
+- `'success'` - Green success styling
+
+<p align="center">
+  <img src="./img/data-model/tabStore/quickPickSelectorInfo.png" alt="quickPickSelectorInfo" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 
 ---
 

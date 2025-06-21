@@ -51,6 +51,7 @@ import {
     mcpToolRunSampleCard,
     mcpToolRunSampleCardInit,
     sampleRulesList,
+    exampleBorderCard,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -1285,6 +1286,11 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     chatItems: [],
                     promptInputText: `/${action.id.replace('quick-start-', '')}`,
                     quickActionCommands: qAgentQuickActions,
+                    quickPickSelectorInfo: {
+                          status: 'info',
+                          icon: MynahIcons.INFO,
+                          body: '**Q Developer agentic capabilities**\n\n/dev, /test, and /doc are going away. With agentic coding, you can now ask Q directly in the chat to generate code, documentation, and unit tests.'
+                      },
                 });
             }
             if (messageId === 'sticky-card') {
@@ -1648,6 +1654,29 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         body: `${Commands.COMMAND_WITH_PROMPT} => ${realPromptText}`,
                     });
                     getGenerativeAIAnswer(tabId);
+                    break;
+                case Commands.INFORMATION_CARDS:
+                    mynahUI.addChatItem(tabId, exampleInformationCard(null, null, true));
+                    mynahUI.addChatItem(
+                        tabId,
+                        exampleInformationCard(
+                            'warning',
+                            'You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits.',
+                        ),
+                    );
+                    mynahUI.addChatItem(
+                        tabId,
+                        exampleInformationCard(
+                            'error',
+                            'You have hit the usage limit for this chat bot. Contact your admin to enable usage overages or learn more about pro license limits.',
+                        ),
+                    );
+                    mynahUI.addChatItem(tabId, exampleInformationCard('success', 'Successfully completed this task!'));
+                    mynahUI.addChatItem(tabId, defaultFollowUps);
+                    break;
+                case Commands.REROUTE_CARDS:
+                    mynahUI.addChatItem(tabId, exampleBorderCard());
+                    mynahUI.addChatItem(tabId, defaultFollowUps);
                     break;
                 default:
                     mynahUI.addChatItem(tabId, {

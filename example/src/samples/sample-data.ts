@@ -447,30 +447,35 @@ Transform your java project from an old version to a new one.
 
 export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
     {
-        groupName: 'Amazon Q Agents',
         commands: [
             {
                 command: '/dev',
                 icon: MynahIcons.CODE_BLOCK,
-                description: 'Generate code across files with a task description.',
+                description: 'Generate code to make a change in your project',
+                placeholder: 'Describe your task or issue in as much detail as possible',
+            },
+            {
+                command: '/doc',
+                icon: MynahIcons.DOC,
+                description: 'Generate documentation',
                 placeholder: 'Type your question',
             },
             {
-                command: '/write',
-                icon: MynahIcons.BUG,
-                description: 'Automatically write code and commit it',
-                placeholder: 'Type your question',
-            },
-            {
-                command: '/generate',
+                command: '/test',
                 icon: MynahIcons.CHECK_LIST,
-                description: 'Generate code for selected codebase (supports python & java)',
+                description: 'Generate unit tests for selected code',
+                placeholder: 'Specify a function(s) in the current file (optional)',
+            },
+            {
+                command: '/review',
+                icon: MynahIcons.BUG,
+                description: '... and fix code issues before committing',
                 placeholder: 'Type your question',
             },
             {
                 command: '/transform',
                 icon: MynahIcons.TRANSFORM,
-                description: 'Transform your java project',
+                description: 'Transform your Java project',
                 placeholder: 'Type your question',
             },
         ],
@@ -481,6 +486,11 @@ export const welcomeScreenTabData: MynahUITabStoreTab = {
     isSelected: true,
     store: {
         quickActionCommands: qAgentQuickActions,
+        quickPickSelectorInfo: {
+            status: 'info',
+            icon: MynahIcons.INFO,
+            body: '**Q Developer agentic capabilities**\n\n/dev, /test, and /doc are going away. With agentic coding, you can now ask Q directly in the chat to generate code, documentation, and unit tests.'
+        },
         tabTitle: 'Welcome to Q',
         tabBackground: true,
         chatItems: [
@@ -576,6 +586,10 @@ export const defaultFollowUps: ChatItem = {
             {
                 command: Commands.CARD_WITH_MARKDOWN_LIST,
                 pillText: 'Markdown list',
+            },
+            {
+                command: Commands.REROUTE_CARDS,
+                pillText: 'Reroute cards',
             },
             {
                 command: Commands.CARD_WITH_PROGRESSIVE_FILE_LIST,
@@ -1283,6 +1297,27 @@ export const exampleInformationCard = (
                           body: statusBody,
                       },
         },
+    };
+};
+
+export const exampleBorderCard = (): ChatItem => {
+    return {
+        messageId: generateUID(),
+        type: ChatItemType.ANSWER,
+        border: true,
+        header: {
+            iconForegroundStatus: 'warning',
+            icon: MynahIcons.INFO,
+            body: '### /dev is going away soon!'
+        },
+        body: `With agentic coding, you can now ask me any coding question directly in the chat instead of using /dev.
+
+You can ask me to do things like:
+1. Create a project
+2. Add a feature
+3. Modify your files
+
+Try it out by typing your request in the chat!`,
     };
 };
 

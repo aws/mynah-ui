@@ -88,6 +88,14 @@ export interface MynahUIDataModel {
   */
   quickActionCommands?: QuickActionCommandGroup[];
   /**
+  * Information block to show on top of quick pick selector
+  */
+  quickPickSelectorInfo?: {
+    status?: Status;
+    icon?: MynahIcons | MynahIconsType;
+    body?: string; // [MARKDOWN]
+  };
+  /**
   * Context commands to show when user hits @ to the input any point
   */
   contextCommands?: QuickActionCommandGroup[];
@@ -450,6 +458,8 @@ export interface ChatItem extends ChatItemContent {
   hoverEffect?: boolean;
   status?: Status;
   shimmer?: boolean;
+  border?: boolean;
+  collapse?: boolean;
 }
 
 export interface ValidationPattern {
