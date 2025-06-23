@@ -1079,7 +1079,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         },
 
         onContextSelected(contextItem, tabId) {
-            if (contextItem.command === 'image') {
+            if (contextItem.command.toLowerCase() === 'image') {
                 const fileInput = document.createElement('input');
                 fileInput.type = 'file';
                 fileInput.accept = 'image/*';
