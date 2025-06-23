@@ -96,7 +96,6 @@ export class ChatPromptInput {
   private quickPick: Overlay;
   private quickPickOpen: boolean = false;
   private selectedCommand: string = '';
-  private currentTriggerSource: 'top-bar' | 'prompt-input' = 'prompt-input';
   private readonly userPromptHistory: UserPrompt[] = [];
   private userPromptHistoryIndex: number = -1;
   private lastUnsentUserPrompt: UserPrompt;
@@ -361,7 +360,7 @@ export class ChatPromptInput {
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_INSERTED, (data: { tabId: string }) => {
       if (this.props.tabId === data.tabId) {
         // Reset trigger source to prompt-input after context is inserted
-        this.currentTriggerSource = 'prompt-input';
+        this.topBarTitleClicked = false;
       }
     });
   }
@@ -603,7 +602,6 @@ export class ChatPromptInput {
 
   private readonly openQuickPick = (topBarTitleClicked?: boolean): void => {
     this.topBarTitleClicked = topBarTitleClicked === true;
-    this.currentTriggerSource = topBarTitleClicked === true ? 'top-bar' : 'prompt-input';
 
     this.quickPickItemsSelectorContainer = null;
 
@@ -921,6 +919,6 @@ export class ChatPromptInput {
   };
 
   public readonly getCurrentTriggerSource = (): 'top-bar' | 'prompt-input' => {
-    return this.currentTriggerSource;
+    return this.topBarTitleClicked ? 'top-bar' : 'prompt-input';
   };
 }
