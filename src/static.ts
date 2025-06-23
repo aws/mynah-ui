@@ -33,6 +33,10 @@ export interface QuickActionCommand {
   children?: QuickActionCommandGroup[];
   route?: string[];
 }
+export interface CustomQuickActionCommand extends QuickActionCommand {
+  content?: Uint8Array;
+}
+
 export interface QuickActionCommandGroup {
   groupName?: string;
   icon?: MynahIcons | MynahIconsType;
@@ -172,6 +176,10 @@ export interface MynahUIDataModel {
    * application state management for that purpose.
    */
   tabMetadata?: { [key: string]: string | boolean | number };
+  /**
+   * Custom context commands to be inserted into the prompt input.
+   */
+  customContextCommand?: QuickActionCommand[];
 }
 
 export interface MynahUITabStoreTab {
@@ -230,11 +238,15 @@ export enum MynahEventNames {
   PROMPT_PROGRESS_ACTION_CLICK = 'promptProgressActionClick',
   ROOT_RESIZE = 'rootResize',
   CONTEXT_SELECTED = 'contextSelected',
+  OPEN_FILE_SYSTEM = 'openFileSystem',
+  ADD_CUSTOM_CONTEXT = 'addCustomContext',
   TOP_BAR_ITEM_ADD = 'promptInputTopBarItemAdd',
   TOP_BAR_ITEM_REMOVE = 'promptInputTopBarItemRemove',
   TOP_BAR_BUTTON_CLICK = 'promptInputTopBarButtonClick',
-  CONTEXT_PINNED = 'contextPinned'
-};
+  CONTEXT_PINNED = 'contextPinned',
+  FILES_DROPPED = 'filesDropped',
+  CONTEXT_INSERTED = 'contextInserted'
+}
 
 export enum MynahPortalNames {
   WRAPPER = 'wrapper',

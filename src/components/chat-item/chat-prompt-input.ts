@@ -4,8 +4,17 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup } from '../../static';
-import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
+import {
+  ChatItemButton,
+  ChatPrompt, DetailedList,
+  FilterOption,
+  KeyMap,
+  MynahEventNames,
+  PromptAttachmentType,
+  QuickActionCommand,
+  QuickActionCommandGroup
+} from '../../static';
+import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
@@ -17,7 +26,13 @@ import { Config } from '../../helper/config';
 import testIds from '../../helper/test-ids';
 import { PromptInputProgress } from './prompt-input/prompt-progress';
 import { CardBody } from '../card/card-body';
-import { convertDetailedListItemToQuickActionCommand, convertQuickActionCommandGroupsToDetailedListGroups, filterQuickPickItems, MARK_CLOSE, MARK_OPEN } from '../../helper/quick-pick-data-handler';
+import {
+  convertDetailedListItemToQuickActionCommand,
+  convertQuickActionCommandGroupsToDetailedListGroups,
+  filterQuickPickItems,
+  MARK_CLOSE,
+  MARK_OPEN
+} from '../../helper/quick-pick-data-handler';
 import { DetailedListWrapper } from '../detailed-list/detailed-list';
 import { PromptOptions } from './prompt-input/prompt-options';
 import { PromptInputStopButton } from './prompt-input/prompt-input-stop-button';
@@ -340,6 +355,13 @@ export class ChatPromptInput {
       this.promptAttachment.clear();
       // Update the limit on prompt text given the selected code
       this.updateAvailableCharactersIndicator();
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_INSERTED, (data: { tabId: string }) => {
+      if (this.props.tabId === data.tabId) {
+        // Reset trigger source to prompt-input after context is inserted
+        this.topBarTitleClicked = false;
+      }
     });
   }
 
@@ -868,6 +890,10 @@ export class ChatPromptInput {
     this.updateAvailableCharactersIndicator();
   };
 
+  public readonly getCursorPosition = (): number => {
+    return this.promptTextInput.getCursorPos();
+  };
+
   public readonly addAttachment = (attachmentContent: string, type?: PromptAttachmentType): void => {
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.ADD_ATTACHMENT, {
       textToAdd: attachmentContent,
@@ -886,5 +912,13 @@ export class ChatPromptInput {
 
   public readonly closeTopBarButtonItemOverlay = (): void => {
     this.promptTopBar.topBarButton.closeOverlay();
+  };
+
+  public readonly destroy = (): void => {
+    this.promptTextInput.destroy();
+  };
+
+  public readonly getCurrentTriggerSource = (): 'top-bar' | 'prompt-input' => {
+    return this.topBarTitleClicked ? 'top-bar' : 'prompt-input';
   };
 }
