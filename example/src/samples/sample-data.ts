@@ -504,6 +504,48 @@ _Generate code, scan for issues, and more._`,
                     },
                 ],
             },
+            {
+                fullWidth: true,
+                padding: false,
+                type: ChatItemType.ANSWER,
+                header: {
+                    body: 'Shell',
+                    status: {
+                        position: 'left',
+                        icon: MynahIcons.WARNING,
+                        status: 'warning',
+                        description: 'This command may cause\nsignificant data loss or damage.',
+                    },
+                    buttons: [
+                        {
+                            status: 'clear',
+                            icon: 'play',
+                            text: 'Run',
+                            id: 'run-bash-command',
+                        },
+                        {
+                            status: 'dimmed-clear',
+                            icon: 'cancel',
+                            text: 'Reject',
+                            id: 'reject-bash-command',
+                        },
+                    ],
+                },
+                body: 'mkdir -p src/ lalalaaaa',
+                dropdownList: {
+                title: 'Destructive commands',
+                titleIcon: MynahIcons.WARNING,
+                description: 'Configure run behavior for this session. To adjust global settings, go to auto-approval settings.',
+                options: [
+                { id: 'option1', label: 'Auto Run' },
+                { id: 'option2', label: 'Dont Auto Run', selected: true },
+                ],
+                onChange: (selectedOptions) => {
+                console.log('Selected options:', selectedOptions);
+                }
+            },
+                codeBlockActions: { copy: null, 'insert-to-cursor': null },
+            }
         ],
         promptInputLabel: 'Or, start a chat',
         promptInputPlaceholder: 'Type your question',

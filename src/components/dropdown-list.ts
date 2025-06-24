@@ -9,7 +9,7 @@ import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
 import { generateUID } from '../helper/guid';
 import { MynahUIGlobalEvents } from '../helper/events';
-import { MynahEventNames } from '../static';
+import { MynahEventNames, MynahPortalNames } from '../static';
 
 export interface DropdownListOption {
   id: string;
@@ -19,6 +19,7 @@ export interface DropdownListOption {
 
 export interface DropdownListProps {
   title: string;
+  titleIcon?: MynahIcons;
   description?: string;
   options: DropdownListOption[];
   onChange?: (selectedOptions: DropdownListOption[]) => void;
@@ -29,7 +30,8 @@ export interface DropdownListProps {
 export class DropdownList {
   render: ExtendedHTMLElement;
   private readonly props: DropdownListProps;
-  private readonly dropdownContent: ExtendedHTMLElement;
+  private dropdownContent: ExtendedHTMLElement | null = null;
+  private dropdownPortal: ExtendedHTMLElement | null = null;
   private readonly selectedOptionsContainer: ExtendedHTMLElement;
   private readonly uid: string;
   private isOpen = false;
@@ -47,37 +49,6 @@ export class DropdownList {
     // Initialize the dropdown icon
     this.dropdownIcon = new Icon({ icon: MynahIcons.DOWN_OPEN }).render;
 
-    // Create the dropdown content (hidden initially)
-    this.dropdownContent = DomBuilder.getInstance().build({
-      type: 'div',
-      classNames: [ 'mynah-dropdown-list-content' ],
-      children: [
-        {
-          type: 'div',
-          classNames: [ 'mynah-dropdown-list-header' ],
-          children: [
-            {
-              type: 'h4',
-              classNames: [ 'mynah-dropdown-list-title' ],
-              children: [ props.title ]
-            },
-            ...(props.description != null
-              ? [ {
-                  type: 'p',
-                  classNames: [ 'mynah-dropdown-list-description' ],
-                  children: [ props.description ]
-                } ]
-              : [])
-          ]
-        },
-        {
-          type: 'div',
-          classNames: [ 'mynah-dropdown-list-options' ],
-          children: props.options.map(option => this.createOptionElement(option))
-        }
-      ]
-    });
-
     // Create the main dropdown button with the selected option's label if available
     const initialLabel = this.selectedOptions.length > 0 ? this.selectedOptions[0].label : props.title;
     const dropdownButton = new Button({
@@ -89,7 +60,7 @@ export class DropdownList {
       classNames: [ 'mynah-dropdown-list-button' ]
     }).render;
 
-    // Create the main container
+    // Create the main container (without dropdown content)
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: props.testId,
@@ -101,8 +72,7 @@ export class DropdownList {
         id: this.uid
       },
       children: [
-        dropdownButton,
-        this.dropdownContent
+        dropdownButton
       ]
     });
 
@@ -173,28 +143,30 @@ export class DropdownList {
   };
 
   private readonly updateUI = (): void => {
-    // Update the options in the dropdown
-    const optionElements = this.dropdownContent.querySelectorAll('.mynah-dropdown-list-option');
-    Array.from(optionElements).forEach((element) => {
-      const optionElement = element as ExtendedHTMLElement;
-      const optionId = optionElement.getAttribute('data-option-id');
-      const isSelected = this.selectedOptions.some(option => option.id === optionId);
+    // Update the options in the dropdown (only if dropdown is open)
+    if (this.dropdownContent != null) {
+      const optionElements = this.dropdownContent.querySelectorAll('.mynah-dropdown-list-option');
+      Array.from(optionElements).forEach((element) => {
+        const optionElement = element as ExtendedHTMLElement;
+        const optionId = optionElement.getAttribute('data-option-id');
+        const isSelected = this.selectedOptions.some(option => option.id === optionId);
 
-      if (isSelected) {
-        optionElement.addClass('selected');
-        const checkbox = optionElement.querySelector('.mynah-dropdown-list-checkbox');
-        if (checkbox != null) {
-          checkbox.innerHTML = '';
-          checkbox.appendChild(new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render);
+        if (isSelected) {
+          optionElement.addClass('selected');
+          const checkbox = optionElement.querySelector('.mynah-dropdown-list-checkbox');
+          if (checkbox != null) {
+            checkbox.innerHTML = '';
+            checkbox.appendChild(new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render);
+          }
+        } else {
+          optionElement.removeClass('selected');
+          const checkbox = optionElement.querySelector('.mynah-dropdown-list-checkbox');
+          if (checkbox != null) {
+            checkbox.innerHTML = '';
+          }
         }
-      } else {
-        optionElement.removeClass('selected');
-        const checkbox = optionElement.querySelector('.mynah-dropdown-list-checkbox');
-        if (checkbox != null) {
-          checkbox.innerHTML = '';
-        }
-      }
-    });
+      });
+    }
 
     // Update the dropdown button label to show the selected option
     const dropdownButton = this.render.querySelector('.mynah-dropdown-list-button');
@@ -216,25 +188,181 @@ export class DropdownList {
     this.isOpen = !this.isOpen;
 
     if (this.isOpen) {
-      this.dropdownContent.addClass('open');
-      // Update the icon to UP_OPEN when the dropdown is open
-      this.dropdownIcon.replaceWith(new Icon({ icon: MynahIcons.UP_OPEN }).render);
-      this.dropdownIcon = this.render.querySelector('.mynah-dropdown-list-button .mynah-ui-icon') as ExtendedHTMLElement;
+      this.openDropdown();
     } else {
-      this.dropdownContent.removeClass('open');
-      // Update the icon to DOWN_OPEN when the dropdown is closed
-      this.dropdownIcon.replaceWith(new Icon({ icon: MynahIcons.DOWN_OPEN }).render);
-      this.dropdownIcon = this.render.querySelector('.mynah-dropdown-list-button .mynah-ui-icon') as ExtendedHTMLElement;
+      this.closeDropdown();
     }
+  };
+
+  private readonly openDropdown = (): void => {
+    // Create the dropdown content
+    this.dropdownContent = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-dropdown-list-content', 'open' ],
+      children: [
+        {
+          type: 'div',
+          classNames: [ 'mynah-dropdown-list-header' ],
+          children: [
+            {
+              type: 'h4',
+              classNames: [ 'mynah-dropdown-list-title' ],
+              children: [
+                ...(this.props.titleIcon != null
+                  ? [ new Icon({
+                      icon: this.props.titleIcon,
+                      classNames: [
+                        'mynah-dropdown-list-title-icon',
+                        ...(this.props.titleIcon === MynahIcons.WARNING ? [ 'mynah-dropdown-list-title-icon-warning' ] : [])
+                      ]
+                    }).render ]
+                  : []),
+                {
+                  type: 'span',
+                  classNames: [ 'mynah-dropdown-list-title-text' ],
+                  children: [ this.props.title ]
+                }
+              ]
+            },
+            ...(this.props.description != null
+              ? [ {
+                  type: 'p',
+                  classNames: [ 'mynah-dropdown-list-description' ],
+                  children: [ this.props.description ]
+                } ]
+              : [])
+          ]
+        },
+        {
+          type: 'div',
+          classNames: [ 'mynah-dropdown-list-options' ],
+          children: this.props.options.map(option => this.createOptionElement(option))
+        }
+      ]
+    });
+
+    // Create portal container
+    this.dropdownPortal = DomBuilder.getInstance().createPortal(
+      `${MynahPortalNames.OVERLAY}-dropdown-${this.uid}`,
+      {
+        type: 'div',
+        classNames: [ 'mynah-dropdown-list-portal' ],
+        attributes: {
+          style: 'position: fixed; z-index: 9999;'
+        },
+        events: {
+          click: (event: MouseEvent) => {
+            // Prevent closing when clicking inside the dropdown
+            event.stopPropagation();
+          }
+        },
+        children: [ this.dropdownContent ]
+      },
+      'beforeend'
+    );
+
+    // Position the dropdown and add scroll listeners
+    this.updateDropdownPosition();
+    window.addEventListener('scroll', this.updateDropdownPosition, true);
+    window.addEventListener('resize', this.updateDropdownPosition);
+
+    // Update the icon to UP_OPEN when the dropdown is open
+    this.dropdownIcon.replaceWith(new Icon({ icon: MynahIcons.UP_OPEN }).render);
+    this.dropdownIcon = this.render.querySelector('.mynah-dropdown-list-button .mynah-ui-icon') as ExtendedHTMLElement;
+  };
+
+  private readonly isElementVisible = (element: Element): boolean => {
+    const rect = element.getBoundingClientRect();
+
+    // Check if element is visible within its scrollable parent containers
+    let parent = element.parentElement;
+    while (parent != null) {
+      const parentRect = parent.getBoundingClientRect();
+      const parentStyle = window.getComputedStyle(parent);
+
+      // Check if parent has overflow hidden/scroll/auto
+      const hasOverflow = parentStyle.overflow !== 'visible' ||
+                         parentStyle.overflowX !== 'visible' ||
+                         parentStyle.overflowY !== 'visible';
+
+      if (hasOverflow) {
+        // Check if element is visible within this parent's bounds
+        const isVisibleInParent = !(
+          rect.bottom < parentRect.top ||
+          rect.top > parentRect.bottom ||
+          rect.right < parentRect.left ||
+          rect.left > parentRect.right
+        );
+
+        if (!isVisibleInParent) {
+          return false;
+        }
+      }
+
+      parent = parent.parentElement;
+    }
+
+    // Also check viewport bounds
+    const viewportHeight = window.innerHeight ?? document.documentElement.clientHeight;
+    const viewportWidth = window.innerWidth ?? document.documentElement.clientWidth;
+
+    return !(rect.bottom < 0 || rect.top > viewportHeight || rect.right < 0 || rect.left > viewportWidth);
+  };
+
+  private readonly updateDropdownPosition = (): void => {
+    if (this.dropdownPortal != null) {
+      // Check if the button is visible in the viewport
+      if (!this.isElementVisible(this.render)) {
+        // If button is not visible, close the dropdown
+        this.isOpen = false;
+        this.closeDropdown();
+        return;
+      }
+
+      // Calculate position relative to the button
+      const buttonRect = this.render.getBoundingClientRect();
+      const calculatedTop = buttonRect.bottom + 4; // 4px margin
+      
+      // Try to find the chat item card container to align with its right edge
+      let chatItemCard = this.render.closest('.mynah-chat-item-card');
+      let calculatedLeft: number;
+      
+      if (chatItemCard != null) {
+        // Align dropdown right edge with chat item card right edge
+        const cardRect = chatItemCard.getBoundingClientRect();
+        calculatedLeft = cardRect.right - 250; // 250px is dropdown width
+      } else {
+        // Fallback to button alignment if chat item card not found
+        calculatedLeft = buttonRect.right - 250;
+      }
+
+      // Update the portal position
+      this.dropdownPortal.style.top = `${calculatedTop}px`;
+      this.dropdownPortal.style.left = `${calculatedLeft}px`;
+    }
+  };
+
+  private readonly closeDropdown = (): void => {
+    // Remove scroll and resize listeners
+    window.removeEventListener('scroll', this.updateDropdownPosition, true);
+    window.removeEventListener('resize', this.updateDropdownPosition);
+
+    // Remove the portal
+    if (this.dropdownPortal != null) {
+      this.dropdownPortal.remove();
+      this.dropdownPortal = null;
+    }
+    this.dropdownContent = null;
+
+    // Update the icon to DOWN_OPEN when the dropdown is closed
+    this.dropdownIcon.replaceWith(new Icon({ icon: MynahIcons.DOWN_OPEN }).render);
+    this.dropdownIcon = this.render.querySelector('.mynah-dropdown-list-button .mynah-ui-icon') as ExtendedHTMLElement;
   };
 
   private readonly handleClickOutside = (e: MouseEvent): void => {
     if (this.isOpen && !this.render.contains(e.target as Node)) {
       this.isOpen = false;
-      this.dropdownContent.removeClass('open');
-      // Update the icon to DOWN_OPEN when the dropdown is closed by clicking outside
-      this.dropdownIcon.replaceWith(new Icon({ icon: MynahIcons.DOWN_OPEN }).render);
-      this.dropdownIcon = this.render.querySelector('.mynah-dropdown-list-button .mynah-ui-icon') as ExtendedHTMLElement;
+      this.closeDropdown();
     }
   };
 
@@ -251,5 +379,18 @@ export class DropdownList {
 
   public readonly destroy = (): void => {
     document.removeEventListener('click', this.handleClickOutside);
+
+    // Remove scroll and resize listeners if dropdown is open
+    if (this.isOpen) {
+      window.removeEventListener('scroll', this.updateDropdownPosition, true);
+      window.removeEventListener('resize', this.updateDropdownPosition);
+    }
+
+    // Clean up portal if it exists
+    if (this.dropdownPortal != null) {
+      this.dropdownPortal.remove();
+      this.dropdownPortal = null;
+    }
+    this.dropdownContent = null;
   };
 }

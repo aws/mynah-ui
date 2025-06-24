@@ -440,6 +440,21 @@ export interface ChatItemContent {
   tabbedContent?: Array<ToggleOption & {
     content: ChatItemContent;
   }> | null;
+  dropdownList?: {
+    title: string;
+    titleIcon?: MynahIcons;
+    description?: string;
+    options: Array<{
+      id: string;
+      label: string;
+      selected?: boolean;
+    }>;
+    onChange?: (selectedOptions: Array<{
+      id: string;
+      label: string;
+      selected?: boolean;
+    }>) => void;
+  } | null;
   codeBlockActions?: CodeBlockActions | null;
   fullWidth?: boolean;
   padding?: boolean;

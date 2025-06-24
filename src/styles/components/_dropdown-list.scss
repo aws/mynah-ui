@@ -17,31 +17,24 @@
 
     .mynah-button-label {
       flex: 1;
+      font-size: var(--mynah-font-size-xsmall);
       text-align: right;
       margin-right: var(--mynah-sizing-1);
     }
-
   }
+}
 
+// Portal-based dropdown content (rendered at document root)
+.mynah-dropdown-list-portal {
   .mynah-dropdown-list-content {
-    position: absolute;
-    top: 100%;
-    right: 0;
     width: 250px;
-    max-height: 0;
-    overflow: hidden;
-    background-color: #E2E2E2;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 5px;
+    background-color: #1E1E1E;
     border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-    margin-top: var(--mynah-sizing-1);
-    z-index: var(--mynah-z-max);
-    opacity: 0;
     box-shadow: var(--mynah-shadow-overlay);
-
-    &.open {
-      max-height: 300px;
-      opacity: 1;
-      overflow-y: auto;
-    }
+    border-radius: var(--mynah-card-radius);
 
     .mynah-dropdown-list-header {
       padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
@@ -49,15 +42,35 @@
 
       .mynah-dropdown-list-title {
         font-size: var(--mynah-font-size-medium);
-        color: black;
+        color: #F0F0F0;
         font-weight: bold;
         margin: 0;
         padding: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--mynah-sizing-2);
+
+        .mynah-dropdown-list-title-icon {
+          width: var(--mynah-sizing-3);
+          height: var(--mynah-sizing-3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #F0F0F0;
+
+          &.mynah-dropdown-list-title-icon-warning {
+            color: #FFD700;
+          }
+        }
+
+        .mynah-dropdown-list-title-text {
+          flex: 1;
+        }
       }
 
       .mynah-dropdown-list-description {
-        font-size: var(--mynah-font-size-small);
-        color: darkgrey;
+        font-size: var(--mynah-font-size-xsmall);
+        color: #CCCCCC80;
         margin: var(--mynah-sizing-1) 0 0;
         padding: 0;
       }
@@ -73,6 +86,10 @@
         padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
         cursor: pointer;
 
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+
         .mynah-dropdown-list-checkbox {
           display: flex;
           align-items: center;
@@ -82,7 +99,7 @@
           height: var(--mynah-sizing-3);
           
           .mynah-dropdown-list-check-icon {
-            color: black;
+            color: #F0F0F0;
             font: 700;
             width: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
             height: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
@@ -94,10 +111,9 @@
 
         .mynah-dropdown-list-option-label {
           flex: 1;
-          color: black;
+          color: #F0F0F0;
         }
       }
     }
   }
-
 }

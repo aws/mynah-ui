@@ -27,6 +27,7 @@ import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { marked } from 'marked';
+import { DropdownList } from '../dropdown-list';
 
 const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
@@ -182,7 +183,7 @@ export class ChatItemCard {
         ...(this.canShowAvatar() && MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
         ...(this.card != null ? [ this.card?.render ] : []),
         ...(this.chatButtonsOutside != null ? [ this.chatButtonsOutside?.render ] : []),
-        ...(this.props.chatItem.followUp?.text !== undefined ? [ new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render ] : [])
+        ...(this.props.chatItem.followUp?.text !== undefined ? [ new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render ] : []),
       ],
     });
 
@@ -726,7 +727,9 @@ export class ChatItemCard {
       this.cardFooter.remove();
       this.cardFooter = null;
     }
-    if (this.props.chatItem.footer != null || this.props.chatItem.canBeVoted === true) {
+
+    // Always create footer to include DropdownList
+    if (this.props.chatItem.footer != null || this.props.chatItem.canBeVoted === true || this.shouldShowDropdownList()) {
       this.cardFooter = this.getCardFooter();
       this.card?.render.insertChild('beforeend', this.cardFooter);
 
@@ -765,6 +768,26 @@ export class ChatItemCard {
         });
         this.cardFooter.insertChild('beforeend', this.votes.render);
       }
+
+      /**
+       * Add DropdownList to footer if available
+       */
+      if (this.props.chatItem.dropdownList != null) {
+        const dropdownContainer = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-dropdown-list-container' ],
+          children: [
+            new DropdownList({
+              title: this.props.chatItem.dropdownList.title,
+              titleIcon: this.props.chatItem.dropdownList.titleIcon,
+              description: this.props.chatItem.dropdownList.description,
+              options: this.props.chatItem.dropdownList.options,
+              onChange: this.props.chatItem.dropdownList.onChange
+            }).render
+          ]
+        });
+        this.cardFooter.insertChild('beforeend', dropdownContainer);
+      }
     }
 
     /**
@@ -788,6 +811,10 @@ export class ChatItemCard {
     });
 
   private readonly canShowAvatar = (): boolean => (this.props.chatItem.type === ChatItemType.ANSWER_STREAM || (this.props.inline !== true && chatItemHasContent({ ...this.props.chatItem, followUp: undefined })));
+
+  private readonly shouldShowDropdownList = (): boolean => {
+    return this.props.chatItem.dropdownList != null;
+  };
 
   private readonly showTooltip = (content: string, elm: HTMLElement): void => {
     if (content.trim() !== undefined) {
