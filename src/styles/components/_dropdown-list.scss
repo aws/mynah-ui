@@ -1,0 +1,103 @@
+.mynah-dropdown-list-wrapper {
+  position: relative;
+  width: auto;
+  display: inline-block;
+  margin-bottom: var(--mynah-sizing-2);
+
+  .mynah-dropdown-list-button {
+    min-width: var(--mynah-sizing-15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: var(--mynah-very-short-transition);
+
+    .mynah-button-label {
+      flex: 1;
+      text-align: right;
+      margin-right: var(--mynah-sizing-1);
+    }
+
+  }
+
+  .mynah-dropdown-list-content {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 250px;
+    max-height: 0;
+    overflow: hidden;
+    background-color: #E2E2E2;
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    margin-top: var(--mynah-sizing-1);
+    z-index: var(--mynah-z-max);
+    opacity: 0;
+    box-shadow: var(--mynah-shadow-overlay);
+
+    &.open {
+      max-height: 300px;
+      opacity: 1;
+      overflow-y: auto;
+    }
+
+    .mynah-dropdown-list-header {
+      padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
+      border-bottom: var(--mynah-border-width) solid var(--mynah-color-border-default);
+
+      .mynah-dropdown-list-title {
+        font-size: var(--mynah-font-size-medium);
+        color: black;
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+      }
+
+      .mynah-dropdown-list-description {
+        font-size: var(--mynah-font-size-small);
+        color: darkgrey;
+        margin: var(--mynah-sizing-1) 0 0;
+        padding: 0;
+      }
+    }
+
+    .mynah-dropdown-list-options {
+      max-height: 200px;
+      overflow-y: auto;
+
+      .mynah-dropdown-list-option {
+        display: flex;
+        align-items: center;
+        padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
+        cursor: pointer;
+
+        .mynah-dropdown-list-checkbox {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: var(--mynah-sizing-2);
+          width: var(--mynah-sizing-3);
+          height: var(--mynah-sizing-3);
+          
+          .mynah-dropdown-list-check-icon {
+            color: black;
+            font: 700;
+            width: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
+            height: calc(var(--mynah-sizing-2) + var(--mynah-sizing-half));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+
+        .mynah-dropdown-list-option-label {
+          flex: 1;
+          color: black;
+        }
+      }
+    }
+  }
+
+}

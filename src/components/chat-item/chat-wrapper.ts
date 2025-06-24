@@ -30,6 +30,7 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons } from '../icon';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
+import { DropdownList } from '../dropdown-list';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -295,6 +296,23 @@ export class ChatWrapper {
             this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
           }
         }).render,
+        DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-dropdown-list-container' ],
+          children: [
+            new DropdownList({
+              title: 'Read-only commands',
+              description: 'Configure run behavior for this session. To adjust global settings, go to auto-approval settings.',
+              options: [
+                { id: 'option1', label: 'Auto Run' },
+                { id: 'option2', label: 'Dont Auto Run', selected: true },
+              ],
+              onChange: (selectedOptions) => {
+                console.log('Selected options:', selectedOptions);
+              }
+            }).render
+          ]
+        }),
         this.promptStickyCard,
         this.promptInputElement,
         this.footerSpacer,
