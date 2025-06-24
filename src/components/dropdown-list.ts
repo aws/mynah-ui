@@ -113,11 +113,11 @@ export class DropdownList {
 
   private readonly toggleOption = (option: DropdownListOption): void => {
     // Single select: replace the entire selection with the new option
-    // unless it's already selected, in which case deselect it
+    // Keep the current selection if clicking on already selected option
     const isAlreadySelected = this.selectedOptions.some(selectedOption => selectedOption.id === option.id);
     if (isAlreadySelected) {
-      // If clicking on the already selected option, deselect it
-      this.selectedOptions = [];
+      // If clicking on the already selected option, keep it selected (no change)
+      return;
     } else {
       // Otherwise, select only this option
       this.selectedOptions = [ option ];

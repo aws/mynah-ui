@@ -537,8 +537,8 @@ _Generate code, scan for issues, and more._`,
                 titleIcon: MynahIcons.WARNING,
                 description: 'Configure run behavior for this session. To adjust global settings, go to auto-approval settings.',
                 options: [
-                { id: 'option1', label: 'Auto Run' },
-                { id: 'option2', label: 'Dont Auto Run', selected: true },
+                { id: 'option1', label: 'Ask to Run', selected: true},
+                { id: 'option2', label: 'Auto run'},
                 ],
                 onChange: (selectedOptions) => {
                 console.log('Selected options:', selectedOptions);
