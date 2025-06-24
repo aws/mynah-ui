@@ -3567,3 +3567,40 @@ export interface DetailedListItem {
 }
 }
 ```
+
+---
+
+### `quickActionCommandsHeader` (default: `{}`)
+Quick action commands header displays an informational banner above the quick action commands list when users hit `/` in the input. This is useful for providing additional context, warnings, or guidance about the available commands.
+
+The header supports various status styles (info, success, warning, error) and can include an icon, title, and description.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.updateStore('tab-1', {
+    quickActionCommands: [
+        // ... your commands here
+    ],
+    quickActionCommandsHeader: {
+        status: 'warning',
+        icon: MynahIcons.INFO,
+        title: 'New agentic capabilities',
+        description: 'You can now ask Q directly in the chat. You don\'t need to explicitly use /dev, /test, or /doc commands anymore.',
+    }
+})
+```
+
+<p align="center">
+  <img src="./img/data-model/tabStore/quickActionCommandsHeader.png" alt="quickActionCommandsHeader" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+The header will appear above the quick action commands list and provides information to users about new features.
+
+---
