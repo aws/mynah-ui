@@ -100,16 +100,12 @@ export class DropdownList {
       },
       children: [
         {
-          type: 'div',
-          classNames: [ 'mynah-dropdown-list-checkbox' ],
-          children: [
-            isSelected ? new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render : ''
-          ]
-        },
-        {
           type: 'span',
           classNames: [ 'mynah-dropdown-list-option-label' ],
-          children: [ option.label ]
+          children: [
+            ...(isSelected ? [ new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render ] : []),
+            option.label
+          ]
         }
       ]
     });
@@ -150,19 +146,21 @@ export class DropdownList {
         const optionElement = element as ExtendedHTMLElement;
         const optionId = optionElement.getAttribute('data-option-id');
         const isSelected = this.selectedOptions.some(option => option.id === optionId);
+        const optionLabel = this.props.options.find(opt => opt.id === optionId)?.label || '';
 
         if (isSelected) {
           optionElement.addClass('selected');
-          const checkbox = optionElement.querySelector('.mynah-dropdown-list-checkbox');
-          if (checkbox != null) {
-            checkbox.innerHTML = '';
-            checkbox.appendChild(new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render);
+          const labelElement = optionElement.querySelector('.mynah-dropdown-list-option-label');
+          if (labelElement != null) {
+            labelElement.innerHTML = '';
+            labelElement.appendChild(new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render);
+            labelElement.appendChild(document.createTextNode(optionLabel));
           }
         } else {
           optionElement.removeClass('selected');
-          const checkbox = optionElement.querySelector('.mynah-dropdown-list-checkbox');
-          if (checkbox != null) {
-            checkbox.innerHTML = '';
+          const labelElement = optionElement.querySelector('.mynah-dropdown-list-option-label');
+          if (labelElement != null) {
+            labelElement.innerHTML = optionLabel;
           }
         }
       });
