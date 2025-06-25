@@ -127,6 +127,8 @@
 
         select.mynah-form-input {
             padding: 0px var(--mynah-sizing-2);
+            -webkit-appearance: menulist;
+            appearance: menulist;
         }
 
         > .select-auto-width-sizer {
@@ -174,6 +176,7 @@
             color: var(--mynah-color-text-weak);
             pointer-events: none;
             transform: translateX(-25%);
+            visibility: hidden;
         }
         & ~ .mynah-form-input-validation-error-block {
             display: flex;
