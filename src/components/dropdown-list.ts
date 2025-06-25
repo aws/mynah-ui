@@ -9,27 +9,13 @@ import { Button } from './button';
 import { Icon, MynahIcons } from './icon';
 import { generateUID } from '../helper/guid';
 import { MynahUIGlobalEvents } from '../helper/events';
-import { MynahEventNames, MynahPortalNames } from '../static';
-
-export interface DropdownListOption {
-  id: string;
-  label: string;
-  selected?: boolean;
-}
-
-export interface DropdownListProps {
-  title: string;
-  titleIcon?: MynahIcons;
-  description?: string;
-  options: DropdownListOption[];
-  onChange?: (selectedOptions: DropdownListOption[]) => void;
-  testId?: string;
-  classNames?: string[];
-}
+import { DropdownListOption, DropdownListProps, MynahEventNames, MynahPortalNames } from '../static';
 
 export class DropdownList {
   render: ExtendedHTMLElement;
   private readonly props: DropdownListProps;
+  private readonly tabId: string;
+  private readonly messageId: string;
   private dropdownContent: ExtendedHTMLElement | null = null;
   private dropdownPortal: ExtendedHTMLElement | null = null;
   private readonly selectedOptionsContainer: ExtendedHTMLElement;
@@ -42,6 +28,10 @@ export class DropdownList {
     StyleLoader.getInstance().load('components/_dropdown-list.scss');
     this.props = props;
     this.uid = generateUID();
+
+    // Initialize messageId + tabId
+    this.tabId = props.tabId ?? '';
+    this.messageId = props.messageId ?? '';
 
     // Initialize selected options
     this.selectedOptions = props.options.filter(option => option.selected);
@@ -189,7 +179,9 @@ export class DropdownList {
       this.openDropdown();
     } else {
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
-        value: this.selectedOptions.map(opt => opt.id)
+        value: this.selectedOptions,
+        messageId: this.messageId,
+        tabId: this.tabId
       });
       this.closeDropdown();
     }
@@ -365,11 +357,13 @@ export class DropdownList {
     // should trigger on change event as well
     if (this.isOpen && !this.render.contains(e.target as Node)) {
       this.isOpen = false;
+      this.closeDropdown();
       // add event here
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
-        value: this.selectedOptions.map(opt => opt.id)
+        value: this.selectedOptions,
+        messageId: this.messageId,
+        tabId: this.tabId
       });
-      this.closeDropdown();
     }
   };
 

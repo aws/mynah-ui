@@ -30,6 +30,7 @@ import {
   DetailedList,
   TreeNodeDetails,
   Action,
+  DropdownListOption,
 } from './static';
 import { MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -263,7 +264,9 @@ export interface MynahUIProps {
     },
     eventId?: string) => void;
   onDropDownOptionChange?: (
-    value: string []) => void;
+    tabId: string,
+    messageId: string,
+    value: DropdownListOption[]) => void;
   onPromptInputOptionChange?: (
     tabId: string,
     optionsValues: Record<string, string>,
@@ -818,7 +821,7 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DROP_DOWN_OPTION_CHANGE, (data) => {
-      this.props.onDropDownOptionChange?.(data.value);
+      this.props.onDropDownOptionChange?.(data.tabId, data.messageId, data.value);
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_ADD, (data) => {

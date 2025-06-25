@@ -380,6 +380,25 @@ export interface TreeNodeDetails {
   data?: Record<string, string>;
 }
 
+export interface DropdownListOption {
+  id: string;
+  label: string;
+  value: string;
+  selected?: boolean;
+}
+
+export interface DropdownListProps {
+  title: string;
+  titleIcon?: MynahIcons;
+  description?: string;
+  options: DropdownListOption[];
+  onChange?: (selectedOptions: DropdownListOption[]) => void;
+  tabId?: string;
+  messageId?: string;
+  testId?: string;
+  classNames?: string[];
+}
+
 export interface ChatItemContent {
   header?: (ChatItemContent & {
     icon?: MynahIcons | MynahIconsType | CustomIcon;
@@ -441,21 +460,7 @@ export interface ChatItemContent {
   tabbedContent?: Array<ToggleOption & {
     content: ChatItemContent;
   }> | null;
-  dropdownList?: {
-    title: string;
-    titleIcon?: MynahIcons;
-    description?: string;
-    options: Array<{
-      id: string;
-      label: string;
-      selected?: boolean;
-    }>;
-    onChange?: (selectedOptions: Array<{
-      id: string;
-      label: string;
-      selected?: boolean;
-    }>) => void;
-  } | null;
+  dropdownList?: DropdownListProps | null;
   codeBlockActions?: CodeBlockActions | null;
   fullWidth?: boolean;
   padding?: boolean;

@@ -304,8 +304,8 @@ export class ChatWrapper {
               title: 'Read-only commands',
               description: 'Configure run behavior for this session. To adjust global settings, go to auto-approval settings.',
               options: [
-                { id: 'option1', label: 'Auto Run' },
-                { id: 'option2', label: 'Dont Auto Run', selected: true },
+                { id: 'option1', label: 'Auto Run', value: 'ReadOnly' },
+                { id: 'option2', label: 'Dont Auto Run', selected: true, value: 'ReadOnly' },
               ],
               onChange: (selectedOptions) => {
                 console.log('Selected options:', selectedOptions);

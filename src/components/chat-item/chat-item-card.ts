@@ -779,6 +779,8 @@ export class ChatItemCard {
           children: [
             new DropdownList({
               title: this.props.chatItem.dropdownList.title,
+              tabId: this.props.chatItem.dropdownList.tabId,
+              messageId: this.props.chatItem.dropdownList.messageId,
               titleIcon: this.props.chatItem.dropdownList.titleIcon,
               description: this.props.chatItem.dropdownList.description,
               options: this.props.chatItem.dropdownList.options,
