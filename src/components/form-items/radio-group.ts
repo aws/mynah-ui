@@ -43,14 +43,23 @@ export class RadioGroupInternal extends RadioGroupAbstract {
   constructor (props: RadioGroupProps) {
     StyleLoader.getInstance().load('components/_form-input.scss');
     super();
+    // Only add vertical classes for radiogroup type
+    const isRadioGroup = props.type === 'radiogroup';
     this.radioGroupElement = DomBuilder.getInstance().build({
       type: 'div',
       testId: props.wrapperTestId,
-      classNames: [ 'mynah-form-input', ...(props.classNames ?? []) ],
+      classNames: [
+        'mynah-form-input',
+        ...(props.classNames ?? []),
+        ...(isRadioGroup ? [ 'mynah-form-input-vertical' ] : [])
+      ],
       children:
         props.options?.map((option, index) => ({
           type: 'div',
-          classNames: [ 'mynah-form-input-radio-wrapper' ],
+          classNames: [
+            'mynah-form-input-radio-wrapper',
+            ...(isRadioGroup ? [ 'mynah-form-input-radio-wrapper-vertical' ] : [])
+          ],
           children: [ {
             type: 'label',
             testId: props.optionTestId,
