@@ -473,7 +473,6 @@ export interface ChatItem extends ChatItemContent {
   hoverEffect?: boolean;
   status?: Status;
   shimmer?: boolean;
-  border?: boolean;
   collapse?: boolean;
 }
 

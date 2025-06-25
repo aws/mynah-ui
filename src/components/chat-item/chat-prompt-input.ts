@@ -725,8 +725,6 @@ export class ChatPromptInput {
 
     // const subscriptionId =
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'quickActionCommandsHeader', (newHeader: QuickActionCommandsHeader) => {
-      // MynahUITabsStore.getInstance().removeListenerFromDataStore(this.props.tabId, subscriptionId as string, 'quickActionCommandsHeader');
-
       const newHeaderComponent = new TitleDescriptionWithIcon({
         ...newHeader,
         classNames: [ 'mynah-chat-prompt-quick-picks-header', `status-${newHeader.status ?? 'default'}` ]

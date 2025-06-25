@@ -218,7 +218,6 @@ export class ChatItemCard {
       ...(this.props.chatItem.muted === true ? [ 'muted' ] : []),
       ...(this.props.small === true ? [ 'mynah-ui-chat-item-small-card' ] : []),
       ...(this.props.initVisibility === true ? [ 'reveal' ] : []),
-      ...(this.props.chatItem.border === true ? [ 'border' ] : []),
       `mynah-chat-item-card-status-${this.props.chatItem.status ?? 'default'}`,
       `mynah-chat-item-card-content-horizontal-align-${this.props.chatItem.contentHorizontalAlignment ?? 'default'}`,
       'mynah-chat-item-card',
