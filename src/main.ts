@@ -262,6 +262,8 @@ export interface MynahUIProps {
       formItemValues?: Record<string, string>;
     },
     eventId?: string) => void;
+  onDropDownOptionChange?: (
+    value: string []) => void;
   onPromptInputOptionChange?: (
     tabId: string,
     optionsValues: Record<string, string>,
@@ -813,6 +815,10 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_OPTIONS_CHANGE, (data) => {
       this.props.onPromptInputOptionChange?.(data.tabId, data.optionsValues, this.getUserEventId());
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DROP_DOWN_OPTION_CHANGE, (data) => {
+      this.props.onDropDownOptionChange?.(data.value);
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_ADD, (data) => {

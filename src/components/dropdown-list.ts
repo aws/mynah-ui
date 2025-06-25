@@ -130,12 +130,6 @@ export class DropdownList {
     if (this.props.onChange != null) {
       this.props.onChange(this.selectedOptions);
     }
-
-    // Dispatch global event
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FORM_CHANGE, {
-      id: this.uid,
-      value: this.selectedOptions.map(opt => opt.id)
-    });
   };
 
   private readonly updateUI = (): void => {
@@ -145,8 +139,14 @@ export class DropdownList {
       Array.from(optionElements).forEach((element) => {
         const optionElement = element as ExtendedHTMLElement;
         const optionId = optionElement.getAttribute('data-option-id');
+
+        // Handle null case explicitly
+        if (optionId == null) {
+          return;
+        }
+
         const isSelected = this.selectedOptions.some(option => option.id === optionId);
-        const optionLabel = this.props.options.find(opt => opt.id === optionId)?.label || '';
+        const optionLabel = this.props.options.find(opt => opt.id === optionId)?.label ?? '';
 
         if (isSelected) {
           optionElement.addClass('selected');
@@ -188,6 +188,9 @@ export class DropdownList {
     if (this.isOpen) {
       this.openDropdown();
     } else {
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
+        value: this.selectedOptions.map(opt => opt.id)
+      });
       this.closeDropdown();
     }
   };
@@ -320,11 +323,11 @@ export class DropdownList {
       // Calculate position relative to the button
       const buttonRect = this.render.getBoundingClientRect();
       const calculatedTop = buttonRect.bottom + 4; // 4px margin
-      
+
       // Try to find the chat item card container to align with its right edge
-      let chatItemCard = this.render.closest('.mynah-chat-item-card');
+      const chatItemCard = this.render.closest('.mynah-chat-item-card');
       let calculatedLeft: number;
-      
+
       if (chatItemCard != null) {
         // Align dropdown right edge with chat item card right edge
         const cardRect = chatItemCard.getBoundingClientRect();
@@ -358,8 +361,13 @@ export class DropdownList {
   };
 
   private readonly handleClickOutside = (e: MouseEvent): void => {
+    // should trigger on change event as well
     if (this.isOpen && !this.render.contains(e.target as Node)) {
       this.isOpen = false;
+      // add event here
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
+        value: this.selectedOptions.map(opt => opt.id)
+      });
       this.closeDropdown();
     }
   };

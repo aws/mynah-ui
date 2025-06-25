@@ -139,6 +139,9 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 });
             }
         },
+        onDropDownOptionChange: (value: string []) => {
+            Log(`Dropdown Option: ${value}`)
+        },
         onPromptInputButtonClick: (tabId, buttonId) => {
             Log(`Prompt input button ${buttonId} clicked on tab <b>${tabId}</b>`);
         },

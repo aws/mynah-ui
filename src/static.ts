@@ -226,6 +226,7 @@ export enum MynahEventNames {
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
+  DROP_DOWN_OPTION_CHANGE = 'dropDownOptionChange',
   PROMPT_INPUT_OPTIONS_CHANGE = 'promptInputOptionsChange',
   PROMPT_INPUT_BUTTON_CLICK = 'promptInputButtonClick',
   FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
