@@ -417,7 +417,7 @@
         border-radius: var(--mynah-input-radius);
         box-sizing: border-box;
         margin: var(--mynah-chat-wrapper-spacing);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--mynah-shadow-card-border);
         width: calc(100% - 2 * var(--mynah-chat-wrapper-spacing));
     }
 

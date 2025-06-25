@@ -4,17 +4,9 @@
  */
 
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
-import {
-  ChatItemButton,
-  ChatPrompt, DetailedList,
-  FilterOption,
-  KeyMap,
-  MynahEventNames,
-  PromptAttachmentType,
-  QuickActionCommand,
-  QuickActionCommandGroup
-} from '../../static';
-import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
+import { ChatItemButton, ChatPrompt, DetailedList, FilterOption, KeyMap, MynahEventNames, PromptAttachmentType, QuickActionCommand, QuickActionCommandGroup, QuickActionCommandsHeader } from '../../static';
+import { TitleDescriptionWithIcon } from '../title-description-with-icon';
+import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
@@ -724,10 +716,31 @@ export class ChatPromptInput {
         list: detailedListItemsGroup
       });
     }
+
+    const headerInfo: QuickActionCommandsHeader = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommandsHeader');
+    let headerComponent = new TitleDescriptionWithIcon({
+      ...headerInfo,
+      classNames: [ 'mynah-chat-prompt-quick-picks-header', `status-${headerInfo.status ?? 'default'}` ]
+    }).render;
+
+    // const subscriptionId =
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'quickActionCommandsHeader', (newHeader: QuickActionCommandsHeader) => {
+      const newHeaderComponent = new TitleDescriptionWithIcon({
+        ...newHeader,
+        classNames: [ 'mynah-chat-prompt-quick-picks-header', `status-${newHeader.status ?? 'default'}` ]
+      }).render;
+
+      headerComponent.replaceWith(newHeaderComponent);
+      headerComponent = newHeaderComponent;
+    });
+
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-prompt-quick-picks-overlay-wrapper' ],
       children: [
+        ...(this.quickPickType === 'quick-action' && headerInfo != null
+          ? [ headerComponent ]
+          : []),
         this.quickPickItemsSelectorContainer.render
       ]
     });

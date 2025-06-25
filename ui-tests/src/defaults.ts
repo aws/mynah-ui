@@ -1,7 +1,8 @@
 import {
   ChatItemType,
   MynahUITabStoreTab,
-  QuickActionCommandGroup
+  QuickActionCommandGroup,
+  MynahIcons
 } from '@aws/mynah-ui';
 import { Commands, mockFollowups, welcomeMessage } from './mocks/mock-data';
 
@@ -50,6 +51,12 @@ export const defaultDataSet: Partial<MynahUITabStoreTab> = {
       mockFollowups
     ],
     quickActionCommands,
+    quickActionCommandsHeader: {
+      status: 'warning',
+      icon: MynahIcons.INFO,
+      title: 'Q Developer agentic capabilities',
+      description: 'You can now ask Q directly in the chat to generate code, documentation, and unit tests. You don\'t need to explicitly use /dev, /test, or /doc',
+    },
     contextCommands,
     promptInputPlaceholder: 'Type something or "/" for quick action commands or @ for choosing context',
   }
