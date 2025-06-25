@@ -214,7 +214,8 @@ export class DropdownList {
                       icon: this.props.titleIcon,
                       classNames: [
                         'mynah-dropdown-list-title-icon',
-                        ...(this.props.titleIcon === MynahIcons.WARNING ? [ 'mynah-dropdown-list-title-icon-warning' ] : [])
+                        ...(this.props.titleIcon === MynahIcons.WARNING ? [ 'mynah-dropdown-list-title-icon-warning' ] : []),
+                        ...(this.props.titleIcon === MynahIcons.INFO ? [ 'mynah-dropdown-list-title-icon-info' ] : [])
                       ]
                     }).render ]
                   : []),
