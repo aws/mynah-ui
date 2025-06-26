@@ -13,7 +13,7 @@
         justify-content: center;
         align-items: center;
         position: relative;
-        gap: var(--mynah-sizing-1);
+        gap: var(--mynah-sizing-2);
         cursor: pointer;
 
         box-sizing: border-box;
@@ -57,7 +57,7 @@
             > .mynah-ui-icon {
                 position: relative;
                 transition: inherit;
-                opacity: 0.25;
+                opacity: 0;
                 font-size: 85%;
                 z-index: var(--mynah-z-2);
             }
@@ -66,5 +66,19 @@
                 display: none;
             }
         }
+    }
+}
+
+/* Vertical radio group styles */
+.mynah-form-input-vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+.mynah-form-input-radio-wrapper-vertical {
+    display: block;
+
+    &:not(:last-child) {
+        margin-bottom: var(--mynah-sizing-2);
     }
 }

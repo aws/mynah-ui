@@ -25,10 +25,10 @@ export class FeedbackFormComment {
         },
       },
       classNames: [ 'mynah-feedback-form-comment' ],
-      attributes: {
-        value: props.initComment ?? '',
-      },
     });
+
+    // Set the initial value after creating the element
+    this.render.value = props.initComment ?? '';
   }
 
   getComment = (): string => this.render.value;

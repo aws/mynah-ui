@@ -486,6 +486,12 @@ export const welcomeScreenTabData: MynahUITabStoreTab = {
     isSelected: true,
     store: {
         quickActionCommands: qAgentQuickActions,
+        quickActionCommandsHeader: {
+            status: 'warning',
+            icon: MynahIcons.INFO,
+            title: 'Q Developer agentic capabilities',
+            description: 'You can now ask Q directly in the chat to generate code, documentation, and unit tests. You don\'t need to explicitly use /dev, /test, or /doc',
+        },
         tabTitle: 'Welcome to Q',
         tabBackground: true,
         chatItems: [

@@ -9,6 +9,12 @@ import { closeQuickPicks } from './flows/quick-picks/close-quick-picks';
 import { filterQuickPicks } from './flows/quick-picks/filter-quick-picks';
 import { selectQuickPicks } from './flows/quick-picks/select-quick-picks';
 import { renderCharacterCount } from './flows/render-character-count';
+import {
+  renderQuickActionCommandsHeader,
+  verifyQuickActionCommandsHeaderInteraction,
+  verifyQuickActionCommandsHeaderWithoutData,
+  verifyQuickActionCommandsHeaderStatusVariations
+} from './flows/quick-action-commands-header';
 import { progressIndicator } from './flows/prompt-progress-indicator';
 import { parseMarkdown } from './flows/markdown-parser/markdown-parser';
 import { renderInformationCard } from './flows/render-information-card';
@@ -137,6 +143,21 @@ test.describe('Open MynahUI', () => {
     });
     test('should select quick command selector item with enter', async ({ page }) => {
       await selectQuickPicks(page, 'Enter');
+    });
+  });
+
+  test.describe('Quick Action Commands Header', () => {
+    test('should render the quick action commands header', async ({ page }) => {
+      await renderQuickActionCommandsHeader(page);
+    });
+    test('should handle quick action commands header interaction', async ({ page }) => {
+      await verifyQuickActionCommandsHeaderInteraction(page);
+    });
+    test('should not render header when not applicable', async ({ page }) => {
+      await verifyQuickActionCommandsHeaderWithoutData(page);
+    });
+    test('should render header with correct status styling', async ({ page }) => {
+      await verifyQuickActionCommandsHeaderStatusVariations(page);
     });
   });
 
