@@ -506,7 +506,7 @@ export class ChatWrapper {
   private hasImageContextCommand (): boolean {
     const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
     return !((contextCommands?.some(group =>
-      group.commands.some((cmd: QuickActionCommand) => cmd.command === 'image')
+      group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     )) === false);
   }
 
