@@ -18,7 +18,6 @@ export class DropdownList {
   private readonly messageId: string;
   private dropdownContent: ExtendedHTMLElement | null = null;
   private dropdownPortal: ExtendedHTMLElement | null = null;
-  private readonly selectedOptionsContainer: ExtendedHTMLElement;
   private readonly uid: string;
   private isOpen = false;
   private selectedOptions: DropdownListOption[] = [];
@@ -102,89 +101,61 @@ export class DropdownList {
   };
 
   private readonly toggleOption = (option: DropdownListOption): void => {
-    // Single select: replace the entire selection with the new option
-    // Keep the current selection if clicking on already selected option
-    const isAlreadySelected = this.selectedOptions.some(selectedOption => selectedOption.id === option.id);
-    if (isAlreadySelected) {
-      // If clicking on the already selected option, keep it selected (no change)
+    // Skip if already selected
+    if (this.selectedOptions.some(selectedOption => selectedOption.id === option.id)) {
       return;
-    } else {
-      // Otherwise, select only this option
-      this.selectedOptions = [ option ];
     }
 
-    // Update the UI
+    // Select only this option
+    this.selectedOptions = [ option ];
+
+    // Update UI, close dropdown and dispatch event
     this.updateUI();
-
-    // Trigger onChange callback
-    if (this.props.onChange != null) {
-      this.props.onChange(this.selectedOptions);
-    }
+    this.isOpen = false;
+    this.closeDropdown();
+    this.dispatchChangeEvent();
   };
 
   private readonly updateUI = (): void => {
-    // Update the options in the dropdown (only if dropdown is open)
+    // Update dropdown options (if dropdown is open)
     if (this.dropdownContent != null) {
       const optionElements = this.dropdownContent.querySelectorAll('.mynah-dropdown-list-option');
+      const selectedIds = new Set(this.selectedOptions.map(opt => opt.id));
+
       Array.from(optionElements).forEach((element) => {
         const optionElement = element as ExtendedHTMLElement;
         const optionId = optionElement.getAttribute('data-option-id');
+        if (optionId == null) return;
 
-        // Handle null case explicitly
-        if (optionId == null) {
-          return;
-        }
-
-        const isSelected = this.selectedOptions.some(option => option.id === optionId);
+        const isSelected = selectedIds.has(optionId);
         const optionLabel = this.props.options.find(opt => opt.id === optionId)?.label ?? '';
+        const labelElement = optionElement.querySelector('.mynah-dropdown-list-option-label');
+
+        if (labelElement == null) return;
 
         if (isSelected) {
           optionElement.addClass('selected');
-          const labelElement = optionElement.querySelector('.mynah-dropdown-list-option-label');
-          if (labelElement != null) {
-            labelElement.innerHTML = '';
-            labelElement.appendChild(new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render);
-            labelElement.appendChild(document.createTextNode(optionLabel));
-          }
+          labelElement.innerHTML = '';
+          labelElement.appendChild(new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render);
+          labelElement.appendChild(document.createTextNode(optionLabel));
         } else {
           optionElement.removeClass('selected');
-          const labelElement = optionElement.querySelector('.mynah-dropdown-list-option-label');
-          if (labelElement != null) {
-            labelElement.innerHTML = optionLabel;
-          }
+          labelElement.innerHTML = optionLabel;
         }
       });
     }
 
-    // Update the dropdown button label to show the selected option
-    const dropdownButton = this.render.querySelector('.mynah-dropdown-list-button');
-    if (dropdownButton != null) {
-      const buttonLabel = dropdownButton.querySelector('.mynah-button-label');
-      if (buttonLabel != null) {
-        if (this.selectedOptions.length > 0) {
-          // Show only the selected option label
-          buttonLabel.innerHTML = this.selectedOptions[0].label;
-        } else {
-          buttonLabel.innerHTML = this.props.title;
-        }
-      }
+    // Update button label
+    const buttonLabel = this.render.querySelector('.mynah-dropdown-list-button .mynah-button-label');
+    if (buttonLabel != null) {
+      buttonLabel.innerHTML = this.selectedOptions.length > 0 ? this.selectedOptions[0].label : this.props.title;
     }
   };
 
   private readonly toggleDropdown = (e: Event): void => {
     e.stopPropagation();
     this.isOpen = !this.isOpen;
-
-    if (this.isOpen) {
-      this.openDropdown();
-    } else {
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
-        value: this.selectedOptions,
-        messageId: this.messageId,
-        tabId: this.tabId
-      });
-      this.closeDropdown();
-    }
+    this.isOpen ? this.openDropdown() : this.closeDropdown();
   };
 
   private readonly openDropdown = (): void => {
@@ -268,72 +239,59 @@ export class DropdownList {
   private readonly isElementVisible = (element: Element): boolean => {
     const rect = element.getBoundingClientRect();
 
-    // Check if element is visible within its scrollable parent containers
-    let parent = element.parentElement;
-    while (parent != null) {
-      const parentRect = parent.getBoundingClientRect();
-      const parentStyle = window.getComputedStyle(parent);
+    // Check viewport bounds first (quick check)
+    const viewportHeight = window.innerHeight ?? document.documentElement.clientHeight;
+    const viewportWidth = window.innerWidth ?? document.documentElement.clientWidth;
+    if (rect.bottom < 0 || rect.top > viewportHeight || rect.right < 0 || rect.left > viewportWidth) {
+      return false;
+    }
 
-      // Check if parent has overflow hidden/scroll/auto
-      const hasOverflow = parentStyle.overflow !== 'visible' ||
-                         parentStyle.overflowX !== 'visible' ||
-                         parentStyle.overflowY !== 'visible';
+    // Check parent containers with overflow
+    for (let parent = element.parentElement; parent != null; parent = parent.parentElement) {
+      const parentStyle = window.getComputedStyle(parent);
+      const hasOverflow = [ 'overflow', 'overflowX', 'overflowY' ].some(
+        prop => parentStyle[prop as any] !== 'visible'
+      );
 
       if (hasOverflow) {
-        // Check if element is visible within this parent's bounds
-        const isVisibleInParent = !(
-          rect.bottom < parentRect.top ||
-          rect.top > parentRect.bottom ||
-          rect.right < parentRect.left ||
-          rect.left > parentRect.right
-        );
-
-        if (!isVisibleInParent) {
+        const parentRect = parent.getBoundingClientRect();
+        if (rect.bottom < parentRect.top || rect.top > parentRect.bottom ||
+            rect.right < parentRect.left || rect.left > parentRect.right) {
           return false;
         }
       }
-
-      parent = parent.parentElement;
     }
 
-    // Also check viewport bounds
-    const viewportHeight = window.innerHeight ?? document.documentElement.clientHeight;
-    const viewportWidth = window.innerWidth ?? document.documentElement.clientWidth;
-
-    return !(rect.bottom < 0 || rect.top > viewportHeight || rect.right < 0 || rect.left > viewportWidth);
+    return true;
   };
 
   private readonly updateDropdownPosition = (): void => {
-    if (this.dropdownPortal != null) {
-      // Check if the button is visible in the viewport
-      if (!this.isElementVisible(this.render)) {
-        // If button is not visible, close the dropdown
-        this.isOpen = false;
-        this.closeDropdown();
-        return;
-      }
+    if (this.dropdownPortal == null) return;
 
-      // Calculate position relative to the button
-      const buttonRect = this.render.getBoundingClientRect();
-      const calculatedTop = buttonRect.bottom + 4; // 4px margin
-
-      // Try to find the chat item card container to align with its right edge
-      const chatItemCard = this.render.closest('.mynah-chat-item-card');
-      let calculatedLeft: number;
-
-      if (chatItemCard != null) {
-        // Align dropdown right edge with chat item card right edge
-        const cardRect = chatItemCard.getBoundingClientRect();
-        calculatedLeft = cardRect.right - 250; // 250px is dropdown width
-      } else {
-        // Fallback to button alignment if chat item card not found
-        calculatedLeft = buttonRect.right - 250;
-      }
-
-      // Update the portal position
-      this.dropdownPortal.style.top = `${calculatedTop}px`;
-      this.dropdownPortal.style.left = `${calculatedLeft}px`;
+    // Close dropdown if button is not visible
+    if (!this.isElementVisible(this.render)) {
+      this.isOpen = false;
+      this.closeDropdown();
+      return;
     }
+
+    // Calculate position
+    const buttonRect = this.render.getBoundingClientRect();
+    const DROPDOWN_WIDTH = 250; // px
+    const MARGIN = 4; // px
+
+    // Position dropdown below button with margin
+    const calculatedTop = buttonRect.bottom + MARGIN;
+
+    // Align with chat item card if present, otherwise align with button
+    const chatItemCard = this.render.closest('.mynah-chat-item-card');
+    const calculatedLeft = (chatItemCard != null)
+      ? chatItemCard.getBoundingClientRect().right - DROPDOWN_WIDTH
+      : buttonRect.right - DROPDOWN_WIDTH;
+
+    // Update position
+    this.dropdownPortal.style.top = `${calculatedTop}px`;
+    this.dropdownPortal.style.left = `${calculatedLeft}px`;
   };
 
   private readonly closeDropdown = (): void => {
@@ -354,16 +312,10 @@ export class DropdownList {
   };
 
   private readonly handleClickOutside = (e: MouseEvent): void => {
-    // should trigger on change event as well
     if (this.isOpen && !this.render.contains(e.target as Node)) {
       this.isOpen = false;
       this.closeDropdown();
-      // add event here
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
-        value: this.selectedOptions,
-        messageId: this.messageId,
-        tabId: this.tabId
-      });
+      this.dispatchChangeEvent();
     }
   };
 
@@ -376,6 +328,19 @@ export class DropdownList {
       optionIds.includes(option.id)
     );
     this.updateUI();
+  };
+
+  private readonly dispatchChangeEvent = (): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
+      value: this.selectedOptions,
+      messageId: this.messageId,
+      tabId: this.tabId
+    });
+
+    // Also trigger onChange callback if provided
+    if (this.props.onChange != null) {
+      this.props.onChange(this.selectedOptions);
+    }
   };
 
   public readonly destroy = (): void => {

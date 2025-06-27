@@ -2,6 +2,37 @@
 
 There are a number of models for the various items on the screen for MynahUI. Let's start from the top and go in detail one-by-one.
 
+## DropdownList Component
+
+The `DropdownList` component provides a customizable dropdown selector that allows users to choose from a list of options. It supports single selection with visual feedback and can be positioned relative to its parent elements.
+
+```typescript
+interface DropdownListOption {
+  id: string;      // Unique identifier for the option
+  label: string;   // Display text for the option
+  value: string;   // Value associated with the option
+  selected?: boolean; // Whether the option is initially selected
+}
+
+interface DropdownListProps {
+  title: string;                // The title displayed in the dropdown header
+  titleIcon?: MynahIcons;       // Icon displayed next to the title
+  description?: string;         // Description text displayed below the title
+  options: DropdownListOption[]; // Array of options to display in the dropdown
+  onChange?: (selectedOptions: DropdownListOption[]) => void; // Callback when selection changes
+  tabId?: string;              // Tab identifier for event dispatching
+  messageId?: string;          // Message identifier for event dispatching
+  testId?: string;             // Test identifier for automated testing
+  classNames?: string[];       // Additional CSS class names to apply
+}
+```
+
+When a dropdown option is selected, the component dispatches a `MynahEventNames.DROP_DOWN_OPTION_CHANGE` event with the selected options.
+
+<p align="center">
+  <img src="./img/data-model/components/dropdown-list.png" alt="DropdownList component" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
 ## Tab Data Store
 
 All information you can set related to a tab. 
@@ -1359,6 +1390,7 @@ interface ChatItemContent {
     content: ChatItemContent;
   }> | null;
   codeBlockActions?: CodeBlockActions | null;
+  dropdownList?: DropdownListProps | null;
   fullWidth?: boolean;
   padding?: boolean;
   wrapCodes?: boolean;
