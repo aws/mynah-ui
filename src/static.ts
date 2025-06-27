@@ -475,6 +475,7 @@ export interface ChatItem extends ChatItemContent {
   status?: Status;
   shimmer?: boolean;
   collapse?: boolean;
+  border?: boolean;
 }
 
 export interface ValidationPattern {
