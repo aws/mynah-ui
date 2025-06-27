@@ -466,7 +466,6 @@ export interface ChatItem extends ChatItemContent {
   contentHorizontalAlignment?: 'default' | 'center';
   canBeVoted?: boolean;
   canBeDismissed?: boolean;
-  border?: boolean;
   title?: string;
   icon?: MynahIcons | MynahIconsType | CustomIcon;
   iconForegroundStatus?: Status;
