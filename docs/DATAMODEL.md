@@ -3598,4 +3598,11 @@ export interface DetailedListItem {
   keywords?: string[];
 }
 }
+```ollowupText?: string;
+  clickable?: boolean;
+  actions?: ChatItemButton[];
+  children?: DetailedListItemGroup[];
+  keywords?: string[];
+}
+}
 ```

@@ -227,6 +227,7 @@ export enum MynahEventNames {
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
   DROP_DOWN_OPTION_CHANGE = 'dropDownOptionChange',
+  DROPDOWN_LINK_CLICK = 'dropDownLinkClick',
   PROMPT_INPUT_OPTIONS_CHANGE = 'promptInputOptionsChange',
   PROMPT_INPUT_BUTTON_CLICK = 'promptInputButtonClick',
   FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
@@ -391,6 +392,11 @@ export interface DropdownListProps {
   title: string;
   titleIcon?: MynahIcons;
   description?: string;
+  descriptionLink?: {
+    id: string;
+    text: string;
+    onClick?: () => void;
+  };
   options: DropdownListOption[];
   onChange?: (selectedOptions: DropdownListOption[]) => void;
   tabId?: string;

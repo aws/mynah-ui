@@ -145,6 +145,9 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
             Log(`Dropdown Option: ${messageId}`)
             Log(`Dropdown Option: ${tabId}`)
         },
+        onDropDownLinkClick: (tabId, actionId) => {
+            Log(`Dropdown link click with id ${tabId}, ${actionId}`)
+        },
         onPromptInputButtonClick: (tabId, buttonId) => {
             Log(`Prompt input button ${buttonId} clicked on tab <b>${tabId}</b>`);
         },

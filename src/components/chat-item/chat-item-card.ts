@@ -783,6 +783,7 @@ export class ChatItemCard {
               messageId: this.props.chatItem.dropdownList.messageId,
               titleIcon: this.props.chatItem.dropdownList.titleIcon,
               description: this.props.chatItem.dropdownList.description,
+              descriptionLink: this.props.chatItem.dropdownList.descriptionLink,
               options: this.props.chatItem.dropdownList.options,
               onChange: this.props.chatItem.dropdownList.onChange
             }).render

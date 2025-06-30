@@ -1014,6 +1014,23 @@ onDropDownOptionChange?: (
 
 ---
 
+### `onDropDownLinkClick`
+
+This event will be fired when a user clicks on a link within a dropdown list's description. It passes the `tabId` and the `actionId` of the clicked link.
+
+```typescript
+...
+onDropDownLinkClick?: (
+    tabId: string,
+    actionId: string): void => {
+      console.log(`Dropdown link clicked in tab: ${tabId}`);
+      console.log(`Link action ID: ${actionId}`);
+    };
+...
+```
+
+---
+
 ### `onCustomFormAction`
 
 This event will be fired when user clicks one of the buttons inside a custom popup form. It will pass `tabId` and `action`. But `action` argument contains the `id` and `text` of the action clicked and the values for each form item with string values. 

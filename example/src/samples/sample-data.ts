@@ -537,7 +537,11 @@ _Generate code, scan for issues, and more._`,
                     messageId: "1",
                     tabId: "hello",
                     titleIcon: MynahIcons.WARNING,
-                    description: 'Configure run behavior for this session. To adjust global settings, go to auto-approval settings.',
+                    description: 'Configure run behavior for this session. To adjust global settings, go to',
+                    descriptionLink: {
+                        id: "button-id",
+                        text: 'Auto-approve settings',
+                    },
                     options: [
                     { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
                     { id: 'option2', label: 'Auto run', value: 'Destructive' },

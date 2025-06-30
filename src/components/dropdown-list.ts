@@ -22,6 +22,7 @@ export class DropdownList {
   private isOpen = false;
   private selectedOptions: DropdownListOption[] = [];
   private dropdownIcon: ExtendedHTMLElement;
+  private readonly sheetOpenListenerId: string | null = null;
 
   constructor (props: DropdownListProps) {
     StyleLoader.getInstance().load('components/_dropdown-list.scss');
@@ -65,8 +66,11 @@ export class DropdownList {
       ]
     });
 
-    // Add click outside listener to close dropdown
-    document.addEventListener('click', this.handleClickOutside);
+    // Add click outside listener to close dropdown (use capture phase to catch events before stopPropagation)
+    document.addEventListener('click', this.handleClickOutside, true);
+
+    // Listen for sheet/overlay open events to close dropdown
+    this.sheetOpenListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_SHEET, this.handleSheetOpen);
   }
 
   private readonly createOptionElement = (option: DropdownListOption): ExtendedHTMLElement => {
@@ -152,6 +156,14 @@ export class DropdownList {
     }
   };
 
+  private readonly onLinkClick = (buttonId: string): void => {
+    console.log('Link Clicked');
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROPDOWN_LINK_CLICK, {
+      tabId: this.props.tabId,
+      actionId: buttonId
+    });
+  };
+
   private readonly toggleDropdown = (e: Event): void => {
     e.stopPropagation();
     this.isOpen = !this.isOpen;
@@ -193,7 +205,28 @@ export class DropdownList {
               ? [ {
                   type: 'p',
                   classNames: [ 'mynah-dropdown-list-description' ],
-                  children: [ this.props.description ]
+                  children: [
+                    this.props.description,
+                    ...(this.props.descriptionLink != null
+                      ? (() => {
+                          const descriptionLink = this.props.descriptionLink;
+                          return [ {
+                            type: 'button',
+                            classNames: [ 'mynah-dropdown-list-description-link' ],
+                            attributes: {
+                              style: 'color: #0073bb; background: none; border: none; padding: 0; margin-left: 4px; cursor: pointer; font-size: inherit; font-family: inherit;'
+                            },
+                            events: {
+                              click: (e: Event) => {
+                                e.stopPropagation();
+                                this.onLinkClick(descriptionLink.id);
+                              }
+                            },
+                            children: [ descriptionLink.text ]
+                          } ];
+                        })()
+                      : [])
+                  ]
                 } ]
               : [])
           ]
@@ -312,7 +345,29 @@ export class DropdownList {
   };
 
   private readonly handleClickOutside = (e: MouseEvent): void => {
-    if (this.isOpen && !this.render.contains(e.target as Node)) {
+    if (!this.isOpen) return;
+
+    const target = e.target as Node;
+
+    // Don't close if clicking inside the dropdown portal
+    if (this.dropdownPortal?.contains(target) ?? false) {
+      return;
+    }
+
+    // Don't close if clicking on this dropdown's button
+    if (this.render.contains(target)) {
+      return;
+    }
+
+    // Close the dropdown for any other click
+    this.isOpen = false;
+    this.closeDropdown();
+    this.dispatchChangeEvent();
+  };
+
+  private readonly handleSheetOpen = (): void => {
+    // Close dropdown when any sheet/overlay opens
+    if (this.isOpen) {
       this.isOpen = false;
       this.closeDropdown();
       this.dispatchChangeEvent();
@@ -344,7 +399,12 @@ export class DropdownList {
   };
 
   public readonly destroy = (): void => {
-    document.removeEventListener('click', this.handleClickOutside);
+    document.removeEventListener('click', this.handleClickOutside, true);
+
+    // Remove sheet open listener if it exists
+    if (this.sheetOpenListenerId != null) {
+      MynahUIGlobalEvents.getInstance().removeListener(MynahEventNames.OPEN_SHEET, this.sheetOpenListenerId);
+    }
 
     // Remove scroll and resize listeners if dropdown is open
     if (this.isOpen) {
