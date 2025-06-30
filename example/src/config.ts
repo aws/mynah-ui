@@ -215,6 +215,12 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
                 description:
                     'You can set the position of the followups too. By simply setting the type of the ChatItem.',
             },
+            {
+                command: Commands.BORDERED_CARDS,
+                icon: MynahIcons.INFO,
+                description:
+                    'ChatItem cards with border styling for important notifications or reroute messages.',
+            },
         ],
     },
     {

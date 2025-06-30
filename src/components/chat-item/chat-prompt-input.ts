@@ -734,11 +734,18 @@ export class ChatPromptInput {
       headerComponent = newHeaderComponent;
     });
 
+    // Only show header if it has meaningful content
+    const hasHeaderContent = headerInfo != null && (
+      (headerInfo.title != null && headerInfo.title.trim() !== '') ||
+      (headerInfo.description != null && headerInfo.description.trim() !== '') ||
+      headerInfo.icon != null
+    );
+
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-chat-prompt-quick-picks-overlay-wrapper' ],
       children: [
-        ...(this.quickPickType === 'quick-action' && headerInfo != null
+        ...(this.quickPickType === 'quick-action' && hasHeaderContent
           ? [ headerComponent ]
           : []),
         this.quickPickItemsSelectorContainer.render

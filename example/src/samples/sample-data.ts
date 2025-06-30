@@ -577,6 +577,10 @@ export const defaultFollowUps: ChatItem = {
                 pillText: 'Cards with headers',
             },
             {
+                command: Commands.BORDERED_CARDS,
+                pillText: 'Bordered cards',
+            },
+            {
                 command: Commands.SUMMARY_CARD,
                 pillText: 'Card with summary field',
             },
@@ -1251,6 +1255,7 @@ export const exampleCustomRendererWithDomBuilderJson: ChatItem = {
     ],
 };
 
+
 export const exampleDownloadFile: ChatItem = {
     messageId: new Date().getTime().toString(),
     type: ChatItemType.ANSWER,
@@ -1297,13 +1302,13 @@ export const exampleInformationCard = (
     };
 };
 
-export const exampleBorderCard = (): ChatItem => {
+export const exampleBorderedCard = (): ChatItem => {
     return {
         messageId: generateUID(),
         type: ChatItemType.ANSWER,
         border: true,
-        padding: true,
         header: {
+            padding: true,
             iconForegroundStatus: 'warning',
             icon: MynahIcons.INFO,
             body: '### /dev is going away soon!'
