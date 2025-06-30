@@ -15,6 +15,7 @@
     transform-origin: center bottom;
     gap: var(--mynah-sizing-4);
     z-index: var(--mynah-z-1);
+
     &-status {
         @each $status in $mynah-statuses {
             &-#{$status} {
@@ -420,6 +421,10 @@
                 display: flex;
                 flex-flow: row nowrap;
                 align-items: center;
+                // Adding background color and border for chat summary header
+                background-color: var(--mynah-card-bg);
+                border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+                border-radius: var(--mynah-card-radius);
                 > .mynah-chat-item-summary-button {
                     margin-right: calc(-1 * var(--mynah-sizing-1));
                 }
@@ -427,7 +432,6 @@
             > .mynah-chat-item-card-summary-collapsed-content {
                 display: none;
                 flex-flow: column nowrap;
-                gap: var(--mynah-chat-wrapper-spacing);
             }
             &.show-summary > .mynah-chat-item-card-summary-collapsed-content {
                 display: flex;

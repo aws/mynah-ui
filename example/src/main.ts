@@ -39,6 +39,7 @@ import {
     sampleAllInOneList,
     sampleTableList,
     exampleInformationCard,
+    exampleBorderedCard,
     exploreTabData,
     qAgentQuickActions,
     welcomeScreenTabData,
@@ -1088,7 +1089,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         },
 
         onContextSelected(contextItem, tabId) {
-            if (contextItem.command === 'image') {
+            if (contextItem.command.toLowerCase() === 'image') {
                 const fileInput = document.createElement('input');
                 fileInput.type = 'file';
                 fileInput.accept = 'image/*';
@@ -1732,6 +1733,10 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         ),
                     );
                     mynahUI.addChatItem(tabId, exampleInformationCard('success', 'Successfully completed this task!'));
+                    mynahUI.addChatItem(tabId, defaultFollowUps);
+                    break;
+                case Commands.BORDERED_CARDS:
+                    mynahUI.addChatItem(tabId, exampleBorderedCard());
                     mynahUI.addChatItem(tabId, defaultFollowUps);
                     break;
                 case Commands.CONFIRMATION_BUTTONS:

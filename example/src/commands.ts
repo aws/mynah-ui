@@ -21,6 +21,7 @@ export enum Commands {
     INFORMATION_CARDS = '/information-cards',
     CONFIRMATION_BUTTONS = '/confirmation-buttons',
     BUTTONS = '/buttons',
+    BORDERED_CARDS = '/bordered-cards',
 
     NOTIFY = '/show-notification',
     CLEAR = '/clear',

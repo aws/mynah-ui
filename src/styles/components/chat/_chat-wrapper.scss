@@ -1,4 +1,5 @@
 @import '../../mixins';
+@import '../../scss-variables';
 
 .mynah-chat-prompt-overlay-buttons-container {
     display: inline-flex;
@@ -250,7 +251,28 @@
     max-height: 70vh;
     height: auto;
     display: flex;
+    flex-direction: column;
     overflow: hidden;
+
+    // Quick pick selector info header styling
+    > .mynah-chat-prompt-quick-picks-header {
+        padding: var(--mynah-sizing-3);
+        > .mynah-ui-title-description-icon-title {
+            font-weight: bold;
+            color: var(--mynah-color-text-strong);
+        }
+        > .mynah-ui-title-description-icon-description {
+            color: var(--mynah-color-text-weak);
+        }
+        @each $status in $mynah-statuses {
+            &.status-#{$status} {
+                > .mynah-ui-title-description-icon-icon {
+                    color: var(--mynah-color-status-#{$status});
+                }
+            }
+        }
+    }
+
     > .mynah-detailed-list {
         padding: var(--mynah-sizing-2);
         flex: 1;

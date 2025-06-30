@@ -78,7 +78,7 @@ export class PromptTextInput {
           // Check if image command exists in context commands to make the feature consistent
           const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
           const hasImageCommand = contextCommands?.some(group =>
-            group.commands.some(cmd => cmd.command === 'image')
+            group.commands.some(cmd => cmd.command.toLowerCase() === 'image')
           );
 
           if (hasImageCommand ?? false) {

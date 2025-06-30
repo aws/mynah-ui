@@ -43,6 +43,13 @@ export interface QuickActionCommandGroup {
   actions?: Action[];
   commands: QuickActionCommand[];
 }
+
+export interface QuickActionCommandsHeader {
+  icon?: MynahIcons | MynahIconsType;
+  title?: string;
+  description?: string;
+  status?: Status;
+}
 /**
  * data store model to update the mynah ui partially or fully
  */
@@ -91,6 +98,10 @@ export interface MynahUIDataModel {
   * Quick Action commands to show when user hits / to the input initially
   */
   quickActionCommands?: QuickActionCommandGroup[];
+  /**
+  * Quick Action commands header information block
+  */
+  quickActionCommandsHeader?: QuickActionCommandsHeader;
   /**
   * Context commands to show when user hits @ to the input any point
   */
@@ -489,6 +500,8 @@ export interface ChatItem extends ChatItemContent {
   hoverEffect?: boolean;
   status?: Status;
   shimmer?: boolean;
+  collapse?: boolean;
+  border?: boolean;
 }
 
 export interface ValidationPattern {
