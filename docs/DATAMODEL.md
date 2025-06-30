@@ -30,7 +30,7 @@ interface DropdownListProps {
 When a dropdown option is selected, the component dispatches a `MynahEventNames.DROP_DOWN_OPTION_CHANGE` event with the selected options.
 
 <p align="center">
-  <img src="./img/data-model/components/dropdown-list.png" alt="DropdownList component" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/data-model/chatItems/dropdown-list.png" alt="DropdownList component" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ## Tab Data Store

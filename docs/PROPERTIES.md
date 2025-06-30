@@ -1009,7 +1009,7 @@ onDropDownOptionChange?: (
 ```
 
 <p align="center">
-  <img src="./img/components/dropdown-list.png" alt="Dropdown List" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
+  <img src="./img/onDropDownOptionChange.png" alt="Dropdown List" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -1028,6 +1028,11 @@ onDropDownLinkClick?: (
     };
 ...
 ```
+
+<p align="center">
+  <img src="./img/onDropDownLinkClick.png" alt="Dropdown List" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
 
 ---
 
