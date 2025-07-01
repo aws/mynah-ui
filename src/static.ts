@@ -412,7 +412,6 @@ export interface DropdownListProps {
   onChange?: (selectedOptions: DropdownListOption[]) => void;
   tabId?: string;
   messageId?: string;
-  testId?: string;
   classNames?: string[];
 }
 

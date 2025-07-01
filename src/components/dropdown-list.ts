@@ -10,6 +10,7 @@ import { Icon, MynahIcons } from './icon';
 import { generateUID } from '../helper/guid';
 import { MynahUIGlobalEvents } from '../helper/events';
 import { DropdownListOption, DropdownListProps, MynahEventNames, MynahPortalNames } from '../static';
+import testIds from '../helper/test-ids';
 
 export class DropdownList {
   render: ExtendedHTMLElement;
@@ -47,13 +48,14 @@ export class DropdownList {
       onClick: this.toggleDropdown,
       primary: false,
       status: 'clear',
-      classNames: [ 'mynah-dropdown-list-button' ]
+      classNames: [ 'mynah-dropdown-list-button' ],
+      testId: testIds.dropdownList.button
     }).render;
 
     // Create the main container (without dropdown content)
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      testId: props.testId,
+      testId: testIds.dropdownList.wrapper,
       classNames: [
         'mynah-dropdown-list-wrapper',
         ...(props.classNames ?? [])
@@ -78,6 +80,7 @@ export class DropdownList {
 
     return DomBuilder.getInstance().build({
       type: 'div',
+      testId: testIds.dropdownList.option,
       classNames: [
         'mynah-dropdown-list-option',
         ...(isSelected ? [ 'selected' ] : [])
@@ -94,6 +97,7 @@ export class DropdownList {
       children: [
         {
           type: 'span',
+          testId: testIds.dropdownList.optionLabel,
           classNames: [ 'mynah-dropdown-list-option-label' ],
           children: [
             ...(isSelected ? [ new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render ] : []),
@@ -196,6 +200,7 @@ export class DropdownList {
                   : []),
                 {
                   type: 'span',
+                  testId: testIds.dropdownList.title,
                   classNames: [ 'mynah-dropdown-list-title-text' ],
                   children: [ this.props.title ]
                 }
@@ -204,6 +209,7 @@ export class DropdownList {
             ...(this.props.description != null
               ? [ {
                   type: 'p',
+                  testId: testIds.dropdownList.description,
                   classNames: [ 'mynah-dropdown-list-description' ],
                   children: [
                     this.props.description,
@@ -244,6 +250,7 @@ export class DropdownList {
       `${MynahPortalNames.OVERLAY}-dropdown-${this.uid}`,
       {
         type: 'div',
+        testId: testIds.dropdownList.portal,
         classNames: [ 'mynah-dropdown-list-portal' ],
         attributes: {
           style: 'position: fixed; z-index: 9999;'
