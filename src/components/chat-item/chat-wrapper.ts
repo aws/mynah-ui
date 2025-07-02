@@ -55,32 +55,6 @@ export class ChatWrapper {
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
   render: ExtendedHTMLElement;
 
-  /**
-   * Static method to remove drag overlays from a chat wrapper element
-   */
-  private static removeDragOverlays (chatWrapperElement: ExtendedHTMLElement): void {
-    chatWrapperElement.removeClass('drag-over');
-
-    // Force immediate removal of all overlays
-    const dragOverlays = chatWrapperElement.getElementsByClassName('mynah-drag-overlay-content');
-    Array.from(dragOverlays).forEach(overlay => overlay.remove());
-
-    const blurOverlays = chatWrapperElement.getElementsByClassName('mynah-drag-blur-overlay');
-    Array.from(blurOverlays).forEach(overlay => overlay.remove());
-
-    // Fallback: ensure overlays are removed even if browser delays
-    setTimeout(() => {
-      const remainingDragOverlays = chatWrapperElement.getElementsByClassName('mynah-drag-overlay-content');
-      const remainingBlurOverlays = chatWrapperElement.getElementsByClassName('mynah-drag-blur-overlay');
-
-      if (remainingDragOverlays.length > 0 || remainingBlurOverlays.length > 0) {
-        Array.from(remainingDragOverlays).forEach(overlay => overlay.remove());
-        Array.from(remainingBlurOverlays).forEach(overlay => overlay.remove());
-        chatWrapperElement.removeClass('drag-over');
-      }
-    }, 0);
-  }
-
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
 
@@ -258,13 +232,13 @@ export class ChatWrapper {
           cancelEvent(e);
           // Only remove if we're leaving the wrapper entirely (not just moving to a child element)
           if (e.relatedTarget === null || !this.render.contains(e.relatedTarget as Node)) {
-            ChatWrapper.removeDragOverlays(this.render);
+            this.removeDragOverlays();
           }
         },
         drop: (e: DragEvent) => {
           if (!this.hasImageContextCommand()) return;
           cancelEvent(e);
-          ChatWrapper.removeDragOverlays(this.render);
+          this.removeDragOverlays();
 
           // Force browser repaint before heavy processing
           void this.render.offsetHeight;
@@ -282,7 +256,7 @@ export class ChatWrapper {
         dragend: (e: DragEvent) => {
           if (!this.hasImageContextCommand()) return;
           // Ensure overlays are removed when drag ends
-          ChatWrapper.removeDragOverlays(this.render);
+          this.removeDragOverlays();
         }
       },
       children: [
@@ -522,6 +496,32 @@ export class ChatWrapper {
     return !((contextCommands?.some(group =>
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     )) === false);
+  }
+
+  /**
+   * Removes drag overlays from this chat wrapper element
+   */
+  private removeDragOverlays (): void {
+    this.render.removeClass('drag-over');
+
+    // Force immediate removal of all overlays
+    const dragOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
+    Array.from(dragOverlays).forEach(overlay => overlay.remove());
+
+    const blurOverlays = this.render.getElementsByClassName('mynah-drag-blur-overlay');
+    Array.from(blurOverlays).forEach(overlay => overlay.remove());
+
+    // Fallback: ensure overlays are removed even if browser delays
+    setTimeout(() => {
+      const remainingDragOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
+      const remainingBlurOverlays = this.render.getElementsByClassName('mynah-drag-blur-overlay');
+
+      if (remainingDragOverlays.length > 0 || remainingBlurOverlays.length > 0) {
+        Array.from(remainingDragOverlays).forEach(overlay => overlay.remove());
+        Array.from(remainingBlurOverlays).forEach(overlay => overlay.remove());
+        this.render.removeClass('drag-over');
+      }
+    }, 0);
   }
 
   public destroy = (): void => {
