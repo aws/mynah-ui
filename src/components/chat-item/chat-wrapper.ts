@@ -268,7 +268,7 @@ export class ChatWrapper {
 
           // Force browser repaint before heavy processing
           void this.render.offsetHeight;
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_INSERTED, { tabId: this.props.tabId });
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_TOP_BAR_CLICKED, { tabId: this.props.tabId });
           const files = Array.from(e.dataTransfer?.files ?? []);
           files.filter(file => file.type.startsWith('image/'));
           // Get the current cursor position of prompt input

@@ -207,6 +207,7 @@ export class PromptTextInput {
           this.insertContextItem(command, insertPos);
           insertPos = this.getCursorPos();
         });
+        this.focus();
       }
     });
 
