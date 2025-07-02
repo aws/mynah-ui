@@ -1791,7 +1791,11 @@ mkdir -p src/ lalalaaaa
                 },
             ],
         },
-        body: 'mkdir -p src/ lalalaaaa',
+        body: `
+\`\`\`bash
+mkdir -p src/ lalalaaaa
+\`\`\`
+`,
         dropdownList: {
             title: 'Destructive commands',
             messageId: "1",
@@ -1803,8 +1807,8 @@ mkdir -p src/ lalalaaaa
                 text: 'Auto-approve settings',
             },
             options: [
-            { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
-            { id: 'option2', label: 'Auto run', value: 'Destructive' },
+                { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
+                { id: 'option2', label: 'Auto run', value: 'Destructive' },
             ],
             onChange: (selectedOptions) => {
                 console.log('Selected options:', selectedOptions);

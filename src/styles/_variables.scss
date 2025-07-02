@@ -16,6 +16,13 @@
     --mynah-button-border-width: 1px;
     --mynah-border-width: 1px;
 
+    // Dropdown component sizing
+    --mynah-dropdown-width: 250px;
+    --mynah-dropdown-max-height: 300px;
+    --mynah-dropdown-min-width: 200px;
+    --mynah-dropdown-option-min-height: var(--mynah-sizing-6);
+    --mynah-dropdown-margin: var(--mynah-sizing-1);
+
     // ======
     // Colors
     // ======
@@ -110,6 +117,9 @@
 
     --mynah-color-button: var(--vscode-button-background);
     --mynah-color-button-reverse: var(--vscode-button-foreground);
+    --mynah-color-button-primary: var(--vscode-button-background, var(--mynah-color-button));
+    --mynah-color-button-primary-hover: var(--vscode-button-hoverBackground, var(--mynah-color-button));
+    --mynah-color-button-primary-light: var(--vscode-list-activeSelectionBackground, rgba(0, 122, 255, 0.1));
     --mynah-color-alternate: var(--vscode-button-secondaryBackground);
     --mynah-color-alternate-reverse: var(--vscode-button-secondaryForeground);
     --mynah-input-bg: var(--vscode-input-background, var(--mynah-card-bg));

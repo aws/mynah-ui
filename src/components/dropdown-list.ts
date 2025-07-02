@@ -25,6 +25,16 @@ export class DropdownList {
   private dropdownIcon: ExtendedHTMLElement;
   private readonly sheetOpenListenerId: string | null = null;
 
+  // Helper method to get CSS variable values
+  private getCSSVariableValue (variableName: string, fallback: number): number {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
+    if (value.length > 0) {
+      const numericValue = parseFloat(value);
+      return isNaN(numericValue) ? fallback : numericValue;
+    }
+    return fallback;
+  }
+
   constructor (props: DropdownListProps) {
     StyleLoader.getInstance().load('components/_dropdown-list.scss');
     this.props = props;
@@ -161,7 +171,6 @@ export class DropdownList {
   };
 
   private readonly onLinkClick = (buttonId: string): void => {
-    console.log('Link Clicked');
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROPDOWN_LINK_CLICK, {
       tabId: this.props.tabId,
       actionId: buttonId
@@ -219,9 +228,6 @@ export class DropdownList {
                           return [ {
                             type: 'button',
                             classNames: [ 'mynah-dropdown-list-description-link' ],
-                            attributes: {
-                              style: 'color: #0073bb; background: none; border: none; padding: 0; margin-left: 4px; cursor: pointer; font-size: inherit; font-family: inherit;'
-                            },
                             events: {
                               click: (e: Event) => {
                                 e.stopPropagation();
@@ -315,19 +321,19 @@ export class DropdownList {
       return;
     }
 
-    // Calculate position
+    // Calculate position using CSS variables
     const buttonRect = this.render.getBoundingClientRect();
-    const DROPDOWN_WIDTH = 250; // px
-    const MARGIN = 4; // px
+    const dropdownWidth = this.getCSSVariableValue('--mynah-dropdown-width', 250);
+    const dropdownMargin = this.getCSSVariableValue('--mynah-dropdown-margin', 4);
 
     // Position dropdown below button with margin
-    const calculatedTop = buttonRect.bottom + MARGIN;
+    const calculatedTop = buttonRect.bottom + dropdownMargin;
 
     // Align with chat item card if present, otherwise align with button
     const chatItemCard = this.render.closest('.mynah-chat-item-card');
     const calculatedLeft = (chatItemCard != null)
-      ? chatItemCard.getBoundingClientRect().right - DROPDOWN_WIDTH
-      : buttonRect.right - DROPDOWN_WIDTH;
+      ? chatItemCard.getBoundingClientRect().right - dropdownWidth
+      : buttonRect.right - dropdownWidth;
 
     // Update position
     this.dropdownPortal.style.top = `${calculatedTop}px`;

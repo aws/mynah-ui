@@ -27,8 +27,8 @@
 // Portal-based dropdown content (rendered at document root)
 .mynah-dropdown-list-portal {
   .mynah-dropdown-list-content {
-    width: 250px;
-    max-height: 300px;
+    width: var(--mynah-dropdown-width);
+    max-height: var(--mynah-dropdown-max-height);
     overflow-y: auto;
     margin-top: 5px;
     background-color: var(--mynah-card-bg);
@@ -77,11 +77,31 @@
         color: var(--mynah-color-text-weak);
         margin: var(--mynah-sizing-1) 0 0;
         padding: 0;
+
+        .mynah-dropdown-list-description-link {
+          color: var(--mynah-color-button-primary);
+          background: none;
+          border: none;
+          padding: 0;
+          margin-left: var(--mynah-sizing-half);
+          cursor: pointer;
+          font-size: inherit;
+          font-family: inherit;
+          text-decoration: underline;
+          
+          &:hover {
+            color: var(--mynah-color-button-primary-hover);
+          }
+          
+          &:focus {
+            outline: var(--mynah-border-width) solid var(--mynah-color-button-primary);
+            outline-offset: 1px;
+          }
+        }
       }
     }
 
     .mynah-dropdown-list-options {
-      max-height: 200px;
       overflow-y: auto;
 
       .mynah-dropdown-list-option {
@@ -89,9 +109,20 @@
         align-items: center;
         padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
         cursor: pointer;
+        min-height: var(--mynah-sizing-6); // Consistent height to prevent text shift
 
         &:hover {
           background-color: var(--mynah-color-light);
+        }
+
+        &:focus-visible {
+          outline: var(--mynah-border-width) solid var(--mynah-color-button-primary);
+          outline-offset: -1px;
+          background-color: var(--mynah-color-light);
+        }
+
+        &[aria-selected="true"] {
+          background-color: var(--mynah-color-button-primary-light);
         }
 
         .mynah-dropdown-list-checkbox {
@@ -119,6 +150,7 @@
           color: var(--mynah-color-text-default);
           display: flex;
           align-items: center;
+          min-height: var(--mynah-sizing-4); // Prevent text shift
           
           .mynah-dropdown-list-check-icon {
             color: var(--mynah-color-text-default);
@@ -129,6 +161,7 @@
             align-items: center;
             justify-content: center;
             margin-right: var(--mynah-sizing-1);
+            flex-shrink: 0; // Prevent icon from shrinking
           }
         }
       }
