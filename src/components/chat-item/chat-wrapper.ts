@@ -216,6 +216,7 @@ export class ChatWrapper {
       events: {
         dragenter: (e: DragEvent) => {
           if (!this.imageContextFeatureEnabled) return;
+          cancelEvent(e);
           if ((e.dataTransfer?.types.includes('Files')) === true) {
             this.setDragOverlayVisible(true);
           }
