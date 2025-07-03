@@ -186,7 +186,7 @@ export class ChatWrapper {
 
     this.imageContextFeatureEnabled = this.hasImageContextCommand();
 
-    // --- Always-present drag overlays (hidden by default, shown by style) ---
+    // Always-present drag overlays (hidden by default, shown by style)
     this.dragOverlayContent = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-drag-overlay-content' ],
