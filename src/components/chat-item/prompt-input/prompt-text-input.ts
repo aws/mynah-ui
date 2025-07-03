@@ -202,10 +202,12 @@ export class PromptTextInput {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.ADD_CUSTOM_CONTEXT, (data: { tabId: string; contextCommands: QuickActionCommand[]; insertPosition?: number}) => {
       if (data.tabId === this.props.tabId) {
+        let insertPos = data.insertPosition ?? this.lastCursorIndex;
         data.contextCommands.forEach((command) => {
-          const insertPos = data.insertPosition ?? this.lastCursorIndex;
-          return this.insertContextItem(command, insertPos);
+          this.insertContextItem(command, insertPos);
+          insertPos = this.getCursorPos();
         });
+        this.focus();
       }
     });
 
@@ -346,6 +348,23 @@ export class PromptTextInput {
     maintainCursor: boolean = false
   ): void => {
     const selection = window.getSelection();
+    if (this.promptTextInput.childNodes.length === 0) {
+      this.promptTextInput.insertChild('beforeend', element as HTMLElement);
+
+      const spaceNode = document.createTextNode('\u00A0');
+      element.parentNode?.insertBefore(spaceNode, element.nextSibling);
+
+      if (!maintainCursor && selection != null) {
+        const range = document.createRange();
+        range.setStartAfter(spaceNode);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        this.lastCursorIndex = this.updateCursorPos();
+      }
+      return;
+    }
+
     if (selection == null ||
       (selection.focusNode?.isSameNode(this.promptTextInput) === false &&
       selection.focusNode?.parentElement?.isSameNode(this.promptTextInput) === false)) {
@@ -412,9 +431,9 @@ export class PromptTextInput {
       currentPos += length;
     }
 
-    // Fallback: if nothing was inserted (e.g., prompt is empty), insert at the beginning
+    // Fallback: if nothing was inserted, insert at the end
     if (!inserted) {
-      this.promptTextInput.insertChild('afterbegin', element as HTMLElement);
+      this.promptTextInput.insertChild('beforeend', element as HTMLElement);
     }
 
     if (!maintainCursor) {

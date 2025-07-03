@@ -15,7 +15,6 @@ import {
   PromptAttachmentType,
   TabHeaderDetails,
   MynahEventNames,
-  QuickActionCommandGroup,
   QuickActionCommand
 } from '../../static';
 import { ChatItemCard } from './chat-item-card';
@@ -54,6 +53,11 @@ export class ChatWrapper {
   private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
   render: ExtendedHTMLElement;
+  private readonly dragOverlayContent: HTMLElement;
+  private readonly dragBlurOverlay: HTMLElement;
+  private dragOverlayVisibility: boolean = true;
+  private readonly imageContextFeatureEnabled: boolean = false;
+
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
 
@@ -179,6 +183,23 @@ export class ChatWrapper {
       this.promptInputElement = this.promptInput.render;
     }
 
+    this.imageContextFeatureEnabled = this.hasImageContextCommand();
+
+    // Always-present drag overlays (hidden by default, shown by style)
+    this.dragOverlayContent = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-drag-overlay-content' ],
+      children: [
+        new Icon({ icon: MynahIcons.IMAGE }).render,
+        { type: 'span', children: [ 'Add image to context' ] }
+      ]
+    });
+    this.dragBlurOverlay = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-drag-blur-overlay' ]
+    });
+    // Set display:none initially
+    this.setDragOverlayVisible(false);
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.chat.wrapper,
@@ -193,72 +214,27 @@ export class ChatWrapper {
       persistent: true,
       events: {
         dragenter: (e: DragEvent) => {
-          if (!this.hasImageContextCommand()) return;
+          if (!this.imageContextFeatureEnabled) return;
           cancelEvent(e);
           if ((e.dataTransfer?.types.includes('Files')) === true) {
-            this.render.addClass('drag-over');
-            // Only create overlay if it doesn't already exist
-            const existingOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
-            const existingBlurOverlays = this.render.getElementsByClassName('mynah-drag-blur-overlay');
-            if (existingOverlays.length === 0) {
-              // Create and show drag overlay content
-              const dragOverlay = DomBuilder.getInstance().build({
-                type: 'div',
-                classNames: [ 'mynah-drag-overlay-content' ],
-                children: [
-                  new Icon({ icon: MynahIcons.IMAGE }).render,
-                  { type: 'span', children: [ 'Add image to context' ] }
-                ]
-              });
-              this.render.appendChild(dragOverlay);
-            }
-            if (existingBlurOverlays.length === 0) {
-              // Create blur background overlay
-              const blurOverlay = DomBuilder.getInstance().build({
-                type: 'div',
-                classNames: [ 'mynah-drag-blur-overlay' ]
-              });
-              this.render.appendChild(blurOverlay);
-            }
+            this.setDragOverlayVisible(true);
           }
         },
         dragover: (e: DragEvent) => {
-          if (!this.hasImageContextCommand()) return;
+          if (!this.imageContextFeatureEnabled) return;
           cancelEvent(e);
         },
         dragleave: (e: DragEvent) => {
-          if (!this.hasImageContextCommand()) return;
+          if (!this.imageContextFeatureEnabled) return;
           cancelEvent(e);
-          // Only remove if we're leaving the wrapper entirely (not just moving to a child element)
           if (e.relatedTarget === null || !this.render.contains(e.relatedTarget as Node)) {
-            this.render.removeClass('drag-over');
-            // Remove drag overlay content
-            const dragOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
-            while (dragOverlays.length > 0) {
-              dragOverlays[0].remove();
-            }
-            // Remove blur overlay
-            const blurOverlays = this.render.getElementsByClassName('mynah-drag-blur-overlay');
-            while (blurOverlays.length > 0) {
-              blurOverlays[0].remove();
-            }
+            this.setDragOverlayVisible(false);
           }
         },
         drop: (e: DragEvent) => {
-          if (!this.hasImageContextCommand()) return;
+          if (!this.imageContextFeatureEnabled) return;
           cancelEvent(e);
-          this.render.removeClass('drag-over');
-          // Remove drag overlay content
-          const dragOverlays = this.render.getElementsByClassName('mynah-drag-overlay-content');
-          while (dragOverlays.length > 0) {
-            dragOverlays[0].remove();
-          }
-          // Remove blur overlay
-          const blurOverlays = this.render.getElementsByClassName('mynah-drag-blur-overlay');
-          while (blurOverlays.length > 0) {
-            blurOverlays[0].remove();
-          }
-
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_TOP_BAR_CLICKED, { tabId: this.props.tabId });
           const files = Array.from(e.dataTransfer?.files ?? []);
           files.filter(file => file.type.startsWith('image/'));
           // Get the current cursor position of prompt input
@@ -268,8 +244,12 @@ export class ChatWrapper {
             insertPosition: cursorPosition,
             files
           });
+          this.setDragOverlayVisible(false);
+        },
+        dragend: (e: DragEvent) => {
+          if (!this.hasImageContextCommand()) return;
+          this.setDragOverlayVisible(false);
         }
-
       },
       children: [
         {
@@ -283,7 +263,30 @@ export class ChatWrapper {
             }
             .mynah-nav-tabs-wrapper[selected-tab="${this.props.tabId}"] ~ .mynah-ui-tab-contents-wrapper > .mynah-chat-wrapper:not([mynah-tab-id="${this.props.tabId}"]) * {
               pointer-events: none !important;
-            }` ],
+            }
+            .mynah-drag-overlay-blur {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(255,255,255,0.7);
+              backdrop-filter: blur(2px);
+              z-index: 1;
+            }
+            .mynah-drag-overlay-content {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              z-index: 2;
+              font-size: 1.2em;
+              color: #333;
+            }
+          ` ],
         },
         (new GradientBackground()).render,
         this.headerSpacer,
@@ -298,7 +301,9 @@ export class ChatWrapper {
         this.promptStickyCard,
         this.promptInputElement,
         this.footerSpacer,
-        this.promptInfo
+        this.promptInfo,
+        this.dragBlurOverlay,
+        this.dragOverlayContent
       ]
     });
 
@@ -504,10 +509,12 @@ export class ChatWrapper {
    * Returns true if the current tab has an image context command available.
    */
   private hasImageContextCommand (): boolean {
-    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
-    return !((contextCommands?.some(group =>
-      group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
-    )) === false);
+    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands');
+    if (!Array.isArray(contextCommands)) return false;
+    return contextCommands.some(group =>
+      Array.isArray(group.commands) &&
+      group.commands.some((cmd: QuickActionCommand) => cmd.command?.toLowerCase() === 'image')
+    );
   }
 
   public destroy = (): void => {
@@ -519,5 +526,12 @@ export class ChatWrapper {
 
   public getCurrentTriggerSource (): 'top-bar' | 'prompt-input' {
     return this.promptInput?.getCurrentTriggerSource?.() ?? 'prompt-input';
+  }
+
+  private setDragOverlayVisible (visible: boolean): void {
+    if (this.dragOverlayVisibility === visible) return;
+    this.dragOverlayVisibility = visible;
+    this.dragOverlayContent.style.display = visible ? 'flex' : 'none';
+    this.dragBlurOverlay.style.display = visible ? 'block' : 'none';
   }
 }

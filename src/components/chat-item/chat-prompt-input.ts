@@ -349,7 +349,7 @@ export class ChatPromptInput {
       this.updateAvailableCharactersIndicator();
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_INSERTED, (data: { tabId: string }) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_TOP_BAR_CLICKED, (data: { tabId: string }) => {
       if (this.props.tabId === data.tabId) {
         // Reset trigger source to prompt-input after context is inserted
         this.topBarTitleClicked = false;
