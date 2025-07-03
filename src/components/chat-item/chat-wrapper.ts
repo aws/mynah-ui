@@ -15,7 +15,6 @@ import {
   PromptAttachmentType,
   TabHeaderDetails,
   MynahEventNames,
-  QuickActionCommandGroup,
   QuickActionCommand
 } from '../../static';
 import { ChatItemCard } from './chat-item-card';
@@ -510,10 +509,12 @@ export class ChatWrapper {
    * Returns true if the current tab has an image context command available.
    */
   private hasImageContextCommand (): boolean {
-    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
-    return !((contextCommands?.some(group =>
-      group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
-    )) === false);
+    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands');
+    if (!Array.isArray(contextCommands)) return false;
+    return contextCommands.some(group =>
+      Array.isArray(group.commands) &&
+      group.commands.some((cmd: QuickActionCommand) => cmd.command?.toLowerCase() === 'image')
+    );
   }
 
   public destroy = (): void => {
