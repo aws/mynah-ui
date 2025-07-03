@@ -256,7 +256,7 @@ export enum MynahEventNames {
   TOP_BAR_BUTTON_CLICK = 'promptInputTopBarButtonClick',
   CONTEXT_PINNED = 'contextPinned',
   FILES_DROPPED = 'filesDropped',
-  RESET_TOP_BAR_CLICKED = 'resetToBarClicked'
+  RESET_TOP_BAR_CLICKED = 'resetTopBarClicked'
 }
 
 export enum MynahPortalNames {
