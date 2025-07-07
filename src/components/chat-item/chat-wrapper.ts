@@ -15,6 +15,7 @@ import {
   PromptAttachmentType,
   TabHeaderDetails,
   MynahEventNames,
+  QuickActionCommandGroup,
   QuickActionCommand
 } from '../../static';
 import { ChatItemCard } from './chat-item-card';
@@ -56,7 +57,7 @@ export class ChatWrapper {
   private readonly dragOverlayContent: HTMLElement;
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
-  private readonly imageContextFeatureEnabled: boolean = false;
+  private imageContextFeatureEnabled: boolean = false;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -153,6 +154,13 @@ export class ChatWrapper {
       }
     });
 
+    MynahUITabsStore.getInstance().addListenerToDataStore(props.tabId, 'contextCommands', (contextCommands: QuickActionCommandGroup[]) => {
+      // Send the new values to calculation and update the count variables.
+      this.imageContextFeatureEnabled = contextCommands?.some(group =>
+        group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
+      );
+    });
+
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'tabBackground', (tabBackground: boolean) => {
       if (tabBackground) {
         this.render.addClass('with-background');
@@ -182,8 +190,6 @@ export class ChatWrapper {
       this.promptInput = new ChatPromptInput({ tabId: this.props.tabId, onStopChatResponse: this.props?.onStopChatResponse });
       this.promptInputElement = this.promptInput.render;
     }
-
-    this.imageContextFeatureEnabled = this.hasImageContextCommand();
 
     // Always-present drag overlays (hidden by default, shown by style)
     this.dragOverlayContent = DomBuilder.getInstance().build({
@@ -509,12 +515,10 @@ export class ChatWrapper {
    * Returns true if the current tab has an image context command available.
    */
   private hasImageContextCommand (): boolean {
-    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands');
-    if (!Array.isArray(contextCommands)) return false;
-    return contextCommands.some(group =>
-      Array.isArray(group.commands) &&
-      group.commands.some((cmd: QuickActionCommand) => cmd.command?.toLowerCase() === 'image')
-    );
+    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
+    return !((contextCommands?.some(group =>
+      group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
+    )) === false);
   }
 
   public destroy = (): void => {
