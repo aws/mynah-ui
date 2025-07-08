@@ -677,7 +677,7 @@ export class ChatPromptInput {
             : !this.promptTopBar.isHidden() && this.quickPickType === 'context'
                 ? {
                     header: {
-                      description: 'Pin context with ⌥ Enter',
+                      description: Config.getInstance().config.texts.pinContextHint,
                     }
                   }
                 : {})

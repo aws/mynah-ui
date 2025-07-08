@@ -754,6 +754,7 @@ export interface ConfigTexts {
   noTabsOpen: string;
   openNewTab: string;
   commandConfirmation: string;
+  pinContextHint: string;
 };
 
 type PickMatching<T, V> = {
