@@ -4,7 +4,7 @@
  */
 
 import { Config } from '../../helper/config';
-import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { DomBuilder, ExtendedHTMLElement, DomBuilderObject } from '../../helper/dom';
 import { generateUID } from '../../helper/guid';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import {
@@ -27,7 +27,7 @@ import { TitleDescriptionWithIcon } from '../title-description-with-icon';
 import { GradientBackground } from '../background';
 import { MoreContentIndicator } from '../more-content-indicator';
 import { StyleLoader } from '../../helper/style-loader';
-import { Icon, MynahIcons } from '../icon';
+import { Icon } from '../icon';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
 
@@ -71,6 +71,25 @@ export class ChatWrapper {
       type: 'div',
       classNames: [ 'mynah-chat-wrapper-header-spacer' ]
     });
+
+    /*
+    The IDE controls image-related functionality through the imageContextEnabled feature flag.
+    When this flag is set to true, the language server adds the Image option to the available context types.
+
+    Users can add images to the context in Mynah UI through three methods:
+
+    Using the context command menu
+    Typing the @image: command
+    Dragging and dropping images
+    To maintain consistency, we've implemented a centralized feature flag that controls the visibility
+    of all three image-adding methods. This ensures that image functionality is either entirely available
+    or unavailable across for an IDE.
+     */
+    this.imageContextFeatureEnabled = false;
+    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] ?? [];
+    this.imageContextFeatureEnabled = contextCommands?.some(group =>
+      group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
+    );
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
@@ -192,13 +211,19 @@ export class ChatWrapper {
     }
 
     // Always-present drag overlays (hidden by default, shown by style)
+    const dragOverlayIcon = Config.getInstance().config.dragOverlayIcon;
+    const dragOverlayText = Config.getInstance().config.texts.dragOverlayText;
+    const dragOverlayChildren: Array<HTMLElement | DomBuilderObject | ExtendedHTMLElement> = [];
+    if (dragOverlayIcon !== undefined) {
+      dragOverlayChildren.push(new Icon({ icon: dragOverlayIcon }).render);
+    }
+    if (dragOverlayText !== undefined) {
+      dragOverlayChildren.push({ type: 'span', children: [ dragOverlayText ] } satisfies DomBuilderObject);
+    }
     this.dragOverlayContent = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-drag-overlay-content' ],
-      children: [
-        new Icon({ icon: MynahIcons.IMAGE }).render,
-        { type: 'span', children: [ 'Add image to context' ] }
-      ]
+      children: dragOverlayChildren
     });
     this.dragBlurOverlay = DomBuilder.getInstance().build({
       type: 'div',
@@ -253,7 +278,7 @@ export class ChatWrapper {
           this.setDragOverlayVisible(false);
         },
         dragend: (e: DragEvent) => {
-          if (!this.hasImageContextCommand()) return;
+          if (!this.imageContextFeatureEnabled) return;
           this.setDragOverlayVisible(false);
         }
       },
@@ -510,16 +535,6 @@ export class ChatWrapper {
   public getPromptInputCursorPosition = (): number => {
     return this.promptInput.getCursorPosition();
   };
-
-  /**
-   * Returns true if the current tab has an image context command available.
-   */
-  private hasImageContextCommand (): boolean {
-    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
-    return !((contextCommands?.some(group =>
-      group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
-    )) === false);
-  }
 
   public destroy = (): void => {
     if (this.observer != null) {

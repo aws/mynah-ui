@@ -755,7 +755,8 @@ export interface ConfigTexts {
   openNewTab: string;
   commandConfirmation: string;
   pinContextHint: string;
-};
+  dragOverlayText: string;
+}
 
 type PickMatching<T, V> = {
   [K in keyof T as T[K] extends V ? K : never]: T[K];
@@ -789,6 +790,7 @@ export interface ConfigOptions {
   codeInsertToCursorEnabled?: boolean;
   codeCopyToClipboardEnabled?: boolean;
   test?: boolean;
+  dragOverlayIcon?: MynahIcons | MynahIconsType | CustomIcon;
 }
 
 export interface ConfigModel extends ConfigOptions {
