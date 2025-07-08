@@ -503,6 +503,7 @@ export type TextBasedFormItem = BaseFormItem & {
     genericValidationErrorMessage?: string;
     patterns: ValidationPattern[];
   };
+  validateOnChange?: boolean;
 };
 
 type DropdownFormItem = BaseFormItem & {

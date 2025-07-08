@@ -1799,6 +1799,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     placeholder: 'Enter prompt name',
                     description: "Use this prompt by typing '@' followed by the prompt name.",
                     autoFocus: true,
+                    validateOnChange: true
                 },
             ],
             [

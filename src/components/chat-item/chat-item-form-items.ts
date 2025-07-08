@@ -181,6 +181,7 @@ export class ChatItemFormItemsWrapper {
               value,
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
+              validateOnChange: chatItemOption.validateOnChange,
               placeholder: chatItemOption.placeholder,
               ...(this.getHandlers(chatItemOption))
             });
