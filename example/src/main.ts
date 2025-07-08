@@ -83,7 +83,9 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             maxTabsTooltipDuration: 5000,
             noMoreTabsTooltip: 'You can only open five conversation tabs at a time.',
             autoFocus: true,
+            dragOverlayIcon: MynahIcons.IMAGE,
             texts: {
+                dragOverlayText: 'Add Image to Context',
                 feedbackFormDescription:
                     '_Feedback is anonymous. For issue updates, please contact us on [GitHub](https://github.com/aws/mynah-ui/issues)._',
             },

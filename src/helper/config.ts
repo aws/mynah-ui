@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MynahIcons } from '../main';
+import { MynahIcons } from '../components/icon';
 import { ComponentOverrides, ConfigModel, ConfigOptions, ConfigTexts } from '../static';
 
 interface ConfigFullModel extends ConfigOptions {
@@ -81,7 +81,8 @@ const configDefaults: ConfigFullModel = {
     noTabsOpen: '### Open a tab to chat with Q',
     openNewTab: 'New tab',
     commandConfirmation: 'Press enter to continue',
-    pinContextHint: 'Pin context with \u2325 Enter'
+    pinContextHint: 'Pin context with \u2325 Enter',
+    dragOverlayText: 'Add image to context',
   },
 };
 export class Config {
@@ -100,6 +101,10 @@ export class Config {
         ...config?.componentOverrides
       }
     };
+    // Set dragOverlayIcon default
+    if (this.config.dragOverlayIcon === undefined) {
+      this.config.dragOverlayIcon = MynahIcons.IMAGE;
+    }
     this.config.codeBlockActions = {
       ...(this.config.codeCopyToClipboardEnabled !== false
         ? {
