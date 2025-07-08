@@ -85,9 +85,10 @@ export class ChatWrapper {
     of all three image-adding methods. This ensures that image functionality is either entirely available
     or unavailable across for an IDE.
      */
-    this.imageContextFeatureEnabled = false;
-    const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] ?? [];
-    this.imageContextFeatureEnabled = contextCommands?.some(group =>
+
+    const contextCommandsRaw = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands');
+    const contextCommands = Array.isArray(contextCommandsRaw) ? contextCommandsRaw : [];
+    this.imageContextFeatureEnabled = contextCommands.some(group =>
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     );
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
