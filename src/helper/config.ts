@@ -81,7 +81,7 @@ const configDefaults: ConfigFullModel = {
     noTabsOpen: '### Open a tab to chat with Q',
     openNewTab: 'New tab',
     commandConfirmation: 'Press enter to continue',
-    pinContextHint: 'Pin context with ⌥ Enter'
+    pinContextHint: 'Pin context with \u2325 Enter'
   },
 };
 export class Config {
