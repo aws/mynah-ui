@@ -155,7 +155,7 @@ export class ChatWrapper {
     });
 
     MynahUITabsStore.getInstance().addListenerToDataStore(props.tabId, 'contextCommands', (contextCommands: QuickActionCommandGroup[]) => {
-      // Send the new values to calculation and update the count variables.
+      // Feature flag for image context command
       this.imageContextFeatureEnabled = contextCommands?.some(group =>
         group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
       );
