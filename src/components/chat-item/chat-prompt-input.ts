@@ -656,6 +656,7 @@ export class ChatPromptInput {
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
     const detailedListItemsGroup = convertQuickActionCommandGroupsToDetailedListGroups(quickPickGroupList);
     if (this.quickPickItemsSelectorContainer == null) {
+      const pinContextHint = Config.getInstance().config.texts.pinContextHint;
       this.quickPickItemsSelectorContainer = new DetailedListWrapper({
         descriptionTextDirection: 'rtl',
         detailedList: {
@@ -674,10 +675,10 @@ export class ChatPromptInput {
                 ],
 
               }
-            : !this.promptTopBar.isHidden() && this.quickPickType === 'context'
+            : !this.promptTopBar.isHidden() && this.quickPickType === 'context' && pinContextHint !== ''
                 ? {
                     header: {
-                      description: 'Pin context with ⌥ Enter',
+                      description: pinContextHint,
                     }
                   }
                 : {})

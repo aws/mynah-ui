@@ -37,6 +37,7 @@ interface ConfigModel {
         noTabsOpen: string; // Supports markdown
         openNewTab: string;
         commandConfirmation: string;
+        pinContextHint: string;
     };
     // Options to show up on the overlay feedback form
     // after user clicks to downvote on a chat item
@@ -209,6 +210,10 @@ Default tab title text if it is not set through store data for that tab.
   <img src="./img/texts/commandConfirmation.png" alt="commandConfirmation" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
+## pinContextHint
+<p align="center">
+  <img src="./img/texts/pinContextHint.png" alt="pinContextHint" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 ---
 
 <p><br/></p>
