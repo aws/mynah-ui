@@ -744,6 +744,7 @@ export interface ConfigTexts {
   add: string;
   pleaseSelect: string;
   stopGenerating: string;
+  stopGeneratingTooltip?: string;
   copyToClipboard: string;
   noMoreTabsTooltip: string;
   codeSuggestionWithReferenceTitle: string;
