@@ -399,7 +399,7 @@ _If you set `showPromptField` to `false`_
 **Type:** `MynahIcons | MynahIconsType | CustomIcon`
 
 **Description:**
-Specifies the icon to display in the drag-and-drop overlay for adding files (such as images) to the chat context. This allows consumers to customize the overlay icon without modifying the core library.
+Specifies the icon to display in the drag-and-drop overlay for adding files (such as images) to the chat context. This allows consumers to customize the overlay icon.
 
 **Default:** `MynahIcons.IMAGE`
 
