@@ -170,4 +170,7 @@
     --mynah-z-4: 400; /* Fourth layer */
     --mynah-z-5: 500; /* Fifth layer */
     --mynah-z-max: 999; /* Maximum layer - for critical elements */
+
+    // Drag overlay
+    --mynah-drag-overlay-blur-bg: rgba(136, 136, 136, 0.2);
 }
