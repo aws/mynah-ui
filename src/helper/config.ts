@@ -71,7 +71,7 @@ const configDefaults: ConfigFullModel = {
     add: 'Add',
     pleaseSelect: 'Please select...',
     stopGenerating: 'Stop',
-    stopGeneratingTooltip: "Stop &#8984; Backspace",
+    stopGeneratingTooltip: 'Stop &#8984; Backspace',
     copyToClipboard: 'Copied to clipboard',
     noMoreTabsTooltip: 'You\'ve reached maximum number of tabs you can simultaneously use.',
     codeSuggestionWithReferenceTitle: 'Some suggestions contain code with references.',
