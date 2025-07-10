@@ -135,6 +135,9 @@ export const createMynahUI = (): MynahUI => {
     onInfoLinkClick: (tabId, link, mouseEvent) => {
       //
     },
+    onDropDownOptionChange: (tabId: string, messageId: string, selectedOptions: any[]) => {
+      //
+    },
   });
 
   const onChatPrompt = (tabId: string, prompt: ChatPrompt): void => {

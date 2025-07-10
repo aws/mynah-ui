@@ -237,6 +237,8 @@ export enum MynahEventNames {
   FILE_ACTION_CLICK = 'fileActionClick',
   TAB_FOCUS = 'tabFocus',
   CUSTOM_FORM_ACTION_CLICK = 'customFormActionClick',
+  DROP_DOWN_OPTION_CHANGE = 'dropDownOptionChange',
+  DROPDOWN_LINK_CLICK = 'dropDownLinkClick',
   PROMPT_INPUT_OPTIONS_CHANGE = 'promptInputOptionsChange',
   PROMPT_INPUT_BUTTON_CLICK = 'promptInputButtonClick',
   FORM_MODIFIER_ENTER_PRESS = 'formModifierEnterPress',
@@ -390,6 +392,29 @@ export interface TreeNodeDetails {
   data?: Record<string, string>;
 }
 
+export interface DropdownListOption {
+  id: string;
+  label: string;
+  value: string;
+  selected?: boolean;
+}
+
+export interface DropdownListProps {
+  title: string;
+  titleIcon?: MynahIcons;
+  description?: string;
+  descriptionLink?: {
+    id: string;
+    text: string;
+    onClick?: () => void;
+  };
+  options: DropdownListOption[];
+  onChange?: (selectedOptions: DropdownListOption[]) => void;
+  tabId?: string;
+  messageId?: string;
+  classNames?: string[];
+}
+
 export interface ChatItemContent {
   header?: (ChatItemContent & {
     icon?: MynahIcons | MynahIconsType | CustomIcon;
@@ -451,6 +476,7 @@ export interface ChatItemContent {
   tabbedContent?: Array<ToggleOption & {
     content: ChatItemContent;
   }> | null;
+  dropdownList?: DropdownListProps | null;
   codeBlockActions?: CodeBlockActions | null;
   fullWidth?: boolean;
   padding?: boolean;
