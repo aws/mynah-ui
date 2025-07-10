@@ -78,9 +78,10 @@ export class ChatWrapper {
 
     Users can add images to the context in Mynah UI through three methods:
 
-    Using the context command menu
-    Typing the @image: command
-    Dragging and dropping images
+    1) Using the context command menu (image option in the context menu added by the language server)
+    2) Typing the @image: command
+    3) Dragging and dropping images
+
     To maintain consistency, we've implemented a centralized feature flag that controls the visibility
     of all three image-adding methods. This ensures that image functionality is either entirely available
     or unavailable across for an IDE.
@@ -295,28 +296,6 @@ export class ChatWrapper {
             }
             .mynah-nav-tabs-wrapper[selected-tab="${this.props.tabId}"] ~ .mynah-ui-tab-contents-wrapper > .mynah-chat-wrapper:not([mynah-tab-id="${this.props.tabId}"]) * {
               pointer-events: none !important;
-            }
-            .mynah-drag-overlay-blur {
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background: rgba(255,255,255,0.7);
-              backdrop-filter: blur(2px);
-              z-index: 1;
-            }
-            .mynah-drag-overlay-content {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              z-index: 2;
-              font-size: 1.2em;
-              color: #333;
             }
           ` ],
         },
