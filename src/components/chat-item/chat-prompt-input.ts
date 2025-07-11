@@ -848,11 +848,19 @@ export class ChatPromptInput {
         : currentInputValue + (attachmentContent ?? '');
       const context: QuickActionCommand[] = this.promptTextInput.getUsedContext();
 
-      const escapedPrompt = escapeHTML(promptText.replace(/@\S*/gi, (match) => {
-        // Unnecessary spaces will be removed by HTML rendering,
-        // it is safe to add a start space to avoid rendering problems for bold text
-        return ` **${match}**`;
-      }));
+      let escapedPrompt = escapeHTML(promptText);
+
+      if (Array.isArray(context)) {
+        for (const cmd of context) {
+          if (cmd.command !== null) {
+            // Escape special regex characters in the command
+            const escapedCmd = cmd.command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            // Replace all occurrences of @command with **@command**
+            const regex = new RegExp(`@${escapedCmd}`, 'g');
+            escapedPrompt = escapedPrompt.replace(regex, ` **@${cmd.command}**`);
+          }
+        }
+      }
 
       const promptData: {tabId: string; prompt: ChatPrompt} = {
         tabId: this.props.tabId,
