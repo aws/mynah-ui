@@ -28,6 +28,7 @@
         min-height: 0;
         min-width: var(--mynah-sizing-5);
         padding-inline: var(--mynah-sizing-half);
+        font-size: var(--mynah-font-size-small) !important;
     }
 
     > span.top-bar-button {
@@ -35,6 +36,7 @@
 
         > .mynah-button {
             min-height: 0;
+            font-size: var(--mynah-font-size-small) !important;
         }
     }
 

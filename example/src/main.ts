@@ -18,7 +18,7 @@ import {
     ChatItemButton,
     CustomQuickActionCommand
 } from '@aws/mynah-ui';
-import { mcpButton, mynahUIDefaults, rulesButton, tabbarButtons } from './config';
+import { mcpButton, mynahUIDefaults, promptTopBarTitle, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
 import {
     exampleCodeBlockToInsert,
@@ -63,7 +63,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     const connector = new Connector();
     let streamingMessageId: string | null;
     let showChatAvatars: boolean = false;
-    let showPinnedContext: boolean = false;
+    let showPinnedContext: boolean = true;
 
     const mynahUI = new MynahUI({
         loadStyles: true,
@@ -313,7 +313,7 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 if (showPinnedContext){
                 Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
                     mynahUI.updateStore(tabIdFromStore, {
-                        promptTopBarTitle: `@Pin Context`,
+                        promptTopBarTitle: promptTopBarTitle,
                         promptTopBarButton: rulesButton,
                     }),
                 ); } else {
