@@ -67,7 +67,7 @@ export class TopBarButton {
       };
 
       this.overlay = new Overlay({
-        testId: testIds.prompt.tobBarActionOverlay,
+        testId: testIds.prompt.topBarActionOverlay,
         background: true,
         closeOnOutsideClick: true,
         referenceElement: this.topBarButton.render,

@@ -129,7 +129,7 @@ export const renderPromptTopBar = async (page: Page): Promise<void> => {
   await waitForAnimationEnd(page);
 
   // Check if overflow button appears
-  const overflowButton = page.locator(getSelector(testIds.prompt.tobBarOverflowPill));
+  const overflowButton = page.locator(getSelector(testIds.prompt.topBarOverflowPill));
   expect(await overflowButton.isVisible()).toBeTruthy();
 
   // Take a screenshot with overflow button
@@ -143,7 +143,7 @@ export const renderPromptTopBar = async (page: Page): Promise<void> => {
   await justWait(1000);
 
   // Take a screenshot of the overflow overlay
-  const overflowOverlay = page.locator(getSelector(testIds.prompt.tobBarOverflowOverlay));
+  const overflowOverlay = page.locator(getSelector(testIds.prompt.topBarOverflowOverlay));
   expect(await overflowOverlay.screenshot()).toMatchSnapshot();
 
   // Click outside to close the overlay

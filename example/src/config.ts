@@ -15,6 +15,7 @@ export const mcpButton: TabBarMainAction = {
 
 export const rulesButton: ChatItemButton = {id: 'Rules', status: 'clear', text: 'Rules', icon: 'check-list'}
 
+export const promptTopBarTitle = '@ Pin Context'
 
 export const tabbarButtons: TabBarMainAction[] = [
     {
@@ -500,5 +501,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
         ],
         promptInputPlaceholder: 'Type something or "/" for quick action commands or @ for choosing context',
         tabBarButtons: [mcpButton, ...tabbarButtons],
+        promptTopBarTitle: promptTopBarTitle,
+        promptTopBarButton: rulesButton,
     },
 };

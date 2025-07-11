@@ -25,9 +25,9 @@ export default {
     topBarButton: 'prompt-input-top-bar-button',
     topBarContextPill: 'prompt-input-top-bar-context-pill',
     topBarContextTooltip: 'prompt-input-top-bar-context-tooltip',
-    tobBarOverflowPill: 'prompt-input-top-bar-overflow-pill',
-    tobBarOverflowOverlay: 'prompt-input-top-bar-overflow-overlay',
-    tobBarActionOverlay: 'prompt-input-top-bar-action-overlay'
+    topBarOverflowPill: 'prompt-input-top-bar-overflow-pill',
+    topBarOverflowOverlay: 'prompt-input-top-bar-overflow-overlay',
+    topBarActionOverlay: 'prompt-input-top-bar-action-overlay'
 
   },
   chat: {
