@@ -86,6 +86,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             dragOverlayIcon: MynahIcons.IMAGE,
             texts: {
                 dragOverlayText: 'Add Image to Context',
+                stopGeneratingTooltip: 'Stop &#8984; Backspace',
                 feedbackFormDescription:
                     '_Feedback is anonymous. For issue updates, please contact us on [GitHub](https://github.com/aws/mynah-ui/issues)._',
             },
