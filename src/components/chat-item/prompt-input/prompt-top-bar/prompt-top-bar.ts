@@ -271,7 +271,7 @@ export class PromptTopBar {
     if (this.overflowButton == null) {
       this.overflowButton = DomBuilder.getInstance().build({
         type: 'span',
-        testId: testIds.prompt.tobBarOverflowPill,
+        testId: testIds.prompt.topBarOverflowPill,
         children: [
         `+${this.getOverflowCount()}`
         ],
@@ -299,7 +299,7 @@ export class PromptTopBar {
   showOverflowOverlay (e: Event): void {
     if (this.overflowOverlay == null) {
       this.overflowOverlay = new Overlay({
-        testId: testIds.prompt.tobBarOverflowOverlay,
+        testId: testIds.prompt.topBarOverflowOverlay,
         background: true,
         closeOnOutsideClick: true,
         referenceElement: this.overflowButton,
@@ -366,7 +366,6 @@ export class PromptTopBar {
     const containerWidth = this.render.offsetWidth;
     const titleWidth = (this.titleButton != null) ? this.titleButton.render.offsetWidth + 8 : 0; // 8px for margin/padding
     const topBarButtonWidth = (this.topBarButton != null) ? this.topBarButton.render.offsetWidth + 8 : 0;
-    const overflowWidth = (this.overflowButton != null) ? this.overflowButton.offsetWidth + 8 : 0;
 
     // Available width for context pills
     const availableWidth = containerWidth - titleWidth - topBarButtonWidth - 16; // 16px for container padding
@@ -385,7 +384,7 @@ export class PromptTopBar {
       });
 
       // Check if we have enough space to bring back an item from overflow
-      const remainingWidth = availableWidth - currentUsedWidth - overflowWidth;
+      const remainingWidth = availableWidth - currentUsedWidth;
       if (remainingWidth >= extraSpaceNeeded && this.getOverflowCount() > 0) {
         // We have enough space to bring back at least one item
         this.visibleCount++;
