@@ -849,18 +849,17 @@ export class ChatPromptInput {
       const context: QuickActionCommand[] = this.promptTextInput.getUsedContext();
 
       let escapedPrompt = escapeHTML(promptText);
-
-      if (Array.isArray(context)) {
-        for (const cmd of context) {
-          if (cmd.command !== null) {
-            // Escape special regex characters in the command
-            const escapedCmd = cmd.command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            // Replace all occurrences of @command with **@command**
-            const regex = new RegExp(`@${escapedCmd}`, 'g');
-            escapedPrompt = escapedPrompt.replace(regex, ` **@${cmd.command}**`);
-          }
+      context?.forEach(cmd => {
+        if (cmd.command !== '') {
+          // Escape special regex characters in the command
+          const escapedCmd = cmd.command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          // Replace all occurrences of @command with **@command**
+          escapedPrompt = escapedPrompt.replace(
+            new RegExp(`@${escapedCmd}`, 'g'),
+            ` **@${cmd.command}**`
+          );
         }
-      }
+      });
 
       const promptData: {tabId: string; prompt: ChatPrompt} = {
         tabId: this.props.tabId,
