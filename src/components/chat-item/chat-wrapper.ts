@@ -527,7 +527,7 @@ export class ChatWrapper {
     return this.promptInput?.getCurrentTriggerSource?.() ?? 'prompt-input';
   }
 
-  private setDragOverlayVisible (visible: boolean): void {
+  public setDragOverlayVisible (visible: boolean): void {
     if (this.dragOverlayVisibility === visible) return;
     this.dragOverlayVisibility = visible;
     this.dragOverlayContent.style.display = visible ? 'flex' : 'none';
