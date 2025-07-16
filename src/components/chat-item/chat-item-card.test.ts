@@ -4,7 +4,7 @@
  */
 
 import { ChatItemCard } from './chat-item-card';
-import { ChatItem, ChatItemType, MynahEventNames } from '../../static';
+import { ChatItem, ChatItemType } from '../../static';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { MynahUIGlobalEvents } from '../../helper/events';
 import { DomBuilder } from '../../helper/dom';

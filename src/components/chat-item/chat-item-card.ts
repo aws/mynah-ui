@@ -87,7 +87,7 @@ export class ChatItemCard {
         padding: props.chatItem.padding != null ? props.chatItem.padding : (props.chatItem.type !== ChatItemType.DIRECTIVE),
       }
     };
-    this.lastContentEditable = !!this.props.chatItem.editable;
+    this.lastContentEditable = this.props.chatItem.editable === true;
     this.chatAvatar = this.getChatAvatar();
     MynahUITabsStore.getInstance()
       .getTabDataStore(this.props.tabId)
@@ -399,7 +399,7 @@ export class ChatItemCard {
     if (this.props.chatItem.body != null && this.props.chatItem.body !== '') {
       const updatedCardContentBodyProps: ChatItemCardContentProps = {
         body: this.props.chatItem.body ?? '',
-        editable: !!this.props.chatItem.editable,
+        editable: this.props.chatItem.editable === true,
 
         onEdit: (newText: string) => {
           const items = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems') as ChatItem[];
@@ -442,7 +442,7 @@ export class ChatItemCard {
       };
 
       // Check for editable mode change and recreate content if needed
-      const nowEditable = !!this.props.chatItem.editable;
+      const nowEditable = this.props.chatItem.editable === true;
       if ((this.contentBody != null) && this.lastContentEditable !== nowEditable) {
         this.contentBody.render.remove();
         this.contentBody = null;
