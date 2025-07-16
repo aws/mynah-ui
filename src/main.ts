@@ -890,7 +890,7 @@ export class MynahUI {
       }
 
       // Dispatch event to signal context has been inserted
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_INSERTED, { tabId });
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_TOP_BAR_CLICKED, { tabId });
     }
   };
 

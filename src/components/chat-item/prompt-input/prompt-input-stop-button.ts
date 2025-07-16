@@ -37,7 +37,7 @@ export class PromptInputStopButton {
       icon: new Icon({ icon: MynahIcons.STOP }).render,
       primary: false,
       border: false,
-      tooltip: Config.getInstance().config.texts.stopGenerating,
+      tooltip: Config.getInstance().config.texts.stopGeneratingTooltip ?? Config.getInstance().config.texts.stopGenerating,
       tooltipHorizontalDirection: OverlayHorizontalDirection.END_TO_LEFT,
       status: 'clear',
       onClick: () => {

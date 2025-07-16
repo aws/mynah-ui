@@ -191,6 +191,7 @@
                             height: calc(100%);
                             border-radius: inherit;
                             border-width: var(--mynah-button-border-width);
+                            border-color: var(--mynah-color-text-disabled, var(--mynah-color-border-default));
                             border-style: solid;
                             z-index: var(--mynah-z-sub);
                         }
@@ -368,6 +369,9 @@
                     max-height: var(--mynah-line-height);
                 }
                 > .mynah-chat-prompt-button-wrapper {
+                    display: none;
+                }
+                > .mynah-prompt-input-top-bar {
                     display: none;
                 }
             }

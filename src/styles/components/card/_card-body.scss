@@ -76,6 +76,14 @@
             }
         }
 
+        /* Add spacing only between top-level list items */
+        > ol > li,
+        > ul > li,
+        > div > ol > li,
+        > div > ul > li {
+            margin-bottom: 0.4em;
+        }
+
         p + ol,
         p + ul {
             margin-block-start: 0;

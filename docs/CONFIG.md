@@ -37,6 +37,8 @@ interface ConfigModel {
         noTabsOpen: string; // Supports markdown
         openNewTab: string;
         commandConfirmation: string;
+        pinContextHint: string;
+        dragOverlayText: string;
     };
     // Options to show up on the overlay feedback form
     // after user clicks to downvote on a chat item
@@ -53,6 +55,7 @@ interface ConfigModel {
     autoFocus: boolean; // auto focuses to input panel after every action
     maxTabs: number; // set 1 to hide tabs panel
     showPromptField: boolean; // shows prompt field (default: true)
+    dragOverlayIcon?: MynahIcons | MynahIconsType | CustomIcon; // icon displayed in the overlay when a file is dragged into the chat area
 }
 ...
 ```
@@ -209,6 +212,16 @@ Default tab title text if it is not set through store data for that tab.
   <img src="./img/texts/commandConfirmation.png" alt="commandConfirmation" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
+## pinContextHint
+<p align="center">
+  <img src="./img/texts/pinContextHint.png" alt="pinContextHint" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+---
+
+## dragOverlayText
+<p align="center">
+  <img src="./img/texts/dragOverlayText.png" alt="dragOverlayText" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
 ---
 
 <p><br/></p>
@@ -377,4 +390,19 @@ _If you set `showPromptField` to `false`_
 
 <p align="center">
   <img src="./img/noPrompt.png" alt="noPrompt" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## dragOverlayIcon
+
+**Type:** `MynahIcons | MynahIconsType | CustomIcon`
+
+**Description:**
+Specifies the icon to display in the drag-and-drop overlay for adding files (such as images) to the chat context. This allows consumers to customize the overlay icon.
+
+**Default:** `MynahIcons.IMAGE`
+
+<p align="center">
+  <img src="./img/dragOverlayIcon.png" alt="noPrompt" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>

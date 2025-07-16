@@ -1176,6 +1176,7 @@ export type TextBasedFormItem = BaseFormItem & {
   type: 'textarea' | 'textinput' | 'numericinput' | 'email';
   autoFocus?: boolean;
   checkModifierEnterKeyPress?: boolean;
+  validateOnChange?: boolean;
   validationPatterns?: {
     operator?: 'and' | 'or';
     genericValidationErrorMessage?: string;
@@ -2802,6 +2803,7 @@ interface ChatItemFormItem {
   placeholder?: string; // Placeholder for input, but only applicable to textarea, textinput and numericinput
   value?: string; // Initial value of the item. All types of form items will get and return string values, conversion of the value type is up to you
   checkModifierEnterKeyPress?: boolean; // Only applicable to textual inputs: whether the onFormModifierEnterPress event can be triggered from this input field
+  validateOnChange?: boolean; // Only applicable to text input: whether the form should validate on this field's change. If this field is false (or not set), form will validate onBlur by default
   options?: Array<{ // Only applicable to select and radiogroup types
     value: string;
     label: string;

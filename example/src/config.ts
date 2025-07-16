@@ -15,6 +15,7 @@ export const mcpButton: TabBarMainAction = {
 
 export const rulesButton: ChatItemButton = {id: 'Rules', status: 'clear', text: 'Rules', icon: 'check-list'}
 
+export const promptTopBarTitle = '@ Pin Context'
 
 export const tabbarButtons: TabBarMainAction[] = [
     {
@@ -214,6 +215,12 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
                 icon: MynahIcons.RIGHT_OPEN,
                 description:
                     'You can set the position of the followups too. By simply setting the type of the ChatItem.',
+            },
+            {
+                command: Commands.BORDERED_CARDS,
+                icon: MynahIcons.INFO,
+                description:
+                    'ChatItem cards with border styling for important notifications or reroute messages.',
             },
         ],
     },
@@ -494,5 +501,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
         ],
         promptInputPlaceholder: 'Type something or "/" for quick action commands or @ for choosing context',
         tabBarButtons: [mcpButton, ...tabbarButtons],
+        promptTopBarTitle: promptTopBarTitle,
+        promptTopBarButton: rulesButton,
     },
 };
