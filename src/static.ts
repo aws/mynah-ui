@@ -514,6 +514,7 @@ type DropdownFormItem = BaseFormItem & {
     value: string;
     label: string;
   }>;
+  disabled?: boolean;
 };
 
 type Stars = BaseFormItem & {
