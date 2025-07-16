@@ -74,8 +74,8 @@ export class ChatItemCard {
   private footer: ChatItemCard | null = null;
   private header: ChatItemCard | null = null;
 
-  private _shellOriginalHeader?: ChatItem['header'];
-  private _shellOriginalCodeBlockActions?: ChatItem['codeBlockActions'];
+  private readonly _shellOriginalHeader?: ChatItem['header'];
+  private readonly _shellOriginalCodeBlockActions?: ChatItem['codeBlockActions'];
   private lastContentEditable: boolean;
 
   constructor (props: ChatItemCardProps) {
@@ -400,18 +400,18 @@ export class ChatItemCard {
       const updatedCardContentBodyProps: ChatItemCardContentProps = {
         body: this.props.chatItem.body ?? '',
         editable: !!this.props.chatItem.editable,
-        
+
         onEdit: (newText: string) => {
-          const items = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems') as ChatItem[]
+          const items = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems') as ChatItem[];
           MynahUITabsStore.getInstance()
-          .getTabDataStore(this.props.tabId)
-          .updateStore({
-            chatItems: items.map(item =>
-            item.messageId === this.props.chatItem.messageId
-            ? { ...item, body: newText }
-            : item
-            )
-          }, true)
+            .getTabDataStore(this.props.tabId)
+            .updateStore({
+              chatItems: items.map(item =>
+                item.messageId === this.props.chatItem.messageId
+                  ? { ...item, body: newText }
+                  : item
+              )
+            }, true);
         },
         hideCodeBlockLanguage: this.props.chatItem.padding === false,
         wrapCode: this.props.chatItem.wrapCodes,
@@ -443,7 +443,7 @@ export class ChatItemCard {
 
       // Check for editable mode change and recreate content if needed
       const nowEditable = !!this.props.chatItem.editable;
-      if (this.contentBody && this.lastContentEditable !== nowEditable) {
+      if ((this.contentBody != null) && this.lastContentEditable !== nowEditable) {
         this.contentBody.render.remove();
         this.contentBody = null;
       }
@@ -697,7 +697,6 @@ export class ChatItemCard {
         formItems: this.chatFormItems,
         buttons: [],
         onActionClick: action => {
-
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
             messageId: this.props.chatItem.messageId,
@@ -707,28 +706,28 @@ export class ChatItemCard {
           });
 
           // Only handle buttons that want to remove the card entirely:
-    if (action.keepCardAfterClick === false) {
-      this.render.remove();
-      if (this.props.chatItem.messageId !== undefined) {
-        const current = MynahUITabsStore.getInstance()
-          .getTabDataStore(this.props.tabId)
-          .getValue('chatItems') as ChatItem[];
+          if (action.keepCardAfterClick === false) {
+            this.render.remove();
+            if (this.props.chatItem.messageId !== undefined) {
+              const current = MynahUITabsStore.getInstance()
+                .getTabDataStore(this.props.tabId)
+                .getValue('chatItems') as ChatItem[];
 
-        MynahUITabsStore.getInstance()
-          .getTabDataStore(this.props.tabId)
-          .updateStore({
-            chatItems: current.map(ci =>
-              ci.messageId === this.props.chatItem.messageId
-                ? { type: ChatItemType.ANSWER, messageId: ci.messageId }
-                : ci
-            )
-          }, true);
-      }
-      return false;
-    }
-  return true
-},
-}; 
+              MynahUITabsStore.getInstance()
+                .getTabDataStore(this.props.tabId)
+                .updateStore({
+                  chatItems: current.map(ci =>
+                    ci.messageId === this.props.chatItem.messageId
+                      ? { type: ChatItemType.ANSWER, messageId: ci.messageId }
+                      : ci
+                  )
+                }, true);
+            }
+            return false;
+          }
+          return true;
+        },
+      };
 
       if (insideButtons.length > 0) {
         this.chatButtonsInside = new ChatItemButtonsWrapper({ ...chatButtonProps, buttons: insideButtons });
