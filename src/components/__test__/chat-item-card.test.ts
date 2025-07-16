@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ChatItemCard } from './chat-item-card';
+import { ChatItemCard } from '../chat-item/chat-item-card';
 import { ChatItem, ChatItemType } from '../../static';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { MynahUIGlobalEvents } from '../../helper/events';

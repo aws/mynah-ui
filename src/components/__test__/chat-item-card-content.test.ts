@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
+import { ChatItemCardContent, ChatItemCardContentProps } from '../chat-item/chat-item-card-content';
 import { DomBuilder } from '../../helper/dom';
 import { CardBody } from '../card/card-body';
 
