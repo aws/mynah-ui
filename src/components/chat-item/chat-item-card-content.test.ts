@@ -45,15 +45,15 @@ describe('ChatItemCardContent Modify Functionality', () => {
             }
           };
           // Set initial value if provided
-          if (config.attributes?.value) {
+          if (config.attributes?.value != null) {
             element.value = config.attributes.value;
           }
           // Mock events
-          if (config.events) {
-            Object.keys(config.events).forEach(eventName => {
-              element.addEventListener = jest.fn();
-            });
-          }
+        if (config.events != null) {
+          Object.keys(config.events).forEach(eventName => {
+            element.addEventListener = jest.fn();
+          });
+        }
           return element;
         }
         return {
@@ -119,7 +119,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         onEdit: jest.fn()
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -138,7 +138,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         onEdit: jest.fn()
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -156,7 +156,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         onEdit: jest.fn()
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -174,7 +174,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         onEdit: jest.fn()
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -193,7 +193,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         onEdit: jest.fn()
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -330,7 +330,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         onEdit: onEditMock
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       // Verify that the build was called with input event handler
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
@@ -349,7 +349,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         onEdit: jest.fn()
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       // Verify that the build was called with focus event handler
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
@@ -463,7 +463,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
       };
 
       expect(() => {
-        new ChatItemCardContent(props);
+        void new ChatItemCardContent(props);
       }).not.toThrow();
     });
 
@@ -475,7 +475,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         onEdit: jest.fn()
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -534,7 +534,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         }
       };
 
-      new ChatItemCardContent(props);
+      void new ChatItemCardContent(props);
 
       expect(CardBody).toHaveBeenCalledWith(
         expect.objectContaining({

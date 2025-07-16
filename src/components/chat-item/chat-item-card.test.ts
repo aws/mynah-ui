@@ -487,7 +487,7 @@ describe('ChatItemCard Modify Functionality', () => {
       };
 
       expect(() => {
-        new ChatItemCard({
+        void new ChatItemCard({
           tabId: mockTabId,
           chatItem
         });
@@ -503,7 +503,7 @@ describe('ChatItemCard Modify Functionality', () => {
       };
 
       expect(() => {
-        new ChatItemCard({
+        void new ChatItemCard({
           tabId: mockTabId,
           chatItem
         });
@@ -519,7 +519,7 @@ describe('ChatItemCard Modify Functionality', () => {
       };
 
       expect(() => {
-        new ChatItemCard({
+        void new ChatItemCard({
           tabId: mockTabId,
           chatItem
         });
@@ -571,7 +571,7 @@ describe('ChatItemCard Modify Functionality', () => {
         body: '```shell\necho "test"\n```'
       };
 
-      new ChatItemCard({
+      void new ChatItemCard({
         tabId: mockTabId,
         chatItem
       });
