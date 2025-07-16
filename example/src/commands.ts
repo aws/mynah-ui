@@ -21,6 +21,7 @@ export enum Commands {
     INFORMATION_CARDS = '/information-cards',
     CONFIRMATION_BUTTONS = '/confirmation-buttons',
     BUTTONS = '/buttons',
+    SHELL_WITH_MODIFY = '/shell-with-modify',
 
     NOTIFY = '/show-notification',
     CLEAR = '/clear',

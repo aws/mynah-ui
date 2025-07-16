@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilderObject, ExtendedHTMLElement, getTypewriterPartsCss } from '../../helper/dom';
+import { DomBuilder, DomBuilderObject, ExtendedHTMLElement, getTypewriterPartsCss } from '../../helper/dom';
 import { CardRenderDetails, ChatItem, CodeBlockActions, OnCodeBlockActionFunction, OnCopiedToClipboardFunction, ReferenceTrackerInformation } from '../../static';
 import { CardBody } from '../card/card-body';
 import { generateUID } from '../../helper/guid';
@@ -11,6 +11,9 @@ import { generateUID } from '../../helper/guid';
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardContentProps {
   body?: string | null;
+  /** new: if true render a textarea */
+  editable?: boolean;
+  onEdit?: (newText: string) => void;
   testId?: string;
   renderAsStream?: boolean;
   classNames?: string[];
@@ -31,19 +34,75 @@ export class ChatItemCardContent {
   private props: ChatItemCardContentProps;
   render: ExtendedHTMLElement;
   contentBody: CardBody | null = null;
-  private readonly updateStack: Array<Partial<ChatItem>> = [];
+  //private readonly updateStack: Array<Partial<ChatItem>> = [];
+  private readonly updateStack: Array<Partial<ChatItemCardContentProps>> = [];
   private typewriterItemIndex: number = 0;
   private readonly typewriterId: string = `typewriter-card-${generateUID()}`;
   private lastAnimationDuration: number = 0;
   private updateTimer: ReturnType<typeof setTimeout> | undefined;
+  private textareaEl?: HTMLTextAreaElement;
   constructor (props: ChatItemCardContentProps) {
     this.props = props;
+    
+    if (props.editable) {
+      this.contentBody = null;
+      this.render = this.createEditableTextarea();
+      return;
+    }
+    
     this.contentBody = this.getCardContent();
     this.render = this.contentBody.render;
 
     if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '') {
       this.updateCardStack({});
     }
+  }
+
+  private createEditableTextarea(): ExtendedHTMLElement {
+    // Extract command from markdown code block
+    let initialText = '';
+    if (this.props.body) {
+      const match = this.props.body.match(/```[^\n]*\n([\s\S]*?)```/);
+      initialText = match ? match[1].trim() : this.props.body.trim();
+    }
+    
+    const textarea = DomBuilder.getInstance().build({
+      type: 'textarea',
+      classNames: [ 'mynah-shell-command-input', ...(this.props.classNames ?? []) ],
+      attributes: {
+        rows: '1',
+        spellcheck: 'false',
+        value: initialText
+      },
+      events: {
+        input: this.handleTextareaInput.bind(this),
+        focus: this.handleTextareaFocus.bind(this)
+      }
+    });
+    
+    this.textareaEl = textarea as unknown as HTMLTextAreaElement;
+    this.textareaEl.value = initialText;
+    
+    // Auto-resize after DOM insertion
+    setTimeout(() => this.resizeTextarea(this.textareaEl!), 0);
+    
+    return textarea;
+  }
+
+  private handleTextareaInput(e: Event): void {
+    const textarea = e.target as HTMLTextAreaElement;
+    this.resizeTextarea(textarea);
+    this.props.onEdit?.(textarea.value);
+  }
+
+  private handleTextareaFocus(e: Event): void {
+    const textarea = e.target as HTMLTextAreaElement;
+    this.resizeTextarea(textarea);
+  }
+
+  private resizeTextarea(textarea: HTMLTextAreaElement): void {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.max(40, textarea.scrollHeight) + 'px';
   }
 
   private readonly getCardContent = (): CardBody => {
@@ -63,7 +122,8 @@ export class ChatItemCardContent {
 
   private readonly updateCard = (): void => {
     if (this.updateTimer === undefined && this.updateStack.length > 0) {
-      const updateWith: Partial<ChatItemCardContentProps> | undefined = this.updateStack.shift();
+      //const updateWith: Partial<ChatItemCardContentProps> | undefined = this.updateStack.shift();
+      const updateWith = this.updateStack.shift()
       if (updateWith !== undefined) {
         this.props = {
           ...this.props,
@@ -133,8 +193,126 @@ export class ChatItemCardContent {
   };
 
   public readonly updateCardStack = (updateWith: Partial<ChatItemCardContentProps>): void => {
-    this.updateStack.push(updateWith);
-    this.updateCard();
+    // Handle explicit editable state changes first
+    if (updateWith.hasOwnProperty('editable')) {
+      const newEditableState = updateWith.editable;
+      const currentEditableState = this.props.editable;
+      
+      // Transition to editable mode
+      if (newEditableState === true) {
+        // Force complete state reset before transitioning
+        if (this.updateTimer !== undefined) {
+          clearTimeout(this.updateTimer);
+          this.updateTimer = undefined;
+        }
+        this.updateStack.length = 0;
+        this.typewriterItemIndex = 0;
+        this.lastAnimationDuration = 0;
+        
+        // Update props
+        this.props = { ...this.props, ...updateWith };
+        
+        let initialText = '';
+        if (this.props.body) {
+          const m = this.props.body.match(/```[^\n]*\n([\s\S]*?)```/);
+          initialText = m ? m[1].trim() : this.props.body.trim();
+        }
+        
+        // Build a textarea in-place, pre-filled with the old command
+        const textarea = DomBuilder.getInstance().build({
+          type: 'textarea',
+          classNames: ['mynah-shell-command-input', ...(this.props.classNames ?? [])],
+          attributes: {
+            rows: '4',
+            spellcheck: 'false',
+            placeholder: 'Enter your shell command…', 
+            value: initialText 
+          },
+          events: {
+            input: (e: Event) => {
+              const ta = e.target as HTMLTextAreaElement;
+              this.props.onEdit?.(ta.value);
+              // auto-resize
+              ta.style.height = 'auto';
+              ta.style.height = Math.max(40, ta.scrollHeight) + 'px';
+            },
+            focus: (e: Event) => {
+              const ta = e.target as HTMLTextAreaElement;
+              ta.style.height = 'auto';
+              ta.style.height = Math.max(40, ta.scrollHeight) + 'px';
+            }
+          }
+        });
+
+        // Replace the current render with textarea
+        const parentNode = this.render?.parentNode;
+        if (parentNode) {
+          parentNode.replaceChild(
+            textarea as unknown as Node,
+            this.render as unknown as Node
+          );
+          
+          // Update references
+          this.textareaEl = textarea as unknown as HTMLTextAreaElement;
+          this.render = textarea;
+          this.contentBody = null; // Clear contentBody since we're now in editable mode
+          
+          // Auto-resize after DOM insertion
+          setTimeout(() => {
+            const ta = this.textareaEl!;
+            ta.style.height = 'auto';
+            ta.style.height = Math.max(40, ta.scrollHeight) + 'px';
+            ta.focus(); // Focus the textarea for better UX
+          }, 0);
+        }
+        return;
+      }
+      
+      // Transition from editable to non-editable mode
+      if (newEditableState === false) {        
+        // Update props first
+        this.props = { ...this.props, ...updateWith };
+        
+        // Force complete state reset
+        this.textareaEl = undefined;
+        if (this.updateTimer !== undefined) {
+          clearTimeout(this.updateTimer);
+          this.updateTimer = undefined;
+        }
+        this.updateStack.length = 0;
+        this.typewriterItemIndex = 0;
+        this.lastAnimationDuration = 0;
+        
+        // Create new CardBody with updated content
+        this.contentBody = this.getCardContent();
+        
+        // Replace the textarea with the new CardBody
+        const parentNode = this.render?.parentNode;
+        if (parentNode) {
+          parentNode.replaceChild(
+            this.contentBody.render as unknown as Node,
+            this.render as unknown as Node
+          );
+          
+          // Update render reference
+          this.render = this.contentBody.render;
+          
+          // If we need to render as stream after switching back, trigger it
+          if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '') {
+            setTimeout(() => this.updateCardStack({}), 0);
+          }
+        }
+        return;
+      }
+      
+      return;
+    }
+    
+    // Handle other updates (like body content changes) only if not in editable mode
+    if (!this.props.editable) {
+      this.updateStack.push(updateWith);
+      this.updateCard();
+    }
   };
 
   public readonly getRenderDetails = (): CardRenderDetails => {
@@ -142,4 +320,15 @@ export class ChatItemCardContent {
       totalNumberOfCodeBlocks: (this.contentBody?.nextCodeBlockIndex ?? 0)
     };
   };
+
+  public getText(): string {
+    if (this.props.editable && this.textareaEl) {
+      return this.textareaEl.value;
+    }
+    // strip ```shell\n...\n``` if present
+    const body = this.props.body ?? ''
+    const m = body.match(/```[^\n]*\n([\s\S]*?)```/)
+    return m ? m[1].trim() : body.trim()
+  }
+
 }
