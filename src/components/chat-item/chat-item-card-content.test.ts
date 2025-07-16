@@ -49,11 +49,11 @@ describe('ChatItemCardContent Modify Functionality', () => {
             element.value = config.attributes.value;
           }
           // Mock events
-        if (config.events != null) {
-          Object.keys(config.events).forEach(eventName => {
-            element.addEventListener = jest.fn();
-          });
-        }
+          if (config.events != null) {
+            Object.keys(config.events).forEach(eventName => {
+              element.addEventListener = jest.fn();
+            });
+          }
           return element;
         }
         return {
