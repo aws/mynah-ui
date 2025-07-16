@@ -37,7 +37,7 @@ export class DetailedListWrapper {
     element: ExtendedHTMLElement;
   }> = [];
 
-  private activeTargetElementIndex: number = 0;
+  private activeTargetElementIndex: number = -1;
   private allSelectableDetailedListElements: DetailedListItemWrapper[] = [];
   constructor (props: DetailedListWrapperProps) {
     this.props = props;
@@ -221,7 +221,6 @@ export class DetailedListWrapper {
         ]
       });
     });
-    this.allSelectableDetailedListElements[0]?.setFocus(true, true);
     return groups ?? [ '' ];
   };
 
@@ -231,6 +230,7 @@ export class DetailedListWrapper {
         listItem: detailedListItem,
         onSelect: this.props.onItemSelect,
         onClick: this.props.onItemClick,
+        onShowActionMenuOverlay: () => { this.setFocus(detailedListItem); },
         onActionClick: this.props.onItemActionClick,
         selectable: this.props.detailedList.selectable !== false && this.props.detailedList.selectable !== 'clickable',
         clickable: this.props.detailedList.selectable === 'clickable',
@@ -247,33 +247,58 @@ export class DetailedListWrapper {
   public readonly changeTarget = (direction: 'up' | 'down', snapOnLastAndFirst?: boolean, scrollIntoView?: boolean): void => {
     if (this.allSelectableDetailedListElements.length > 0) {
       let nextElementIndex: number = this.activeTargetElementIndex;
-      if (direction === 'up') {
-        if (nextElementIndex > 0) {
-          nextElementIndex--;
-        } else if (snapOnLastAndFirst !== true) {
-          nextElementIndex = this.allSelectableDetailedListElements.length - 1;
-        } else {
-          nextElementIndex = 0;
-        }
+
+      // If no item is currently selected, select the first or last item based on direction
+      if (nextElementIndex === -1) {
+        nextElementIndex = direction === 'up' ? this.allSelectableDetailedListElements.length - 1 : 0;
       } else {
-        if (nextElementIndex < this.allSelectableDetailedListElements.length - 1) {
-          nextElementIndex++;
-        } else if (snapOnLastAndFirst !== true) {
-          nextElementIndex = 0;
+        if (direction === 'up') {
+          if (nextElementIndex > 0) {
+            nextElementIndex--;
+          } else if (snapOnLastAndFirst !== true) {
+            nextElementIndex = this.allSelectableDetailedListElements.length - 1;
+          } else {
+            nextElementIndex = 0;
+          }
         } else {
-          nextElementIndex = this.allSelectableDetailedListElements.length - 1;
+          if (nextElementIndex < this.allSelectableDetailedListElements.length - 1) {
+            nextElementIndex++;
+          } else if (snapOnLastAndFirst !== true) {
+            nextElementIndex = 0;
+          } else {
+            nextElementIndex = this.allSelectableDetailedListElements.length - 1;
+          }
         }
       }
 
-      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(false, scrollIntoView === true);
-      this.activeTargetElementIndex = nextElementIndex;
-      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(true, scrollIntoView === true);
+      this.setFocusByIndex(nextElementIndex, scrollIntoView);
     }
   };
 
+  private readonly setFocus = (detailedListItem: DetailedListItem): void => {
+    // Only remove focus from current item if one is selected
+    if (this.activeTargetElementIndex >= 0) {
+      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(false, false);
+    }
+    const selectedItemIndex = this.allSelectableDetailedListElements.findIndex(item => item.getItem().id === detailedListItem.id);
+
+    this.activeTargetElementIndex = selectedItemIndex;
+    this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(true, false);
+  };
+
+  private readonly setFocusByIndex = (index: number, scrollIntoView?: boolean): void => {
+    // Only remove focus from current item if one is selected
+    if (this.activeTargetElementIndex >= 0) {
+      this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(false, scrollIntoView === true);
+    }
+
+    this.activeTargetElementIndex = index;
+    this.allSelectableDetailedListElements[this.activeTargetElementIndex].setFocus(true, scrollIntoView === true);
+  };
+
   public readonly getTargetElement = (): DetailedListItem | null => {
-    if (this.allSelectableDetailedListElements.length > 0) {
-      return this.allSelectableDetailedListElements[Math.max(this.activeTargetElementIndex, 0)].getItem();
+    if (this.allSelectableDetailedListElements.length > 0 && this.activeTargetElementIndex >= 0) {
+      return this.allSelectableDetailedListElements[this.activeTargetElementIndex].getItem();
     }
     return null;
   };
@@ -310,7 +335,7 @@ export class DetailedListWrapper {
       // Clear and recreate the list structure
       this.detailedListItemsBlockData = [];
       this.detailedListItemGroupsContainer.clear();
-      this.activeTargetElementIndex = 0;
+      this.activeTargetElementIndex = -1;
       this.allSelectableDetailedListElements = [];
       this.props.detailedList.list = detailedList.list;
 
