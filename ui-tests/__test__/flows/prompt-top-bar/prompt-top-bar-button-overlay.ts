@@ -33,6 +33,7 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
       window.topBarOverlayController = window.mynahUI.openTopBarButtonOverlay({
         tabId: selectedTabId,
         topBarButtonOverlay: {
+          selectable: 'clickable',
           list: [
             {
               groupName: 'Test Group',
