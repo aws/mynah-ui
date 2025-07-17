@@ -38,22 +38,17 @@ describe('ChatItemCardContent Modify Functionality', () => {
       getInstance: jest.fn().mockReturnThis(),
       build: jest.fn().mockImplementation((config) => {
         if (config.type === 'textarea') {
+          // Create a fresh textarea mock for each test
           const element = {
-            ...mockTextarea,
-            parentNode: {
-              replaceChild: jest.fn()
-            }
+            value: config.attributes?.value || '',
+            style: { height: '40px' },
+            scrollHeight: 60,
+            addEventListener: jest.fn(),
+            removeEventListener: jest.fn(),
+            focus: jest.fn(),
+            blur: jest.fn()
           };
-          // Set initial value if provided
-          if (config.attributes?.value != null) {
-            element.value = config.attributes.value;
-          }
-          // Mock events
-          if (config.events != null) {
-            Object.keys(config.events).forEach(eventName => {
-              element.addEventListener = jest.fn();
-            });
-          }
+          // Don't add parentNode initially - it will be set by the test if needed
           return element;
         }
         return {
@@ -105,10 +100,21 @@ describe('ChatItemCardContent Modify Functionality', () => {
 
       expect(mockDomBuilder.build).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'textarea'
+          type: 'textarea',
+          attributes: expect.objectContaining({
+            value: 'echo "hello world"'
+          })
         })
       );
-      expect(content.render).toBe(mockTextarea);
+      expect(content.render).toEqual(expect.objectContaining({
+        value: 'echo "hello world"',
+        addEventListener: expect.any(Function),
+        blur: expect.any(Function),
+        focus: expect.any(Function),
+        removeEventListener: expect.any(Function),
+        scrollHeight: 60,
+        style: { height: '40px' }
+      }));
     });
 
     it('should extract shell command from markdown code block', () => {
@@ -371,7 +377,8 @@ describe('ChatItemCardContent Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      mockTextarea.value = 'current textarea content';
+      // Set the value on the actual render element
+      (content.render as any).value = 'current textarea content';
 
       const text = content.getText();
 

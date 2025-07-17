@@ -39,13 +39,22 @@ describe('ChatItemCard Modify Functionality', () => {
         update: jest.fn(),
         insertAdjacentElement: jest.fn(),
         querySelector: jest.fn(),
-        querySelectorAll: jest.fn(),
+        querySelectorAll: jest.fn().mockReturnValue([]), // Return empty array for querySelectorAll
+        setAttribute: jest.fn(),
+        removeAttribute: jest.fn(),
         scrollHeight: 100,
         clientHeight: 80,
         style: {},
         parentNode: {
           replaceChild: jest.fn()
-        }
+        },
+        childNodes: []
+      }),
+      createPortal: jest.fn().mockReturnValue({
+        insertChild: jest.fn(),
+        remove: jest.fn(),
+        addClass: jest.fn(),
+        removeClass: jest.fn()
       })
     } as any;
     (DomBuilder.getInstance as jest.Mock).mockReturnValue(mockDomBuilder);
@@ -54,7 +63,10 @@ describe('ChatItemCard Modify Functionality', () => {
     mockTabDataStore = {
       getValue: jest.fn(),
       updateStore: jest.fn(),
-      subscribe: jest.fn()
+      subscribe: jest.fn(),
+      getStore: jest.fn().mockReturnValue({
+        chatItems: []
+      })
     };
 
     // Mock Tabs Store
