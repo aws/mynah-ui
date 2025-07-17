@@ -445,6 +445,39 @@ Transform your java project from an old version to a new one.
     ],
 };
 
+export const accountDetailsTabData: MynahUIDataModel = {
+    tabBackground: false,
+    compactMode: false,
+    tabTitle: 'Account Details',
+    promptInputVisible: false,
+    tabHeaderDetails: {
+        title: `Account details`,
+    },
+    chatItems: [
+        {
+            type: ChatItemType.ANSWER,
+            body: `### Subscription
+Free Tier
+`,
+            buttons: [
+                {
+                    status: 'primary',
+                    id: 'upgrade-subscription',
+                    text: `Upgrade`,
+                },
+            ],
+        },
+        {
+            type: ChatItemType.ANSWER,
+            body: `### Usage
+591/1000 queries used
+$0.00 incurred in overages
+Limits reset on 8/1/2025 at 12:00:00 GMT
+`,
+        },
+    ],
+};
+
 export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
     {
         commands: [

@@ -515,6 +515,7 @@ type DropdownFormItem = BaseFormItem & {
     value: string;
     label: string;
   }>;
+  disabled?: boolean;
 };
 
 type Stars = BaseFormItem & {
@@ -793,6 +794,7 @@ export interface ConfigOptions {
   codeCopyToClipboardEnabled?: boolean;
   test?: boolean;
   dragOverlayIcon?: MynahIcons | MynahIconsType | CustomIcon;
+  enableSearchKeyboardShortcut?: boolean;
 }
 
 export interface ConfigModel extends ConfigOptions {

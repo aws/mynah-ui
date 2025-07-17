@@ -1192,6 +1192,7 @@ type DropdownFormItem = BaseFormItem & {
     value: string;
     label: string;
   }>;
+  disabled?: boolean;
 };
 
 type Stars = BaseFormItem & {
@@ -2808,6 +2809,7 @@ interface ChatItemFormItem {
     value: string;
     label: string;
   }>;
+  disabled?: boolean; // this is only applicable to DropDownFormItem. If this is set to true, the dropdown is disabled. User cannot use the dropdown.
 }
 ```
 
@@ -2815,8 +2817,9 @@ Since you can give unlimited form items with several different types, it might b
 
 `validationPattenrs` works only for textual inputs. You can define one or more validation regex patterns, use an operator between them as `AND` or `OR`. You can show individual error messages for each validation or use one generic message if the combined validation fails (Might be useful for `OR` operator).
 
-**Another thing which might be interesting** is to know that if you set the `select` or the `radiogroup` mandatory, they'll be rendered as the first item's of them selected if you don't provide an initial value. And you cannot deselet a radio item in any case. For select, if it is mandatory there won't be the option `Please select...`
+**Another thing which might be interesting** is to know that if you set the `select` or the `radiogroup` mandatory, they'll be rendered as the first item's of them selected if you don't provide an initial value. And you cannot deselet a radio item in any case. For select, if it is mandatory there won't be the option `Please select...`. 
 
+**Important note for DropdownFormItem:** If you set `disabled` to `true` for `DropdownFormItem`, the dropdown will be disabled and the user cannot interact with it. When you have a default value and want to ensure it's always displayed, you can combine `mandatory: true` with `disabled: true` - this will automatically select and display the first value in `options` while preventing user interaction.
 
 _**NOTE**: If you set `options` for `textinput` for example, it won't affect the textinput to be rendered and work properly._
 

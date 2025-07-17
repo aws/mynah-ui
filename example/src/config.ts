@@ -33,6 +33,11 @@ export const tabbarButtons: TabBarMainAction[] = [
                 icon: MynahIcons.Q,
             },
             {
+                id: 'account-details',
+                text: 'Non chat tab (Account Details)',
+                icon: MynahIcons.USER,
+            },
+            {
                 id: 'splash-loader',
                 text: 'Show splash loader',
                 icon: MynahIcons.PAUSE,

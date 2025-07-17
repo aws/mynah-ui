@@ -24,7 +24,11 @@ export class TitleDescriptionWithIcon {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: props.testId,
-      classNames: [ 'mynah-ui-title-description-icon-wrapper', ...(this.props.classNames ?? []) ],
+      // Apply icon wrapper styles only if icon is provided
+      classNames: [
+        ...(this.props.icon !== undefined ? [ 'mynah-ui-title-description-icon-wrapper' ] : []),
+        ...(this.props.classNames ?? [])
+      ],
       children: [
         ...(this.props.icon !== undefined
           ? [ {

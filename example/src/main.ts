@@ -54,6 +54,7 @@ import {
     mcpToolRunSampleCardInit,
     sampleRulesList,
     shellCommandWithModifyEditable,
+    accountDetailsTabData,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -1003,6 +1004,8 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     ...mynahUIDefaults.store,
                     ...welcomeScreenTabData.store,
                 });
+            } else if (buttonId === 'account-details') {
+                mynahUI.updateStore('', accountDetailsTabData);
             } else if (buttonId === 'export-chat-md') {
                 const serializedChat = mynahUI.serializeChat(tabId, 'markdown');
                 const blob = new Blob([serializedChat], { type: 'text/plain' });
@@ -1049,6 +1052,9 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         },
         onTabAdd: (tabId: string) => {
             Log(`New tab added: <b>${tabId}</b>`);
+        },
+        onSearchShortcut: (tabId: string) => {
+            Log(`Search shortcut pressed on tab: <b>${tabId}</b>`);
         },
         onOpenFileDialogClick: (tabId: string, fileType: string, insertPosition: number) => {
 
