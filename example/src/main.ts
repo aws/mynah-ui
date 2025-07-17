@@ -1037,6 +1037,9 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         onTabAdd: (tabId: string) => {
             Log(`New tab added: <b>${tabId}</b>`);
         },
+        onSearchShortcut: (tabId: string) => {
+            Log(`Search shortcut pressed on tab: <b>${tabId}</b>`);
+        },
         onOpenFileDialogClick: (tabId: string, fileType: string, insertPosition: number) => {
 
             if (fileType === 'image') {
