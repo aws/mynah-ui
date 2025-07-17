@@ -1038,6 +1038,25 @@ export class MynahUI {
   public getTabData = (tabId: string): MynahUIDataStore => MynahUITabsStore.getInstance().getTabDataStore(tabId);
 
   /**
+   * Sets the drag overlay visibility for a specific tab
+   * @param tabId The tab ID to set the drag overlay visibility for
+   * @param visible Whether the drag overlay should be visible
+   */
+  public setDragOverlayVisible = (tabId: string, visible: boolean): void => {
+    if (this.chatWrappers[tabId] !== null) {
+      this.chatWrappers[tabId].setDragOverlayVisible(visible);
+    }
+  };
+
+  /**
+   * Programmatically resets topBarClicked for the specified tab by dispatching a RESET_TOP_BAR_CLICKED event.
+   * @param tabId The tab ID
+   */
+  public resetTopBarClicked = (tabId: string): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_TOP_BAR_CLICKED, { tabId });
+  };
+
+  /**
    * Toggles the visibility of the splash loader screen
    */
   public toggleSplashLoader = (visible: boolean, text?: string, actions?: Action[]): void => {
