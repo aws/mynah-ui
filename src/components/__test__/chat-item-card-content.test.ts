@@ -17,21 +17,9 @@ jest.mock('../../helper/guid', () => ({
 describe('ChatItemCardContent Modify Functionality', () => {
   let mockDomBuilder: jest.Mocked<DomBuilder>;
   let mockCardBody: jest.Mocked<CardBody>;
-  let mockTextarea: HTMLTextAreaElement;
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    // Mock textarea element
-    mockTextarea = {
-      value: '',
-      style: { height: '40px' },
-      scrollHeight: 60,
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      focus: jest.fn(),
-      blur: jest.fn()
-    } as any;
 
     // Mock DOM Builder
     mockDomBuilder = {
@@ -40,7 +28,7 @@ describe('ChatItemCardContent Modify Functionality', () => {
         if (config.type === 'textarea') {
           // Create a fresh textarea mock for each test
           const element = {
-            value: config.attributes?.value || '',
+            value: config.attributes?.value ?? '',
             style: { height: '40px' },
             scrollHeight: 60,
             addEventListener: jest.fn(),
