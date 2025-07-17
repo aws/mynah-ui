@@ -110,6 +110,9 @@ export class ChatItemFormItemsWrapper {
               placeholder: chatItemOption.placeholder ?? Config.getInstance().config.texts.pleaseSelect,
               ...(this.getHandlers(chatItemOption))
             });
+            if (chatItemOption.disabled === true) {
+              chatOption.setEnabled(false);
+            }
             break;
           case 'radiogroup':
           case 'toggle':

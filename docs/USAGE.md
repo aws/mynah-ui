@@ -30,6 +30,8 @@ mynahUI.showCustomForm(...);
 mynahUI.updateTabDefaults(...);
 mynahUI.toggleSplashLoader(...);
 mynahUI.addCustomContextToPrompt(...);
+mynahUI.resetTopBarClicked(...);
+mynahUI.setDragOverlayVisible(...);
 mynahUI.destroy();
 ```
 
@@ -710,3 +712,40 @@ When called, this function will:
 - Update the tab's data store so that the custom context is tracked and can be referenced or removed later.
 
 **Note:** If the prompt input is not currently visible or the tab does not exist, the function will have no effect.
+
+---
+
+# Show or hide the drag-and-drop overlay (`setDragOverlayVisible`)
+
+Show or hide the drag-and-drop overlay for a specific tab programmatically.
+
+**Signature:**
+```ts
+setDragOverlayVisible(tabId: string, visible: boolean): void
+```
+
+- `tabId`: The ID of the tab for which to show/hide the overlay.
+- `visible`: `true` to show the overlay, `false` to hide it.
+
+**Example:**
+```ts
+mynahUI.setDragOverlayVisible('tab-1', true);  // Show overlay
+mynahUI.setDragOverlayVisible('tab-1', false); // Hide overlay
+```
+
+---
+# Reset Top Bar Clicked Method (`resetTopBarClicked`)
+
+Programmatically resets topBarClicked for the specified tab by dispatching a RESET_TOP_BAR_CLICKED event. This is useful for scenarios like drag-and-drop
+
+**Signature:**
+```ts
+resetTopBarClicked(tabId: string): void
+```
+
+- `tabId`: The ID of the tab for which to reset the top bar overlay.
+
+**Example:**
+```ts
+mynahUI.resetTopBarClicked('tab-1');
+```

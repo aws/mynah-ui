@@ -56,6 +56,7 @@ interface ConfigModel {
     maxTabs: number; // set 1 to hide tabs panel
     showPromptField: boolean; // shows prompt field (default: true)
     dragOverlayIcon?: MynahIcons | MynahIconsType | CustomIcon; // icon displayed in the overlay when a file is dragged into the chat area
+    enableSearchKeyboardShortcut?: boolean; // if true, calls onSearchShortcut on Command + f or Ctrl + f (default: false)
 }
 ...
 ```
@@ -406,3 +407,11 @@ Specifies the icon to display in the drag-and-drop overlay for adding files (suc
 <p align="center">
   <img src="./img/dragOverlayIcon.png" alt="noPrompt" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+## enableSearchKeyboardShortcut
+
+**Type:** `boolean`
+
+When set to `true`, this option enables capturing the search keyboard shortcut. When enabled, pressing Command+F (Mac) or Ctrl+F (Windows/Linux) will trigger the `onSearchShortcut` event instead of the browser's default search behavior. This allows implementing custom search functionality within the chat interface.
+
+Default: `false`
