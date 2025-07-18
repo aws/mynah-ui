@@ -124,10 +124,13 @@ test.describe('Open MynahUI', () => {
       await renderQuickPicks(page);
     });
     test('should close the quick command selector by clicking outside', async ({ page }) => {
-      await closeQuickPicks(page, 'blur');
+      await closeQuickPicks(page, 'blur', 'command');
     });
     test('should close the quick command selector by pressing escape', async ({ page }) => {
-      await closeQuickPicks(page, 'escape');
+      await closeQuickPicks(page, 'escape', 'command');
+    });
+    test('should close the quick command selector by pressing space', async ({ page }) => {
+      await closeQuickPicks(page, 'space', 'command');
     });
     test('should filter quick command selector list', async ({ page }) => {
       await filterQuickPicks(page);
@@ -137,9 +140,6 @@ test.describe('Open MynahUI', () => {
     });
     test('should select quick command selector item with tab', async ({ page }) => {
       await selectQuickPicks(page, 'Tab');
-    });
-    test('should select quick command selector item with space', async ({ page }) => {
-      await selectQuickPicks(page, 'Space');
     });
     test('should select quick command selector item with enter', async ({ page }) => {
       await selectQuickPicks(page, 'Enter');
@@ -171,6 +171,9 @@ test.describe('Open MynahUI', () => {
     test('should close the context selector by pressing escape', async ({ page }) => {
       await closeQuickPicks(page, 'escape', 'context');
     });
+    test('should close the context selector by pressing space', async ({ page }) => {
+      await closeQuickPicks(page, 'space', 'context');
+    });
     test('should filter context selector list', async ({ page }) => {
       await filterQuickPicks(page, 'context');
     });
@@ -179,9 +182,6 @@ test.describe('Open MynahUI', () => {
     });
     test('should select context selector item with tab', async ({ page }) => {
       await selectQuickPicks(page, 'Tab', 'context');
-    });
-    test('should select context selector item with space', async ({ page }) => {
-      await selectQuickPicks(page, 'Space', 'context');
     });
     test('should select context selector item with enter', async ({ page }) => {
       await selectQuickPicks(page, 'Enter', 'context');
