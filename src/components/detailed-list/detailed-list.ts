@@ -244,35 +244,35 @@ export class DetailedListWrapper {
     });
   };
 
-  public readonly changeTarget = (direction: 'up' | 'down', snapOnLastAndFirst?: boolean, scrollIntoView?: boolean): void => {
-    if (this.allSelectableDetailedListElements.length > 0) {
-      let nextElementIndex: number = this.activeTargetElementIndex;
+  public readonly changeTarget = (
+    direction: 'up' | 'down',
+    snapOnLastAndFirst?: boolean,
+    scrollIntoView?: boolean
+  ): void => {
+    if (this.allSelectableDetailedListElements.length === 0) return;
 
-      // If no item is currently selected, select the first or last item based on direction
-      if (nextElementIndex === -1) {
-        nextElementIndex = direction === 'up' ? this.allSelectableDetailedListElements.length - 1 : 0;
-      } else {
-        if (direction === 'up') {
-          if (nextElementIndex > 0) {
-            nextElementIndex--;
-          } else if (snapOnLastAndFirst !== true) {
-            nextElementIndex = this.allSelectableDetailedListElements.length - 1;
-          } else {
-            nextElementIndex = 0;
-          }
-        } else {
-          if (nextElementIndex < this.allSelectableDetailedListElements.length - 1) {
-            nextElementIndex++;
-          } else if (snapOnLastAndFirst !== true) {
-            nextElementIndex = 0;
-          } else {
-            nextElementIndex = this.allSelectableDetailedListElements.length - 1;
-          }
-        }
-      }
+    const lastIndex = this.allSelectableDetailedListElements.length - 1;
+    let nextElementIndex = this.activeTargetElementIndex;
 
+    // Handle initial selection when no item is selected
+    if (nextElementIndex === -1) {
+      nextElementIndex = direction === 'up' ? lastIndex : 0;
       this.setFocusByIndex(nextElementIndex, scrollIntoView);
+      return;
     }
+
+    // Calculate next index based on direction
+    if (direction === 'up') {
+      nextElementIndex = nextElementIndex > 0
+        ? nextElementIndex - 1
+        : (snapOnLastAndFirst === true ? 0 : lastIndex);
+    } else {
+      nextElementIndex = nextElementIndex < lastIndex
+        ? nextElementIndex + 1
+        : (snapOnLastAndFirst === true ? lastIndex : 0);
+    }
+
+    this.setFocusByIndex(nextElementIndex, scrollIntoView);
   };
 
   private readonly setFocus = (detailedListItem: DetailedListItem): void => {
@@ -297,10 +297,11 @@ export class DetailedListWrapper {
   };
 
   public readonly getTargetElement = (): DetailedListItem | null => {
-    if (this.allSelectableDetailedListElements.length > 0 && this.activeTargetElementIndex >= 0) {
-      return this.allSelectableDetailedListElements[this.activeTargetElementIndex].getItem();
+    if (this.allSelectableDetailedListElements.length === 0 || this.activeTargetElementIndex < 0) {
+      return null;
     }
-    return null;
+
+    return this.allSelectableDetailedListElements[this.activeTargetElementIndex].getItem();
   };
 
   public readonly update = (detailedList: DetailedList, preserveScrollPosition?: boolean): void => {
