@@ -1370,6 +1370,7 @@ interface ChatItemContent {
 interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
+  editable?: boolean;
   snapToTop?: boolean;
   autoCollapse?: boolean;
   contentHorizontalAlignment?: 'default' | 'center';
@@ -2072,6 +2073,28 @@ Even though we don't want you to write styles for the components, you might have
 
 
 That's all!, please also see the **[samples data](https://github.com/aws/mynah-ui/blob/6dd5cfbbb9e9d67fec19c40a2f9fbd7dba4c027c/example/src/samples/sample-data.ts#L544)** of both options we've used in the example app.
+
+---
+
+## `editable` (default: `false`)
+It allows you to make the chat item content editable by the user. When set to `true`, the chat item will display controls that allow users to modify the content directly within the chat interface.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    type: ChatItemType.ANSWER,
+    messageId: 'editable-message-1',
+    editable: true,
+    body: "This message content can be edited by the user."
+});
+```
 
 ---
 

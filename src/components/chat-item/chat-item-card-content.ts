@@ -34,7 +34,6 @@ export class ChatItemCardContent {
   private props: ChatItemCardContentProps;
   render: ExtendedHTMLElement;
   contentBody: CardBody | null = null;
-  // private readonly updateStack: Array<Partial<ChatItem>> = [];
   private readonly updateStack: Array<Partial<ChatItemCardContentProps>> = [];
   private typewriterItemIndex: number = 0;
   private readonly typewriterId: string = `typewriter-card-${generateUID()}`;
@@ -126,7 +125,6 @@ export class ChatItemCardContent {
 
   private readonly updateCard = (): void => {
     if (this.updateTimer === undefined && this.updateStack.length > 0) {
-      // const updateWith: Partial<ChatItemCardContentProps> | undefined = this.updateStack.shift();
       const updateWith = this.updateStack.shift();
       if (updateWith !== undefined) {
         this.props = {

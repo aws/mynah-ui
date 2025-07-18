@@ -2,8 +2,7 @@ export enum Commands {
     INSERT_CODE = '/insert-dummy-code',
     COMMAND_WITH_PROMPT = '/with-prompt',
     SHOW_STICKY_CARD = '/show-sticky-card',
-    BORDERED_CARDS = '/bordered-cards',
-    SHELL_WITH_MODIFY = '/shell-with-modify',
+
     REPLACE_FOLLOWUPS = '/replace-followups',
     STATUS_CARDS = '/cards-with-status-colors',
     HEADER_TYPES = '/cards-header-types',
@@ -22,6 +21,8 @@ export enum Commands {
     INFORMATION_CARDS = '/information-cards',
     CONFIRMATION_BUTTONS = '/confirmation-buttons',
     BUTTONS = '/buttons',
+    BORDERED_CARDS = '/bordered-cards',
+    SHELL_WITH_MODIFY = '/shell-with-modify',
     NOTIFY = '/show-notification',
     CLEAR = '/clear',
     CLEAR_CONTEXT_ITEMS = '/clear-context-items',
