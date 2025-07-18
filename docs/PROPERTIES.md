@@ -1296,3 +1296,23 @@ onFilesDropped: (tabId, files, insertPosition) => {
 ```
 
 ---
+
+### `onSearchShortcut`
+
+This event will be fired when the user presses Command+F (Mac) or Ctrl+F (Windows/Linux). It passes the `tabId` of the current tab and the `eventId` for tracking user intent. This allows the consumer to implement custom search functionality when the standard browser search shortcut is pressed.
+
+```typescript
+...
+onSearchShortcut?: (
+    tabId: string,
+    eventId?: string) => void;
+...
+```
+
+**Example:**
+```typescript
+onSearchShortcut: (tabId, eventId) => {
+  console.log(`Search shortcut triggered in tab: ${tabId}`);
+  // Implement custom search functionality, such as opening a history sheet
+},
+```

@@ -793,6 +793,7 @@ export interface ConfigOptions {
   codeCopyToClipboardEnabled?: boolean;
   test?: boolean;
   dragOverlayIcon?: MynahIcons | MynahIconsType | CustomIcon;
+  enableSearchKeyboardShortcut?: boolean;
 }
 
 export interface ConfigModel extends ConfigOptions {

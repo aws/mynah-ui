@@ -227,7 +227,7 @@
 
                 &[class*='icon-status-']:not(.icon-status-none) {
                     padding: var(--mynah-sizing-2);
-                    mask-size: 100%, 60%;
+                    mask-size: 100% 60%;
                     border-radius: var(--mynah-input-radius);
                 }
                 @each $status in $mynah-statuses {
