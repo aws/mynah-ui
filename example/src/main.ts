@@ -153,47 +153,37 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
             Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
         },
         onPromptTopBarItemAdded: (tabId: string, item: QuickActionCommand) => {
-            Log(`Prompt top bar item <b>${item.command}</b> added on tab <b>${tabId}</b>`);
+                                        Log(`Prompt top bar item <b>${item.command}</b> added on tab <b>${tabId}</b>`);
 
             mynahUI.updateStore(tabId, {
-                promptTopBarContextItems: [
-                    ...((mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command) ?? []),
-                    item,
-                ],
-            });
+                                    promptTopBarContextItems: [
+                                        ...((mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command) ?? []),
+                                        item,
+                                    ],
+                                });
         },
         onPromptTopBarItemRemoved: (tabId: string, item: QuickActionCommand) => {
-            Log(`Prompt top bar item <b>${item.command}</b> removed on tab <b>${tabId}</b>`);
+                                        Log(`Prompt top bar item <b>${item.command}</b> removed on tab <b>${tabId}</b>`);
 
             mynahUI.updateStore(tabId, {
-                promptTopBarContextItems: (mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command)
-            });
+                                    promptTopBarContextItems:(mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command)
+                                });
         },
         onPromptTopBarButtonClick: (tabId: string, button: ChatItemButton) => {
-            Log(`Top bar button <b>${button.id}</b> clicked on tab <b>${tabId}</b>`);
+                                        Log(`Top bar button <b>${button.id}</b> clicked on tab <b>${tabId}</b>`);
 
-            const topBarOverlay = mynahUI.openTopBarButtonOverlay({
-                tabId, 
-                topBarButtonOverlay: sampleRulesList,
-                events: {
-                    onClose: () => {
-                        Log(`Top bar overlay closed on tab <b>${tabId}</b>`)
-                    },
-                    onGroupClick: (group) => {
-                        Log(`Top bar overlay group clicked <b>${group}</b> on tab <b>${tabId}</b>`)
-                    },
-                    onItemClick: (item) => {  
-                        Log(`Top bar overlay item clicked <b>${item.id}</b> on tab <b>${tabId}</b>`); 
-                        topBarOverlay.update(sampleRulesList)
-                    },
-                    onKeyPress: (e) => {
-                        Log(`Key pressed on top bar overlay`);
-                        if (e.key === KeyMap.ESCAPE) {
-                            topBarOverlay.close();
-                        }
-                    }
-                }
-            });
+         const topBarOverlay =   mynahUI.openTopBarButtonOverlay({tabId, topBarButtonOverlay: sampleRulesList,
+            events: {
+            onClose: () => {Log(`Top bar overlay closed on tab <b>${tabId}</b>`)},
+            onGroupClick: (group) => {Log(`Top bar overlay group clicked <b>${group}</b> on tab <b>${tabId}</b>`)},
+            onItemClick: (item) => {  Log(`Top bar overlay item clicked <b>${item.id}</b> on tab <b>${tabId}</b>`); topBarOverlay.update(sampleRulesList)},
+            onKeyPress: (e) => {Log(`Key pressed on top bar overlay`);      if (e.key === KeyMap.ESCAPE) {
+                                topBarOverlay.close();
+                            }}
+
+        }})
+
+
         },
         onTabBarButtonClick: (tabId: string, buttonId: string) => {
             if (buttonId.match('mcp-')) {
@@ -324,19 +314,18 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 );
             } else if (buttonId === 'show-pinned-context') {
                 showPinnedContext = !showPinnedContext;
-                if (showPinnedContext) {
-                    Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
-                        mynahUI.updateStore(tabIdFromStore, {
-                            promptTopBarTitle: promptTopBarTitle,
-                            promptTopBarButton: rulesButton,
-                        }),
-                    );
-                } else {
-                    Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
-                        mynahUI.updateStore(tabIdFromStore, {
-                            promptTopBarTitle: ``,
-                        }),
-                    );
+                if (showPinnedContext){
+                Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
+                    mynahUI.updateStore(tabIdFromStore, {
+                        promptTopBarTitle: `@Pin Context`,
+                        promptTopBarButton: rulesButton,
+                    }),
+                ); } else {
+                         Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
+                    mynahUI.updateStore(tabIdFromStore, {
+                        promptTopBarTitle: ``,
+                    }),
+                )
                 }
             } else if (buttonId === 'splash-loader') {
                 mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
