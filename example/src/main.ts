@@ -53,6 +53,7 @@ import {
     mcpToolRunSampleCard,
     mcpToolRunSampleCardInit,
     sampleRulesList,
+    shellCommandWithModifyEditable,
     accountDetailsTabData,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
@@ -60,6 +61,7 @@ import './styles/styles.scss';
 import { ThemeBuilder } from './theme-builder/theme-builder';
 import { Commands } from './commands';
 
+const shellOriginals = new Map<string, ChatItem>();
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     const connector = new Connector();
     let streamingMessageId: string | null;
@@ -315,7 +317,7 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 if (showPinnedContext){
                 Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
                     mynahUI.updateStore(tabIdFromStore, {
-                        promptTopBarTitle: promptTopBarTitle,
+                        promptTopBarTitle: `@Pin Context`,
                         promptTopBarButton: rulesButton,
                     }),
                 ); } else {
@@ -1333,6 +1335,9 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             mynahUI.addCustomContextToPrompt(tabId, commands, insertPosition);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
+            const items = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
+            const current = items.find(ci => ci.messageId === messageId)!;
+
             if (action.id === 'allow-readonly-tools') {
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
                     muted: true,
@@ -1382,6 +1387,121 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         },
                     },
                 });
+            } else if (action.id === 'modify-bash-command') {
+                const chatItems = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
+                const current = chatItems.find(ci => ci.messageId === messageId)!;
+
+                if (current.editable === true || !current.body || current.body.toString().trim() === '') {
+                    return false;
+                }
+
+                shellOriginals.set(messageId, structuredClone(current));
+
+                const raw = current.body.toString();
+                const m = raw.match(/```(?:bash)?\s*([\s\S]*?)```/);
+                const code = (m ? m[1] : raw).trim();
+
+                if (!code) {
+                    return false;
+                }
+
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: code,
+                    editable: true,
+                    header: {
+                        ...current.header!,
+                        buttons: [
+                            { id: 'save-bash-command', text: 'Save',   icon: MynahIcons.OK,     status: 'clear' },
+                            { id: 'cancel-bash-edit',  text: 'Cancel', icon: MynahIcons.CANCEL, status: 'dimmed-clear' },
+                        ],
+                    },
+                });
+
+                return false;
+            } else if (action.id === 'save-bash-command') {
+                const original = shellOriginals.get(messageId)!;
+                shellOriginals.delete(messageId);
+
+                const currentItems = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
+                const currentItem = currentItems.find(ci => ci.messageId === messageId)!;
+
+                const unwrapped = (currentItem.body ?? '').toString().trim();
+                const fenced = unwrapped ? ['```bash', unwrapped, '```'].join('\n') : original.body;
+
+                const allItems = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
+                const itemIndex = allItems.findIndex(ci => ci.messageId === messageId);
+
+                if (itemIndex !== -1) {
+                    const updatedItem = {
+                        ...original,
+                        body: fenced,
+                        editable: false,
+                    };
+
+                    const newItems = [...allItems];
+                    newItems[itemIndex] = updatedItem;
+
+                    mynahUI.updateStore(tabId, {
+                        chatItems: newItems,
+                    });
+                }
+
+                return false;
+            } else if (action.id === 'cancel-bash-edit') {
+                const original = shellOriginals.get(messageId)!;
+                shellOriginals.delete(messageId);
+
+                const allItems = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
+                const itemIndex = allItems.findIndex(ci => ci.messageId === messageId);
+
+                if (itemIndex !== -1) {
+                    const restoredItem = {
+                        ...original,
+                        editable: false,
+                    };
+
+                    const newItems = [...allItems];
+                    newItems[itemIndex] = restoredItem;
+
+                    mynahUI.updateStore(tabId, {
+                        chatItems: newItems,
+                    });
+                }
+
+                return false;
+            } else if (action.id === 'reject-bash-command' || action.id === 'run-bash-command') {
+                // 1) re-grab the chat item
+                const chatItems = mynahUI.getTabData(tabId)!.getValue('chatItems') as ChatItem[];
+                const currentChatItem = chatItems.find(ci => ci.messageId === messageId);
+                if (!currentChatItem) return;
+
+                // 2) reference your original sample for body/buttons
+                const original = shellCommandWithModifyEditable;
+                const originalBody = original.body;
+                const originalButtons = original.header!.buttons!;
+
+                if (action.id === 'reject-bash-command') {
+                    console.log('✋ Reject');
+                    Log(`Reject clicked for ${messageId}`);
+                    mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                        body: originalBody,
+                        editable: false,
+                        type: ChatItemType.ANSWER,
+                        codeBlockActions: { copy: null, 'insert-to-cursor': null },
+                        header: {
+                            ...currentChatItem.header!,
+                            body: original.header!.body,    // reset the header text
+                            buttons: originalButtons,       // and buttons
+                        },
+                    });
+                    return false;
+                } else { // run-bash-command
+                    console.log('▶️ Run');
+                    Log(`Run clicked for ${messageId}`);
+                    connector.runShellCommand(currentChatItem.body);
+                    // optionally leave the card as-is or give feedback…
+                    return false;
+                }
             } else if (action.id === 'quick-start') {
                 mynahUI.updateStore(tabId, {
                     tabHeaderDetails: null,
@@ -1618,6 +1738,11 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     break;
                 case Commands.HEADER_TYPES:
                     sampleHeaderTypes.forEach((ci) => mynahUI.addChatItem(tabId, ci));
+                    // Add the shell command with modify button example
+                    mynahUI.addChatItem(tabId, {
+                        ...shellCommandWithModifyEditable,
+                        messageId: generateUID(),
+                    });
                     break;
                 case Commands.SUMMARY_CARD:
                     const cardId = generateUID();
@@ -1758,6 +1883,13 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 case Commands.CUSTOM_RENDERER_CARDS:
                     mynahUI.addChatItem(tabId, exampleCustomRendererWithHTMLMarkup());
                     mynahUI.addChatItem(tabId, exampleCustomRendererWithDomBuilderJson);
+                    mynahUI.addChatItem(tabId, defaultFollowUps);
+                    break;
+                case Commands.SHELL_WITH_MODIFY:
+                    mynahUI.addChatItem(tabId, {
+                        ...shellCommandWithModifyEditable,
+                        messageId: generateUID(),
+                    });
                     mynahUI.addChatItem(tabId, defaultFollowUps);
                     break;
                 case Commands.COMMAND_WITH_PROMPT:
