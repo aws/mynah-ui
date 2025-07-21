@@ -1195,6 +1195,7 @@ type DropdownFormItem = BaseFormItem & {
     description?: string;
   }>;
   disabled?: boolean;
+  selectTooltip?: string;
 };
 
 type Stars = BaseFormItem & {
@@ -2814,6 +2815,7 @@ interface ChatItemFormItem {
   }>;
   disabled?: boolean; // this is only applicable to DropDownFormItem. If this is set to true, the dropdown is disabled. User cannot use the dropdown.
   boldTitle?: boolean; // this will make the title of the input bold
+  selectTooltip?: string; // this is only applicable to DropDownFormItem. This will make the tooltip float right above the dropdown, not the wrapper object (or the title to be specific)
 }
 ```
 
