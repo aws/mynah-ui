@@ -317,7 +317,7 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 if (showPinnedContext){
                 Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
                     mynahUI.updateStore(tabIdFromStore, {
-                        promptTopBarTitle: `@Pin Context`,
+                        promptTopBarTitle: promptTopBarTitle,
                         promptTopBarButton: rulesButton,
                     }),
                 ); } else {
@@ -1335,9 +1335,6 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             mynahUI.addCustomContextToPrompt(tabId, commands, insertPosition);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
-            const items = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
-            const current = items.find(ci => ci.messageId === messageId)!;
-
             if (action.id === 'allow-readonly-tools') {
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
                     muted: true,
@@ -1388,120 +1385,107 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     },
                 });
             } else if (action.id === 'modify-bash-command') {
-                const chatItems = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
-                const current = chatItems.find(ci => ci.messageId === messageId)!;
-
-                if (current.editable === true || !current.body || current.body.toString().trim() === '') {
-                    return false;
-                }
-
-                shellOriginals.set(messageId, structuredClone(current));
-
-                const raw = current.body.toString();
-                const m = raw.match(/```(?:bash)?\s*([\s\S]*?)```/);
-                const code = (m ? m[1] : raw).trim();
-
-                if (!code) {
-                    return false;
-                }
-
+                // Example: Show how to pass data for modify action
+                Log(`Modify bash command clicked for message ${messageId}`);
+                Log(`Example data passing: action=${action.id}, messageId=${messageId}, tabId=${tabId}`);
+                
+                // Example: Demonstrate how to update chat item with new data
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
-                    body: code,
-                    editable: true,
+                    body: '**Example:** This shows how to pass data to update a chat item body',
                     header: {
-                        ...current.header!,
+                        body: '**Example Header Update**',
                         buttons: [
-                            { id: 'save-bash-command', text: 'Save',   icon: MynahIcons.OK,     status: 'clear' },
-                            { id: 'cancel-bash-edit',  text: 'Cancel', icon: MynahIcons.CANCEL, status: 'dimmed-clear' },
+                            { id: 'example-save', text: 'Save', icon: MynahIcons.OK, status: 'clear' },
+                            { id: 'example-cancel', text: 'Cancel', icon: MynahIcons.CANCEL, status: 'dimmed-clear' },
                         ],
                     },
                 });
-
                 return false;
-            } else if (action.id === 'save-bash-command') {
-                const original = shellOriginals.get(messageId)!;
-                shellOriginals.delete(messageId);
-
-                const currentItems = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
-                const currentItem = currentItems.find(ci => ci.messageId === messageId)!;
-
-                const unwrapped = (currentItem.body ?? '').toString().trim();
-                const fenced = unwrapped ? ['```bash', unwrapped, '```'].join('\n') : original.body;
-
-                const allItems = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
-                const itemIndex = allItems.findIndex(ci => ci.messageId === messageId);
-
-                if (itemIndex !== -1) {
-                    const updatedItem = {
-                        ...original,
-                        body: fenced,
-                        editable: false,
-                    };
-
-                    const newItems = [...allItems];
-                    newItems[itemIndex] = updatedItem;
-
-                    mynahUI.updateStore(tabId, {
-                        chatItems: newItems,
-                    });
-                }
-
+            } else if (action.id === 'save-bash-command' || action.id === 'example-save') {
+                // Example: Show how to pass data for save action
+                Log(`Save bash command clicked for message ${messageId}`);
+                Log(`Example: Passing save data to Mynah UI component`);
+                
+                // Example: Demonstrate how to pass updated data back to chat item
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This shows how data flows back after save action',
+                    header: {
+                        body: '**Saved State Example**',
+                        buttons: [
+                            { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                            { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                            { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                        ],
+                    },
+                });
                 return false;
-            } else if (action.id === 'cancel-bash-edit') {
-                const original = shellOriginals.get(messageId)!;
-                shellOriginals.delete(messageId);
-
-                const allItems = mynahUI.getTabData(tabId).getValue('chatItems') as ChatItem[];
-                const itemIndex = allItems.findIndex(ci => ci.messageId === messageId);
-
-                if (itemIndex !== -1) {
-                    const restoredItem = {
-                        ...original,
-                        editable: false,
-                    };
-
-                    const newItems = [...allItems];
-                    newItems[itemIndex] = restoredItem;
-
-                    mynahUI.updateStore(tabId, {
-                        chatItems: newItems,
-                    });
-                }
-
+            } else if (action.id === 'cancel-bash-edit' || action.id === 'example-cancel') {
+                // Example: Show how to pass data for cancel action
+                Log(`Cancel bash edit clicked for message ${messageId}`);
+                Log(`Example: Demonstrating data restoration in Mynah UI`);
+                
+                // Example: Show how to restore original data
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This demonstrates how to restore original data on cancel',
+                    header: {
+                        body: '**Original State Restored**',
+                        buttons: [
+                            { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                            { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                            { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                        ],
+                    },
+                });
                 return false;
             } else if (action.id === 'reject-bash-command' || action.id === 'run-bash-command') {
-                // 1) re-grab the chat item
-                const chatItems = mynahUI.getTabData(tabId)!.getValue('chatItems') as ChatItem[];
-                const currentChatItem = chatItems.find(ci => ci.messageId === messageId);
-                if (!currentChatItem) return;
-
-                // 2) reference your original sample for body/buttons
-                const original = shellCommandWithModifyEditable;
-                const originalBody = original.body;
-                const originalButtons = original.header!.buttons!;
-
+                // Example: Show how to pass different action data to Mynah UI
+                Log(`${action.id} clicked for message ${messageId}`);
+                Log(`Example: Demonstrating how to pass action-specific data to components`);
+                
                 if (action.id === 'reject-bash-command') {
-                    console.log('✋ Reject');
-                    Log(`Reject clicked for ${messageId}`);
+                    // Example: Show data passing for reject action
                     mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
-                        body: originalBody,
-                        editable: false,
-                        type: ChatItemType.ANSWER,
-                        codeBlockActions: { copy: null, 'insert-to-cursor': null },
+                        body: '**Example:** This shows how to pass reject action data to Mynah UI',
                         header: {
-                            ...currentChatItem.header!,
-                            body: original.header!.body,    // reset the header text
-                            buttons: originalButtons,       // and buttons
+                            body: '**Rejected State Example**',
+                            buttons: [
+                                { id: 'restore-original-buttons', text: 'Try Again', icon: MynahIcons.REFRESH, status: 'clear' },
+                            ],
                         },
                     });
-                    return false;
-                } else { // run-bash-command
-                    console.log('▶️ Run');
-                    Log(`Run clicked for ${messageId}`);
-                    connector.runShellCommand(currentChatItem.body);
-                    // optionally leave the card as-is or give feedback…
-                    return false;
+                } else {
+                    // Example: Show data passing for run action  
+                    mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                        body: '**Example:** This demonstrates how to pass execution data to Mynah UI components',
+                        header: {
+                            body: '**Running State Example**',
+                            buttons: [
+                                { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                                { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                                { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                            ],
+                        },
+                    });
                 }
+                return false;
+            } else if (action.id === 'restore-original-buttons') {
+                // Example: Show how to restore original button state
+                Log(`Restore original buttons clicked for message ${messageId}`);
+                Log(`Example: Demonstrating how to restore original UI state`);
+                
+                // Example: Restore original buttons after reject -> try again
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This shows how to restore the original button state',
+                    header: {
+                        body: '**Original Buttons Restored**',
+                        buttons: [
+                            { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                            { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                            { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                        ],
+                    },
+                });
+                return false;
             } else if (action.id === 'quick-start') {
                 mynahUI.updateStore(tabId, {
                     tabHeaderDetails: null,

@@ -1344,7 +1344,6 @@ export const exampleBorderedCard = (): ChatItem => {
         messageId: generateUID(),
         type: ChatItemType.ANSWER,
         border: true,
-        padding: true,
         header: {
             padding: true,
             iconForegroundStatus: 'warning',

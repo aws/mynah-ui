@@ -720,23 +720,21 @@ export class ChatItemCard {
           if (action.keepCardAfterClick === false) {
             this.render.remove();
             if (this.props.chatItem.messageId !== undefined) {
-              const current = MynahUITabsStore.getInstance()
+              const currentChatItems: ChatItem[] = MynahUITabsStore.getInstance()
                 .getTabDataStore(this.props.tabId)
-                .getValue('chatItems') as ChatItem[];
+                .getValue('chatItems');
 
               MynahUITabsStore.getInstance()
                 .getTabDataStore(this.props.tabId)
                 .updateStore({
-                  chatItems: current.map(ci =>
+                  chatItems: currentChatItems.map(ci =>
                     ci.messageId === this.props.chatItem.messageId
                       ? { type: ChatItemType.ANSWER, messageId: ci.messageId }
                       : ci
                   )
                 }, true);
             }
-            return false;
           }
-          return true;
         },
       };
 

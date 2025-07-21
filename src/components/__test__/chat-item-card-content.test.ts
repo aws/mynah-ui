@@ -356,64 +356,6 @@ describe('ChatItemCardContent Modify Functionality', () => {
     });
   });
 
-  describe('Text Extraction', () => {
-    it('should return textarea value when in editable mode', () => {
-      const props: ChatItemCardContentProps = {
-        body: '```shell\necho "test"\n```',
-        editable: true,
-        onEdit: jest.fn()
-      };
-
-      const content = new ChatItemCardContent(props);
-      // Set the value on the actual render element
-      (content.render as any).value = 'current textarea content';
-
-      const text = content.getText();
-
-      expect(text).toBe('current textarea content');
-    });
-
-    it('should extract command from markdown body when not editable', () => {
-      const shellCommand = 'echo "hello world"';
-      const props: ChatItemCardContentProps = {
-        body: `\`\`\`shell\n${shellCommand}\n\`\`\``,
-        editable: false
-      };
-
-      const content = new ChatItemCardContent(props);
-
-      const text = content.getText();
-
-      expect(text).toBe(shellCommand);
-    });
-
-    it('should return plain text body when no markdown', () => {
-      const plainText = 'plain command';
-      const props: ChatItemCardContentProps = {
-        body: plainText,
-        editable: false
-      };
-
-      const content = new ChatItemCardContent(props);
-
-      const text = content.getText();
-
-      expect(text).toBe(plainText);
-    });
-
-    it('should return empty string for null body', () => {
-      const props: ChatItemCardContentProps = {
-        body: null,
-        editable: false
-      };
-
-      const content = new ChatItemCardContent(props);
-
-      const text = content.getText();
-
-      expect(text).toBe('');
-    });
-  });
 
   describe('Render Details', () => {
     it('should return correct render details from CardBody', () => {
@@ -446,6 +388,159 @@ describe('ChatItemCardContent Modify Functionality', () => {
       expect(details).toEqual({
         totalNumberOfCodeBlocks: 0
       });
+    });
+  });
+
+  describe('Text Extraction from Body', () => {
+    it('should extract text from shell code block', () => {
+      const command = 'npm install';
+      const props: ChatItemCardContentProps = {
+        body: `\`\`\`shell\n${command}\n\`\`\``,
+        editable: true,
+        onEdit: jest.fn()
+      };
+
+      void new ChatItemCardContent(props);
+
+      expect(mockDomBuilder.build).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            value: command
+          })
+        })
+      );
+    });
+
+    it('should extract text from bash code block', () => {
+      const command = 'cd /home && ls -la';
+      const props: ChatItemCardContentProps = {
+        body: `\`\`\`bash\n${command}\n\`\`\``,
+        editable: true,
+        onEdit: jest.fn()
+      };
+
+      void new ChatItemCardContent(props);
+
+      expect(mockDomBuilder.build).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            value: command
+          })
+        })
+      );
+    });
+
+    it('should extract text from code block without language specifier', () => {
+      const command = 'git status';
+      const props: ChatItemCardContentProps = {
+        body: `\`\`\`\n${command}\n\`\`\``,
+        editable: true,
+        onEdit: jest.fn()
+      };
+
+      void new ChatItemCardContent(props);
+
+      expect(mockDomBuilder.build).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            value: command
+          })
+        })
+      );
+    });
+
+    it('should handle code block with extra whitespace', () => {
+      const command = 'echo "test"';
+      const props: ChatItemCardContentProps = {
+        body: `\`\`\`shell\n   ${command}   \n\`\`\``,
+        editable: true,
+        onEdit: jest.fn()
+      };
+
+      void new ChatItemCardContent(props);
+
+      expect(mockDomBuilder.build).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            value: command // extractTextFromBody trims whitespace
+          })
+        })
+      );
+    });
+
+    it('should return plain text when no code block markers found', () => {
+      const plainText = 'This is just plain text';
+      const props: ChatItemCardContentProps = {
+        body: plainText,
+        editable: true,
+        onEdit: jest.fn()
+      };
+
+      void new ChatItemCardContent(props);
+
+      expect(mockDomBuilder.build).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            value: plainText
+          })
+        })
+      );
+    });
+
+    it('should handle empty string body', () => {
+      const props: ChatItemCardContentProps = {
+        body: '',
+        editable: true,
+        onEdit: jest.fn()
+      };
+
+      void new ChatItemCardContent(props);
+
+      expect(mockDomBuilder.build).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            value: ''
+          })
+        })
+      );
+    });
+
+    it('should handle undefined body', () => {
+      const props: ChatItemCardContentProps = {
+        editable: true,
+        onEdit: jest.fn()
+      };
+
+      void new ChatItemCardContent(props);
+
+      expect(mockDomBuilder.build).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            value: ''
+          })
+        })
+      );
+    });
+
+    it('should handle multiline commands in code blocks', () => {
+      const multilineCommand = `echo "First line"
+echo "Second line"
+ls -la`;
+      const props: ChatItemCardContentProps = {
+        body: `\`\`\`shell\n${multilineCommand}\n\`\`\``,
+        editable: true,
+        onEdit: jest.fn()
+      };
+
+      void new ChatItemCardContent(props);
+
+      expect(mockDomBuilder.build).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            value: multilineCommand
+          })
+        })
+      );
     });
   });
 

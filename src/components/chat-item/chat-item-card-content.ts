@@ -11,7 +11,6 @@ import { generateUID } from '../../helper/guid';
 const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardContentProps {
   body?: string | null;
-  /** new: if true render a textarea */
   editable?: boolean;
   onEdit?: (newText: string) => void;
   testId?: string;
@@ -40,6 +39,8 @@ export class ChatItemCardContent {
   private lastAnimationDuration: number = 0;
   private updateTimer: ReturnType<typeof setTimeout> | undefined;
   private textareaEl?: HTMLTextAreaElement;
+  private isTransitioning: boolean = false;
+  private pendingUpdates: Array<Partial<ChatItemCardContentProps>> = [];
   constructor (props: ChatItemCardContentProps) {
     this.props = props;
 
@@ -57,13 +58,17 @@ export class ChatItemCardContent {
     }
   }
 
-  private createEditableTextarea (): ExtendedHTMLElement {
-    // Extract command from markdown code block
-    let initialText = '';
-    if (this.props.body != null && this.props.body.trim() !== '') {
-      const match = this.props.body.match(/```[^\n]*\n([\s\S]*?)```/);
-      initialText = (match != null) ? match[1].trim() : this.props.body.trim();
+  private extractTextFromBody (body?: string | null): string {
+    if (body == null || body.trim() === '') {
+      return '';
     }
+    // Strip ```shell\n...\n``` if present
+    const match = body.match(/```[^\n]*\n([\s\S]*?)```/);
+    return (match != null) ? match[1].trim() : body.trim();
+  }
+
+  private createEditableTextarea (): ExtendedHTMLElement {
+    const initialText = this.extractTextFromBody(this.props.body);
 
     const textarea = DomBuilder.getInstance().build({
       type: 'textarea',
@@ -199,8 +204,8 @@ export class ChatItemCardContent {
     if (Object.prototype.hasOwnProperty.call(updateWith, 'editable')) {
       const newEditableState = updateWith.editable;
 
-      // Transition to editable mode
-      if (newEditableState === true) {
+        // Transition to editable mode
+        if (newEditableState === true) {
         // Force complete state reset before transitioning
         if (this.updateTimer !== undefined) {
           clearTimeout(this.updateTimer);
@@ -210,74 +215,68 @@ export class ChatItemCardContent {
         this.typewriterItemIndex = 0;
         this.lastAnimationDuration = 0;
 
-        // Update props
-        this.props = { ...this.props, ...updateWith };
+          // Update props
+          this.props = { ...this.props, ...updateWith };
 
-        let initialText = '';
-        if (this.props.body != null && this.props.body.trim() !== '') {
-          const m = this.props.body.match(/```[^\n]*\n([\s\S]*?)```/);
-          initialText = (m != null) ? m[1].trim() : this.props.body.trim();
-        }
+          const initialText = this.extractTextFromBody(this.props.body);
 
-        // Build a textarea in-place, pre-filled with the old command
-        const textarea = DomBuilder.getInstance().build({
-          type: 'textarea',
-          classNames: [ 'mynah-shell-command-input', ...(this.props.classNames ?? []) ],
-          attributes: {
-            rows: '4',
-            spellcheck: 'false',
-            placeholder: 'Enter your shell command…',
-            value: initialText
-          },
-          events: {
-            input: (e: Event) => {
-              const ta = e.target as HTMLTextAreaElement;
-              this.props.onEdit?.(ta.value);
-              // auto-resize
-              ta.style.height = 'auto';
-              ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
+          // Build a textarea in-place, pre-filled with the old command
+          const textarea = DomBuilder.getInstance().build({
+            type: 'textarea',
+            classNames: [ 'mynah-shell-command-input', ...(this.props.classNames ?? []) ],
+            attributes: {
+              spellcheck: 'false',
+              value: initialText
             },
-            focus: (e: Event) => {
-              const ta = e.target as HTMLTextAreaElement;
-              ta.style.height = 'auto';
-              ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
+            events: {
+              input: (e: Event) => {
+                const ta = e.target as HTMLTextAreaElement;
+                this.props.onEdit?.(ta.value);
+                // auto-resize
+                ta.style.height = 'auto';
+                ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
+              },
+              focus: (e: Event) => {
+                const ta = e.target as HTMLTextAreaElement;
+                ta.style.height = 'auto';
+                ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
+              }
             }
+          });
+
+          // Replace the current render with textarea
+          const parentNode = this.render?.parentNode;
+          if (parentNode != null) {
+            parentNode.replaceChild(
+              textarea as unknown as Node,
+              this.render as unknown as Node
+            );
+
+            // Update references
+            this.textareaEl = textarea as unknown as HTMLTextAreaElement;
+            this.render = textarea;
+            this.contentBody = null; // Clear contentBody since we're now in editable mode
+
+            // Auto-resize after DOM insertion
+            setTimeout(() => {
+              if (this.textareaEl != null) {
+                const ta = this.textareaEl;
+                ta.style.height = 'auto';
+                ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
+                ta.focus(); // Focus the textarea for better UX
+              }
+            }, 0);
           }
-        });
-
-        // Replace the current render with textarea
-        const parentNode = this.render?.parentNode;
-        if (parentNode != null) {
-          parentNode.replaceChild(
-            textarea as unknown as Node,
-            this.render as unknown as Node
-          );
-
-          // Update references
-          this.textareaEl = textarea as unknown as HTMLTextAreaElement;
-          this.render = textarea;
-          this.contentBody = null; // Clear contentBody since we're now in editable mode
-
-          // Auto-resize after DOM insertion
-          setTimeout(() => {
-            if (this.textareaEl != null) {
-              const ta = this.textareaEl;
-              ta.style.height = 'auto';
-              ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
-              ta.focus(); // Focus the textarea for better UX
-            }
-          }, 0);
-        }
         return;
-      }
+        }
 
-      // Transition from editable to non-editable mode
+        // Transition from editable to non-editable mode
       if (newEditableState === false) {
-        // Update props first
-        this.props = { ...this.props, ...updateWith };
+          // Update props first
+          this.props = { ...this.props, ...updateWith };
 
         // Force complete state reset
-        this.textareaEl = undefined;
+          this.textareaEl = undefined;
         if (this.updateTimer !== undefined) {
           clearTimeout(this.updateTimer);
           this.updateTimer = undefined;
@@ -286,25 +285,25 @@ export class ChatItemCardContent {
         this.typewriterItemIndex = 0;
         this.lastAnimationDuration = 0;
 
-        // Create new CardBody with updated content
-        this.contentBody = this.getCardContent();
+          // Create new CardBody with updated content
+          this.contentBody = this.getCardContent();
 
-        // Replace the textarea with the new CardBody
-        const parentNode = this.render?.parentNode;
-        if (parentNode != null) {
-          parentNode.replaceChild(
-            this.contentBody.render as unknown as Node,
-            this.render as unknown as Node
-          );
+          // Replace the textarea with the new CardBody
+          const parentNode = this.render?.parentNode;
+          if (parentNode != null) {
+            parentNode.replaceChild(
+              this.contentBody.render as unknown as Node,
+              this.render as unknown as Node
+            );
 
-          // Update render reference
-          this.render = this.contentBody.render;
+            // Update render reference
+            this.render = this.contentBody.render;
 
-          // If we need to render as stream after switching back, trigger it
-          if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '') {
-            setTimeout(() => this.updateCardStack({}), 0);
+            // If we need to render as stream after switching back, trigger it
+            if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '') {
+              setTimeout(() => this.updateCardStack({}), 0);
+            }
           }
-        }
         return;
       }
 
@@ -324,13 +323,4 @@ export class ChatItemCardContent {
     };
   };
 
-  public getText (): string {
-    if (this.props.editable === true && (this.textareaEl != null)) {
-      return this.textareaEl.value;
-    }
-    // strip ```shell\n...\n``` if present
-    const body = this.props.body ?? '';
-    const m = body.match(/```[^\n]*\n([\s\S]*?)```/);
-    return (m != null) ? m[1].trim() : body.trim();
-  }
 }
