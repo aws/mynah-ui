@@ -49,7 +49,12 @@ export class ChatItemFormItemsWrapper {
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
         let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | FormItemList | undefined;
-        let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}`;
+        let label: ExtendedHTMLElement | string = chatItemOption.boldTitle === true
+          ? DomBuilder.getInstance().build({
+            type: 'strong',
+            children: [ `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}` ]
+          })
+          : `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}`;
         if (chatItemOption.mandatory === true) {
           if (chatItemOption.hideMandatoryIcon !== true) {
             label = DomBuilder.getInstance().build({
@@ -108,6 +113,7 @@ export class ChatItemFormItemsWrapper {
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
               placeholder: chatItemOption.placeholder ?? Config.getInstance().config.texts.pleaseSelect,
+              tooltip: chatItemOption.selectTooltip ?? '',
               ...(this.getHandlers(chatItemOption))
             });
             if (chatItemOption.disabled === true) {
