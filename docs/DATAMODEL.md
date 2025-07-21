@@ -1170,6 +1170,7 @@ interface BaseFormItem {
   description?: string;
   tooltip?: string;
   icon?: MynahIcons | MynahIconsType;
+  boldTitle?: boolean;
 }
 
 export type TextBasedFormItem = BaseFormItem & {
@@ -1191,6 +1192,7 @@ type DropdownFormItem = BaseFormItem & {
   options?: Array<{
     value: string;
     label: string;
+    description?: string;
   }>;
   disabled?: boolean;
 };
@@ -2808,8 +2810,10 @@ interface ChatItemFormItem {
   options?: Array<{ // Only applicable to select and radiogroup types
     value: string;
     label: string;
+    description?: string; // Only applicable to select types. This will add a description below the label to add more context for the option
   }>;
   disabled?: boolean; // this is only applicable to DropDownFormItem. If this is set to true, the dropdown is disabled. User cannot use the dropdown.
+  boldTitle?: boolean; // this will make the title of the input bold
 }
 ```
 
