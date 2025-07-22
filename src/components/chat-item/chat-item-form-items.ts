@@ -48,13 +48,14 @@ export class ChatItemFormItemsWrapper {
       testId: testIds.chatItem.chatItemForm.wrapper,
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
+        const title = `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}`;
         let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | FormItemList | undefined;
         let label: ExtendedHTMLElement | string = chatItemOption.boldTitle === true
           ? DomBuilder.getInstance().build({
             type: 'strong',
-            children: [ `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}` ]
+            children: [ title ]
           })
-          : `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}`;
+          : title;
         if (chatItemOption.mandatory === true) {
           if (chatItemOption.hideMandatoryIcon !== true) {
             label = DomBuilder.getInstance().build({
