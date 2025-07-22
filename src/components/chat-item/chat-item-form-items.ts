@@ -50,18 +50,19 @@ export class ChatItemFormItemsWrapper {
       children: this.props.chatItem.formItems?.map(chatItemOption => {
         const title = `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}`;
         let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | FormItemList | undefined;
-        let label: ExtendedHTMLElement | string = chatItemOption.boldTitle === true
-          ? DomBuilder.getInstance().build({
-            type: 'strong',
-            children: [ title ]
-          })
-          : title;
+        const label: ExtendedHTMLElement = DomBuilder.getInstance().build({
+          type: 'div',
+          children: [ title ]
+        });
+        if (chatItemOption.boldTitle === true) {
+          label.addClass('.mynah-ui-form-item-bold-label');
+        }
         if (chatItemOption.mandatory === true) {
           if (chatItemOption.hideMandatoryIcon !== true) {
-            label = DomBuilder.getInstance().build({
-              type: 'div',
+            // Add the mandatory class to the existing label
+            label.addClass('mynah-ui-form-item-mandatory-title');
+            label.update({
               testId: testIds.chatItem.chatItemForm.title,
-              classNames: [ 'mynah-ui-form-item-mandatory-title' ],
               children: [
                 new Icon({ icon: MynahIcons.ASTERISK }).render,
                 chatItemOption.title ?? '',
