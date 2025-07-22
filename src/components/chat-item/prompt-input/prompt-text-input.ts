@@ -348,6 +348,13 @@ export class PromptTextInput {
     maintainCursor: boolean = false
   ): void => {
     const selection = window.getSelection();
+    // Clamp position to total content length
+    let totalLength = 0;
+    for (const node of this.promptTextInput.childNodes) {
+      totalLength += node.textContent?.length ?? 0;
+    }
+    const safePosition = Math.min(position, totalLength);
+
     if (this.promptTextInput.childNodes.length === 0) {
       this.promptTextInput.insertChild('beforeend', element as HTMLElement);
 
@@ -377,15 +384,17 @@ export class PromptTextInput {
 
     const range = document.createRange();
     let currentPos = 0;
-    let inserted = false;
+    let foundInsertionPoint = false;
 
     // Find the correct text node and offset
     for (const node of this.promptTextInput.childNodes) {
       const length = node.textContent?.length ?? 0;
 
-      if (currentPos + length >= position) {
-        if (node.nodeType === Node.TEXT_NODE || node.nodeName === 'BR') {
-          const offset = Math.min(position - currentPos, length);
+      // Only try to set range on text nodes
+      if (currentPos + length >= safePosition && (node.nodeType === Node.TEXT_NODE)) {
+        const offset = Math.min(safePosition - currentPos, length);
+        // Defensive: only setStart if offset is valid
+        if (offset >= 0 && offset <= length) {
           range.setStart(node, offset);
 
           if (endPosition != null) {
@@ -424,7 +433,7 @@ export class PromptTextInput {
           } else {
             range.setStartAfter(element);
           }
-          inserted = true;
+          foundInsertionPoint = true;
           break;
         }
       }
@@ -432,8 +441,41 @@ export class PromptTextInput {
     }
 
     // Fallback: if nothing was inserted, insert at the end
-    if (!inserted) {
+    if (!foundInsertionPoint) {
       this.promptTextInput.insertChild('beforeend', element as HTMLElement);
+      if (!maintainCursor && selection != null) {
+        const endRange = document.createRange();
+        const spaceNode = document.createTextNode('\u00A0');
+        endRange.selectNodeContents(this.promptTextInput);
+        endRange.setStartAfter(spaceNode);
+        endRange.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(endRange);
+        this.lastCursorIndex = this.updateCursorPos();
+      }
+      return;
+    }
+
+    // If the only child is a <br>, treat as empty and insert at end
+    // The <br> is inserted into contenteditable html element if left empty,
+    // this happens when delete prompt input by
+    // selecting all prompt input and click delete
+    if (
+      this.promptTextInput.childNodes.length === 1 &&
+      this.promptTextInput.firstChild?.nodeName === 'BR'
+    ) {
+      this.promptTextInput.insertChild('beforeend', element as HTMLElement);
+      if (!maintainCursor && selection != null) {
+        const range = document.createRange();
+        const spaceNode = document.createTextNode('\u00A0');
+        range.selectNodeContents(this.promptTextInput);
+        range.setStartAfter(spaceNode);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        this.lastCursorIndex = this.updateCursorPos();
+      }
+      return;
     }
 
     if (!maintainCursor) {
