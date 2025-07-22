@@ -1329,7 +1329,6 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     commands.push(contextItem);
                 }
             }
-            console.log(commands)
             mynahUI.addCustomContextToPrompt(tabId, commands, insertPosition);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
