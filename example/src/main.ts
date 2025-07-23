@@ -1074,7 +1074,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         // Return true to allow the context item to be inserted
                         // The original context item will be replaced with our file context item
                         mynahUI.addCustomContextToPrompt(selectedTab, [contextItem], insertPosition)
-                        Log(`Images context added: <b>${contextItem.command}</b>`);
+                        Log(`Image context added: <b>${contextItem.command}</b>`);
                         return true;
                     }
 
@@ -1113,7 +1113,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         };
 
                         mynahUI.addCustomContextToPrompt(tabId, [contextItem])
-                        Log(`Images context added: <b>${contextItem.command}</b>`);
+                        Log(`Image context added: <b>${contextItem.command}</b>`);
                         // avoid insert of context
                         return false;
                     }
