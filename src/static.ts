@@ -493,6 +493,7 @@ interface BaseFormItem {
   description?: string;
   tooltip?: string;
   icon?: MynahIcons | MynahIconsType;
+  boldTitle?: boolean;
 }
 
 export type TextBasedFormItem = BaseFormItem & {
@@ -514,8 +515,10 @@ type DropdownFormItem = BaseFormItem & {
   options?: Array<{
     value: string;
     label: string;
+    description?: string;
   }>;
   disabled?: boolean;
+  selectTooltip?: string;
 };
 
 type Stars = BaseFormItem & {
@@ -555,6 +558,7 @@ export interface ListFormItem {
   description?: string;
   tooltip?: string;
   icon?: MynahIcons | MynahIconsType;
+  boldTitle?: boolean;
   items: SingularFormItem[];
   value: ListItemEntry[];
 };

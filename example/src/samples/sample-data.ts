@@ -2276,6 +2276,52 @@ export const sampleMCPDetails = (title: string): DetailedList => {
         filterOptions: [
             {
                 type: 'select',
+                id: 'auto-approve',
+                title: 'Auto Approve',
+                options: [
+                    {
+                        label: 'Yes',
+                        value: 'yes',
+                    },
+                    {
+                        label: 'No',
+                        value: 'no',
+                    },
+                ],
+                selectTooltip: "Permission for this tool is not configurable yet",
+                mandatory: true,
+                disabled: true,
+                hideMandatoryIcon: true,
+                boldTitle: true,
+            },
+          {
+                type: 'select',
+                id: 'tool_name',
+                title: 'Tool Name',
+                value: 'alwaysAllow',
+                options: [
+                    {
+                        label: 'Ask',
+                        value: 'ask',
+                        description: "Ask for your approval each time this tool is run"
+                    },
+                    {
+                        label: 'Always Allow',
+                        value: 'alwaysAllow',
+                        description: 'Always allow this tool to run without asking for approval'
+                    },
+                    {
+                        label: 'Deny',
+                        value: 'deny',
+                        description: 'Never run this tool'
+                    },
+                ],
+                boldTitle: true,
+                mandatory: true,
+                hideMandatoryIcon: true,
+            },
+            {
+                type: 'select',
                 id: 'transport',
                 title: 'Transport',
                 options: [
@@ -2287,7 +2333,7 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                         label: 'No',
                         value: 'no',
                     },
-                ],
+                ]
             },
             {
                 type: 'textinput',
