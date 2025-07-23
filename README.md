@@ -7,7 +7,7 @@
 [![Publish](https://github.com/aws/mynah-ui/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/aws/mynah-ui/actions/workflows/publish.yml)
 [![Deploy](https://github.com/aws/mynah-ui/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/aws/mynah-ui/actions/workflows/deploy.yml)
 
-**Mynah UI** is a **_data and event_** driven chat interface designed for browsers and webviews on IDEs or any platform supporting the latest web technologies. It is utilized by Amazon Q for [VSCode](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode) and [JetBrains](https://plugins.jetbrains.com/plugin/11349-aws-toolkit--amazon-q-codewhisperer-and-more), and is included with the AWS Toolkit extension.
+**Mynah UI** is a **_data and event_** driven chat interface designed for browsers and webviews on IDEs or any platform supporting the latest web technologies. It is utilized by Amazon Q for [VSCode](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode), [JetBrains](https://plugins.jetbrains.com/plugin/11349-aws-toolkit--amazon-q-codewhisperer-and-more), [Visual studio](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.AWSToolkitforVisualStudio2022&ssr=false#overview) and [Eclipse](https://marketplace.eclipse.org/content/amazon-q).
 
 Mynah UI operates independently of any framework or UI library, enabling seamless integration into any web-based project. This design choice ensures high configurability for theming, supporting various use cases. It functions as a standalone solution, requiring only a designated rendering location within the DOMTree.
 
