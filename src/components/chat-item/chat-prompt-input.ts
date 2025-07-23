@@ -499,13 +499,18 @@ export class ChatPromptInput {
     } else {
       const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH, KeyMap.ALT ] as string[];
       if (blockedKeys.includes(e.key)) {
+        // Close quick pick overlay when space is pressed
+        if (e.key === KeyMap.SPACE) {
+          this.quickPick?.close();
+          return;
+        }
         e.preventDefault();
         if (e.key === KeyMap.ESCAPE) {
           if (this.quickPickType === 'quick-action') {
             this.clearTextArea(true);
           }
           this.quickPick?.close();
-        } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
+        } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB) {
           this.searchTerm = '';
           const targetDetailedListItem = this.quickPickItemsSelectorContainer?.getTargetElement();
           if (targetDetailedListItem != null) {
@@ -521,9 +526,6 @@ export class ChatPromptInput {
               }
             } else {
               switch (e.key) {
-                case KeyMap.SPACE:
-                  this.handleQuickActionCommandSelection(commandToSend, 'space');
-                  break;
                 case KeyMap.TAB:
                   this.handleQuickActionCommandSelection(commandToSend, 'tab');
                   break;

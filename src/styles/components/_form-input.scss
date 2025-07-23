@@ -9,6 +9,9 @@
         &:empty {
             display: none;
         }
+        > .mynah-ui-form-item-bold-label {
+            font-weight: bold;
+        }
         > .mynah-ui-form-item-mandatory-title {
             display: inline-flex;
             flex-flow: row nowrap;
