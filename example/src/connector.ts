@@ -34,15 +34,4 @@ export class Connector {
       }, INITIAL_STREAM_DELAY);
     }, 150);
   });
-  public runShellCommand(cmd: string | null | undefined): void {
-    // example: POST it to your server
-    fetch('/api/run-shell', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ command: cmd }),
-    })
-      .then(res => res.json())
-      .then(result => Log(`shell result: ${JSON.stringify(result)}`))
-      .catch(err => Log(`shell error: ${err}`));
   }
-}
