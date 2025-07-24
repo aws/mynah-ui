@@ -428,6 +428,7 @@ export interface ChatItemContent {
     hideFileCount?: boolean;
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
+    renderAsPills?: boolean;
   } | null;
   buttons?: ChatItemButton[] | null;
   formItems?: ChatItemFormItem[] | null;

@@ -336,13 +336,21 @@ export class ChatItemCard {
       this.header = null;
     } else if (this.props.chatItem.header != null) {
       if (this.cardHeader != null && this.header != null) {
-        this.header.updateCardStack({
-          ...this.props.chatItem.header,
-          status: undefined,
-          type: ChatItemType.ANSWER,
-          messageId: this.props.chatItem.messageId,
-        } satisfies ChatItem);
-      } else {
+        if (this.props.chatItem.header.fileList?.renderAsPills === true) {
+          this.cardHeader?.remove();
+          this.cardHeader = this.getCardHeader();
+          this.card?.render.insertChild('beforeend', this.cardHeader);
+          this.header = null;
+        } else {
+          this.header.updateCardStack({
+            ...this.props.chatItem.header,
+            status: undefined,
+            type: ChatItemType.ANSWER,
+            messageId: this.props.chatItem.messageId,
+          } satisfies ChatItem);
+        }
+      }
+      if (this.header === null) {
         this.cardHeader?.remove();
         this.cardHeader = this.getCardHeader();
         this.card?.render.insertChild('beforeend', this.cardHeader);
@@ -357,13 +365,70 @@ export class ChatItemCard {
             status: undefined,
             type: ChatItemType.ANSWER,
             messageId: this.props.chatItem.messageId,
+            ...(this.props.chatItem.header.fileList?.renderAsPills === true
+              ? {
+                  customRenderer: [
+                    ...(this.props.chatItem.header.icon != null
+                      ? [ {
+                          type: 'i' as const,
+                          classNames: [
+                            'mynah-ui-icon',
+                            `mynah-ui-icon-${this.props.chatItem.header.icon as MynahIcons}`,
+                            'mynah-chat-item-card-icon-inline',
+                            `icon-status-${this.props.chatItem.header.iconStatus ?? 'none'}`
+                          ]
+                        } ]
+                      : []),
+                    ...(this.props.chatItem.header.body != null && this.props.chatItem.header.body !== ''
+                      ? [ { type: 'span' as const, children: [ this.props.chatItem.header.body ] } ]
+                      : []),
+                    ...this.props.chatItem.header.fileList.filePaths?.map(filePath => {
+                      const fileName = this.props.chatItem.header?.fileList?.details?.[filePath]?.visibleName ?? filePath;
+                      const isDeleted = this.props.chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
+                      const description = this.props.chatItem.header?.fileList?.details?.[filePath]?.description;
+
+                      return {
+                        type: 'span' as const,
+                        classNames: [
+                          'mynah-chat-item-tree-file-pill',
+                          ...(isDeleted ? [ 'mynah-chat-item-tree-file-pill-deleted' ] : [])
+                        ],
+                        children: [ fileName ],
+                        events: {
+                          click: () => {
+                            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
+                              tabId: this.props.tabId,
+                              messageId: this.props.chatItem.messageId,
+                              filePath,
+                              deleted: isDeleted
+                            });
+                          },
+                          ...(description !== undefined
+                            ? {
+                                mouseover: (e: MouseEvent) => {
+                                  this.showTooltip(description, e.target as HTMLElement);
+                                },
+                                mouseleave: () => {
+                                  this.hideTooltip();
+                                }
+                              }
+                            : {})
+                        },
+                      };
+                    }) ?? []
+                  ],
+                  body: null,
+                  fileList: null,
+                  icon: undefined
+                }
+              : {})
           },
         });
         this.cardHeader.insertChild('beforeend', this.header.render);
       }
 
       if (this.props.chatItem.header.status != null) {
-        this.cardHeader.insertAdjacentElement(this.props.chatItem.header.status.position === 'left' ? 'afterbegin' : 'beforeend', DomBuilder.getInstance().build({
+        this.cardHeader?.insertAdjacentElement(this.props.chatItem.header.status.position === 'left' ? 'afterbegin' : 'beforeend', DomBuilder.getInstance().build({
           type: 'span',
           classNames: [ 'mynah-chat-item-card-header-status', `status-${this.props.chatItem.header.status.status ?? 'default'}` ],
           children: [
@@ -513,7 +578,7 @@ export class ChatItemCard {
       this.fileTreeWrapper.render.remove();
       this.fileTreeWrapper = null;
     }
-    if (this.props.chatItem.fileList != null) {
+    if (this.props.chatItem.fileList != null && this.props.chatItem.header?.fileList?.renderAsPills !== true) {
       const { filePaths = [], deletedFiles = [], actions, details, flatList } = this.props.chatItem.fileList;
       const referenceSuggestionLabel = this.props.chatItem.body ?? '';
       this.fileTreeWrapper = new ChatItemTreeViewWrapper({
