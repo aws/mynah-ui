@@ -250,13 +250,14 @@
                                 }
                                 > .mynah-form-input-container.no-border {
                                     > .select-auto-width-sizer {
+                                        font-size: var(--mynah-font-size-xsmall);
                                         padding-right: calc(var(--mynah-sizing-half) + 1em);
                                     }
                                     > select {
                                         width: auto;
                                         min-width: auto;
                                         color: var(--mynah-color-text-default);
-                                        font-size: var(--mynah-font-size-small);
+                                        font-size: var(--mynah-font-size-xsmall);
                                         & + i {
                                             font-size: var(--mynah-font-size-xsmall);
                                         }
@@ -392,7 +393,7 @@
             pointer-events: none;
         }
         &::before {
-            border: var(--mynah-border-width) solid var(--mynah-color-text-input-border);
+            border: var(--mynah-border-width) solid var(--mynah-color-text-input-border-focused);
         }
     }
 
