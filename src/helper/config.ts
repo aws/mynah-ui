@@ -82,6 +82,7 @@ const configDefaults: ConfigFullModel = {
     openNewTab: 'New tab',
     commandConfirmation: 'Press enter to continue',
     pinContextHint: 'Pin context with \u2325 Enter',
+    contextSearchPlaceholder: 'Search context',
     dragOverlayText: 'Add image to context',
   },
 };

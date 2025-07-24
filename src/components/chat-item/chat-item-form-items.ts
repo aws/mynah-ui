@@ -375,4 +375,16 @@ export class ChatItemFormItemsWrapper {
     });
     return valueMap;
   };
+
+  clearFirstTextInput = (): void => {
+    const firstOptionId = Object.keys(this.options)[0];
+    if (firstOptionId != null) {
+      const firstOption = this.options[firstOptionId];
+      // Clear first text input
+      if ('clear' in firstOption && typeof firstOption.clear === 'function') {
+        firstOption.clear();
+        firstOption.focus();
+      }
+    }
+  };
 }

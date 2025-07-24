@@ -36,6 +36,8 @@ export abstract class TextInputAbstract {
   render: ExtendedHTMLElement;
   setValue = (value: string): void => {};
   getValue = (): string => '';
+  clear = (): void => {};
+  focus = (): void => {};
   setEnabled = (enabled: boolean): void => {};
   checkValidation = (): void => {};
 }
@@ -125,11 +127,7 @@ export class TextInputInternal extends TextInputAbstract {
       ]
     });
 
-    if (this.props.autoFocus === true) {
-      setTimeout(() => {
-        this.inputElement.focus();
-      }, 250);
-    }
+    this.focus();
   }
 
   setValue = (value: string): void => {
@@ -138,6 +136,18 @@ export class TextInputInternal extends TextInputAbstract {
 
   getValue = (): string => {
     return this.inputElement.value;
+  };
+
+  focus = (): void => {
+    if (this.props.autoFocus === true) {
+      setTimeout(() => {
+        this.inputElement.focus();
+      }, 250);
+    }
+  };
+
+  clear = (): void => {
+    this.setValue('');
   };
 
   setEnabled = (enabled: boolean): void => {
@@ -161,6 +171,8 @@ export class TextInput extends TextInputAbstract {
 
   setValue = (value: string): void => {};
   getValue = (): string => '';
+  clear = (): void => {};
+  focus = (): void => {};
   setEnabled = (enabled: boolean): void => {};
   checkValidation = (): void => {};
 }

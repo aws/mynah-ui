@@ -671,7 +671,7 @@ export class ChatPromptInput {
                     type: 'textinput',
                     icon: MynahIcons.SEARCH,
                     id: 'search',
-                    placeholder: 'Search context',
+                    placeholder: Config.getInstance().config.texts.contextSearchPlaceholder,
                     autoFocus: true,
                   },
                 ],
@@ -717,7 +717,7 @@ export class ChatPromptInput {
     } else {
       this.quickPickItemsSelectorContainer.update({
         list: detailedListItemsGroup
-      });
+      }, false, true);
     }
 
     const headerInfo: QuickActionCommandsHeader = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommandsHeader');
