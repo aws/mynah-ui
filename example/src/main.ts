@@ -1074,6 +1074,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         // Return true to allow the context item to be inserted
                         // The original context item will be replaced with our file context item
                         mynahUI.addCustomContextToPrompt(selectedTab, [contextItem], insertPosition)
+                        Log(`Image context added by typing '@image:': <b>${contextItem.command}</b>`);
                         return true;
                     }
 
@@ -1112,6 +1113,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         };
 
                         mynahUI.addCustomContextToPrompt(tabId, [contextItem])
+                        Log(`Image context added by selecting Image from context menu: <b>${contextItem.command}</b>`);
                         // avoid insert of context
                         return false;
                     }
@@ -1330,6 +1332,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 }
             }
             mynahUI.addCustomContextToPrompt(tabId, commands, insertPosition);
+            Log(`Images dropped: ${commands.map(cmd => `<br/>- <b>${cmd.command}</b>`).join('')}`);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
             if (action.id === 'allow-readonly-tools') {
