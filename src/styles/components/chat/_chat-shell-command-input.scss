@@ -1,0 +1,28 @@
+.mynah-shell-command-input {
+    width: 100%;
+    min-height: 40px;
+    padding: var(--mynah-sizing-2);
+    border: 1px solid var(--mynah-color-border-default);
+    border-radius: var(--mynah-input-radius);
+    background-color: var(--mynah-color-bg);
+    color: var(--mynah-color-text-default);
+    font-family: var(--mynah-font-family-mono);
+    font-size: var(--mynah-font-size-medium);
+    line-height: var(--mynah-line-height);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+        border-color: var(--mynah-color-border-focus);
+        box-shadow: 0 0 0 2px var(--mynah-color-border-focus-shadow);
+    }
+
+    &:hover {
+        border-color: var(--mynah-color-border-hover);
+    }
+
+    &::placeholder {
+        color: var(--mynah-color-text-weak);
+    }
+}
