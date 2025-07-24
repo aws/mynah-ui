@@ -55,6 +55,7 @@ import {
   renderPromptTopBar,
   promptTopBarTooltip,
   promptTopBarButtonOverlay,
+  promptTopBarTitle,
 } from './flows/prompt-top-bar';
 
 test.describe('Open MynahUI', () => {
@@ -199,6 +200,10 @@ test.describe('Open MynahUI', () => {
 
     test('should show overlay when clicking top bar button', async ({ page }) => {
       await promptTopBarButtonOverlay(page);
+    });
+
+    test('should show context menu when clicking top bar title', async ({ page }) => {
+      await promptTopBarTitle(page);
     });
   });
 
