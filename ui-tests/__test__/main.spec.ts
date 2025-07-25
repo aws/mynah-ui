@@ -203,7 +203,7 @@ test.describe('Open MynahUI', () => {
     });
 
     test('should show context menu when clicking top bar title', async ({ page }) => {
-      test.setTimeout(40_6000);
+      test.setTimeout(40_000);
       await promptTopBarTitle(page);
     });
   });
