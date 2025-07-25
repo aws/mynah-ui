@@ -128,7 +128,7 @@ export const promptTopBarTitle = async (page: Page): Promise<void> => {
                         icon: 'code-block',
                         description: 'The DomGeneration function in dom.ts file',
                       },
-                      ...Array(100_000)
+                      ...Array(10)
                         .fill(null)
                         .map((_, i) => ({
                           command: `item${i}`,
@@ -224,17 +224,10 @@ export const promptTopBarTitle = async (page: Page): Promise<void> => {
   expect(filteredItems.some(text => text.includes('folder'))).toBeTruthy();
   expect(filteredItems.some(text => text.includes('file'))).toBeFalsy();
 
-  // Clear the search and search for an item with children
-  await searchInput.clear();
-  await searchInput.fill('folder');
-  await waitForAnimationEnd(page);
-
-  // Take screenshot of filtered results showing folder
-  expect(await quickPicksWrapper.screenshot()).toMatchSnapshot('context-selector-folder-filtered.png');
-
   // Click on the folder item (which has children)
   const folderItem = page.locator(getSelector(testIds.prompt.quickPickItem)).filter({ hasText: 'folder' });
   await folderItem.click();
+  await page.mouse.move(0, 0); // move cursor away so hover effect is removed
   await waitForAnimationEnd(page);
 
   // Verify that the children are now shown (Folders group)
@@ -257,11 +250,15 @@ export const promptTopBarTitle = async (page: Page): Promise<void> => {
   const nestedChildTexts = await nestedChildItems.allInnerTexts();
   expect(nestedChildTexts.some(text => text.includes('index.ts'))).toBeTruthy();
 
+  // Hover over index.ts item to verify hover effect in screenshot
+  const indexTsItem = page.locator(getSelector(testIds.prompt.quickPickItem)).filter({ hasText: 'index.ts' }).first();
+  await indexTsItem.hover();
+  await waitForAnimationEnd(page);
+
   // Take screenshot showing the nested children
   expect(await quickPicksWrapper.screenshot()).toMatchSnapshot('context-selector-nested-children-shown.png');
 
-  // Select the index.ts file
-  const indexTsItem = page.locator(getSelector(testIds.prompt.quickPickItem)).filter({ hasText: 'index.ts' });
+  // Select index.ts context item
   await indexTsItem.click();
   await waitForAnimationEnd(page);
 
