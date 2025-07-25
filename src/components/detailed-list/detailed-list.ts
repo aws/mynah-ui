@@ -306,7 +306,7 @@ export class DetailedListWrapper {
 
   public readonly update = (detailedList: DetailedList, preserveScrollPosition?: boolean, clearFilter?: boolean): void => {
     if (this.filterForm != null && clearFilter === true) {
-      this.filterForm.clearFirstTextInput();
+      this.filterForm.clearAndFocusFirstTextInput();
     }
 
     if (detailedList.header != null) {

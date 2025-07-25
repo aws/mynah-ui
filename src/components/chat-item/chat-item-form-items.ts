@@ -376,7 +376,7 @@ export class ChatItemFormItemsWrapper {
     return valueMap;
   };
 
-  clearFirstTextInput = (): void => {
+  clearAndFocusFirstTextInput = (): void => {
     const firstOptionId = Object.keys(this.options)[0];
     if (firstOptionId != null) {
       const firstOption = this.options[firstOptionId];
