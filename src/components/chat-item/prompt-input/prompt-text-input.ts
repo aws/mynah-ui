@@ -325,6 +325,26 @@ export class PromptTextInput {
     return preCaretRange.toString().length;
   };
 
+  private readonly updateSelectionAndCursor = (range: Range, maintainCursor: boolean = false, selection?: Selection | null): void => {
+    const sel = selection ?? window.getSelection();
+    if (!maintainCursor && sel != null) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+      this.lastCursorIndex = this.updateCursorPos();
+    }
+  };
+
+  private readonly insertSpaceNodeAndUpdateCursor = (element: HTMLElement | Text, maintainCursor: boolean = false, selection?: Selection | null): void => {
+    const spaceNode = document.createTextNode('\u00A0');
+    element.parentNode?.insertBefore(spaceNode, element.nextSibling);
+    if (!maintainCursor && selection != null) {
+      const endRange = document.createRange();
+      endRange.setStartAfter(spaceNode);
+      endRange.collapse(true);
+      this.updateSelectionAndCursor(endRange, maintainCursor, selection);
+    }
+  };
+
   private readonly checkIsEmpty = (): void => {
     if (this.promptTextInput.textContent === '' && this.promptTextInput.querySelectorAll('span.context').length === 0) {
       this.promptTextInput.addClass('empty');
@@ -357,18 +377,21 @@ export class PromptTextInput {
 
     if (this.promptTextInput.childNodes.length === 0) {
       this.promptTextInput.insertChild('beforeend', element as HTMLElement);
+      this.insertSpaceNodeAndUpdateCursor(element, maintainCursor, selection);
+      return;
+    }
 
-      const spaceNode = document.createTextNode('\u00A0');
-      element.parentNode?.insertBefore(spaceNode, element.nextSibling);
-
-      if (!maintainCursor && selection != null) {
-        const range = document.createRange();
-        range.setStartAfter(spaceNode);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        this.lastCursorIndex = this.updateCursorPos();
-      }
+    // If the only child is a <br>, treat as empty and insert at end
+    // The <br> is inserted into contenteditable html element if left empty,
+    // this happens when delete prompt input by selecting all and clicking delete
+    if (
+      this.promptTextInput.childNodes.length === 1 &&
+      this.promptTextInput.firstChild?.nodeName === 'BR'
+    ) {
+      // Remove the br element and insert our element
+      this.promptTextInput.firstChild.remove();
+      this.promptTextInput.insertChild('beforeend', element as HTMLElement);
+      this.insertSpaceNodeAndUpdateCursor(element, maintainCursor, selection);
       return;
     }
 
@@ -443,48 +466,14 @@ export class PromptTextInput {
     // Fallback: if nothing was inserted, insert at the end
     if (!foundInsertionPoint) {
       this.promptTextInput.insertChild('beforeend', element as HTMLElement);
-      if (!maintainCursor && selection != null) {
-        const endRange = document.createRange();
-        const spaceNode = document.createTextNode('\u00A0');
-        endRange.selectNodeContents(this.promptTextInput);
-        endRange.setStartAfter(spaceNode);
-        endRange.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(endRange);
-        this.lastCursorIndex = this.updateCursorPos();
-      }
-      return;
-    }
-
-    // If the only child is a <br>, treat as empty and insert at end
-    // The <br> is inserted into contenteditable html element if left empty,
-    // this happens when delete prompt input by
-    // selecting all prompt input and click delete
-    if (
-      this.promptTextInput.childNodes.length === 1 &&
-      this.promptTextInput.firstChild?.nodeName === 'BR'
-    ) {
-      this.promptTextInput.insertChild('beforeend', element as HTMLElement);
-      if (!maintainCursor && selection != null) {
-        const range = document.createRange();
-        const spaceNode = document.createTextNode('\u00A0');
-        range.selectNodeContents(this.promptTextInput);
-        range.setStartAfter(spaceNode);
-        range.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        this.lastCursorIndex = this.updateCursorPos();
-      }
+      this.insertSpaceNodeAndUpdateCursor(element, maintainCursor, selection);
       return;
     }
 
     if (!maintainCursor) {
       // Only modify cursor position if maintainCursor is false
       range.collapse(true);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      // Update lastCursorIndex with new cursor position so getCursorPos is accurate
-      this.lastCursorIndex = this.updateCursorPos();
+      this.updateSelectionAndCursor(range, maintainCursor, selection);
     } else if (originalRange != null) {
       // Restore original cursor position
       selection.removeAllRanges();
