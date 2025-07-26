@@ -4,75 +4,75 @@
  */
 
 .mynah-form-item-pill-box-wrapper {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--mynah-form-input-border-color);
-  border-radius: 4px;
-  padding: 8px;
-  min-height: 100px;
-  background-color: var(--mynah-form-input-background-color);
-  
-  &:focus-within {
-    border-color: var(--mynah-form-input-focus-border-color);
-    box-shadow: 0 0 0 2px var(--mynah-form-input-focus-shadow-color);
-  }
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--mynah-form-input-border-color);
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 100px;
+    background-color: var(--mynah-form-input-background-color);
+
+    &:focus-within {
+        border-color: var(--mynah-form-input-focus-border-color);
+        box-shadow: 0 0 0 2px var(--mynah-form-input-focus-shadow-color);
+    }
 }
 
 .mynah-form-item-pill-box-pills-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
 }
 
 .mynah-form-item-pill-box-input {
-  border: none;
-  outline: none;
-  background: transparent;
-  width: 100%;
-  resize: none;
-  font-family: var(--mynah-font-family);
-  font-size: var(--mynah-font-size-normal);
-  color: var(--mynah-text-color);
-  
-  &::placeholder {
-    color: var(--mynah-text-color-secondary);
-  }
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    resize: none;
+    font-family: var(--mynah-font-family);
+    font-size: var(--mynah-font-size-normal);
+    color: var(--mynah-text-color);
+
+    &::placeholder {
+        color: var(--mynah-text-color-secondary);
+    }
 }
 
 .mynah-form-item-pill {
-  display: inline-flex;
-  align-items: center;
-  background-color: var(--mynah-color-primary-light);
-  border-radius: 16px;
-  padding: 4px 8px;
-  max-width: 100%;
-  
-  .mynah-form-item-pill-text {
-    margin-right: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
-  }
-  
-  .mynah-form-item-pill-remove {
-    cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 14px;
-    height: 14px;
-    opacity: 0.7;
-    
-    &:hover {
-      opacity: 1;
+    background-color: var(--mynah-color-primary-light);
+    border-radius: 16px;
+    padding: 4px 8px;
+    max-width: 100%;
+
+    .mynah-form-item-pill-text {
+        margin-right: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
     }
-  }
+
+    .mynah-form-item-pill-remove {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 14px;
+        height: 14px;
+        opacity: 0.7;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
 }
 
 [disabled] .mynah-form-item-pill-box-wrapper,
 .mynah-form-item-pill-box-wrapper[disabled] {
-  opacity: 0.6;
-  pointer-events: none;
+    opacity: 0.6;
+    pointer-events: none;
 }
