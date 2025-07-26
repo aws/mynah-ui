@@ -5,6 +5,7 @@
 
 import { CheckboxAbstract, CheckboxProps } from './components/form-items/checkbox';
 import { FormItemListAbstract, FormItemListProps } from './components/form-items/form-item-list';
+import { FormItemPillBoxAbstract, FormItemPillBoxProps } from './components/form-items/form-item-pill-box';
 import { SwitchAbstract, SwitchProps } from './components/form-items/switch';
 import { CustomIcon, MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
@@ -778,6 +779,7 @@ export interface ComponentOverrides {
   TextInput?: new(props: TextInputProps) => ExtractMethods<TextInputAbstract>;
   TextArea?: new(props: TextAreaProps) => ExtractMethods<TextAreaAbstract>;
   FormItemList?: new(props: FormItemListProps) => ExtractMethods<FormItemListAbstract>;
+  FormItemPillBox?: new(props: FormItemPillBoxProps) => ExtractMethods<FormItemPillBoxAbstract>;
 };
 export interface ConfigOptions {
   feedbackOptions: Array<{
