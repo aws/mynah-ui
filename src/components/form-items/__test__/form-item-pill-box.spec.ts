@@ -24,20 +24,20 @@ describe('FormItemPillBox', () => {
   it('should add pill on enter', () => {
     const input = pillBox.render.querySelector('.mynah-form-item-pill-box-input') as HTMLTextAreaElement;
     input.value = 'test-pill';
-    
+
     const event = new KeyboardEvent('keydown', { key: 'Enter' });
     input.dispatchEvent(event);
-    
+
     expect(pillBox.getValue()).toBe('test-pill');
     expect(pillBox.render.querySelector('.mynah-form-item-pill')).toBeTruthy();
   });
 
   it('should remove pill on click', () => {
     pillBox.setValue('pill1,pill2');
-    
+
     const removeButton = pillBox.render.querySelector('.mynah-form-item-pill-remove') as HTMLElement;
     removeButton.click();
-    
+
     expect(pillBox.getValue()).toBe('pill2');
   });
 
