@@ -6,9 +6,7 @@
 import { Config } from '../../helper/config';
 import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent } from '../../helper/events';
-import { generateUID } from '../../helper/guid';
 import { StyleLoader } from '../../helper/style-loader';
-import { SingularFormItem } from '../../static';
 
 export interface FormItemPillBoxProps {
   id: string;
@@ -38,7 +36,7 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
   private pills: string[] = [];
   render: ExtendedHTMLElement;
 
-  constructor(props: FormItemPillBoxProps) {
+  constructor (props: FormItemPillBoxProps) {
     StyleLoader.getInstance().load('components/form-items/_form-item-pill-box.scss');
     super();
     this.props = props;
@@ -46,15 +44,15 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
     // Create pills container
     this.pillsContainer = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: ['mynah-form-item-pill-box-pills-container'],
+      classNames: [ 'mynah-form-item-pill-box-pills-container' ],
     });
 
     // Create input field
     this.input = DomBuilder.getInstance().build({
       type: 'textarea',
-      classNames: ['mynah-form-item-pill-box-input'],
+      classNames: [ 'mynah-form-item-pill-box-input' ],
       attributes: {
-        placeholder: props.placeholder || 'Type and press Enter to add a tag',
+        placeholder: props.placeholder ?? 'Type and press Enter to add a tag',
         rows: '1',
       },
       events: {
@@ -62,7 +60,7 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
           if (e.key === 'Enter' && !e.shiftKey) {
             cancelEvent(e);
             const value = (this.input as unknown as HTMLTextAreaElement).value.trim();
-            if (value) {
+            if (value !== '') {
               this.addPill(value);
               (this.input as unknown as HTMLTextAreaElement).value = '';
               this.notifyChange();
@@ -75,7 +73,7 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
     // Create wrapper
     this.wrapper = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: ['mynah-form-item-pill-box-wrapper'],
+      classNames: [ 'mynah-form-item-pill-box-wrapper' ],
       children: [
         this.pillsContainer,
         this.input
@@ -85,53 +83,53 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
     // Create main container
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: ['mynah-form-input-wrapper', ...(props.classNames || [])],
+      classNames: [ 'mynah-form-input-wrapper', ...((props.classNames != null) || []) ],
       attributes: props.attributes,
       testId: props.wrapperTestId,
       children: [
         {
           type: 'span',
-          classNames: ['mynah-form-input-label'],
+          classNames: [ 'mynah-form-input-label' ],
           children: [
-            ...(props.label !== undefined ? [props.label] : []),
+            ...(props.label !== undefined ? [ props.label ] : []),
           ]
         },
-        ...(props.description !== undefined ? [props.description] : []),
+        ...(props.description !== undefined ? [ props.description ] : []),
         this.wrapper
       ]
     });
 
     // Initialize with existing value
-    if (props.value) {
+    if (props.value != null) {
       this.setValue(props.value);
     }
 
     // Set initial disabled state
-    if (props.disabled) {
+    if (props.disabled === true) {
       this.setEnabled(false);
     }
   }
 
-  private addPill(text: string): void {
-    if (!text || this.pills.includes(text)) {
+  private addPill (text: string): void {
+    if (text === '' || this.pills.includes(text)) {
       return;
     }
 
     this.pills.push(text);
-    
+
     const pill = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: ['mynah-form-item-pill'],
+      classNames: [ 'mynah-form-item-pill' ],
       children: [
         {
           type: 'span',
-          classNames: ['mynah-form-item-pill-text'],
-          children: [text]
+          classNames: [ 'mynah-form-item-pill-text' ],
+          children: [ text ]
         },
         {
           type: 'span',
-          classNames: ['mynah-form-item-pill-remove'],
-          children: ['×'],
+          classNames: [ 'mynah-form-item-pill-remove' ],
+          children: [ '×' ],
           events: {
             click: (e) => {
               cancelEvent(e);
@@ -147,8 +145,8 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
     this.pillsContainer.appendChild(pill);
   }
 
-  private notifyChange(): void {
-    if (this.props.onChange) {
+  private notifyChange (): void {
+    if (this.props.onChange != null) {
       this.props.onChange(this.getValue());
     }
   }
@@ -159,7 +157,7 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
     this.pills = [];
 
     // Add new pills
-    if (value) {
+    if (value !== '') {
       const pillValues = value.split(/[,\n]+/).map(v => v.trim()).filter(v => v);
       pillValues.forEach(pill => this.addPill(pill));
     }
@@ -182,9 +180,9 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
 
 export class FormItemPillBox extends FormItemPillBoxAbstract {
   render: ExtendedHTMLElement;
-  private instance: FormItemPillBoxAbstract;
+  private readonly instance: FormItemPillBoxAbstract;
 
-  constructor(props: FormItemPillBoxProps) {
+  constructor (props: FormItemPillBoxProps) {
     super();
     const InternalClass = Config.getInstance().config.componentClasses.FormItemPillBox ?? FormItemPillBoxInternal;
     this.instance = new InternalClass(props);
@@ -194,11 +192,11 @@ export class FormItemPillBox extends FormItemPillBoxAbstract {
   setValue = (value: string): void => {
     this.instance.setValue(value);
   };
-  
+
   getValue = (): string => {
     return this.instance.getValue();
   };
-  
+
   setEnabled = (enabled: boolean): void => {
     this.instance.setEnabled(enabled);
   };
