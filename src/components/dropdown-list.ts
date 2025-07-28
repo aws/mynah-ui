@@ -193,28 +193,6 @@ export class DropdownList {
           type: 'div',
           classNames: [ 'mynah-dropdown-list-header' ],
           children: [
-            {
-              type: 'h4',
-              classNames: [ 'mynah-dropdown-list-title' ],
-              children: [
-                ...(this.props.titleIcon != null
-                  ? [ new Icon({
-                      icon: this.props.titleIcon,
-                      classNames: [
-                        'mynah-dropdown-list-title-icon',
-                        ...(this.props.titleIcon === MynahIcons.WARNING ? [ 'mynah-dropdown-list-title-icon-warning' ] : []),
-                        ...(this.props.titleIcon === MynahIcons.INFO ? [ 'mynah-dropdown-list-title-icon-info' ] : [])
-                      ]
-                    }).render ]
-                  : []),
-                {
-                  type: 'span',
-                  testId: testIds.dropdownList.title,
-                  classNames: [ 'mynah-dropdown-list-title-text' ],
-                  children: [ this.props.title ]
-                }
-              ]
-            },
             ...(this.props.description != null
               ? [ {
                   type: 'p',
