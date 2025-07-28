@@ -1829,7 +1829,8 @@ mkdir -p src/ lalalaaaa
 mkdir -p src/ lalalaaaa
 \`\`\`
 `,
-        dropdownList: {
+        quickSettings: {
+            type: "select",
             title: 'Destructive commands',
             messageId: "1",
             tabId: "hello",
@@ -1843,7 +1844,7 @@ mkdir -p src/ lalalaaaa
                 { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
                 { id: 'option2', label: 'Auto run', value: 'Destructive' },
             ],
-            onChange: (selectedOptions) => {
+            onChange: (selectedOptions: any) => {
                 console.log('Selected options:', selectedOptions);
             }
     },

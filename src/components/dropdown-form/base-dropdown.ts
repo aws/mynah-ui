@@ -3,30 +3,51 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
-import { StyleLoader } from '../helper/style-loader';
-import { Button } from './button';
-import { Icon, MynahIcons } from './icon';
-import { generateUID } from '../helper/guid';
-import { MynahUIGlobalEvents } from '../helper/events';
-import { DropdownListOption, DropdownListProps, MynahEventNames, MynahPortalNames } from '../static';
-import testIds from '../helper/test-ids';
+import { DomBuilder, ExtendedHTMLElement } from '../../helper/dom';
+import { Button } from '../button';
+import { Icon, MynahIcons } from '../icon';
+import { generateUID } from '../../helper/guid';
+import { MynahUIGlobalEvents } from '../../helper/events';
+import { MynahEventNames, MynahPortalNames } from '../../static';
+import testIds from '../../helper/test-ids';
 
-export class DropdownList {
+export interface BaseDropdownProps<T> {
+  title: string;
+  titleIcon?: MynahIcons;
+  description?: string;
+  descriptionLink?: {
+    id: string;
+    text: string;
+    onClick?: () => void;
+  };
+  items: T[];
+  onChange?: (selectedItems: T[]) => void;
+  tabId?: string;
+  messageId?: string;
+  classNames?: string[];
+}
+
+export abstract class BaseDropdown<T = any> {
   render: ExtendedHTMLElement;
-  private readonly props: DropdownListProps;
-  private readonly tabId: string;
-  private readonly messageId: string;
-  private dropdownContent: ExtendedHTMLElement | null = null;
-  private dropdownPortal: ExtendedHTMLElement | null = null;
-  private readonly uid: string;
-  private isOpen = false;
-  private selectedOptions: DropdownListOption[] = [];
-  private dropdownIcon: ExtendedHTMLElement;
-  private readonly sheetOpenListenerId: string | null = null;
+  protected readonly props: BaseDropdownProps<T>;
+  protected readonly tabId: string;
+  protected readonly messageId: string;
+  protected dropdownContent: ExtendedHTMLElement | null = null;
+  protected dropdownPortal: ExtendedHTMLElement | null = null;
+  protected readonly uid: string;
+  protected isOpen = false;
+  protected selectedItems: T[] = [];
+  protected dropdownIcon: ExtendedHTMLElement;
+  protected readonly sheetOpenListenerId: string | null = null;
+
+  // Abstract methods that subclasses must implement
+  protected abstract createItemElement (item: T): ExtendedHTMLElement;
+  protected abstract handleItemSelection (item: T): void;
+  protected abstract getItemSelectionState (item: T): boolean;
+  protected abstract getDisplayLabel (): string;
 
   // Helper method to get CSS variable values
-  private getCSSVariableValue (variableName: string, fallback: number): number {
+  protected getCSSVariableValue (variableName: string, fallback: number): number {
     const value = getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
     if (value.length > 0) {
       const numericValue = parseFloat(value);
@@ -35,8 +56,7 @@ export class DropdownList {
     return fallback;
   }
 
-  constructor (props: DropdownListProps) {
-    StyleLoader.getInstance().load('components/_dropdown-list.scss');
+  constructor (props: BaseDropdownProps<T>) {
     this.props = props;
     this.uid = generateUID();
 
@@ -44,14 +64,14 @@ export class DropdownList {
     this.tabId = props.tabId ?? '';
     this.messageId = props.messageId ?? '';
 
-    // Initialize selected options
-    this.selectedOptions = props.options.filter(option => option.selected);
+    // Initialize selected items
+    this.selectedItems = this.getInitialSelection();
 
     // Initialize the dropdown icon
     this.dropdownIcon = new Icon({ icon: MynahIcons.DOWN_OPEN }).render;
 
-    // Create the main dropdown button with the selected option's label if available
-    const initialLabel = this.selectedOptions.length > 0 ? this.selectedOptions[0].label : props.title;
+    // Create the main dropdown button with the selected item's label if available
+    const initialLabel = this.getDisplayLabel();
     const dropdownButton = new Button({
       label: initialLabel,
       icon: this.dropdownIcon,
@@ -85,100 +105,53 @@ export class DropdownList {
     this.sheetOpenListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_SHEET, this.handleSheetOpen);
   }
 
-  private readonly createOptionElement = (option: DropdownListOption): ExtendedHTMLElement => {
-    const isSelected = this.selectedOptions.some(selectedOption => selectedOption.id === option.id);
+  protected getInitialSelection (): T[] {
+    // Default implementation - subclasses can override if needed
+    return [];
+  }
 
-    return DomBuilder.getInstance().build({
-      type: 'div',
-      testId: testIds.dropdownList.option,
-      classNames: [
-        'mynah-dropdown-list-option',
-        ...(isSelected ? [ 'selected' ] : [])
-      ],
-      attributes: {
-        'data-option-id': option.id
-      },
-      events: {
-        click: (e) => {
-          e.stopPropagation();
-          this.toggleOption(option);
-        }
-      },
-      children: [
-        {
-          type: 'span',
-          testId: testIds.dropdownList.optionLabel,
-          classNames: [ 'mynah-dropdown-list-option-label' ],
-          children: [
-            ...(isSelected ? [ new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render ] : []),
-            option.label
-          ]
-        }
-      ]
-    });
-  };
-
-  private readonly toggleOption = (option: DropdownListOption): void => {
-    // Select only this option
-    this.selectedOptions = [ option ];
-
-    // Update UI, close dropdown and dispatch event
-    this.updateUI();
-    this.isOpen = false;
-    this.closeDropdown();
-    this.dispatchChangeEvent();
-  };
-
-  private readonly updateUI = (): void => {
-    // Update dropdown options (if dropdown is open)
+  protected readonly updateUI = (): void => {
+    // Update dropdown items (if dropdown is open)
     if (this.dropdownContent != null) {
-      const optionElements = this.dropdownContent.querySelectorAll('.mynah-dropdown-list-option');
-      const selectedIds = new Set(this.selectedOptions.map(opt => opt.id));
+      const itemElements = this.dropdownContent.querySelectorAll('[data-item-id]');
 
-      Array.from(optionElements).forEach((element) => {
-        const optionElement = element as ExtendedHTMLElement;
-        const optionId = optionElement.getAttribute('data-option-id');
-        if (optionId == null) return;
+      Array.from(itemElements).forEach((element) => {
+        const itemElement = element as ExtendedHTMLElement;
+        const itemId = itemElement.getAttribute('data-item-id');
+        if (itemId == null) return;
 
-        const isSelected = selectedIds.has(optionId);
-        const optionLabel = this.props.options.find(opt => opt.id === optionId)?.label ?? '';
-        const labelElement = optionElement.querySelector('.mynah-dropdown-list-option-label');
+        const item = this.props.items.find(item => this.getItemId(item) === itemId);
+        if (item == null) return;
 
-        if (labelElement == null) return;
-
-        if (isSelected) {
-          optionElement.addClass('selected');
-          labelElement.innerHTML = '';
-          labelElement.appendChild(new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render);
-          labelElement.appendChild(document.createTextNode(optionLabel));
-        } else {
-          optionElement.removeClass('selected');
-          labelElement.innerHTML = optionLabel;
-        }
+        // Replace the entire element with updated version
+        const updatedElement = this.createItemElement(item);
+        itemElement.replaceWith(updatedElement);
       });
     }
 
     // Update button label
     const buttonLabel = this.render.querySelector('.mynah-dropdown-list-button .mynah-button-label');
     if (buttonLabel != null) {
-      buttonLabel.innerHTML = this.selectedOptions.length > 0 ? this.selectedOptions[0].label : this.props.title;
+      buttonLabel.innerHTML = this.getDisplayLabel();
     }
   };
 
-  private readonly onLinkClick = (buttonId: string): void => {
+  protected abstract getItemId (item: T): string;
+
+  protected readonly onLinkClick = (buttonId: string): void => {
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROPDOWN_LINK_CLICK, {
       tabId: this.props.tabId,
       actionId: buttonId
     });
   };
 
-  private readonly toggleDropdown = (e: Event): void => {
+  protected readonly toggleDropdown = (e: Event): void => {
     e.stopPropagation();
     this.isOpen = !this.isOpen;
     this.isOpen ? this.openDropdown() : this.closeDropdown();
   };
 
-  private readonly openDropdown = (): void => {
+  protected readonly openDropdown = (): void => {
     // Create the dropdown content
     this.dropdownContent = DomBuilder.getInstance().build({
       type: 'div',
@@ -187,7 +160,7 @@ export class DropdownList {
         {
           type: 'div',
           classNames: [ 'mynah-dropdown-list-options' ],
-          children: this.props.options.map(option => this.createOptionElement(option))
+          children: this.props.items.map(item => this.createItemElement(item))
         },
         {
           type: 'div',
@@ -255,7 +228,7 @@ export class DropdownList {
     this.dropdownIcon = this.render.querySelector('.mynah-dropdown-list-button .mynah-ui-icon') as ExtendedHTMLElement;
   };
 
-  private readonly isElementVisible = (element: Element): boolean => {
+  protected readonly isElementVisible = (element: Element): boolean => {
     const rect = element.getBoundingClientRect();
 
     // Check viewport bounds first (quick check)
@@ -284,7 +257,7 @@ export class DropdownList {
     return true;
   };
 
-  private readonly updateDropdownPosition = (): void => {
+  protected readonly updateDropdownPosition = (): void => {
     if (this.dropdownPortal == null) return;
 
     // Close dropdown if button is not visible
@@ -313,7 +286,7 @@ export class DropdownList {
     this.dropdownPortal.style.left = `${calculatedLeft}px`;
   };
 
-  private readonly closeDropdown = (): void => {
+  protected readonly closeDropdown = (): void => {
     // Remove scroll and resize listeners
     window.removeEventListener('scroll', this.updateDropdownPosition, true);
     window.removeEventListener('resize', this.updateDropdownPosition);
@@ -330,7 +303,7 @@ export class DropdownList {
     this.dropdownIcon = this.render.querySelector('.mynah-dropdown-list-button .mynah-ui-icon') as ExtendedHTMLElement;
   };
 
-  private readonly handleClickOutside = (e: MouseEvent): void => {
+  protected readonly handleClickOutside = (e: MouseEvent): void => {
     if (!this.isOpen) return;
 
     const target = e.target as Node;
@@ -351,7 +324,7 @@ export class DropdownList {
     this.dispatchChangeEvent();
   };
 
-  private readonly handleSheetOpen = (): void => {
+  protected readonly handleSheetOpen = (): void => {
     // Close dropdown when any sheet/overlay opens
     if (this.isOpen) {
       this.isOpen = false;
@@ -360,27 +333,27 @@ export class DropdownList {
     }
   };
 
-  public readonly getSelectedOptions = (): DropdownListOption[] => {
-    return [ ...this.selectedOptions ];
+  public readonly getSelectedItems = (): T[] => {
+    return [ ...this.selectedItems ];
   };
 
-  public readonly setSelectedOptions = (optionIds: string[]): void => {
-    this.selectedOptions = this.props.options.filter(option =>
-      optionIds.includes(option.id)
+  public readonly setSelectedItems = (itemIds: string[]): void => {
+    this.selectedItems = this.props.items.filter(item =>
+      itemIds.includes(this.getItemId(item))
     );
     this.updateUI();
   };
 
-  private readonly dispatchChangeEvent = (): void => {
+  protected readonly dispatchChangeEvent = (): void => {
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
-      value: this.selectedOptions,
+      value: this.selectedItems,
       messageId: this.messageId,
       tabId: this.tabId
     });
 
     // Also trigger onChange callback if provided
     if (this.props.onChange != null) {
-      this.props.onChange(this.selectedOptions);
+      this.props.onChange(this.selectedItems);
     }
   };
 

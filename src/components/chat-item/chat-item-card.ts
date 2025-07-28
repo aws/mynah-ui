@@ -27,7 +27,7 @@ import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { marked } from 'marked';
-import { DropdownList } from '../dropdown-list';
+import { DropdownWrapper } from '../dropdown-form/dropdown-wrapper';
 
 const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
@@ -739,8 +739,8 @@ export class ChatItemCard {
       this.cardFooter = null;
     }
 
-    // Always create footer to include DropdownList
-    if (this.props.chatItem.footer != null || this.props.chatItem.canBeVoted === true || this.shouldShowDropdownList()) {
+    // Always create footer to include QuickSettings
+    if (this.props.chatItem.footer != null || this.props.chatItem.canBeVoted === true || this.shouldShowQuickSettings()) {
       this.cardFooter = this.getCardFooter();
       this.card?.render.insertChild('beforeend', this.cardFooter);
 
@@ -781,22 +781,15 @@ export class ChatItemCard {
       }
 
       /**
-       * Add DropdownList to footer if available
+       * Add QuickSettings to footer if available
        */
-      if (this.props.chatItem.dropdownList != null) {
+      if (this.props.chatItem.quickSettings != null) {
         const dropdownContainer = DomBuilder.getInstance().build({
           type: 'div',
           classNames: [ 'mynah-dropdown-list-container' ],
           children: [
-            new DropdownList({
-              title: this.props.chatItem.dropdownList.title,
-              tabId: this.props.chatItem.dropdownList.tabId,
-              messageId: this.props.chatItem.dropdownList.messageId,
-              titleIcon: this.props.chatItem.dropdownList.titleIcon,
-              description: this.props.chatItem.dropdownList.description,
-              descriptionLink: this.props.chatItem.dropdownList.descriptionLink,
-              options: this.props.chatItem.dropdownList.options,
-              onChange: this.props.chatItem.dropdownList.onChange
+            new DropdownWrapper({
+              dropdownProps: this.props.chatItem.quickSettings
             }).render
           ]
         });
@@ -826,8 +819,8 @@ export class ChatItemCard {
 
   private readonly canShowAvatar = (): boolean => (this.props.chatItem.type === ChatItemType.ANSWER_STREAM || (this.props.inline !== true && chatItemHasContent({ ...this.props.chatItem, followUp: undefined })));
 
-  private readonly shouldShowDropdownList = (): boolean => {
-    return this.props.chatItem.dropdownList != null;
+  private readonly shouldShowQuickSettings = (): boolean => {
+    return this.props.chatItem.quickSettings != null;
   };
 
   private readonly showTooltip = (content: string, elm: HTMLElement): void => {

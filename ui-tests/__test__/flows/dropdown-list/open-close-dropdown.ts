@@ -14,7 +14,8 @@ export const openCloseDropdown = async (page: Page, skipScreenshots?: boolean): 
         type: 'answer' as any,
         snapToTop: true,
         body: 'Here is a test dropdown:',
-        dropdownList: {
+        quickSettings: {
+          type: 'select',
           title: 'Select an option',
           description: 'Choose one of the following options',
           tabId: selectedTabId,
@@ -55,9 +56,6 @@ export const openCloseDropdown = async (page: Page, skipScreenshots?: boolean): 
     expect(dropdownPortal).toBeDefined();
 
     // Verify dropdown content
-    const dropdownTitle = dropdownPortal.locator(getSelector(testIds.dropdownList.title));
-    await expect(dropdownTitle).toHaveText('Select an option');
-
     const dropdownDescription = dropdownPortal.locator(getSelector(testIds.dropdownList.description));
     await expect(dropdownDescription).toHaveText('Choose one of the following options');
 

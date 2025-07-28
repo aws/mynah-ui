@@ -14,7 +14,8 @@ export const selectDropdownOption = async (page: Page, skipScreenshots?: boolean
         type: 'answer' as any,
         snapToTop: true,
         body: 'Test dropdown option selection:',
-        dropdownList: {
+        quickSettings: {
+          type: 'select',
           title: 'Choose your preference',
           tabId: selectedTabId,
           messageId: 'dropdown-select-test-message',
@@ -57,13 +58,13 @@ export const selectDropdownOption = async (page: Page, skipScreenshots?: boolean
     expect(await page.screenshot()).toMatchSnapshot('dropdown-select-open.png');
 
     // Verify first option is selected (has check mark)
-    const firstOption = dropdownPortal.locator(`${getSelector(testIds.dropdownList.option)}[data-option-id="opt1"]`);
+    const firstOption = dropdownPortal.locator(`${getSelector(testIds.dropdownList.option)}[data-item-id="opt1"]`);
     expect(firstOption).toBeDefined();
     const firstCheckIcon = firstOption.locator(getSelector(testIds.dropdownList.checkIcon));
     expect(firstCheckIcon).toBeDefined();
 
     // Click on the second option
-    const secondOption = dropdownPortal.locator(`${getSelector(testIds.dropdownList.option)}[data-option-id="opt2"]`);
+    const secondOption = dropdownPortal.locator(`${getSelector(testIds.dropdownList.option)}[data-item-id="opt2"]`);
     expect(secondOption).toBeDefined();
     await secondOption.click();
     await waitForAnimationEnd(page);
@@ -82,7 +83,7 @@ export const selectDropdownOption = async (page: Page, skipScreenshots?: boolean
     await waitForAnimationEnd(page);
 
     // Verify second option is now selected
-    const secondOptionSelected = dropdownPortal.locator(`${getSelector(testIds.dropdownList.option)}[data-option-id="opt2"]`);
+    const secondOptionSelected = dropdownPortal.locator(`${getSelector(testIds.dropdownList.option)}[data-item-id="opt2"]`);
     expect(secondOptionSelected).toBeDefined();
     const secondCheckIcon = secondOptionSelected.locator(getSelector(testIds.dropdownList.checkIcon));
     expect(secondCheckIcon).toBeDefined();

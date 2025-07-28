@@ -415,6 +415,10 @@ export interface DropdownListProps {
   classNames?: string[];
 }
 
+export interface DropdownFactoryProps extends DropdownListProps {
+  type: 'select' | 'radio' | 'checkbox';
+}
+
 export interface ChatItemContent {
   header?: (ChatItemContent & {
     icon?: MynahIcons | MynahIconsType | CustomIcon;
@@ -476,7 +480,7 @@ export interface ChatItemContent {
   tabbedContent?: Array<ToggleOption & {
     content: ChatItemContent;
   }> | null;
-  dropdownList?: DropdownListProps | null;
+  quickSettings?: DropdownFactoryProps | null;
   codeBlockActions?: CodeBlockActions | null;
   fullWidth?: boolean;
   padding?: boolean;
