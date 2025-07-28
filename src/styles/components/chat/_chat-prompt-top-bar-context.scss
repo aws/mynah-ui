@@ -57,6 +57,7 @@
         border-width: var(--mynah-button-border-width);
         border-style: solid;
         border-radius: inherit;
+        border-color: var(--mynah-color-text-disabled, var(--mynah-color-border-default));
         z-index: var(--mynah-z-sub);
     }
 

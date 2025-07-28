@@ -1201,12 +1201,14 @@ interface BaseFormItem {
   description?: string;
   tooltip?: string;
   icon?: MynahIcons | MynahIconsType;
+  boldTitle?: boolean;
 }
 
 export type TextBasedFormItem = BaseFormItem & {
   type: 'textarea' | 'textinput' | 'numericinput' | 'email';
   autoFocus?: boolean;
   checkModifierEnterKeyPress?: boolean;
+  validateOnChange?: boolean;
   validationPatterns?: {
     operator?: 'and' | 'or';
     genericValidationErrorMessage?: string;
@@ -1221,7 +1223,10 @@ type DropdownFormItem = BaseFormItem & {
   options?: Array<{
     value: string;
     label: string;
+    description?: string;
   }>;
+  disabled?: boolean;
+  selectTooltip?: string;
 };
 
 type Stars = BaseFormItem & {
@@ -2834,10 +2839,15 @@ interface ChatItemFormItem {
   placeholder?: string; // Placeholder for input, but only applicable to textarea, textinput and numericinput
   value?: string; // Initial value of the item. All types of form items will get and return string values, conversion of the value type is up to you
   checkModifierEnterKeyPress?: boolean; // Only applicable to textual inputs: whether the onFormModifierEnterPress event can be triggered from this input field
+  validateOnChange?: boolean; // Only applicable to text input: whether the form should validate on this field's change. If this field is false (or not set), form will validate onBlur by default
   options?: Array<{ // Only applicable to select and radiogroup types
     value: string;
     label: string;
+    description?: string; // Only applicable to select types. This will add a description below the label to add more context for the option
   }>;
+  disabled?: boolean; // this is only applicable to DropDownFormItem. If this is set to true, the dropdown is disabled. User cannot use the dropdown.
+  boldTitle?: boolean; // this will make the title of the input bold
+  selectTooltip?: string; // this is only applicable to DropDownFormItem. This will make the tooltip float right above the dropdown, not the wrapper object (or the title to be specific)
 }
 ```
 
@@ -2845,8 +2855,9 @@ Since you can give unlimited form items with several different types, it might b
 
 `validationPattenrs` works only for textual inputs. You can define one or more validation regex patterns, use an operator between them as `AND` or `OR`. You can show individual error messages for each validation or use one generic message if the combined validation fails (Might be useful for `OR` operator).
 
-**Another thing which might be interesting** is to know that if you set the `select` or the `radiogroup` mandatory, they'll be rendered as the first item's of them selected if you don't provide an initial value. And you cannot deselet a radio item in any case. For select, if it is mandatory there won't be the option `Please select...`
+**Another thing which might be interesting** is to know that if you set the `select` or the `radiogroup` mandatory, they'll be rendered as the first item's of them selected if you don't provide an initial value. And you cannot deselet a radio item in any case. For select, if it is mandatory there won't be the option `Please select...`. 
 
+**Important note for DropdownFormItem:** If you set `disabled` to `true` for `DropdownFormItem`, the dropdown will be disabled and the user cannot interact with it. When you have a default value and want to ensure it's always displayed, you can combine `mandatory: true` with `disabled: true` - this will automatically select and display the first value in `options` while preventing user interaction.
 
 _**NOTE**: If you set `options` for `textinput` for example, it won't affect the textinput to be rendered and work properly._
 

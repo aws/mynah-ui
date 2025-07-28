@@ -17,6 +17,7 @@ export interface DetailedListItemWrapperProps {
   onSelect?: (detailedListItem: DetailedListItem) => void;
   onClick?: (detailedListItem: DetailedListItem) => void;
   onActionClick?: (action: ChatItemButton, detailedListItem?: DetailedListItem) => void;
+  onShowActionMenuOverlay?: () => void;
   selectable?: boolean;
   clickable?: boolean;
   textDirection?: 'row' | 'column';
@@ -201,6 +202,7 @@ export class DetailedListItemWrapper {
   };
 
   private readonly showActionMenuOverlay = (listItem?: DetailedListItem): void => {
+    this.props.onShowActionMenuOverlay?.();
     this.actionMenuOverlay = new Overlay({
       background: true,
       closeOnOutsideClick: true,

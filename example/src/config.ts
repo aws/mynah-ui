@@ -15,6 +15,7 @@ export const mcpButton: TabBarMainAction = {
 
 export const rulesButton: ChatItemButton = {id: 'Rules', status: 'clear', text: 'Rules', icon: 'check-list'}
 
+export const promptTopBarTitle = '@ Pin Context'
 
 export const tabbarButtons: TabBarMainAction[] = [
     {
@@ -30,6 +31,11 @@ export const tabbarButtons: TabBarMainAction[] = [
                 id: 'new-welcome-screen',
                 text: 'Welcome screen',
                 icon: MynahIcons.Q,
+            },
+            {
+                id: 'account-details',
+                text: 'Non chat tab (Account Details)',
+                icon: MynahIcons.USER,
             },
             {
                 id: 'splash-loader',
@@ -500,5 +506,7 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
         ],
         promptInputPlaceholder: 'Type something or "/" for quick action commands or @ for choosing context',
         tabBarButtons: [mcpButton, ...tabbarButtons],
+        promptTopBarTitle: promptTopBarTitle,
+        promptTopBarButton: rulesButton,
     },
 };

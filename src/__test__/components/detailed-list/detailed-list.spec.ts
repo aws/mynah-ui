@@ -574,6 +574,7 @@ describe('DetailedListWrapper Component', () => {
     it('should get target element', () => {
       detailedListWrapper = new DetailedListWrapper({ detailedList: basicDetailedList });
       document.body.appendChild(detailedListWrapper.render);
+      detailedListWrapper.changeTarget('down', false, true);
 
       const targetElement = detailedListWrapper.getTargetElement();
       expect(targetElement).toBeDefined();
@@ -615,6 +616,9 @@ describe('DetailedListWrapper Component', () => {
       detailedListWrapper = new DetailedListWrapper({ detailedList: basicDetailedList });
       document.body.appendChild(detailedListWrapper.render);
 
+      // First select the first item
+      detailedListWrapper.changeTarget('down');
+
       // Go up from first item (should wrap to last)
       detailedListWrapper.changeTarget('up', false);
       const targetElement = detailedListWrapper.getTargetElement();
@@ -625,7 +629,9 @@ describe('DetailedListWrapper Component', () => {
       detailedListWrapper = new DetailedListWrapper({ detailedList: basicDetailedList });
       document.body.appendChild(detailedListWrapper.render);
 
-      // Move to last item first
+      // First select an item
+      detailedListWrapper.changeTarget('down');
+      // Move to last item
       detailedListWrapper.changeTarget('down');
       // Then go down (should wrap to first)
       detailedListWrapper.changeTarget('down', false);
@@ -636,6 +642,9 @@ describe('DetailedListWrapper Component', () => {
     it('should handle navigation with snap at boundaries', () => {
       detailedListWrapper = new DetailedListWrapper({ detailedList: basicDetailedList });
       document.body.appendChild(detailedListWrapper.render);
+
+      // First select the first item
+      detailedListWrapper.changeTarget('down');
 
       // Go up with snap (should stay at first)
       detailedListWrapper.changeTarget('up', true);

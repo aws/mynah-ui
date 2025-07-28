@@ -258,7 +258,7 @@ export enum MynahEventNames {
   TOP_BAR_BUTTON_CLICK = 'promptInputTopBarButtonClick',
   CONTEXT_PINNED = 'contextPinned',
   FILES_DROPPED = 'filesDropped',
-  CONTEXT_INSERTED = 'contextInserted'
+  RESET_TOP_BAR_CLICKED = 'resetTopBarClicked'
 }
 
 export enum MynahPortalNames {
@@ -518,6 +518,7 @@ interface BaseFormItem {
   description?: string;
   tooltip?: string;
   icon?: MynahIcons | MynahIconsType;
+  boldTitle?: boolean;
 }
 
 export type TextBasedFormItem = BaseFormItem & {
@@ -529,6 +530,7 @@ export type TextBasedFormItem = BaseFormItem & {
     genericValidationErrorMessage?: string;
     patterns: ValidationPattern[];
   };
+  validateOnChange?: boolean;
 };
 
 type DropdownFormItem = BaseFormItem & {
@@ -538,7 +540,10 @@ type DropdownFormItem = BaseFormItem & {
   options?: Array<{
     value: string;
     label: string;
+    description?: string;
   }>;
+  disabled?: boolean;
+  selectTooltip?: string;
 };
 
 type Stars = BaseFormItem & {
@@ -578,6 +583,7 @@ export interface ListFormItem {
   description?: string;
   tooltip?: string;
   icon?: MynahIcons | MynahIconsType;
+  boldTitle?: boolean;
   items: SingularFormItem[];
   value: ListItemEntry[];
 };
@@ -769,6 +775,7 @@ export interface ConfigTexts {
   add: string;
   pleaseSelect: string;
   stopGenerating: string;
+  stopGeneratingTooltip?: string;
   copyToClipboard: string;
   noMoreTabsTooltip: string;
   codeSuggestionWithReferenceTitle: string;
@@ -779,7 +786,9 @@ export interface ConfigTexts {
   noTabsOpen: string;
   openNewTab: string;
   commandConfirmation: string;
-};
+  pinContextHint: string;
+  dragOverlayText: string;
+}
 
 type PickMatching<T, V> = {
   [K in keyof T as T[K] extends V ? K : never]: T[K];
@@ -813,6 +822,8 @@ export interface ConfigOptions {
   codeInsertToCursorEnabled?: boolean;
   codeCopyToClipboardEnabled?: boolean;
   test?: boolean;
+  dragOverlayIcon?: MynahIcons | MynahIconsType | CustomIcon;
+  enableSearchKeyboardShortcut?: boolean;
 }
 
 export interface ConfigModel extends ConfigOptions {

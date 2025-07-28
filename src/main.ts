@@ -32,7 +32,7 @@ import {
   Action,
   DropdownListOption,
 } from './static';
-import { MynahUIGlobalEvents } from './helper/events';
+import { cancelEvent, MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
 import { ChatWrapper } from './components/chat-item/chat-wrapper';
 import { FeedbackForm } from './components/feedback-form/feedback-form';
@@ -166,6 +166,9 @@ export interface MynahUIProps {
     eventId?: string
   ) => boolean;
   onTabRemove?: (
+    tabId: string,
+    eventId?: string) => void;
+  onSearchShortcut?: (
     tabId: string,
     eventId?: string) => void;
   /**
@@ -487,6 +490,20 @@ export class MynahUI {
     this.focusToInput(tabId);
     if (this.props.onReady !== undefined) {
       this.props.onReady();
+    }
+    if (Config.getInstance().config.enableSearchKeyboardShortcut === true) {
+      document.addEventListener('keydown', (e) => {
+        // Check for Command+F (Mac) or Ctrl+F (Windows/Linux)
+        if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+          cancelEvent(e);
+          // Call the search shortcut handler with the current tab ID
+          if (this.props.onSearchShortcut !== undefined) {
+            this.props.onSearchShortcut(
+              MynahUITabsStore.getInstance().getSelectedTabId(),
+              this.getUserEventId());
+          }
+        }
+      });
     }
   }
 
@@ -906,7 +923,7 @@ export class MynahUI {
       }
 
       // Dispatch event to signal context has been inserted
-      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_INSERTED, { tabId });
+      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_TOP_BAR_CLICKED, { tabId });
     }
   };
 
@@ -1052,6 +1069,25 @@ export class MynahUI {
   public getAllTabs = (): MynahUITabStoreModel => MynahUITabsStore.getInstance().getAllTabs();
 
   public getTabData = (tabId: string): MynahUIDataStore => MynahUITabsStore.getInstance().getTabDataStore(tabId);
+
+  /**
+   * Sets the drag overlay visibility for a specific tab
+   * @param tabId The tab ID to set the drag overlay visibility for
+   * @param visible Whether the drag overlay should be visible
+   */
+  public setDragOverlayVisible = (tabId: string, visible: boolean): void => {
+    if (this.chatWrappers[tabId] !== null) {
+      this.chatWrappers[tabId].setDragOverlayVisible(visible);
+    }
+  };
+
+  /**
+   * Programmatically resets topBarClicked for the specified tab by dispatching a RESET_TOP_BAR_CLICKED event.
+   * @param tabId The tab ID
+   */
+  public resetTopBarClicked = (tabId: string): void => {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.RESET_TOP_BAR_CLICKED, { tabId });
+  };
 
   /**
    * Toggles the visibility of the splash loader screen

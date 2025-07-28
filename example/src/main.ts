@@ -19,7 +19,7 @@ import {
     CustomQuickActionCommand,
     DropdownListOption
 } from '@aws/mynah-ui';
-import { mcpButton, mynahUIDefaults, rulesButton, tabbarButtons } from './config';
+import { mcpButton, mynahUIDefaults, promptTopBarTitle, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
 import {
     exampleCodeBlockToInsert,
@@ -54,6 +54,7 @@ import {
     mcpToolRunSampleCard,
     mcpToolRunSampleCardInit,
     sampleRulesList,
+    accountDetailsTabData,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -64,7 +65,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     const connector = new Connector();
     let streamingMessageId: string | null;
     let showChatAvatars: boolean = false;
-    let showPinnedContext: boolean = false;
+    let showPinnedContext: boolean = true;
 
     const mynahUI = new MynahUI({
         loadStyles: true,
@@ -84,7 +85,10 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             maxTabsTooltipDuration: 5000,
             noMoreTabsTooltip: 'You can only open five conversation tabs at a time.',
             autoFocus: true,
+            dragOverlayIcon: MynahIcons.IMAGE,
             texts: {
+                dragOverlayText: 'Add Image to Context',
+                stopGeneratingTooltip: 'Stop &#8984; Backspace',
                 feedbackFormDescription:
                     '_Feedback is anonymous. For issue updates, please contact us on [GitHub](https://github.com/aws/mynah-ui/issues)._',
             },
@@ -318,7 +322,7 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 if (showPinnedContext){
                 Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
                     mynahUI.updateStore(tabIdFromStore, {
-                        promptTopBarTitle: `@Pin Context`,
+                        promptTopBarTitle: promptTopBarTitle,
                         promptTopBarButton: rulesButton,
                     }),
                 ); } else {
@@ -994,6 +998,8 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     ...mynahUIDefaults.store,
                     ...welcomeScreenTabData.store,
                 });
+            } else if (buttonId === 'account-details') {
+                mynahUI.updateStore('', accountDetailsTabData);
             } else if (buttonId === 'export-chat-md') {
                 const serializedChat = mynahUI.serializeChat(tabId, 'markdown');
                 const blob = new Blob([serializedChat], { type: 'text/plain' });
@@ -1041,6 +1047,9 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         onTabAdd: (tabId: string) => {
             Log(`New tab added: <b>${tabId}</b>`);
         },
+        onSearchShortcut: (tabId: string) => {
+            Log(`Search shortcut pressed on tab: <b>${tabId}</b>`);
+        },
         onOpenFileDialogClick: (tabId: string, fileType: string, insertPosition: number) => {
 
             if (fileType === 'image') {
@@ -1072,6 +1081,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         // Return true to allow the context item to be inserted
                         // The original context item will be replaced with our file context item
                         mynahUI.addCustomContextToPrompt(selectedTab, [contextItem], insertPosition)
+                        Log(`Image context added by typing '@image:': <b>${contextItem.command}</b>`);
                         return true;
                     }
 
@@ -1110,6 +1120,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         };
 
                         mynahUI.addCustomContextToPrompt(tabId, [contextItem])
+                        Log(`Image context added by selecting Image from context menu: <b>${contextItem.command}</b>`);
                         // avoid insert of context
                         return false;
                     }
@@ -1327,8 +1338,8 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     commands.push(contextItem);
                 }
             }
-            console.log(commands)
             mynahUI.addCustomContextToPrompt(tabId, commands, insertPosition);
+            Log(`Images dropped: ${commands.map(cmd => `<br/>- <b>${cmd.command}</b>`).join('')}`);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
             if (action.id === 'allow-readonly-tools') {
@@ -1806,6 +1817,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     placeholder: 'Enter prompt name',
                     description: "Use this prompt by typing '@' followed by the prompt name.",
                     autoFocus: true,
+                    validateOnChange: true
                 },
             ],
             [

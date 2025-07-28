@@ -48,14 +48,21 @@ export class ChatItemFormItemsWrapper {
       testId: testIds.chatItem.chatItemForm.wrapper,
       classNames: [ 'mynah-chat-item-form-items-container', ...(this.props.classNames ?? []) ],
       children: this.props.chatItem.formItems?.map(chatItemOption => {
+        const title = `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}`;
         let chatOption: Select | RadioGroup | TextArea | Stars | TextInput | Checkbox | FormItemList | undefined;
-        let label: ExtendedHTMLElement | string = `${chatItemOption.mandatory === true && chatItemOption.hideMandatoryIcon !== true ? '* ' : ''}${chatItemOption.title ?? ''}`;
+        const label: ExtendedHTMLElement = DomBuilder.getInstance().build({
+          type: 'div',
+          children: [ title ]
+        });
+        if (chatItemOption.boldTitle === true) {
+          label.addClass('.mynah-ui-form-item-bold-label');
+        }
         if (chatItemOption.mandatory === true) {
           if (chatItemOption.hideMandatoryIcon !== true) {
-            label = DomBuilder.getInstance().build({
-              type: 'div',
+            // Add the mandatory class to the existing label
+            label.addClass('mynah-ui-form-item-mandatory-title');
+            label.update({
               testId: testIds.chatItem.chatItemForm.title,
-              classNames: [ 'mynah-ui-form-item-mandatory-title' ],
               children: [
                 new Icon({ icon: MynahIcons.ASTERISK }).render,
                 chatItemOption.title ?? '',
@@ -108,8 +115,12 @@ export class ChatItemFormItemsWrapper {
               options: chatItemOption.options,
               optional: chatItemOption.mandatory !== true,
               placeholder: chatItemOption.placeholder ?? Config.getInstance().config.texts.pleaseSelect,
+              tooltip: chatItemOption.selectTooltip ?? '',
               ...(this.getHandlers(chatItemOption))
             });
+            if (chatItemOption.disabled === true) {
+              chatOption.setEnabled(false);
+            }
             break;
           case 'radiogroup':
           case 'toggle':
@@ -181,6 +192,7 @@ export class ChatItemFormItemsWrapper {
               value,
               mandatory: chatItemOption.mandatory,
               validationPatterns: chatItemOption.validationPatterns,
+              validateOnChange: chatItemOption.validateOnChange,
               placeholder: chatItemOption.placeholder,
               ...(this.getHandlers(chatItemOption))
             });

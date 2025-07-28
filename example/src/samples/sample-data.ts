@@ -445,6 +445,39 @@ Transform your java project from an old version to a new one.
     ],
 };
 
+export const accountDetailsTabData: MynahUIDataModel = {
+    tabBackground: false,
+    compactMode: false,
+    tabTitle: 'Account Details',
+    promptInputVisible: false,
+    tabHeaderDetails: {
+        title: `Account details`,
+    },
+    chatItems: [
+        {
+            type: ChatItemType.ANSWER,
+            body: `### Subscription
+Free Tier
+`,
+            buttons: [
+                {
+                    status: 'primary',
+                    id: 'upgrade-subscription',
+                    text: `Upgrade`,
+                },
+            ],
+        },
+        {
+            type: ChatItemType.ANSWER,
+            body: `### Usage
+591/1000 queries used
+$0.00 incurred in overages
+Limits reset on 8/1/2025 at 12:00:00 GMT
+`,
+        },
+    ],
+};
+
 export const qAgentQuickActions: MynahUIDataModel['quickActionCommands'] = [
     {
         commands: [
@@ -2290,6 +2323,52 @@ export const sampleMCPDetails = (title: string): DetailedList => {
         filterOptions: [
             {
                 type: 'select',
+                id: 'auto-approve',
+                title: 'Auto Approve',
+                options: [
+                    {
+                        label: 'Yes',
+                        value: 'yes',
+                    },
+                    {
+                        label: 'No',
+                        value: 'no',
+                    },
+                ],
+                selectTooltip: "Permission for this tool is not configurable yet",
+                mandatory: true,
+                disabled: true,
+                hideMandatoryIcon: true,
+                boldTitle: true,
+            },
+          {
+                type: 'select',
+                id: 'tool_name',
+                title: 'Tool Name',
+                value: 'alwaysAllow',
+                options: [
+                    {
+                        label: 'Ask',
+                        value: 'ask',
+                        description: "Ask for your approval each time this tool is run"
+                    },
+                    {
+                        label: 'Always Allow',
+                        value: 'alwaysAllow',
+                        description: 'Always allow this tool to run without asking for approval'
+                    },
+                    {
+                        label: 'Deny',
+                        value: 'deny',
+                        description: 'Never run this tool'
+                    },
+                ],
+                boldTitle: true,
+                mandatory: true,
+                hideMandatoryIcon: true,
+            },
+            {
+                type: 'select',
                 id: 'transport',
                 title: 'Transport',
                 options: [
@@ -2301,7 +2380,7 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                         label: 'No',
                         value: 'no',
                     },
-                ],
+                ]
             },
             {
                 type: 'textinput',

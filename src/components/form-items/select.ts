@@ -7,10 +7,16 @@ import { Config } from '../../helper/config';
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { StyleLoader } from '../../helper/style-loader';
 import { Icon, MynahIcons, MynahIconsType } from '../icon';
+import { Card } from '../card/card';
+import { CardBody } from '../card/card-body';
+import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
+
+const TOOLTIP_DELAY = 350;
 
 interface SelectOption {
   value: string;
   label: string;
+  description?: string;
 }
 
 export interface SelectProps {
@@ -29,6 +35,7 @@ export interface SelectProps {
   onChange?: (value: string) => void;
   wrapperTestId?: string;
   optionTestId?: string;
+  tooltip?: string;
 }
 
 export abstract class SelectAbstract {
@@ -42,6 +49,9 @@ export class SelectInternal {
   private readonly props: SelectProps;
   private readonly selectElement: ExtendedHTMLElement;
   private readonly autoWidthSizer: ExtendedHTMLElement;
+  private readonly selectContainer: ExtendedHTMLElement;
+  private tooltipOverlay: Overlay | null = null;
+  private tooltipTimeout: ReturnType<typeof setTimeout> | null = null;
   render: ExtendedHTMLElement;
   constructor (props: SelectProps) {
     this.props = props;
@@ -70,19 +80,61 @@ export class SelectInternal {
         [ ...(props.optional === true
           ? [ {
               label: props.placeholder ?? '...',
-              value: ''
+              value: '',
+              description: undefined
             } ]
-          : []), ...props.options ?? [] ].map(option => ({
-          type: 'option',
-          testId: props.optionTestId,
-          classNames: option.value === '' ? [ 'empty-option' ] : [],
-          attributes: { value: option.value },
-          children: [ option.label ]
-        })) as DomBuilderObject[]
+          : []), ...props.options ?? [] ].flatMap(option => {
+          const mainOption = {
+            type: 'option',
+            testId: props.optionTestId,
+            classNames: option.value === '' ? [ 'empty-option' ] : [],
+            attributes: {
+              value: option.value,
+              ...(option.description != null && option.description.trim() !== '' ? { 'data-description': option.description } : {})
+            },
+            children: [
+              option.label
+            ]
+          };
+
+          // Add disabled description option if description exists
+          if (option.description != null && option.description.trim() !== '') {
+            return [
+              mainOption,
+              {
+                type: 'option',
+                testId: props.optionTestId,
+                classNames: [ 'description-option' ],
+                attributes: {
+                  value: '',
+                  disabled: 'disabled'
+                },
+                children: [
+                  `  ${option.description}`
+                ]
+              }
+            ];
+          }
+
+          return [ mainOption ];
+        }) as DomBuilderObject[]
     });
     if (props.value !== undefined) {
       this.selectElement.value = props.value;
     }
+    this.selectContainer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-form-input-container', ...(props.border === false ? [ 'no-border' ] : []) ],
+      ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
+      children: [
+        ...(props.icon
+          ? [ new Icon({ icon: props.icon, classNames: [ 'mynah-form-input-icon' ] }).render ]
+          : []),
+        ...(props.autoWidth !== undefined ? [ this.autoWidthSizer ] : []),
+        this.selectElement,
+        new Icon({ icon: props.handleIcon ?? MynahIcons.DOWN_OPEN, classNames: [ 'mynah-select-handle' ] }).render ]
+    });
+
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-form-input-wrapper' ],
@@ -93,20 +145,25 @@ export class SelectInternal {
           children: [ ...(props.label !== undefined ? [ props.label ] : []) ]
         },
         ...[ props.description !== undefined ? props.description : '' ],
-        {
-          type: 'div',
-          classNames: [ 'mynah-form-input-container', ...(props.border === false ? [ 'no-border' ] : []) ],
-          ...(props.attributes !== undefined ? { attributes: props.attributes } : {}),
-          children: [
-            ...(props.icon
-              ? [ new Icon({ icon: props.icon, classNames: [ 'mynah-form-input-icon' ] }).render ]
-              : []),
-            ...(props.autoWidth !== undefined ? [ this.autoWidthSizer ] : []),
-            this.selectElement,
-            new Icon({ icon: props.handleIcon ?? MynahIcons.DOWN_OPEN, classNames: [ 'mynah-select-handle' ] }).render ]
-        }
+        this.selectContainer
       ]
     });
+
+    // Add tooltip functionality if tooltip is provided
+    if (props.tooltip != null && props.tooltip.trim() !== '') {
+      this.selectContainer.update({
+        events: {
+          mouseenter: () => {
+            if (props.tooltip != null && props.tooltip.trim() !== '') {
+              this.showTooltip(props.tooltip);
+            }
+          },
+          mouseleave: () => {
+            this.hideTooltip();
+          }
+        }
+      });
+    }
   }
 
   setValue = (value: string): void => {
@@ -125,6 +182,51 @@ export class SelectInternal {
       this.selectElement.removeAttribute('disabled');
     } else {
       this.selectElement.setAttribute('disabled', 'disabled');
+    }
+  };
+
+  private readonly showTooltip = (content: string): void => {
+    if (content.trim() !== '') {
+      // Clear any existing timeout
+      if (this.tooltipTimeout !== null) {
+        clearTimeout(this.tooltipTimeout);
+      }
+
+      this.tooltipTimeout = setTimeout(() => {
+        this.tooltipOverlay = new Overlay({
+          background: true,
+          closeOnOutsideClick: false,
+          referenceElement: this.selectContainer,
+          dimOutside: false,
+          removeOtherOverlays: true,
+          verticalDirection: OverlayVerticalDirection.TO_TOP,
+          horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
+          children: [
+            new Card({
+              border: false,
+              children: [
+                new CardBody({
+                  body: content
+                }).render
+              ]
+            }).render
+          ],
+        });
+      }, TOOLTIP_DELAY);
+    }
+  };
+
+  private readonly hideTooltip = (): void => {
+    // Clear any pending timeout
+    if (this.tooltipTimeout !== null) {
+      clearTimeout(this.tooltipTimeout);
+      this.tooltipTimeout = null;
+    }
+
+    // Close existing tooltip
+    if (this.tooltipOverlay !== null) {
+      this.tooltipOverlay.close();
+      this.tooltipOverlay = null;
     }
   };
 }

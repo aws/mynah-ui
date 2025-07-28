@@ -349,7 +349,7 @@ export class ChatPromptInput {
       this.updateAvailableCharactersIndicator();
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_INSERTED, (data: { tabId: string }) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.RESET_TOP_BAR_CLICKED, (data: { tabId: string }) => {
       if (this.props.tabId === data.tabId) {
         // Reset trigger source to prompt-input after context is inserted
         this.topBarTitleClicked = false;
@@ -499,13 +499,18 @@ export class ChatPromptInput {
     } else {
       const blockedKeys = [ KeyMap.ENTER, KeyMap.ESCAPE, KeyMap.SPACE, KeyMap.TAB, KeyMap.AT, KeyMap.BACK_SLASH, KeyMap.SLASH, KeyMap.ALT ] as string[];
       if (blockedKeys.includes(e.key)) {
+        // Close quick pick overlay when space is pressed
+        if (e.key === KeyMap.SPACE) {
+          this.quickPick?.close();
+          return;
+        }
         e.preventDefault();
         if (e.key === KeyMap.ESCAPE) {
           if (this.quickPickType === 'quick-action') {
             this.clearTextArea(true);
           }
           this.quickPick?.close();
-        } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB || e.key === KeyMap.SPACE) {
+        } else if (e.key === KeyMap.ENTER || e.key === KeyMap.TAB) {
           this.searchTerm = '';
           const targetDetailedListItem = this.quickPickItemsSelectorContainer?.getTargetElement();
           if (targetDetailedListItem != null) {
@@ -521,9 +526,6 @@ export class ChatPromptInput {
               }
             } else {
               switch (e.key) {
-                case KeyMap.SPACE:
-                  this.handleQuickActionCommandSelection(commandToSend, 'space');
-                  break;
                 case KeyMap.TAB:
                   this.handleQuickActionCommandSelection(commandToSend, 'tab');
                   break;
@@ -656,6 +658,7 @@ export class ChatPromptInput {
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
     const detailedListItemsGroup = convertQuickActionCommandGroupsToDetailedListGroups(quickPickGroupList);
     if (this.quickPickItemsSelectorContainer == null) {
+      const pinContextHint = Config.getInstance().config.texts.pinContextHint;
       this.quickPickItemsSelectorContainer = new DetailedListWrapper({
         descriptionTextDirection: 'rtl',
         detailedList: {
@@ -674,10 +677,10 @@ export class ChatPromptInput {
                 ],
 
               }
-            : !this.promptTopBar.isHidden() && this.quickPickType === 'context'
+            : !this.promptTopBar.isHidden() && this.quickPickType === 'context' && pinContextHint !== ''
                 ? {
                     header: {
-                      description: 'Pin context with ⌥ Enter',
+                      description: pinContextHint,
                     }
                   }
                 : {})
@@ -847,11 +850,18 @@ export class ChatPromptInput {
         : currentInputValue + (attachmentContent ?? '');
       const context: QuickActionCommand[] = this.promptTextInput.getUsedContext();
 
-      const escapedPrompt = escapeHTML(promptText.replace(/@\S*/gi, (match) => {
-        // Unnecessary spaces will be removed by HTML rendering,
-        // it is safe to add a start space to avoid rendering problems for bold text
-        return ` **${match}**`;
-      }));
+      let escapedPrompt = escapeHTML(promptText);
+      context?.forEach(cmd => {
+        if (cmd.command !== '') {
+          // Escape special regex characters in the command
+          const escapedCmd = cmd.command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          // Replace all occurrences of @command with **@command**
+          escapedPrompt = escapedPrompt.replace(
+            new RegExp(`@${escapedCmd}`, 'g'),
+            ` **@${cmd.command}**`
+          );
+        }
+      });
 
       const promptData: {tabId: string; prompt: ChatPrompt} = {
         tabId: this.props.tabId,

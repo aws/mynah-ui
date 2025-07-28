@@ -195,7 +195,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(136, 136, 136, 0.2);
+        background-color: var(--mynah-drag-overlay-blur-bg);
         backdrop-filter: blur(3px);
         z-index: calc(var(--mynah-z-max) + 1);
         pointer-events: none;

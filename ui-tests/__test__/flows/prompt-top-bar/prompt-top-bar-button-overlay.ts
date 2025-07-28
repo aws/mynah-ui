@@ -33,6 +33,7 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
       window.topBarOverlayController = window.mynahUI.openTopBarButtonOverlay({
         tabId: selectedTabId,
         topBarButtonOverlay: {
+          selectable: 'clickable',
           list: [
             {
               groupName: 'Test Group',
@@ -71,7 +72,7 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
   await waitForAnimationEnd(page);
 
   // Check if the overlay is visible
-  const actionOverlay = page.locator(getSelector(testIds.prompt.tobBarActionOverlay));
+  const actionOverlay = page.locator(getSelector(testIds.prompt.topBarActionOverlay));
   expect(await actionOverlay.isVisible()).toBeTruthy();
 
   // Check if the group title is visible
@@ -120,5 +121,5 @@ export const promptTopBarButtonOverlay = async (page: Page): Promise<void> => {
   await waitForAnimationEnd(page);
 
   // Verify the overlay is closed
-  expect(await page.locator(getSelector(testIds.prompt.tobBarActionOverlay)).count()).toBe(0);
+  expect(await page.locator(getSelector(testIds.prompt.topBarActionOverlay)).count()).toBe(0);
 };

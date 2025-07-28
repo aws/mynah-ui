@@ -25,6 +25,7 @@ export interface TextInputProps {
     operator?: 'and' | 'or';
     patterns: ValidationPattern[];
   };
+  validateOnChange?: boolean;
   value?: string;
   onChange?: (value: string) => void;
   onKeyPress?: (event: KeyboardEvent) => void;
@@ -43,6 +44,7 @@ export class TextInputInternal extends TextInputAbstract {
   private readonly validationErrorBlock: ExtendedHTMLElement;
   private readonly props: TextInputProps;
   private readyToValidate: boolean = false;
+  private touched: boolean = false;
   render: ExtendedHTMLElement;
   constructor (props: TextInputProps) {
     StyleLoader.getInstance().load('components/_form-input.scss');
@@ -71,13 +73,20 @@ export class TextInputInternal extends TextInputAbstract {
       },
       events: {
         blur: (e) => {
-          this.readyToValidate = true;
+          // Only show validation error if user changed the input
+          if (this.touched) {
+            this.readyToValidate = true;
+          }
           this.checkValidation();
         },
         input: (e) => {
           if (this.props.onChange !== undefined) {
             this.props.onChange((e.currentTarget as HTMLInputElement).value);
           }
+          if (props.validateOnChange === true) {
+            this.readyToValidate = true;
+          }
+          this.touched = true;
           this.checkValidation();
         },
         keydown: (e: KeyboardEvent) => {
