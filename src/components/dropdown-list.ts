@@ -119,11 +119,6 @@ export class DropdownList {
   };
 
   private readonly toggleOption = (option: DropdownListOption): void => {
-    // Skip if already selected
-    if (this.selectedOptions.some(selectedOption => selectedOption.id === option.id)) {
-      return;
-    }
-
     // Select only this option
     this.selectedOptions = [ option ];
 
@@ -191,7 +186,12 @@ export class DropdownList {
       children: [
         {
           type: 'div',
-          classNames: [ 'mynah-dropdown-list-header' ],
+          classNames: [ 'mynah-dropdown-list-options' ],
+          children: this.props.options.map(option => this.createOptionElement(option))
+        },
+        {
+          type: 'div',
+          classNames: [ 'mynah-dropdown-list-footer' ],
           children: [
             ...(this.props.description != null
               ? [ {
@@ -221,11 +221,6 @@ export class DropdownList {
               : [])
           ]
         },
-        {
-          type: 'div',
-          classNames: [ 'mynah-dropdown-list-options' ],
-          children: this.props.options.map(option => this.createOptionElement(option))
-        }
       ]
     });
 
