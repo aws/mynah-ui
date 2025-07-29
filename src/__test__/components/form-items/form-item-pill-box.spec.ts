@@ -1,4 +1,4 @@
-import { FormItemPillBox } from '../form-item-pill-box';
+import { FormItemPillBox } from '../../../components/form-items/form-item-pill-box';
 
 describe('FormItemPillBox', () => {
   let pillBox: FormItemPillBox;
