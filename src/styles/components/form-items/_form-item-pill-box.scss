@@ -4,17 +4,19 @@
  */
 
 .mynah-form-item-pill-box-wrapper {
+    position: relative;
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--mynah-form-input-border-color);
-    border-radius: 4px;
-    padding: 8px;
-    min-height: 100px;
-    background-color: var(--mynah-form-input-background-color);
+    padding: var(--mynah-sizing-2);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    background-color: var(--mynah-card-bg);
+    border-radius: var(--mynah-input-radius);
+    min-height: calc(var(--mynah-sizing-6) + var(--mynah-sizing-half));
+    box-sizing: border-box;
+    transform: translateZ(0px);
 
     &:focus-within {
-        border-color: var(--mynah-form-input-focus-border-color);
-        box-shadow: 0 0 0 2px var(--mynah-form-input-focus-shadow-color);
+        box-shadow: 0 0 0 2px var(--mynah-color-border-focus-shadow);
     }
 }
 
@@ -32,11 +34,14 @@
     width: 100%;
     resize: none;
     font-family: var(--mynah-font-family);
-    font-size: var(--mynah-font-size-normal);
-    color: var(--mynah-text-color);
+    font-size: var(--mynah-font-size-medium);
+    color: var(--mynah-color-text-input);
 
     &::placeholder {
-        color: var(--mynah-text-color-secondary);
+        color: var(--mynah-color-text-input-placeholder);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
     }
 }
 
@@ -73,6 +78,21 @@
 
 [disabled] .mynah-form-item-pill-box-wrapper,
 .mynah-form-item-pill-box-wrapper[disabled] {
-    opacity: 0.6;
-    pointer-events: none;
+    &::after {
+        content: '';
+        position: absolute;
+        top: calc(var(--mynah-border-width) * -1);
+        left: calc(var(--mynah-border-width) * -1);
+        right: calc(var(--mynah-border-width) * -1);
+        bottom: calc(var(--mynah-border-width) * -1);
+        background-color: var(--mynah-color-text-disabled);
+        border-radius: var(--mynah-input-radius);
+        z-index: var(--mynah-z-sub);
+        opacity: 10%;
+    }
+    
+    .mynah-form-item-pill-box-input {
+        pointer-events: none;
+        opacity: 50%;
+    }
 }

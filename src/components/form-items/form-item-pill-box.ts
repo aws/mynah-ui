@@ -83,7 +83,7 @@ export class FormItemPillBoxInternal extends FormItemPillBoxAbstract {
     // Create main container
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-form-input-wrapper', ...((props.classNames != null) || []) ],
+      classNames: [ 'mynah-form-input-wrapper', ...(props.classNames ?? []) ],
       attributes: props.attributes,
       testId: props.wrapperTestId,
       children: [

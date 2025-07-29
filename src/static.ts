@@ -497,7 +497,7 @@ interface BaseFormItem {
 }
 
 export type TextBasedFormItem = BaseFormItem & {
-  type: 'textarea' | 'textinput' | 'numericinput' | 'email';
+  type: 'textarea' | 'textinput' | 'numericinput' | 'email' | 'pillbox';
   autoFocus?: boolean;
   checkModifierEnterKeyPress?: boolean;
   validationPatterns?: {
