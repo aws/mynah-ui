@@ -1831,10 +1831,8 @@ mkdir -p src/ lalalaaaa
 `,
         quickSettings: {
             type: "select",
-            title: 'Destructive commands',
             messageId: "1",
             tabId: "hello",
-            titleIcon: MynahIcons.WARNING,
             description: 'Configure run behavior for this session. To adjust global settings, go to',
             descriptionLink: {
                 id: "button-id",
