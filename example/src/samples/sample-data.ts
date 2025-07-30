@@ -934,6 +934,14 @@ _To send the form, mandatory items should be filled._`,
             title: `How do feel about our AI assistant in general?`,
         },
         {
+            id: 'skills',
+            type: 'pillbox',
+            title: 'Skills and Technologies',
+            description: 'Add your programming languages and technologies (press Enter to add)',
+            placeholder: 'Type a skill and press Enter',
+            value: 'JavaScript,TypeScript,React',
+        },
+        {
             id: 'description',
             type: 'textarea',
             title: `Any other things you would like to share? (should contain one of "amazonq" or "aws", capital or not)`,
@@ -2341,6 +2349,13 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                 title: 'Timeout',
                 description: 'Seconds',
                 id: 'timeout',
+            },
+            { // Add mandatory field
+                id: 'args-pillbox',
+                type: 'pillbox',
+                title: 'Arguments - pillbox',
+                placeholder: 'Type arguments and press Enter',
+                value: '-y,@modelcontextprotocol/server-filesystem,/Users/username/Desktop,/path/to/other/allowed/dir',
             },
             {
                 id: 'args',
