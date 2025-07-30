@@ -400,8 +400,6 @@ export interface DropdownListOption {
 }
 
 export interface DropdownListProps {
-  title: string;
-  titleIcon?: MynahIcons;
   description?: string;
   descriptionLink?: {
     id: string;

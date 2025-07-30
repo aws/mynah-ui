@@ -12,8 +12,6 @@ import { MynahEventNames, MynahPortalNames } from '../../static';
 import testIds from '../../helper/test-ids';
 
 export interface BaseDropdownProps<T> {
-  title: string;
-  titleIcon?: MynahIcons;
   description?: string;
   descriptionLink?: {
     id: string;
@@ -46,13 +44,32 @@ export abstract class BaseDropdown<T = any> {
   protected abstract getItemSelectionState (item: T): boolean;
   protected abstract getDisplayLabel (): string;
 
-  // Helper method to get CSS variable values
+  // Helper method to get CSS variable values with calc() support
   protected getCSSVariableValue (variableName: string, fallback: number): number {
     const value = getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
+
     if (value.length > 0) {
-      const numericValue = parseFloat(value);
+      let numericValue: number;
+
+      if (value.includes('calc(')) {
+        // For calc expressions, create a temporary element to get the computed value
+        const tempDiv = document.createElement('div');
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.visibility = 'hidden';
+        tempDiv.style.width = value;
+        document.body.appendChild(tempDiv);
+        const computedWidth = getComputedStyle(tempDiv).width;
+        document.body.removeChild(tempDiv);
+        numericValue = parseFloat(computedWidth.replace(/px$/, ''));
+      } else {
+        // Remove 'px' suffix if present and parse the numeric value
+        const cleanValue = value.replace(/px$/, '');
+        numericValue = parseFloat(cleanValue);
+      }
+
       return isNaN(numericValue) ? fallback : numericValue;
     }
+
     return fallback;
   }
 
@@ -100,9 +117,6 @@ export abstract class BaseDropdown<T = any> {
 
     // Add click outside listener to close dropdown (use capture phase to catch events before stopPropagation)
     document.addEventListener('click', this.handleClickOutside, true);
-
-    // Listen for sheet/overlay open events to close dropdown
-    this.sheetOpenListenerId = MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.OPEN_SHEET, this.handleSheetOpen);
   }
 
   protected getInitialSelection (): T[] {
@@ -199,14 +213,11 @@ export abstract class BaseDropdown<T = any> {
 
     // Create portal container
     this.dropdownPortal = DomBuilder.getInstance().createPortal(
-      `${MynahPortalNames.OVERLAY}-dropdown-${this.uid}`,
+      `${MynahPortalNames.SHEET}-dropdown-${this.uid}`,
       {
         type: 'div',
         testId: testIds.dropdownList.portal,
         classNames: [ 'mynah-dropdown-list-portal' ],
-        attributes: {
-          style: 'position: fixed; z-index: 9999;'
-        },
         events: {
           click: (event: MouseEvent) => {
             // Prevent closing when clicking inside the dropdown
@@ -322,15 +333,6 @@ export abstract class BaseDropdown<T = any> {
     this.isOpen = false;
     this.closeDropdown();
     this.dispatchChangeEvent();
-  };
-
-  protected readonly handleSheetOpen = (): void => {
-    // Close dropdown when any sheet/overlay opens
-    if (this.isOpen) {
-      this.isOpen = false;
-      this.closeDropdown();
-      this.dispatchChangeEvent();
-    }
   };
 
   public readonly getSelectedItems = (): T[] => {

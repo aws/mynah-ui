@@ -17,9 +17,9 @@
     --mynah-border-width: 1px;
 
     // Dropdown component sizing
-    --mynah-dropdown-width: 250px;
-    --mynah-dropdown-max-height: 300px;
-    --mynah-dropdown-min-width: 200px;
+    --mynah-dropdown-width: calc(var(--mynah-sizing-base) * 62.5); // 250px (250/4 = 62.5)
+    --mynah-dropdown-max-height: calc(var(--mynah-sizing-base) * 75); // 300px (300/4 = 75)
+    --mynah-dropdown-min-width: calc(var(--mynah-sizing-base) * 50); // 200px (200/4 = 50)
     --mynah-dropdown-option-min-height: var(--mynah-sizing-6);
     --mynah-dropdown-margin: var(--mynah-sizing-1);
 

@@ -78,7 +78,7 @@ export class DropdownList extends BaseDropdown<DropdownListOption> {
   }
 
   protected getDisplayLabel (): string {
-    return this.selectedItems.length > 0 ? this.selectedItems[0].label : this.props.title;
+    return this.selectedItems.length > 0 ? this.selectedItems[0].label : '';
   }
 
   protected getItemId (option: DropdownListOption): string {

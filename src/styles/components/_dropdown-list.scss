@@ -26,11 +26,12 @@
 
 // Portal-based dropdown content (rendered at document root)
 .mynah-dropdown-list-portal {
+    position: fixed;
     .mynah-dropdown-list-content {
         width: var(--mynah-dropdown-width);
         max-height: var(--mynah-dropdown-max-height);
         overflow-y: auto;
-        margin-top: 5px;
+        margin-top: var(--mynah-sizing-1);
         background-color: var(--mynah-card-bg);
         border: var(--mynah-border-width) solid var(--mynah-color-border-default);
         box-shadow: var(--mynah-shadow-overlay);
@@ -121,7 +122,7 @@
 
                     .mynah-dropdown-list-check-icon {
                         color: var(--mynah-color-text-default);
-                        font-weight: 700;
+                        font-weight: bold;
                         width: var(--mynah-sizing-4);
                         height: var(--mynah-sizing-4);
                         display: flex;

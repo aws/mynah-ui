@@ -44,8 +44,6 @@ export class DropdownWrapper {
       case 'checkbox':
       default:
         this.dropdown = new DropdownList({
-          title: dropdownProps.title,
-          titleIcon: dropdownProps.titleIcon,
           description: dropdownProps.description,
           descriptionLink: dropdownProps.descriptionLink,
           options: dropdownProps.options,
