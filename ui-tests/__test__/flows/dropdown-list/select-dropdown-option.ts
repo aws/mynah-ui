@@ -16,7 +16,6 @@ export const selectDropdownOption = async (page: Page, skipScreenshots?: boolean
         body: 'Test dropdown option selection:',
         quickSettings: {
           type: 'select',
-          title: 'Choose your preference',
           tabId: selectedTabId,
           messageId: 'dropdown-select-test-message',
           options: [

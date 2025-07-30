@@ -16,7 +16,6 @@ export const openCloseDropdown = async (page: Page, skipScreenshots?: boolean): 
         body: 'Here is a test dropdown:',
         quickSettings: {
           type: 'select',
-          title: 'Select an option',
           description: 'Choose one of the following options',
           tabId: selectedTabId,
           messageId: 'dropdown-test-message',
