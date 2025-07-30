@@ -2448,10 +2448,6 @@ mynahUI.addChatItem(tabId, {
 
 ---
 
-
-
----
-
 ## `relatedContent`
 It allows you to show some related links under the body of the chat item. It shows one item and if you provided more user can expand the list with the show more button. 
 
