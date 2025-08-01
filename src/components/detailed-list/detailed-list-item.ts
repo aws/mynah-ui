@@ -89,17 +89,25 @@ export class DetailedListItemWrapper {
               : [])
           ]
         },
-        ...((this.props.listItem.children != null) && this.props.listItem.children.length > 0
+        ...(this.props.listItem.pending === true
           ? [
               {
                 type: 'div',
-                classNames: [ 'mynah-detailed-list-item-arrow-icon' ],
-                children: [
-                  new Icon({ icon: 'right-open' }).render
-                ]
+                classNames: [ 'mynah-detailed-list-item-pending' ],
+                children: [ '(pending)' ]
               }
             ]
-          : []),
+          : (this.props.listItem.children != null) && this.props.listItem.children.length > 0
+              ? [
+                  {
+                    type: 'div',
+                    classNames: [ 'mynah-detailed-list-item-arrow-icon' ],
+                    children: [
+                      new Icon({ icon: 'right-open' }).render
+                    ]
+                  }
+                ]
+              : []),
         ...(this.props.listItem.status != null
           ? [
               DomBuilder.getInstance().build({

@@ -33,6 +33,7 @@ export interface QuickActionCommand {
   placeholder?: string;
   children?: QuickActionCommandGroup[];
   route?: string[];
+  pending?: boolean;
 }
 export interface CustomQuickActionCommand extends QuickActionCommand {
   content?: Uint8Array;
@@ -346,6 +347,7 @@ export interface DetailedListItem {
     icon?: MynahIcons | MynahIconsType;
     text?: string;
   };
+  pending?: boolean;
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
