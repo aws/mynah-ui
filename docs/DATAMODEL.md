@@ -1153,7 +1153,7 @@ interface ChatItemButton {
   icon?: MynahIcons;
 }
 
-type ChatItemFormItem = TextBasedFormItem | DropdownFormItem | RadioGroupFormItem | CheckboxFormItem | ListFormItem | Stars;
+type ChatItemFormItem = TextBasedFormItem | DropdownFormItem | RadioGroupFormItem | CheckboxFormItem | ListFormItem | Stars | PillboxFormItem;
 
 export interface ValidationPattern {
   pattern: string | RegExp;
@@ -1239,6 +1239,11 @@ export interface ListItemEntry {
   persistent?: boolean;
   value: Record<string, string>;
 }
+
+type PillboxFormItem = BaseFormItem & {
+  type: 'pillbox';
+  value?: string;
+};
 
 interface FileNodeAction {
   name: string;
@@ -2891,7 +2896,7 @@ Let's take a look to the data type of a form item:
 ```typescript
 interface ChatItemFormItem {
   id: string; // id is mandatory to understand to get the specific values for each form item when a button is clicked
-  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup' | 'toggle' | 'checkbox' | 'switch' ; // type (see below for each of them)
+  type: 'select' | 'textarea' | 'textinput' | 'numericinput' | 'stars' | 'radiogroup' | 'toggle' | 'checkbox' | 'switch' | 'pillbox' ; // type (see below for each of them)
   mandatory?: boolean; // If it is set to true, buttons in the same card with waitMandatoryFormItems set to true will wait them to be filled
   hideMandatoryIcon?: boolean; // If it is set to true, it won't render an asterisk icon next to the form label
   title?: string; // Label of the input
@@ -3077,6 +3082,14 @@ mynahUI.addChatItem(tabId, {
             id: 'general-rating',
             type: 'stars',
             title: `How do feel about our AI assistant in general?`,
+        },
+        {
+            id: 'skills',
+            type: 'pillbox',
+            title: 'Programming Languages & Technologies',
+            description: 'Add your programming languages and technologies (press Enter to add)',
+            placeholder: 'Type a skill and press Enter',
+            value: 'JavaScript,TypeScript,React,Node.js',
         },
         {
             id: 'description',
