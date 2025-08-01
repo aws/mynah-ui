@@ -182,13 +182,15 @@ export abstract class BaseDropdown<T = any> {
           type: 'div',
           classNames: [ 'mynah-dropdown-list-footer' ],
           children: [
-            ...(this.props.description != null
+            ...((this.props.description != null && this.props.description.trim() !== '') || this.props.descriptionLink != null
               ? [ {
                   type: 'p',
                   testId: testIds.dropdownList.description,
                   classNames: [ 'mynah-dropdown-list-description' ],
                   children: [
-                    this.props.description,
+                    ...(this.props.description != null && this.props.description.trim() !== ''
+                      ? [ this.props.description ]
+                      : []),
                     ...(this.props.descriptionLink != null
                       ? (() => {
                           const descriptionLink = this.props.descriptionLink;

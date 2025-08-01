@@ -19,7 +19,6 @@
             flex: 1;
             font-size: var(--mynah-font-size-xsmall);
             text-align: right;
-            margin-right: var(--mynah-sizing-1);
         }
     }
 }
@@ -38,22 +37,24 @@
         border-radius: var(--mynah-card-radius);
 
         .mynah-dropdown-list-footer {
-            padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
+            padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
 
             .mynah-dropdown-list-description {
                 font-size: var(--mynah-font-size-xsmall);
                 color: var(--mynah-color-text-weak);
-                margin: var(--mynah-sizing-1) 0 0;
+                margin: 0;
                 padding: 0;
+                // Align with option text by accounting for checkbox space
+                margin-left: calc(var(--mynah-sizing-3) + var(--mynah-sizing-2));
 
                 .mynah-dropdown-list-description-link {
                     color: var(--mynah-color-button-primary);
                     background: none;
                     border: none;
                     padding: 0;
-                    margin-left: var(--mynah-sizing-half);
                     cursor: pointer;
                     font-size: inherit;
+                    text-align: left;
                     font-family: inherit;
                     text-decoration: underline;
 
@@ -65,6 +66,11 @@
                         outline: var(--mynah-border-width) solid var(--mynah-color-button-primary);
                         outline-offset: 1px;
                     }
+
+                    // Add margin only when there's text before the link
+                    &:not(:first-child) {
+                        margin-left: var(--mynah-sizing-half);
+                    }
                 }
             }
         }
@@ -75,9 +81,9 @@
             .mynah-dropdown-list-option {
                 display: flex;
                 align-items: center;
-                padding: var(--mynah-sizing-2) var(--mynah-sizing-3);
+                padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
                 cursor: pointer;
-                min-height: var(--mynah-sizing-6); // Consistent height to prevent text shift
+                min-height: var(--mynah-sizing-4); // Consistent height to prevent text shift
 
                 &:hover {
                     background-color: var(--mynah-color-light);

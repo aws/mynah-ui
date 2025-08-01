@@ -1833,11 +1833,11 @@ mkdir -p src/ lalalaaaa
             type: "select",
             messageId: "1",
             tabId: "hello",
-            description: 'Configure run behavior for this session. To adjust global settings, go to',
+            description: '',
             descriptionLink: {
                 id: "button-id",
                 destination: "Built-in",
-                text: 'Auto-approve settings',
+                text: 'More control, modify the commands',
             },
             options: [
                 { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
@@ -2071,7 +2071,39 @@ export const mcpToolRunSampleCard:ChatItem = // Summary Card
             header: {
                 icon: MynahIcons.TOOLS,
                 body: 'Ran Filesystem tool search-files',
-                fileList: null
+                fileList: null,
+                buttons: [
+                {
+                    status: 'clear',
+                    icon: 'play',
+                    text: 'Run',
+                    id: 'run-bash-command',
+                },
+                {
+                    status: 'dimmed-clear',
+                    icon: 'cancel',
+                    text: 'Reject',
+                    id: 'reject-bash-command',
+                },
+            ],
+            },
+            quickSettings: {
+                type: "select",
+                messageId: "1",
+                tabId: "hello",
+                description: '',
+                descriptionLink: {
+                    id: "button-id",
+                    destination: "Built-in",
+                    text: 'Auto-approve settings',
+                },
+                options: [
+                    { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
+                    { id: 'option2', label: 'Auto run', value: 'Destructive' },
+                ],
+                onChange: (selectedOptions: any) => {
+                    console.log('Selected options:', selectedOptions);
+                }
             },
         },
         collapsedContent: [

@@ -50,11 +50,17 @@ export class DropdownList extends BaseDropdown<DropdownListOption> {
       },
       children: [
         {
+          type: 'div',
+          classNames: [ 'mynah-dropdown-list-checkbox' ],
+          children: [
+            ...(isSelected ? [ new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render ] : [])
+          ]
+        },
+        {
           type: 'span',
           testId: testIds.dropdownList.optionLabel,
           classNames: [ 'mynah-dropdown-list-option-label' ],
           children: [
-            ...(isSelected ? [ new Icon({ icon: MynahIcons.OK, classNames: [ 'mynah-dropdown-list-check-icon' ] }).render ] : []),
             option.label
           ]
         }
