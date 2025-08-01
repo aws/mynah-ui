@@ -239,7 +239,7 @@ export class ChatItemCard {
 
   private readonly getFilePillsCustomRenderer = (): ChatItem['customRenderer'] => {
     const header = this.props.chatItem.header;
-    if ((header?.fileList) == null) return;
+    if ((header?.fileList) == null) return [];
 
     const customRenderer: ChatItemBodyRenderer[] = [];
 
