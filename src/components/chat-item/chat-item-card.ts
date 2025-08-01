@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { ChatItemBodyRenderer, DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames } from '../../static';
@@ -237,6 +237,74 @@ export class ChatItemCard {
     ];
   };
 
+  private readonly getFilePillsCustomRenderer = (): ChatItem['customRenderer'] => {
+    const header = this.props.chatItem.header;
+    if ((header?.fileList) == null) return;
+
+    const customRenderer: ChatItemBodyRenderer[] = [];
+
+    // Add icon if present
+    if (header.icon != null) {
+      customRenderer.push({
+        type: 'i' as const,
+        classNames: [
+          'mynah-ui-icon',
+          `mynah-ui-icon-${header.icon as MynahIcons}`,
+          'mynah-chat-item-card-icon-inline',
+          `icon-status-${header.iconStatus ?? 'none'}`
+        ]
+      });
+    }
+
+    // Add body text if present
+    if (header.body != null && header.body !== '') {
+      customRenderer.push({
+        type: 'span' as const,
+        children: [ header.body ]
+      });
+    }
+
+    // Add file pills
+    const filePills = header.fileList.filePaths?.map(filePath => {
+      const fileName = header.fileList?.details?.[filePath]?.visibleName ?? filePath;
+      const isDeleted = header.fileList?.deletedFiles?.includes(filePath) === true;
+      const description = header.fileList?.details?.[filePath]?.description;
+
+      return {
+        type: 'span' as const,
+        classNames: [
+          'mynah-chat-item-tree-file-pill',
+          ...(isDeleted ? [ 'mynah-chat-item-tree-file-pill-deleted' ] : [])
+        ],
+        children: [ fileName ],
+        events: {
+          click: () => {
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
+              tabId: this.props.tabId,
+              messageId: this.props.chatItem.messageId,
+              filePath,
+              deleted: isDeleted
+            });
+          },
+          ...(description !== undefined
+            ? {
+                mouseover: (e: MouseEvent) => {
+                  this.showTooltip(description, e.target as HTMLElement);
+                },
+                mouseleave: () => {
+                  this.hideTooltip();
+                }
+              }
+            : {})
+        },
+      };
+    }) ?? [];
+
+    customRenderer.push(...filePills);
+
+    return customRenderer;
+  };
+
   private readonly updateCardContent = (): void => {
     if (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId) === undefined) {
       return;
@@ -367,56 +435,7 @@ export class ChatItemCard {
             messageId: this.props.chatItem.messageId,
             ...(this.props.chatItem.header.fileList?.renderAsPills === true
               ? {
-                  customRenderer: [
-                    ...(this.props.chatItem.header.icon != null
-                      ? [ {
-                          type: 'i' as const,
-                          classNames: [
-                            'mynah-ui-icon',
-                            `mynah-ui-icon-${this.props.chatItem.header.icon as MynahIcons}`,
-                            'mynah-chat-item-card-icon-inline',
-                            `icon-status-${this.props.chatItem.header.iconStatus ?? 'none'}`
-                          ]
-                        } ]
-                      : []),
-                    ...(this.props.chatItem.header.body != null && this.props.chatItem.header.body !== ''
-                      ? [ { type: 'span' as const, children: [ this.props.chatItem.header.body ] } ]
-                      : []),
-                    ...this.props.chatItem.header.fileList.filePaths?.map(filePath => {
-                      const fileName = this.props.chatItem.header?.fileList?.details?.[filePath]?.visibleName ?? filePath;
-                      const isDeleted = this.props.chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
-                      const description = this.props.chatItem.header?.fileList?.details?.[filePath]?.description;
-
-                      return {
-                        type: 'span' as const,
-                        classNames: [
-                          'mynah-chat-item-tree-file-pill',
-                          ...(isDeleted ? [ 'mynah-chat-item-tree-file-pill-deleted' ] : [])
-                        ],
-                        children: [ fileName ],
-                        events: {
-                          click: () => {
-                            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
-                              tabId: this.props.tabId,
-                              messageId: this.props.chatItem.messageId,
-                              filePath,
-                              deleted: isDeleted
-                            });
-                          },
-                          ...(description !== undefined
-                            ? {
-                                mouseover: (e: MouseEvent) => {
-                                  this.showTooltip(description, e.target as HTMLElement);
-                                },
-                                mouseleave: () => {
-                                  this.hideTooltip();
-                                }
-                              }
-                            : {})
-                        },
-                      };
-                    }) ?? []
-                  ],
+                  customRenderer: this.getFilePillsCustomRenderer(),
                   body: null,
                   fileList: null,
                   icon: undefined
