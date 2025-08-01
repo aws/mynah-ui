@@ -164,5 +164,16 @@ export default {
     wrapper: 'notification-wrapper',
     title: 'notification-title',
     content: 'notification-content',
+  },
+  dropdownList: {
+    wrapper: 'dropdown-list-wrapper',
+    button: 'dropdown-list-button',
+    portal: 'dropdown-list-portal',
+    content: 'dropdown-list-content',
+    title: 'dropdown-list-title',
+    description: 'dropdown-list-description',
+    option: 'dropdown-list-option',
+    optionLabel: 'dropdown-list-option-label',
+    checkIcon: 'dropdown-list-check-icon'
   }
 };

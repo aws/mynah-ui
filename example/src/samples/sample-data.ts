@@ -1805,7 +1805,58 @@ mkdir -p src/ lalalaaaa
 `,
         codeBlockActions: { copy: null, 'insert-to-cursor': null },
     },
-
+    {
+        fullWidth: true,
+        padding: false,
+        type: ChatItemType.ANSWER,
+        header: {
+            body: 'Shell',
+            status: {
+                position: 'left',
+                icon: MynahIcons.WARNING,
+                status: 'warning',
+                description: 'This command may cause\nsignificant data loss or damage.',
+            },
+            buttons: [
+                {
+                    status: 'clear',
+                    icon: 'play',
+                    text: 'Run',
+                    id: 'run-bash-command',
+                },
+                {
+                    status: 'dimmed-clear',
+                    icon: 'cancel',
+                    text: 'Reject',
+                    id: 'reject-bash-command',
+                },
+            ],
+        },
+        body: `
+\`\`\`bash
+mkdir -p src/ lalalaaaa
+\`\`\`
+`,
+        quickSettings: {
+            type: "select",
+            messageId: "1",
+            tabId: "hello",
+            description: 'Configure run behavior for this session. To adjust global settings, go to',
+            descriptionLink: {
+                id: "button-id",
+                destination: "Built-in",
+                text: 'Auto-approve settings',
+            },
+            options: [
+                { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
+                { id: 'option2', label: 'Auto run', value: 'Destructive' },
+            ],
+            onChange: (selectedOptions: any) => {
+                console.log('Selected options:', selectedOptions);
+            }
+    },
+        codeBlockActions: { copy: null, 'insert-to-cursor': null },
+    },
     {
         fullWidth: true,
         padding: false,
