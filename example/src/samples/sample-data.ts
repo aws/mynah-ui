@@ -1836,6 +1836,7 @@ mkdir -p src/ lalalaaaa
             description: 'Configure run behavior for this session. To adjust global settings, go to',
             descriptionLink: {
                 id: "button-id",
+                destination: "Built-in",
                 text: 'Auto-approve settings',
             },
             options: [
