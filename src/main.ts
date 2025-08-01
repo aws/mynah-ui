@@ -272,7 +272,8 @@ export interface MynahUIProps {
     value: DropdownListOption[]) => void;
   onDropDownLinkClick?: (
     tabId: string,
-    actionId: string) => void;
+    actionId: string,
+    destination: string) => void;
   onPromptInputOptionChange?: (
     tabId: string,
     optionsValues: Record<string, string>,
@@ -845,7 +846,7 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DROPDOWN_LINK_CLICK, (data) => {
-      this.props.onDropDownLinkClick?.(data.tabId, data.actionId);
+      this.props.onDropDownLinkClick?.(data.tabId, data.actionId, data.destination);
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_ADD, (data) => {

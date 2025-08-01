@@ -2333,6 +2333,7 @@ interface DropdownFactoryProps {
   descriptionLink?: {          // Optional clickable link that appears within the description text
     id: string;                // Unique identifier for the link
     text: string;              // Display text for the link
+    destination: string;       // Link destination
     onClick?: () => void;      // Optional callback function triggered when the link is clicked
   };
   options: DropdownListOption[]; // Array of options to display in the dropdown

@@ -16,6 +16,7 @@ export interface BaseDropdownProps<T> {
   descriptionLink?: {
     id: string;
     text: string;
+    destination: string;
     onClick?: () => void;
   };
   items: T[];
@@ -155,7 +156,8 @@ export abstract class BaseDropdown<T = any> {
   protected readonly onLinkClick = (buttonId: string): void => {
     MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROPDOWN_LINK_CLICK, {
       tabId: this.props.tabId,
-      actionId: buttonId
+      actionId: buttonId,
+      destination: this.props.descriptionLink?.destination
     });
   };
 

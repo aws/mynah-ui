@@ -404,6 +404,7 @@ export interface DropdownListProps {
   descriptionLink?: {
     id: string;
     text: string;
+    destination: string;
     onClick?: () => void;
   };
   options: DropdownListOption[];

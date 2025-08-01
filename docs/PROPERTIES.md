@@ -1022,9 +1022,11 @@ This event will be fired when a user clicks on a link within a dropdown list's d
 ...
 onDropDownLinkClick?: (
     tabId: string,
+    destination: string,
     actionId: string): void => {
       console.log(`Dropdown link clicked in tab: ${tabId}`);
       console.log(`Link action ID: ${actionId}`);
+      console.log(`Destination ID: ${destination}`);
     };
 ...
 ```
