@@ -763,6 +763,7 @@ export interface ConfigTexts {
   openNewTab: string;
   commandConfirmation: string;
   pinContextHint: string;
+  contextSearchPlaceholder: string;
   dragOverlayText: string;
 }
 
