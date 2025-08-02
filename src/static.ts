@@ -463,6 +463,7 @@ export interface ChatItemContent {
 export interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
+  editable?: boolean;
   snapToTop?: boolean;
   autoCollapse?: boolean;
   contentHorizontalAlignment?: 'default' | 'center';

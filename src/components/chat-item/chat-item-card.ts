@@ -73,6 +73,11 @@ export class ChatItemCard {
   private votes: ChatItemRelevanceVote | null = null;
   private footer: ChatItemCard | null = null;
   private header: ChatItemCard | null = null;
+
+  private readonly _shellOriginalHeader?: ChatItem['header'];
+  private readonly _shellOriginalCodeBlockActions?: ChatItem['codeBlockActions'];
+  private lastContentEditable: boolean;
+
   constructor (props: ChatItemCardProps) {
     this.props = {
       ...props,
@@ -82,6 +87,7 @@ export class ChatItemCard {
         padding: props.chatItem.padding != null ? props.chatItem.padding : (props.chatItem.type !== ChatItemType.DIRECTIVE),
       }
     };
+    this.lastContentEditable = this.props.chatItem.editable === true;
     this.chatAvatar = this.getChatAvatar();
     MynahUITabsStore.getInstance()
       .getTabDataStore(this.props.tabId)
@@ -488,6 +494,20 @@ export class ChatItemCard {
     if (this.props.chatItem.body != null && this.props.chatItem.body !== '') {
       const updatedCardContentBodyProps: ChatItemCardContentProps = {
         body: this.props.chatItem.body ?? '',
+        editable: this.props.chatItem.editable === true,
+
+        onEdit: (newText: string) => {
+          const items = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems') as ChatItem[];
+          MynahUITabsStore.getInstance()
+            .getTabDataStore(this.props.tabId)
+            .updateStore({
+              chatItems: items.map(item =>
+                item.messageId === this.props.chatItem.messageId
+                  ? { ...item, body: newText }
+                  : item
+              )
+            }, true);
+        },
         hideCodeBlockLanguage: this.props.chatItem.padding === false,
         wrapCode: this.props.chatItem.wrapCodes,
         unlimitedCodeBlockHeight: this.props.chatItem.autoCollapse,
@@ -515,6 +535,17 @@ export class ChatItemCard {
             : [],
         contentProperties: bodyEvents,
       };
+
+      // Check for editable mode change and recreate content if needed
+      const nowEditable = this.props.chatItem.editable === true;
+      if ((this.contentBody != null) && this.lastContentEditable !== nowEditable) {
+        this.contentBody.render.remove();
+        this.contentBody = null;
+      }
+      this.lastContentEditable = nowEditable;
+      updatedCardContentBodyProps.editable = nowEditable;
+
+      // Update existing or create new content body
       if (this.contentBody != null) {
         this.contentBody.updateCardStack(updatedCardContentBodyProps);
       } else {
@@ -525,7 +556,6 @@ export class ChatItemCard {
       this.contentBody?.render.remove();
       this.contentBody = null;
     }
-
     /**
      * Generate customRenderer if available
      */
@@ -770,20 +800,27 @@ export class ChatItemCard {
             ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {}),
           });
 
+          // Only handle buttons that want to remove the card entirely:
           if (action.keepCardAfterClick === false) {
             this.render.remove();
             if (this.props.chatItem.messageId !== undefined) {
-              const currentChatItems: ChatItem[] = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems');
+              const current = MynahUITabsStore.getInstance()
+                .getTabDataStore(this.props.tabId)
+                .getValue('chatItems') as ChatItem[];
+
               MynahUITabsStore.getInstance()
                 .getTabDataStore(this.props.tabId)
-                .updateStore(
-                  {
-                    chatItems: [ ...currentChatItems.map(chatItem => this.props.chatItem.messageId !== chatItem.messageId ? chatItem : { type: ChatItemType.ANSWER, messageId: chatItem.messageId }) ],
-                  },
-                  true
-                );
+                .updateStore({
+                  chatItems: current.map(ci =>
+                    ci.messageId === this.props.chatItem.messageId
+                      ? { type: ChatItemType.ANSWER, messageId: ci.messageId }
+                      : ci
+                  )
+                }, true);
             }
+            return false;
           }
+          return true;
         },
       };
 
