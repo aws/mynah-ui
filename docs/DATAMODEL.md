@@ -2532,7 +2532,6 @@ mynahUI.addChatItem('tab-1', {
       deletedFiles: ['src/index.ts'] // Will show with deleted styling
     }
   },
-  body: 'Here are the files I analyzed...'
 });
 ```
 
