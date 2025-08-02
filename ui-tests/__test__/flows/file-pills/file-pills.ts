@@ -1,6 +1,7 @@
 import { Page } from 'playwright';
 import { waitForAnimationEnd } from '../../helpers';
 import { expect } from 'playwright/test';
+import type { ChatItemType } from '@aws/mynah-ui';
 
 export const showFilePills = async (page: Page): Promise<void> => {
   await page.evaluate(() => {
@@ -9,7 +10,7 @@ export const showFilePills = async (page: Page): Promise<void> => {
       window.mynahUI.updateStore(selectedTabId, { chatItems: [] });
 
       window.mynahUI.addChatItem(selectedTabId, {
-        type: 'answer' as any,
+        type: 'answer' as ChatItemType,
         fullWidth: true,
         padding: false,
         header: {
@@ -48,7 +49,7 @@ export const showFilePillsWithDeletedFiles = async (page: Page): Promise<void> =
       window.mynahUI.updateStore(selectedTabId, { chatItems: [] });
 
       window.mynahUI.addChatItem(selectedTabId, {
-        type: 'answer' as any,
+        type: 'answer' as ChatItemType,
         fullWidth: true,
         padding: false,
         header: {
