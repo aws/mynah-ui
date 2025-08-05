@@ -5,11 +5,10 @@
     margin-bottom: var(--mynah-sizing-2);
 
     .mynah-dropdown-list-button {
-        min-width: var(--mynah-sizing-15);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
+        padding: var(--mynah-sizing-1) var(--mynah-sizing-1) var(--mynah-sizing-1) var(--mynah-sizing-2);
         border: none;
         border-radius: var(--mynah-card-radius);
         cursor: pointer;
@@ -19,6 +18,8 @@
             flex: 1;
             font-size: var(--mynah-font-size-xsmall);
             text-align: right;
+            flex-shrink: 0;
+            margin-left: auto;
         }
     }
 }
