@@ -3377,14 +3377,6 @@ mynahUI.addChatItem('tab-1', {
 - **Event Handling**: Integrates with existing button click events, adding `editedText` parameter for backend processing
 - **Accessibility**: Auto-focus and text selection in edit mode for improved user experience
 
-<p align="center">
-  <img src="./img/data-model/chatItems/editable-normal.png" alt="editable normal state" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
-</p>
-
-<p align="center">
-  <img src="./img/data-model/chatItems/editable-edit.png" alt="editable edit state" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">  
-</p>
-
 **Note:** The `editable` property works best with shell command content but can be used with any text content. When combined with buttons, the modify workflow automatically manages button states and integrates with the existing event system.
 
 ---
