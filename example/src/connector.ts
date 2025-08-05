@@ -34,4 +34,4 @@ export class Connector {
       }, INITIAL_STREAM_DELAY);
     }, 150);
   });
-  }
+}

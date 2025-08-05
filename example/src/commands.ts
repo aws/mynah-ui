@@ -22,7 +22,7 @@ export enum Commands {
     CONFIRMATION_BUTTONS = '/confirmation-buttons',
     BUTTONS = '/buttons',
     BORDERED_CARDS = '/bordered-cards',
-    SHELL_WITH_MODIFY = '/shell-with-modify',
+
     NOTIFY = '/show-notification',
     CLEAR = '/clear',
     CLEAR_CONTEXT_ITEMS = '/clear-context-items',
