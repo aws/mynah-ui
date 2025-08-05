@@ -2085,28 +2085,6 @@ That's all!, please also see the **[samples data](https://github.com/aws/mynah-u
 
 ---
 
-## `editable` (default: `false`)
-It allows you to make the chat item content editable by the user. When set to `true`, the chat item will display controls that allow users to modify the content directly within the chat interface.
-
-```typescript
-const mynahUI = new MynahUI({
-    tabs: {
-        'tab-1': {
-            ...
-        }
-    }
-});
-
-mynahUI.addChatItem('tab-1', {
-    type: ChatItemType.ANSWER,
-    messageId: 'editable-message-1',
-    editable: true,
-    body: "This message content can be edited by the user."
-});
-```
-
----
-
 ## `snapToTop`
 It gives you the option to snap the card to the top of the scrolling container. By default, if the user already scrolled to the bottom of the container, container will autoscroll whenever the content is updated. 
 
@@ -3352,7 +3330,7 @@ The `editable` property enables users to modify the content of chat items direct
 **Key Features:**
 - **Inline Editing**: Users can modify shell commands directly in the chat response
 - **Button State Management**: Shows "Modify" button in normal state, "Save"/"Cancel" buttons in edit mode  
-- **Text Extraction**: Automatically extracts commands from markdown code blocks (e.g., `\`\`\`shell\nnpm install\n\`\`\``)
+- **Text Extraction**: Automatically extracts commands from markdown code blocks (e.g., `\`\`\`shell\inputted_command\n\`\`\``)
 - **State Preservation**: Original commands are preserved during editing and restored on cancel
 - **Event Integration**: Modified content is sent to backend via `editedText` parameter in button click events
 
