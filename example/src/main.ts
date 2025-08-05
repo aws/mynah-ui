@@ -146,7 +146,7 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
             }
         },
         onDropDownOptionChange: (tabId: string, messageId: string, value: DropdownListOption []) => {
-            Log(`Dropdown Option: ${value[0]} with msgID: ${messageId} from tab: ${tabId}`)
+            Log(`Dropdown Option changed in message ${messageId} on tab ${tabId}`)
         },
         onDropDownLinkClick: (tabId, actionId, destination) => {
             Log(`Dropdown link click with id ${tabId}, ${actionId}, ${destination}`)

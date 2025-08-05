@@ -420,13 +420,26 @@
             > .mynah-chat-item-card-summary-content {
                 display: flex;
                 flex-flow: row nowrap;
-                align-items: center;
+                align-items: flex-start;
                 // Adding background color and border for chat summary header
                 background-color: var(--mynah-card-bg);
                 border: var(--mynah-border-width) solid var(--mynah-color-border-default);
                 border-radius: var(--mynah-card-radius);
                 > .mynah-chat-item-summary-button {
                     margin-right: calc(-1 * var(--mynah-sizing-1));
+                    align-self: flex-start;
+                    margin-top: calc(var(--mynah-sizing-1) * 1.5);
+                    > i {
+                        vertical-align: top;
+                    }
+                }
+                > .mynah-ui-chat-item-small-card {
+                    flex: 1;
+                    > .mynah-card {
+                        > .mynah-chat-item-card-header {
+                            align-items: flex-start;
+                        }
+                    }
                 }
             }
             > .mynah-chat-item-card-summary-collapsed-content {

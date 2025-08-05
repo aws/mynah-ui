@@ -351,7 +351,7 @@ export abstract class BaseDropdown<T = any> {
   };
 
   protected readonly dispatchChangeEvent = (): void => {
-    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROP_DOWN_OPTION_CHANGE, {
+    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.DROPDOWN_OPTION_CHANGE, {
       value: this.selectedItems,
       messageId: this.messageId,
       tabId: this.tabId

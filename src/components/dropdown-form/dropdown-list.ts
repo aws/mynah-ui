@@ -91,7 +91,6 @@ export class DropdownList extends BaseDropdown<DropdownListOption> {
     return option.id;
   }
 
-  // Legacy API methods for backward compatibility
   public readonly getSelectedOptions = (): DropdownListOption[] => {
     return this.getSelectedItems();
   };

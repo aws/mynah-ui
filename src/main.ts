@@ -841,7 +841,7 @@ export class MynahUI {
       this.props.onPromptInputOptionChange?.(data.tabId, data.optionsValues, this.getUserEventId());
     });
 
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DROP_DOWN_OPTION_CHANGE, (data) => {
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DROPDOWN_OPTION_CHANGE, (data) => {
       this.props.onDropDownOptionChange?.(data.tabId, data.messageId, data.value);
     });
 

@@ -84,15 +84,50 @@
                 padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
                 cursor: pointer;
                 min-height: var(--mynah-sizing-4); // Consistent height to prevent text shift
+                position: relative;
+                overflow: hidden;
+                transition: var(--mynah-very-short-transition);
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0;
+                    background-color: currentColor;
+                    pointer-events: none;
+                    transition: var(--mynah-very-short-transition);
+                }
+
+                &::after {
+                    content: '';
+                    pointer-events: none;
+                    transition: var(--mynah-very-short-transition);
+                    opacity: 0;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: currentColor;
+                    transform: translate3d(-7%, 0, 0) scale(0.93);
+                }
 
                 &:hover {
-                    background-color: var(--mynah-color-light);
+                    &::after {
+                        transform: translate3d(0%, 0, 0);
+                        opacity: 0.15;
+                    }
                 }
 
                 &:focus-visible {
                     outline: var(--mynah-border-width) solid var(--mynah-color-button-primary);
                     outline-offset: -1px;
-                    background-color: var(--mynah-color-light);
+                    &::before {
+                        opacity: 0.6;
+                    }
                 }
 
                 &[aria-selected='true'] {

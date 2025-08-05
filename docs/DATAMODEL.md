@@ -2349,7 +2349,7 @@ interface DropdownFactoryProps {
 }
 ```
 
-When a dropdown option is selected, the component dispatches a `MynahEventNames.DROP_DOWN_OPTION_CHANGE` event with the selected options. You can handle this event by implementing the [`onDropDownOptionChange`](./PROPERTIES.md#ondropdownoptionchange) callback in your MynahUI constructor properties.
+When a dropdown option is selected, the component dispatches a `MynahEventNames.DROPDOWN_OPTION_CHANGE` event with the selected options. You can handle this event by implementing the [`onDropDownOptionChange`](./PROPERTIES.md#ondropdownoptionchange) callback in your MynahUI constructor properties.
 
 When a link in the dropdown description is clicked, the component dispatches a `MynahEventNames.DROP_DOWN_LINK_CLICK` event. You can handle this event by implementing the [`onDropDownLinkClick`](./PROPERTIES.md#ondropdownlinkclick) callback in your MynahUI constructor properties.
 
