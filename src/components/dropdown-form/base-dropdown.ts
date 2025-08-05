@@ -95,7 +95,7 @@ export abstract class BaseDropdown<T = any> {
       icon: this.dropdownIcon,
       onClick: this.toggleDropdown,
       primary: false,
-      status: 'clear',
+      status: 'dimmed-clear',
       classNames: [ 'mynah-dropdown-list-button' ],
       testId: testIds.dropdownList.button
     }).render;
