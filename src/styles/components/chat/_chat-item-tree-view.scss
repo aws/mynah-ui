@@ -345,6 +345,61 @@
     }
 }
 
+.mynah-chat-item-tree-file-pill {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--mynah-color-syntax-bg);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    border-radius: var(--mynah-input-radius);
+    padding: calc(2 * var(--mynah-border-width)) calc(3 * var(--mynah-border-width));
+    font-size: var(--mynah-font-size-small);
+    font-family: var(--mynah-syntax-code-font-family);
+    color: var(--mynah-color-syntax-code);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+    margin-left: var(--mynah-sizing-1);
+
+    &:hover {
+        background-color: var(--mynah-color-button);
+    }
+
+    &.mynah-chat-item-tree-file-pill-deleted {
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+}
+
+.mynah-chat-item-card-header {
+    .mynah-chat-item-tree-file-pill {
+        margin-left: var(--mynah-sizing-1);
+        vertical-align: middle;
+    }
+
+    .mynah-card-body {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0;
+        row-gap: var(--mynah-sizing-1);
+
+        p {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0;
+            row-gap: var(--mynah-sizing-1);
+            margin: 0;
+        }
+    }
+}
+
+.mynah-chat-item-card-icon-inline {
+    margin-right: var(--mynah-sizing-1);
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
 // TODO: Update this depending on the general file list structure
 .mynah-chat-item-answer,
 .mynah-chat-item-answer-answer-stream {

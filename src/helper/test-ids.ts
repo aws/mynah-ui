@@ -113,7 +113,7 @@ export default {
       folder: 'chat-item-file-tree-folder',
       file: 'chat-item-file-tree-file',
       fileAction: 'chat-item-file-tree-file-action',
-      fileTooltipWrapper: 'chat-item-file-tree-file-tooltip-wrapper'
+      fileTooltipWrapper: 'chat-item-file-tree-file-tooltip-wrapper',
     },
     tabbedCard: {
       tabs: 'chat-item-tabbed-card-tabs'

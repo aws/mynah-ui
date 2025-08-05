@@ -938,6 +938,14 @@ _To send the form, mandatory items should be filled._`,
             title: `How do feel about our AI assistant in general?`,
         },
         {
+            id: 'skills',
+            type: 'pillbox',
+            title: 'Skills and Technologies',
+            description: 'Add your programming languages and technologies (press Enter to add)',
+            placeholder: 'Type a skill and press Enter',
+            value: 'JavaScript,TypeScript,React',
+        },
+        {
             id: 'description',
             type: 'textarea',
             title: `Any other things you would like to share? (should contain one of "amazonq" or "aws", capital or not)`,
@@ -1961,6 +1969,122 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
 `,
         codeBlockActions: { copy: null, 'insert-to-cursor': null },
     },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'progress',
+            body: 'Reading',
+            fileList: {
+                filePaths: ['package.json', 'README.md'],
+                details: {
+                    'package.json': {
+                        visibleName: 'package.json',
+                        description: 'package.json'
+                    },
+                    'README.md': {
+                        visibleName: 'README.md',
+                        description: 'README.md'
+                    }
+                },
+                renderAsPills: true
+            }
+        },
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'eye',
+            body: '5 files read',
+            fileList: {
+                filePaths: ['package.json', 'README.md', 'webpack.config.js', 'src/app.ts', 'src/components/Button/Button.tsx'],
+                details: {
+                    'package.json': {
+                        visibleName: 'package.json',
+                        description: 'package.json'
+                    },
+                    'README.md': {
+                        visibleName: 'README.md',
+                        description: 'README.md'
+                    },
+                    'webpack.config.js': {
+                        visibleName: 'webpack.config.js',
+                        description: 'webpack.config.js'
+                    },
+                    'src/app.ts': {
+                        visibleName: 'app.ts',
+                        description: 'src/app.ts'
+                    },
+                    'src/components/Button/Button.tsx': {
+                        visibleName: 'Button.tsx',
+                        description: 'src/components/Button/Button.tsx'
+                    }
+                },
+                renderAsPills: true
+            }
+        },
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'progress',
+            body: 'Listing',
+            fileList: {
+                filePaths: ['src/components/ui', 'src/components/forms'],
+                details: {
+                    'src/components/ui': {
+                        visibleName: 'ui',
+                        description: 'src/components/ui'
+                    },
+                    'src/components/forms': {
+                        visibleName: 'forms',
+                        description: 'src/components/forms'
+                    },
+                },
+                renderAsPills: true
+            }
+        }
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'check-list',
+            body: '5 directories listed',
+            fileList: {
+                filePaths: ['src/components/ui', 'src/components/forms', 'src/components/layout', 'src/utils/helpers', 'src/utils/validation'],
+                details: {
+                    'src/components/ui': {
+                        visibleName: 'ui',
+                        description: 'src/components/ui',
+                    },
+                    'src/components/forms': {
+                        visibleName: 'forms',
+                        description: 'src/components/forms'
+                    },
+                    'src/components/layout': {
+                        visibleName: 'layout',
+                        description: 'src/components/layout'
+                    },
+                    'src/utils/helpers': {
+                        visibleName: 'helpers',
+                        description: 'src/components/helpers'
+                    },
+                    'src/utils/validation': {
+                        visibleName: 'validation',
+                        description: 'src/components/validation'
+                    },
+                },
+                renderAsPills: true
+            }
+        }
+    }
 ];
 
 
@@ -2345,6 +2469,13 @@ export const sampleMCPDetails = (title: string): DetailedList => {
                 title: 'Timeout',
                 description: 'Seconds',
                 id: 'timeout',
+            },
+            { // Add mandatory field
+                id: 'args-pillbox',
+                type: 'pillbox',
+                title: 'Arguments - pillbox',
+                placeholder: 'Type arguments and press Enter',
+                value: '-y,@modelcontextprotocol/server-filesystem,/Users/username/Desktop,/path/to/other/allowed/dir',
             },
             {
                 id: 'args',
