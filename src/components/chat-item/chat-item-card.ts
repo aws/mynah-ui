@@ -809,7 +809,7 @@ export class ChatItemCard {
             if (action.id === 'modify-shell-command') {
               // Handle modify immediately - enter edit mode locally, then notify backend
               this.contentBody.enterEditMode();
-              
+
               // Notify backend about modify action
               MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                 tabId: this.props.tabId,
@@ -822,15 +822,15 @@ export class ChatItemCard {
             } else if (action.id === 'save-shell-command') {
               // Handle save immediately - onSaveClicked returns the edited text and handles local state
               console.log('[ChatItemCard] Save button clicked - checking contentBody');
-              if (!this.contentBody) {
+              if (this.contentBody === null) {
                 console.log('[ChatItemCard] ERROR: No contentBody found for save operation');
                 return;
               }
-              
+
               console.log('[ChatItemCard] Calling contentBody.onSaveClicked()');
               const newCommand = this.contentBody.onSaveClicked();
               console.log('[ChatItemCard] Got command from contentBody:', JSON.stringify(newCommand));
-              
+
               const eventPayload = {
                 tabId: this.props.tabId,
                 messageId: this.props.chatItem.messageId,
@@ -839,16 +839,16 @@ export class ChatItemCard {
                 editedText: newCommand,
                 ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {}),
               };
-              
+
               console.log('[ChatItemCard] Dispatching BODY_ACTION_CLICKED with payload:', JSON.stringify(eventPayload));
-              
+
               // Notify backend with edited text
               MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, eventPayload);
               return;
             } else if (action.id === 'cancel-shell-command') {
               // Handle cancel immediately - cancel locally, then notify backend
               this.contentBody.onCancelClicked();
-              
+
               // Notify backend about cancel action
               MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                 tabId: this.props.tabId,

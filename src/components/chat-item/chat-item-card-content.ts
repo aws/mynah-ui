@@ -44,11 +44,11 @@ export class ChatItemCardContent {
   constructor (props: ChatItemCardContentProps) {
     this.props = props;
     this.originalCommand = this.extractTextFromBody(this.props.body);
-        this.isOnEdit = false;
+    this.isOnEdit = false;
     this.contentBody = this.getCardContent();
     this.render = this.contentBody.render;
 
-    if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '' && this.props.editable !== true) {
+    if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '' && (this.props.editable !== true)) {
       this.updateCardStack({});
     }
   }
@@ -67,7 +67,7 @@ export class ChatItemCardContent {
     const container = DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-form-input-container', ...(this.props.classNames ?? []) ],
-      children: [{
+      children: [ {
         type: 'textarea',
         classNames: [ 'mynah-shell-command-input' ],
         attributes: {
@@ -75,7 +75,7 @@ export class ChatItemCardContent {
           spellcheck: 'false',
           value: this.originalCommand,
           'aria-label': 'Edit shell command',
-          'role': 'textbox',
+          role: 'textbox',
           'aria-multiline': 'false'
         },
         events: {
@@ -84,7 +84,7 @@ export class ChatItemCardContent {
             (e.target as HTMLTextAreaElement).select();
           }
         }
-      }]
+      } ]
     });
 
     this.textareaEl = container.querySelector('.mynah-shell-command-input') as HTMLTextAreaElement;
@@ -92,7 +92,7 @@ export class ChatItemCardContent {
 
     // Auto-focus and select after DOM insertion
     setTimeout(() => {
-      if (this.textareaEl) {
+      if (this.textareaEl != null) {
         this.textareaEl.focus();
         this.textareaEl.select();
       }
@@ -110,33 +110,33 @@ export class ChatItemCardContent {
       newCommand = this.originalCommand;
     }
     const capturedText = newCommand;
-    
+
     // Update original command for future reference
     this.originalCommand = newCommand;
     // Update props.body with new command
     this.props.body = `\`\`\`shell\n${newCommand}\n\`\`\``;
-    
+
     this.exitEditMode();
-    
+
     return capturedText;
   }
 
   public onCancelClicked (): void {
     // Reset textarea to original command
-    if (this.textareaEl) {
+    if (this.textareaEl != null) {
       this.textareaEl.value = this.originalCommand;
     }
     // Keep props.body as original command
     this.props.body = `\`\`\`shell\n${this.originalCommand}\n\`\`\``;
-    
+
     this.exitEditMode();
   }
 
   /**
    * Switch from CardBody to textarea
    */
-  private showTextarea(): void {
-    if (this.props.editable === true && this.isOnEdit === true && this.contentBody != null) {
+  private showTextarea (): void {
+    if (this.props.editable === true && this.isOnEdit && this.contentBody != null) {
       // Force complete state reset before transitioning
       if (this.updateTimer !== undefined) {
         clearTimeout(this.updateTimer);
@@ -167,8 +167,8 @@ export class ChatItemCardContent {
   /**
    * Switch from textarea to CardBody
    */
-  private hideTextarea(): void {
-    if (this.isOnEdit === false && this.textareaEl != null) {
+  private hideTextarea (): void {
+    if (!this.isOnEdit && this.textareaEl != null) {
       this.textareaEl = undefined;
       if (this.updateTimer !== undefined) {
         clearTimeout(this.updateTimer);
@@ -178,7 +178,7 @@ export class ChatItemCardContent {
       this.typewriterItemIndex = 0;
       this.lastAnimationDuration = 0;
 
-      // Create new CardBody with updated content 
+      // Create new CardBody with updated content
       // (this.props.body should now contain the new command)
       this.contentBody = this.getCardContent();
 
@@ -204,7 +204,7 @@ export class ChatItemCardContent {
    * Public method for ChatItemCard to call when modify button is clicked
    * This sets editable to true, which causes isOnEdit to become true
    */
-  public enterEditMode(): void {
+  public enterEditMode (): void {
     // Directly trigger edit mode without going through updateCardStack
     // to avoid potential issues with the update mechanism
     if (!this.isOnEdit && this.props.editable === true) {
@@ -218,20 +218,19 @@ export class ChatItemCardContent {
    * Exit edit mode and return to view mode
    * This sets isOnEdit to false, which causes editable to become false
    */
-  private exitEditMode(): void {
+  private exitEditMode (): void {
     // Step 1: Set isOnEdit to false
     this.isOnEdit = false;
     // Step 2: This will trigger hideTextarea() and set editable to false
     this.handleEditModeTransition();
   }
 
-
   /**
    * Handle the cascading state transitions according to specification
    */
-  private handleEditModeTransition(): void {
+  private handleEditModeTransition (): void {
     // When isOnEdit becomes false → hideTextarea() → editable should become false
-    if (this.isOnEdit === false && this.textareaEl != null) {
+    if (!this.isOnEdit && this.textareaEl != null) {
       this.hideTextarea();
       // Notify parent that we exited edit mode
       this.props.onEditModeChange?.(false);
@@ -268,20 +267,20 @@ export class ChatItemCardContent {
         if (chatItemUpdate.codeReference !== undefined) {
           updateWith.codeReference = chatItemUpdate.codeReference;
         }
-        
+
         // Handle editable state changes (entering or exiting edit mode)
-        const enteringEditMode = updateWith.editable === true && !this.props.editable;
+        const enteringEditMode = updateWith.editable === true && (this.props.editable !== true);
         const exitingEditMode = updateWith.editable === false && this.props.editable === true;
-        
+
         if (enteringEditMode || exitingEditMode) {
           // Update props first
           this.props = { ...this.props, ...updateWith };
-          
+
           // Update original command if body changed
           if (updateWith.body !== undefined) {
             this.originalCommand = this.extractTextFromBody(updateWith.body);
           }
-          
+
           // Handle edit mode transitions
           if (enteringEditMode) {
             this.isOnEdit = true;
@@ -295,7 +294,7 @@ export class ChatItemCardContent {
               this.props.onEditModeChange?.(false);
             } else {
               // Update displayed content if already exited edit mode locally
-              if (this.contentBody) {
+              if (this.contentBody != null) {
                 this.contentBody = this.getCardContent();
                 const parentNode = this.render?.parentNode;
                 if (parentNode != null) {
@@ -315,7 +314,7 @@ export class ChatItemCardContent {
         if (this.isOnEdit) {
           return;
         }
-        
+
         this.props = {
           ...this.props,
           ...updateWith,

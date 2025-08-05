@@ -39,14 +39,14 @@ jest.mock('../../../helper/dom', () => ({
               if (child.children && typeof child.children[0] === 'string') {
                 childElement.textContent = child.children[0];
               }
-              
+
               // Special case for textarea inside the container
               if (child.type === 'textarea' && child.classNames && child.classNames.includes('mynah-shell-command-input')) {
                 childElement.setAttribute('rows', '1');
                 childElement.setAttribute('spellcheck', 'false');
                 childElement.setAttribute('aria-label', 'Edit shell command');
               }
-              
+
               element.appendChild(childElement);
             } else {
               element.appendChild(child);
@@ -59,7 +59,7 @@ jest.mock('../../../helper/dom', () => ({
         element.removeClass = jest.fn();
         element.insertChild = jest.fn();
         element.update = jest.fn();
-        return element as any;
+        return element;
       }),
       createPortal: jest.fn()
     }))
@@ -101,7 +101,7 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Test the private extractTextFromBody method through the constructor
       expect((content as any).originalCommand).toBe('npm install');
     });
@@ -175,13 +175,13 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Call enterEditMode
       content.enterEditMode();
-      
+
       // Verify state changed
       expect((content as any).isOnEdit).toBe(true);
-      
+
       // Verify callback was called
       expect(mockOnEditModeChange).toHaveBeenCalledWith(true);
     });
@@ -195,13 +195,13 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Try to enter edit mode
       content.enterEditMode();
-      
+
       // Verify state did not change
       expect((content as any).isOnEdit).toBe(false);
-      
+
       // Verify callback was not called
       expect(mockOnEditModeChange).not.toHaveBeenCalled();
     });
@@ -215,14 +215,14 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode first time
       content.enterEditMode();
       expect(mockOnEditModeChange).toHaveBeenCalledTimes(1);
-      
+
       // Try to enter edit mode again
       content.enterEditMode();
-      
+
       // Should not call callback again
       expect(mockOnEditModeChange).toHaveBeenCalledTimes(1);
     });
@@ -238,27 +238,27 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode first
       content.enterEditMode();
-      
+
       // Mock textarea with edited content
       const mockTextarea = document.createElement('textarea');
       mockTextarea.value = 'npm install --save';
       (content as any).textareaEl = mockTextarea;
-      
+
       // Call onSaveClicked
       const result = content.onSaveClicked();
-      
+
       // Verify result
       expect(result).toBe('npm install --save');
-      
+
       // Verify state changed
       expect((content as any).isOnEdit).toBe(false);
-      
+
       // Verify original command was updated
       expect((content as any).originalCommand).toBe('npm install --save');
-      
+
       // Verify callback was called to exit edit mode
       expect(mockOnEditModeChange).toHaveBeenCalledWith(false);
     });
@@ -272,19 +272,19 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode first
       content.enterEditMode();
-      
+
       // Ensure textarea is null
       (content as any).textareaEl = null;
-      
+
       // Call onSaveClicked
       const result = content.onSaveClicked();
-      
+
       // Should return original command
       expect(result).toBe('npm install');
-      
+
       // Verify state changed
       expect((content as any).isOnEdit).toBe(false);
     });
@@ -298,18 +298,18 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode
       content.enterEditMode();
-      
+
       // Mock textarea with edited content
       const mockTextarea = document.createElement('textarea');
       mockTextarea.value = 'npm run build';
       (content as any).textareaEl = mockTextarea;
-      
+
       // Call onSaveClicked
       content.onSaveClicked();
-      
+
       // Verify props.body was updated
       expect((content as any).props.body).toBe('```shell\nnpm run build\n```');
     });
@@ -325,27 +325,27 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode
       content.enterEditMode();
-      
+
       // Mock textarea with edited content
       const mockTextarea = document.createElement('textarea');
       mockTextarea.value = 'npm install --save';
       (content as any).textareaEl = mockTextarea;
-      
+
       // Call onCancelClicked
       content.onCancelClicked();
-      
+
       // Verify textarea was reset to original value
       expect(mockTextarea.value).toBe('npm install');
-      
+
       // Verify state changed
       expect((content as any).isOnEdit).toBe(false);
-      
+
       // Verify props.body kept original command
       expect((content as any).props.body).toBe('```shell\nnpm install\n```');
-      
+
       // Verify callback was called to exit edit mode
       expect(mockOnEditModeChange).toHaveBeenCalledWith(false);
     });
@@ -359,18 +359,18 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode
       content.enterEditMode();
-      
+
       // Ensure textarea is null
       (content as any).textareaEl = null;
-      
+
       // Should not throw error
       expect(() => {
         content.onCancelClicked();
       }).not.toThrow();
-      
+
       // Verify state changed
       expect((content as any).isOnEdit).toBe(false);
     });
@@ -386,14 +386,14 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Call the private createEditableTextarea method
       const textarea = (content as any).createEditableTextarea();
-      
+
       // Verify textarea was created with proper attributes
       expect(textarea).toBeDefined();
       expect(textarea.tagName).toBe('DIV'); // Container div
-      
+
       // Verify textarea inside container has correct properties
       const actualTextarea = textarea.querySelector('.mynah-shell-command-input') as HTMLTextAreaElement;
       expect(actualTextarea).toBeTruthy();
@@ -415,27 +415,27 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Mock the textarea element that will be found by querySelector
       const mockTextarea = document.createElement('textarea');
       mockTextarea.focus = jest.fn();
       mockTextarea.select = jest.fn();
       mockTextarea.value = 'npm install';
       mockTextarea.className = 'mynah-shell-command-input';
-      
+
       // Mock querySelector on document to return our mock textarea
       const originalQuerySelector = document.querySelector;
       document.querySelector = jest.fn().mockReturnValue(mockTextarea);
-      
+
       // Enter edit mode
       content.enterEditMode();
-      
+
       // Check after timeout (since focus is called in setTimeout)
       setTimeout(() => {
         try {
           expect(mockTextarea.focus).toHaveBeenCalled();
           expect(mockTextarea.select).toHaveBeenCalled();
-          
+
           // Restore original querySelector
           document.querySelector = originalQuerySelector;
           done();
@@ -458,22 +458,22 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Mock DOM methods for parent element
       const mockParent = document.createElement('div');
       const originalRender = (content as any).render;
       const mockReplaceChild = jest.fn();
       mockParent.replaceChild = mockReplaceChild;
-      
+
       // Set up parent relationship
       Object.defineProperty(originalRender, 'parentNode', {
         value: mockParent,
         configurable: true
       });
-      
+
       // Enter edit mode to trigger transition
       content.enterEditMode();
-      
+
       // Verify transition occurred
       expect((content as any).isOnEdit).toBe(true);
       expect(mockOnEditModeChange).toHaveBeenCalledWith(true);
@@ -488,19 +488,19 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode first
       content.enterEditMode();
       expect((content as any).isOnEdit).toBe(true);
-      
+
       // Mock textarea
       const mockTextarea = document.createElement('textarea');
       mockTextarea.value = 'npm install --save';
       (content as any).textareaEl = mockTextarea;
-      
+
       // Save to trigger transition back
       content.onSaveClicked();
-      
+
       // Verify transition back
       expect((content as any).isOnEdit).toBe(false);
       expect(mockOnEditModeChange).toHaveBeenCalledWith(false);
@@ -519,13 +519,13 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode
       content.enterEditMode();
-      
+
       // Try to update card stack (which would normally trigger stream rendering)
       content.updateCardStack({ body: 'updated content' });
-      
+
       // Verify that update was skipped because we're in edit mode
       expect((content as any).isOnEdit).toBe(true);
     });
@@ -540,17 +540,17 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter and exit edit mode
       content.enterEditMode();
-      
+
       // Mock textarea
       const mockTextarea = document.createElement('textarea');
       mockTextarea.value = 'npm run build';
       (content as any).textareaEl = mockTextarea;
-      
+
       content.onSaveClicked();
-      
+
       // Verify stream rendering can resume
       expect((content as any).isOnEdit).toBe(false);
     });
@@ -566,13 +566,13 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Rapidly enter and exit edit mode multiple times
       content.enterEditMode();
       content.onCancelClicked();
       content.enterEditMode();
       content.onCancelClicked();
-      
+
       // Should end in correct state
       expect((content as any).isOnEdit).toBe(false);
       expect(mockOnEditModeChange).toHaveBeenCalledTimes(4); // 2 enters, 2 exits
@@ -587,21 +587,21 @@ describe('ChatItemCardContent - Modify Functionality', () => {
       };
 
       const content = new ChatItemCardContent(props);
-      
+
       // Enter edit mode
       content.enterEditMode();
-      
+
       // Mock textarea
       const mockTextarea = document.createElement('textarea');
       mockTextarea.value = 'npm run test';
       (content as any).textareaEl = mockTextarea;
-      
+
       // Try to save
       const result = content.onSaveClicked();
-      
+
       // Try to cancel immediately after (should be no-op)
       content.onCancelClicked();
-      
+
       // Should have saved correctly
       expect(result).toBe('npm run test');
       expect((content as any).isOnEdit).toBe(false);
@@ -617,24 +617,24 @@ describe('ChatItemCardContent - Modify Functionality', () => {
 
       const content = new ChatItemCardContent(props);
       const originalCommand = 'npm install';
-      
+
       // First edit session - cancel
       content.enterEditMode();
       const mockTextarea1 = document.createElement('textarea');
       mockTextarea1.value = 'npm run build';
       (content as any).textareaEl = mockTextarea1;
       content.onCancelClicked();
-      
+
       // Verify original preserved
       expect((content as any).originalCommand).toBe(originalCommand);
-      
+
       // Second edit session - save
       content.enterEditMode();
       const mockTextarea2 = document.createElement('textarea');
       mockTextarea2.value = 'npm test';
       (content as any).textareaEl = mockTextarea2;
       content.onSaveClicked();
-      
+
       // Verify new command saved
       expect((content as any).originalCommand).toBe('npm test');
     });

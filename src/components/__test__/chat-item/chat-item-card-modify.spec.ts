@@ -70,7 +70,7 @@ jest.mock('../../../helper/dom', () => ({
         element.removeClass = jest.fn();
         element.insertChild = jest.fn();
         element.update = jest.fn();
-        return element as any;
+        return element;
       }),
       createPortal: jest.fn()
     }))
@@ -102,7 +102,7 @@ jest.mock('../../../helper/config', () => ({
         },
         codeBlockActions: {},
         componentClasses: {
-          Button: undefined  // This allows the fallback to ButtonInternal
+          Button: undefined // This allows the fallback to ButtonInternal
         }
       }
     }))
@@ -119,7 +119,7 @@ describe('ChatItemCard - Modify Functionality', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup mock for global events
     mockDispatch = jest.fn();
     (MynahUIGlobalEvents.getInstance as jest.Mock).mockReturnValue({
@@ -244,7 +244,7 @@ describe('ChatItemCard - Modify Functionality', () => {
 
     it('should handle save button click', () => {
       const mockAction = { id: 'save-shell-command', text: 'Save' };
-      
+
       // Simulate save button click
       const buttonWrapper = (card as any).chatButtonsInside;
       if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
@@ -266,7 +266,7 @@ describe('ChatItemCard - Modify Functionality', () => {
 
     it('should handle cancel button click', () => {
       const mockAction = { id: 'cancel-shell-command', text: 'Cancel' };
-      
+
       // Simulate cancel button click
       const buttonWrapper = (card as any).chatButtonsInside;
       if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
@@ -344,7 +344,7 @@ describe('ChatItemCard - Modify Functionality', () => {
       (card as any).contentBody = null;
 
       const mockAction = { id: 'save-shell-command', text: 'Save' };
-      
+
       // This should not throw an error
       expect(() => {
         const buttonWrapper = (card as any).chatButtonsInside;
@@ -376,7 +376,7 @@ describe('ChatItemCard - Modify Functionality', () => {
       (card as any).contentBody = mockContentBodyWithUndefinedSave;
 
       const mockAction = { id: 'save-shell-command', text: 'Save' };
-      
+
       const buttonWrapper = (card as any).chatButtonsInside;
       if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
         buttonWrapper.props.onActionClick(mockAction);
@@ -414,7 +414,7 @@ describe('ChatItemCard - Modify Functionality', () => {
       (card as any).contentBody = mockContentBody;
 
       const mockAction = { id: 'run-shell-command', text: 'Run' };
-      
+
       // Simulate non-modify button click
       const buttonWrapper = (card as any).chatButtonsInside;
       if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
