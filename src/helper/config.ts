@@ -83,6 +83,7 @@ const configDefaults: ConfigFullModel = {
     commandConfirmation: 'Press enter to continue',
     pinContextHint: 'Pin context with \u2325 Enter',
     dragOverlayText: 'Add image to context',
+    disabledContextLabel: 'pending',
   },
 };
 export class Config {

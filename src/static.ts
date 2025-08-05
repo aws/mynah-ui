@@ -766,6 +766,7 @@ export interface ConfigTexts {
   commandConfirmation: string;
   pinContextHint: string;
   dragOverlayText: string;
+  disabledContextLabel: string;
 }
 
 type PickMatching<T, V> = {

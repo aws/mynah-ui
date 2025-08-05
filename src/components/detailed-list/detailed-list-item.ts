@@ -8,6 +8,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { parseMarkdown } from '../../helper/marked';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
+import { Config } from '../../helper/config';
 
 const TOOLTIP_DELAY = 350;
 
@@ -93,8 +94,8 @@ export class DetailedListItemWrapper {
           ? [
               {
                 type: 'div',
-                classNames: [ 'mynah-detailed-list-item-pending' ],
-                children: [ '(pending)' ]
+                classNames: [ 'mynah-detailed-list-item-disabled-context-label' ],
+                children: [ `(${Config.getInstance().config.texts.disabledContextLabel})` ]
               }
             ]
           : (this.props.listItem.children != null) && this.props.listItem.children.length > 0
