@@ -60,6 +60,7 @@ export class ChatItemCard {
   private tabbedCard: ChatItemTabbedCard | null = null;
   private cardIcon: Icon | null = null;
   private contentBody: ChatItemCardContent | null = null;
+  private isContentBodyInEditMode: boolean = false;
   private chatAvatar: ExtendedHTMLElement;
   private chatFormItems: ChatItemFormItemsWrapper | null = null;
   private customRendererWrapper: CardBody | null = null;
@@ -73,11 +74,6 @@ export class ChatItemCard {
   private votes: ChatItemRelevanceVote | null = null;
   private footer: ChatItemCard | null = null;
   private header: ChatItemCard | null = null;
-
-  private readonly _shellOriginalHeader?: ChatItem['header'];
-  private readonly _shellOriginalCodeBlockActions?: ChatItem['codeBlockActions'];
-  private lastContentEditable: boolean;
-
   constructor (props: ChatItemCardProps) {
     this.props = {
       ...props,
@@ -87,7 +83,6 @@ export class ChatItemCard {
         padding: props.chatItem.padding != null ? props.chatItem.padding : (props.chatItem.type !== ChatItemType.DIRECTIVE),
       }
     };
-    this.lastContentEditable = this.props.chatItem.editable === true;
     this.chatAvatar = this.getChatAvatar();
     MynahUITabsStore.getInstance()
       .getTabDataStore(this.props.tabId)
@@ -494,20 +489,7 @@ export class ChatItemCard {
     if (this.props.chatItem.body != null && this.props.chatItem.body !== '') {
       const updatedCardContentBodyProps: ChatItemCardContentProps = {
         body: this.props.chatItem.body ?? '',
-        editable: this.props.chatItem.editable === true,
-
-        onEdit: (newText: string) => {
-          const items = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('chatItems') as ChatItem[];
-          MynahUITabsStore.getInstance()
-            .getTabDataStore(this.props.tabId)
-            .updateStore({
-              chatItems: items.map(item =>
-                item.messageId === this.props.chatItem.messageId
-                  ? { ...item, body: newText }
-                  : item
-              )
-            }, true);
-        },
+        editable: this.props.chatItem.editable,
         hideCodeBlockLanguage: this.props.chatItem.padding === false,
         wrapCode: this.props.chatItem.wrapCodes,
         unlimitedCodeBlockHeight: this.props.chatItem.autoCollapse,
@@ -522,6 +504,11 @@ export class ChatItemCard {
             this.props.onAnimationStateChange?.(isAnimating);
           }
         },
+        onEditModeChange: (isInEditMode) => {
+          this.isContentBodyInEditMode = isInEditMode;
+          // Re-render buttons when edit mode changes
+          this.updateCardContent();
+        },
         children:
           this.props.chatItem.relatedContent !== undefined
             ? [
@@ -535,17 +522,6 @@ export class ChatItemCard {
             : [],
         contentProperties: bodyEvents,
       };
-
-      // Check for editable mode change and recreate content if needed
-      const nowEditable = this.props.chatItem.editable === true;
-      if ((this.contentBody != null) && this.lastContentEditable !== nowEditable) {
-        this.contentBody.render.remove();
-        this.contentBody = null;
-      }
-      this.lastContentEditable = nowEditable;
-      updatedCardContentBodyProps.editable = nowEditable;
-
-      // Update existing or create new content body
       if (this.contentBody != null) {
         this.contentBody.updateCardStack(updatedCardContentBodyProps);
       } else {
@@ -556,6 +532,7 @@ export class ChatItemCard {
       this.contentBody?.render.remove();
       this.contentBody = null;
     }
+
     /**
      * Generate customRenderer if available
      */
@@ -783,8 +760,43 @@ export class ChatItemCard {
       this.chatButtonsOutside = null;
     }
     if (this.props.chatItem.buttons != null) {
-      const insideButtons = this.props.chatItem.buttons.filter((button) => button.position == null || button.position === 'inside');
-      const outsideButtons = this.props.chatItem.buttons.filter((button) => button.position === 'outside');
+      // Show different buttons based on contentBody edit state
+      let activeButtons = this.props.chatItem.buttons;
+
+      if (this.props.chatItem.editable === true) {
+        if (this.isContentBodyInEditMode) {
+          // Show save/cancel buttons when in edit mode
+          activeButtons = [
+            {
+              id: 'save-shell-command',
+              text: 'Save',
+              icon: MynahIcons.OK,
+              status: 'primary',
+            },
+            {
+              id: 'cancel-shell-command',
+              text: 'Cancel',
+              icon: MynahIcons.CANCEL,
+              status: 'clear',
+            },
+          ];
+        } else {
+          // Add modify button when editable but not in edit mode
+          // Insert modify button after existing buttons (typically after Run/Reject)
+          activeButtons = [
+            {
+              id: 'modify-shell-command',
+              text: 'Modify',
+              icon: MynahIcons.PENCIL,
+              status: 'clear',
+            },
+            ...this.props.chatItem.buttons,
+          ];
+        }
+      }
+
+      const insideButtons = activeButtons.filter((button) => button.position == null || button.position === 'inside');
+      const outsideButtons = activeButtons.filter((button) => button.position === 'outside');
 
       const chatButtonProps: ChatItemButtonsWrapperProps = {
         tabId: this.props.tabId,
@@ -792,6 +804,64 @@ export class ChatItemCard {
         formItems: this.chatFormItems,
         buttons: [],
         onActionClick: action => {
+          // Handle editable-specific button actions
+          if (this.contentBody != null) {
+            if (action.id === 'modify-shell-command') {
+              // Handle modify immediately - enter edit mode locally, then notify backend
+              this.contentBody.enterEditMode();
+              
+              // Notify backend about modify action
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                tabId: this.props.tabId,
+                messageId: this.props.chatItem.messageId,
+                actionId: action.id,
+                actionText: action.text,
+                ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {}),
+              });
+              return;
+            } else if (action.id === 'save-shell-command') {
+              // Handle save immediately - onSaveClicked returns the edited text and handles local state
+              console.log('[ChatItemCard] Save button clicked - checking contentBody');
+              if (!this.contentBody) {
+                console.log('[ChatItemCard] ERROR: No contentBody found for save operation');
+                return;
+              }
+              
+              console.log('[ChatItemCard] Calling contentBody.onSaveClicked()');
+              const newCommand = this.contentBody.onSaveClicked();
+              console.log('[ChatItemCard] Got command from contentBody:', JSON.stringify(newCommand));
+              
+              const eventPayload = {
+                tabId: this.props.tabId,
+                messageId: this.props.chatItem.messageId,
+                actionId: action.id,
+                actionText: action.text,
+                editedText: newCommand,
+                ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {}),
+              };
+              
+              console.log('[ChatItemCard] Dispatching BODY_ACTION_CLICKED with payload:', JSON.stringify(eventPayload));
+              
+              // Notify backend with edited text
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, eventPayload);
+              return;
+            } else if (action.id === 'cancel-shell-command') {
+              // Handle cancel immediately - cancel locally, then notify backend
+              this.contentBody.onCancelClicked();
+              
+              // Notify backend about cancel action
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                tabId: this.props.tabId,
+                messageId: this.props.chatItem.messageId,
+                actionId: action.id,
+                actionText: action.text,
+                ...(this.chatFormItems !== null ? { formItemValues: this.chatFormItems.getAllValues() } : {}),
+              });
+              return;
+            }
+          }
+
+          // Dispatch generic event for all other buttons
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
             messageId: this.props.chatItem.messageId,

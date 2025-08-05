@@ -4,7 +4,7 @@
  */
 
 import { DomBuilder, DomBuilderObject, ExtendedHTMLElement, getTypewriterPartsCss } from '../../helper/dom';
-import { CardRenderDetails, CodeBlockActions, OnCodeBlockActionFunction, OnCopiedToClipboardFunction, ReferenceTrackerInformation } from '../../static';
+import { CardRenderDetails, ChatItem, CodeBlockActions, OnCodeBlockActionFunction, OnCopiedToClipboardFunction, ReferenceTrackerInformation } from '../../static';
 import { CardBody } from '../card/card-body';
 import { generateUID } from '../../helper/guid';
 
@@ -12,7 +12,6 @@ const TYPEWRITER_STACK_TIME = 500;
 export interface ChatItemCardContentProps {
   body?: string | null;
   editable?: boolean;
-  onEdit?: (newText: string) => void;
   testId?: string;
   renderAsStream?: boolean;
   classNames?: string[];
@@ -21,6 +20,7 @@ export interface ChatItemCardContentProps {
   wrapCode?: boolean;
   codeReference?: ReferenceTrackerInformation[] | null;
   onAnimationStateChange?: (isAnimating: boolean) => void;
+  onEditModeChange?: (isInEditMode: boolean) => void;
   contentProperties?: {
     codeBlockActions?: CodeBlockActions;
     onLinkClick?: (url: string, e: MouseEvent) => void;
@@ -33,27 +33,22 @@ export class ChatItemCardContent {
   private props: ChatItemCardContentProps;
   render: ExtendedHTMLElement;
   contentBody: CardBody | null = null;
-  private readonly updateStack: Array<Partial<ChatItemCardContentProps>> = [];
+  private readonly updateStack: Array<Partial<ChatItem>> = [];
   private typewriterItemIndex: number = 0;
   private readonly typewriterId: string = `typewriter-card-${generateUID()}`;
   private lastAnimationDuration: number = 0;
   private updateTimer: ReturnType<typeof setTimeout> | undefined;
   private textareaEl?: HTMLTextAreaElement;
-  private isTransitioning: boolean = false;
-  private pendingUpdates: Array<Partial<ChatItemCardContentProps>> = [];
+  private originalCommand: string = '';
+  private isOnEdit: boolean = false;
   constructor (props: ChatItemCardContentProps) {
     this.props = props;
-
-    if (props.editable === true) {
-      this.contentBody = null;
-      this.render = this.createEditableTextarea();
-      return;
-    }
-
+    this.originalCommand = this.extractTextFromBody(this.props.body);
+        this.isOnEdit = false;
     this.contentBody = this.getCardContent();
     this.render = this.contentBody.render;
 
-    if (this.props.renderAsStream === true && (this.props.body ?? '').trim() !== '') {
+    if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '' && this.props.editable !== true) {
       this.updateCardStack({});
     }
   }
@@ -68,49 +63,179 @@ export class ChatItemCardContent {
   }
 
   private createEditableTextarea (): ExtendedHTMLElement {
-    const initialText = this.extractTextFromBody(this.props.body);
-
-    const textarea = DomBuilder.getInstance().build({
-      type: 'textarea',
-      classNames: [ 'mynah-shell-command-input', ...(this.props.classNames ?? []) ],
-      attributes: {
-        rows: '1',
-        spellcheck: 'false',
-        value: initialText
-      },
-      events: {
-        input: this.handleTextareaInput.bind(this),
-        focus: this.handleTextareaFocus.bind(this)
-      }
+    // Create a wrapper container with the form input styles
+    const container = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-form-input-container', ...(this.props.classNames ?? []) ],
+      children: [{
+        type: 'textarea',
+        classNames: [ 'mynah-shell-command-input' ],
+        attributes: {
+          rows: '1',
+          spellcheck: 'false',
+          value: this.originalCommand,
+          'aria-label': 'Edit shell command',
+          'role': 'textbox',
+          'aria-multiline': 'false'
+        },
+        events: {
+          focus: (e) => {
+            // Auto-select all text when focusing
+            (e.target as HTMLTextAreaElement).select();
+          }
+        }
+      }]
     });
 
-    this.textareaEl = textarea as unknown as HTMLTextAreaElement;
-    this.textareaEl.value = initialText;
+    this.textareaEl = container.querySelector('.mynah-shell-command-input') as HTMLTextAreaElement;
+    this.textareaEl.value = this.originalCommand;
 
-    // Auto-resize after DOM insertion
+    // Auto-focus and select after DOM insertion
     setTimeout(() => {
-      if (this.textareaEl != null) {
-        this.resizeTextarea(this.textareaEl);
+      if (this.textareaEl) {
+        this.textareaEl.focus();
+        this.textareaEl.select();
       }
     }, 0);
 
-    return textarea;
+    return container;
   }
 
-  private handleTextareaInput (e: Event): void {
-    const textarea = e.target as HTMLTextAreaElement;
-    this.resizeTextarea(textarea);
-    this.props.onEdit?.(textarea.value);
+  public onSaveClicked (): string {
+    // Capture current text before any state changes
+    let newCommand = '';
+    if (this.textareaEl != null) {
+      newCommand = this.textareaEl.value;
+    } else {
+      newCommand = this.originalCommand;
+    }
+    const capturedText = newCommand;
+    
+    // Update original command for future reference
+    this.originalCommand = newCommand;
+    // Update props.body with new command
+    this.props.body = `\`\`\`shell\n${newCommand}\n\`\`\``;
+    
+    this.exitEditMode();
+    
+    return capturedText;
   }
 
-  private handleTextareaFocus (e: Event): void {
-    const textarea = e.target as HTMLTextAreaElement;
-    this.resizeTextarea(textarea);
+  public onCancelClicked (): void {
+    // Reset textarea to original command
+    if (this.textareaEl) {
+      this.textareaEl.value = this.originalCommand;
+    }
+    // Keep props.body as original command
+    this.props.body = `\`\`\`shell\n${this.originalCommand}\n\`\`\``;
+    
+    this.exitEditMode();
   }
 
-  private resizeTextarea (textarea: HTMLTextAreaElement): void {
-    textarea.style.height = 'auto';
-    textarea.style.height = `${Math.max(40, textarea.scrollHeight)}px`;
+  /**
+   * Switch from CardBody to textarea
+   */
+  private showTextarea(): void {
+    if (this.props.editable === true && this.isOnEdit === true && this.contentBody != null) {
+      // Force complete state reset before transitioning
+      if (this.updateTimer !== undefined) {
+        clearTimeout(this.updateTimer);
+        this.updateTimer = undefined;
+      }
+      this.updateStack.length = 0;
+      this.typewriterItemIndex = 0;
+      this.lastAnimationDuration = 0;
+
+      // Create textarea with current command
+      const textarea = this.createEditableTextarea();
+
+      // Replace the current render with textarea
+      const parentNode = this.render?.parentNode;
+      if (parentNode != null) {
+        parentNode.replaceChild(
+          textarea as unknown as Node,
+          this.render as unknown as Node
+        );
+
+        // Update references
+        this.render = textarea;
+        this.contentBody = null;
+      }
+    }
+  }
+
+  /**
+   * Switch from textarea to CardBody
+   */
+  private hideTextarea(): void {
+    if (this.isOnEdit === false && this.textareaEl != null) {
+      this.textareaEl = undefined;
+      if (this.updateTimer !== undefined) {
+        clearTimeout(this.updateTimer);
+        this.updateTimer = undefined;
+      }
+      this.updateStack.length = 0;
+      this.typewriterItemIndex = 0;
+      this.lastAnimationDuration = 0;
+
+      // Create new CardBody with updated content 
+      // (this.props.body should now contain the new command)
+      this.contentBody = this.getCardContent();
+
+      const parentNode = this.render?.parentNode;
+      if (parentNode != null) {
+        parentNode.replaceChild(
+          this.contentBody.render as unknown as Node,
+          this.render as unknown as Node
+        );
+
+        // Update references
+        this.render = this.contentBody.render;
+      }
+
+      // If we need to render as stream after switching back, trigger it
+      if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '') {
+        setTimeout(() => this.updateCardStack({}), 0);
+      }
+    }
+  }
+
+  /**
+   * Public method for ChatItemCard to call when modify button is clicked
+   * This sets editable to true, which causes isOnEdit to become true
+   */
+  public enterEditMode(): void {
+    // Directly trigger edit mode without going through updateCardStack
+    // to avoid potential issues with the update mechanism
+    if (!this.isOnEdit && this.props.editable === true) {
+      this.isOnEdit = true;
+      this.showTextarea();
+      this.props.onEditModeChange?.(true);
+    }
+  }
+
+  /**
+   * Exit edit mode and return to view mode
+   * This sets isOnEdit to false, which causes editable to become false
+   */
+  private exitEditMode(): void {
+    // Step 1: Set isOnEdit to false
+    this.isOnEdit = false;
+    // Step 2: This will trigger hideTextarea() and set editable to false
+    this.handleEditModeTransition();
+  }
+
+
+  /**
+   * Handle the cascading state transitions according to specification
+   */
+  private handleEditModeTransition(): void {
+    // When isOnEdit becomes false → hideTextarea() → editable should become false
+    if (this.isOnEdit === false && this.textareaEl != null) {
+      this.hideTextarea();
+      // Notify parent that we exited edit mode
+      this.props.onEditModeChange?.(false);
+    }
   }
 
   private readonly getCardContent = (): CardBody => {
@@ -130,8 +255,67 @@ export class ChatItemCardContent {
 
   private readonly updateCard = (): void => {
     if (this.updateTimer === undefined && this.updateStack.length > 0) {
-      const updateWith = this.updateStack.shift();
-      if (updateWith !== undefined) {
+      const chatItemUpdate: Partial<ChatItem> | undefined = this.updateStack.shift();
+      if (chatItemUpdate !== undefined) {
+        // Convert ChatItem fields to ChatItemCardContentProps
+        const updateWith: Partial<ChatItemCardContentProps> = {};
+        if (chatItemUpdate.body !== undefined) {
+          updateWith.body = chatItemUpdate.body;
+        }
+        if (chatItemUpdate.editable !== undefined) {
+          updateWith.editable = chatItemUpdate.editable;
+        }
+        if (chatItemUpdate.codeReference !== undefined) {
+          updateWith.codeReference = chatItemUpdate.codeReference;
+        }
+        
+        // Handle editable state changes (entering or exiting edit mode)
+        const enteringEditMode = updateWith.editable === true && !this.props.editable;
+        const exitingEditMode = updateWith.editable === false && this.props.editable === true;
+        
+        if (enteringEditMode || exitingEditMode) {
+          // Update props first
+          this.props = { ...this.props, ...updateWith };
+          
+          // Update original command if body changed
+          if (updateWith.body !== undefined) {
+            this.originalCommand = this.extractTextFromBody(updateWith.body);
+          }
+          
+          // Handle edit mode transitions
+          if (enteringEditMode) {
+            this.isOnEdit = true;
+            this.showTextarea();
+            this.props.onEditModeChange?.(true);
+          } else if (exitingEditMode) {
+            if (this.isOnEdit) {
+              // Exit edit mode
+              this.isOnEdit = false;
+              this.hideTextarea();
+              this.props.onEditModeChange?.(false);
+            } else {
+              // Update displayed content if already exited edit mode locally
+              if (this.contentBody) {
+                this.contentBody = this.getCardContent();
+                const parentNode = this.render?.parentNode;
+                if (parentNode != null) {
+                  parentNode.replaceChild(
+                    this.contentBody.render as unknown as Node,
+                    this.render as unknown as Node
+                  );
+                  this.render = this.contentBody.render;
+                }
+              }
+            }
+          }
+          return;
+        }
+
+        // Skip normal updates while in edit mode to prevent conflicts
+        if (this.isOnEdit) {
+          return;
+        }
+        
         this.props = {
           ...this.props,
           ...updateWith,
@@ -200,121 +384,8 @@ export class ChatItemCardContent {
   };
 
   public readonly updateCardStack = (updateWith: Partial<ChatItemCardContentProps>): void => {
-    // Handle explicit editable state changes first
-    if (Object.prototype.hasOwnProperty.call(updateWith, 'editable')) {
-      const newEditableState = updateWith.editable;
-
-        // Transition to editable mode
-        if (newEditableState === true) {
-        // Force complete state reset before transitioning
-        if (this.updateTimer !== undefined) {
-          clearTimeout(this.updateTimer);
-          this.updateTimer = undefined;
-        }
-        this.updateStack.length = 0;
-        this.typewriterItemIndex = 0;
-        this.lastAnimationDuration = 0;
-
-          // Update props
-          this.props = { ...this.props, ...updateWith };
-
-          const initialText = this.extractTextFromBody(this.props.body);
-
-          // Build a textarea in-place, pre-filled with the old command
-          const textarea = DomBuilder.getInstance().build({
-            type: 'textarea',
-            classNames: [ 'mynah-shell-command-input', ...(this.props.classNames ?? []) ],
-            attributes: {
-              spellcheck: 'false',
-              value: initialText
-            },
-            events: {
-              input: (e: Event) => {
-                const ta = e.target as HTMLTextAreaElement;
-                this.props.onEdit?.(ta.value);
-                // auto-resize
-                ta.style.height = 'auto';
-                ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
-              },
-              focus: (e: Event) => {
-                const ta = e.target as HTMLTextAreaElement;
-                ta.style.height = 'auto';
-                ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
-              }
-            }
-          });
-
-          // Replace the current render with textarea
-          const parentNode = this.render?.parentNode;
-          if (parentNode != null) {
-            parentNode.replaceChild(
-              textarea as unknown as Node,
-              this.render as unknown as Node
-            );
-
-            // Update references
-            this.textareaEl = textarea as unknown as HTMLTextAreaElement;
-            this.render = textarea;
-            this.contentBody = null; // Clear contentBody since we're now in editable mode
-
-            // Auto-resize after DOM insertion
-            setTimeout(() => {
-              if (this.textareaEl != null) {
-                const ta = this.textareaEl;
-                ta.style.height = 'auto';
-                ta.style.height = `${Math.max(40, ta.scrollHeight)}px`;
-                ta.focus(); // Focus the textarea for better UX
-              }
-            }, 0);
-          }
-        return;
-        }
-
-        // Transition from editable to non-editable mode
-      if (newEditableState === false) {
-          // Update props first
-          this.props = { ...this.props, ...updateWith };
-
-        // Force complete state reset
-          this.textareaEl = undefined;
-        if (this.updateTimer !== undefined) {
-          clearTimeout(this.updateTimer);
-          this.updateTimer = undefined;
-        }
-        this.updateStack.length = 0;
-        this.typewriterItemIndex = 0;
-        this.lastAnimationDuration = 0;
-
-          // Create new CardBody with updated content
-          this.contentBody = this.getCardContent();
-
-          // Replace the textarea with the new CardBody
-          const parentNode = this.render?.parentNode;
-          if (parentNode != null) {
-            parentNode.replaceChild(
-              this.contentBody.render as unknown as Node,
-              this.render as unknown as Node
-            );
-
-            // Update render reference
-            this.render = this.contentBody.render;
-
-            // If we need to render as stream after switching back, trigger it
-            if ((this.props.renderAsStream ?? false) && (this.props.body ?? '').trim() !== '') {
-              setTimeout(() => this.updateCardStack({}), 0);
-            }
-          }
-        return;
-      }
-
-      return;
-    }
-
-    // Handle other updates (like body content changes) only if not in editable mode
-    if (this.props.editable !== true) {
-      this.updateStack.push(updateWith);
-      this.updateCard();
-    }
+    this.updateStack.push(updateWith);
+    this.updateCard();
   };
 
   public readonly getRenderDetails = (): CardRenderDetails => {
@@ -322,5 +393,4 @@ export class ChatItemCardContent {
       totalNumberOfCodeBlocks: (this.contentBody?.nextCodeBlockIndex ?? 0)
     };
   };
-
 }

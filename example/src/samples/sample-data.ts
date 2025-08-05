@@ -678,10 +678,6 @@ export const defaultFollowUps: ChatItem = {
                 command: Commands.SHOW_STICKY_CARD,
             },
             {
-                pillText: 'Shell with modify',
-                command: Commands.SHELL_WITH_MODIFY,
-            },
-            {
                 pillText: 'Some auto reply',
                 prompt: 'Some random auto reply here.',
             },
@@ -2558,16 +2554,16 @@ export const shellCommandWithModifyEditable: ChatItem = {
   padding: false,
   type: ChatItemType.ANSWER,
   messageId: 'shell-cmd-1',
-  body: ['```bash', 'npm run build', '```'].join('\n'),
+  body: ['```bash', 'ls', '```'].join('\n'),
   editable: false,           // start view-only
   header: {
-    // pick an existing icon—let’s use BLOCK as our “shell” glyph
+    // pick an existing icon—let's use BLOCK as our "shell" glyph
     icon: MynahIcons.BLOCK,
     
     buttons: [
       { id: 'run-bash-command',    text: 'Run',    icon: MynahIcons.PLAY,    status: 'primary' },
       { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL,  status: 'error'   },
-      { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL,  status: 'clear'   },
+      { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL,  status: 'clear'   },
     ],
   },
   // these drive the little buttons that appear *in* the code block

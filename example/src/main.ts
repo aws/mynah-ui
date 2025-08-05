@@ -61,7 +61,6 @@ import './styles/styles.scss';
 import { ThemeBuilder } from './theme-builder/theme-builder';
 import { Commands } from './commands';
 
-const shellOriginals = new Map<string, ChatItem>();
 export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     const connector = new Connector();
     let streamingMessageId: string | null;
@@ -1386,7 +1385,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         },
                     },
                 });
-            } else if (action.id === 'modify-bash-command') {
+            } else if (action.id === 'modify-example-command') {
                 // Example: Show how to pass data for modify action
                 Log(`Modify bash command clicked for message ${messageId}`);
                 Log(`Example data passing: action=${action.id}, messageId=${messageId}, tabId=${tabId}`);
@@ -1397,15 +1396,15 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     header: {
                         body: '**Example Header Update**',
                         buttons: [
-                            { id: 'example-save', text: 'Save', icon: MynahIcons.OK, status: 'clear' },
-                            { id: 'example-cancel', text: 'Cancel', icon: MynahIcons.CANCEL, status: 'dimmed-clear' },
+                            { id: 'save-example-command', text: 'Save', icon: MynahIcons.OK, status: 'clear' },
+                            { id: 'cancel-example-command', text: 'Cancel', icon: MynahIcons.CANCEL, status: 'dimmed-clear' },
                         ],
                     },
                 });
                 return false;
-            } else if (action.id === 'save-bash-command' || action.id === 'example-save') {
+            } else if (action.id === 'save-example-command') {
                 // Example: Show how to pass data for save action
-                Log(`Save bash command clicked for message ${messageId}`);
+                Log(`Save command clicked for message ${messageId}`);
                 Log(`Example: Passing save data to Mynah UI component`);
                 
                 // Example: Demonstrate how to pass updated data back to chat item
@@ -1416,14 +1415,14 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         buttons: [
                             { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
                             { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
-                            { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                            { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
                         ],
                     },
                 });
                 return false;
-            } else if (action.id === 'cancel-bash-edit' || action.id === 'example-cancel') {
+            } else if (action.id === 'cancel-example-command') {
                 // Example: Show how to pass data for cancel action
-                Log(`Cancel bash edit clicked for message ${messageId}`);
+                Log(`Cancel edit clicked for message ${messageId}`);
                 Log(`Example: Demonstrating data restoration in Mynah UI`);
                 
                 // Example: Show how to restore original data
@@ -1434,7 +1433,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         buttons: [
                             { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
                             { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
-                            { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                            { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
                         ],
                     },
                 });
@@ -1464,7 +1463,7 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                             buttons: [
                                 { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
                                 { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
-                                { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                                { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
                             ],
                         },
                     });
@@ -1483,7 +1482,56 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         buttons: [
                             { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
                             { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
-                            { id: 'modify-bash-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                            { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                        ],
+                    },
+                });
+                return false;
+            } else if (action.id === 'reject-bash-command' || action.id === 'run-bash-command') {
+                // Example: Show how to pass different action data to Mynah UI
+                Log(`${action.id} clicked for message ${messageId}`);
+                Log(`Example: Demonstrating how to pass action-specific data to components`);
+                
+                if (action.id === 'reject-bash-command') {
+                    // Example: Show data passing for reject action
+                    mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                        body: '**Example:** This shows how to pass reject action data to Mynah UI',
+                        header: {
+                            body: '**Rejected State Example**',
+                            buttons: [
+                                { id: 'restore-original-buttons', text: 'Try Again', icon: MynahIcons.REFRESH, status: 'clear' },
+                            ],
+                        },
+                    });
+                } else {
+                    // Example: Show data passing for run action  
+                    mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                        body: '**Example:** This demonstrates how to pass execution data to Mynah UI components',
+                        header: {
+                            body: '**Running State Example**',
+                            buttons: [
+                                { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                                { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                                { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                            ],
+                        },
+                    });
+                }
+                return false;
+            } else if (action.id === 'restore-original-buttons') {
+                // Example: Show how to restore original button state
+                Log(`Restore original buttons clicked for message ${messageId}`);
+                Log(`Example: Demonstrating how to restore original UI state`);
+                
+                // Example: Restore original buttons after reject
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This shows how to restore the original button state',
+                    header: {
+                        body: '**Original Buttons Restored**',
+                        buttons: [
+                            { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                            { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                            { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
                         ],
                     },
                 });
@@ -1869,13 +1917,6 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 case Commands.CUSTOM_RENDERER_CARDS:
                     mynahUI.addChatItem(tabId, exampleCustomRendererWithHTMLMarkup());
                     mynahUI.addChatItem(tabId, exampleCustomRendererWithDomBuilderJson);
-                    mynahUI.addChatItem(tabId, defaultFollowUps);
-                    break;
-                case Commands.SHELL_WITH_MODIFY:
-                    mynahUI.addChatItem(tabId, {
-                        ...shellCommandWithModifyEditable,
-                        messageId: generateUID(),
-                    });
                     mynahUI.addChatItem(tabId, defaultFollowUps);
                     break;
                 case Commands.COMMAND_WITH_PROMPT:
