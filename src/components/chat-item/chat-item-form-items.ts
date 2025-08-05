@@ -13,6 +13,7 @@ import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
 import { Checkbox } from '../form-items/checkbox';
 import { FormItemList } from '../form-items/form-item-list';
+import { FormItemPillBox } from '../form-items/form-item-pill-box';
 import { RadioGroup } from '../form-items/radio-group';
 import { Select } from '../form-items/select';
 import { Stars } from '../form-items/stars';
@@ -32,7 +33,7 @@ export interface ChatItemFormItemsWrapperProps {
 }
 export class ChatItemFormItemsWrapper {
   private readonly props: ChatItemFormItemsWrapperProps;
-  private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars | Checkbox | FormItemList> = {};
+  private readonly options: Record<string, Select | TextArea | TextInput | RadioGroup | Stars | Checkbox | FormItemList | FormItemPillBox> = {};
   private readonly validationItems: Record<string, boolean> = {};
   private isValid: boolean = false;
   private tooltipOverlay: Overlay | null;
@@ -235,6 +236,17 @@ export class ChatItemFormItemsWrapper {
               ...(this.getHandlers(chatItemOption))
             });
             break;
+          case 'pillbox':
+            chatOption = new FormItemPillBox({
+              id: chatItemOption.id,
+              wrapperTestId: testIds.chatItem.chatItemForm.itemInput,
+              label,
+              description,
+              value,
+              placeholder: chatItemOption.placeholder,
+              ...(this.getHandlers(chatItemOption))
+            });
+            break;
           case 'stars':
             chatOption = new Stars({
               wrapperTestId: testIds.chatItem.chatItemForm.itemStarsWrapper,
@@ -313,7 +325,7 @@ export class ChatItemFormItemsWrapper {
 
   private readonly getHandlers = (chatItemOption: ChatItemFormItem): Object => {
     if (chatItemOption.mandatory === true ||
-      ([ 'textarea', 'textinput', 'numericinput', 'email' ].includes(chatItemOption.type) && (chatItemOption as TextBasedFormItem).validationPatterns != null)) {
+      ([ 'textarea', 'textinput', 'numericinput', 'email', 'pillbox' ].includes(chatItemOption.type) && (chatItemOption as TextBasedFormItem).validationPatterns != null)) {
       // Set initial validation status
       this.validationItems[chatItemOption.id] = this.isItemValid(chatItemOption.value as string ?? '', chatItemOption);
       return {
