@@ -10,45 +10,45 @@ jest.mock('../../../helper/dom', () => ({
   DomBuilder: {
     getInstance: jest.fn(() => ({
       build: jest.fn((options) => {
-        const element = document.createElement(options.type || 'div');
-        if (options.classNames) {
+        const element = document.createElement(options.type ?? 'div');
+        if (options.classNames != null) {
           element.className = options.classNames.join(' ');
         }
-        if (options.attributes) {
+        if (options.attributes != null) {
           Object.keys(options.attributes).forEach(key => {
             element.setAttribute(key, options.attributes[key]);
           });
         }
-        if (options.innerHTML) {
+        if (options.innerHTML != null) {
           element.innerHTML = options.innerHTML;
         }
-        if (options.children) {
+        if (options.children != null) {
           options.children.forEach((child: any) => {
             if (typeof child === 'string') {
               element.appendChild(document.createTextNode(child));
-            } else if (child.type) {
+            } else if (child?.type != null) {
               const childElement = document.createElement(child.type);
-              if (child.classNames) {
+              if (child.classNames != null) {
                 childElement.className = child.classNames.join(' ');
               }
-              if (child.attributes) {
+              if (child.attributes != null) {
                 Object.keys(child.attributes).forEach(key => {
                   childElement.setAttribute(key, child.attributes[key]);
                 });
               }
-              if (child.children && typeof child.children[0] === 'string') {
+              if (child.children != null && child.children.length > 0 && typeof child.children[0] === 'string') {
                 childElement.textContent = child.children[0];
               }
 
               // Special case for textarea inside the container
-              if (child.type === 'textarea' && child.classNames && child.classNames.includes('mynah-shell-command-input')) {
+              if (child.type === 'textarea' && Array.isArray(child.classNames) && (child.classNames as string[]).includes('mynah-shell-command-input')) {
                 childElement.setAttribute('rows', '1');
                 childElement.setAttribute('spellcheck', 'false');
                 childElement.setAttribute('aria-label', 'Edit shell command');
               }
 
               element.appendChild(childElement);
-            } else {
+            } else if (child != null) {
               element.appendChild(child);
             }
           });

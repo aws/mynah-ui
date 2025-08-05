@@ -38,29 +38,29 @@ jest.mock('../../../helper/dom', () => ({
   DomBuilder: {
     getInstance: jest.fn(() => ({
       build: jest.fn((options) => {
-        const element = document.createElement(options.type || 'div');
-        if (options.classNames) {
+        const element = document.createElement(options.type ?? 'div');
+        if (options.classNames != null) {
           element.className = options.classNames.join(' ');
         }
-        if (options.attributes) {
+        if (options.attributes != null) {
           Object.keys(options.attributes).forEach(key => {
             element.setAttribute(key, options.attributes[key]);
           });
         }
-        if (options.innerHTML) {
+        if (options.innerHTML != null) {
           element.innerHTML = options.innerHTML;
         }
-        if (options.children) {
+        if (options.children != null) {
           options.children.forEach((child: any) => {
             if (typeof child === 'string') {
               element.appendChild(document.createTextNode(child));
-            } else if (child.type) {
+            } else if (child?.type != null) {
               const childElement = document.createElement(child.type);
-              if (child.children && typeof child.children[0] === 'string') {
+              if (child.children != null && child.children.length > 0 && typeof child.children[0] === 'string') {
                 childElement.textContent = child.children[0];
               }
               element.appendChild(childElement);
-            } else {
+            } else if (child != null) {
               element.appendChild(child);
             }
           });
@@ -226,9 +226,7 @@ describe('ChatItemCard - Modify Functionality', () => {
 
       // Simulate modify button click through the button wrapper's onActionClick
       const buttonWrapper = (card as any).chatButtonsInside;
-      if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
-        buttonWrapper.props.onActionClick(mockAction);
-      }
+      buttonWrapper?.props?.onActionClick?.(mockAction);
 
       // Verify enterEditMode was called
       expect(mockContentBody.enterEditMode).toHaveBeenCalled();
@@ -247,9 +245,7 @@ describe('ChatItemCard - Modify Functionality', () => {
 
       // Simulate save button click
       const buttonWrapper = (card as any).chatButtonsInside;
-      if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
-        buttonWrapper.props.onActionClick(mockAction);
-      }
+      buttonWrapper?.props?.onActionClick?.(mockAction);
 
       // Verify onSaveClicked was called and returned the edited text
       expect(mockContentBody.onSaveClicked).toHaveBeenCalled();
@@ -269,9 +265,7 @@ describe('ChatItemCard - Modify Functionality', () => {
 
       // Simulate cancel button click
       const buttonWrapper = (card as any).chatButtonsInside;
-      if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
-        buttonWrapper.props.onActionClick(mockAction);
-      }
+      buttonWrapper?.props?.onActionClick?.(mockAction);
 
       // Verify onCancelClicked was called
       expect(mockContentBody.onCancelClicked).toHaveBeenCalled();
@@ -311,7 +305,7 @@ describe('ChatItemCard - Modify Functionality', () => {
 
       // Simulate edit mode change by calling onEditModeChange
       const contentProps = (card as any).contentBody.updateCardStack.mock.calls[0]?.[0];
-      if (contentProps && contentProps.onEditModeChange) {
+      if (contentProps?.onEditModeChange != null) {
         // Enter edit mode
         contentProps.onEditModeChange(true);
         expect((card as any).isContentBodyInEditMode).toBe(true);
@@ -348,9 +342,7 @@ describe('ChatItemCard - Modify Functionality', () => {
       // This should not throw an error
       expect(() => {
         const buttonWrapper = (card as any).chatButtonsInside;
-        if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
-          buttonWrapper.props.onActionClick(mockAction);
-        }
+        buttonWrapper?.props?.onActionClick?.(mockAction);
       }).not.toThrow();
     });
 
@@ -378,9 +370,7 @@ describe('ChatItemCard - Modify Functionality', () => {
       const mockAction = { id: 'save-shell-command', text: 'Save' };
 
       const buttonWrapper = (card as any).chatButtonsInside;
-      if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
-        buttonWrapper.props.onActionClick(mockAction);
-      }
+      buttonWrapper?.props?.onActionClick?.(mockAction);
 
       // Should still dispatch event, but with undefined editedText
       expect(mockDispatch).toHaveBeenCalledWith('bodyActionClicked', {
@@ -417,9 +407,7 @@ describe('ChatItemCard - Modify Functionality', () => {
 
       // Simulate non-modify button click
       const buttonWrapper = (card as any).chatButtonsInside;
-      if (buttonWrapper && buttonWrapper.props && buttonWrapper.props.onActionClick) {
-        buttonWrapper.props.onActionClick(mockAction);
-      }
+      buttonWrapper?.props?.onActionClick?.(mockAction);
 
       // Verify it doesn't call modify-specific methods
       expect(mockContentBody.enterEditMode).not.toHaveBeenCalled();
