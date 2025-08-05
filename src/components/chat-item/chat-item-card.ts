@@ -739,7 +739,6 @@ export class ChatItemCard {
       this.cardFooter = null;
     }
 
-    // Always create footer to include QuickSettings
     if (this.props.chatItem.footer != null || this.props.chatItem.canBeVoted === true || this.shouldShowQuickSettings()) {
       this.cardFooter = this.getCardFooter();
       this.card?.render.insertChild('beforeend', this.cardFooter);
