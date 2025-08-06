@@ -351,9 +351,8 @@
     background-color: var(--mynah-color-syntax-bg);
     border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     border-radius: var(--mynah-input-radius);
-    padding: calc(2 * var(--mynah-border-width)) calc(3 * var(--mynah-border-width));
-    font-size: var(--mynah-font-size-small);
-    font-family: var(--mynah-syntax-code-font-family);
+    padding: 0 calc(4 * var(--mynah-border-width));
+    font-size: var(--mynah-font-size-small) !important;
     color: var(--mynah-color-syntax-code);
     cursor: pointer;
     white-space: nowrap;
