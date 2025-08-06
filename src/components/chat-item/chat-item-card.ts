@@ -447,6 +447,8 @@ export class ChatItemCard {
       }
 
       if (this.props.chatItem.header.status != null) {
+        // Remove existing status before adding new one
+        this.cardHeader?.querySelector('.mynah-chat-item-card-header-status')?.remove();
         this.cardHeader?.insertAdjacentElement(this.props.chatItem.header.status.position === 'left' ? 'afterbegin' : 'beforeend', DomBuilder.getInstance().build({
           type: 'span',
           classNames: [ 'mynah-chat-item-card-header-status', `status-${this.props.chatItem.header.status.status ?? 'default'}` ],
