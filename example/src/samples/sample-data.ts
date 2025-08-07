@@ -2035,11 +2035,13 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
                 details: {
                     'src/components/ui': {
                         visibleName: 'ui',
-                        description: 'src/components/ui'
+                        description: 'src/components/ui',
+                        clickable: false
                     },
                     'src/components/forms': {
                         visibleName: 'forms',
-                        description: 'src/components/forms'
+                        description: 'src/components/forms',
+                        clickable: false
                     },
                 },
                 renderAsPills: true
@@ -2059,27 +2061,55 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
                     'src/components/ui': {
                         visibleName: 'ui',
                         description: 'src/components/ui',
+                        clickable: false
                     },
                     'src/components/forms': {
                         visibleName: 'forms',
-                        description: 'src/components/forms'
+                        description: 'src/components/forms',
+                        clickable: false
                     },
                     'src/components/layout': {
                         visibleName: 'layout',
-                        description: 'src/components/layout'
+                        description: 'src/components/layout',
+                        clickable: false
                     },
                     'src/utils/helpers': {
                         visibleName: 'helpers',
-                        description: 'src/components/helpers'
+                        description: 'src/components/helpers',
+                        clickable: false
                     },
                     'src/utils/validation': {
                         visibleName: 'validation',
-                        description: 'src/components/validation'
+                        description: 'src/components/validation',
+                        clickable: false
                     },
                 },
                 renderAsPills: true
             }
         }
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'search',
+            body: 'Searched for `*.md` in',
+            fileList: {
+                filePaths: ['src/docs'],
+                details: {
+                    ['src/docs']: {
+                        visibleName: 'docs',
+                        description: 'src/docs',
+                        clickable: false
+                    }
+                },
+                renderAsPills: true
+            },
+            status: {
+                text: '5 results found'
+            }
+        },
     }
 ];
 
