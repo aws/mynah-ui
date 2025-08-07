@@ -27,6 +27,7 @@ import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { marked } from 'marked';
+import { parseMarkdown } from '../../helper/marked';
 
 const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
@@ -258,9 +259,45 @@ export class ChatItemCard {
 
     // Add body text if present
     if (header.body != null && header.body !== '') {
+      // Parse markdown to handle inline code
+      const parsedHtml = parseMarkdown(header.body, { includeLineBreaks: true });
+
+      // Create a temporary div to extract text content while preserving inline code
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = parsedHtml;
+
+      // Convert to ChatItemBodyRenderer format
+      const processNode = (node: Node): Array<string | ChatItemBodyRenderer> => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return [ node.textContent ?? '' ];
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as HTMLElement;
+          if (element.tagName.toLowerCase() === 'code') {
+            return [ {
+              type: 'code' as const,
+              classNames: [ 'mynah-syntax-highlighter', 'mynah-inline-code' ],
+              children: [ element.textContent ?? '' ]
+            } ];
+          } else {
+            // For other elements, process their children
+            const children: Array<string | ChatItemBodyRenderer> = [];
+            Array.from(element.childNodes).forEach(child => {
+              children.push(...processNode(child));
+            });
+            return children;
+          }
+        }
+        return [ '' ];
+      };
+
+      const children: Array<string | ChatItemBodyRenderer> = [];
+      Array.from(tempDiv.childNodes).forEach(node => {
+        children.push(...processNode(node));
+      });
+
       customRenderer.push({
         type: 'span' as const,
-        children: [ header.body ]
+        children
       });
     }
 
@@ -279,6 +316,9 @@ export class ChatItemCard {
         children: [ fileName ],
         events: {
           click: () => {
+            if (header.fileList?.details?.[filePath]?.clickable === false) {
+              return;
+            }
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
               tabId: this.props.tabId,
               messageId: this.props.chatItem.messageId,

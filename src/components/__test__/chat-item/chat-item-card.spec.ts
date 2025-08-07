@@ -1,5 +1,6 @@
 import { ChatItemCard } from '../../chat-item/chat-item-card';
 import { ChatItemType } from '../../../static';
+import { MynahUIGlobalEvents } from '../../../helper/events';
 
 // Mock the tabs store
 jest.mock('../../../helper/tabs-store', () => ({
@@ -13,7 +14,29 @@ jest.mock('../../../helper/tabs-store', () => ({
   }
 }));
 
+// Mock global events
+jest.mock('../../../helper/events', () => ({
+  MynahUIGlobalEvents: {
+    getInstance: jest.fn(() => ({
+      dispatch: jest.fn()
+    }))
+  }
+}));
+
 describe('ChatItemCard', () => {
+  let mockDispatch: jest.Mock;
+
+  beforeEach(() => {
+    mockDispatch = jest.fn();
+    (MynahUIGlobalEvents.getInstance as jest.Mock).mockReturnValue({
+      dispatch: mockDispatch
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render basic chat item card', () => {
     const card = new ChatItemCard({
       tabId: 'test-tab',
@@ -115,6 +138,32 @@ describe('ChatItemCard', () => {
       expect(deletedPill).toBeTruthy();
       expect(deletedPill?.textContent).toBe('deleted.ts');
     });
+
+    it('should not dispatch click events when clickable is false', () => {
+      const card = new ChatItemCard({
+        tabId: 'test-tab',
+        chatItem: {
+          type: ChatItemType.ANSWER,
+          header: {
+            body: 'Files',
+            fileList: {
+              filePaths: [ 'test.js' ],
+              details: {
+                'test.js': {
+                  clickable: false
+                }
+              },
+              renderAsPills: true
+            }
+          }
+        }
+      });
+
+      const pillElement = card.render.querySelector('.mynah-chat-item-tree-file-pill') as HTMLElement;
+      pillElement?.click();
+
+      expect(mockDispatch).not.toHaveBeenCalled();
+    });
   });
 
   it('should not render pills when renderAsPills is false', () => {
@@ -172,5 +221,24 @@ describe('ChatItemCard', () => {
 
     const pillElements = card.render.querySelectorAll('.mynah-chat-item-tree-file-pill');
     expect(pillElements.length).toBe(0);
+  });
+
+  it('should parse markdown in header body for pills', () => {
+    const card = new ChatItemCard({
+      tabId: 'test-tab',
+      chatItem: {
+        type: ChatItemType.ANSWER,
+        header: {
+          body: 'Reading `inline code` text',
+          fileList: {
+            filePaths: [ 'test.js' ],
+            renderAsPills: true
+          }
+        }
+      }
+    });
+
+    const codeElement = card.render.querySelector('.mynah-inline-code');
+    expect(codeElement).toBeTruthy();
   });
 });
