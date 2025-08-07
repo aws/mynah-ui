@@ -172,7 +172,7 @@ export const convertQuickActionCommandToDetailedListItem = (quickActionCommand: 
     icon: quickActionCommand.icon,
     id: quickActionCommand.id,
     keywords: quickActionCommand.route,
-    pending: quickActionCommand.pending
+    disabledText: quickActionCommand.disabledText
   };
 };
 

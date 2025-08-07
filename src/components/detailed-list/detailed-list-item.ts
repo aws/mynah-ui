@@ -8,7 +8,6 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { parseMarkdown } from '../../helper/marked';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
-import { Config } from '../../helper/config';
 
 const TOOLTIP_DELAY = 350;
 
@@ -90,12 +89,12 @@ export class DetailedListItemWrapper {
               : [])
           ]
         },
-        ...(this.props.listItem.pending === true
+        ...(this.props.listItem.disabledText != null
           ? [
               {
                 type: 'div',
-                classNames: [ 'mynah-detailed-list-item-disabled-context-label' ],
-                children: [ `(${Config.getInstance().config.texts.disabledContextLabel})` ]
+                classNames: [ 'mynah-detailed-list-item-disabled-text' ],
+                children: [ `(${this.props.listItem.disabledText})` ]
               }
             ]
           : (this.props.listItem.children != null) && this.props.listItem.children.length > 0

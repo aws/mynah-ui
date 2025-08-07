@@ -33,7 +33,7 @@ export interface QuickActionCommand {
   placeholder?: string;
   children?: QuickActionCommandGroup[];
   route?: string[];
-  pending?: boolean;
+  disabledText?: string;
 }
 export interface CustomQuickActionCommand extends QuickActionCommand {
   content?: Uint8Array;
@@ -347,7 +347,7 @@ export interface DetailedListItem {
     icon?: MynahIcons | MynahIconsType;
     text?: string;
   };
-  pending?: boolean;
+  disabledText?: string;
 }
 
 export type Status = 'info' | 'success' | 'warning' | 'error';
@@ -766,7 +766,6 @@ export interface ConfigTexts {
   commandConfirmation: string;
   pinContextHint: string;
   dragOverlayText: string;
-  disabledContextLabel: string;
 }
 
 type PickMatching<T, V> = {
