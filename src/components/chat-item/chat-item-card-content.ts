@@ -41,6 +41,8 @@ export class ChatItemCardContent {
   private textareaEl?: HTMLTextAreaElement;
   private originalCommand: string = '';
   private isOnEdit: boolean = false;
+  private themeChangeListeners: Array<() => void> = [];
+  private mutationObserver?: MutationObserver;
   constructor (props: ChatItemCardContentProps) {
     this.props = props;
     this.originalCommand = this.extractTextFromBody(this.props.body);
@@ -76,12 +78,19 @@ export class ChatItemCardContent {
           value: this.originalCommand,
           'aria-label': 'Edit shell command',
           role: 'textbox',
-          'aria-multiline': 'false'
+          'aria-multiline': 'false',
+          style: 'resize: none; width: 100%; box-sizing: border-box;'
         },
         events: {
           focus: (e) => {
             // Auto-select all text when focusing
             (e.target as HTMLTextAreaElement).select();
+          },
+          input: (e) => {
+            this.autoResizeTextarea(e.target as HTMLTextAreaElement);
+          },
+          keyup: (e) => {
+            this.autoResizeTextarea(e.target as HTMLTextAreaElement);
           }
         }
       } ]
@@ -90,15 +99,140 @@ export class ChatItemCardContent {
     this.textareaEl = container.querySelector('.mynah-shell-command-input') as HTMLTextAreaElement;
     this.textareaEl.value = this.originalCommand;
 
-    // Auto-focus and select after DOM insertion
+    // Set initial styling, height and auto-focus after DOM insertion
     setTimeout(() => {
       if (this.textareaEl != null) {
+        // Ensure basic styling is applied
+        this.textareaEl.style.resize = 'none';
+        this.textareaEl.style.width = '100%';
+        this.textareaEl.style.boxSizing = 'border-box';
+        
+        // Apply theme-aware background colors
+        this.applyThemeAwareStyles(this.textareaEl);
+        
+        // Set up dynamic theme change detection
+        this.setupThemeChangeListeners(this.textareaEl);
+        
+        this.autoResizeTextarea(this.textareaEl);
         this.textareaEl.focus();
         this.textareaEl.select();
       }
     }, 0);
 
     return container;
+  }
+
+  /**
+   * Apply theme-aware styles to textarea
+   */
+  private applyThemeAwareStyles (textarea: HTMLTextAreaElement): void {
+    if (!textarea) return;
+
+    // Apply styles using CSS custom properties that automatically adapt to themes
+    Object.assign(textarea.style, {
+      backgroundColor: 'var(--mynah-color-bg, var(--vscode-input-background, transparent))',
+      color: 'var(--mynah-color-text-default, var(--vscode-input-foreground, inherit))',
+      border: 'none',
+      outline: 'none',
+      borderRadius: 'var(--mynah-sizing-half, 4px)',
+      padding: 'var(--mynah-sizing-half, 8px)'
+    });
+  }
+
+  /**
+   * Setup theme change detection with automatic cleanup
+   */
+  private setupThemeChangeListeners (textarea: HTMLTextAreaElement): void {
+    if (!textarea) return;
+
+    this.cleanupThemeChangeListeners();
+
+    const updateStyles = () => {
+      if (this.textareaEl === textarea) {
+        this.applyThemeAwareStyles(textarea);
+      }
+    };
+
+    // System theme preference changes
+    const mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (mediaQuery) {
+      const handler = () => updateStyles();
+      
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', handler);
+        this.themeChangeListeners.push(() => {
+          mediaQuery.removeEventListener('change', handler);
+        });
+      } else if (mediaQuery.addListener) {
+        mediaQuery.addListener(handler);
+        this.themeChangeListeners.push(() => {
+          mediaQuery.removeListener?.(handler);
+        });
+      }
+    }
+
+    // DOM class changes for IDE theme switches
+    if (window.MutationObserver) {
+      const observer = new MutationObserver(() => {
+        setTimeout(updateStyles, 50); // Debounced
+      });
+      
+      [document.body, document.documentElement].forEach(element => {
+        observer.observe(element, {
+          attributes: true,
+          attributeFilter: ['class', 'data-theme', 'theme']
+        });
+      });
+      
+      this.mutationObserver = observer;
+    }
+
+    // Custom theme events
+    const themeEvents = ['themeChanged', 'theme-changed', 'colorSchemeChanged'];
+    themeEvents.forEach(eventName => {
+      window.addEventListener(eventName, updateStyles);
+      this.themeChangeListeners.push(() => {
+        window.removeEventListener(eventName, updateStyles);
+      });
+    });
+  }
+
+  /**
+   * Clean up all theme change listeners
+   */
+  private cleanupThemeChangeListeners (): void {
+    this.themeChangeListeners.forEach(cleanup => cleanup());
+    this.themeChangeListeners = [];
+    
+    this.mutationObserver?.disconnect();
+    this.mutationObserver = undefined;
+  }
+
+  /**
+   * Automatically resize textarea to fit content
+   */
+  private autoResizeTextarea (textarea: HTMLTextAreaElement): void {
+    if (textarea == null) return;
+
+    // Reset height to auto to get the correct scrollHeight
+    textarea.style.height = 'auto';
+    
+    // Calculate the new height based on content
+    const scrollHeight = textarea.scrollHeight;
+    const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight) || 20;
+    const minHeight = lineHeight + 12; // minimum height (1 line + padding)
+    const maxHeight = lineHeight * 10 + 12; // maximum height (10 lines + padding)
+    
+    // Set height to fit content, but within min/max bounds
+    const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+    textarea.style.height = `${newHeight}px`;
+    
+    // Add scrollbar if content exceeds max height
+    if (scrollHeight > maxHeight) {
+      textarea.style.overflowY = 'auto';
+    } else {
+      textarea.style.overflowY = 'hidden';
+    }
   }
 
   public onSaveClicked (): string {
