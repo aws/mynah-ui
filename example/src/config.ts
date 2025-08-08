@@ -102,6 +102,21 @@ export const tabbarButtons: TabBarMainAction[] = [
                 icon: MynahIcons.PLAY,
                 text: 'Enable/disable Progress bar',
             },
+            {
+                id: 'animation-fast',
+                icon: MynahIcons.FLASH,
+                text: 'Fast Animation (100ms)',
+            },
+            {
+                id: 'animation-normal',
+                icon: MynahIcons.CALENDAR,
+                text: 'Normal Animation (500ms)',
+            },
+            {
+                id: 'animation-disabled',
+                icon: MynahIcons.BLOCK,
+                text: 'Disable Animation',
+            },
         ],
     },
 ];
@@ -262,6 +277,11 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
                 command: Commands.CLEAR_LOGS,
                 icon: MynahIcons.CANCEL,
                 description: 'Clears logs on the bottom left.',
+            },
+            {
+                command: '/animation-demo',
+                icon: MynahIcons.FLASH,
+                description: 'Test streaming animation with different speeds. Use tab bar buttons to switch modes.',
             },
         ],
     },
