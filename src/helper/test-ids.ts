@@ -22,6 +22,7 @@ export default {
     progress: 'prompt-input-progress-wrapper',
     label: 'prompt-input-label',
     topBar: 'prompt-input-top-bar',
+    topBarTitle: 'prompt-input-top-bar-title',
     topBarButton: 'prompt-input-top-bar-button',
     topBarContextPill: 'prompt-input-top-bar-context-pill',
     topBarContextTooltip: 'prompt-input-top-bar-context-tooltip',
