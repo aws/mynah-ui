@@ -106,13 +106,13 @@ export class ChatItemCardContent {
         this.textareaEl.style.resize = 'none';
         this.textareaEl.style.width = '100%';
         this.textareaEl.style.boxSizing = 'border-box';
-        
+
         // Apply theme-aware background colors
         this.applyThemeAwareStyles(this.textareaEl);
-        
+
         // Set up dynamic theme change detection
         this.setupThemeChangeListeners(this.textareaEl);
-        
+
         this.autoResizeTextarea(this.textareaEl);
         this.textareaEl.focus();
         this.textareaEl.select();
@@ -126,7 +126,7 @@ export class ChatItemCardContent {
    * Apply theme-aware styles to textarea
    */
   private applyThemeAwareStyles (textarea: HTMLTextAreaElement): void {
-    if (!textarea) return;
+    if (textarea == null) return;
 
     // Apply styles using CSS custom properties that automatically adapt to themes
     Object.assign(textarea.style, {
@@ -143,11 +143,11 @@ export class ChatItemCardContent {
    * Setup theme change detection with automatic cleanup
    */
   private setupThemeChangeListeners (textarea: HTMLTextAreaElement): void {
-    if (!textarea) return;
+    if (textarea == null) return;
 
     this.cleanupThemeChangeListeners();
 
-    const updateStyles = () => {
+    const updateStyles = (): void => {
       if (this.textareaEl === textarea) {
         this.applyThemeAwareStyles(textarea);
       }
@@ -155,15 +155,15 @@ export class ChatItemCardContent {
 
     // System theme preference changes
     const mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
-    if (mediaQuery) {
-      const handler = () => updateStyles();
-      
-      if (mediaQuery.addEventListener) {
+    if (mediaQuery != null) {
+      const handler = (): void => updateStyles();
+
+      if (mediaQuery.addEventListener != null) {
         mediaQuery.addEventListener('change', handler);
         this.themeChangeListeners.push(() => {
           mediaQuery.removeEventListener('change', handler);
         });
-      } else if (mediaQuery.addListener) {
+      } else if (mediaQuery.addListener != null) {
         mediaQuery.addListener(handler);
         this.themeChangeListeners.push(() => {
           mediaQuery.removeListener?.(handler);
@@ -172,23 +172,23 @@ export class ChatItemCardContent {
     }
 
     // DOM class changes for IDE theme switches
-    if (window.MutationObserver) {
+    if (window.MutationObserver != null) {
       const observer = new MutationObserver(() => {
         setTimeout(updateStyles, 50); // Debounced
       });
-      
-      [document.body, document.documentElement].forEach(element => {
+
+      [ document.body, document.documentElement ].forEach(element => {
         observer.observe(element, {
           attributes: true,
-          attributeFilter: ['class', 'data-theme', 'theme']
+          attributeFilter: [ 'class', 'data-theme', 'theme' ]
         });
       });
-      
+
       this.mutationObserver = observer;
     }
 
     // Custom theme events
-    const themeEvents = ['themeChanged', 'theme-changed', 'colorSchemeChanged'];
+    const themeEvents = [ 'themeChanged', 'theme-changed', 'colorSchemeChanged' ];
     themeEvents.forEach(eventName => {
       window.addEventListener(eventName, updateStyles);
       this.themeChangeListeners.push(() => {
@@ -203,7 +203,7 @@ export class ChatItemCardContent {
   private cleanupThemeChangeListeners (): void {
     this.themeChangeListeners.forEach(cleanup => cleanup());
     this.themeChangeListeners = [];
-    
+
     this.mutationObserver?.disconnect();
     this.mutationObserver = undefined;
   }
@@ -216,17 +216,18 @@ export class ChatItemCardContent {
 
     // Reset height to auto to get the correct scrollHeight
     textarea.style.height = 'auto';
-    
+
     // Calculate the new height based on content
     const scrollHeight = textarea.scrollHeight;
-    const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight) || 20;
+    const parsedLineHeight = parseInt(window.getComputedStyle(textarea).lineHeight, 10);
+    const lineHeight = (isNaN(parsedLineHeight) || parsedLineHeight === 0) ? 20 : parsedLineHeight;
     const minHeight = lineHeight + 12; // minimum height (1 line + padding)
     const maxHeight = lineHeight * 10 + 12; // maximum height (10 lines + padding)
-    
+
     // Set height to fit content, but within min/max bounds
     const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
     textarea.style.height = `${newHeight}px`;
-    
+
     // Add scrollbar if content exceeds max height
     if (scrollHeight > maxHeight) {
       textarea.style.overflowY = 'auto';
