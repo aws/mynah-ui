@@ -2548,3 +2548,36 @@ export const sampleRulesList: DetailedList = {selectable: 'clickable', list: [{c
     description: 'README',actions: [{ id: 'README.md', icon: MynahIcons.OK, status: 'clear' }]}]}, 
     {groupName: '.amazonq/rules', childrenIndented: true, icon: MynahIcons.FOLDER , actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }], children: [{id: 'java-expert.md', icon: MynahIcons.CHECK_LIST, 
     description: 'java-expert',actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }]}]}]}
+
+export const shellCommandWithModifyEditable: ChatItem = {
+  fullWidth: true,
+  padding: false,
+  type: ChatItemType.ANSWER,
+  messageId: 'shell-cmd-1',
+  body: ['```bash', 'ls', '```'].join('\n'),
+  editable: false,           // start view-only
+  header: {
+    // pick an existing icon—let's use BLOCK as our "shell" glyph
+    icon: MynahIcons.BLOCK,
+    
+    buttons: [
+      { id: 'run-bash-command',    text: 'Run',    icon: MynahIcons.PLAY,    status: 'primary' },
+      { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL,  status: 'error'   },
+      { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL,  status: 'clear'   },
+    ],
+  },
+  // these drive the little buttons that appear *in* the code block
+  codeBlockActions: {
+    'run-bash-command': {
+      id: 'run-bash-command',
+      label: 'Run',             // ← was `text`
+      icon: MynahIcons.PLAY,
+      flash: 'infinite',
+    },
+    'reject-bash-command': {
+      id: 'reject-bash-command',
+      label: 'Reject',          // ← was `text`
+      icon: MynahIcons.CANCEL,
+    },
+  },
+};

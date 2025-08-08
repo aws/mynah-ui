@@ -146,6 +146,7 @@ export interface MynahUIProps {
       id: string;
       text?: string;
       formItemValues?: Record<string, string>;
+      editedText?: string;
     },
     eventId?: string) => void;
   onTabbedContentTabChange?: (
@@ -591,12 +592,14 @@ export class MynahUI {
       actionId: string;
       actionText?: string;
       formItemValues?: Record<string, string>;
+      editedText?: string;
     }) => {
       if (this.props.onInBodyButtonClicked !== undefined) {
         this.props.onInBodyButtonClicked(data.tabId, data.messageId, {
           id: data.actionId,
           text: data.actionText,
-          formItemValues: data.formItemValues
+          formItemValues: data.formItemValues,
+          editedText: data.editedText
         }, this.getUserEventId());
       }
     });

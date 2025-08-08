@@ -53,6 +53,7 @@ import {
     mcpToolRunSampleCard,
     mcpToolRunSampleCardInit,
     sampleRulesList,
+    shellCommandWithModifyEditable,
     accountDetailsTabData,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
@@ -1384,6 +1385,157 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         },
                     },
                 });
+            } else if (action.id === 'modify-example-command') {
+                // Example: Show how to pass data for modify action
+                Log(`Modify bash command clicked for message ${messageId}`);
+                Log(`Example data passing: action=${action.id}, messageId=${messageId}, tabId=${tabId}`);
+                
+                // Example: Demonstrate how to update chat item with new data
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This shows how to pass data to update a chat item body',
+                    header: {
+                        body: '**Example Header Update**',
+                        buttons: [
+                            { id: 'save-example-command', text: 'Save', icon: MynahIcons.OK, status: 'clear' },
+                            { id: 'cancel-example-command', text: 'Cancel', icon: MynahIcons.CANCEL, status: 'dimmed-clear' },
+                        ],
+                    },
+                });
+                return false;
+            } else if (action.id === 'save-example-command') {
+                // Example: Show how to pass data for save action
+                Log(`Save command clicked for message ${messageId}`);
+                Log(`Example: Passing save data to Mynah UI component`);
+                
+                // Example: Demonstrate how to pass updated data back to chat item
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This shows how data flows back after save action',
+                    header: {
+                        body: '**Saved State Example**',
+                        buttons: [
+                            { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                            { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                            { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                        ],
+                    },
+                });
+                return false;
+            } else if (action.id === 'cancel-example-command') {
+                // Example: Show how to pass data for cancel action
+                Log(`Cancel edit clicked for message ${messageId}`);
+                Log(`Example: Demonstrating data restoration in Mynah UI`);
+                
+                // Example: Show how to restore original data
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This demonstrates how to restore original data on cancel',
+                    header: {
+                        body: '**Original State Restored**',
+                        buttons: [
+                            { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                            { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                            { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                        ],
+                    },
+                });
+                return false;
+            } else if (action.id === 'reject-bash-command' || action.id === 'run-bash-command') {
+                // Example: Show how to pass different action data to Mynah UI
+                Log(`${action.id} clicked for message ${messageId}`);
+                Log(`Example: Demonstrating how to pass action-specific data to components`);
+                
+                if (action.id === 'reject-bash-command') {
+                    // Example: Show data passing for reject action
+                    mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                        body: '**Example:** This shows how to pass reject action data to Mynah UI',
+                        header: {
+                            body: '**Rejected State Example**',
+                            buttons: [
+                                { id: 'restore-original-buttons', text: 'Try Again', icon: MynahIcons.REFRESH, status: 'clear' },
+                            ],
+                        },
+                    });
+                } else {
+                    // Example: Show data passing for run action  
+                    mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                        body: '**Example:** This demonstrates how to pass execution data to Mynah UI components',
+                        header: {
+                            body: '**Running State Example**',
+                            buttons: [
+                                { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                                { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                                { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                            ],
+                        },
+                    });
+                }
+                return false;
+            } else if (action.id === 'restore-original-buttons') {
+                // Example: Show how to restore original button state
+                Log(`Restore original buttons clicked for message ${messageId}`);
+                Log(`Example: Demonstrating how to restore original UI state`);
+                
+                // Example: Restore original buttons after reject -> try again
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This shows how to restore the original button state',
+                    header: {
+                        body: '**Original Buttons Restored**',
+                        buttons: [
+                            { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                            { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                            { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                        ],
+                    },
+                });
+                return false;
+            } else if (action.id === 'reject-bash-command' || action.id === 'run-bash-command') {
+                // Example: Show how to pass different action data to Mynah UI
+                Log(`${action.id} clicked for message ${messageId}`);
+                Log(`Example: Demonstrating how to pass action-specific data to components`);
+                
+                if (action.id === 'reject-bash-command') {
+                    // Example: Show data passing for reject action
+                    mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                        body: '**Example:** This shows how to pass reject action data to Mynah UI',
+                        header: {
+                            body: '**Rejected State Example**',
+                            buttons: [
+                                { id: 'restore-original-buttons', text: 'Try Again', icon: MynahIcons.REFRESH, status: 'clear' },
+                            ],
+                        },
+                    });
+                } else {
+                    // Example: Show data passing for run action  
+                    mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                        body: '**Example:** This demonstrates how to pass execution data to Mynah UI components',
+                        header: {
+                            body: '**Running State Example**',
+                            buttons: [
+                                { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                                { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                                { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                            ],
+                        },
+                    });
+                }
+                return false;
+            } else if (action.id === 'restore-original-buttons') {
+                // Example: Show how to restore original button state
+                Log(`Restore original buttons clicked for message ${messageId}`);
+                Log(`Example: Demonstrating how to restore original UI state`);
+                
+                // Example: Restore original buttons after reject
+                mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
+                    body: '**Example:** This shows how to restore the original button state',
+                    header: {
+                        body: '**Original Buttons Restored**',
+                        buttons: [
+                            { id: 'run-bash-command', text: 'Run', icon: MynahIcons.PLAY, status: 'primary' },
+                            { id: 'reject-bash-command', text: 'Reject', icon: MynahIcons.CANCEL, status: 'error' },
+                            { id: 'modify-example-command', text: 'Modify', icon: MynahIcons.PENCIL, status: 'clear' },
+                        ],
+                    },
+                });
+                return false;
             } else if (action.id === 'quick-start') {
                 mynahUI.updateStore(tabId, {
                     tabHeaderDetails: null,
@@ -1620,6 +1772,11 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     break;
                 case Commands.HEADER_TYPES:
                     sampleHeaderTypes.forEach((ci) => mynahUI.addChatItem(tabId, ci));
+                    // Add the shell command with modify button example
+                    mynahUI.addChatItem(tabId, {
+                        ...shellCommandWithModifyEditable,
+                        messageId: generateUID(),
+                    });
                     break;
                 case Commands.SUMMARY_CARD:
                     const cardId = generateUID();

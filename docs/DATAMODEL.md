@@ -1379,6 +1379,7 @@ interface ChatItemContent {
 interface ChatItem extends ChatItemContent {
   type: ChatItemType;
   messageId?: string;
+  editable?: boolean;
   snapToTop?: boolean;
   autoCollapse?: boolean;
   contentHorizontalAlignment?: 'default' | 'center';
@@ -3322,6 +3323,61 @@ mynahUI.addChatItem(tabId, {
 <p align="center">
   <img src="./img/data-model/chatItems/iconStatus.png" alt="icon" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+## `editable` (default: `false`)
+The `editable` property enables users to modify the content of chat items directly within the chat interface. When set to `true`, the chat item displays interactive controls that allow users to edit command text and see immediate changes.
+
+**Key Features:**
+- **Inline Editing**: Users can modify shell commands directly in the chat response
+- **Button State Management**: Shows "Modify" button in normal state, "Save"/"Cancel" buttons in edit mode  
+- **Text Extraction**: Automatically extracts commands from markdown code blocks (e.g., `\`\`\`shell\inputted_command\n\`\`\``)
+- **State Preservation**: Original commands are preserved during editing and restored on cancel
+- **Event Integration**: Modified content is sent to backend via `editedText` parameter in button click events
+
+**Usage Example:**
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    type: ChatItemType.ANSWER,
+    messageId: 'editable-command-1',
+    editable: true,
+    body: '```shell\nnpm install react\n```',
+    buttons: [
+        {
+            id: 'run-shell-command',
+            text: 'Run',
+            status: 'primary'
+        },
+        {
+            id: 'reject-shell-command', 
+            text: 'Reject',
+            status: 'clear'
+        }
+    ]
+});
+```
+
+**User Workflow:**
+1. **Initial State**: Command appears with "Modify", "Run", "Reject" buttons
+2. **Edit Mode**: Click "Modify" → UI switches to editable textarea with "Save"/"Cancel" buttons
+3. **Editing**: User modifies command with auto-focus and text selection
+4. **Save**: Click "Save" → Edited command sent to backend, UI returns to normal view
+5. **Cancel**: Click "Cancel" → Original command restored, UI returns to normal view
+
+**Technical Implementation:**
+- **State Management**: Uses `isOnEdit` internal state for edit mode tracking
+- **UI Switching**: Seamlessly transitions between CardBody display and textarea input
+- **Event Handling**: Integrates with existing button click events, adding `editedText` parameter for backend processing
+- **Accessibility**: Auto-focus and text selection in edit mode for improved user experience
+
+**Note:** The `editable` property works best with shell command content but can be used with any text content. When combined with buttons, the modify workflow automatically manages button states and integrates with the existing event system.
 
 ---
 
