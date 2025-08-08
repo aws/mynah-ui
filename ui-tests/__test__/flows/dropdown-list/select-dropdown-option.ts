@@ -1,6 +1,7 @@
 import { expect, Page } from 'playwright/test';
 import { getSelector, waitForAnimationEnd } from '../../helpers';
 import testIds from '../../../../src/helper/test-ids';
+import { ChatItemType } from '../../../../dist/static';
 
 export const selectDropdownOption = async (page: Page, skipScreenshots?: boolean): Promise<void> => {
   await page.evaluate(() => {
@@ -11,7 +12,7 @@ export const selectDropdownOption = async (page: Page, skipScreenshots?: boolean
       });
 
       window.mynahUI.addChatItem(selectedTabId, {
-        type: 'answer' as any,
+        type: 'answer' as ChatItemType,
         snapToTop: true,
         body: 'Test dropdown option selection:',
         quickSettings: {
