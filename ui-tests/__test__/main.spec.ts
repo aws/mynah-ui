@@ -27,6 +27,7 @@ import { collapseExpandFileTree } from './flows/file-tree/collapse-file-tree';
 import { showFileTooltip } from './flows/file-tree/show-file-tooltip';
 import { triggerFileActions } from './flows/file-tree/trigger-file-action';
 import { renderFileDetails } from './flows/file-tree/render-file-details';
+import { showFilePills, showFilePillsWithDeletedFiles } from './flows/file-pills/file-pills';
 import { renderFormElements } from './flows/form/render-form-elements';
 import { disableForm } from './flows/form/disable-form';
 import { removeForm } from './flows/form/remove-form';
@@ -223,6 +224,16 @@ test.describe('Open MynahUI', () => {
 
     test('should render file appearance based on its details', async ({ page }) => {
       await renderFileDetails(page);
+    });
+  });
+
+  test.describe('File pills', () => {
+    test('should render file pills in header', async ({ page }) => {
+      await showFilePills(page);
+    });
+
+    test('should render deleted files with special styling', async ({ page }) => {
+      await showFilePillsWithDeletedFiles(page);
     });
   });
 

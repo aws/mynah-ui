@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
+import { ChatItemBodyRenderer, DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/dom';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import { CardRenderDetails, ChatItem, ChatItemType, MynahEventNames } from '../../static';
@@ -27,6 +27,7 @@ import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { marked } from 'marked';
+import { parseMarkdown } from '../../helper/marked';
 import { DropdownWrapper } from '../dropdown-form/dropdown-wrapper';
 
 const TOOLTIP_DELAY = 350;
@@ -238,6 +239,113 @@ export class ChatItemCard {
     ];
   };
 
+  private readonly getFilePillsCustomRenderer = (): ChatItem['customRenderer'] => {
+    const header = this.props.chatItem.header;
+    if ((header?.fileList) == null) return [];
+
+    const customRenderer: ChatItemBodyRenderer[] = [];
+
+    // Add icon if present
+    if (header.icon != null) {
+      customRenderer.push({
+        type: 'i' as const,
+        classNames: [
+          'mynah-ui-icon',
+          `mynah-ui-icon-${header.icon as MynahIcons}`,
+          'mynah-chat-item-card-icon-inline',
+          `icon-status-${header.iconStatus ?? 'none'}`
+        ]
+      });
+    }
+
+    // Add body text if present
+    if (header.body != null && header.body !== '') {
+      // Parse markdown to handle inline code
+      const parsedHtml = parseMarkdown(header.body, { includeLineBreaks: true });
+
+      // Create a temporary div to extract text content while preserving inline code
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = parsedHtml;
+
+      // Convert to ChatItemBodyRenderer format
+      const processNode = (node: Node): Array<string | ChatItemBodyRenderer> => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return [ node.textContent ?? '' ];
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as HTMLElement;
+          if (element.tagName.toLowerCase() === 'code') {
+            return [ {
+              type: 'code' as const,
+              classNames: [ 'mynah-syntax-highlighter', 'mynah-inline-code' ],
+              children: [ element.textContent ?? '' ]
+            } ];
+          } else {
+            // For other elements, process their children
+            const children: Array<string | ChatItemBodyRenderer> = [];
+            Array.from(element.childNodes).forEach(child => {
+              children.push(...processNode(child));
+            });
+            return children;
+          }
+        }
+        return [ '' ];
+      };
+
+      const children: Array<string | ChatItemBodyRenderer> = [];
+      Array.from(tempDiv.childNodes).forEach(node => {
+        children.push(...processNode(node));
+      });
+
+      customRenderer.push({
+        type: 'span' as const,
+        children
+      });
+    }
+
+    // Add file pills
+    const filePills = header.fileList.filePaths?.map(filePath => {
+      const fileName = header.fileList?.details?.[filePath]?.visibleName ?? filePath;
+      const isDeleted = header.fileList?.deletedFiles?.includes(filePath) === true;
+      const description = header.fileList?.details?.[filePath]?.description;
+
+      return {
+        type: 'span' as const,
+        classNames: [
+          'mynah-chat-item-tree-file-pill',
+          ...(isDeleted ? [ 'mynah-chat-item-tree-file-pill-deleted' ] : [])
+        ],
+        children: [ fileName ],
+        events: {
+          click: () => {
+            if (header.fileList?.details?.[filePath]?.clickable === false) {
+              return;
+            }
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
+              tabId: this.props.tabId,
+              messageId: this.props.chatItem.messageId,
+              filePath,
+              deleted: isDeleted
+            });
+          },
+          ...(description !== undefined
+            ? {
+                mouseover: (e: MouseEvent) => {
+                  this.showTooltip(description, e.target as HTMLElement);
+                },
+                mouseleave: () => {
+                  this.hideTooltip();
+                }
+              }
+            : {})
+        },
+      };
+    }) ?? [];
+
+    customRenderer.push(...filePills);
+
+    return customRenderer;
+  };
+
   private readonly updateCardContent = (): void => {
     if (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId) === undefined) {
       return;
@@ -337,13 +445,21 @@ export class ChatItemCard {
       this.header = null;
     } else if (this.props.chatItem.header != null) {
       if (this.cardHeader != null && this.header != null) {
-        this.header.updateCardStack({
-          ...this.props.chatItem.header,
-          status: undefined,
-          type: ChatItemType.ANSWER,
-          messageId: this.props.chatItem.messageId,
-        } satisfies ChatItem);
-      } else {
+        if (this.props.chatItem.header.fileList?.renderAsPills === true) {
+          this.cardHeader?.remove();
+          this.cardHeader = this.getCardHeader();
+          this.card?.render.insertChild('beforeend', this.cardHeader);
+          this.header = null;
+        } else {
+          this.header.updateCardStack({
+            ...this.props.chatItem.header,
+            status: undefined,
+            type: ChatItemType.ANSWER,
+            messageId: this.props.chatItem.messageId,
+          } satisfies ChatItem);
+        }
+      }
+      if (this.header === null) {
         this.cardHeader?.remove();
         this.cardHeader = this.getCardHeader();
         this.card?.render.insertChild('beforeend', this.cardHeader);
@@ -358,13 +474,23 @@ export class ChatItemCard {
             status: undefined,
             type: ChatItemType.ANSWER,
             messageId: this.props.chatItem.messageId,
+            ...(this.props.chatItem.header.fileList?.renderAsPills === true
+              ? {
+                  customRenderer: this.getFilePillsCustomRenderer(),
+                  body: null,
+                  fileList: null,
+                  icon: undefined
+                }
+              : {})
           },
         });
         this.cardHeader.insertChild('beforeend', this.header.render);
       }
 
       if (this.props.chatItem.header.status != null) {
-        this.cardHeader.insertAdjacentElement(this.props.chatItem.header.status.position === 'left' ? 'afterbegin' : 'beforeend', DomBuilder.getInstance().build({
+        // Remove existing status before adding new one
+        this.cardHeader?.querySelector('.mynah-chat-item-card-header-status')?.remove();
+        this.cardHeader?.insertAdjacentElement(this.props.chatItem.header.status.position === 'left' ? 'afterbegin' : 'beforeend', DomBuilder.getInstance().build({
           type: 'span',
           classNames: [ 'mynah-chat-item-card-header-status', `status-${this.props.chatItem.header.status.status ?? 'default'}` ],
           children: [
@@ -514,7 +640,7 @@ export class ChatItemCard {
       this.fileTreeWrapper.render.remove();
       this.fileTreeWrapper = null;
     }
-    if (this.props.chatItem.fileList != null) {
+    if (this.props.chatItem.fileList != null && this.props.chatItem.header?.fileList?.renderAsPills !== true) {
       const { filePaths = [], deletedFiles = [], actions, details, flatList } = this.props.chatItem.fileList;
       const referenceSuggestionLabel = this.props.chatItem.body ?? '';
       this.fileTreeWrapper = new ChatItemTreeViewWrapper({

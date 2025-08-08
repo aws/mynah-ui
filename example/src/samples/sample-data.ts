@@ -2016,6 +2016,152 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
 `,
         codeBlockActions: { copy: null, 'insert-to-cursor': null },
     },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'progress',
+            body: 'Reading',
+            fileList: {
+                filePaths: ['package.json', 'README.md'],
+                details: {
+                    'package.json': {
+                        visibleName: 'package.json',
+                        description: 'package.json'
+                    },
+                    'README.md': {
+                        visibleName: 'README.md',
+                        description: 'README.md'
+                    }
+                },
+                renderAsPills: true
+            }
+        },
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'eye',
+            body: '5 files read',
+            fileList: {
+                filePaths: ['package.json', 'README.md', 'webpack.config.js', 'src/app.ts', 'src/components/Button/Button.tsx'],
+                details: {
+                    'package.json': {
+                        visibleName: 'package.json',
+                        description: 'package.json'
+                    },
+                    'README.md': {
+                        visibleName: 'README.md',
+                        description: 'README.md'
+                    },
+                    'webpack.config.js': {
+                        visibleName: 'webpack.config.js',
+                        description: 'webpack.config.js'
+                    },
+                    'src/app.ts': {
+                        visibleName: 'app.ts',
+                        description: 'src/app.ts'
+                    },
+                    'src/components/Button/Button.tsx': {
+                        visibleName: 'Button.tsx',
+                        description: 'src/components/Button/Button.tsx'
+                    }
+                },
+                renderAsPills: true
+            }
+        },
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'progress',
+            body: 'Listing',
+            fileList: {
+                filePaths: ['src/components/ui', 'src/components/forms'],
+                details: {
+                    'src/components/ui': {
+                        visibleName: 'ui',
+                        description: 'src/components/ui',
+                        clickable: false
+                    },
+                    'src/components/forms': {
+                        visibleName: 'forms',
+                        description: 'src/components/forms',
+                        clickable: false
+                    },
+                },
+                renderAsPills: true
+            }
+        }
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'check-list',
+            body: '5 directories listed',
+            fileList: {
+                filePaths: ['src/components/ui', 'src/components/forms', 'src/components/layout', 'src/utils/helpers', 'src/utils/validation'],
+                details: {
+                    'src/components/ui': {
+                        visibleName: 'ui',
+                        description: 'src/components/ui',
+                        clickable: false
+                    },
+                    'src/components/forms': {
+                        visibleName: 'forms',
+                        description: 'src/components/forms',
+                        clickable: false
+                    },
+                    'src/components/layout': {
+                        visibleName: 'layout',
+                        description: 'src/components/layout',
+                        clickable: false
+                    },
+                    'src/utils/helpers': {
+                        visibleName: 'helpers',
+                        description: 'src/components/helpers',
+                        clickable: false
+                    },
+                    'src/utils/validation': {
+                        visibleName: 'validation',
+                        description: 'src/components/validation',
+                        clickable: false
+                    },
+                },
+                renderAsPills: true
+            }
+        }
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'search',
+            body: 'Searched for `*.md` in',
+            fileList: {
+                filePaths: ['src/docs'],
+                details: {
+                    ['src/docs']: {
+                        visibleName: 'docs',
+                        description: 'src/docs',
+                        clickable: false
+                    }
+                },
+                renderAsPills: true
+            },
+            status: {
+                text: '5 results found'
+            }
+        },
+    }
 ];
 
 

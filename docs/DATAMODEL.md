@@ -1343,6 +1343,7 @@ interface ChatItemContent {
     folderIcon?: MynahIcons | MynahIconsType | null;
     collapsed?: boolean;
     hideFileCount?: boolean;
+    renderAsPills?: boolean; // When true (header only), renders files as inline pills instead of tree
     actions?: Record<string, FileNodeAction[]>;
     details?: Record<string, TreeNodeDetails>;
   } | null;
@@ -2586,9 +2587,79 @@ mynahUI.addChatItem(tabId, {
 
 **NOTE 4:** In case you want a flat list, where all subfolders are not rendered but just all the files, you can pass `true` to the `flatList` prop.
 
+**NOTE 5:** When using `renderAsPills: true` in a header's fileList, files will be displayed as inline pills instead of a traditional file tree. This is useful for showing a compact list of files that were processed or referenced.
+
 <p align="center">
   <img src="./img/data-model/chatItems/codeResult.png" alt="mainTitle" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
+
+#### `renderAsPills` (default: `false`)
+When set to `true` in a header's fileList, files will be rendered as inline pills next to the header text instead of a traditional file tree. This creates a compact display perfect for showing files that were read, processed, or referenced.
+
+**Features:**
+- Files appear as clickable pills inline with the header text and icon
+- Uses `visibleName` from details as pill text (falls back to full file path)
+- Deleted files get special styling with `mynah-chat-item-tree-file-pill-deleted` class
+- Pills support hover tooltips when `description` is provided in details
+- Header icon is automatically included in the custom renderer for proper alignment
+- Pills dispatch `FILE_CLICK` events when clicked, same as regular file tree items
+- Only works when `renderAsPills: true` is set in a header's fileList (not main fileList)
+
+**Important Notes:**
+- This feature only works within a `header.fileList`, not in the main chat item `fileList`
+- When `renderAsPills: true`, the traditional file tree is replaced with inline pills
+- The header's `body`, `icon`, and file pills are all rendered together in a custom renderer
+- Empty `filePaths` array will result in no pills being rendered
+
+```typescript
+mynahUI.addChatItem('tab-1', {
+  type: ChatItemType.ANSWER,
+  header: {
+    icon: MynahIcons.EYE,
+    body: '5 files read',
+    fileList: {
+      filePaths: ['package.json', 'tsconfig.json', 'src/index.ts'],
+      renderAsPills: true,
+      details: {
+        'package.json': {
+          visibleName: 'package',
+          description: 'Project configuration'
+        },
+        'tsconfig.json': {
+          visibleName: 'tsconfig',
+          description: 'TypeScript configuration'
+        },
+        'src/index.ts': {
+          visibleName: 'index.ts',
+          description: 'Main entry point'
+        }
+      },
+      deletedFiles: ['src/index.ts'] // Will show with deleted styling
+    }
+  },
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/renderAsPills.png" alt="renderAsPills" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+**Comparison with regular file tree:**
+
+```typescript
+// Regular file tree (renderAsPills: false or undefined)
+mynahUI.addChatItem('tab-1', {
+  type: ChatItemType.ANSWER,
+  header: {
+    icon: MynahIcons.EYE,
+    body: 'Files analyzed',
+    fileList: {
+      filePaths: ['package.json', 'src/index.ts'],
+      renderAsPills: false // or omit this property
+    }
+  }
+});
+```
 
 
 #### File `details`
