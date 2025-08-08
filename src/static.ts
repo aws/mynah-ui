@@ -830,6 +830,9 @@ export interface ConfigOptions {
   test?: boolean;
   dragOverlayIcon?: MynahIcons | MynahIconsType | CustomIcon;
   enableSearchKeyboardShortcut?: boolean;
+  typewriterStackTime?: number;
+  typewriterMaxWordTime?: number;
+  disableTypewriterAnimation?: boolean;
 }
 
 export interface ConfigModel extends ConfigOptions {
