@@ -66,6 +66,29 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
     let showChatAvatars: boolean = false;
     let showPinnedContext: boolean = true;
 
+    // Get animation config from URL hash
+    const getAnimationConfig = () => {
+        const hash = window.location.hash.replace('#', '');
+        switch (hash) {
+            case 'fast-animation':
+                return {
+                    typewriterStackTime: 100,
+                    typewriterMaxWordTime: 20,
+                };
+            case 'normal-animation':
+                return {
+                    typewriterStackTime: 500,
+                    typewriterMaxWordTime: 50,
+                };
+            case 'no-animation':
+                return {
+                    disableTypewriterAnimation: true,
+                };
+            default:
+                return {};
+        }
+    };
+
     const mynahUI = new MynahUI({
         loadStyles: true,
         splashScreenInitialStatus: {
@@ -85,6 +108,7 @@ export const createMynahUI = (initialData?: MynahUIDataModel): MynahUI => {
             noMoreTabsTooltip: 'You can only open five conversation tabs at a time.',
             autoFocus: true,
             dragOverlayIcon: MynahIcons.IMAGE,
+            ...getAnimationConfig(),
             texts: {
                 dragOverlayText: 'Add Image to Context',
                 stopGeneratingTooltip: 'Stop &#8984; Backspace',
@@ -1034,6 +1058,18 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         },
                     });
                 }
+            } else if (buttonId === 'animation-fast') {
+                // Recreate MynahUI with fast animation settings
+                window.location.hash = 'fast-animation';
+                window.location.reload();
+            } else if (buttonId === 'animation-normal') {
+                // Recreate MynahUI with normal animation settings
+                window.location.hash = 'normal-animation';
+                window.location.reload();
+            } else if (buttonId === 'animation-disabled') {
+                // Recreate MynahUI with disabled animation
+                window.location.hash = 'no-animation';
+                window.location.reload();
             }
             Log(`Tab bar button clicked when tab ${tabId} is selected: <b>${buttonId}</b>`);
         },
@@ -1770,6 +1806,25 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         body: `${Commands.COMMAND_WITH_PROMPT} => ${realPromptText}`,
                     });
                     getGenerativeAIAnswer(tabId);
+                    break;
+                case '/animation-demo':
+                    mynahUI.addChatItem(tabId, {
+                        type: ChatItemType.PROMPT,
+                        messageId: new Date().getTime().toString(),
+                        body: 'Test streaming animation speeds',
+                    });
+                    // Create a longer streaming response to better demonstrate animation differences
+                    const longStreamParts = [
+                        { body: 'Here is a demonstration of the typewriter animation speed. ' },
+                        { body: 'This response will stream word by word to show the animation effect. ' },
+                        { body: 'You can use the tab bar buttons (Fast Animation, Normal Animation, Disable Animation) to switch between different modes. ' },
+                        { body: 'Fast animation uses 100ms stack time with 20ms max per word. ' },
+                        { body: 'Normal animation uses 500ms stack time with 50ms max per word. ' },
+                        { body: 'Disabled animation shows content immediately without any delay. ' },
+                        { body: 'Try switching modes and running this command again to see the difference! ' },
+                        { body: '\n\n```typescript\n// Animation configuration\nconst config = {\n  typewriterStackTime: 100, // Fast mode\n  typewriterMaxWordTime: 20,\n  // OR\n  disableTypewriterAnimation: true // Instant\n};\n```' },
+                    ];
+                    getGenerativeAIAnswer(tabId, longStreamParts);
                     break;
                 default:
                     mynahUI.addChatItem(tabId, {

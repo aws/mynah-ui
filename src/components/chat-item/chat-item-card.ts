@@ -1051,6 +1051,10 @@ export class ChatItemCard {
     };
   };
 
+  public readonly endStream = (): void => {
+    this.contentBody?.endStream();
+  };
+
   public readonly cleanFollowupsAndRemoveIfEmpty = (): boolean => {
     this.followUps?.render?.remove();
     this.followUps = null;
