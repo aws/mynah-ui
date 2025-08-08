@@ -991,6 +991,53 @@ onFormChange?: (
 
 ---
 
+### `onDropDownOptionChange`
+
+This event will be fired when a user selects an option from a dropdown list. It passes the `tabId`, `messageId`, and the selected options.
+
+```typescript
+...
+onDropDownOptionChange?: (
+    tabId: string,
+    messageId: string,
+    selectedOptions: DropdownListOption[]): void => {
+      console.log(`Dropdown selection changed in tab: ${tabId}`);
+      console.log(`From message: ${messageId}`);
+      console.log(`Selected option: ${selectedOptions[0].label}`);
+    };
+...
+```
+
+<p align="center">
+  <img src="./img/onDropDownOptionChange.png" alt="Dropdown List" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+### `onDropDownLinkClick`
+
+This event will be fired when a user clicks on a link within a dropdown list's description. It passes the `tabId` and the `actionId` of the clicked link.
+
+```typescript
+...
+onDropDownLinkClick?: (
+    tabId: string,
+    destination: string,
+    actionId: string): void => {
+      console.log(`Dropdown link clicked in tab: ${tabId}`);
+      console.log(`Link action ID: ${actionId}`);
+      console.log(`Destination ID: ${destination}`);
+    };
+...
+```
+
+<p align="center">
+  <img src="./img/onDropDownLinkClick.png" alt="Dropdown List" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+
+---
+
 ### `onCustomFormAction`
 
 This event will be fired when user clicks one of the buttons inside a custom popup form. It will pass `tabId` and `action`. But `action` argument contains the `id` and `text` of the action clicked and the values for each form item with string values. 

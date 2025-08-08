@@ -50,6 +50,8 @@ import { checkContentInsideWindowBoundaries } from './flows/window-boundaries';
 import { navigatePromptsFirstLastLineCheck } from './flows/navigate-prompts/navigate-prompts-first-last-line-check';
 import { renderHeaders } from './flows/headers';
 import { renderAndDismissCard } from './flows/dismissible-cards';
+import { openCloseDropdown } from './flows/dropdown-list/open-close-dropdown';
+import { selectDropdownOption } from './flows/dropdown-list/select-dropdown-option';
 import { DEFAULT_VIEWPORT } from './helpers';
 import path from 'path';
 import {
@@ -324,6 +326,14 @@ test.describe('Open MynahUI', () => {
     });
     test('should submit feedback form', async ({ page }) => {
       await submitFeedbackForm(page);
+    });
+  });
+  test.describe('Dropdown list', () => {
+    test('should open and close dropdown', async ({ page }) => {
+      await openCloseDropdown(page);
+    });
+    test('should select dropdown option', async ({ page }) => {
+      await selectDropdownOption(page);
     });
   });
 });
