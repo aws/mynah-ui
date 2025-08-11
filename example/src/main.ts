@@ -16,7 +16,8 @@ import {
     TreeNodeDetails,
     QuickActionCommand,
     ChatItemButton,
-    CustomQuickActionCommand
+    CustomQuickActionCommand,
+    DropdownListOption
 } from '@aws/mynah-ui';
 import { mcpButton, mynahUIDefaults, promptTopBarTitle, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
@@ -143,6 +144,12 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                     type: NotificationType.INFO
                 });
             }
+        },
+        onDropDownOptionChange: (tabId: string, messageId: string, value: DropdownListOption []) => {
+            Log(`Dropdown Option changed in message ${messageId} on tab ${tabId}`)
+        },
+        onDropDownLinkClick: (tabId, actionId, destination) => {
+            Log(`Dropdown link click with id ${tabId}, ${actionId}, ${destination}`)
         },
         onPromptInputButtonClick: (tabId, buttonId) => {
             Log(`Prompt input button ${buttonId} clicked on tab <b>${tabId}</b>`);

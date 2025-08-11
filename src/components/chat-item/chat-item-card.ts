@@ -27,6 +27,8 @@ import { MoreContentIndicator } from '../more-content-indicator';
 import { Button } from '../button';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { marked } from 'marked';
+import { parseMarkdown } from '../../helper/marked';
+import { DropdownWrapper } from '../dropdown-form/dropdown-wrapper';
 
 const TOOLTIP_DELAY = 350;
 export interface ChatItemCardProps {
@@ -192,7 +194,7 @@ export class ChatItemCard {
         ...(this.canShowAvatar() && MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('showChatAvatars') === true ? [ this.chatAvatar ] : []),
         ...(this.card != null ? [ this.card?.render ] : []),
         ...(this.chatButtonsOutside != null ? [ this.chatButtonsOutside?.render ] : []),
-        ...(this.props.chatItem.followUp?.text !== undefined ? [ new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render ] : [])
+        ...(this.props.chatItem.followUp?.text !== undefined ? [ new ChatItemFollowUpContainer({ tabId: this.props.tabId, chatItem: this.props.chatItem }).render ] : []),
       ],
     });
 
@@ -258,9 +260,45 @@ export class ChatItemCard {
 
     // Add body text if present
     if (header.body != null && header.body !== '') {
+      // Parse markdown to handle inline code
+      const parsedHtml = parseMarkdown(header.body, { includeLineBreaks: true });
+
+      // Create a temporary div to extract text content while preserving inline code
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = parsedHtml;
+
+      // Convert to ChatItemBodyRenderer format
+      const processNode = (node: Node): Array<string | ChatItemBodyRenderer> => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return [ node.textContent ?? '' ];
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as HTMLElement;
+          if (element.tagName.toLowerCase() === 'code') {
+            return [ {
+              type: 'code' as const,
+              classNames: [ 'mynah-syntax-highlighter', 'mynah-inline-code' ],
+              children: [ element.textContent ?? '' ]
+            } ];
+          } else {
+            // For other elements, process their children
+            const children: Array<string | ChatItemBodyRenderer> = [];
+            Array.from(element.childNodes).forEach(child => {
+              children.push(...processNode(child));
+            });
+            return children;
+          }
+        }
+        return [ '' ];
+      };
+
+      const children: Array<string | ChatItemBodyRenderer> = [];
+      Array.from(tempDiv.childNodes).forEach(node => {
+        children.push(...processNode(node));
+      });
+
       customRenderer.push({
         type: 'span' as const,
-        children: [ header.body ]
+        children
       });
     }
 
@@ -279,6 +317,9 @@ export class ChatItemCard {
         children: [ fileName ],
         events: {
           click: () => {
+            if (header.fileList?.details?.[filePath]?.clickable === false) {
+              return;
+            }
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
               tabId: this.props.tabId,
               messageId: this.props.chatItem.messageId,
@@ -447,6 +488,8 @@ export class ChatItemCard {
       }
 
       if (this.props.chatItem.header.status != null) {
+        // Remove existing status before adding new one
+        this.cardHeader?.querySelector('.mynah-chat-item-card-header-status')?.remove();
         this.cardHeader?.insertAdjacentElement(this.props.chatItem.header.status.position === 'left' ? 'afterbegin' : 'beforeend', DomBuilder.getInstance().build({
           type: 'span',
           classNames: [ 'mynah-chat-item-card-header-status', `status-${this.props.chatItem.header.status.status ?? 'default'}` ],
@@ -821,7 +864,8 @@ export class ChatItemCard {
       this.cardFooter.remove();
       this.cardFooter = null;
     }
-    if (this.props.chatItem.footer != null || this.props.chatItem.canBeVoted === true) {
+
+    if (this.props.chatItem.footer != null || this.props.chatItem.canBeVoted === true || this.shouldShowQuickSettings()) {
       this.cardFooter = this.getCardFooter();
       this.card?.render.insertChild('beforeend', this.cardFooter);
 
@@ -860,6 +904,22 @@ export class ChatItemCard {
         });
         this.cardFooter.insertChild('beforeend', this.votes.render);
       }
+
+      /**
+       * Add QuickSettings to footer if available
+       */
+      if (this.props.chatItem.quickSettings != null) {
+        const dropdownContainer = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-dropdown-list-container' ],
+          children: [
+            new DropdownWrapper({
+              dropdownProps: this.props.chatItem.quickSettings
+            }).render
+          ]
+        });
+        this.cardFooter.insertChild('beforeend', dropdownContainer);
+      }
     }
 
     /**
@@ -883,6 +943,10 @@ export class ChatItemCard {
     });
 
   private readonly canShowAvatar = (): boolean => (this.props.chatItem.type === ChatItemType.ANSWER_STREAM || (this.props.inline !== true && chatItemHasContent({ ...this.props.chatItem, followUp: undefined })));
+
+  private readonly shouldShowQuickSettings = (): boolean => {
+    return this.props.chatItem.quickSettings != null;
+  };
 
   private readonly showTooltip = (content: string, elm: HTMLElement): void => {
     if (content.trim() !== undefined) {

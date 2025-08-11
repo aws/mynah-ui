@@ -1370,6 +1370,7 @@ interface ChatItemContent {
     content: ChatItemContent;
   }> | null;
   codeBlockActions?: CodeBlockActions | null;
+  quickSettings?: DropdownFactoryProps | null;
   fullWidth?: boolean;
   padding?: boolean;
   wrapCodes?: boolean;
@@ -2311,6 +2312,105 @@ mynahUI.addChatItem(tabId, {
 
 <p align="center">
   <img src="./img/data-model/chatItems/codeBlockActions.png" alt="codeBlockActions" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+---
+
+## `quickSettings`
+This parameter allows you to add a dropdown selector to the footer of a chat item card. The `quickSettings` component provides a flexible dropdown interface that can be extended for different form item types in the future (radio buttons, checkboxes, etc.).
+
+Currently, it supports the `select` type for single-selection dropdowns with visual feedback and customizable options.
+
+The `DropdownList` component provides a customizable dropdown selector that allows users to choose from a list of options. It supports single selection with visual feedback and can be positioned relative to its parent elements.
+
+```typescript
+interface DropdownListOption {
+  id: string;      // Unique identifier for the option
+  label: string;   // Display text for the option
+  value: string;   // Value associated with the option
+  selected?: boolean; // Whether the option is initially selected
+}
+
+interface DropdownFactoryProps {
+  type: 'select';              // Type of dropdown (currently only 'select', extensible for 'radio', 'checkbox', etc.)
+  title: string;               // The title displayed in the dropdown header
+  titleIcon?: MynahIcons;      // Icon displayed next to the title
+  description?: string;        // Description text displayed below the title
+  descriptionLink?: {          // Optional clickable link that appears within the description text
+    id: string;                // Unique identifier for the link
+    text: string;              // Display text for the link
+    destination: string;       // Link destination
+    onClick?: () => void;      // Optional callback function triggered when the link is clicked
+  };
+  options: DropdownListOption[]; // Array of options to display in the dropdown
+  onChange?: (selectedOptions: DropdownListOption[]) => void; // Callback when selection changes
+  tabId?: string;              // Tab identifier for event dispatching
+  messageId?: string;          // Message identifier for event dispatching
+  classNames?: string[];       // Additional CSS class names to apply
+}
+```
+
+When a dropdown option is selected, the component dispatches a `MynahEventNames.DROPDOWN_OPTION_CHANGE` event with the selected options. You can handle this event by implementing the [`onDropDownOptionChange`](./PROPERTIES.md#ondropdownoptionchange) callback in your MynahUI constructor properties.
+
+When a link in the dropdown description is clicked, the component dispatches a `MynahEventNames.DROP_DOWN_LINK_CLICK` event. You can handle this event by implementing the [`onDropDownLinkClick`](./PROPERTIES.md#ondropdownlinkclick) callback in your MynahUI constructor properties.
+
+```typescript
+const mynahUI = new MynahUI({
+    tabs: {
+        'tab-1': {
+            ...
+        }
+    }
+});
+
+mynahUI.addChatItem('tab-1', {
+    type: ChatItemType.ANSWER,
+    messageId: 'dropdown-example',
+    body: 'Please select your preferred option:',
+    quickSettings: {
+        type: 'select',
+        title: 'Select an option',
+        description: 'Choose one of the following options',
+        tabId: 'tab-1',
+        messageId: 'dropdown-example',
+        options: [
+            { id: 'option1', label: 'Option 1', value: 'option1', selected: false },
+            { id: 'option2', label: 'Option 2', value: 'option2', selected: true },
+            { id: 'option3', label: 'Option 3', value: 'option3', selected: false }
+        ]
+    }
+});
+
+// Example with descriptionLink
+mynahUI.addChatItem('tab-1', {
+    type: ChatItemType.ANSWER,
+    messageId: 'dropdown-with-link-example',
+    body: 'Configure your settings:',
+    quickSettings: {
+        type: 'select',
+        title: 'Model Selection',
+        description: 'Choose your preferred AI model. Need help choosing?',
+        descriptionLink: {
+            id: 'model-help-link',
+            text: 'Learn more about models',
+            onClick: () => {
+                console.log('Help link clicked - opening model documentation');
+                // Handle the link click, e.g., open documentation or show help dialog
+            }
+        },
+        tabId: 'tab-1',
+        messageId: 'dropdown-with-link-example',
+        options: [
+            { id: 'gpt4', label: 'GPT-4', value: 'gpt4', selected: true },
+            { id: 'claude', label: 'Claude', value: 'claude', selected: false },
+            { id: 'llama', label: 'Llama', value: 'llama', selected: false }
+        ]
+    }
+});
+```
+
+<p align="center">
+  <img src="./img/data-model/chatItems/dropdown-list.png" alt="QuickSettings dropdown" style="max-width:300px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 
 ---
@@ -3659,7 +3759,6 @@ export interface DetailedListItem {
   actions?: ChatItemButton[];
   children?: DetailedListItemGroup[];
   keywords?: string[];
-}
 }
 ```
 

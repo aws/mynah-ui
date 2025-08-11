@@ -1805,7 +1805,58 @@ mkdir -p src/ lalalaaaa
 `,
         codeBlockActions: { copy: null, 'insert-to-cursor': null },
     },
-
+    {
+        fullWidth: true,
+        padding: false,
+        type: ChatItemType.ANSWER,
+        header: {
+            body: 'Shell',
+            status: {
+                position: 'left',
+                icon: MynahIcons.WARNING,
+                status: 'warning',
+                description: 'This command may cause\nsignificant data loss or damage.',
+            },
+            buttons: [
+                {
+                    status: 'clear',
+                    icon: 'play',
+                    text: 'Run',
+                    id: 'run-bash-command',
+                },
+                {
+                    status: 'dimmed-clear',
+                    icon: 'cancel',
+                    text: 'Reject',
+                    id: 'reject-bash-command',
+                },
+            ],
+        },
+        body: `
+\`\`\`bash
+mkdir -p src/ lalalaaaa
+\`\`\`
+`,
+        quickSettings: {
+            type: "select",
+            messageId: "1",
+            tabId: "hello",
+            description: '',
+            descriptionLink: {
+                id: "button-id",
+                destination: "Built-in",
+                text: 'More control, modify the commands',
+            },
+            options: [
+                { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
+                { id: 'option2', label: 'Auto run', value: 'Destructive' },
+            ],
+            onChange: (selectedOptions: any) => {
+                console.log('Selected options:', selectedOptions);
+            }
+    },
+        codeBlockActions: { copy: null, 'insert-to-cursor': null },
+    },
     {
         fullWidth: true,
         padding: false,
@@ -2035,11 +2086,13 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
                 details: {
                     'src/components/ui': {
                         visibleName: 'ui',
-                        description: 'src/components/ui'
+                        description: 'src/components/ui',
+                        clickable: false
                     },
                     'src/components/forms': {
                         visibleName: 'forms',
-                        description: 'src/components/forms'
+                        description: 'src/components/forms',
+                        clickable: false
                     },
                 },
                 renderAsPills: true
@@ -2059,27 +2112,55 @@ mkdir -p src/ lalalaaaa sad fbnsafsdaf sdakjfsd sadf asdkljf basdkjfh ksajhf kjs
                     'src/components/ui': {
                         visibleName: 'ui',
                         description: 'src/components/ui',
+                        clickable: false
                     },
                     'src/components/forms': {
                         visibleName: 'forms',
-                        description: 'src/components/forms'
+                        description: 'src/components/forms',
+                        clickable: false
                     },
                     'src/components/layout': {
                         visibleName: 'layout',
-                        description: 'src/components/layout'
+                        description: 'src/components/layout',
+                        clickable: false
                     },
                     'src/utils/helpers': {
                         visibleName: 'helpers',
-                        description: 'src/components/helpers'
+                        description: 'src/components/helpers',
+                        clickable: false
                     },
                     'src/utils/validation': {
                         visibleName: 'validation',
-                        description: 'src/components/validation'
+                        description: 'src/components/validation',
+                        clickable: false
                     },
                 },
                 renderAsPills: true
             }
         }
+    },
+    {
+        type: ChatItemType.ANSWER,
+        fullWidth: true,
+        padding: false,
+        header: {
+            icon: 'search',
+            body: 'Searched for `*.md` in',
+            fileList: {
+                filePaths: ['src/docs'],
+                details: {
+                    ['src/docs']: {
+                        visibleName: 'docs',
+                        description: 'src/docs',
+                        clickable: false
+                    }
+                },
+                renderAsPills: true
+            },
+            status: {
+                text: '5 results found'
+            }
+        },
     }
 ];
 
@@ -2144,7 +2225,39 @@ export const mcpToolRunSampleCard:ChatItem = // Summary Card
             header: {
                 icon: MynahIcons.TOOLS,
                 body: 'Ran Filesystem tool search-files',
-                fileList: null
+                fileList: null,
+                buttons: [
+                {
+                    status: 'clear',
+                    icon: 'play',
+                    text: 'Run',
+                    id: 'run-bash-command',
+                },
+                {
+                    status: 'dimmed-clear',
+                    icon: 'cancel',
+                    text: 'Reject',
+                    id: 'reject-bash-command',
+                },
+            ],
+            },
+            quickSettings: {
+                type: "select",
+                messageId: "1",
+                tabId: "hello",
+                description: '',
+                descriptionLink: {
+                    id: "button-id",
+                    destination: "Built-in",
+                    text: 'Auto-approve settings',
+                },
+                options: [
+                    { id: 'option1', label: 'Ask to Run', selected: true, value: 'Destructive' },
+                    { id: 'option2', label: 'Auto run', value: 'Destructive' },
+                ],
+                onChange: (selectedOptions: any) => {
+                    console.log('Selected options:', selectedOptions);
+                }
             },
         },
         collapsedContent: [
