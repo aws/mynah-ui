@@ -30,6 +30,7 @@ import {
   DetailedList,
   TreeNodeDetails,
   Action,
+  DropdownListOption,
 } from './static';
 import { cancelEvent, MynahUIGlobalEvents } from './helper/events';
 import { Tabs } from './components/navigation-tabs';
@@ -265,6 +266,14 @@ export interface MynahUIProps {
       formItemValues?: Record<string, string>;
     },
     eventId?: string) => void;
+  onDropDownOptionChange?: (
+    tabId: string,
+    messageId: string,
+    value: DropdownListOption[]) => void;
+  onDropDownLinkClick?: (
+    tabId: string,
+    actionId: string,
+    destination: string) => void;
   onPromptInputOptionChange?: (
     tabId: string,
     optionsValues: Record<string, string>,
@@ -830,6 +839,14 @@ export class MynahUI {
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.PROMPT_INPUT_OPTIONS_CHANGE, (data) => {
       this.props.onPromptInputOptionChange?.(data.tabId, data.optionsValues, this.getUserEventId());
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DROPDOWN_OPTION_CHANGE, (data) => {
+      this.props.onDropDownOptionChange?.(data.tabId, data.messageId, data.value);
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.DROPDOWN_LINK_CLICK, (data) => {
+      this.props.onDropDownLinkClick?.(data.tabId, data.actionId, data.destination);
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.TOP_BAR_ITEM_ADD, (data) => {
