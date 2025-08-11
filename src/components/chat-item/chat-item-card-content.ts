@@ -93,43 +93,20 @@ export class ChatItemCardContent {
             getTypewriterPartsCss(this.typewriterId, this.typewriterItemIndex, upcomingWords.length, timeForEach));
         }
 
-        this.props.onAnimationStateChange?.(true);
+        this.props.onAnimationStateChange?.(shouldAnimate);
         if (this.contentBody == null) {
           this.contentBody = newCardContent;
           this.render = this.contentBody.render;
         }
-        Array.from(newCardContent.render.childNodes).forEach(node => {
-          const newElm = node as HTMLElement;
-          const currIndex = (node as HTMLElement).getAttribute('render-index');
-          const oldElm = this.render.querySelector(`[render-index="${currIndex ?? ''}"]`);
-          if (oldElm == null) {
-            this.render.insertChild('beforeend', node as HTMLElement);
-          } else if (newElm.innerHTML !== oldElm.innerHTML) {
-            if (newElm.classList.contains('mynah-syntax-highlighter')) {
-              const newPreElm = newElm.querySelector('pre');
-              if (newPreElm?.childNodes != null) {
-                const oldElmPre = oldElm.querySelector('pre');
-                if (oldElmPre != null) {
-                  oldElmPre.replaceChildren(...Array.from(newPreElm.childNodes));
-                  if (!newElm.classList.contains('mynah-inline-code') && !newElm.classList.contains('no-max') && oldElmPre.scrollHeight > oldElmPre.clientHeight) {
-                    oldElm.classList.add('max-height-exceed');
-                  }
-                }
-              }
-            } else {
-              oldElm.replaceWith(newElm);
-            }
-          }
-        });
-        this.contentBody = newCardContent;
+        this.updateDOMContent(newCardContent);
         this.lastAnimationDuration = shouldAnimate ? timeForEach * newWordsCount : 0;
-        this.typewriterItemIndex = upcomingWords.length;
 
         // If there is another set
         // call the same function to check after current stack totally shown
         this.updateTimer = setTimeout(() => {
           this.updateTimer = undefined;
-          this.props.onAnimationStateChange?.(false);
+          // Only signal animation end if no more updates are queued
+          this.props.onAnimationStateChange?.(this.updateStack.length > 0);
           this.updateCard();
         }, this.lastAnimationDuration);
       }
@@ -146,65 +123,65 @@ export class ChatItemCardContent {
     this.flushRemainingUpdates();
   };
 
+  private readonly updateDOMContent = (newCardContent: CardBody): void => {
+    const upcomingWords = Array.from(newCardContent.render.querySelectorAll('.typewriter-part') ?? []);
+    for (let i = 0; i < upcomingWords.length; i++) {
+      upcomingWords[i].setAttribute('index', i.toString());
+    }
+
+    if (this.contentBody == null) {
+      this.contentBody = newCardContent;
+      this.render = this.contentBody.render;
+    }
+    Array.from(newCardContent.render.childNodes).forEach(node => {
+      const newElm = node as HTMLElement;
+      const currIndex = (node as HTMLElement).getAttribute('render-index');
+      const oldElm = this.render.querySelector(`[render-index="${currIndex ?? ''}"]`);
+      if (oldElm == null) {
+        this.render.insertChild('beforeend', node as HTMLElement);
+      } else if (newElm.innerHTML !== oldElm.innerHTML) {
+        if (newElm.classList.contains('mynah-syntax-highlighter')) {
+          const newPreElm = newElm.querySelector('pre');
+          if (newPreElm?.childNodes != null) {
+            const oldElmPre = oldElm.querySelector('pre');
+            if (oldElmPre != null) {
+              oldElmPre.replaceChildren(...Array.from(newPreElm.childNodes));
+              if (!newElm.classList.contains('mynah-inline-code') && !newElm.classList.contains('no-max') && oldElmPre.scrollHeight > oldElmPre.clientHeight) {
+                oldElm.classList.add('max-height-exceed');
+              }
+            }
+          }
+        } else {
+          oldElm.replaceWith(newElm);
+        }
+      }
+    });
+    this.contentBody = newCardContent;
+    this.typewriterItemIndex = upcomingWords.length;
+  };
+
   private readonly flushRemainingUpdates = (): void => {
     if (this.updateTimer != null) {
       clearTimeout(this.updateTimer);
       this.updateTimer = undefined;
     }
 
-    // Cancel any currently running CSS animations by removing animation styles
-    const existingAnimationStyles = this.render.querySelectorAll('style[type="text/css"]');
+    // Clean up all animation styles
+    const existingAnimationStyles = this.render.querySelectorAll(`style[data-typewriter="${this.typewriterId}"], style[type="text/css"]`);
     existingAnimationStyles.forEach(style => {
       if (style.innerHTML.includes(this.typewriterId)) {
         style.remove();
       }
     });
 
-    // Process all remaining updates directly without setTimeout recursion
-    while (this.updateStack.length > 0) {
-      const updateWith: Partial<ChatItemCardContentProps> | undefined = this.updateStack.shift();
-      if (updateWith !== undefined) {
-        this.props = {
-          ...this.props,
-          ...updateWith,
-        };
+    // Batch all updates into final props
+    if (this.updateStack.length > 0) {
+      const finalProps = this.updateStack.reduce((acc, update) => ({ ...acc, ...update }), this.props);
+      this.updateStack.length = 0; // Clear array efficiently
 
-        const newCardContent = this.getCardContent();
-        const upcomingWords = Array.from(newCardContent.render.querySelectorAll('.typewriter-part') ?? []);
-        for (let i = 0; i < upcomingWords.length; i++) {
-          upcomingWords[i].setAttribute('index', i.toString());
-        }
-
-        if (this.contentBody == null) {
-          this.contentBody = newCardContent;
-          this.render = this.contentBody.render;
-        }
-        Array.from(newCardContent.render.childNodes).forEach(node => {
-          const newElm = node as HTMLElement;
-          const currIndex = (node as HTMLElement).getAttribute('render-index');
-          const oldElm = this.render.querySelector(`[render-index="${currIndex ?? ''}"]`);
-          if (oldElm == null) {
-            this.render.insertChild('beforeend', node as HTMLElement);
-          } else if (newElm.innerHTML !== oldElm.innerHTML) {
-            if (newElm.classList.contains('mynah-syntax-highlighter')) {
-              const newPreElm = newElm.querySelector('pre');
-              if (newPreElm?.childNodes != null) {
-                const oldElmPre = oldElm.querySelector('pre');
-                if (oldElmPre != null) {
-                  oldElmPre.replaceChildren(...Array.from(newPreElm.childNodes));
-                  if (!newElm.classList.contains('mynah-inline-code') && !newElm.classList.contains('no-max') && oldElmPre.scrollHeight > oldElmPre.clientHeight) {
-                    oldElm.classList.add('max-height-exceed');
-                  }
-                }
-              }
-            } else {
-              oldElm.replaceWith(newElm);
-            }
-          }
-        });
-        this.contentBody = newCardContent;
-        this.typewriterItemIndex = upcomingWords.length;
-      }
+      this.props = finalProps;
+      const newCardContent = this.getCardContent();
+      this.updateDOMContent(newCardContent);
     }
 
     this.props.onAnimationStateChange?.(false);
