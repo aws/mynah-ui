@@ -25,7 +25,7 @@
         "@playwright/test": "^1.50.0",
         "css-loader": "^6.6.0",
         "html-webpack-plugin": "^5.5.0",
-        "playwright": "^1.52.0",
+        "playwright": "^1.50.0",
         "raw-loader": "^4.0.2",
         "sass": "^1.49.8",
         "sass-loader": "^12.6.0",
