@@ -37,7 +37,10 @@
         &.mynah-chat-item-directive.full-width {
             > .mynah-card {
                 background-color: var(--mynah-color-bg);
-                backface-visibility: hidden;
+                // skips transparency layer related styling for Eclipse Webkit that causes rendering issues
+                body:not(.eclipse-swt-webkit) & {
+                    backface-visibility: hidden;
+                }
                 max-width: calc(100% - var(--mynah-sizing-18));
                 width: auto;
                 padding-left: var(--mynah-sizing-2);
@@ -92,17 +95,19 @@
             display: none !important;
         }
 
-        *:not(.mynah-chat-item-card-header, .mynah-card) {
-            filter: grayscale(100%) !important;
-            -webkit-filter: grayscale(100%) !important;
-            opacity: 90%;
-        }
+        body:not(.eclipse-swt-webkit) & {
+            *:not(.mynah-chat-item-card-header, .mynah-card) {
+                filter: grayscale(100%) !important;
+                -webkit-filter: grayscale(100%) !important;
+                opacity: 90%;
+            }
 
-        .mynah-chat-item-card-header-status,
-        .mynah-chat-item-card-header-status * {
-            filter: none !important;
-            -webkit-filter: none !important;
-            opacity: 60%;
+            .mynah-chat-item-card-header-status,
+            .mynah-chat-item-card-header-status * {
+                filter: none !important;
+                -webkit-filter: none !important;
+                opacity: 60%;
+            }
         }
 
         .mynah-button {
@@ -186,7 +191,9 @@
             border-bottom-left-radius: var(--mynah-card-radius-corner);
             border-bottom-right-radius: var(--mynah-card-radius);
             > button > i {
-                opacity: 0.5;
+                body:not(.eclipse-swt-webkit) & {
+                    opacity: 0.5;
+                }
             }
         }
         &.mynah-chat-item-collapsed {
@@ -227,8 +234,10 @@
 
                 &[class*='icon-status-']:not(.icon-status-none) {
                     padding: var(--mynah-sizing-2);
-                    mask-size: 100% 60%;
                     border-radius: var(--mynah-input-radius);
+                    body:not(.eclipse-swt-webkit) & {
+                        mask-size: 100% 60%;
+                    }
                 }
                 @each $status in $mynah-statuses {
                     &.icon-status-#{$status} {
@@ -303,7 +312,9 @@
             padding: var(--mynah-border-width);
             & > div {
                 > .mynah-syntax-highlighter {
-                    filter: contrast(1.15) brightness(0.85);
+                    body:not(.eclipse-swt-webkit) & {
+                        filter: contrast(1.15) brightness(0.85);
+                    }
                 }
 
                 @for $i from 1 through 4 {
@@ -469,7 +480,7 @@
             gap: var(--mynah-sizing-2);
             > .mynah-chat-item-followup-question-option {
                 color: var(--mynah-color-text-default);
-                &:not(:hover) {
+                body:not(.eclipse-swt-webkit) &:not(:hover) {
                     opacity: 0.75;
                 }
             }
@@ -504,8 +515,10 @@
                     margin-bottom: calc(-1 * var(--mynah-sizing-4));
                     pointer-events: none;
                     @include list-fader-bottom(var(--mynah-sizing-12));
-                    mask-image: linear-gradient(to top, transparent var(--mynah-sizing-1), black 70%);
-                    -webkit-mask-image: linear-gradient(to top, transparent var(--mynah-sizing-1), black 70%);
+                    body:not(.eclipse-swt-webkit) & {
+                        mask-image: linear-gradient(to top, transparent var(--mynah-sizing-1), black 70%);
+                        -webkit-mask-image: linear-gradient(to top, transparent var(--mynah-sizing-1), black 70%);
+                    }
                 }
                 &:nth-of-type(#{$maxItems + 1}) {
                     & ~ .mynah-chat-item-card-related-content-show-more {
