@@ -501,6 +501,13 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                             },
                         ],
                     },
+                    {
+                        command: 'disabled-example',
+                        icon: MynahIcons.BLOCK,
+                        description: 'Example of disabled item with custom text',
+                        disabled: true,
+                        disabledText: 'pending'
+                    },
                 ],
             },
         ],

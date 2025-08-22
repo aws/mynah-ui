@@ -291,6 +291,14 @@
                         color: var(--mynah-color-text-weak);
                         font-size: var(--mynah-font-size-small);
                     }
+
+                    > .mynah-detailed-list-item-disabled-text {
+                        flex-shrink: 0;
+                        color: var(--mynah-color-text-weak);
+                        font-size: var(--mynah-font-size-small);
+                        font-style: italic;
+                        white-space: nowrap;
+                    }
                 }
             }
         }

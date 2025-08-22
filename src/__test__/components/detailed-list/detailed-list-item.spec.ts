@@ -404,6 +404,52 @@ describe('DetailedListItemWrapper Component', () => {
     });
   });
 
+  describe('Disabled Text', () => {
+    it('should render disabled text when disabledText is present without children', () => {
+      const itemWithDisabledTextOnly: DetailedListItem = {
+        id: 'disabled-text-only',
+        title: 'Item with Disabled Text Only',
+        disabledText: 'pending'
+      };
+
+      detailedListItem = new DetailedListItemWrapper({ listItem: itemWithDisabledTextOnly });
+      document.body.appendChild(detailedListItem.render);
+
+      const disabledText = document.body.querySelector('.mynah-detailed-list-item-disabled-text');
+      expect(disabledText).toBeDefined();
+      expect(disabledText?.textContent).toBe('(pending)');
+
+      const arrowIcon = document.body.querySelector('.mynah-detailed-list-item-arrow-icon');
+      expect(arrowIcon).toBeNull();
+    });
+
+    it('should render disabled text instead of arrow when disabledText is present with children', () => {
+      const itemWithDisabledTextAndChildren: DetailedListItem = {
+        id: 'disabled-text-with-children',
+        title: 'Item with Disabled Text and Children',
+        children: [
+          {
+            groupName: 'Child Group',
+            children: [
+              { id: 'child-1', title: 'Child Item 1' }
+            ]
+          }
+        ],
+        disabledText: 'pending'
+      };
+
+      detailedListItem = new DetailedListItemWrapper({ listItem: itemWithDisabledTextAndChildren });
+      document.body.appendChild(detailedListItem.render);
+
+      const disabledText = document.body.querySelector('.mynah-detailed-list-item-disabled-text');
+      expect(disabledText).toBeDefined();
+      expect(disabledText?.textContent).toBe('(pending)');
+
+      const arrowIcon = document.body.querySelector('.mynah-detailed-list-item-arrow-icon');
+      expect(arrowIcon).toBeNull();
+    });
+  });
+
   describe('Click Handling', () => {
     it('should handle select click when selectable', () => {
       detailedListItem = new DetailedListItemWrapper({
