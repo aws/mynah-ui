@@ -475,6 +475,10 @@ export class ChatWrapper {
   public endStreamWithMessageId = (messageId: string, updateWith: Partial<ChatItem>): void => {
     if (this.allRenderedChatItems[messageId]?.render !== undefined) {
       this.allRenderedChatItems[messageId].render.addClass('stream-ended');
+
+      // End typewriter animation stream to flush remaining updates instantly
+      this.allRenderedChatItems[messageId].endStream();
+
       this.updateChatAnswerWithMessageId(messageId, updateWith);
 
       // If the last streaming chat answer is the same with the messageId
