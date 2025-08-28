@@ -91,19 +91,23 @@ export class DetailedListWrapper {
   private readonly handleScroll = (): void => {
     const wrapperOffsetHeight = this.detailedListItemGroupsContainer.offsetHeight;
     const wrapperScrollTop = this.detailedListItemGroupsContainer.scrollTop;
+    const buffer = wrapperOffsetHeight;
+
     this.detailedListItemsBlockData.forEach(itemsBlock => {
       const itemBlockTop = itemsBlock.element.offsetTop;
-      const itemBlockBottom = itemsBlock.element.offsetTop + itemsBlock.element.offsetHeight;
-      if (itemsBlock.element.childNodes.length === 0 &&
-      (itemBlockTop < wrapperScrollTop + wrapperOffsetHeight) &&
-      (itemBlockBottom > wrapperScrollTop - wrapperOffsetHeight)) {
+      const itemBlockBottom = itemBlockTop + itemsBlock.element.offsetHeight;
+      const hasChildren = itemsBlock.element.childNodes.length > 0;
+
+      const isVisible = (itemBlockTop < wrapperScrollTop + wrapperOffsetHeight + buffer) &&
+                     (itemBlockBottom > wrapperScrollTop - buffer);
+
+      if (!hasChildren && isVisible) {
         // Block is visible but not rendered yet - add DOM elements
         itemsBlock.element.update({
           children: this.getDetailedListItemElements(itemsBlock.data)
         });
-      } else if ((itemBlockTop > wrapperScrollTop + wrapperOffsetHeight) ||
-    (itemBlockBottom < wrapperScrollTop - wrapperOffsetHeight)) {
-        // Block is no longer visible - remove DOM elements to save memory
+      } else if (hasChildren && !isVisible) {
+        // Block has children but is no longer visible - remove DOM elements
         itemsBlock.element.clear();
       }
     });
