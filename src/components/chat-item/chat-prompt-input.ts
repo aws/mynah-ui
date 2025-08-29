@@ -10,6 +10,7 @@ import { MynahUIGlobalEvents, cancelEvent } from '../../helper/events';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
 import { MynahUITabsStore } from '../../helper/tabs-store';
 import escapeHTML from 'escape-html';
+import { escapeHtml } from '../../helper/sanitize';
 import { ChatPromptInputCommand } from './chat-prompt-input-command';
 import { PromptAttachment } from './prompt-input/prompt-attachment';
 import { PromptInputSendButton } from './prompt-input/prompt-input-send-button';
@@ -469,10 +470,10 @@ export class ChatPromptInput {
 
           let codeAttachment = '';
           if (this.userPromptHistoryIndex === this.userPromptHistory.length) {
-            this.promptTextInput.updateTextInputValue(this.lastUnsentUserPrompt.inputText ?? '');
+            this.promptTextInput.updateTextInputValue(escapeHtml(this.lastUnsentUserPrompt.inputText ?? ''));
             codeAttachment = this.lastUnsentUserPrompt.codeAttachment ?? '';
           } else {
-            this.promptTextInput.updateTextInputValue(this.userPromptHistory[this.userPromptHistoryIndex].inputText);
+            this.promptTextInput.updateTextInputValue(escapeHtml(this.userPromptHistory[this.userPromptHistoryIndex].inputText));
             codeAttachment = this.userPromptHistory[this.userPromptHistoryIndex].codeAttachment ?? '';
           }
           codeAttachment = codeAttachment.trim();
@@ -877,8 +878,8 @@ export class ChatPromptInput {
 
       if (currentInputValue !== '') {
         this.userPromptHistory.push({
-          inputText: currentInputValue,
-          codeAttachment: attachmentContent ?? '',
+          inputText: escapeHtml(currentInputValue),
+          codeAttachment: escapeHtml(attachmentContent ?? ''),
         });
       }
 

@@ -57,7 +57,9 @@ export {
 } from './helper/dom';
 export {
   AllowedAttributesInCustomRenderer,
-  AllowedTagsInCustomRenderer
+  AllowedTagsInCustomRenderer,
+  cleanHtml,
+  escapeHtml
 } from './helper/sanitize';
 export * from './static';
 export {

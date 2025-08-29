@@ -10,6 +10,7 @@ import { CardBody } from '../../card/card-body';
 import testIds from '../../../helper/test-ids';
 import { generateUID } from '../../../main';
 import { Icon, MynahIcons } from '../../icon';
+import { escapeHtml } from '../../../helper/sanitize';
 
 const PREVIEW_DELAY = 500;
 const IMAGE_CONTEXT_SELECT_KEYWORD = '@image:';
@@ -493,13 +494,13 @@ export class PromptTextInput {
                   {
                     type: 'div',
                     classNames: [ 'mynah-chat-prompt-context-tooltip-name' ],
-                    children: [ contextItem.command ]
+                    children: [ escapeHtml(contextItem.command) ]
                   },
                   ...(contextItem.description !== undefined
                     ? [ {
                         type: 'div',
                         classNames: [ 'mynah-chat-prompt-context-tooltip-description' ],
-                        children: [ contextItem.description ]
+                        children: [ escapeHtml(contextItem.description ?? '') ]
                       } ]
                     : [])
                 ]
@@ -530,7 +531,7 @@ export class PromptTextInput {
         ...(topBarHidden !== true ? [ new Icon({ icon: MynahIcons.PIN, classNames: [ 'hover-icon' ] }).render ] : []),
         new Icon({ icon: contextItem.icon ?? MynahIcons.AT }).render,
         { type: 'span', classNames: [ 'at-char' ], innerHTML: '@' },
-        `${contextItem.command.replace(/^@?(.*)$/, '$1')}`
+        escapeHtml(contextItem.command.replace(/^@?(.*)$/, '$1'))
       ],
       classNames: [ 'context', topBarHidden === true ? 'no-hover' : '' ],
       attributes: {
@@ -607,7 +608,8 @@ export class PromptTextInput {
   };
 
   public readonly updateTextInputValue = (value: string): void => {
-    this.promptTextInput.innerText = value;
+    // Escape HTML to prevent XSS when setting text content
+    this.promptTextInput.innerText = escapeHtml(value);
     this.checkIsEmpty();
   };
 

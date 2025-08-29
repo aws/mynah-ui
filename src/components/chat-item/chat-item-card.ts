@@ -16,7 +16,7 @@ import { ChatItemTreeViewWrapper } from './chat-item-tree-view-wrapper';
 import { Config } from '../../helper/config';
 import { ChatItemFormItemsWrapper } from './chat-item-form-items';
 import { ChatItemButtonsWrapper, ChatItemButtonsWrapperProps } from './chat-item-buttons';
-import { cleanHtml } from '../../helper/sanitize';
+import { cleanHtml, escapeHtml } from '../../helper/sanitize';
 import { chatItemHasContent } from '../../helper/chat-item';
 import { Card } from '../card/card';
 import { ChatItemCardContent, ChatItemCardContentProps } from './chat-item-card-content';
@@ -407,7 +407,7 @@ export class ChatItemCard {
         this.cardTitle?.insertChild('beforeend', DomBuilder.getInstance().build({
           type: 'div',
           classNames: [ 'mynah-chat-item-card-title-text' ],
-          children: [ this.props.chatItem.title ]
+          children: [ escapeHtml(this.props.chatItem.title) ]
         }));
       }
 
@@ -495,7 +495,7 @@ export class ChatItemCard {
           classNames: [ 'mynah-chat-item-card-header-status', `status-${this.props.chatItem.header.status.status ?? 'default'}` ],
           children: [
             ...(this.props.chatItem.header.status.icon != null ? [ new Icon({ icon: this.props.chatItem.header.status.icon }).render ] : []),
-            ...(this.props.chatItem.header.status.text != null ? [ { type: 'span', classNames: [ 'mynah-chat-item-card-header-status-text' ], children: [ this.props.chatItem.header.status.text ] } ] : []),
+            ...(this.props.chatItem.header.status.text != null ? [ { type: 'span', classNames: [ 'mynah-chat-item-card-header-status-text' ], children: [ escapeHtml(this.props.chatItem.header.status.text) ] } ] : []),
           ],
           ...(this.props.chatItem.header.status?.description != null
             ? {
