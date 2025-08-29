@@ -17,6 +17,7 @@ import { generateUID } from '../../helper/guid';
 import { Config } from '../../helper/config';
 import { parseMarkdown } from '../../helper/marked';
 import { StyleLoader } from '../../helper/style-loader';
+import { escapeHtml } from '../../helper/sanitize';
 
 const PREVIEW_DELAY = 500;
 
@@ -108,7 +109,7 @@ export class CardBody {
         children: elementFromNode.textContent?.split(' ').map(textPart => DomBuilder.getInstance().build({
           type: 'span',
           classNames: [ PARTS_CLASS_NAME ],
-          children: [ textPart, ' ' ]
+          children: [ escapeHtml(textPart), ' ' ]
         }))
       });
     } else {

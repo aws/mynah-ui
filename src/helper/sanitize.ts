@@ -19,7 +19,6 @@ export const AllowedTags = [
   'data',
   'div',
   'em',
-  'embed',
   'figcaption',
   'figure',
   'h1',
@@ -29,13 +28,11 @@ export const AllowedTags = [
   'h5',
   'h6',
   'i',
-  'iframe',
   'img',
   'input',
   'li',
   'map',
   'mark',
-  'object',
   'ol',
   'p',
   'pre',
@@ -142,6 +139,12 @@ export const cleanHtml = (dirty: string): string => {
       '*': [ ...AllowedAttributes ],
       input: [ 'type', 'disabled', 'checked' ]
     },
+    allowedSchemes: [ 'http', 'https', 'ftp', 'mailto', 'tel' ],
+    allowedSchemesByTag: {
+      a: [ 'http', 'https', 'ftp', 'mailto', 'tel' ],
+      img: [ 'http', 'https', 'data' ],
+    },
+    disallowedTagsMode: 'discard',
     transformTags: {
       input: ((tagName, attribs) => {
         // Only allow input if it's a checkbox and disabled
@@ -163,4 +166,18 @@ export const cleanHtml = (dirty: string): string => {
       }) as sanitizeHtml.Transformer
     }
   });
+};
+
+/**
+ * Escapes HTML characters to prevent XSS attacks
+ * This is a lightweight alternative to cleanHtml for simple text content
+ */
+export const escapeHtml = (unsafe: string): string => {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
 };

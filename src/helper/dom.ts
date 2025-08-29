@@ -7,7 +7,7 @@ import testIds from '../helper/test-ids';
 import { MynahEventNames, MynahPortalNames } from '../static';
 import { Config } from './config';
 import { MynahUIGlobalEvents } from './events';
-import { AllowedTagsInCustomRenderer, AllowedAttributesInCustomRenderer } from './sanitize';
+import { AllowedTagsInCustomRenderer, AllowedAttributesInCustomRenderer, cleanHtml } from './sanitize';
 
 /* eslint-disable @typescript-eslint/method-signature-style */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
@@ -266,7 +266,7 @@ export class DomBuilder {
     }
 
     if (typeof readyToBuildObject.innerHTML === 'string') {
-      buildedDom.innerHTML = readyToBuildObject.innerHTML;
+      buildedDom.innerHTML = cleanHtml(readyToBuildObject.innerHTML);
     } else if (readyToBuildObject.children !== undefined && readyToBuildObject.children?.length > 0) {
       this.insertChild.apply(buildedDom as ExtendedHTMLElement, [
         'beforeend',
@@ -321,7 +321,7 @@ export class DomBuilder {
       }
 
       if (typeof domBuilderObject.innerHTML === 'string') {
-        domToUpdate.innerHTML = domBuilderObject.innerHTML;
+        domToUpdate.innerHTML = cleanHtml(domBuilderObject.innerHTML);
       } else if (domBuilderObject.children !== undefined && domBuilderObject.children.length > 0) {
         domToUpdate.clear();
         domToUpdate.insertChild('beforeend', domBuilderObject.children);
