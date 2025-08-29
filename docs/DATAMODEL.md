@@ -379,6 +379,9 @@ const mynahUI = new MynahUI({
 ### `contextCommands` (default: `[]`)
 Context commands are the predefined context items which user can pick between but unlike quick action commands, they can be picked several times at any point in the prompt text. When users hit `@` from their keyboard in the input, if there is an available list of context items provided through store it will show up as an overlay menu.
 
+#### Disabled Commands
+Commands can be disabled by setting the `disabled` property to `true`. When a command is disabled, you can optionally provide `disabledText` to display custom text instead of the usual arrow icon for items with children. This is useful for showing status information like "pending".
+
 
 ```typescript
 const mynahUI = new MynahUI({
@@ -397,7 +400,9 @@ contextCommands: [
             command: 'workspace',
             icon: MynahIcons.ASTERISK,
             placeholder: 'Yes, you selected workspace :P',
-            description: 'Reference all code in workspace.'
+            description: 'Reference all code in workspace.',
+            disabled: true,
+            disabledText: 'pending' 
           },
           {
             command: 'folder',
@@ -3727,7 +3732,7 @@ export interface ChatPrompt {
 
 # `DetailedListItem`
 
-DetailedList items can be rendered in an `DetailedListItemGroup` within a `DetailedList`. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions.
+DetailedList items can be rendered in an `DetailedListItemGroup` within a `DetailedList`. These items are full width information displays, with an optional icon on the left, and room for a title, description, and a list of actions. Items with children display an arrow icon by default, but when disabled they can display custom text such as "pending" instead of the arrow icon.
 
 ```typescript
 export interface DetailedList {
@@ -3759,6 +3764,7 @@ export interface DetailedListItem {
   actions?: ChatItemButton[];
   children?: DetailedListItemGroup[];
   keywords?: string[];
+  disabledText?: string;
 }
 ```
 
