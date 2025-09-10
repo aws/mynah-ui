@@ -96,6 +96,10 @@ export {
   ChatItemCardContent,
   ChatItemCardContentProps
 } from './components/chat-item/chat-item-card-content';
+export {
+  ModifiedFilesTracker,
+  ModifiedFilesTrackerProps
+} from './components/modified-files-tracker';
 export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {
@@ -337,6 +341,11 @@ export interface MynahUIProps {
     files: FileList,
     insertPosition: number
   ) => void;
+  onModifiedFileClick?: (
+    tabId: string,
+    filePath: string,
+    eventId?: string
+  ) => void;
 }
 
 export class MynahUI {
@@ -351,6 +360,17 @@ export class MynahUI {
   private readonly feedbackForm?: FeedbackForm;
   private readonly sheet?: Sheet;
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
+
+  private logToStorage (message: string): void {
+    try {
+      const timestamp = new Date().toISOString();
+      const logEntry = `[${timestamp}] ${message}`;
+      const existingLogs = localStorage.getItem('mynah-modified-files-logs') ?? '';
+      localStorage.setItem('mynah-modified-files-logs', existingLogs + logEntry + '\n');
+    } catch (error) {
+      // Ignore storage errors
+    }
+  }
 
   constructor (props: MynahUIProps) {
     StyleLoader.getInstance(props.loadStyles !== false).load('styles.scss');
@@ -385,6 +405,13 @@ export class MynahUI {
             ? (tabId) => {
                 if (props.onStopChatResponse != null) {
                   props.onStopChatResponse(tabId, this.getUserEventId());
+                }
+              }
+            : undefined,
+          onModifiedFileClick: props.onModifiedFileClick != null
+            ? (tabId, filePath) => {
+                if (props.onModifiedFileClick != null) {
+                  props.onModifiedFileClick(tabId, filePath, this.getUserEventId());
                 }
               }
             : undefined,
@@ -467,6 +494,13 @@ export class MynahUI {
               }
             }
           : undefined,
+        onModifiedFileClick: props.onModifiedFileClick != null
+          ? (tabId, filePath) => {
+              if (props.onModifiedFileClick != null) {
+                props.onModifiedFileClick(tabId, filePath, this.getUserEventId());
+              }
+            }
+          : undefined,
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
       this.focusToInput(tabId);
@@ -535,11 +569,7 @@ export class MynahUI {
   };
 
   private readonly addGlobalListeners = (): void => {
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: { tabId: string; prompt: ChatPrompt }) => {
-      if (this.props.onChatPrompt !== undefined) {
-        this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
-      }
-    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, this.handleChatPrompt);
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: {
       tabId: string;
@@ -891,6 +921,14 @@ export class MynahUI {
    */
   public addChatItem = (tabId: string, chatItem: ChatItem): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      // Auto-populate modified files tracker from fileList
+      if ((chatItem.fileList?.filePaths) != null) {
+        this.logToStorage(`[MynahUI] addChatItem - auto-populating modified files - tabId: ${tabId}, filePaths: ${JSON.stringify(chatItem.fileList.filePaths)}`);
+        chatItem.fileList.filePaths.forEach(filePath => {
+          this.addModifiedFile(tabId, filePath);
+        });
+      }
+
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ADD, { tabId, chatItem });
       MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
         chatItems: [
@@ -935,6 +973,13 @@ export class MynahUI {
    */
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) != null) {
+      // Auto-populate modified files tracker from fileList in updates
+      if ((updateWith.fileList?.filePaths) != null) {
+        updateWith.fileList.filePaths.forEach(filePath => {
+          this.addModifiedFile(tabId, filePath);
+        });
+      }
+
       if (this.chatWrappers[tabId].getLastStreamingMessageId() != null) {
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
       } else {
@@ -958,6 +1003,13 @@ export class MynahUI {
    */
   public updateChatAnswerWithMessageId = (tabId: string, messageId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      // Auto-populate modified files tracker from fileList in updates
+      if ((updateWith.fileList?.filePaths) != null) {
+        updateWith.fileList.filePaths.forEach(filePath => {
+          this.addModifiedFile(tabId, filePath);
+        });
+      }
+
       this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, updateWith);
     }
   };
@@ -983,6 +1035,14 @@ export class MynahUI {
    */
   public endMessageStream = (tabId: string, messageId: string, updateWith?: Partial<ChatItem>): CardRenderDetails => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
+      // Auto-populate modified files tracker and set work as done
+      if ((updateWith?.fileList?.filePaths) != null) {
+        updateWith.fileList.filePaths.forEach(filePath => {
+          this.addModifiedFile(tabId, filePath);
+        });
+        this.setModifiedFilesWorkInProgress(tabId, false);
+      }
+
       const chatMessage = this.chatWrappers[tabId].getChatItem(messageId);
       if (chatMessage != null && ![ ChatItemType.AI_PROMPT, ChatItemType.PROMPT, ChatItemType.SYSTEM_PROMPT ].includes(chatMessage.chatItem.type)) {
         this.chatWrappers[tabId].endStreamWithMessageId(messageId, {
@@ -1206,6 +1266,93 @@ export class MynahUI {
       changeTarget: detailedListSheet.detailedListWrapper.changeTarget,
       getTargetElementId
     };
+  };
+
+  /**
+   * Adds a file to the modified files tracker for the specified tab
+   * @param tabId The tab ID
+   * @param filePath The path of the modified file
+   */
+  public addModifiedFile = (tabId: string, filePath: string): void => {
+    this.logToStorage(`[MynahUI] addModifiedFile called - tabId: ${tabId}, filePath: ${filePath}`);
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].addModifiedFile(filePath);
+    } else {
+      this.logToStorage(`[MynahUI] addModifiedFile - chatWrapper not found for tabId: ${tabId}`);
+    }
+  };
+
+  /**
+   * Removes a file from the modified files tracker for the specified tab
+   * @param tabId The tab ID
+   * @param filePath The path of the file to remove
+   */
+  public removeModifiedFile = (tabId: string, filePath: string): void => {
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].removeModifiedFile(filePath);
+    }
+  };
+
+  /**
+   * Sets the work in progress status for the modified files tracker
+   * @param tabId The tab ID
+   * @param inProgress Whether work is in progress
+   */
+  public setModifiedFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
+    this.logToStorage(`[MynahUI] setModifiedFilesWorkInProgress called - tabId: ${tabId}, inProgress: ${String(inProgress)}`);
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].setModifiedFilesWorkInProgress(inProgress);
+    } else {
+      this.logToStorage(`[MynahUI] setModifiedFilesWorkInProgress - chatWrapper not found for tabId: ${tabId}`);
+    }
+  };
+
+  /**
+   * Clears all modified files for the specified tab
+   * @param tabId The tab ID
+   */
+  public clearModifiedFiles = (tabId: string): void => {
+    this.logToStorage(`[MynahUI] clearModifiedFiles called - tabId: ${tabId}`);
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].clearModifiedFiles();
+    } else {
+      this.logToStorage(`[MynahUI] clearModifiedFiles - chatWrapper not found for tabId: ${tabId}`);
+    }
+  };
+
+  private readonly handleChatPrompt = (data: { tabId: string; prompt: ChatPrompt }): void => {
+    // Clear modified files for file-modifying commands
+    const fileModifyingCommands = [ '/dev', '/transform', '/generate' ];
+    if (data.prompt.command !== null && data.prompt.command !== undefined && fileModifyingCommands.includes(data.prompt.command)) {
+      this.clearModifiedFiles(data.tabId);
+    }
+
+    if (this.props.onChatPrompt !== undefined) {
+      this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
+    }
+  };
+
+  /**
+   * Gets the list of modified files for the specified tab
+   * @param tabId The tab ID
+   * @returns Array of modified file paths
+   */
+  public getModifiedFiles = (tabId: string): string[] => {
+    if (this.chatWrappers[tabId] != null) {
+      return this.chatWrappers[tabId].getModifiedFiles();
+    }
+    return [];
+  };
+
+  /**
+   * Sets the visibility of the modified files tracker for the specified tab
+   * @param tabId The tab ID
+   * @param visible Whether the tracker should be visible
+   */
+  public setModifiedFilesTrackerVisible = (tabId: string, visible: boolean): void => {
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].setModifiedFilesTrackerVisible(visible);
+    }
   };
 
   public destroy = (): void => {

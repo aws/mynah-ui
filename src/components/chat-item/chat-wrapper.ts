@@ -30,11 +30,13 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon } from '../icon';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
+import { ModifiedFilesTracker } from '../modified-files-tracker';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
   onStopChatResponse?: (tabId: string) => void;
   tabId: string;
+  onModifiedFileClick?: (tabId: string, filePath: string) => void;
 }
 export class ChatWrapper {
   private readonly props: ChatWrapperProps;
@@ -58,6 +60,7 @@ export class ChatWrapper {
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
+  private readonly modifiedFilesTracker: ModifiedFilesTracker;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -92,6 +95,14 @@ export class ChatWrapper {
     this.imageContextFeatureEnabled = contextCommands.some(group =>
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     );
+
+    this.modifiedFilesTracker = new ModifiedFilesTracker({
+      tabId: this.props.tabId,
+      visible: true,
+      onFileClick: (filePath: string) => {
+        this.props.onModifiedFileClick?.(this.props.tabId, filePath);
+      }
+    });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
@@ -309,6 +320,7 @@ export class ChatWrapper {
             this.chatItemsContainer.scrollTop = this.chatItemsContainer.scrollHeight;
           }
         }).render,
+        this.modifiedFilesTracker.render,
         this.promptStickyCard,
         this.promptInputElement,
         this.footerSpacer,
@@ -536,5 +548,29 @@ export class ChatWrapper {
     this.dragOverlayVisibility = visible;
     this.dragOverlayContent.style.display = visible ? 'flex' : 'none';
     this.dragBlurOverlay.style.display = visible ? 'block' : 'none';
+  }
+
+  public addModifiedFile (filePath: string): void {
+    this.modifiedFilesTracker.addModifiedFile(filePath);
+  }
+
+  public removeModifiedFile (filePath: string): void {
+    this.modifiedFilesTracker.removeModifiedFile(filePath);
+  }
+
+  public setModifiedFilesWorkInProgress (inProgress: boolean): void {
+    this.modifiedFilesTracker.setWorkInProgress(inProgress);
+  }
+
+  public clearModifiedFiles (): void {
+    this.modifiedFilesTracker.clearModifiedFiles();
+  }
+
+  public getModifiedFiles (): string[] {
+    return this.modifiedFilesTracker.getModifiedFiles();
+  }
+
+  public setModifiedFilesTrackerVisible (visible: boolean): void {
+    this.modifiedFilesTracker.setVisible(visible);
   }
 }
