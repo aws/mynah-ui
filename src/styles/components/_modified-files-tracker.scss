@@ -65,6 +65,31 @@
     padding: var(--mynah-sizing-2);
 }
 
+.mynah-modified-files-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--mynah-sizing-2);
+
+    .mynah-modified-files-title-text {
+        flex: 1;
+    }
+
+    .mynah-modified-files-title-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--mynah-sizing-1);
+        flex-shrink: 0;
+
+        .mynah-button {
+            font-size: var(--mynah-font-size-small);
+            padding: var(--mynah-sizing-half) var(--mynah-sizing-1);
+            min-height: var(--mynah-sizing-6);
+        }
+    }
+}
+
 .mynah-modified-files-item {
     display: flex;
     align-items: center;
@@ -121,5 +146,24 @@
         &:hover .mynah-ui-icon {
             color: var(--mynah-color-text-strong);
         }
+    }
+}
+
+// Fix for detailed list item layout to ensure single line display
+.mynah-modified-files-content .mynah-detailed-list-item {
+    .mynah-detailed-list-item-text {
+        flex-direction: row !important;
+        align-items: center;
+        
+        .mynah-detailed-list-item-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    
+    .mynah-detailed-list-item-actions {
+        margin-left: auto;
+        flex-shrink: 0;
     }
 }

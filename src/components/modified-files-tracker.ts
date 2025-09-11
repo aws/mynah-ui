@@ -7,6 +7,8 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
 import { Icon, MynahIcons } from './icon';
+import { ChatItemButton } from '../static';
+import { DetailedListItemWrapper } from './detailed-list/detailed-list-item';
 import { Button } from './button';
 import testIds from '../helper/test-ids';
 
@@ -16,6 +18,8 @@ export interface ModifiedFilesTrackerProps {
   onFileClick?: (filePath: string) => void;
   onAcceptFile?: (filePath: string) => void;
   onUndoFile?: (filePath: string) => void;
+  onAcceptAll?: () => void;
+  onUndoAll?: () => void;
 }
 
 export class ModifiedFilesTracker {
@@ -25,58 +29,10 @@ export class ModifiedFilesTracker {
   private isWorkInProgress: boolean = false;
   private readonly collapsibleContent: CollapsibleContent;
   private readonly contentWrapper: ExtendedHTMLElement;
-  private readonly logBuffer: string[] = [];
-
-  private log (message: string, data?: any): void {
-    const timestamp = new Date().toISOString();
-    const logEntry = `[${timestamp}] ModifiedFilesTracker(${this.props.tabId}): ${message}${data !== undefined ? ' - ' + JSON.stringify(data) : ''}`;
-
-    // Store in localStorage for VS Code environment
-    try {
-      const existingLogs = localStorage.getItem('mynah-modified-files-logs') ?? '';
-      const newLogs = existingLogs + logEntry + '\n';
-      localStorage.setItem('mynah-modified-files-logs', newLogs);
-
-      // Also add to DOM for visibility
-      this.addLogToDOM(logEntry);
-    } catch (error) {
-      // Fallback to DOM only
-      this.addLogToDOM(logEntry);
-    }
-  }
-
-  private addLogToDOM (logEntry: string): void {
-    let logContainer = document.getElementById('mynah-debug-logs');
-    if (logContainer == null) {
-      logContainer = document.createElement('div');
-      logContainer.id = 'mynah-debug-logs';
-      logContainer.style.cssText = 'position:fixed;top:10px;right:10px;width:400px;height:200px;background:black;color:lime;font-family:monospace;font-size:10px;overflow-y:scroll;z-index:9999;padding:5px;border:1px solid lime;';
-      document.body.appendChild(logContainer);
-    }
-
-    const logLine = document.createElement('div');
-    logLine.textContent = logEntry;
-    logContainer.appendChild(logLine);
-    logContainer.scrollTop = logContainer.scrollHeight;
-
-    // Keep only last 50 entries
-    while (logContainer.children.length > 50) {
-      const firstChild = logContainer.firstChild;
-      if (firstChild !== null) {
-        logContainer.removeChild(firstChild);
-      }
-    }
-  }
 
   constructor (props: ModifiedFilesTrackerProps) {
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
-
-    this.props = {
-      visible: true,
-      ...props
-    };
-
-    this.log('Constructor called', { props });
+    this.props = { visible: true, ...props };
 
     this.contentWrapper = DomBuilder.getInstance().build({
       type: 'div',
@@ -85,16 +41,11 @@ export class ModifiedFilesTracker {
     });
 
     this.collapsibleContent = new CollapsibleContent({
-      title: this.getCollapsedTitle(),
+      title: this.getTitleWithButtons(),
       initialCollapsedState: false,
       children: [ this.contentWrapper ],
       classNames: [ 'mynah-modified-files-tracker' ],
-      testId: testIds.modifiedFilesTracker.wrapper,
-      onCollapseStateChange: (collapsed) => {
-        if (!collapsed && this.modifiedFiles.size === 0) {
-          this.updateContent();
-        }
-      }
+      testId: testIds.modifiedFilesTracker.wrapper
     });
 
     this.render = DomBuilder.getInstance().build({
@@ -108,16 +59,30 @@ export class ModifiedFilesTracker {
     });
   }
 
-  private getCollapsedTitle (): string {
-    if (this.modifiedFiles.size === 0) {
-      return 'No files modified!';
-    }
-
-    const fileCount = this.modifiedFiles.size;
-    const fileText = fileCount === 1 ? 'file' : 'files';
-    const statusText = this.isWorkInProgress ? 'Work in progress...' : 'Work done!';
-
-    return `${fileCount} ${fileText} modified so far. ${statusText}`;
+  private getTitleWithButtons (): ExtendedHTMLElement {
+    const titleText = this.modifiedFiles.size === 0 
+      ? 'No files modified!' 
+      : `${this.modifiedFiles.size} ${this.modifiedFiles.size === 1 ? 'file' : 'files'} modified so far. ${this.isWorkInProgress ? 'Work in progress...' : 'Work done!'}`;
+    
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-modified-files-title-wrapper' ],
+      children: [
+        {
+          type: 'span',
+          classNames: [ 'mynah-modified-files-title-text' ],
+          children: [ titleText ]
+        },
+        ...(this.modifiedFiles.size > 0 ? [{
+          type: 'div',
+          classNames: [ 'mynah-modified-files-title-actions' ],
+          children: [
+            new Button({ tooltip: 'Accept all', icon: new Icon({ icon: MynahIcons.OK }).render, primary: false, border: false, status: 'clear', onClick: () => this.props.onAcceptAll?.() }).render,
+            new Button({ tooltip: 'Undo all', icon: new Icon({ icon: MynahIcons.UNDO }).render, primary: false, border: false, status: 'clear', onClick: () => this.props.onUndoAll?.() }).render
+          ]
+        }] : [])
+      ]
+    });
   }
 
   private getEmptyStateContent (): ExtendedHTMLElement {
@@ -129,103 +94,95 @@ export class ModifiedFilesTracker {
     });
   }
 
-  private getFileListContent (): ExtendedHTMLElement[] {
-    if (this.modifiedFiles.size === 0) {
-      return [ this.getEmptyStateContent() ];
-    }
-
-    return Array.from(this.modifiedFiles).map(filePath =>
-      DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-modified-files-item' ],
-        testId: testIds.modifiedFilesTracker.fileItem,
-        children: [
-          new Icon({ icon: MynahIcons.FILE }).render,
-          {
-            type: 'span',
-            classNames: [ 'mynah-modified-files-item-path' ],
-            events: {
-              click: () => {
-                this.props.onFileClick?.(filePath);
-              }
-            },
-            children: [ filePath ]
-          },
-          {
-            type: 'span',
-            classNames: [ 'mynah-modified-files-item-actions' ],
-            children: [
-              new Button({
-                icon: new Icon({ icon: MynahIcons.OK }).render,
-                onClick: () => {
-                  this.props.onAcceptFile?.(filePath);
-                },
-                primary: false,
-                status: 'clear',
-                tooltip: 'Accept changes',
-                testId: testIds.modifiedFilesTracker.fileItemAccept
-              }).render,
-              new Button({
-                icon: new Icon({ icon: MynahIcons.UNDO }).render,
-                onClick: () => {
-                  this.props.onUndoFile?.(filePath);
-                },
-                primary: false,
-                status: 'clear',
-                tooltip: 'Undo changes',
-                testId: testIds.modifiedFilesTracker.fileItemUndo
-              }).render
-            ]
-          }
-        ]
-      })
-    );
+  private getFileActions (filePath: string): ChatItemButton[] {
+    return [
+      { id: 'accept', icon: MynahIcons.OK, text: 'Accept', description: 'Accept changes', status: 'clear' },
+      { id: 'undo', icon: MynahIcons.UNDO, text: 'Undo', description: 'Undo changes', status: 'clear' }
+    ];
   }
 
+  private readonly handleFileAction = (action: ChatItemButton, filePath: string): void => {
+    switch (action.id) {
+      case 'accept':
+        this.props.onAcceptFile?.(filePath);
+        break;
+      case 'undo':
+        this.props.onUndoFile?.(filePath);
+        break;
+    }
+  };
+
   private updateContent (): void {
+    const fileItems = this.modifiedFiles.size === 0
+      ? [ this.getEmptyStateContent() ]
+      : Array.from(this.modifiedFiles).map(filePath =>
+        DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: ['mynah-modified-files-item'],
+          children: [
+            new Icon({ icon: MynahIcons.FILE }).render,
+            {
+              type: 'span',
+              classNames: ['mynah-modified-files-item-path'],
+              children: [filePath]
+            },
+            {
+              type: 'div',
+              classNames: ['mynah-modified-files-item-actions'],
+              children: this.getFileActions(filePath).map(action => 
+                new Button({
+                  icon: new Icon({ icon: action.icon }).render,
+                  tooltip: action.description,
+                  primary: false,
+                  border: false,
+                  status: 'clear',
+                  onClick: () => this.handleFileAction(action, filePath)
+                }).render
+              )
+            }
+          ],
+          events: {
+            click: () => this.props.onFileClick?.(filePath)
+          }
+        })
+      );
+
     this.contentWrapper.clear();
-    this.contentWrapper.update({
-      children: this.getFileListContent()
-    });
+    this.contentWrapper.update({ children: fileItems });
   }
 
   private updateTitle (): void {
-    const newTitle = this.getCollapsedTitle();
-    const titleElement = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-title-text');
-    if (titleElement != null) {
-      titleElement.textContent = newTitle;
+    const titleWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-title-text');
+    if (titleWrapper != null) {
+      const newTitle = this.getTitleWithButtons();
+      titleWrapper.innerHTML = '';
+      titleWrapper.appendChild(newTitle);
     }
   }
 
+  // Public API - same as original
   public addModifiedFile (filePath: string): void {
-    this.log('addModifiedFile called', { filePath, currentFiles: Array.from(this.modifiedFiles) });
     this.modifiedFiles.add(filePath);
     this.updateTitle();
     this.updateContent();
-    this.log('addModifiedFile completed', { newFiles: Array.from(this.modifiedFiles) });
   }
 
   public removeModifiedFile (filePath: string): void {
-    this.log('removeModifiedFile called', { filePath, currentFiles: Array.from(this.modifiedFiles) });
     this.modifiedFiles.delete(filePath);
     this.updateTitle();
     this.updateContent();
-    this.log('removeModifiedFile completed', { newFiles: Array.from(this.modifiedFiles) });
   }
 
   public setWorkInProgress (inProgress: boolean): void {
-    this.log('setWorkInProgress called', { inProgress, currentStatus: this.isWorkInProgress });
     this.isWorkInProgress = inProgress;
     this.updateTitle();
   }
 
   public clearModifiedFiles (): void {
-    this.log('clearModifiedFiles called', { currentFiles: Array.from(this.modifiedFiles) });
     this.modifiedFiles.clear();
     this.isWorkInProgress = false;
     this.updateTitle();
     this.updateContent();
-    this.log('clearModifiedFiles completed');
   }
 
   public getModifiedFiles (): string[] {
@@ -233,7 +190,6 @@ export class ModifiedFilesTracker {
   }
 
   public setVisible (visible: boolean): void {
-    this.log('setVisible called', { visible });
     if (visible) {
       this.render.removeClass('hidden');
     } else {
