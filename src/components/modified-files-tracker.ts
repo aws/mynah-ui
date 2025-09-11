@@ -8,7 +8,7 @@ import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
 import { Icon, MynahIcons } from './icon';
 import { ChatItemButton } from '../static';
-import { DetailedListItemWrapper } from './detailed-list/detailed-list-item';
+
 import { Button } from './button';
 import testIds from '../helper/test-ids';
 
@@ -60,10 +60,10 @@ export class ModifiedFilesTracker {
   }
 
   private getTitleWithButtons (): ExtendedHTMLElement {
-    const titleText = this.modifiedFiles.size === 0 
-      ? 'No files modified!' 
+    const titleText = this.modifiedFiles.size === 0
+      ? 'No files modified!'
       : `${this.modifiedFiles.size} ${this.modifiedFiles.size === 1 ? 'file' : 'files'} modified so far. ${this.isWorkInProgress ? 'Work in progress...' : 'Work done!'}`;
-    
+
     return DomBuilder.getInstance().build({
       type: 'div',
       classNames: [ 'mynah-modified-files-title-wrapper' ],
@@ -73,14 +73,16 @@ export class ModifiedFilesTracker {
           classNames: [ 'mynah-modified-files-title-text' ],
           children: [ titleText ]
         },
-        ...(this.modifiedFiles.size > 0 ? [{
-          type: 'div',
-          classNames: [ 'mynah-modified-files-title-actions' ],
-          children: [
-            new Button({ tooltip: 'Accept all', icon: new Icon({ icon: MynahIcons.OK }).render, primary: false, border: false, status: 'clear', onClick: () => this.props.onAcceptAll?.() }).render,
-            new Button({ tooltip: 'Undo all', icon: new Icon({ icon: MynahIcons.UNDO }).render, primary: false, border: false, status: 'clear', onClick: () => this.props.onUndoAll?.() }).render
-          ]
-        }] : [])
+        ...(this.modifiedFiles.size > 0
+          ? [ {
+              type: 'div',
+              classNames: [ 'mynah-modified-files-title-actions' ],
+              children: [
+                new Button({ tooltip: 'Accept all', icon: new Icon({ icon: MynahIcons.OK }).render, primary: false, border: false, status: 'clear', onClick: () => this.props.onAcceptAll?.() }).render,
+                new Button({ tooltip: 'Undo all', icon: new Icon({ icon: MynahIcons.UNDO }).render, primary: false, border: false, status: 'clear', onClick: () => this.props.onUndoAll?.() }).render
+              ]
+            } ]
+          : [ ])
       ]
     });
   }
@@ -118,18 +120,18 @@ export class ModifiedFilesTracker {
       : Array.from(this.modifiedFiles).map(filePath =>
         DomBuilder.getInstance().build({
           type: 'div',
-          classNames: ['mynah-modified-files-item'],
+          classNames: [ 'mynah-modified-files-item' ],
           children: [
             new Icon({ icon: MynahIcons.FILE }).render,
             {
               type: 'span',
-              classNames: ['mynah-modified-files-item-path'],
-              children: [filePath]
+              classNames: [ 'mynah-modified-files-item-path' ],
+              children: [ filePath ]
             },
             {
               type: 'div',
-              classNames: ['mynah-modified-files-item-actions'],
-              children: this.getFileActions(filePath).map(action => 
+              classNames: [ 'mynah-modified-files-item-actions' ],
+              children: this.getFileActions(filePath).map(action =>
                 new Button({
                   icon: new Icon({ icon: action.icon }).render,
                   tooltip: action.description,

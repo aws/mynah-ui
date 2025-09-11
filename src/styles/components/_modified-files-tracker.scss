@@ -154,14 +154,14 @@
     .mynah-detailed-list-item-text {
         flex-direction: row !important;
         align-items: center;
-        
+
         .mynah-detailed-list-item-name {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
     }
-    
+
     .mynah-detailed-list-item-actions {
         margin-left: auto;
         flex-shrink: 0;

@@ -88,12 +88,6 @@ describe('ModifiedFilesTracker', () => {
     expect(tracker.render.classList.contains('hidden')).toBe(false);
   });
 
-
-
-
-
-
-
   it('should prevent duplicate files', () => {
     tracker.addModifiedFile('src/test.ts');
     tracker.addModifiedFile('src/test.ts'); // Duplicate
