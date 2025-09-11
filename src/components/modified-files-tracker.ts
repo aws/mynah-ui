@@ -42,7 +42,7 @@ export class ModifiedFilesTracker {
 
     this.collapsibleContent = new CollapsibleContent({
       title: this.getTitleWithButtons(),
-      initialCollapsedState: false,
+      initialCollapsedState: true,
       children: [ this.contentWrapper ],
       classNames: [ 'mynah-modified-files-tracker' ],
       testId: testIds.modifiedFilesTracker.wrapper
@@ -62,7 +62,7 @@ export class ModifiedFilesTracker {
   private getTitleWithButtons (): ExtendedHTMLElement {
     const titleText = this.modifiedFiles.size === 0
       ? 'No files modified!'
-      : `${this.modifiedFiles.size} ${this.modifiedFiles.size === 1 ? 'file' : 'files'} modified so far. ${this.isWorkInProgress ? 'Work in progress...' : 'Work done!'}`;
+      : this.isWorkInProgress ? 'Working...' : 'Done!';
 
     return DomBuilder.getInstance().build({
       type: 'div',
@@ -78,7 +78,6 @@ export class ModifiedFilesTracker {
               type: 'div',
               classNames: [ 'mynah-modified-files-title-actions' ],
               children: [
-                new Button({ tooltip: 'Accept all', icon: new Icon({ icon: MynahIcons.OK }).render, primary: false, border: false, status: 'clear', onClick: () => this.props.onAcceptAll?.() }).render,
                 new Button({ tooltip: 'Undo all', icon: new Icon({ icon: MynahIcons.UNDO }).render, primary: false, border: false, status: 'clear', onClick: () => this.props.onUndoAll?.() }).render
               ]
             } ]
@@ -98,16 +97,12 @@ export class ModifiedFilesTracker {
 
   private getFileActions (filePath: string): ChatItemButton[] {
     return [
-      { id: 'accept', icon: MynahIcons.OK, text: 'Accept', description: 'Accept changes', status: 'clear' },
       { id: 'undo', icon: MynahIcons.UNDO, text: 'Undo', description: 'Undo changes', status: 'clear' }
     ];
   }
 
   private readonly handleFileAction = (action: ChatItemButton, filePath: string): void => {
     switch (action.id) {
-      case 'accept':
-        this.props.onAcceptFile?.(filePath);
-        break;
       case 'undo':
         this.props.onUndoFile?.(filePath);
         break;
@@ -133,7 +128,7 @@ export class ModifiedFilesTracker {
               classNames: [ 'mynah-modified-files-item-actions' ],
               children: this.getFileActions(filePath).map(action =>
                 new Button({
-                  icon: new Icon({ icon: action.icon }).render,
+                  icon: new Icon({ icon: action.icon ?? MynahIcons.DOT }).render,
                   tooltip: action.description,
                   primary: false,
                   border: false,
@@ -154,12 +149,8 @@ export class ModifiedFilesTracker {
   }
 
   private updateTitle (): void {
-    const titleWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-title-text');
-    if (titleWrapper != null) {
-      const newTitle = this.getTitleWithButtons();
-      titleWrapper.innerHTML = '';
-      titleWrapper.appendChild(newTitle);
-    }
+    const newTitle = this.getTitleWithButtons();
+    this.collapsibleContent.updateTitle(newTitle);
   }
 
   // Public API - same as original
