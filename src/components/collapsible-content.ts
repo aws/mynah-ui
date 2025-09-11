@@ -22,7 +22,7 @@ export class CollapsibleContent {
   private readonly props: Required<CollapsibleContentProps>;
   private readonly uid: string;
   private icon: ExtendedHTMLElement;
-  private titleTextElement: ExtendedHTMLElement;
+  private readonly titleTextElement: ExtendedHTMLElement;
   constructor (props: CollapsibleContentProps) {
     StyleLoader.getInstance().load('components/_collapsible-content.scss');
     this.uid = generateUID();
@@ -90,9 +90,9 @@ export class CollapsibleContent {
     });
   }
 
-  public updateTitle(newTitle: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject): void {
+  public updateTitle (newTitle: string | ExtendedHTMLElement | HTMLElement | DomBuilderObject): void {
     this.props.title = newTitle;
     this.titleTextElement.clear();
-    this.titleTextElement.update({ children: [newTitle] });
+    this.titleTextElement.update({ children: [ newTitle ] });
   }
 }
