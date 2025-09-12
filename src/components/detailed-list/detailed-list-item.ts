@@ -89,17 +89,25 @@ export class DetailedListItemWrapper {
               : [])
           ]
         },
-        ...((this.props.listItem.children != null) && this.props.listItem.children.length > 0
+        ...(this.props.listItem.disabledText != null
           ? [
               {
                 type: 'div',
-                classNames: [ 'mynah-detailed-list-item-arrow-icon' ],
-                children: [
-                  new Icon({ icon: 'right-open' }).render
-                ]
+                classNames: [ 'mynah-detailed-list-item-disabled-text' ],
+                children: [ `(${this.props.listItem.disabledText})` ]
               }
             ]
-          : []),
+          : (this.props.listItem.children != null) && this.props.listItem.children.length > 0
+              ? [
+                  {
+                    type: 'div',
+                    classNames: [ 'mynah-detailed-list-item-arrow-icon' ],
+                    children: [
+                      new Icon({ icon: 'right-open' }).render
+                    ]
+                  }
+                ]
+              : []),
         ...(this.props.listItem.status != null
           ? [
               DomBuilder.getInstance().build({
