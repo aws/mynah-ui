@@ -575,7 +575,7 @@ export class ChatWrapper {
     this.modifiedFilesTracker.clearFiles();
   }
 
-  public getTrackedFiles (): Array<{path: string, type: 'created' | 'modified' | 'deleted'}> {
+  public getTrackedFiles (): Array<{path: string; type: 'created' | 'modified' | 'deleted'}> {
     return this.modifiedFilesTracker.getTrackedFiles();
   }
 

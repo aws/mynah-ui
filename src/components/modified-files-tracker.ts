@@ -124,57 +124,57 @@ export class ModifiedFilesTracker {
   private updateContent (): void {
     const fileItems = this.trackedFiles.size === 0
       ? [ this.getEmptyStateContent() ]
-      : Array.from(this.trackedFiles.entries()).map(([filePath, fileType]) => {
-          const iconColor = this.getFileIconColor(fileType);
-          const iconType = this.getFileIcon(fileType);
-          const iconElement = new Icon({ icon: iconType }).render;
-          
-          // Apply color styling to the icon
-          iconElement.style.color = iconColor;
-          
-          return DomBuilder.getInstance().build({
-            type: 'div',
-            classNames: [ 'mynah-modified-files-item', `mynah-modified-files-item-${fileType}` ],
-            children: [
-              iconElement,
-              {
-                type: 'div',
-                classNames: [ 'mynah-modified-files-item-content' ],
-                children: [
-                  {
-                    type: 'span',
-                    classNames: [ 'mynah-modified-files-item-path' ],
-                    children: [ filePath ]
-                  }
-                ],
-                events: {
-                  click: (event: Event) => {
-                    console.log('[ModifiedFilesTracker] File content clicked:', filePath);
-                    event.stopPropagation();
-                    this.props.onFileClick?.(filePath, fileType);
-                  }
+      : Array.from(this.trackedFiles.entries()).map(([ filePath, fileType ]) => {
+        const iconColor = this.getFileIconColor(fileType);
+        const iconType = this.getFileIcon(fileType);
+        const iconElement = new Icon({ icon: iconType }).render;
+
+        // Apply color styling to the icon
+        iconElement.style.color = iconColor;
+
+        return DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-modified-files-item', `mynah-modified-files-item-${fileType}` ],
+          children: [
+            iconElement,
+            {
+              type: 'div',
+              classNames: [ 'mynah-modified-files-item-content' ],
+              children: [
+                {
+                  type: 'span',
+                  classNames: [ 'mynah-modified-files-item-path' ],
+                  children: [ filePath ]
                 }
-              },
-              {
-                type: 'div',
-                classNames: [ 'mynah-modified-files-item-actions' ],
-                children: this.getFileActions(filePath).map(action =>
-                  new Button({
-                    icon: new Icon({ icon: action.icon ?? MynahIcons.DOT }).render,
-                    tooltip: action.description,
-                    primary: false,
-                    border: false,
-                    status: 'clear',
-                    onClick: (event: Event) => {
-                      event.stopPropagation();
-                      this.handleFileAction(action, filePath);
-                    }
-                  }).render
-                )
+              ],
+              events: {
+                click: (event: Event) => {
+                  console.log('[ModifiedFilesTracker] File content clicked:', filePath);
+                  event.stopPropagation();
+                  this.props.onFileClick?.(filePath, fileType);
+                }
               }
-            ]
-          });
+            },
+            {
+              type: 'div',
+              classNames: [ 'mynah-modified-files-item-actions' ],
+              children: this.getFileActions(filePath).map(action =>
+                new Button({
+                  icon: new Icon({ icon: action.icon ?? MynahIcons.DOT }).render,
+                  tooltip: action.description,
+                  primary: false,
+                  border: false,
+                  status: 'clear',
+                  onClick: (event: Event) => {
+                    event.stopPropagation();
+                    this.handleFileAction(action, filePath);
+                  }
+                }).render
+              )
+            }
+          ]
         });
+      });
 
     this.contentWrapper.clear();
     this.contentWrapper.update({ children: fileItems });
@@ -209,7 +209,7 @@ export class ModifiedFilesTracker {
   }
 
   public getTrackedFiles (): TrackedFile[] {
-    return Array.from(this.trackedFiles.entries()).map(([path, type]) => ({ path, type }));
+    return Array.from(this.trackedFiles.entries()).map(([ path, type ]) => ({ path, type }));
   }
 
   // Legacy API - maintained for backward compatibility

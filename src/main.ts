@@ -1417,7 +1417,7 @@ export class MynahUI {
    * @param tabId The tab ID
    * @returns Array of tracked files with types
    */
-  public getTrackedFiles = (tabId: string): Array<{path: string, type: 'created' | 'modified' | 'deleted'}> => {
+  public getTrackedFiles = (tabId: string): Array<{path: string; type: 'created' | 'modified' | 'deleted'}> => {
     if (this.chatWrappers[tabId] != null) {
       return this.chatWrappers[tabId].getTrackedFiles();
     }
