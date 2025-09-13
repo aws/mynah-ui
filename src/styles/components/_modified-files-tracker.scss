@@ -129,7 +129,7 @@
     padding: var(--mynah-sizing-half);
     border-radius: var(--mynah-sizing-half);
     transition: var(--mynah-short-transition);
-    
+
     &:hover {
         background-color: var(--mynah-color-bg-alt);
     }
@@ -152,7 +152,7 @@
     .mynah-modified-files-item:hover & {
         opacity: 1;
     }
-    
+
     .mynah-modified-files-item-content:hover ~ & {
         opacity: 1;
     }
