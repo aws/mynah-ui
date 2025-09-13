@@ -37,6 +37,8 @@ export interface ChatWrapperProps {
   onStopChatResponse?: (tabId: string) => void;
   tabId: string;
   onModifiedFileClick?: (tabId: string, filePath: string) => void;
+  onModifiedFileUndo?: (tabId: string, filePath: string) => void;
+  onModifiedFileUndoAll?: (tabId: string) => void;
 }
 export class ChatWrapper {
   private readonly props: ChatWrapperProps;
@@ -101,6 +103,12 @@ export class ChatWrapper {
       visible: true,
       onFileClick: (filePath: string) => {
         this.props.onModifiedFileClick?.(this.props.tabId, filePath);
+      },
+      onUndoFile: (filePath: string) => {
+        this.props.onModifiedFileUndo?.(this.props.tabId, filePath);
+      },
+      onUndoAll: () => {
+        this.props.onModifiedFileUndoAll?.(this.props.tabId);
       }
     });
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
@@ -550,27 +558,59 @@ export class ChatWrapper {
     this.dragBlurOverlay.style.display = visible ? 'block' : 'none';
   }
 
-  public addModifiedFile (filePath: string): void {
-    this.modifiedFilesTracker.addModifiedFile(filePath);
+  // Enhanced API methods
+  public addFile (filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified'): void {
+    this.modifiedFilesTracker.addFile(filePath, fileType);
   }
 
-  public removeModifiedFile (filePath: string): void {
-    this.modifiedFilesTracker.removeModifiedFile(filePath);
+  public removeFile (filePath: string): void {
+    this.modifiedFilesTracker.removeFile(filePath);
   }
 
-  public setModifiedFilesWorkInProgress (inProgress: boolean): void {
+  public setFilesWorkInProgress (inProgress: boolean): void {
     this.modifiedFilesTracker.setWorkInProgress(inProgress);
   }
 
-  public clearModifiedFiles (): void {
-    this.modifiedFilesTracker.clearModifiedFiles();
+  public clearFiles (): void {
+    this.modifiedFilesTracker.clearFiles();
   }
 
+  public getTrackedFiles (): Array<{path: string, type: 'created' | 'modified' | 'deleted'}> {
+    return this.modifiedFilesTracker.getTrackedFiles();
+  }
+
+  public setFilesTrackerVisible (visible: boolean): void {
+    this.modifiedFilesTracker.setVisible(visible);
+  }
+
+  // Legacy API methods (deprecated)
+  /** @deprecated Use addFile() instead */
+  public addModifiedFile (filePath: string): void {
+    this.addFile(filePath, 'modified');
+  }
+
+  /** @deprecated Use removeFile() instead */
+  public removeModifiedFile (filePath: string): void {
+    this.removeFile(filePath);
+  }
+
+  /** @deprecated Use setFilesWorkInProgress() instead */
+  public setModifiedFilesWorkInProgress (inProgress: boolean): void {
+    this.setFilesWorkInProgress(inProgress);
+  }
+
+  /** @deprecated Use clearFiles() instead */
+  public clearModifiedFiles (): void {
+    this.clearFiles();
+  }
+
+  /** @deprecated Use getTrackedFiles() instead */
   public getModifiedFiles (): string[] {
     return this.modifiedFilesTracker.getModifiedFiles();
   }
 
+  /** @deprecated Use setFilesTrackerVisible() instead */
   public setModifiedFilesTrackerVisible (visible: boolean): void {
-    this.modifiedFilesTracker.setVisible(visible);
+    this.setFilesTrackerVisible(visible);
   }
 }

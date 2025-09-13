@@ -31,7 +31,7 @@ describe('ModifiedFilesTracker', () => {
 
   it('should initialize with empty state', () => {
     expect(tracker.getModifiedFiles()).toEqual([]);
-    const titleElement = tracker.render.querySelector('.mynah-collapsible-content-label-title-text');
+    const titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
     expect(titleElement?.textContent).toBe('No files modified!');
   });
 
@@ -41,8 +41,8 @@ describe('ModifiedFilesTracker', () => {
 
     expect(tracker.getModifiedFiles()).toEqual([ 'src/test.ts', 'src/another.ts' ]);
 
-    const titleElement = tracker.render.querySelector('.mynah-collapsible-content-label-title-text');
-    expect(titleElement?.textContent).toBe('2 files modified so far. Work done!');
+    const titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
+    expect(titleElement?.textContent).toBe('Done!');
   });
 
   it('should remove modified files', () => {
@@ -52,19 +52,19 @@ describe('ModifiedFilesTracker', () => {
 
     expect(tracker.getModifiedFiles()).toEqual([ 'src/another.ts' ]);
 
-    const titleElement = tracker.render.querySelector('.mynah-collapsible-content-label-title-text');
-    expect(titleElement?.textContent).toBe('1 file modified so far. Work done!');
+    const titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
+    expect(titleElement?.textContent).toBe('Done!');
   });
 
   it('should update work in progress status', () => {
     tracker.addModifiedFile('src/test.ts');
     tracker.setWorkInProgress(true);
 
-    const titleElement = tracker.render.querySelector('.mynah-collapsible-content-label-title-text');
-    expect(titleElement?.textContent).toBe('1 file modified so far. Work in progress...');
+    const titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
+    expect(titleElement?.textContent).toBe('Working...');
 
     tracker.setWorkInProgress(false);
-    expect(titleElement?.textContent).toBe('1 file modified so far. Work done!');
+    expect(titleElement?.textContent).toBe('Done!');
   });
 
   it('should clear all modified files', () => {
@@ -74,7 +74,7 @@ describe('ModifiedFilesTracker', () => {
 
     expect(tracker.getModifiedFiles()).toEqual([]);
 
-    const titleElement = tracker.render.querySelector('.mynah-collapsible-content-label-title-text');
+    const titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
     expect(titleElement?.textContent).toBe('No files modified!');
   });
 
@@ -95,15 +95,15 @@ describe('ModifiedFilesTracker', () => {
     expect(tracker.getModifiedFiles()).toEqual([ 'src/test.ts' ]);
   });
 
-  it('should handle singular vs plural file text', () => {
+  it('should show Done status when files are modified', () => {
     tracker.addModifiedFile('src/test.ts');
 
-    let titleElement = tracker.render.querySelector('.mynah-collapsible-content-label-title-text');
-    expect(titleElement?.textContent).toBe('1 file modified so far. Work done!');
+    let titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
+    expect(titleElement?.textContent).toBe('Done!');
 
     tracker.addModifiedFile('src/another.ts');
 
-    titleElement = tracker.render.querySelector('.mynah-collapsible-content-label-title-text');
-    expect(titleElement?.textContent).toBe('2 files modified so far. Work done!');
+    titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
+    expect(titleElement?.textContent).toBe('Done!');
   });
 });

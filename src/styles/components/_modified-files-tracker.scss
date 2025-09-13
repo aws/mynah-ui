@@ -28,7 +28,7 @@
         }
 
         .mynah-collapsible-content-label-content-wrapper {
-            max-height: 200px;
+            max-height: 300px;
             overflow-y: auto;
 
             // Custom scrollbar styling
@@ -99,18 +99,39 @@
     transition: var(--mynah-short-transition);
     border: var(--mynah-border-width) solid transparent;
 
-    &:hover {
-        background-color: var(--mynah-color-bg-alt);
-        border-color: var(--mynah-color-border-default);
-    }
-
-    &:active {
-        background-color: var(--mynah-color-bg-alt-2);
-    }
-
     > .mynah-ui-icon {
         color: var(--mynah-color-text-weak);
         flex-shrink: 0;
+    }
+
+    // File type specific styling
+    &.mynah-modified-files-item-created {
+        .mynah-modified-files-item-path {
+            font-weight: bold;
+        }
+    }
+
+    &.mynah-modified-files-item-deleted {
+        .mynah-modified-files-item-path {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+    }
+
+    &.mynah-modified-files-item-modified {
+        // Default styling for modified files
+    }
+}
+
+.mynah-modified-files-item-content {
+    flex: 1;
+    cursor: pointer;
+    padding: var(--mynah-sizing-half);
+    border-radius: var(--mynah-sizing-half);
+    transition: var(--mynah-short-transition);
+    
+    &:hover {
+        background-color: var(--mynah-color-bg-alt);
     }
 }
 
@@ -119,8 +140,6 @@
     font-size: var(--mynah-font-size-small);
     color: var(--mynah-color-text-default);
     word-break: break-all;
-    cursor: pointer;
-    margin-right: var(--mynah-sizing-2);
 }
 
 .mynah-modified-files-item-actions {
@@ -131,6 +150,10 @@
     transition: var(--mynah-short-transition);
 
     .mynah-modified-files-item:hover & {
+        opacity: 1;
+    }
+    
+    .mynah-modified-files-item-content:hover ~ & {
         opacity: 1;
     }
 

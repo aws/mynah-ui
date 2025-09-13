@@ -98,7 +98,9 @@ export {
 } from './components/chat-item/chat-item-card-content';
 export {
   ModifiedFilesTracker,
-  ModifiedFilesTrackerProps
+  ModifiedFilesTrackerProps,
+  FileChangeType,
+  TrackedFile
 } from './components/modified-files-tracker';
 export { default as MynahUITestIds } from './helper/test-ids';
 
@@ -415,6 +417,27 @@ export class MynahUI {
                 }
               }
             : undefined,
+          onModifiedFileUndo: (tabId, filePath) => {
+            // Send button click event for individual file undo
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+              tabId,
+              messageId: 'modified-files-tracker',
+              actionId: 'undo-changes',
+              actionText: filePath
+            });
+          },
+          onModifiedFileUndoAll: (tabId) => {
+            // Get all tracked files and undo each one
+            const trackedFiles = this.getTrackedFiles(tabId);
+            trackedFiles.forEach(file => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                tabId,
+                messageId: 'modified-files-tracker',
+                actionId: 'undo-changes',
+                actionText: file.path
+              });
+            });
+          }
         });
         return this.chatWrappers[tabId].render;
       })
@@ -501,6 +524,23 @@ export class MynahUI {
               }
             }
           : undefined,
+        onModifiedFileUndo: (tabId, filePath) => {
+          // Send button click event for individual file undo
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+            tabId,
+            messageId: 'modified-files-tracker',
+            actionId: 'undo-file',
+            actionText: filePath
+          });
+        },
+        onModifiedFileUndoAll: (tabId) => {
+          // Send button click event for undo all
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+            tabId,
+            messageId: 'modified-files-tracker',
+            actionId: 'undo-all-files'
+          });
+        }
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
       this.focusToInput(tabId);
@@ -1269,17 +1309,28 @@ export class MynahUI {
   };
 
   /**
+   * Adds a file to the modified files tracker for the specified tab with file type
+   * @param tabId The tab ID
+   * @param filePath The path of the file
+   * @param fileType The type of file change ('created', 'modified', 'deleted')
+   */
+  public addFile = (tabId: string, filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified'): void => {
+    this.logToStorage(`[MynahUI] addFile called - tabId: ${tabId}, filePath: ${filePath}, fileType: ${fileType}`);
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].addFile(filePath, fileType);
+    } else {
+      this.logToStorage(`[MynahUI] addFile - chatWrapper not found for tabId: ${tabId}`);
+    }
+  };
+
+  /**
    * Adds a file to the modified files tracker for the specified tab
+   * @deprecated Use addFile() instead
    * @param tabId The tab ID
    * @param filePath The path of the modified file
    */
   public addModifiedFile = (tabId: string, filePath: string): void => {
-    this.logToStorage(`[MynahUI] addModifiedFile called - tabId: ${tabId}, filePath: ${filePath}`);
-    if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].addModifiedFile(filePath);
-    } else {
-      this.logToStorage(`[MynahUI] addModifiedFile - chatWrapper not found for tabId: ${tabId}`);
-    }
+    this.addFile(tabId, filePath, 'modified');
   };
 
   /**
@@ -1287,37 +1338,66 @@ export class MynahUI {
    * @param tabId The tab ID
    * @param filePath The path of the file to remove
    */
-  public removeModifiedFile = (tabId: string, filePath: string): void => {
+  public removeFile = (tabId: string, filePath: string): void => {
     if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].removeModifiedFile(filePath);
+      this.chatWrappers[tabId].removeFile(filePath);
+    }
+  };
+
+  /**
+   * Removes a file from the modified files tracker for the specified tab
+   * @deprecated Use removeFile() instead
+   * @param tabId The tab ID
+   * @param filePath The path of the file to remove
+   */
+  public removeModifiedFile = (tabId: string, filePath: string): void => {
+    this.removeFile(tabId, filePath);
+  };
+
+  /**
+   * Sets the work in progress status for the files tracker
+   * @param tabId The tab ID
+   * @param inProgress Whether work is in progress
+   */
+  public setFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
+    this.logToStorage(`[MynahUI] setFilesWorkInProgress called - tabId: ${tabId}, inProgress: ${String(inProgress)}`);
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].setFilesWorkInProgress(inProgress);
+    } else {
+      this.logToStorage(`[MynahUI] setFilesWorkInProgress - chatWrapper not found for tabId: ${tabId}`);
     }
   };
 
   /**
    * Sets the work in progress status for the modified files tracker
+   * @deprecated Use setFilesWorkInProgress() instead
    * @param tabId The tab ID
    * @param inProgress Whether work is in progress
    */
   public setModifiedFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
-    this.logToStorage(`[MynahUI] setModifiedFilesWorkInProgress called - tabId: ${tabId}, inProgress: ${String(inProgress)}`);
+    this.setFilesWorkInProgress(tabId, inProgress);
+  };
+
+  /**
+   * Clears all files for the specified tab
+   * @param tabId The tab ID
+   */
+  public clearFiles = (tabId: string): void => {
+    this.logToStorage(`[MynahUI] clearFiles called - tabId: ${tabId}`);
     if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].setModifiedFilesWorkInProgress(inProgress);
+      this.chatWrappers[tabId].clearFiles();
     } else {
-      this.logToStorage(`[MynahUI] setModifiedFilesWorkInProgress - chatWrapper not found for tabId: ${tabId}`);
+      this.logToStorage(`[MynahUI] clearFiles - chatWrapper not found for tabId: ${tabId}`);
     }
   };
 
   /**
    * Clears all modified files for the specified tab
+   * @deprecated Use clearFiles() instead
    * @param tabId The tab ID
    */
   public clearModifiedFiles = (tabId: string): void => {
-    this.logToStorage(`[MynahUI] clearModifiedFiles called - tabId: ${tabId}`);
-    if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].clearModifiedFiles();
-    } else {
-      this.logToStorage(`[MynahUI] clearModifiedFiles - chatWrapper not found for tabId: ${tabId}`);
-    }
+    this.clearFiles(tabId);
   };
 
   private readonly handleChatPrompt = (data: { tabId: string; prompt: ChatPrompt }): void => {
@@ -1333,7 +1413,20 @@ export class MynahUI {
   };
 
   /**
+   * Gets the list of tracked files for the specified tab
+   * @param tabId The tab ID
+   * @returns Array of tracked files with types
+   */
+  public getTrackedFiles = (tabId: string): Array<{path: string, type: 'created' | 'modified' | 'deleted'}> => {
+    if (this.chatWrappers[tabId] != null) {
+      return this.chatWrappers[tabId].getTrackedFiles();
+    }
+    return [];
+  };
+
+  /**
    * Gets the list of modified files for the specified tab
+   * @deprecated Use getTrackedFiles() instead
    * @param tabId The tab ID
    * @returns Array of modified file paths
    */
@@ -1345,14 +1438,24 @@ export class MynahUI {
   };
 
   /**
+   * Sets the visibility of the files tracker for the specified tab
+   * @param tabId The tab ID
+   * @param visible Whether the tracker should be visible
+   */
+  public setFilesTrackerVisible = (tabId: string, visible: boolean): void => {
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].setFilesTrackerVisible(visible);
+    }
+  };
+
+  /**
    * Sets the visibility of the modified files tracker for the specified tab
+   * @deprecated Use setFilesTrackerVisible() instead
    * @param tabId The tab ID
    * @param visible Whether the tracker should be visible
    */
   public setModifiedFilesTrackerVisible = (tabId: string, visible: boolean): void => {
-    if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].setModifiedFilesTrackerVisible(visible);
-    }
+    this.setFilesTrackerVisible(tabId, visible);
   };
 
   public destroy = (): void => {
