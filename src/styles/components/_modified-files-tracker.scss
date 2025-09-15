@@ -138,8 +138,17 @@
 .mynah-modified-files-item-path {
     font-family: var(--mynah-font-family-mono);
     font-size: var(--mynah-font-size-small);
-    color: var(--mynah-color-text-default);
+    color: var(--mynah-color-text-link);
     word-break: break-all;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: var(--mynah-short-transition);
+    
+    &:hover {
+        color: var(--mynah-color-text-link-hover, var(--mynah-color-text-strong));
+        text-decoration-color: currentColor;
+    }
 }
 
 .mynah-modified-files-item-actions {

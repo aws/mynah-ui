@@ -37,7 +37,7 @@ export interface ChatWrapperProps {
   onStopChatResponse?: (tabId: string) => void;
   tabId: string;
   onModifiedFileClick?: (tabId: string, filePath: string) => void;
-  onModifiedFileUndo?: (tabId: string, filePath: string) => void;
+  onModifiedFileUndo?: (tabId: string, filePath: string, toolUseId?: string) => void;
   onModifiedFileUndoAll?: (tabId: string) => void;
 }
 export class ChatWrapper {
@@ -104,8 +104,8 @@ export class ChatWrapper {
       onFileClick: (filePath: string) => {
         this.props.onModifiedFileClick?.(this.props.tabId, filePath);
       },
-      onUndoFile: (filePath: string) => {
-        this.props.onModifiedFileUndo?.(this.props.tabId, filePath);
+      onUndoFile: (filePath: string, toolUseId?: string) => {
+        this.props.onModifiedFileUndo?.(this.props.tabId, filePath, toolUseId);
       },
       onUndoAll: () => {
         this.props.onModifiedFileUndoAll?.(this.props.tabId);
@@ -559,8 +559,15 @@ export class ChatWrapper {
   }
 
   // Enhanced API methods
-  public addFile (filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified'): void {
-    this.modifiedFilesTracker.addFile(filePath, fileType);
+  public addFile (filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', fullPath?: string, toolUseId?: string): void {
+    this.modifiedFilesTracker.addFile(filePath, fileType, fullPath, toolUseId);
+  }
+
+  public setMessageId (messageId: string): void {
+    // Update the messageId through a public method
+    if (this.modifiedFilesTracker.setMessageId) {
+      this.modifiedFilesTracker.setMessageId(messageId);
+    }
   }
 
   public removeFile (filePath: string): void {

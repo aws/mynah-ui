@@ -60,10 +60,11 @@ describe('ModifiedFilesTracker', () => {
     tracker.addModifiedFile('src/test.ts');
     tracker.setWorkInProgress(true);
 
-    const titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
+    let titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
     expect(titleElement?.textContent).toBe('Working...');
 
     tracker.setWorkInProgress(false);
+    titleElement = tracker.render.querySelector('.mynah-modified-files-title-text');
     expect(titleElement?.textContent).toBe('Done!');
   });
 

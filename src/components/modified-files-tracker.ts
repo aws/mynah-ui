@@ -7,7 +7,8 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
 import { Icon, MynahIcons } from './icon';
-import { ChatItemButton } from '../static';
+import { ChatItemButton, MynahEventNames } from '../static';
+import { MynahUIGlobalEvents } from '../helper/events';
 
 import { Button } from './button';
 import testIds from '../helper/test-ids';
@@ -17,6 +18,8 @@ export type FileChangeType = 'modified' | 'created' | 'deleted';
 export interface TrackedFile {
   path: string;
   type: FileChangeType;
+  toolUseId?: string; // Optional tool use ID for undo operations
+  fullPath?: string; // Full absolute path for file operations
 }
 
 export interface ModifiedFilesTrackerProps {
@@ -24,19 +27,21 @@ export interface ModifiedFilesTrackerProps {
   visible?: boolean;
   onFileClick?: (filePath: string, fileType?: FileChangeType) => void;
   onAcceptFile?: (filePath: string) => void;
-  onUndoFile?: (filePath: string) => void;
+  onUndoFile?: (filePath: string, toolUseId?: string) => void;
   onAcceptAll?: () => void;
   onUndoAll?: () => void;
+  messageId?: string; // Optional message ID for diff mode functionality
 }
 
 export class ModifiedFilesTracker {
   render: ExtendedHTMLElement;
   private readonly props: ModifiedFilesTrackerProps;
   private readonly modifiedFiles: Set<string> = new Set();
-  private readonly trackedFiles: Map<string, FileChangeType> = new Map();
+  private readonly trackedFiles: Map<string, { type: FileChangeType; toolUseId?: string; fullPath?: string }> = new Map();
   private isWorkInProgress: boolean = false;
   private readonly collapsibleContent: CollapsibleContent;
   private readonly contentWrapper: ExtendedHTMLElement;
+  private readonly actionDebounce: Map<string, number> = new Map();
 
   constructor (props: ModifiedFilesTrackerProps) {
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
@@ -89,7 +94,13 @@ export class ModifiedFilesTracker {
               type: 'div',
               classNames: [ 'mynah-modified-files-title-actions' ],
               children: [
-                new Button({ tooltip: 'Undo all', icon: new Icon({ icon: MynahIcons.UNDO }).render, primary: false, border: false, status: 'clear', onClick: () => { this.props.onUndoAll?.(); } }).render
+                new Button({ tooltip: 'Undo all', icon: new Icon({ icon: MynahIcons.UNDO }).render, primary: false, border: false, status: 'clear', onClick: () => { 
+                  const now = Date.now();
+                  const lastAction = this.actionDebounce.get('undo-all') || 0;
+                  if (now - lastAction < 1000) return;
+                  this.actionDebounce.set('undo-all', now);
+                  this.props.onUndoAll?.(); 
+                } }).render
               ]
             } ]
           : [ ])
@@ -106,16 +117,31 @@ export class ModifiedFilesTracker {
     });
   }
 
-  private getFileActions (filePath: string): ChatItemButton[] {
+  private getFileActions (filePath: string, toolUseId?: string): ChatItemButton[] {
+    if (!filePath) {
+      return [];
+    }
     return [
       { id: 'undo-changes', icon: MynahIcons.UNDO, text: 'Undo', description: 'Undo changes', status: 'clear' }
     ];
   }
 
-  private readonly handleFileAction = (action: ChatItemButton, filePath: string): void => {
+  private readonly handleFileAction = (action: ChatItemButton, filePath: string, toolUseId?: string): void => {
+    const actionKey = `${action.id}-${filePath}`;
+    const now = Date.now();
+    const lastAction = this.actionDebounce.get(actionKey) || 0;
+    
+    // Debounce: ignore clicks within 1 second
+    if (now - lastAction < 1000) {
+      return;
+    }
+    this.actionDebounce.set(actionKey, now);
+    
     switch (action.id) {
       case 'undo-changes':
-        this.props.onUndoFile?.(filePath);
+        if (filePath && this.props.onUndoFile) {
+          this.props.onUndoFile(filePath, toolUseId);
+        }
         // Don't remove from tracker here - let the language server handle the actual undo
         break;
     }
@@ -124,7 +150,8 @@ export class ModifiedFilesTracker {
   private updateContent (): void {
     const fileItems = this.trackedFiles.size === 0
       ? [ this.getEmptyStateContent() ]
-      : Array.from(this.trackedFiles.entries()).map(([ filePath, fileType ]) => {
+      : Array.from(this.trackedFiles.entries()).map(([ filePath, fileData ]) => {
+        const { type: fileType, toolUseId } = fileData;
         const iconColor = this.getFileIconColor(fileType);
         const iconType = this.getFileIcon(fileType);
         const iconElement = new Icon({ icon: iconType }).render;
@@ -144,21 +171,32 @@ export class ModifiedFilesTracker {
                 {
                   type: 'span',
                   classNames: [ 'mynah-modified-files-item-path' ],
-                  children: [ filePath ]
+                  children: [ filePath ],
+                  events: {
+                    click: (event: Event) => {
+                      console.log('[ModifiedFilesTracker] File clicked:', filePath);
+                      event.stopPropagation();
+                      
+                      // Dispatch FILE_CLICK event like ChatItemCard does
+                      MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
+                        tabId: this.props.tabId,
+                        messageId: this.props.messageId, // Include messageId for diff mode functionality
+                        filePath: fileData.fullPath || filePath, // Use fullPath for file operations
+                        deleted: fileType === 'deleted',
+                        fileDetails: fileData.fullPath ? { data: { fullPath: fileData.fullPath } } : undefined
+                      });
+                      
+                      // Also call the callback if provided
+                      this.props.onFileClick?.(filePath, fileType);
+                    }
+                  }
                 }
-              ],
-              events: {
-                click: (event: Event) => {
-                  console.log('[ModifiedFilesTracker] File content clicked:', filePath);
-                  event.stopPropagation();
-                  this.props.onFileClick?.(filePath, fileType);
-                }
-              }
+              ]
             },
             {
               type: 'div',
               classNames: [ 'mynah-modified-files-item-actions' ],
-              children: this.getFileActions(filePath).map(action =>
+              children: this.getFileActions(filePath, toolUseId).map(action =>
                 new Button({
                   icon: new Icon({ icon: action.icon ?? MynahIcons.DOT }).render,
                   tooltip: action.description,
@@ -167,7 +205,7 @@ export class ModifiedFilesTracker {
                   status: 'clear',
                   onClick: (event: Event) => {
                     event.stopPropagation();
-                    this.handleFileAction(action, filePath);
+                    this.handleFileAction(action, filePath, toolUseId);
                   }
                 }).render
               )
@@ -186,8 +224,12 @@ export class ModifiedFilesTracker {
   }
 
   // Enhanced API with file type support
-  public addFile (filePath: string, fileType: FileChangeType = 'modified'): void {
-    this.trackedFiles.set(filePath, fileType);
+  public addFile (filePath: string, fileType: FileChangeType = 'modified', fullPath?: string, toolUseId?: string): void {
+    if (!filePath || typeof filePath !== 'string') {
+      console.warn('[ModifiedFilesTracker] Invalid file path provided:', filePath);
+      return;
+    }
+    this.trackedFiles.set(filePath, { type: fileType, toolUseId, fullPath: fullPath || filePath });
     this.modifiedFiles.add(filePath); // Keep for backward compatibility
     this.updateTitle();
     this.updateContent();
@@ -209,7 +251,12 @@ export class ModifiedFilesTracker {
   }
 
   public getTrackedFiles (): TrackedFile[] {
-    return Array.from(this.trackedFiles.entries()).map(([ path, type ]) => ({ path, type }));
+    return Array.from(this.trackedFiles.entries()).map(([ path, fileData ]) => ({ 
+      path, 
+      type: fileData.type, 
+      toolUseId: fileData.toolUseId,
+      fullPath: fileData.fullPath
+    }));
   }
 
   // Legacy API - maintained for backward compatibility
@@ -245,6 +292,10 @@ export class ModifiedFilesTracker {
     } else {
       this.render.addClass('hidden');
     }
+  }
+
+  public setMessageId (messageId: string): void {
+    this.props.messageId = messageId;
   }
 
   private getFileIconColor (fileType: FileChangeType): string {
