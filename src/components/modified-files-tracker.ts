@@ -190,7 +190,7 @@ export class ModifiedFilesTracker {
                         messageId: this.props.messageId, // Include messageId for diff mode functionality
                         filePath: fileData.fullPath ?? filePath, // Use fullPath for file operations
                         deleted: fileType === 'deleted',
-                        fileDetails: fileData.fullPath ? { data: { fullPath: fileData.fullPath } } : undefined
+                        fileDetails: (fileData.fullPath != null && fileData.fullPath !== '') ? { data: { fullPath: fileData.fullPath } } : undefined
                       });
 
                       // Also call the callback if provided

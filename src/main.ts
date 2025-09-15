@@ -969,7 +969,7 @@ export class MynahUI {
         this.logToStorage(`[MynahUI] addChatItem - auto-populating modified files - tabId: ${tabId}, filePaths: ${JSON.stringify(chatItem.fileList.filePaths)}`);
         chatItem.fileList.filePaths.forEach(filePath => {
           // Use messageId as toolUseId if available
-          this.addModifiedFile(tabId, filePath, chatItem.messageId ?? undefined);
+          this.addModifiedFile(tabId, filePath, (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : undefined);
         });
       }
 
@@ -1021,7 +1021,7 @@ export class MynahUI {
       if ((updateWith.fileList?.filePaths) != null) {
         updateWith.fileList.filePaths.forEach(filePath => {
           // Use messageId as toolUseId if available
-          this.addModifiedFile(tabId, filePath, updateWith.messageId ?? undefined);
+          this.addModifiedFile(tabId, filePath, (updateWith.messageId != null && updateWith.messageId !== '') ? updateWith.messageId : undefined);
         });
       }
 
