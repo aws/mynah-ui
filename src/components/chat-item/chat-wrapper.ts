@@ -565,7 +565,7 @@ export class ChatWrapper {
 
   public setMessageId (messageId: string): void {
     // Update the messageId through a public method
-    if (this.modifiedFilesTracker.setMessageId) {
+    if (this.modifiedFilesTracker.setMessageId != null) {
       this.modifiedFilesTracker.setMessageId(messageId);
     }
   }

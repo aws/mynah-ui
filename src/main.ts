@@ -423,7 +423,7 @@ export class MynahUI {
             // Use toolUseId as messageId if available, otherwise fall back to generic ID
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
               tabId,
-              messageId: toolUseId || 'modified-files-tracker',
+              messageId: toolUseId ?? 'modified-files-tracker',
               actionId: 'undo-changes',
               actionText: filePath
             });
@@ -527,7 +527,7 @@ export class MynahUI {
           // Use toolUseId as messageId if available, otherwise fall back to generic ID
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId,
-            messageId: toolUseId || 'modified-files-tracker',
+            messageId: toolUseId ?? 'modified-files-tracker',
             actionId: 'undo-changes',
             actionText: filePath
           });
@@ -538,7 +538,7 @@ export class MynahUI {
           trackedFiles.forEach(file => {
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
               tabId,
-              messageId: file.toolUseId || 'modified-files-tracker',
+              messageId: file.toolUseId ?? 'modified-files-tracker',
               actionId: 'undo-changes',
               actionText: file.path
             });
@@ -969,7 +969,7 @@ export class MynahUI {
         this.logToStorage(`[MynahUI] addChatItem - auto-populating modified files - tabId: ${tabId}, filePaths: ${JSON.stringify(chatItem.fileList.filePaths)}`);
         chatItem.fileList.filePaths.forEach(filePath => {
           // Use messageId as toolUseId if available
-          this.addModifiedFile(tabId, filePath, chatItem.messageId);
+          this.addModifiedFile(tabId, filePath, chatItem.messageId ?? undefined);
         });
       }
 
@@ -1021,7 +1021,7 @@ export class MynahUI {
       if ((updateWith.fileList?.filePaths) != null) {
         updateWith.fileList.filePaths.forEach(filePath => {
           // Use messageId as toolUseId if available
-          this.addModifiedFile(tabId, filePath, updateWith.messageId);
+          this.addModifiedFile(tabId, filePath, updateWith.messageId ?? undefined);
         });
       }
 
