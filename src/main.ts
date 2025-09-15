@@ -1323,9 +1323,9 @@ export class MynahUI {
    * @param toolUseId Optional tool use ID for undo operations
    */
   public addFile = (tabId: string, filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', toolUseId?: string): void => {
-    this.logToStorage(`[MynahUI] addFile called - tabId: ${tabId}, filePath: ${filePath}, fileType: ${fileType}, toolUseId: ${toolUseId || 'none'}`);
+    this.logToStorage(`[MynahUI] addFile called - tabId: ${tabId}, filePath: ${filePath}, fileType: ${fileType}, toolUseId: ${toolUseId ?? 'none'}`);
     if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].addFile(filePath, fileType, toolUseId);
+      this.chatWrappers[tabId].addFile(filePath, fileType, undefined, toolUseId);
     } else {
       this.logToStorage(`[MynahUI] addFile - chatWrapper not found for tabId: ${tabId}`);
     }
