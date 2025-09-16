@@ -90,14 +90,14 @@ export class ModifiedFilesTracker {
   private updateContent (): void {
     const filePills = this.getFilePillsRenderer();
     this.contentWrapper.clear();
-    
+
     if (filePills.length === 0) {
       this.contentWrapper.update({
-        children: [{
+        children: [ {
           type: 'div',
           classNames: [ 'mynah-modified-files-empty-state' ],
           children: [ 'No modified files' ]
-        }]
+        } ]
       });
     } else {
       this.contentWrapper.update({ children: filePills });
