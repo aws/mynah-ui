@@ -60,10 +60,10 @@ describe('ModifiedFilesTracker', () => {
   describe('addFile', () => {
     it('should add a file to tracked files', () => {
       tracker.addFile('test.js', 'modified', '/full/path/test.js', 'tool-123');
-      
+
       const trackedFiles = tracker.getTrackedFiles();
       expect(trackedFiles).toHaveLength(1);
-      expect(trackedFiles[0]).toEqual({
+      expect(trackedFiles[ 0 ]).toEqual({
         path: 'test.js',
         type: 'modified',
         fullPath: '/full/path/test.js',
@@ -74,11 +74,11 @@ describe('ModifiedFilesTracker', () => {
     it('should replace existing file with same path', () => {
       tracker.addFile('test.js', 'modified');
       tracker.addFile('test.js', 'created', '/new/path/test.js');
-      
+
       const trackedFiles = tracker.getTrackedFiles();
       expect(trackedFiles).toHaveLength(1);
-      expect(trackedFiles[0].type).toBe('created');
-      expect(trackedFiles[0].fullPath).toBe('/new/path/test.js');
+      expect(trackedFiles[ 0 ].type).toBe('created');
+      expect(trackedFiles[ 0 ].fullPath).toBe('/new/path/test.js');
     });
   });
 
@@ -86,7 +86,7 @@ describe('ModifiedFilesTracker', () => {
     it('should remove a file from tracked files', () => {
       tracker.addFile('test.js', 'modified');
       tracker.removeFile('test.js');
-      
+
       expect(tracker.getTrackedFiles()).toHaveLength(0);
     });
   });
@@ -96,9 +96,9 @@ describe('ModifiedFilesTracker', () => {
       tracker.addFile('modified.js', 'modified');
       tracker.addFile('created.js', 'created');
       tracker.addFile('deleted.js', 'deleted');
-      
+
       const modifiedFiles = tracker.getModifiedFiles();
-      expect(modifiedFiles).toEqual(['modified.js', 'created.js']);
+      expect(modifiedFiles).toEqual([ 'modified.js', 'created.js' ]);
     });
   });
 
@@ -106,9 +106,9 @@ describe('ModifiedFilesTracker', () => {
     it('should clear all tracked files', () => {
       tracker.addFile('test1.js', 'modified');
       tracker.addFile('test2.js', 'created');
-      
+
       tracker.clearFiles();
-      
+
       expect(tracker.getTrackedFiles()).toHaveLength(0);
     });
   });
@@ -117,12 +117,12 @@ describe('ModifiedFilesTracker', () => {
     it('should build correct file list structure', () => {
       tracker.addFile('src/test.js', 'modified', '/full/src/test.js');
       tracker.addFile('deleted.js', 'deleted');
-      
-      const fileList = tracker['buildFileList']();
-      
-      expect(fileList.filePaths).toEqual(['src/test.js']);
-      expect(fileList.deletedFiles).toEqual(['deleted.js']);
-      expect(fileList.details['src/test.js']).toEqual({
+
+      const fileList = tracker.buildFileList();
+
+      expect(fileList.filePaths).toEqual([ 'src/test.js' ]);
+      expect(fileList.deletedFiles).toEqual([ 'deleted.js' ]);
+      expect(fileList.details[ 'src/test.js' ]).toEqual({
         visibleName: 'test.js',
         clickable: true,
         fullPath: '/full/src/test.js'
@@ -133,10 +133,10 @@ describe('ModifiedFilesTracker', () => {
   describe('visibility', () => {
     it('should show/hide component', () => {
       const mockRender = tracker.render;
-      
+
       tracker.setVisible(false);
       expect(mockRender.addClass).toHaveBeenCalledWith('hidden');
-      
+
       tracker.setVisible(true);
       expect(mockRender.removeClass).toHaveBeenCalledWith('hidden');
     });
@@ -145,9 +145,9 @@ describe('ModifiedFilesTracker', () => {
   describe('DOM rendering', () => {
     it('should create ChatItemCard when files are added', () => {
       const { ChatItemCard } = jest.requireMock('../chat-item/chat-item-card');
-      
+
       tracker.addFile('test.js', 'modified');
-      
+
       expect(ChatItemCard).toHaveBeenCalledWith({
         tabId: 'test-tab',
         inline: true,
@@ -158,7 +158,7 @@ describe('ModifiedFilesTracker', () => {
           messageId: 'modified-files-tracker',
           header: {
             fileList: {
-              filePaths: ['test.js'],
+              filePaths: [ 'test.js' ],
               deletedFiles: [],
               details: {
                 'test.js': {
@@ -176,10 +176,10 @@ describe('ModifiedFilesTracker', () => {
     it('should append ChatItemCard to DOM', () => {
       const mockAppendChild = jest.fn();
       const mockQuerySelector = jest.fn().mockReturnValue({ appendChild: mockAppendChild });
-      tracker['collapsibleContent'].render.querySelector = mockQuerySelector;
-      
+      tracker.collapsibleContent.render.querySelector = mockQuerySelector;
+
       tracker.addFile('test.js', 'modified');
-      
+
       expect(mockQuerySelector).toHaveBeenCalledWith('.mynah-collapsible-content-wrapper');
       expect(mockAppendChild).toHaveBeenCalled();
     });
@@ -187,11 +187,11 @@ describe('ModifiedFilesTracker', () => {
     it('should show empty state when no files', () => {
       const mockAppendChild = jest.fn();
       const mockQuerySelector = jest.fn().mockReturnValue({ appendChild: mockAppendChild });
-      tracker['collapsibleContent'].render.querySelector = mockQuerySelector;
-      
+      tracker.collapsibleContent.render.querySelector = mockQuerySelector;
+
       // Clear any existing files and trigger update
       tracker.clearFiles();
-      
+
       expect(mockAppendChild).toHaveBeenCalledWith(
         expect.objectContaining({
           className: expect.stringContaining('mynah-modified-files-empty-state')
@@ -201,17 +201,17 @@ describe('ModifiedFilesTracker', () => {
 
     it('should remove old ChatItemCard when updating', () => {
       const mockRemove = jest.fn();
-      
+
       // Add first file
       tracker.addFile('test1.js', 'modified');
-      const firstCard = tracker['chatItemCard'];
-      if (firstCard) {
+      const firstCard = tracker.chatItemCard;
+      if (firstCard != null) {
         firstCard.render.remove = mockRemove;
       }
-      
+
       // Add second file - should remove first card
       tracker.addFile('test2.js', 'modified');
-      
+
       expect(mockRemove).toHaveBeenCalled();
     });
   });

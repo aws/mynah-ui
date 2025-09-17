@@ -154,14 +154,14 @@ export class ModifiedFilesTracker {
 
   public addFile (filePath: string, fileType: string = 'modified', fullPath?: string, toolUseId?: string): void {
     console.log('[ModifiedFilesTracker] addFile called:', { filePath, fileType, fullPath, toolUseId });
-    
+
     this.trackedFiles.set(filePath, {
       path: filePath,
       type: fileType,
       fullPath,
       toolUseId
     });
-    
+
     console.log('[ModifiedFilesTracker] trackedFiles after add:', Array.from(this.trackedFiles.entries()));
     this.updateContent();
   }
