@@ -104,8 +104,7 @@ export class ModifiedFilesTracker {
 
     this.trackedFiles.forEach((file) => {
       const fileName = file.path.split('/').pop() ?? file.path;
-      const isDeleted = file.type === 'deleted';
-      
+
       // Get icon based on status like sampleProgressiveFileList
       let icon = 'file';
       let iconStatus = 'none';
@@ -144,7 +143,7 @@ export class ModifiedFilesTracker {
                     tabId: this.props.tabId,
                     messageId: 'modified-files-tracker',
                     filePath: file.path,
-                    deleted: isDeleted
+                    deleted: file.type === 'deleted'
                   });
                 }
               }
@@ -153,7 +152,7 @@ export class ModifiedFilesTracker {
           {
             type: 'span',
             classNames: [ 'mynah-modified-files-status' ],
-            children: [ file.label || file.type ]
+            children: [ file.label ?? file.type ]
           },
           new Button({
             icon: new Icon({ icon: 'undo' }).render,
@@ -184,10 +183,10 @@ export class ModifiedFilesTracker {
   private processLatestChatItems (chatItems: ChatItem[]): void {
     // Only process the latest non-streaming chat item with files
     const latestChatItem = chatItems
-      .filter(item => item.type !== 'answer-stream' && (item.header?.fileList || item.fileList))
+      .filter(item => item.type !== 'answer-stream' && (((item.header?.fileList) != null) || item.fileList))
       .pop();
 
-    if (latestChatItem) {
+    if (latestChatItem != null) {
       // Clear existing files and add new ones to prevent duplicates
       this.clearFiles();
       this.extractFilesFromChatItem(latestChatItem);
@@ -197,28 +196,31 @@ export class ModifiedFilesTracker {
 
   private extractFilesFromChatItem (chatItem: ChatItem): void {
     // Extract files from header.fileList (like ChatItemCard does)
-    if (chatItem.header?.fileList?.filePaths) {
+    if ((chatItem.header?.fileList?.filePaths) != null) {
       chatItem.header.fileList.filePaths.forEach(filePath => {
         const details = chatItem.header?.fileList?.details?.[filePath];
-        const isDeleted = chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
-        const status = details?.icon === 'progress' ? 'working' : 
-                      details?.icon === 'ok-circled' ? 'done' : 
-                      details?.icon === 'cancel-circle' ? 'failed' : 'modified';
-        
+        const status = details?.icon === 'progress'
+          ? 'working'
+          : details?.icon === 'ok-circled'
+            ? 'done'
+            : details?.icon === 'cancel-circle' ? 'failed' : 'modified';
+
         this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus);
       });
     }
-    
+
     // Extract files from main fileList (like ChatItemCard does)
-    if (chatItem.fileList?.filePaths) {
+    if ((chatItem.fileList?.filePaths) != null) {
       chatItem.fileList.filePaths.forEach(filePath => {
         const details = chatItem.fileList?.details?.[filePath];
-        const isDeleted = chatItem.fileList?.deletedFiles?.includes(filePath) === true;
-        const status = details?.icon === 'progress' ? 'working' : 
-                      details?.icon === 'ok-circled' ? 'done' : 
-                      details?.icon === 'cancel-circle' ? 'failed' : 
-                      isDeleted ? 'deleted' : 'modified';
-        
+        const status = details?.icon === 'progress'
+          ? 'working'
+          : details?.icon === 'ok-circled'
+            ? 'done'
+            : details?.icon === 'cancel-circle'
+              ? 'failed'
+              : (chatItem.fileList?.deletedFiles?.includes(filePath) === true) ? 'deleted' : 'modified';
+
         this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus);
       });
     }
