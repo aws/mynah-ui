@@ -7,8 +7,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
 import { MynahUIGlobalEvents } from '../helper/events';
-import { MynahEventNames } from '../static';
-import { ChatItem } from '../static';
+import { MynahEventNames, ChatItem } from '../static';
 import { Button } from './button';
 import { Icon } from './icon';
 import testIds from '../helper/test-ids';
@@ -27,7 +26,7 @@ export class ModifiedFilesTracker {
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
   public titleText: string = 'Modified Files';
-  private trackedFiles: Map<string, { path: string; type: string; fullPath?: string; toolUseId?: string }> = new Map();
+  private readonly trackedFiles: Map<string, { path: string; type: string; fullPath?: string; toolUseId?: string }> = new Map();
   private workInProgress: boolean = false;
 
   constructor (props: ModifiedFilesTrackerProps) {
@@ -57,7 +56,7 @@ export class ModifiedFilesTracker {
 
   private updateContent (): void {
     const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
-    if (contentWrapper) {
+    if (contentWrapper != null) {
       contentWrapper.innerHTML = '';
     }
 
@@ -85,13 +84,13 @@ export class ModifiedFilesTracker {
     this.updateTitle();
   }
 
-  private createFilePills () {
+  private createFilePills (): any[] {
     const fileRows: any[] = [];
-    
+
     this.trackedFiles.forEach((file) => {
       const fileName = file.path.split('/').pop() ?? file.path;
       const isDeleted = file.type === 'deleted';
-      
+
       fileRows.push({
         type: 'div',
         classNames: [ 'mynah-modified-files-row' ],
@@ -108,7 +107,7 @@ export class ModifiedFilesTracker {
             events: {
               click: (event: Event) => {
                 event.stopPropagation();
-                if (this.props.onFileClick) {
+                if (this.props.onFileClick != null) {
                   this.props.onFileClick(file.path);
                 } else {
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
@@ -127,7 +126,7 @@ export class ModifiedFilesTracker {
             primary: false,
             classNames: [ 'mynah-modified-files-undo-button' ],
             onClick: () => {
-              if (this.props.onUndoFile) {
+              if (this.props.onUndoFile != null) {
                 this.props.onUndoFile(file.path, file.toolUseId);
               }
               this.removeFile(file.path);
@@ -136,7 +135,7 @@ export class ModifiedFilesTracker {
         ]
       });
     });
-    
+
     return fileRows;
   }
 
@@ -195,8 +194,8 @@ export class ModifiedFilesTracker {
   private updateTitle (): void {
     const fileCount = this.trackedFiles.size;
     const title = fileCount > 0 ? `Modified Files (${fileCount})` : 'Modified Files';
-    
-    if (this.collapsibleContent.updateTitle) {
+
+    if (this.collapsibleContent.updateTitle != null) {
       this.collapsibleContent.updateTitle(this.workInProgress ? `${title} - Working...` : title);
     }
   }
