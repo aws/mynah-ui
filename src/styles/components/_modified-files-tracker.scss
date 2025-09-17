@@ -1,201 +1,54 @@
-@import '../mixins';
-@import '../scss-variables';
+/*!
+ * Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 .mynah-modified-files-tracker-wrapper {
-    position: relative;
-    width: 100%;
-    box-sizing: border-box;
-    z-index: var(--mynah-z-index-overlay);
-
-    &.hidden {
-        display: none;
-    }
-
-    .mynah-modified-files-tracker {
-        background-color: var(--mynah-color-bg);
-        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-        border-radius: var(--mynah-sizing-1) var(--mynah-sizing-1) 0 0;
-        border-bottom: none;
-        box-shadow: var(--mynah-box-shadow);
-
-        // Expand upwards without affecting content below
-        transform-origin: bottom;
-
-        // Reduce collapsed height for better appearance
-        .mynah-collapsible-content-label {
-            min-height: var(--mynah-sizing-8);
-            padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
-        }
-
-        .mynah-collapsible-content-label-content-wrapper {
-            max-height: 300px;
-            overflow-y: auto;
-
-            // Custom scrollbar styling
-            scrollbar-width: thin;
-            scrollbar-color: var(--mynah-color-border-default) transparent;
-
-            &::-webkit-scrollbar {
-                width: 6px;
-            }
-
-            &::-webkit-scrollbar-track {
-                background: transparent;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background-color: var(--mynah-color-border-default);
-                border-radius: var(--mynah-sizing-1);
-            }
-        }
-    }
-}
-
-.mynah-modified-files-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--mynah-sizing-1);
-    padding: var(--mynah-sizing-1);
-}
-
-.mynah-modified-files-empty-state {
-    color: var(--mynah-color-text-weak);
-    font-style: italic;
-    text-align: center;
-    padding: var(--mynah-sizing-2);
-}
-
-.mynah-modified-files-title-wrapper {
+  border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+  border-bottom: none;
+  border-radius: var(--mynah-sizing-1);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin: 0 var(--mynah-sizing-6);
+  
+  .mynah-collapsible-content-label {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
+  }
+
+  .mynah-modified-files-list {
+    display: flex;
+    flex-direction: column;
     gap: var(--mynah-sizing-2);
+  }
 
-    .mynah-modified-files-title-text {
-        flex: 1;
-    }
-
-    .mynah-modified-files-title-actions {
-        display: flex;
-        align-items: center;
-        gap: var(--mynah-sizing-1);
-        flex-shrink: 0;
-
-        .mynah-button {
-            font-size: var(--mynah-font-size-small);
-            padding: var(--mynah-sizing-half) var(--mynah-sizing-1);
-            min-height: var(--mynah-sizing-6);
-        }
-    }
-}
-
-.mynah-modified-files-item {
+  .mynah-modified-files-row {
     display: flex;
     align-items: center;
-    gap: var(--mynah-sizing-1);
-    padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
-    border-radius: var(--mynah-sizing-1);
-    transition: var(--mynah-short-transition);
-    border: var(--mynah-border-width) solid transparent;
+    justify-content: space-between;
+    padding: var(--mynah-sizing-1) 0;
+  }
 
-    > .mynah-ui-icon {
-        color: var(--mynah-color-text-weak);
-        flex-shrink: 0;
-    }
-
-    // File type specific styling
-    &.mynah-modified-files-item-created {
-        .mynah-modified-files-item-path {
-            font-weight: bold;
-        }
-    }
-
-    &.mynah-modified-files-item-deleted {
-        .mynah-modified-files-item-path {
-            text-decoration: line-through;
-            opacity: 0.7;
-        }
-    }
-
-    &.mynah-modified-files-item-modified {
-        // Default styling for modified files
-    }
-}
-
-.mynah-modified-files-item-content {
-    flex: 1;
+  .mynah-modified-files-filename {
     cursor: pointer;
-    padding: var(--mynah-sizing-half);
-    border-radius: var(--mynah-sizing-half);
-    transition: var(--mynah-short-transition);
-
-    &:hover {
-        background-color: var(--mynah-color-bg-alt);
-    }
-}
-
-.mynah-modified-files-item-path {
-    font-family: var(--mynah-font-family-mono);
-    font-size: var(--mynah-font-size-small);
     color: var(--mynah-color-text-link);
-    word-break: break-all;
-    cursor: pointer;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition: var(--mynah-short-transition);
-
+    flex: 1;
+    
     &:hover {
-        color: var(--mynah-color-text-link-hover, var(--mynah-color-text-strong));
-        text-decoration-color: currentColor;
+      text-decoration: underline;
     }
-}
+  }
 
-.mynah-modified-files-item-actions {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--mynah-sizing-half);
-    opacity: 0;
-    transition: var(--mynah-short-transition);
+  .mynah-modified-files-undo-button {
+    margin-left: var(--mynah-sizing-2);
+    flex-shrink: 0;
+  }
 
-    .mynah-modified-files-item:hover & {
-        opacity: 1;
-    }
-
-    .mynah-modified-files-item-content:hover ~ & {
-        opacity: 1;
-    }
-
-    .mynah-button {
-        min-width: var(--mynah-sizing-6);
-        min-height: var(--mynah-sizing-6);
-        padding: var(--mynah-sizing-half);
-
-        .mynah-ui-icon {
-            color: var(--mynah-color-text-default);
-        }
-
-        &:hover .mynah-ui-icon {
-            color: var(--mynah-color-text-strong);
-        }
-    }
-}
-
-// Fix for detailed list item layout to ensure single line display
-.mynah-modified-files-content .mynah-detailed-list-item {
-    .mynah-detailed-list-item-text {
-        flex-direction: row !important;
-        align-items: center;
-
-        .mynah-detailed-list-item-name {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    }
-
-    .mynah-detailed-list-item-actions {
-        margin-left: auto;
-        flex-shrink: 0;
-    }
+  .mynah-modified-files-empty-state {
+    color: var(--mynah-color-text-weak);
+    font-style: italic;
+    padding: var(--mynah-sizing-2) 0;
+  }
 }

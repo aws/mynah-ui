@@ -964,15 +964,6 @@ export class MynahUI {
    */
   public addChatItem = (tabId: string, chatItem: ChatItem): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      // Auto-populate modified files tracker from fileList
-      if ((chatItem.fileList?.filePaths) != null) {
-        this.logToStorage(`[MynahUI] addChatItem - auto-populating modified files - tabId: ${tabId}, filePaths: ${JSON.stringify(chatItem.fileList.filePaths)}`);
-        chatItem.fileList.filePaths.forEach(filePath => {
-          // Use messageId as toolUseId if available
-          this.addModifiedFile(tabId, filePath, (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : undefined);
-        });
-      }
-
       MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CHAT_ITEM_ADD, { tabId, chatItem });
       MynahUITabsStore.getInstance().getTabDataStore(tabId).updateStore({
         chatItems: [
@@ -1017,14 +1008,6 @@ export class MynahUI {
    */
   public updateLastChatAnswer = (tabId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) != null) {
-      // Auto-populate modified files tracker from fileList in updates
-      if ((updateWith.fileList?.filePaths) != null) {
-        updateWith.fileList.filePaths.forEach(filePath => {
-          // Use messageId as toolUseId if available
-          this.addModifiedFile(tabId, filePath, (updateWith.messageId != null && updateWith.messageId !== '') ? updateWith.messageId : undefined);
-        });
-      }
-
       if (this.chatWrappers[tabId].getLastStreamingMessageId() != null) {
         this.chatWrappers[tabId].updateLastChatAnswer(updateWith);
       } else {
@@ -1048,14 +1031,6 @@ export class MynahUI {
    */
   public updateChatAnswerWithMessageId = (tabId: string, messageId: string, updateWith: Partial<ChatItem>): void => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      // Auto-populate modified files tracker from fileList in updates
-      if ((updateWith.fileList?.filePaths) != null) {
-        updateWith.fileList.filePaths.forEach(filePath => {
-          // Use the provided messageId as toolUseId
-          this.addModifiedFile(tabId, filePath, messageId);
-        });
-      }
-
       this.chatWrappers[tabId].updateChatAnswerWithMessageId(messageId, updateWith);
     }
   };
@@ -1081,15 +1056,6 @@ export class MynahUI {
    */
   public endMessageStream = (tabId: string, messageId: string, updateWith?: Partial<ChatItem>): CardRenderDetails => {
     if (MynahUITabsStore.getInstance().getTab(tabId) !== null) {
-      // Auto-populate modified files tracker and set work as done
-      if ((updateWith?.fileList?.filePaths) != null) {
-        updateWith.fileList.filePaths.forEach(filePath => {
-          // Use the provided messageId as toolUseId
-          this.addModifiedFile(tabId, filePath, messageId);
-        });
-        this.setModifiedFilesWorkInProgress(tabId, false);
-      }
-
       const chatMessage = this.chatWrappers[tabId].getChatItem(messageId);
       if (chatMessage != null && ![ ChatItemType.AI_PROMPT, ChatItemType.PROMPT, ChatItemType.SYSTEM_PROMPT ].includes(chatMessage.chatItem.type)) {
         this.chatWrappers[tabId].endStreamWithMessageId(messageId, {
@@ -1320,13 +1286,17 @@ export class MynahUI {
    * @param tabId The tab ID
    * @param filePath The path of the file
    * @param fileType The type of file change ('created', 'modified', 'deleted')
+   * @param fullPath Optional full path of the file
    * @param toolUseId Optional tool use ID for undo operations
    */
-  public addFile = (tabId: string, filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', toolUseId?: string): void => {
-    this.logToStorage(`[MynahUI] addFile called - tabId: ${tabId}, filePath: ${filePath}, fileType: ${fileType}, toolUseId: ${toolUseId ?? 'none'}`);
+  public addFile = (tabId: string, filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', fullPath?: string, toolUseId?: string): void => {
+    console.log('[MynahUI] addFile called:', { tabId, filePath, fileType, fullPath, toolUseId });
+    this.logToStorage(`[MynahUI] addFile called - tabId: ${tabId}, filePath: ${filePath}, fileType: ${fileType}, fullPath: ${fullPath ?? 'none'}, toolUseId: ${toolUseId ?? 'none'}`);
     if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].addFile(filePath, fileType, undefined, toolUseId);
+      console.log('[MynahUI] Found chatWrapper, calling addFile');
+      this.chatWrappers[tabId].addFile(filePath, fileType, fullPath, toolUseId);
     } else {
+      console.log('[MynahUI] ERROR: chatWrapper not found for tabId:', tabId, 'Available tabIds:', Object.keys(this.chatWrappers));
       this.logToStorage(`[MynahUI] addFile - chatWrapper not found for tabId: ${tabId}`);
     }
   };
@@ -1369,10 +1339,12 @@ export class MynahUI {
    * @param inProgress Whether work is in progress
    */
   public setFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
+    console.log('[MynahUI] setFilesWorkInProgress called:', { tabId, inProgress });
     this.logToStorage(`[MynahUI] setFilesWorkInProgress called - tabId: ${tabId}, inProgress: ${String(inProgress)}`);
     if (this.chatWrappers[tabId] != null) {
       this.chatWrappers[tabId].setFilesWorkInProgress(inProgress);
     } else {
+      console.log('[MynahUI] ERROR: chatWrapper not found for tabId:', tabId);
       this.logToStorage(`[MynahUI] setFilesWorkInProgress - chatWrapper not found for tabId: ${tabId}`);
     }
   };

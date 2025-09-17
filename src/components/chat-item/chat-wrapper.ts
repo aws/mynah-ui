@@ -98,19 +98,24 @@ export class ChatWrapper {
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     );
 
+    console.log('[ChatWrapper] Creating ModifiedFilesTracker for tabId:', this.props.tabId);
     this.modifiedFilesTracker = new ModifiedFilesTracker({
       tabId: this.props.tabId,
       visible: true,
       onFileClick: (filePath: string) => {
+        console.log('[ChatWrapper] ModifiedFilesTracker onFileClick:', { tabId: this.props.tabId, filePath });
         this.props.onModifiedFileClick?.(this.props.tabId, filePath);
       },
       onUndoFile: (filePath: string, toolUseId?: string) => {
+        console.log('[ChatWrapper] ModifiedFilesTracker onUndoFile:', { tabId: this.props.tabId, filePath, toolUseId });
         this.props.onModifiedFileUndo?.(this.props.tabId, filePath, toolUseId);
       },
       onUndoAll: () => {
+        console.log('[ChatWrapper] ModifiedFilesTracker onUndoAll:', { tabId: this.props.tabId });
         this.props.onModifiedFileUndoAll?.(this.props.tabId);
       }
     });
+    console.log('[ChatWrapper] ModifiedFilesTracker created successfully');
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
@@ -560,6 +565,7 @@ export class ChatWrapper {
 
   // Enhanced API methods
   public addFile (filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', fullPath?: string, toolUseId?: string): void {
+    console.log('[ChatWrapper] addFile called:', { tabId: this.props.tabId, filePath, fileType, fullPath, toolUseId });
     this.modifiedFilesTracker.addFile(filePath, fileType, fullPath, toolUseId);
   }
 
@@ -575,6 +581,7 @@ export class ChatWrapper {
   }
 
   public setFilesWorkInProgress (inProgress: boolean): void {
+    console.log('[ChatWrapper] setFilesWorkInProgress called:', { tabId: this.props.tabId, inProgress });
     this.modifiedFilesTracker.setWorkInProgress(inProgress);
   }
 

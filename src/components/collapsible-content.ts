@@ -89,4 +89,8 @@ export class CollapsibleContent {
       ],
     });
   }
+
+  public updateTitle (newTitle: string): void {
+    this.titleTextElement.update({ children: [ newTitle ] });
+  }
 }
