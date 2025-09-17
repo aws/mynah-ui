@@ -4,51 +4,51 @@
  */
 
 .mynah-modified-files-tracker-wrapper {
-  border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-  border-bottom: none;
-  border-radius: var(--mynah-sizing-1);
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  margin: 0 var(--mynah-sizing-6);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    border-bottom: none;
+    border-radius: var(--mynah-sizing-1);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin: 0 var(--mynah-sizing-6);
 
-  .mynah-collapsible-content-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .mynah-modified-files-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--mynah-sizing-2);
-  }
-
-  .mynah-modified-files-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--mynah-sizing-1) 0;
-  }
-
-  .mynah-modified-files-filename {
-    cursor: pointer;
-    color: var(--mynah-color-text-link);
-    flex: 1;
-
-    &:hover {
-      text-decoration: underline;
+    .mynah-collapsible-content-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
     }
-  }
 
-  .mynah-modified-files-undo-button {
-    margin-left: var(--mynah-sizing-2);
-    flex-shrink: 0;
-  }
+    .mynah-modified-files-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--mynah-sizing-2);
+    }
 
-  .mynah-modified-files-empty-state {
-    color: var(--mynah-color-text-weak);
-    font-style: italic;
-    padding: var(--mynah-sizing-2) 0;
-  }
+    .mynah-modified-files-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--mynah-sizing-1) 0;
+    }
+
+    .mynah-modified-files-filename {
+        cursor: pointer;
+        color: var(--mynah-color-text-link);
+        flex: 1;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .mynah-modified-files-undo-button {
+        margin-left: var(--mynah-sizing-2);
+        flex-shrink: 0;
+    }
+
+    .mynah-modified-files-empty-state {
+        color: var(--mynah-color-text-weak);
+        font-style: italic;
+        padding: var(--mynah-sizing-2) 0;
+    }
 }
