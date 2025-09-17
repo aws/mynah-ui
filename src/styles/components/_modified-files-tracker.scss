@@ -22,17 +22,21 @@
         align-items: center !important;
     }
 
-    .mynah-modified-files-list {
+    .mynah-modified-files-pills-container {
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
         gap: var(--mynah-sizing-2);
     }
 
-    .mynah-modified-files-row {
-        display: flex;
+    .mynah-chat-item-tree-file-pill {
+        display: inline-flex;
         align-items: center;
-        justify-content: space-between;
-        padding: var(--mynah-sizing-1) 0;
+        gap: var(--mynah-sizing-1);
+        
+        .mynah-modified-files-undo-button {
+            margin-left: var(--mynah-sizing-1);
+            flex-shrink: 0;
+        }
     }
 
     .mynah-modified-files-filename {

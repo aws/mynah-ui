@@ -52,14 +52,12 @@ export class ModifiedFilesTracker {
       children: [ this.collapsibleContent.render ]
     });
 
-    // Subscribe to loading state like ChatItemCard does
     MynahUITabsStore.getInstance()
       .getTabDataStore(this.props.tabId)
       .subscribe('loadingChat', (isLoading: boolean) => {
         this.setWorkInProgress(isLoading);
       });
 
-    // Subscribe to chat items updates like ChatItemCard does
     MynahUITabsStore.getInstance()
       .getTabDataStore(this.props.tabId)
       .subscribe('chatItems', (chatItems: ChatItem[]) => {
@@ -85,12 +83,7 @@ export class ModifiedFilesTracker {
     } else {
       const filePillsContainer = DomBuilder.getInstance().build({
         type: 'div',
-        classNames: [ 'mynah-modified-files-list' ],
-        events: {
-          click: (event: Event) => {
-            event.stopPropagation();
-          }
-        },
+        classNames: [ 'mynah-modified-files-pills-container' ],
         children: this.createFilePills()
       });
       contentWrapper?.appendChild(filePillsContainer);
@@ -100,94 +93,70 @@ export class ModifiedFilesTracker {
   }
 
   private createFilePills (): any[] {
-    const fileRows: any[] = [];
+    const filePills: any[] = [];
 
     this.trackedFiles.forEach((file) => {
       const fileName = file.path.split('/').pop() ?? file.path;
+      const isDeleted = file.type === 'deleted';
 
-      // Get icon based on status like sampleProgressiveFileList
-      let icon = 'file';
-      let iconStatus = 'none';
-      if (file.type === 'working') {
-        icon = 'progress';
-        iconStatus = 'info';
-      } else if (file.type === 'done') {
-        icon = 'ok-circled';
-        iconStatus = 'success';
-      } else if (file.type === 'failed') {
-        icon = 'cancel-circle';
-        iconStatus = 'error';
-      }
-
-      fileRows.push({
-        type: 'div',
-        classNames: [ 'mynah-modified-files-row' ],
-        events: {
-          click: (event: Event) => {
-            event.stopPropagation();
-          }
-        },
+      filePills.push({
+        type: 'span',
+        classNames: [
+          'mynah-chat-item-tree-file-pill',
+          ...(isDeleted ? [ 'mynah-chat-item-tree-file-pill-deleted' ] : [])
+        ],
         children: [
-          new Icon({ icon, status: iconStatus }).render,
           {
             type: 'span',
-            classNames: [ 'mynah-modified-files-filename' ],
             children: [ fileName ],
             events: {
               click: (event: Event) => {
+                event.preventDefault();
                 event.stopPropagation();
-                if (this.props.onFileClick != null) {
-                  this.props.onFileClick(file.path);
-                } else {
-                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
-                    tabId: this.props.tabId,
-                    messageId: 'modified-files-tracker',
-                    filePath: file.path,
-                    deleted: file.type === 'deleted'
-                  });
-                }
+                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
+                  tabId: this.props.tabId,
+                  messageId: 'modified-files-tracker',
+                  filePath: file.fullPath ?? file.path,
+                  deleted: isDeleted
+                });
               }
             }
-          },
-          {
-            type: 'span',
-            classNames: [ 'mynah-modified-files-status' ],
-            children: [ file.label ?? file.type ]
           },
           new Button({
             icon: new Icon({ icon: 'undo' }).render,
             status: 'clear',
             primary: false,
             classNames: [ 'mynah-modified-files-undo-button' ],
-            onClick: () => {
+            onClick: (event: Event) => {
+              event.preventDefault();
+              event.stopPropagation();
               if (this.props.onUndoFile != null) {
-                this.props.onUndoFile(file.path, file.toolUseId);
+                this.props.onUndoFile(file.fullPath ?? file.path, file.toolUseId);
+              } else {
+                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                  tabId: this.props.tabId,
+                  messageId: 'modified-files-tracker',
+                  actionId: 'undo-file',
+                  actionText: 'Undo',
+                  filePath: file.fullPath ?? file.path,
+                  toolUseId: file.toolUseId
+                });
               }
-              this.removeFile(file.path);
             }
           }).render
         ]
       });
     });
 
-    return fileRows;
-  }
-
-  public updateChatItem (chatItem: ChatItem): void {
-    console.log('[ModifiedFilesTracker] updateChatItem called with:', chatItem);
-    this.props.chatItem = chatItem;
-    this.extractFilesFromChatItem(chatItem);
-    this.updateContent();
+    return filePills;
   }
 
   private processLatestChatItems (chatItems: ChatItem[]): void {
-    // Only process the latest non-streaming chat item with files
     const latestChatItem = chatItems
       .filter(item => item.type !== 'answer-stream' && (((item.header?.fileList) != null) || item.fileList))
       .pop();
 
     if (latestChatItem != null) {
-      // Clear existing files and add new ones to prevent duplicates
       this.clearFiles();
       this.extractFilesFromChatItem(latestChatItem);
       this.updateContent();
@@ -195,7 +164,6 @@ export class ModifiedFilesTracker {
   }
 
   private extractFilesFromChatItem (chatItem: ChatItem): void {
-    // Extract files from header.fileList (like ChatItemCard does)
     if ((chatItem.header?.fileList?.filePaths) != null) {
       chatItem.header.fileList.filePaths.forEach(filePath => {
         const details = chatItem.header?.fileList?.details?.[filePath];
@@ -204,12 +172,10 @@ export class ModifiedFilesTracker {
           : details?.icon === 'ok-circled'
             ? 'done'
             : details?.icon === 'cancel-circle' ? 'failed' : 'modified';
-
-        this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus);
+        this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus, details?.description);
       });
     }
 
-    // Extract files from main fileList (like ChatItemCard does)
     if ((chatItem.fileList?.filePaths) != null) {
       chatItem.fileList.filePaths.forEach(filePath => {
         const details = chatItem.fileList?.details?.[filePath];
@@ -220,8 +186,7 @@ export class ModifiedFilesTracker {
             : details?.icon === 'cancel-circle'
               ? 'failed'
               : (chatItem.fileList?.deletedFiles?.includes(filePath) === true) ? 'deleted' : 'modified';
-
-        this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus);
+        this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus, details?.description);
       });
     }
   }
@@ -235,22 +200,12 @@ export class ModifiedFilesTracker {
   }
 
   public addFile (filePath: string, fileType: string = 'modified', fullPath?: string, toolUseId?: string): void {
-    this.trackedFiles.set(filePath, {
-      path: filePath,
-      type: fileType,
-      fullPath,
-      toolUseId
-    });
+    this.trackedFiles.set(filePath, { path: filePath, type: fileType, fullPath, toolUseId });
     this.updateContent();
   }
 
-  private addFileWithDetails (filePath: string, status: string, label?: string, iconStatus?: string): void {
-    this.trackedFiles.set(filePath, {
-      path: filePath,
-      type: status,
-      label,
-      iconStatus
-    });
+  private addFileWithDetails (filePath: string, status: string, label?: string, iconStatus?: string, fullPath?: string): void {
+    this.trackedFiles.set(filePath, { path: filePath, type: status, label, iconStatus, fullPath });
   }
 
   public removeFile (filePath: string): void {
@@ -268,21 +223,10 @@ export class ModifiedFilesTracker {
     this.updateContent();
   }
 
-  public getTrackedFiles (): Array<{ path: string; type: string; fullPath?: string; toolUseId?: string; label?: string; iconStatus?: string }> {
-    return Array.from(this.trackedFiles.values());
-  }
-
-  public getModifiedFiles (): string[] {
-    return Array.from(this.trackedFiles.values())
-      .filter(file => file.type !== 'deleted')
-      .map(file => file.path);
-  }
-
   private updateTitle (): void {
     const fileCount = this.trackedFiles.size;
     const title = fileCount > 0 ? `Modified Files (${fileCount})` : 'Modified Files';
-
-    if (this.collapsibleContent.updateTitle != null) {
+    if ((this.collapsibleContent.updateTitle) != null) {
       this.collapsibleContent.updateTitle(this.workInProgress ? `${title} - Working...` : title);
     }
   }
