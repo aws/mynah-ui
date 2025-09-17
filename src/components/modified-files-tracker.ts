@@ -11,6 +11,7 @@ import { MynahEventNames, ChatItem } from '../static';
 import { Button } from './button';
 import { Icon } from './icon';
 import testIds from '../helper/test-ids';
+import { MynahUITabsStore } from '../helper/tabs-store';
 
 export interface ModifiedFilesTrackerProps {
   tabId: string;
@@ -26,7 +27,7 @@ export class ModifiedFilesTracker {
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
   public titleText: string = 'Modified Files';
-  private readonly trackedFiles: Map<string, { path: string; type: string; fullPath?: string; toolUseId?: string }> = new Map();
+  private readonly trackedFiles: Map<string, { path: string; type: string; fullPath?: string; toolUseId?: string; label?: string; iconStatus?: string }> = new Map();
   private workInProgress: boolean = false;
 
   constructor (props: ModifiedFilesTrackerProps) {
@@ -50,6 +51,20 @@ export class ModifiedFilesTracker {
       testId: testIds.modifiedFilesTracker.container,
       children: [ this.collapsibleContent.render ]
     });
+
+    // Subscribe to loading state like ChatItemCard does
+    MynahUITabsStore.getInstance()
+      .getTabDataStore(this.props.tabId)
+      .subscribe('loadingChat', (isLoading: boolean) => {
+        this.setWorkInProgress(isLoading);
+      });
+
+    // Subscribe to chat items updates like ChatItemCard does
+    MynahUITabsStore.getInstance()
+      .getTabDataStore(this.props.tabId)
+      .subscribe('chatItems', (chatItems: ChatItem[]) => {
+        this.processLatestChatItems(chatItems);
+      });
 
     this.updateContent();
   }
@@ -90,6 +105,20 @@ export class ModifiedFilesTracker {
     this.trackedFiles.forEach((file) => {
       const fileName = file.path.split('/').pop() ?? file.path;
       const isDeleted = file.type === 'deleted';
+      
+      // Get icon based on status like sampleProgressiveFileList
+      let icon = 'file';
+      let iconStatus = 'none';
+      if (file.type === 'working') {
+        icon = 'progress';
+        iconStatus = 'info';
+      } else if (file.type === 'done') {
+        icon = 'ok-circled';
+        iconStatus = 'success';
+      } else if (file.type === 'failed') {
+        icon = 'cancel-circle';
+        iconStatus = 'error';
+      }
 
       fileRows.push({
         type: 'div',
@@ -100,6 +129,7 @@ export class ModifiedFilesTracker {
           }
         },
         children: [
+          new Icon({ icon, status: iconStatus }).render,
           {
             type: 'span',
             classNames: [ 'mynah-modified-files-filename' ],
@@ -119,6 +149,11 @@ export class ModifiedFilesTracker {
                 }
               }
             }
+          },
+          {
+            type: 'span',
+            classNames: [ 'mynah-modified-files-status' ],
+            children: [ file.label || file.type ]
           },
           new Button({
             icon: new Icon({ icon: 'undo' }).render,
@@ -140,8 +175,53 @@ export class ModifiedFilesTracker {
   }
 
   public updateChatItem (chatItem: ChatItem): void {
+    console.log('[ModifiedFilesTracker] updateChatItem called with:', chatItem);
     this.props.chatItem = chatItem;
+    this.extractFilesFromChatItem(chatItem);
     this.updateContent();
+  }
+
+  private processLatestChatItems (chatItems: ChatItem[]): void {
+    // Only process the latest non-streaming chat item with files
+    const latestChatItem = chatItems
+      .filter(item => item.type !== 'answer-stream' && (item.header?.fileList || item.fileList))
+      .pop();
+
+    if (latestChatItem) {
+      // Clear existing files and add new ones to prevent duplicates
+      this.clearFiles();
+      this.extractFilesFromChatItem(latestChatItem);
+      this.updateContent();
+    }
+  }
+
+  private extractFilesFromChatItem (chatItem: ChatItem): void {
+    // Extract files from header.fileList (like ChatItemCard does)
+    if (chatItem.header?.fileList?.filePaths) {
+      chatItem.header.fileList.filePaths.forEach(filePath => {
+        const details = chatItem.header?.fileList?.details?.[filePath];
+        const isDeleted = chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
+        const status = details?.icon === 'progress' ? 'working' : 
+                      details?.icon === 'ok-circled' ? 'done' : 
+                      details?.icon === 'cancel-circle' ? 'failed' : 'modified';
+        
+        this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus);
+      });
+    }
+    
+    // Extract files from main fileList (like ChatItemCard does)
+    if (chatItem.fileList?.filePaths) {
+      chatItem.fileList.filePaths.forEach(filePath => {
+        const details = chatItem.fileList?.details?.[filePath];
+        const isDeleted = chatItem.fileList?.deletedFiles?.includes(filePath) === true;
+        const status = details?.icon === 'progress' ? 'working' : 
+                      details?.icon === 'ok-circled' ? 'done' : 
+                      details?.icon === 'cancel-circle' ? 'failed' : 
+                      isDeleted ? 'deleted' : 'modified';
+        
+        this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus);
+      });
+    }
   }
 
   public setVisible (visible: boolean): void {
@@ -153,17 +233,22 @@ export class ModifiedFilesTracker {
   }
 
   public addFile (filePath: string, fileType: string = 'modified', fullPath?: string, toolUseId?: string): void {
-    console.log('[ModifiedFilesTracker] addFile called:', { filePath, fileType, fullPath, toolUseId });
-
     this.trackedFiles.set(filePath, {
       path: filePath,
       type: fileType,
       fullPath,
       toolUseId
     });
-
-    console.log('[ModifiedFilesTracker] trackedFiles after add:', Array.from(this.trackedFiles.entries()));
     this.updateContent();
+  }
+
+  private addFileWithDetails (filePath: string, status: string, label?: string, iconStatus?: string): void {
+    this.trackedFiles.set(filePath, {
+      path: filePath,
+      type: status,
+      label,
+      iconStatus
+    });
   }
 
   public removeFile (filePath: string): void {
@@ -181,7 +266,7 @@ export class ModifiedFilesTracker {
     this.updateContent();
   }
 
-  public getTrackedFiles (): Array<{ path: string; type: string; fullPath?: string; toolUseId?: string }> {
+  public getTrackedFiles (): Array<{ path: string; type: string; fullPath?: string; toolUseId?: string; label?: string; iconStatus?: string }> {
     return Array.from(this.trackedFiles.values());
   }
 
