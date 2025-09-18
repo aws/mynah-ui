@@ -27,7 +27,7 @@ export class ModifiedFilesTracker {
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
   public titleText: string = 'Modified Files';
-  private readonly trackedFiles: Map<string, { path: string; type: string; fullPath?: string; toolUseId?: string; label?: string; iconStatus?: string }> = new Map();
+  private currentChatItem: ChatItem | null = null;
   private workInProgress: boolean = false;
 
   constructor (props: ModifiedFilesTrackerProps) {
@@ -73,7 +73,8 @@ export class ModifiedFilesTracker {
       contentWrapper.innerHTML = '';
     }
 
-    if (this.trackedFiles.size === 0) {
+    const filePills = this.createFilePills();
+    if (filePills.length === 0) {
       const emptyState = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-modified-files-empty-state' ],
@@ -84,7 +85,7 @@ export class ModifiedFilesTracker {
       const filePillsContainer = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-modified-files-pills-container' ],
-        children: this.createFilePills()
+        children: filePills
       });
       contentWrapper?.appendChild(filePillsContainer);
     }
@@ -93,11 +94,20 @@ export class ModifiedFilesTracker {
   }
 
   private createFilePills (): any[] {
-    const filePills: any[] = [];
+    if (!this.currentChatItem) return [];
 
-    this.trackedFiles.forEach((file) => {
-      const fileName = file.path.split('/').pop() ?? file.path;
-      const isDeleted = file.type === 'deleted';
+    const filePills: any[] = [];
+    const fileList = this.currentChatItem.header?.fileList || this.currentChatItem.fileList;
+    
+    if (!fileList?.filePaths) return [];
+
+    fileList.filePaths.forEach(filePath => {
+      const details = fileList.details?.[filePath];
+      const fileName = filePath.split('/').pop() ?? filePath;
+      const isDeleted = fileList.deletedFiles?.includes(filePath) === true;
+      const statusIcon = details?.icon === 'progress' ? 'progress' :
+                        details?.icon === 'ok-circled' ? 'ok-circled' :
+                        details?.icon === 'cancel-circle' ? 'cancel-circle' : null;
 
       filePills.push({
         type: 'span',
@@ -106,19 +116,22 @@ export class ModifiedFilesTracker {
           ...(isDeleted ? [ 'mynah-chat-item-tree-file-pill-deleted' ] : [])
         ],
         children: [
+          ...(statusIcon ? [new Icon({ icon: statusIcon, status: details?.iconForegroundStatus }).render] : []),
           {
             type: 'span',
             children: [ fileName ],
             events: {
               click: (event: Event) => {
+                if (details?.clickable === false) {
+                  return;
+                }
                 event.preventDefault();
                 event.stopPropagation();
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
                   tabId: this.props.tabId,
-                  messageId: 'modified-files-tracker',
-                  filePath: file.path,
-                  deleted: isDeleted,
-                  fileDetails: { data: { fullPath: file.fullPath ?? file.path } }
+                  messageId: this.currentChatItem?.messageId,
+                  filePath,
+                  deleted: isDeleted
                 });
               }
             }
@@ -132,15 +145,15 @@ export class ModifiedFilesTracker {
               event.preventDefault();
               event.stopPropagation();
               if (this.props.onUndoFile != null) {
-                this.props.onUndoFile(file.fullPath ?? file.path, file.toolUseId);
+                this.props.onUndoFile(filePath, details?.toolUseId);
               } else {
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                   tabId: this.props.tabId,
-                  messageId: 'modified-files-tracker',
+                  messageId: this.currentChatItem?.messageId,
                   actionId: 'undo-file',
                   actionText: 'Undo',
-                  filePath: file.fullPath ?? file.path,
-                  toolUseId: file.toolUseId
+                  filePath,
+                  toolUseId: details?.toolUseId
                 });
               }
             }
@@ -157,48 +170,13 @@ export class ModifiedFilesTracker {
       .filter(item => item.type !== 'answer-stream' && (((item.header?.fileList) != null) || item.fileList))
       .pop();
 
-    if (latestChatItem != null) {
-      this.clearFiles();
-      this.extractFilesFromChatItem(latestChatItem);
+    if (latestChatItem) {
+      this.currentChatItem = latestChatItem;
       this.updateContent();
     }
   }
 
-  private extractFilesFromChatItem (chatItem: ChatItem): void {
-    if ((chatItem.header?.fileList?.filePaths) != null) {
-      chatItem.header.fileList.filePaths.forEach(filePath => {
-        const details = chatItem.header?.fileList?.details?.[filePath];
-        const status = details?.icon === 'progress'
-          ? 'working'
-          : details?.icon === 'ok-circled'
-            ? 'done'
-            : details?.icon === 'cancel-circle' ? 'failed' : 'modified';
 
-        // Only add files that are actually modified (not in progress)
-        if (status !== 'working') {
-          this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus, filePath);
-        }
-      });
-    }
-
-    if ((chatItem.fileList?.filePaths) != null) {
-      chatItem.fileList.filePaths.forEach(filePath => {
-        const details = chatItem.fileList?.details?.[filePath];
-        const status = details?.icon === 'progress'
-          ? 'working'
-          : details?.icon === 'ok-circled'
-            ? 'done'
-            : details?.icon === 'cancel-circle'
-              ? 'failed'
-              : (chatItem.fileList?.deletedFiles?.includes(filePath) === true) ? 'deleted' : 'modified';
-
-        // Only add files that are actually modified (not in progress)
-        if (status !== 'working') {
-          this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus, filePath);
-        }
-      });
-    }
-  }
 
   public setVisible (visible: boolean): void {
     if (visible) {
@@ -208,32 +186,17 @@ export class ModifiedFilesTracker {
     }
   }
 
-  public addFile (filePath: string, fileType: string = 'modified', fullPath?: string, toolUseId?: string): void {
-    this.trackedFiles.set(filePath, { path: filePath, type: fileType, fullPath, toolUseId });
-    this.updateContent();
-  }
 
-  private addFileWithDetails (filePath: string, status: string, label?: string, iconStatus?: string, fullPath?: string): void {
-    this.trackedFiles.set(filePath, { path: filePath, type: status, label, iconStatus, fullPath });
-  }
-
-  public removeFile (filePath: string): void {
-    this.trackedFiles.delete(filePath);
-    this.updateContent();
-  }
 
   public setWorkInProgress (inProgress: boolean): void {
     this.workInProgress = inProgress;
     this.updateTitle();
   }
 
-  public clearFiles (): void {
-    this.trackedFiles.clear();
-    this.updateContent();
-  }
+
 
   private updateTitle (): void {
-    const fileCount = this.trackedFiles.size;
+    const fileCount = this.currentChatItem?.header?.fileList?.filePaths?.length || this.currentChatItem?.fileList?.filePaths?.length || 0;
     const title = fileCount > 0 ? `Modified Files (${fileCount})` : 'Modified Files';
     if ((this.collapsibleContent.updateTitle) != null) {
       this.collapsibleContent.updateTitle(this.workInProgress ? `${title} - Working...` : title);
