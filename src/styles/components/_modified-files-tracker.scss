@@ -33,6 +33,10 @@
         align-items: center;
         gap: var(--mynah-sizing-1);
 
+        &:hover {
+            background-color: var(--mynah-color-syntax-bg) !important;
+        }
+
         .mynah-modified-files-undo-button {
             margin-left: var(--mynah-sizing-1);
             flex-shrink: 0;

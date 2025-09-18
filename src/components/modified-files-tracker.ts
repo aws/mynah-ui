@@ -116,8 +116,9 @@ export class ModifiedFilesTracker {
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
                   tabId: this.props.tabId,
                   messageId: 'modified-files-tracker',
-                  filePath: file.fullPath ?? file.path,
-                  deleted: isDeleted
+                  filePath: file.path,
+                  deleted: isDeleted,
+                  fileDetails: { data: { fullPath: file.fullPath ?? file.path } }
                 });
               }
             }
@@ -172,7 +173,11 @@ export class ModifiedFilesTracker {
           : details?.icon === 'ok-circled'
             ? 'done'
             : details?.icon === 'cancel-circle' ? 'failed' : 'modified';
-        this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus, details?.description);
+
+        // Only add files that are actually modified (not in progress)
+        if (status !== 'working') {
+          this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus, filePath);
+        }
       });
     }
 
@@ -186,7 +191,11 @@ export class ModifiedFilesTracker {
             : details?.icon === 'cancel-circle'
               ? 'failed'
               : (chatItem.fileList?.deletedFiles?.includes(filePath) === true) ? 'deleted' : 'modified';
-        this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus, details?.description);
+
+        // Only add files that are actually modified (not in progress)
+        if (status !== 'working') {
+          this.addFileWithDetails(filePath, status, details?.label, details?.iconForegroundStatus, filePath);
+        }
       });
     }
   }
