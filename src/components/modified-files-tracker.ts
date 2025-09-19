@@ -27,7 +27,8 @@ export class ModifiedFilesTracker {
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
   public titleText: string = 'Modified Files';
-  private currentChatItem: ChatItem | null = null;
+  private chatFilePillContainers: ExtendedHTMLElement[] = [];
+  private processedMessageIds: Set<string> = new Set();
   private workInProgress: boolean = false;
 
   constructor (props: ModifiedFilesTrackerProps) {
@@ -69,47 +70,36 @@ export class ModifiedFilesTracker {
 
   private updateContent (): void {
     const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
-    if (contentWrapper != null) {
-      contentWrapper.innerHTML = '';
-    }
+    if (contentWrapper == null) return;
 
-    const filePills = this.createFilePills();
-    if (filePills.length === 0) {
+    if (this.chatFilePillContainers.length === 0) {
+      contentWrapper.innerHTML = '';
       const emptyState = DomBuilder.getInstance().build({
         type: 'div',
         classNames: [ 'mynah-modified-files-empty-state' ],
         children: [ 'No modified files' ]
       });
-      contentWrapper?.appendChild(emptyState);
-    } else {
-      const filePillsContainer = DomBuilder.getInstance().build({
-        type: 'div',
-        classNames: [ 'mynah-modified-files-pills-container' ],
-        children: filePills
-      });
-      contentWrapper?.appendChild(filePillsContainer);
+      contentWrapper.appendChild(emptyState);
     }
 
     this.updateTitle();
   }
 
-  private createFilePills (): any[] {
-    if (this.currentChatItem == null) return [];
+  private createChatFilePillContainer (chatItem: ChatItem): ExtendedHTMLElement | null {
+    const fileList = chatItem.header?.fileList ?? chatItem.fileList;
+    if (fileList?.filePaths == null || fileList.filePaths.length === 0) return null;
 
     const filePills: any[] = [];
-    const fileList = this.currentChatItem.header?.fileList ?? this.currentChatItem.fileList;
-
-    if (fileList?.filePaths == null || fileList.filePaths.length === 0) return [];
-
     fileList.filePaths.forEach(filePath => {
       const details = fileList.details?.[filePath];
+      
+      // Only show files that have completed processing (have changes data)
+      if (!details?.changes) return;
+      
       const fileName = filePath.split('/').pop() ?? filePath;
       const isDeleted = fileList.deletedFiles?.includes(filePath) === true;
-      const statusIcon = details?.icon === 'progress'
-        ? 'progress'
-        : details?.icon === 'ok-circled'
-          ? 'ok-circled'
-          : details?.icon === 'cancel-circle' ? 'cancel-circle' : null;
+      // Since icons are always null, we'll show a default success icon for completed files
+      const statusIcon = 'ok-circled';
 
       filePills.push({
         type: 'span',
@@ -131,7 +121,7 @@ export class ModifiedFilesTracker {
                 event.stopPropagation();
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
                   tabId: this.props.tabId,
-                  messageId: this.currentChatItem?.messageId,
+                  messageId: chatItem.messageId,
                   filePath,
                   deleted: isDeleted
                 });
@@ -151,7 +141,7 @@ export class ModifiedFilesTracker {
               } else {
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                   tabId: this.props.tabId,
-                  messageId: this.currentChatItem?.messageId,
+                  messageId: chatItem.messageId,
                   actionId: 'undo-file',
                   actionText: 'Undo',
                   filePath,
@@ -164,18 +154,39 @@ export class ModifiedFilesTracker {
       });
     });
 
-    return filePills;
+    return DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-modified-files-pills-container' ],
+      children: filePills
+    });
   }
 
   private processLatestChatItems (chatItems: ChatItem[]): void {
-    const latestChatItem = chatItems
-      .filter(item => item.type !== 'answer-stream' && (((item.header?.fileList) != null) || item.fileList))
-      .pop();
+    const fileListItems = chatItems.filter(item => 
+      item.type !== 'answer-stream' && 
+      item.messageId != null &&
+      !this.processedMessageIds.has(item.messageId) &&
+      (((item.header?.fileList) != null) || item.fileList)
+    );
+    
 
-    if (latestChatItem != null) {
-      this.currentChatItem = latestChatItem;
-      this.updateContent();
-    }
+
+    fileListItems.forEach(chatItem => {
+      if (chatItem.messageId != null) {
+        this.processedMessageIds.add(chatItem.messageId);
+        const container = this.createChatFilePillContainer(chatItem);
+        if (container != null) {
+          this.chatFilePillContainers.push(container);
+          const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
+          if (contentWrapper != null) {
+            contentWrapper.querySelector('.mynah-modified-files-empty-state')?.remove();
+            contentWrapper.appendChild(container);
+          }
+        }
+      }
+    });
+
+    this.updateTitle();
   }
 
   public setVisible (visible: boolean): void {
@@ -192,8 +203,10 @@ export class ModifiedFilesTracker {
   }
 
   private updateTitle (): void {
-    const fileCount = this.currentChatItem?.header?.fileList?.filePaths?.length ?? this.currentChatItem?.fileList?.filePaths?.length ?? 0;
-    const title = fileCount > 0 ? `Modified Files (${fileCount})` : 'Modified Files';
+    const totalFiles = this.chatFilePillContainers.reduce((count, container) => {
+      return count + container.querySelectorAll('.mynah-chat-item-tree-file-pill').length;
+    }, 0);
+    const title = totalFiles > 0 ? `(${totalFiles}) files modified!` : 'No Files Modified!';
     if ((this.collapsibleContent.updateTitle) != null) {
       this.collapsibleContent.updateTitle(this.workInProgress ? `${title} - Working...` : title);
     }

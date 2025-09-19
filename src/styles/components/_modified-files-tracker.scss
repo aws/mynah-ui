@@ -32,9 +32,18 @@
         display: inline-flex;
         align-items: center;
         gap: var(--mynah-sizing-1);
+        transition: all 0.2s ease;
+        cursor: pointer;
 
         &:hover {
             background-color: var(--mynah-color-syntax-bg) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            
+            span:not(.mynah-modified-files-undo-button) {
+                text-decoration: underline;
+                color: var(--mynah-color-text-link);
+            }
         }
 
         .mynah-modified-files-undo-button {
