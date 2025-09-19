@@ -27,8 +27,8 @@ export class ModifiedFilesTracker {
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
   public titleText: string = 'Modified Files';
-  private chatFilePillContainers: ExtendedHTMLElement[] = [];
-  private processedMessageIds: Set<string> = new Set();
+  private readonly chatFilePillContainers: ExtendedHTMLElement[] = [];
+  private readonly processedMessageIds: Set<string> = new Set();
   private workInProgress: boolean = false;
 
   constructor (props: ModifiedFilesTrackerProps) {
@@ -92,10 +92,10 @@ export class ModifiedFilesTracker {
     const filePills: any[] = [];
     fileList.filePaths.forEach(filePath => {
       const details = fileList.details?.[filePath];
-      
+
       // Only show files that have completed processing (have changes data)
-      if (!details?.changes) return;
-      
+      if ((details?.changes) == null) return;
+
       const fileName = filePath.split('/').pop() ?? filePath;
       const isDeleted = fileList.deletedFiles?.includes(filePath) === true;
       // Since icons are always null, we'll show a default success icon for completed files
@@ -162,14 +162,12 @@ export class ModifiedFilesTracker {
   }
 
   private processLatestChatItems (chatItems: ChatItem[]): void {
-    const fileListItems = chatItems.filter(item => 
-      item.type !== 'answer-stream' && 
+    const fileListItems = chatItems.filter(item =>
+      item.type !== 'answer-stream' &&
       item.messageId != null &&
       !this.processedMessageIds.has(item.messageId) &&
       (((item.header?.fileList) != null) || item.fileList)
     );
-    
-
 
     fileListItems.forEach(chatItem => {
       if (chatItem.messageId != null) {
