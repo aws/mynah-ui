@@ -50,7 +50,7 @@ import { StyleLoader } from './helper/style-loader';
 import { Icon } from './components/icon';
 import { Button } from './components/button';
 import { TopBarButtonOverlayProps } from './components/chat-item/prompt-input/prompt-top-bar/top-bar-button';
-import { TrackedFile } from './components/modified-files-tracker';
+// TrackedFile interface removed - now using data-driven approach
 
 export { generateUID } from './helper/guid';
 export {
@@ -99,9 +99,7 @@ export {
 } from './components/chat-item/chat-item-card-content';
 export {
   ModifiedFilesTracker,
-  ModifiedFilesTrackerProps,
-  FileChangeType,
-  TrackedFile
+  ModifiedFilesTrackerProps
 } from './components/modified-files-tracker';
 export { default as MynahUITestIds } from './helper/test-ids';
 
@@ -410,32 +408,7 @@ export class MynahUI {
                   props.onStopChatResponse(tabId, this.getUserEventId());
                 }
               }
-            : undefined,
-          onModifiedFileClick: props.onModifiedFileClick != null
-            ? (tabId, filePath) => {
-                if (props.onModifiedFileClick != null) {
-                  props.onModifiedFileClick(tabId, filePath, this.getUserEventId());
-                }
-              }
-            : undefined,
-          onModifiedFileUndo: (tabId, filePath, toolUseId) => {
-            // Send button click event for individual file undo
-            // Use toolUseId as messageId if available, otherwise fall back to generic ID
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-              tabId,
-              messageId: toolUseId ?? 'modified-files-tracker',
-              actionId: 'undo-changes',
-              actionText: filePath
-            });
-          },
-          onModifiedFileUndoAll: (tabId) => {
-            // Send undo-all-changes button click event
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-              tabId,
-              messageId: 'modified-files-tracker',
-              actionId: 'undo-all-changes'
-            });
-          }
+            : undefined
         });
         return this.chatWrappers[tabId].render;
       })
@@ -514,36 +487,7 @@ export class MynahUI {
                 props.onStopChatResponse(tabId, this.getUserEventId());
               }
             }
-          : undefined,
-        onModifiedFileClick: props.onModifiedFileClick != null
-          ? (tabId, filePath) => {
-              if (props.onModifiedFileClick != null) {
-                props.onModifiedFileClick(tabId, filePath, this.getUserEventId());
-              }
-            }
-          : undefined,
-        onModifiedFileUndo: (tabId, filePath, toolUseId) => {
-          // Send button click event for individual file undo
-          // Use toolUseId as messageId if available, otherwise fall back to generic ID
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-            tabId,
-            messageId: toolUseId ?? 'modified-files-tracker',
-            actionId: 'undo-changes',
-            actionText: filePath
-          });
-        },
-        onModifiedFileUndoAll: (tabId) => {
-          // Get all tracked files and undo each one
-          const trackedFiles = this.getTrackedFiles(tabId);
-          trackedFiles.forEach(file => {
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-              tabId,
-              messageId: file.toolUseId ?? 'modified-files-tracker',
-              actionId: 'undo-changes',
-              actionText: file.path
-            });
-          });
-        }
+          : undefined
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
       this.focusToInput(tabId);
@@ -1290,15 +1234,7 @@ export class MynahUI {
    * @param toolUseId Optional tool use ID for undo operations
    */
   public addFile = (tabId: string, filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', fullPath?: string, toolUseId?: string): void => {
-    console.log('[MynahUI] addFile called:', { tabId, filePath, fileType, fullPath, toolUseId });
-    this.logToStorage(`[MynahUI] addFile called - tabId: ${tabId}, filePath: ${filePath}, fileType: ${fileType}, fullPath: ${fullPath ?? 'none'}, toolUseId: ${toolUseId ?? 'none'}`);
-    if (this.chatWrappers[tabId] != null) {
-      console.log('[MynahUI] Found chatWrapper, calling addFile');
-      this.chatWrappers[tabId].addFile(filePath, fileType, fullPath, toolUseId);
-    } else {
-      console.log('[MynahUI] ERROR: chatWrapper not found for tabId:', tabId, 'Available tabIds:', Object.keys(this.chatWrappers));
-      this.logToStorage(`[MynahUI] addFile - chatWrapper not found for tabId: ${tabId}`);
-    }
+    // No-op: now handled by data-driven approach through ChatItem.fileList
   };
 
   /**
@@ -1318,9 +1254,7 @@ export class MynahUI {
    * @param filePath The path of the file to remove
    */
   public removeFile = (tabId: string, filePath: string): void => {
-    if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].removeFile(filePath);
-    }
+    // No-op: now handled by data-driven approach
   };
 
   /**
@@ -1364,12 +1298,7 @@ export class MynahUI {
    * @param tabId The tab ID
    */
   public clearFiles = (tabId: string): void => {
-    this.logToStorage(`[MynahUI] clearFiles called - tabId: ${tabId}`);
-    if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].clearFiles();
-    } else {
-      this.logToStorage(`[MynahUI] clearFiles - chatWrapper not found for tabId: ${tabId}`);
-    }
+    // No-op: now handled by data-driven approach
   };
 
   /**
@@ -1398,10 +1327,8 @@ export class MynahUI {
    * @param tabId The tab ID
    * @returns Array of tracked files with types
    */
-  public getTrackedFiles = (tabId: string): TrackedFile[] => {
-    if (this.chatWrappers[tabId] != null) {
-      return this.chatWrappers[tabId].getTrackedFiles();
-    }
+  public getTrackedFiles = (tabId: string): any[] => {
+    // Return empty array: now handled by data-driven approach
     return [];
   };
 
@@ -1412,9 +1339,7 @@ export class MynahUI {
    * @returns Array of modified file paths
    */
   public getModifiedFiles = (tabId: string): string[] => {
-    if (this.chatWrappers[tabId] != null) {
-      return this.chatWrappers[tabId].getModifiedFiles();
-    }
+    // Return empty array: now handled by data-driven approach
     return [];
   };
 
@@ -1425,7 +1350,7 @@ export class MynahUI {
    */
   public setFilesTrackerVisible = (tabId: string, visible: boolean): void => {
     if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].setFilesTrackerVisible(visible);
+      this.chatWrappers[tabId].setModifiedFilesTrackerVisible(visible);
     }
   };
 
@@ -1445,9 +1370,7 @@ export class MynahUI {
    * @param messageId The message ID to associate with file clicks
    */
   public setMessageId = (tabId: string, messageId: string): void => {
-    if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].setMessageId(messageId);
-    }
+    // No-op: now handled by data-driven approach
   };
 
   public destroy = (): void => {

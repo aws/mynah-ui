@@ -36,9 +36,6 @@ export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
   onStopChatResponse?: (tabId: string) => void;
   tabId: string;
-  onModifiedFileClick?: (tabId: string, filePath: string) => void;
-  onModifiedFileUndo?: (tabId: string, filePath: string, toolUseId?: string) => void;
-  onModifiedFileUndoAll?: (tabId: string) => void;
 }
 export class ChatWrapper {
   private readonly props: ChatWrapperProps;
@@ -98,24 +95,10 @@ export class ChatWrapper {
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     );
 
-    console.log('[ChatWrapper] Creating ModifiedFilesTracker for tabId:', this.props.tabId);
     this.modifiedFilesTracker = new ModifiedFilesTracker({
       tabId: this.props.tabId,
-      visible: true,
-      onFileClick: (filePath: string) => {
-        console.log('[ChatWrapper] ModifiedFilesTracker onFileClick:', { tabId: this.props.tabId, filePath });
-        this.props.onModifiedFileClick?.(this.props.tabId, filePath);
-      },
-      onUndoFile: (filePath: string, toolUseId?: string) => {
-        console.log('[ChatWrapper] ModifiedFilesTracker onUndoFile:', { tabId: this.props.tabId, filePath, toolUseId });
-        this.props.onModifiedFileUndo?.(this.props.tabId, filePath, toolUseId);
-      },
-      onUndoAll: () => {
-        console.log('[ChatWrapper] ModifiedFilesTracker onUndoAll:', { tabId: this.props.tabId });
-        this.props.onModifiedFileUndoAll?.(this.props.tabId);
-      }
+      visible: true
     });
-    console.log('[ChatWrapper] ModifiedFilesTracker created successfully');
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
@@ -563,68 +546,11 @@ export class ChatWrapper {
     this.dragBlurOverlay.style.display = visible ? 'block' : 'none';
   }
 
-  // Enhanced API methods
-  public addFile (filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', fullPath?: string, toolUseId?: string): void {
-    console.log('[ChatWrapper] addFile called:', { tabId: this.props.tabId, filePath, fileType, fullPath, toolUseId });
-    this.modifiedFilesTracker.addFile(filePath, fileType, fullPath, toolUseId);
-  }
-
-  public setMessageId (messageId: string): void {
-    // Update the messageId through a public method
-    if (this.modifiedFilesTracker.setMessageId != null) {
-      this.modifiedFilesTracker.setMessageId(messageId);
-    }
-  }
-
-  public removeFile (filePath: string): void {
-    this.modifiedFilesTracker.removeFile(filePath);
-  }
-
   public setFilesWorkInProgress (inProgress: boolean): void {
-    console.log('[ChatWrapper] setFilesWorkInProgress called:', { tabId: this.props.tabId, inProgress });
     this.modifiedFilesTracker.setWorkInProgress(inProgress);
   }
 
-  public clearFiles (): void {
-    this.modifiedFilesTracker.clearFiles();
-  }
-
-  public getTrackedFiles (): Array<{path: string; type: 'created' | 'modified' | 'deleted'}> {
-    return this.modifiedFilesTracker.getTrackedFiles();
-  }
-
-  public setFilesTrackerVisible (visible: boolean): void {
-    this.modifiedFilesTracker.setVisible(visible);
-  }
-
-  // Legacy API methods (deprecated)
-  /** @deprecated Use addFile() instead */
-  public addModifiedFile (filePath: string): void {
-    this.addFile(filePath, 'modified');
-  }
-
-  /** @deprecated Use removeFile() instead */
-  public removeModifiedFile (filePath: string): void {
-    this.removeFile(filePath);
-  }
-
-  /** @deprecated Use setFilesWorkInProgress() instead */
-  public setModifiedFilesWorkInProgress (inProgress: boolean): void {
-    this.setFilesWorkInProgress(inProgress);
-  }
-
-  /** @deprecated Use clearFiles() instead */
-  public clearModifiedFiles (): void {
-    this.clearFiles();
-  }
-
-  /** @deprecated Use getTrackedFiles() instead */
-  public getModifiedFiles (): string[] {
-    return this.modifiedFilesTracker.getModifiedFiles();
-  }
-
-  /** @deprecated Use setFilesTrackerVisible() instead */
   public setModifiedFilesTrackerVisible (visible: boolean): void {
-    this.setFilesTrackerVisible(visible);
+    this.modifiedFilesTracker.setVisible(visible);
   }
 }
