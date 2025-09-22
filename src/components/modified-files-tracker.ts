@@ -8,7 +8,6 @@ import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
 import { MynahUIGlobalEvents } from '../helper/events';
 import { MynahEventNames, ChatItem } from '../static';
-import { Button } from './button';
 import { Icon } from './icon';
 import testIds from '../helper/test-ids';
 import { MynahUITabsStore } from '../helper/tabs-store';
@@ -26,7 +25,7 @@ export class ModifiedFilesTracker {
   public titleText: string = 'Modified Files';
   private workInProgress: boolean = false;
 
-  constructor (props: ModifiedFilesTrackerProps) {
+  constructor(props: ModifiedFilesTrackerProps) {
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
     this.props = { visible: true, ...props };
 
@@ -63,7 +62,7 @@ export class ModifiedFilesTracker {
     this.updateContent();
   }
 
-  private updateContent (): void {
+  private updateContent(): void {
     const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
     if (contentWrapper == null) return;
 
@@ -102,8 +101,9 @@ export class ModifiedFilesTracker {
         classNames: [ 'mynah-modified-files-pills-container' ],
         children: allModifiedFiles.map(({ chatItem, filePath, details }) => {
           const fileName = details?.visibleName ?? filePath;
-          const isDeleted = chatItem.fileList?.deletedFiles?.includes(filePath) === true ||
-                           chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
+          const isDeleted =
+            chatItem.fileList?.deletedFiles?.includes(filePath) === true ||
+            chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
           const statusIcon = details?.icon ?? 'ok-circled';
 
           return {
@@ -191,9 +191,7 @@ export class ModifiedFilesTracker {
     this.updateTitle(allModifiedFiles.length);
   }
 
-
-
-  public setVisible (visible: boolean): void {
+  public setVisible(visible: boolean): void {
     if (visible) {
       this.render.removeClass('hidden');
     } else {
@@ -201,12 +199,12 @@ export class ModifiedFilesTracker {
     }
   }
 
-  public setWorkInProgress (inProgress: boolean): void {
+  public setWorkInProgress(inProgress: boolean): void {
     this.workInProgress = inProgress;
     this.updateTitle(0);
   }
 
-  private updateTitle (totalFiles: number): void {
+  private updateTitle(totalFiles: number): void {
     const title = totalFiles > 0 ? `(${totalFiles}) files modified!` : 'No Files Modified!';
     if ((this.collapsibleContent.updateTitle) != null) {
       this.collapsibleContent.updateTitle(this.workInProgress ? `${title} - Working...` : title);
