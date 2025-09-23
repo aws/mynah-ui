@@ -85,10 +85,10 @@ export class ChatItemCard {
       fileList: props.chatItem.fileList,
       headerFileList: props.chatItem.header?.fileList,
       hasButtons: (props.chatItem.buttons?.length ?? 0) > 0,
-      hasFileActions: props.chatItem.fileList?.actions || props.chatItem.header?.fileList?.actions
+      hasFileActions: ((props.chatItem.fileList?.actions) != null) || props.chatItem.header?.fileList?.actions
     });
     console.log('=== End ChatItemCard Constructor Data ===');
-    
+
     this.props = {
       ...props,
       chatItem: {

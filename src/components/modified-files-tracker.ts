@@ -7,7 +7,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
 import { MynahUIGlobalEvents } from '../helper/events';
-import { MynahEventNames, ChatItem, FileNodeAction } from '../static';
+import { MynahEventNames, ChatItem } from '../static';
 import { Icon } from './icon';
 import testIds from '../helper/test-ids';
 import { MynahUITabsStore } from '../helper/tabs-store';
@@ -105,8 +105,6 @@ export class ModifiedFilesTracker {
             chatItem.fileList?.deletedFiles?.includes(filePath) === true ||
             chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
           const statusIcon = details?.icon ?? 'ok-circled';
-          
-
 
           return {
             type: 'span',
@@ -137,23 +135,25 @@ export class ModifiedFilesTracker {
                 }
               },
               // Add undo button if present in chatItem.header.buttons
-              ...((chatItem.header?.buttons?.find((btn: any) => btn.id === 'undo-changes')) ? [{
-                type: 'button',
-                classNames: [ 'mynah-button', 'mynah-button-clear', 'mynah-icon-button' ],
-                children: [ new Icon({ icon: 'undo' }).render ],
-                events: {
-                  click: (event: Event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-                      tabId: this.props.tabId,
-                      messageId: chatItem.messageId,
-                      actionId: 'undo-changes',
-                      actionText: 'Undo changes'
-                    });
-                  }
-                }
-              }] : [])
+              ...(((chatItem.header?.buttons?.find((btn: any) => btn.id === 'undo-changes')) != null)
+                ? [ {
+                    type: 'button',
+                    classNames: [ 'mynah-button', 'mynah-button-clear', 'mynah-icon-button' ],
+                    children: [ new Icon({ icon: 'undo' }).render ],
+                    events: {
+                      click: (event: Event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                          tabId: this.props.tabId,
+                          messageId: chatItem.messageId,
+                          actionId: 'undo-changes',
+                          actionText: 'Undo changes'
+                        });
+                      }
+                    }
+                  } ]
+                : [])
             ]
           };
         })
@@ -161,19 +161,19 @@ export class ModifiedFilesTracker {
       contentWrapper.appendChild(pillsContainer);
 
       // Add "Undo All" button if present in any chatItem.header.buttons
-      const undoAllButton = chatItems.find((chatItem: ChatItem) => 
+      const undoAllButton = chatItems.find((chatItem: ChatItem) =>
         chatItem.header?.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
       )?.header?.buttons?.find((btn: any) => btn.id === 'undo-all-changes');
-      
+
       if (undoAllButton != null) {
-        const undoAllChatItem = chatItems.find((chatItem: ChatItem) => 
+        const undoAllChatItem = chatItems.find((chatItem: ChatItem) =>
           chatItem.header?.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
         );
-        
+
         const buttonsContainer = DomBuilder.getInstance().build({
           type: 'div',
           classNames: [ 'mynah-modified-files-buttons-container' ],
-          children: [{
+          children: [ {
             type: 'button',
             classNames: [ 'mynah-button', 'mynah-button-clear' ],
             children: [
@@ -196,7 +196,7 @@ export class ModifiedFilesTracker {
                 });
               }
             }
-          }]
+          } ]
         });
         contentWrapper.appendChild(buttonsContainer);
       }
