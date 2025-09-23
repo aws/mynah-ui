@@ -142,8 +142,20 @@ export class ModifiedFilesTracker {
                     children: [ new Icon({ icon: 'undo' }).render ],
                     events: {
                       click: (event: Event) => {
+                        const button = event.currentTarget as HTMLButtonElement;
+                        if (button.classList.contains('disabled')) return;
+
                         event.preventDefault();
                         event.stopPropagation();
+
+                        // Replace icon with red cross and disable
+                        const iconElement = button.querySelector('.mynah-icon');
+                        if (iconElement != null) {
+                          iconElement.className = 'mynah-icon codicon codicon-close';
+                          iconElement.setAttribute('style', 'color: var(--mynah-color-status-error);');
+                        }
+                        button.classList.add('disabled');
+
                         MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                           tabId: this.props.tabId,
                           messageId: chatItem.messageId,
@@ -213,8 +225,20 @@ export class ModifiedFilesTracker {
             ],
             events: {
               click: (event: Event) => {
+                const button = event.currentTarget as HTMLButtonElement;
+                if (button.classList.contains('disabled')) return;
+
                 event.preventDefault();
                 event.stopPropagation();
+
+                // Replace icon with red cross and disable
+                const iconElement = button.querySelector('.mynah-icon');
+                if (iconElement != null) {
+                  iconElement.className = 'mynah-icon codicon codicon-close';
+                  iconElement.setAttribute('style', 'color: var(--mynah-color-status-error);');
+                }
+                button.classList.add('disabled');
+
                 MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                   tabId: this.props.tabId,
                   messageId: undoAllChatItem?.messageId,
@@ -248,7 +272,7 @@ export class ModifiedFilesTracker {
   private updateTitle (totalFiles: number): void {
     const title = totalFiles > 0 ? `(${totalFiles}) files modified!` : 'No Files Modified!';
     if ((this.collapsibleContent.updateTitle) != null) {
-      this.collapsibleContent.updateTitle(this.workInProgress ? `${title} - Working...` : title);
+      this.collapsibleContent.updateTitle(this.workInProgress ? `${title} - Working...` : `(${totalFiles}) files modified!`);
     }
   }
 }
