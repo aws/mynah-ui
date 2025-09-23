@@ -7,7 +7,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
 import { MynahUIGlobalEvents } from '../helper/events';
-import { MynahEventNames, ChatItem } from '../static';
+import { MynahEventNames, ChatItem, FileNodeAction } from '../static';
 import { Icon } from './icon';
 import testIds from '../helper/test-ids';
 import { MynahUITabsStore } from '../helper/tabs-store';
@@ -105,6 +105,8 @@ export class ModifiedFilesTracker {
             chatItem.fileList?.deletedFiles?.includes(filePath) === true ||
             chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
           const statusIcon = details?.icon ?? 'ok-circled';
+          
+
 
           return {
             type: 'span',
@@ -134,57 +136,69 @@ export class ModifiedFilesTracker {
                   }
                 }
               },
-              {
+              // Add undo button if present in chatItem.header.buttons
+              ...((chatItem.header?.buttons?.find((btn: any) => btn.id === 'undo-changes')) ? [{
                 type: 'button',
-                classNames: [ 'mynah-modified-files-undo-button', 'mynah-button', 'mynah-button-clear' ],
+                classNames: [ 'mynah-button', 'mynah-button-clear', 'mynah-icon-button' ],
                 children: [ new Icon({ icon: 'undo' }).render ],
                 events: {
                   click: (event: Event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_ACTION_CLICK, {
+                    MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                       tabId: this.props.tabId,
                       messageId: chatItem.messageId,
                       actionId: 'undo-changes',
-                      actionText: 'Undo',
-                      filePath,
-                      toolUseId: details?.toolUseId
+                      actionText: 'Undo changes'
                     });
                   }
                 }
-              }
+              }] : [])
             ]
           };
         })
       });
       contentWrapper.appendChild(pillsContainer);
 
-      // Add "Undo All" button if there are files
-      if (allModifiedFiles.length > 0) {
-        const undoAllButton = DomBuilder.getInstance().build({
-          type: 'button',
-          classNames: [ 'mynah-modified-files-undo-all-button', 'mynah-button', 'mynah-button-clear' ],
-          children: [
-            new Icon({ icon: 'undo' }).render,
-            {
-              type: 'span',
-              children: [ 'Undo All' ],
-              classNames: [ 'mynah-button-label' ]
+      // Add "Undo All" button if present in any chatItem.header.buttons
+      const undoAllButton = chatItems.find((chatItem: ChatItem) => 
+        chatItem.header?.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
+      )?.header?.buttons?.find((btn: any) => btn.id === 'undo-all-changes');
+      
+      if (undoAllButton != null) {
+        const undoAllChatItem = chatItems.find((chatItem: ChatItem) => 
+          chatItem.header?.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
+        );
+        
+        const buttonsContainer = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-modified-files-buttons-container' ],
+          children: [{
+            type: 'button',
+            classNames: [ 'mynah-button', 'mynah-button-clear' ],
+            children: [
+              new Icon({ icon: 'undo' }).render,
+              {
+                type: 'span',
+                children: [ undoAllButton.text ?? 'Undo All' ],
+                classNames: [ 'mynah-button-label' ]
+              }
+            ],
+            events: {
+              click: (event: Event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                  tabId: this.props.tabId,
+                  messageId: undoAllChatItem?.messageId,
+                  actionId: undoAllButton.id,
+                  actionText: undoAllButton.text
+                });
+              }
             }
-          ],
-          events: {
-            click: (event: Event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-                tabId: this.props.tabId,
-                actionId: 'undo-all-changes',
-                actionText: 'Undo All'
-              });
-            }
-          }
+          }]
         });
-        contentWrapper.appendChild(undoAllButton);
+        contentWrapper.appendChild(buttonsContainer);
       }
     }
 

@@ -76,6 +76,19 @@ export class ChatItemCard {
   private footer: ChatItemCard | null = null;
   private header: ChatItemCard | null = null;
   constructor (props: ChatItemCardProps) {
+    // Log what data ChatItemCard receives
+    console.log('=== ChatItemCard Constructor Data ===');
+    console.log('ChatItemCard received chatItem:', {
+      type: props.chatItem.type,
+      messageId: props.chatItem.messageId,
+      buttons: props.chatItem.buttons,
+      fileList: props.chatItem.fileList,
+      headerFileList: props.chatItem.header?.fileList,
+      hasButtons: (props.chatItem.buttons?.length ?? 0) > 0,
+      hasFileActions: props.chatItem.fileList?.actions || props.chatItem.header?.fileList?.actions
+    });
+    console.log('=== End ChatItemCard Constructor Data ===');
+    
     this.props = {
       ...props,
       chatItem: {
