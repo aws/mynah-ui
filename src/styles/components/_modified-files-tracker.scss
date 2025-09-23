@@ -33,21 +33,45 @@
         display: inline-flex;
         align-items: center;
         gap: var(--mynah-sizing-1);
-        padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
-        border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+        padding: var(--mynah-sizing-half) var(--mynah-sizing-2);
+        height: 24px;
+        border: var(--mynah-border-width) solid var(--mynah-color-text-link);
         border-radius: var(--mynah-sizing-1);
         background-color: var(--mynah-color-bg);
         transition: all 0.2s ease;
         cursor: pointer;
+        box-sizing: border-box;
 
         &:hover {
             background-color: var(--mynah-color-syntax-bg) !important;
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-color: var(--mynah-color-text-link);
 
             span:not(.mynah-button) {
                 color: var(--mynah-color-text-link);
+            }
+        }
+
+        // Style undo buttons within pills
+        .mynah-button.mynah-icon-button {
+            width: 16px !important;
+            height: 16px !important;
+            min-width: 16px !important;
+            min-height: 16px !important;
+            padding: 0 !important;
+            margin-left: var(--mynah-sizing-half);
+            flex-shrink: 0;
+            border-radius: var(--mynah-sizing-half);
+            
+            .mynah-icon {
+                width: 12px;
+                height: 12px;
+                font-size: 12px;
+            }
+
+            &:hover {
+                background-color: var(--mynah-color-button-reverse);
+                transform: none !important;
             }
         }
 
@@ -70,6 +94,12 @@
         &:hover {
             text-decoration: underline;
         }
+    }
+
+    .mynah-modified-files-buttons-container {
+        margin-top: var(--mynah-sizing-2);
+        display: flex;
+        justify-content: flex-start;
     }
 
     .mynah-modified-files-undo-button {
