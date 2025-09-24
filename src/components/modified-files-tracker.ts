@@ -22,12 +22,12 @@ export class ModifiedFilesTracker {
   render: ExtendedHTMLElement;
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
-  public titleText: string = 'Modified Files';
+  public titleText: string = 'No files modified!';
   private workInProgress: boolean = false;
 
   constructor (props: ModifiedFilesTrackerProps) {
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
-    this.props = { visible: true, ...props };
+    this.props = { visible: false, ...props };
 
     this.collapsibleContent = new CollapsibleContent({
       title: this.titleText,
@@ -57,6 +57,14 @@ export class ModifiedFilesTracker {
       .getTabDataStore(this.props.tabId)
       .subscribe('chatItems', () => {
         this.updateContent();
+      });
+
+    MynahUITabsStore.getInstance()
+      .getTabDataStore(this.props.tabId)
+      .subscribe('modifiedFilesTitle', (newTitle: string) => {
+        if (newTitle !== '') {
+          this.collapsibleContent.updateTitle(newTitle);
+        }
       });
 
     this.updateContent();
@@ -252,8 +260,6 @@ export class ModifiedFilesTracker {
         contentWrapper.appendChild(buttonsContainer);
       }
     }
-
-    this.updateTitle(allModifiedFiles.length);
   }
 
   public setVisible (visible: boolean): void {
@@ -266,13 +272,5 @@ export class ModifiedFilesTracker {
 
   public setWorkInProgress (inProgress: boolean): void {
     this.workInProgress = inProgress;
-    this.updateTitle(0);
-  }
-
-  private updateTitle (totalFiles: number): void {
-    const title = totalFiles > 0 ? `(${totalFiles}) files modified!` : 'No Files Modified!';
-    if ((this.collapsibleContent.updateTitle) != null) {
-      this.collapsibleContent.updateTitle(this.workInProgress ? `${title} - Working...` : `(${totalFiles}) files modified!`);
-    }
   }
 }

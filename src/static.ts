@@ -192,6 +192,10 @@ export interface MynahUIDataModel {
    * Custom context commands to be inserted into the prompt input.
    */
   customContextCommand?: QuickActionCommand[];
+  /**
+   * Title for the modified files tracker component
+   */
+  modifiedFilesTitle?: string;
 }
 
 export interface MynahUITabStoreTab {
