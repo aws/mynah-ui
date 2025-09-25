@@ -196,6 +196,10 @@ export interface MynahUIDataModel {
    * Title for the modified files tracker component
    */
   modifiedFilesTitle?: string;
+  /**
+   * Visibility state for the modified files tracker component
+   */
+  modifiedFilesVisible?: boolean;
 }
 
 export interface MynahUITabStoreTab {

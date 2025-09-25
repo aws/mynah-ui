@@ -99,15 +99,12 @@ export class ChatWrapper {
       tabId: this.props.tabId,
       visible: false
     });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'modifiedFilesVisible', (visible: boolean) => {
+      this.modifiedFilesTracker.setVisible(visible);
+    });
+
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
-
-      // Show modified files tracker when there are chat items
-      if (chatItems.length > 0) {
-        this.modifiedFilesTracker.setVisible(true);
-      } else {
-        this.modifiedFilesTracker.setVisible(false);
-      }
 
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(Array.from(this.chatItemsContainer.children).length - 1);
