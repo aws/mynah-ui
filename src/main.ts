@@ -1273,14 +1273,7 @@ export class MynahUI {
    * @param inProgress Whether work is in progress
    */
   public setFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
-    console.log('[MynahUI] setFilesWorkInProgress called:', { tabId, inProgress });
-    this.logToStorage(`[MynahUI] setFilesWorkInProgress called - tabId: ${tabId}, inProgress: ${String(inProgress)}`);
-    if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].setFilesWorkInProgress(inProgress);
-    } else {
-      console.log('[MynahUI] ERROR: chatWrapper not found for tabId:', tabId);
-      this.logToStorage(`[MynahUI] setFilesWorkInProgress - chatWrapper not found for tabId: ${tabId}`);
-    }
+    // No-op: work in progress functionality removed
   };
 
   /**

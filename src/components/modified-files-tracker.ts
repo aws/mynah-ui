@@ -15,7 +15,6 @@ import { MynahUITabsStore } from '../helper/tabs-store';
 export interface ModifiedFilesTrackerProps {
   tabId: string;
   visible?: boolean;
-  chatItem?: ChatItem;
 }
 
 export class ModifiedFilesTracker {
@@ -23,7 +22,6 @@ export class ModifiedFilesTracker {
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
   public titleText: string = 'No files modified!';
-  private workInProgress: boolean = false;
 
   constructor (props: ModifiedFilesTrackerProps) {
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
@@ -47,25 +45,16 @@ export class ModifiedFilesTracker {
       children: [ this.collapsibleContent.render ]
     });
 
-    MynahUITabsStore.getInstance()
-      .getTabDataStore(this.props.tabId)
-      .subscribe('loadingChat', (isLoading: boolean) => {
-        this.setWorkInProgress(isLoading);
-      });
+    const tabDataStore = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId);
+    tabDataStore.subscribe('chatItems', () => {
+      this.updateContent();
+    });
 
-    MynahUITabsStore.getInstance()
-      .getTabDataStore(this.props.tabId)
-      .subscribe('chatItems', () => {
-        this.updateContent();
-      });
-
-    MynahUITabsStore.getInstance()
-      .getTabDataStore(this.props.tabId)
-      .subscribe('modifiedFilesTitle', (newTitle: string) => {
-        if (newTitle !== '') {
-          this.collapsibleContent.updateTitle(newTitle);
-        }
-      });
+    tabDataStore.subscribe('modifiedFilesTitle', (newTitle: string) => {
+      if (newTitle !== '') {
+        this.collapsibleContent.updateTitle(newTitle);
+      }
+    });
 
     this.updateContent();
   }
@@ -109,9 +98,8 @@ export class ModifiedFilesTracker {
         classNames: [ 'mynah-modified-files-pills-container' ],
         children: allModifiedFiles.map(({ chatItem, filePath, details }) => {
           const fileName = details?.visibleName ?? filePath;
-          const isDeleted =
-            chatItem.fileList?.deletedFiles?.includes(filePath) === true ||
-            chatItem.header?.fileList?.deletedFiles?.includes(filePath) === true;
+          const currentFileList = chatItem.header?.fileList ?? chatItem.fileList;
+          const isDeleted = currentFileList?.deletedFiles?.includes(filePath) === true;
           const statusIcon = details?.icon ?? 'ok-circled';
 
           return {
@@ -180,26 +168,14 @@ export class ModifiedFilesTracker {
       });
       contentWrapper.appendChild(pillsContainer);
 
-      // Add "Undo All" button if present in any chatItem.header.buttons
-      // Check both header.buttons and root buttons for undo-all-changes
-      let undoAllButton = chatItems.find((chatItem: ChatItem) =>
-        chatItem.header?.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
-      )?.header?.buttons?.find((btn: any) => btn.id === 'undo-all-changes');
-
-      let undoAllChatItem = chatItems.find((chatItem: ChatItem) =>
-        chatItem.header?.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
+      // Find undo-all-changes button in any chatItem
+      const undoAllChatItem = chatItems.find((chatItem: ChatItem) =>
+        (chatItem.header?.buttons?.some((btn: any) => btn.id === 'undo-all-changes') ?? false) ||
+        (chatItem.buttons?.some((btn: any) => btn.id === 'undo-all-changes') ?? false)
       );
 
-      // If not found in header.buttons, check root buttons
-      if (undoAllButton === null || undoAllButton === undefined) {
-        undoAllButton = chatItems.find((chatItem: ChatItem) =>
-          chatItem.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
-        )?.buttons?.find((btn: any) => btn.id === 'undo-all-changes');
-
-        undoAllChatItem = chatItems.find((chatItem: ChatItem) =>
-          chatItem.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
-        );
-      }
+      const undoAllButton = undoAllChatItem?.header?.buttons?.find((btn: any) => btn.id === 'undo-all-changes') ??
+                           undoAllChatItem?.buttons?.find((btn: any) => btn.id === 'undo-all-changes');
 
       if (undoAllButton != null) {
         const buttonsContainer = DomBuilder.getInstance().build({
@@ -253,9 +229,5 @@ export class ModifiedFilesTracker {
     } else {
       this.render.addClass('hidden');
     }
-  }
-
-  public setWorkInProgress (inProgress: boolean): void {
-    this.workInProgress = inProgress;
   }
 }

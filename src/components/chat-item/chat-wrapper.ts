@@ -551,10 +551,6 @@ export class ChatWrapper {
     this.dragBlurOverlay.style.display = visible ? 'block' : 'none';
   }
 
-  public setFilesWorkInProgress (inProgress: boolean): void {
-    this.modifiedFilesTracker.setWorkInProgress(inProgress);
-  }
-
   public setModifiedFilesTrackerVisible (visible: boolean): void {
     this.modifiedFilesTracker.setVisible(visible);
   }
