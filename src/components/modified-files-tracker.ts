@@ -181,16 +181,6 @@ export class ModifiedFilesTracker {
       contentWrapper.appendChild(pillsContainer);
 
       // Add "Undo All" button if present in any chatItem.header.buttons
-      console.log('=== UNDO ALL BUTTON DEBUG ===');
-      chatItems.forEach((chatItem: ChatItem, index: number) => {
-        if ((chatItem.header?.buttons) != null) {
-          console.log(`ChatItem ${index} header buttons:`, chatItem.header.buttons.map((btn: any) => ({ id: btn.id, text: btn.text })));
-        }
-        if (chatItem.buttons != null) {
-          console.log(`ChatItem ${index} root buttons:`, chatItem.buttons.map((btn: any) => ({ id: btn.id, text: btn.text })));
-        }
-      });
-
       // Check both header.buttons and root buttons for undo-all-changes
       let undoAllButton = chatItems.find((chatItem: ChatItem) =>
         chatItem.header?.buttons?.some((btn: any) => btn.id === 'undo-all-changes')
@@ -211,12 +201,7 @@ export class ModifiedFilesTracker {
         );
       }
 
-      console.log('Found undoAllButton:', undoAllButton);
-      console.log('Found undoAllChatItem:', undoAllChatItem?.messageId);
-      console.log('=== END UNDO ALL BUTTON DEBUG ===');
-
       if (undoAllButton != null) {
-        console.log('Rendering Undo All button with text:', undoAllButton.text);
         const buttonsContainer = DomBuilder.getInstance().build({
           type: 'div',
           classNames: [ 'mynah-modified-files-buttons-container' ],
