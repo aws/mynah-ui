@@ -52,6 +52,7 @@ import { renderHeaders } from './flows/headers';
 import { renderAndDismissCard } from './flows/dismissible-cards';
 import { openCloseDropdown } from './flows/dropdown-list/open-close-dropdown';
 import { selectDropdownOption } from './flows/dropdown-list/select-dropdown-option';
+import { renderDisabledText } from './flows/disabled-text';
 import { DEFAULT_VIEWPORT } from './helpers';
 import path from 'path';
 import {
@@ -335,5 +336,9 @@ test.describe('Open MynahUI', () => {
     test('should select dropdown option', async ({ page }) => {
       await selectDropdownOption(page);
     });
+  });
+
+  test('should display context command disabled text', async ({ page }) => {
+    await renderDisabledText(page);
   });
 });
