@@ -618,6 +618,7 @@ export class MynahUI {
       actionText?: string;
       formItemValues?: Record<string, string>;
     }) => {
+      console.log('[MynahUI] BODY_ACTION_CLICKED event received:', data);
       if (this.props.onInBodyButtonClicked !== undefined) {
         this.props.onInBodyButtonClicked(data.tabId, data.messageId, {
           id: data.actionId,
@@ -809,6 +810,7 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_CLICK, (data) => {
+      console.log('[MynahUI] FILE_CLICK event received:', data);
       if (this.props.onFileClick !== undefined) {
         this.props.onFileClick(
           data.tabId,
@@ -838,6 +840,7 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_ACTION_CLICK, (data) => {
+      console.log('[MynahUI] FILE_ACTION_CLICK event received:', data);
       if (this.props.onFileActionClick !== undefined) {
         this.props.onFileActionClick(
           data.tabId,
