@@ -6,9 +6,10 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
-import { ChatItemContent } from '../static';
+import { ChatItemContent, MynahEventNames } from '../static';
 import testIds from '../helper/test-ids';
 import { MynahUITabsStore } from '../helper/tabs-store';
+import { MynahUIGlobalEvents } from '../helper/events';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
 import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
 
@@ -138,13 +139,31 @@ export class ModifiedFilesTracker {
 
     const undoButtons = (fileList as { undoButtons?: Array<{ id: string; text: string; status?: string }> }).undoButtons;
     if ((undoButtons?.length ?? 0) > 0 && undoButtons != null) {
+      // Extract the actual messageId from the first file's details for undo-all buttons
+      const firstFileDetails = Object.values(fileList.details ?? {})[0];
+      const actualMessageId = firstFileDetails?.data?.messageId ?? defaultMessageId;
+
       contentWrapper.appendChild(new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
         buttons: undoButtons.map(button => ({
           id: button.id,
           text: button.text,
           status: (button.status ?? 'clear') as 'clear' | 'main' | 'primary' | 'dimmed-clear'
-        }))
+        })),
+        onActionClick: (action) => {
+          console.log('[ModifiedFilesTracker] Button clicked:', {
+            tabId: this.props.tabId,
+            messageId: actualMessageId,
+            actionId: action.id,
+            actionText: action.text
+          });
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+            tabId: this.props.tabId,
+            messageId: actualMessageId,
+            actionId: action.id,
+            actionText: action.text
+          });
+        }
       }).render);
     }
   }
