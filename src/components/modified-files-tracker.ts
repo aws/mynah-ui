@@ -135,7 +135,7 @@ export class ModifiedFilesTracker {
         onActionClick: (action: ChatItemButton) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
-            messageId: (action as any).messageId ?? defaultMessageId,
+            messageId: (action as any).messageId || defaultMessageId,
             actionId: action.id,
             actionText: action.text
           });
