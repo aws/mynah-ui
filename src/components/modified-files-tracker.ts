@@ -6,13 +6,11 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
-import { ChatItemContent, MynahEventNames } from '../static';
+import { ChatItemContent } from '../static';
 import testIds from '../helper/test-ids';
 import { MynahUITabsStore } from '../helper/tabs-store';
-import { MynahUIGlobalEvents } from '../helper/events';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
 import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
-import { MynahIcons } from './icon';
 
 export interface ModifiedFilesTrackerProps {
   tabId: string;
@@ -76,13 +74,14 @@ export class ModifiedFilesTracker {
   }
 
   private renderModifiedFiles (fileList: ChatItemContent['fileList'] | null): void {
+    const fileListWithButtons = fileList as any;
     console.log('[ModifiedFilesTracker] renderModifiedFiles called with:', JSON.stringify({
-      hasFileList: !!fileList,
-      filePathsCount: fileList?.filePaths?.length || 0,
-      hasButtons: !!(fileList as any)?.buttons,
-      buttonsCount: (fileList as any)?.buttons?.length || 0,
-      buttons: (fileList as any)?.buttons?.map((b: any) => ({ id: b.id, text: b.text })) || []
-    }, null, 2))
+      hasFileList: fileList != null,
+      filePathsCount: fileList?.filePaths?.length ?? 0,
+      hasButtons: fileListWithButtons?.buttons != null,
+      buttonsCount: fileListWithButtons?.buttons?.length ?? 0,
+      buttons: fileListWithButtons?.buttons?.map((b: any) => ({ id: b.id, text: b.text })) ?? []
+    }, null, 2));
 
     const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
     if (contentWrapper == null) return;
@@ -106,7 +105,7 @@ export class ModifiedFilesTracker {
 
   private renderFilePills (contentWrapper: Element, fileList: NonNullable<ChatItemContent['fileList']>): void {
     const defaultMessageId = 'modified-files-tracker';
-    
+
     // Render the file tree with actions and buttons as provided by the data
     contentWrapper.appendChild(new ChatItemTreeViewWrapper({
       tabId: this.props.tabId,
@@ -124,15 +123,16 @@ export class ModifiedFilesTracker {
       references: [],
       onRootCollapsedStateChange: () => {}
     }).render);
-    
+
     // Render buttons if they exist
-    const buttons = (fileList as any).buttons
-    if (buttons && buttons.length > 0) {
+    const fileListWithButtons = fileList as any;
+    const buttons = fileListWithButtons.buttons;
+    if (buttons != null && buttons.length > 0) {
       const buttonsWrapper = new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
-        buttons: buttons
-      })
-      contentWrapper.appendChild(buttonsWrapper.render)
+        buttons
+      });
+      contentWrapper.appendChild(buttonsWrapper.render);
     }
   }
 
