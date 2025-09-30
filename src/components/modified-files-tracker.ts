@@ -127,15 +127,15 @@ export class ModifiedFilesTracker {
 
     // Render buttons if they exist
     const fileListWithButtons = fileList as any;
-    const buttons = fileListWithButtons.buttons;
-    if (buttons != null && Array.isArray(buttons) && buttons.length > 0) {
+    const buttons: ChatItemButton[] | undefined = fileListWithButtons.buttons;
+    if (Array.isArray(buttons) && buttons.length > 0) {
       const buttonsWrapper = new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
         buttons,
         onActionClick: (action: ChatItemButton) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
-            messageId: (action as any).messageId || defaultMessageId,
+            messageId: (action as any).messageId != null ? (action as any).messageId : defaultMessageId,
             actionId: action.id,
             actionText: action.text
           });
