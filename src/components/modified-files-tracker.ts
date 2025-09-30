@@ -6,11 +6,12 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
-import { ChatItemContent } from '../static';
+import { ChatItemContent, ChatItemButton, MynahEventNames } from '../static';
 import testIds from '../helper/test-ids';
 import { MynahUITabsStore } from '../helper/tabs-store';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
 import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
+import { MynahUIGlobalEvents } from '../helper/events';
 
 export interface ModifiedFilesTrackerProps {
   tabId: string;
@@ -127,10 +128,18 @@ export class ModifiedFilesTracker {
     // Render buttons if they exist
     const fileListWithButtons = fileList as any;
     const buttons = fileListWithButtons.buttons;
-    if (buttons != null && buttons.length > 0) {
+    if (buttons != null && Array.isArray(buttons) && buttons.length > 0) {
       const buttonsWrapper = new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
-        buttons
+        buttons,
+        onActionClick: (action: ChatItemButton) => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+            tabId: this.props.tabId,
+            messageId: (action as any).messageId ?? defaultMessageId,
+            actionId: action.id,
+            actionText: action.text
+          });
+        }
       });
       contentWrapper.appendChild(buttonsWrapper.render);
     }
