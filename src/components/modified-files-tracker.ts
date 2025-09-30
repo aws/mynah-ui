@@ -12,6 +12,7 @@ import { MynahUITabsStore } from '../helper/tabs-store';
 import { MynahUIGlobalEvents } from '../helper/events';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
 import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
+import { MynahIcons } from './icon';
 
 export interface ModifiedFilesTrackerProps {
   tabId: string;
@@ -75,18 +76,13 @@ export class ModifiedFilesTracker {
   }
 
   private renderModifiedFiles (fileList: ChatItemContent['fileList'] | null): void {
-    console.log('[ModifiedFilesTracker] 📥 Received fileList:', {
-      filePaths: fileList?.filePaths,
-      details: fileList?.details,
-      hasDetails: !((fileList?.details) == null)
-    });
-
-    // Log each file's details to verify fullPath preservation
-    if ((fileList?.details) != null) {
-      Object.entries(fileList.details).forEach(([ filePath, details ]) => {
-        console.log('[ModifiedFilesTracker] 🔍 File details - filePath:', filePath, 'fullPath:', details?.data?.fullPath, 'messageId:', details?.data?.messageId);
-      });
-    }
+    console.log('[ModifiedFilesTracker] renderModifiedFiles called with:', JSON.stringify({
+      hasFileList: !!fileList,
+      filePathsCount: fileList?.filePaths?.length || 0,
+      hasButtons: !!(fileList as any)?.buttons,
+      buttonsCount: (fileList as any)?.buttons?.length || 0,
+      buttons: (fileList as any)?.buttons?.map((b: any) => ({ id: b.id, text: b.text })) || []
+    }, null, 2))
 
     const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
     if (contentWrapper == null) return;
@@ -109,17 +105,9 @@ export class ModifiedFilesTracker {
   }
 
   private renderFilePills (contentWrapper: Element, fileList: NonNullable<ChatItemContent['fileList']>): void {
-    // Use a default messageId for the wrapper, individual files will use their own messageIds from details
     const defaultMessageId = 'modified-files-tracker';
-
-    console.log('[ModifiedFilesTracker] 🎯 Creating ChatItemTreeViewWrapper with:', {
-      tabId: this.props.tabId,
-      messageId: defaultMessageId,
-      filesCount: fileList.filePaths?.length,
-      detailsKeys: Object.keys(fileList.details ?? {}),
-      actionsKeys: Object.keys(fileList.actions ?? {})
-    });
-
+    
+    // Render the file tree with actions and buttons as provided by the data
     contentWrapper.appendChild(new ChatItemTreeViewWrapper({
       tabId: this.props.tabId,
       messageId: defaultMessageId,
@@ -128,7 +116,7 @@ export class ModifiedFilesTracker {
       rootTitle: fileList.rootFolderTitle,
       deletedFiles: fileList.deletedFiles ?? [],
       flatList: fileList.flatList ?? true,
-      actions: fileList.actions,
+      actions: (fileList as any).actions ?? {},
       details: fileList.details ?? {},
       hideFileCount: fileList.hideFileCount ?? true,
       collapsed: fileList.collapsed ?? false,
@@ -136,35 +124,15 @@ export class ModifiedFilesTracker {
       references: [],
       onRootCollapsedStateChange: () => {}
     }).render);
-
-    const undoButtons = (fileList as { undoButtons?: Array<{ id: string; text: string; status?: string }> }).undoButtons;
-    if ((undoButtons?.length ?? 0) > 0 && undoButtons != null) {
-      // Extract the actual messageId from the first file's details for undo-all buttons
-      const firstFileDetails = Object.values(fileList.details ?? {})[0];
-      const actualMessageId = firstFileDetails?.data?.messageId ?? defaultMessageId;
-
-      contentWrapper.appendChild(new ChatItemButtonsWrapper({
+    
+    // Render buttons if they exist
+    const buttons = (fileList as any).buttons
+    if (buttons && buttons.length > 0) {
+      const buttonsWrapper = new ChatItemButtonsWrapper({
         tabId: this.props.tabId,
-        buttons: undoButtons.map(button => ({
-          id: button.id,
-          text: button.text,
-          status: (button.status ?? 'clear') as 'clear' | 'main' | 'primary' | 'dimmed-clear'
-        })),
-        onActionClick: (action) => {
-          console.log('[ModifiedFilesTracker] Button clicked:', {
-            tabId: this.props.tabId,
-            messageId: actualMessageId,
-            actionId: action.id,
-            actionText: action.text
-          });
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-            tabId: this.props.tabId,
-            messageId: actualMessageId,
-            actionId: action.id,
-            actionText: action.text
-          });
-        }
-      }).render);
+        buttons: buttons
+      })
+      contentWrapper.appendChild(buttonsWrapper.render)
     }
   }
 
