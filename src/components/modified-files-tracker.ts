@@ -52,12 +52,6 @@ export class ModifiedFilesTracker {
       this.renderModifiedFiles(fileList);
     });
 
-    tabDataStore.subscribe('newConversation', (newValue: boolean) => {
-      if (newValue) {
-        this.clearContent();
-      }
-    });
-
     tabDataStore.subscribe('modifiedFilesTitle', (newTitle: string) => {
       if (newTitle !== '') {
         this.collapsibleContent.updateTitle(newTitle);
