@@ -6,136 +6,36 @@
 .mynah-modified-files-tracker-wrapper {
     border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     border-bottom: none;
-    border-radius: var(--mynah-input-radius);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    margin: 0 calc(var(--mynah-chat-wrapper-spacing) + var(--mynah-sizing-2));
+    border-radius: var(--mynah-input-radius) var(--mynah-input-radius) var(--mynah-card-radius-corner) var(--mynah-card-radius-corner);
+    margin: var(--mynah-card-radius-corner) calc(var(--mynah-chat-wrapper-spacing) + var(--mynah-sizing-2));
 
     &.hidden {
         display: none;
     }
 
-    .mynah-collapsible-content-label {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    .mynah-collapsible-content-label-title-wrapper {
-        align-items: center !important;
-    }
-
-    .mynah-modified-files-pills-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--mynah-sizing-2);
-        margin-bottom: var(--mynah-sizing-3);
-    }
-
-    .mynah-chat-item-tree-file-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--mynah-sizing-1);
-        padding: var(--mynah-sizing-half) var(--mynah-sizing-2);
-        height: 24px;
-        border: var(--mynah-border-width) solid var(--mynah-color-text-link);
-        border-radius: var(--mynah-sizing-1);
-        background-color: var(--mynah-color-bg);
-        transition: all 0.2s ease;
-        cursor: pointer;
-        box-sizing: border-box;
-
-        &:hover {
-            background-color: var(--mynah-color-syntax-bg) !important;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-            span:not(.mynah-button) {
-                color: var(--mynah-color-text-link);
-            }
+    .mynah-collapsible-content-label-content-wrapper {
+        pointer-events: none;
+        
+        * {
+            pointer-events: auto;
         }
-
-        // Style undo buttons within pills
-        .mynah-button.mynah-icon-button {
-            width: 16px !important;
-            height: 16px !important;
-            min-width: 16px !important;
-            min-height: 16px !important;
-            padding: 0 !important;
-            margin-left: var(--mynah-sizing-half);
-            flex-shrink: 0;
-            border-radius: var(--mynah-sizing-half);
-
-            .mynah-icon {
-                width: 12px;
-                height: 12px;
-                font-size: 12px;
-            }
-
-            &:hover:not(.disabled) {
-                background-color: var(--mynah-color-button-reverse);
-                transform: none !important;
-            }
-
-            &.disabled {
-                cursor: default;
-                opacity: 0.7;
-            }
-        }
-
-        .mynah-modified-files-undo-button {
-            margin-left: var(--mynah-sizing-1);
-            flex-shrink: 0;
-        }
-    }
-
-    .mynah-modified-files-undo-all-button {
-        margin-top: var(--mynah-sizing-2);
-        align-self: flex-start;
-    }
-
-    .mynah-modified-files-filename {
-        cursor: pointer;
-        color: var(--mynah-color-text-link);
-        flex: 1;
-
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-
-    .mynah-modified-files-buttons-container {
-        margin-top: var(--mynah-sizing-2);
-        display: flex;
-        justify-content: flex-start;
-    }
-
-    .mynah-modified-files-undo-button {
-        margin-left: var(--mynah-sizing-2);
-        flex-shrink: 0;
     }
 
     .mynah-modified-files-empty-state {
         color: var(--mynah-color-text-weak);
         font-style: italic;
-        padding: var(--mynah-sizing-2) 0;
-    }
-
-    .mynah-collapsible-content-label-content-wrapper {
-        display: flex;
-        flex-direction: column;
+        padding: var(--mynah-sizing-2) var(--mynah-card-radius-corner);
     }
 }
 
 // Remove top border radius and padding from chat prompt when modified files tracker is visible
 .mynah-modified-files-tracker-wrapper:not(.hidden) + .mynah-chat-prompt-wrapper {
-    padding-top: 0;
-    margin-top: calc(-8 * var(--mynah-border-width));
+    padding-top: var(--mynah-card-radius-corner);
+    margin-top: calc(var(--mynah-sizing-negative-2, calc(-1 * var(--mynah-sizing-2))));
 
     > .mynah-chat-prompt {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        border-top-left-radius: var(--mynah-card-radius-corner);
+        border-top-right-radius: var(--mynah-card-radius-corner);
         border-top: none;
     }
 }
