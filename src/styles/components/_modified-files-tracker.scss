@@ -6,7 +6,8 @@
 .mynah-modified-files-tracker-wrapper {
     border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     border-bottom: none;
-    border-radius: var(--mynah-input-radius) var(--mynah-input-radius) var(--mynah-card-radius-corner) var(--mynah-card-radius-corner);
+    border-radius: var(--mynah-input-radius) var(--mynah-input-radius) var(--mynah-card-radius-corner)
+        var(--mynah-card-radius-corner);
     margin: var(--mynah-card-radius-corner) calc(var(--mynah-chat-wrapper-spacing) + var(--mynah-sizing-2));
 
     &.hidden {
@@ -15,7 +16,7 @@
 
     .mynah-collapsible-content-label-content-wrapper {
         pointer-events: none;
-        
+
         * {
             pointer-events: auto;
         }
