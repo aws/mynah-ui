@@ -309,18 +309,22 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 id: 'model-select',
                 mandatory: true,
                 hideMandatoryIcon: true,
+                showDescriptionAsTooltip: true,
                 options: [
                     {
                         label: 'Fast',
-                        value: 'fast'
+                        value: 'fast',
+                        description: 'Quick responses with good accuracy'
                     },
                     {
                         label: 'Fast 2.0 (Exp.)',
-                        value: 'fast-2-experimental'
+                        value: 'fast-2-experimental',
+                        description: 'Experimental faster model with enhanced capabilities'
                     },
                     {
                         label: 'Decisive',
-                        value: 'decisive'
+                        value: 'decisive',
+                        description: 'More thorough analysis with detailed responses'
                     },
                 ]
             }
