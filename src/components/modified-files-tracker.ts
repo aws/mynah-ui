@@ -61,23 +61,7 @@ export class ModifiedFilesTracker {
     this.renderModifiedFiles(tabDataStore.getValue('modifiedFilesList'));
   }
 
-  private clearContent (): void {
-    const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
-    if (contentWrapper != null) {
-      contentWrapper.innerHTML = '';
-    }
-  }
-
   private renderModifiedFiles (fileList: ChatItemContent['fileList'] | null): void {
-    const fileListWithButtons = fileList as any;
-    console.log('[ModifiedFilesTracker] renderModifiedFiles called with:', JSON.stringify({
-      hasFileList: fileList != null,
-      filePathsCount: fileList?.filePaths?.length ?? 0,
-      hasButtons: fileListWithButtons?.buttons != null,
-      buttonsCount: fileListWithButtons?.buttons?.length ?? 0,
-      buttons: fileListWithButtons?.buttons?.map((b: any) => ({ id: b.id, text: b.text })) ?? []
-    }, null, 2));
-
     const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
     if (contentWrapper == null) return;
 
@@ -98,13 +82,13 @@ export class ModifiedFilesTracker {
     }));
   }
 
-  private renderFilePills (contentWrapper: Element, fileList: NonNullable<ChatItemContent['fileList']>): void {
-    const defaultMessageId = 'modified-files-tracker';
+  private renderFilePills (contentWrapper: Element, fileList: NonNullable<ChatItemContent['fileList']> & { messageId?: string }): void {
+    const messageId = fileList.messageId ?? `modified-files-tracker-${this.props.tabId}`;
 
     // Render the file tree with actions and buttons as provided by the data
     contentWrapper.appendChild(new ChatItemTreeViewWrapper({
       tabId: this.props.tabId,
-      messageId: defaultMessageId,
+      messageId,
       files: fileList.filePaths ?? [],
       cardTitle: '',
       rootTitle: fileList.rootFolderTitle,
@@ -120,7 +104,7 @@ export class ModifiedFilesTracker {
     }).render);
 
     // Render buttons if they exist
-    const fileListWithButtons = fileList as any;
+    const fileListWithButtons = fileList as ChatItemContent['fileList'] & { buttons?: ChatItemButton[] };
     const buttons: ChatItemButton[] | undefined = fileListWithButtons.buttons;
     if (Array.isArray(buttons) && buttons.length > 0) {
       const buttonsWrapper = new ChatItemButtonsWrapper({
@@ -129,7 +113,7 @@ export class ModifiedFilesTracker {
         onActionClick: (action: ChatItemButton) => {
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
-            messageId: (action as any).messageId != null ? (action as any).messageId : defaultMessageId,
+            messageId: (action as any).messageId != null ? (action as any).messageId : messageId,
             actionId: action.id,
             actionText: action.text
           });
