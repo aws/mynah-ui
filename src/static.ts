@@ -551,6 +551,7 @@ type DropdownFormItem = BaseFormItem & {
   }>;
   disabled?: boolean;
   selectTooltip?: string;
+  showDescriptionAsTooltip?: boolean;
 };
 
 type Stars = BaseFormItem & {
