@@ -30,6 +30,7 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon } from '../icon';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
+import { ModifiedFilesTracker } from '../modified-files-tracker';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -58,6 +59,7 @@ export class ChatWrapper {
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
+  private readonly modifiedFilesTracker: ModifiedFilesTracker;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -92,8 +94,18 @@ export class ChatWrapper {
     this.imageContextFeatureEnabled = contextCommands.some(group =>
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     );
+
+    this.modifiedFilesTracker = new ModifiedFilesTracker({
+      tabId: this.props.tabId,
+      visible: false
+    });
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'modifiedFilesVisible', (visible: boolean) => {
+      this.modifiedFilesTracker.setVisible(visible);
+    });
+
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
+
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(Array.from(this.chatItemsContainer.children).length - 1);
         if (lastItem != null && chatItemToInsert != null) {
@@ -310,6 +322,7 @@ export class ChatWrapper {
           }
         }).render,
         this.promptStickyCard,
+        this.modifiedFilesTracker.render,
         this.promptInputElement,
         this.footerSpacer,
         this.promptInfo,
@@ -536,5 +549,9 @@ export class ChatWrapper {
     this.dragOverlayVisibility = visible;
     this.dragOverlayContent.style.display = visible ? 'flex' : 'none';
     this.dragBlurOverlay.style.display = visible ? 'block' : 'none';
+  }
+
+  public setModifiedFilesTrackerVisible (visible: boolean): void {
+    this.modifiedFilesTracker.setVisible(visible);
   }
 }

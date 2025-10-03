@@ -1259,8 +1259,17 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
       `);
         },
         onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
-
+            // Clear modified files tracker only for commands that modify files
+            const fileModifyingCommands = [
+                Commands.MODIFIED_FILES_DEMO,
+                '/dev',
+                '/transform',
+                '/generate'
+            ];
             
+            if (prompt.command && fileModifyingCommands.includes(prompt.command)) {
+                mynahUI.clearModifiedFiles(tabId);
+            }
 
             Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
@@ -1578,6 +1587,9 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         onMessageDismiss: (tabId, messageId) => {
             Log(`Card dismissed: tabId: <b>${tabId}</b>, messageId: <b>${messageId}</b>`);
         },
+        onModifiedFileClick: (tabId, filePath) => {
+            Log(`Modified file clicked on tab <b>${tabId}</b>: <b>${filePath}</b>`);
+        },
     });
 
     setTimeout(() => {
@@ -1624,6 +1636,116 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 case Commands.VOTE:
                     mynahUI.addChatItem(tabId, exampleVoteChatItem);
                     mynahUI.addChatItem(tabId, defaultFollowUps);
+                    break;
+                case Commands.MODIFIED_FILES_DEMO:
+                    // Demo the modified files tracker
+                    mynahUI.addChatItem(tabId, {
+                        type: ChatItemType.ANSWER,
+                        messageId: generateUID(),
+                        body: 'Demonstrating the modified files tracker. Watch the component above the chat!',
+                    });
+                    
+                    // Make the component visible and set initial state
+                    mynahUI.updateStore(tabId, { 
+                        modifiedFilesVisible: true,
+                        modifiedFilesTitle: 'Work in progress...',
+                        modifiedFilesList: {
+                            filePaths: [],
+                            flatList: true
+                        }
+                    });
+                    
+                    // Simulate file modifications with delays
+                    setTimeout(() => {
+                        mynahUI.updateStore(tabId, {
+                            modifiedFilesList: {
+                                filePaths: ['src/components/chat-wrapper.ts'],
+                                flatList: true
+                            }
+                        });
+                    }, 1000);
+                    
+                    setTimeout(() => {
+                        mynahUI.updateStore(tabId, {
+                            modifiedFilesList: {
+                                filePaths: [
+                                    'src/components/chat-wrapper.ts',
+                                    'src/styles/components/_modified-files-tracker.scss'
+                                ],
+                                flatList: true
+                            }
+                        });
+                    }, 2000);
+                    
+                    setTimeout(() => {
+                        mynahUI.updateStore(tabId, {
+                            modifiedFilesList: {
+                                filePaths: [
+                                    'src/components/chat-wrapper.ts',
+                                    'src/styles/components/_modified-files-tracker.scss',
+                                    'src/main.ts'
+                                ],
+                                flatList: true
+                            }
+                        });
+                    }, 3000);
+                    
+                    setTimeout(() => {
+                        mynahUI.updateStore(tabId, {
+                            modifiedFilesList: {
+                                filePaths: [
+                                    'src/components/chat-wrapper.ts',
+                                    'src/styles/components/_modified-files-tracker.scss',
+                                    'src/main.ts',
+                                    'example/src/main.ts'
+                                ],
+                                flatList: true,
+                                actions: {
+                                    'src/components/chat-wrapper.ts': [{ name: 'undo', icon: 'undo' }],
+                                    'src/styles/components/_modified-files-tracker.scss': [{ name: 'undo', icon: 'undo' }],
+                                    'src/main.ts': [{ name: 'undo', icon: 'undo' }],
+                                    'example/src/main.ts': [{ name: 'undo', icon: 'undo' }]
+                                }
+                            }
+                        });
+                    }, 4000);
+                    
+                    setTimeout(() => {
+                        mynahUI.updateStore(tabId, {
+                            modifiedFilesTitle: 'Work done!',
+                            modifiedFilesList: {
+                                filePaths: [
+                                    'src/components/chat-wrapper.ts',
+                                    'src/styles/components/_modified-files-tracker.scss',
+                                    'src/main.ts',
+                                    'example/src/main.ts'
+                                ],
+                                flatList: true,
+                                actions: {
+                                    'src/components/chat-wrapper.ts': [{ name: 'undo', icon: 'undo' }],
+                                    'src/styles/components/_modified-files-tracker.scss': [{ name: 'undo', icon: 'undo' }],
+                                    'src/main.ts': [{ name: 'undo', icon: 'undo' }],
+                                    'example/src/main.ts': [{ name: 'undo', icon: 'undo' }]
+                                }
+                            }
+                        });
+                        
+                        // Add the undo all button as a separate chat item
+                        mynahUI.addChatItem(tabId, {
+                            type: ChatItemType.ANSWER,
+                            messageId: generateUID(),
+                            body: '',
+                            buttons: [
+                                { id: 'undo-all', text: 'Undo All', status: 'clear' }
+                            ]
+                        });
+                        mynahUI.addChatItem(tabId, {
+                            type: ChatItemType.ANSWER,
+                            messageId: generateUID(),
+                            body: 'Demo complete! The modified files tracker now shows "Work done!" status. Click on any file or use the undo buttons to see the callbacks in action.',
+                        });
+                        mynahUI.addChatItem(tabId, defaultFollowUps);
+                    }, 5000);
                     break;
                 case Commands.CARD_WITH_MARKDOWN_LIST:
                     getGenerativeAIAnswer(tabId, sampleMarkdownList);

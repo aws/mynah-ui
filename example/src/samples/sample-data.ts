@@ -681,6 +681,10 @@ export const defaultFollowUps: ChatItem = {
                 pillText: 'Some auto reply',
                 prompt: 'Some random auto reply here.',
             },
+            {
+                command: Commands.MODIFIED_FILES_DEMO,
+                pillText: 'Modified files demo',
+            },
         ],
     },
 };
@@ -2181,7 +2185,7 @@ export const mcpToolRunSampleCardInit:ChatItem = // Summary Card
                     filePaths: ['Running'],
                     details: {
                         'Running': {
-                            description: 'Work in progress!',
+                            description: 'Work in progress...',
                             icon: null,
                             labelIcon: 'progress',
                             labelIconForegroundStatus: 'info',

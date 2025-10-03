@@ -50,6 +50,7 @@ import { StyleLoader } from './helper/style-loader';
 import { Icon } from './components/icon';
 import { Button } from './components/button';
 import { TopBarButtonOverlayProps } from './components/chat-item/prompt-input/prompt-top-bar/top-bar-button';
+// TrackedFile interface removed - now using data-driven approach
 
 export { generateUID } from './helper/guid';
 export {
@@ -96,6 +97,10 @@ export {
   ChatItemCardContent,
   ChatItemCardContentProps
 } from './components/chat-item/chat-item-card-content';
+export {
+  ModifiedFilesTracker,
+  ModifiedFilesTrackerProps
+} from './components/modified-files-tracker';
 export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {
@@ -337,6 +342,11 @@ export interface MynahUIProps {
     files: FileList,
     insertPosition: number
   ) => void;
+  onModifiedFileClick?: (
+    tabId: string,
+    filePath: string,
+    eventId?: string
+  ) => void;
 }
 
 export class MynahUI {
@@ -351,6 +361,17 @@ export class MynahUI {
   private readonly feedbackForm?: FeedbackForm;
   private readonly sheet?: Sheet;
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
+
+  private logToStorage (message: string): void {
+    try {
+      const timestamp = new Date().toISOString();
+      const logEntry = `[${timestamp}] ${message}`;
+      const existingLogs = localStorage.getItem('mynah-modified-files-logs') ?? '';
+      localStorage.setItem('mynah-modified-files-logs', existingLogs + logEntry + '\n');
+    } catch (error) {
+      // Ignore storage errors
+    }
+  }
 
   constructor (props: MynahUIProps) {
     StyleLoader.getInstance(props.loadStyles !== false).load('styles.scss');
@@ -387,7 +408,7 @@ export class MynahUI {
                   props.onStopChatResponse(tabId, this.getUserEventId());
                 }
               }
-            : undefined,
+            : undefined
         });
         return this.chatWrappers[tabId].render;
       })
@@ -466,7 +487,7 @@ export class MynahUI {
                 props.onStopChatResponse(tabId, this.getUserEventId());
               }
             }
-          : undefined,
+          : undefined
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
       this.focusToInput(tabId);
@@ -535,11 +556,7 @@ export class MynahUI {
   };
 
   private readonly addGlobalListeners = (): void => {
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: { tabId: string; prompt: ChatPrompt }) => {
-      if (this.props.onChatPrompt !== undefined) {
-        this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
-      }
-    });
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, this.handleChatPrompt);
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: {
       tabId: string;
@@ -601,6 +618,7 @@ export class MynahUI {
       actionText?: string;
       formItemValues?: Record<string, string>;
     }) => {
+      console.log('[MynahUI] BODY_ACTION_CLICKED event received:', data);
       if (this.props.onInBodyButtonClicked !== undefined) {
         this.props.onInBodyButtonClicked(data.tabId, data.messageId, {
           id: data.actionId,
@@ -792,6 +810,7 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_CLICK, (data) => {
+      console.log('[MynahUI] FILE_CLICK event received:', data);
       if (this.props.onFileClick !== undefined) {
         this.props.onFileClick(
           data.tabId,
@@ -821,6 +840,7 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_ACTION_CLICK, (data) => {
+      console.log('[MynahUI] FILE_ACTION_CLICK event received:', data);
       if (this.props.onFileActionClick !== undefined) {
         this.props.onFileActionClick(
           data.tabId,
@@ -1206,6 +1226,147 @@ export class MynahUI {
       changeTarget: detailedListSheet.detailedListWrapper.changeTarget,
       getTargetElementId
     };
+  };
+
+  /**
+   * Adds a file to the modified files tracker for the specified tab with file type
+   * @param tabId The tab ID
+   * @param filePath The path of the file
+   * @param fileType The type of file change ('created', 'modified', 'deleted')
+   * @param fullPath Optional full path of the file
+   * @param toolUseId Optional tool use ID for undo operations
+   */
+  public addFile = (tabId: string, filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', fullPath?: string, toolUseId?: string): void => {
+    // No-op: now handled by data-driven approach through ChatItem.fileList
+  };
+
+  /**
+   * Adds a file to the modified files tracker for the specified tab
+   * @deprecated Use addFile() instead
+   * @param tabId The tab ID
+   * @param filePath The path of the modified file
+   * @param toolUseId Optional tool use ID for undo operations
+   */
+  public addModifiedFile = (tabId: string, filePath: string, toolUseId?: string): void => {
+    this.addFile(tabId, filePath, 'modified', toolUseId);
+  };
+
+  /**
+   * Removes a file from the modified files tracker for the specified tab
+   * @param tabId The tab ID
+   * @param filePath The path of the file to remove
+   */
+  public removeFile = (tabId: string, filePath: string): void => {
+    // No-op: now handled by data-driven approach
+  };
+
+  /**
+   * Removes a file from the modified files tracker for the specified tab
+   * @deprecated Use removeFile() instead
+   * @param tabId The tab ID
+   * @param filePath The path of the file to remove
+   */
+  public removeModifiedFile = (tabId: string, filePath: string): void => {
+    this.removeFile(tabId, filePath);
+  };
+
+  /**
+   * Sets the work in progress status for the files tracker
+   * @param tabId The tab ID
+   * @param inProgress Whether work is in progress
+   */
+  public setFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
+    // No-op: work in progress functionality removed
+  };
+
+  /**
+   * Sets the work in progress status for the modified files tracker
+   * @deprecated Use setFilesWorkInProgress() instead
+   * @param tabId The tab ID
+   * @param inProgress Whether work is in progress
+   */
+  public setModifiedFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
+    this.setFilesWorkInProgress(tabId, inProgress);
+  };
+
+  /**
+   * Clears all files for the specified tab
+   * @param tabId The tab ID
+   */
+  public clearFiles = (tabId: string): void => {
+    // No-op: now handled by data-driven approach
+  };
+
+  /**
+   * Clears all modified files for the specified tab
+   * @deprecated Use clearFiles() instead
+   * @param tabId The tab ID
+   */
+  public clearModifiedFiles = (tabId: string): void => {
+    this.clearFiles(tabId);
+  };
+
+  private readonly handleChatPrompt = (data: { tabId: string; prompt: ChatPrompt }): void => {
+    // Clear modified files for file-modifying commands
+    const fileModifyingCommands = [ '/dev', '/transform', '/generate' ];
+    if (data.prompt.command !== null && data.prompt.command !== undefined && fileModifyingCommands.includes(data.prompt.command)) {
+      this.clearModifiedFiles(data.tabId);
+    }
+
+    if (this.props.onChatPrompt !== undefined) {
+      this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
+    }
+  };
+
+  /**
+   * Gets the list of tracked files for the specified tab
+   * @param tabId The tab ID
+   * @returns Array of tracked files with types
+   */
+  public getTrackedFiles = (tabId: string): any[] => {
+    // Return empty array: now handled by data-driven approach
+    return [];
+  };
+
+  /**
+   * Gets the list of modified files for the specified tab
+   * @deprecated Use getTrackedFiles() instead
+   * @param tabId The tab ID
+   * @returns Array of modified file paths
+   */
+  public getModifiedFiles = (tabId: string): string[] => {
+    // Return empty array: now handled by data-driven approach
+    return [];
+  };
+
+  /**
+   * Sets the visibility of the files tracker for the specified tab
+   * @param tabId The tab ID
+   * @param visible Whether the tracker should be visible
+   */
+  public setFilesTrackerVisible = (tabId: string, visible: boolean): void => {
+    if (this.chatWrappers[tabId] != null) {
+      this.chatWrappers[tabId].setModifiedFilesTrackerVisible(visible);
+    }
+  };
+
+  /**
+   * Sets the visibility of the modified files tracker for the specified tab
+   * @deprecated Use setFilesTrackerVisible() instead
+   * @param tabId The tab ID
+   * @param visible Whether the tracker should be visible
+   */
+  public setModifiedFilesTrackerVisible = (tabId: string, visible: boolean): void => {
+    this.setFilesTrackerVisible(tabId, visible);
+  };
+
+  /**
+   * Sets the message ID for the modified files tracker to enable diff mode functionality
+   * @param tabId The tab ID
+   * @param messageId The message ID to associate with file clicks
+   */
+  public setMessageId = (tabId: string, messageId: string): void => {
+    // No-op: now handled by data-driven approach
   };
 
   public destroy = (): void => {
