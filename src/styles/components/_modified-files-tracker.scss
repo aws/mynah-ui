@@ -4,131 +4,131 @@
  */
 
 .mynah-modified-files-tracker {
-  width: 100%;
-  margin-bottom: var(--mynah-sizing-2);
-  border: var(--mynah-border-width) solid var(--mynah-color-border-default);
-  border-radius: var(--mynah-card-radius);
-  background-color: var(--mynah-color-bg);
-  transition: all var(--mynah-short-transition-rev);
-
-  &.mynah-modified-files-tracker-hidden {
-    display: none;
-  }
-
-  .mynah-modified-files-tracker-title-container {
-    display: flex;
-    align-items: center;
-    gap: var(--mynah-sizing-2);
     width: 100%;
+    margin-bottom: var(--mynah-sizing-2);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    border-radius: var(--mynah-card-radius);
+    background-color: var(--mynah-color-bg);
+    transition: all var(--mynah-short-transition-rev);
 
-    .mynah-modified-files-tracker-title {
-      flex: 1;
-      font-weight: var(--mynah-font-weight-medium);
-      color: var(--mynah-color-text-default);
+    &.mynah-modified-files-tracker-hidden {
+        display: none;
     }
 
-    .mynah-modified-files-tracker-count {
-      color: var(--mynah-color-text-weak);
-      font-size: var(--mynah-font-size-small);
-      font-weight: var(--mynah-font-weight-normal);
-    }
-
-    .mynah-button {
-      margin-left: auto;
-    }
-  }
-
-  .mynah-modified-files-tracker-items {
-    display: flex;
-    flex-direction: column;
-    gap: var(--mynah-sizing-1);
-    padding: var(--mynah-sizing-2) 0;
-  }
-
-  .mynah-modified-files-tracker-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
-    border-radius: var(--mynah-input-radius);
-    transition: background-color var(--mynah-short-transition);
-
-    &:hover {
-      background-color: var(--mynah-color-bg-alt);
-    }
-
-    .mynah-modified-files-tracker-item-content {
-      display: flex;
-      align-items: center;
-      gap: var(--mynah-sizing-2);
-      flex: 1;
-      min-width: 0; // Allow text truncation
-    }
-
-    .mynah-modified-files-tracker-item-icon {
-      flex-shrink: 0;
-      color: var(--mynah-color-text-weak);
-    }
-
-    .mynah-modified-files-tracker-item-name {
-      flex: 1;
-      color: var(--mynah-color-text-default);
-      font-size: var(--mynah-font-size-medium);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .mynah-button {
-      flex-shrink: 0;
-      opacity: 0;
-      transition: opacity var(--mynah-short-transition);
-    }
-
-    &:hover .mynah-button {
-      opacity: 1;
-    }
-
-    // Status-specific styles
-    &.mynah-modified-files-tracker-item-added {
-      .mynah-modified-files-tracker-item-icon {
-        color: var(--mynah-color-status-success);
-      }
-    }
-
-    &.mynah-modified-files-tracker-item-modified {
-      .mynah-modified-files-tracker-item-icon {
-        color: var(--mynah-color-status-warning);
-      }
-    }
-
-    &.mynah-modified-files-tracker-item-deleted {
-      .mynah-modified-files-tracker-item-icon {
-        color: var(--mynah-color-status-error);
-      }
-      
-      .mynah-modified-files-tracker-item-name {
-        text-decoration: line-through;
-        color: var(--mynah-color-text-weak);
-      }
-    }
-  }
-
-  // Collapsible content overrides
-  .mynah-collapsible-content-wrapper {
-    border: none;
-    background: transparent;
-    
-    .mynah-collapsible-content-label {
-      padding: var(--mynah-sizing-3);
-      
-      .mynah-collapsible-content-label-title-wrapper {
+    .mynah-modified-files-tracker-title-container {
+        display: flex;
+        align-items: center;
+        gap: var(--mynah-sizing-2);
         width: 100%;
-      }
-      
-      .mynah-collapsible-content-label-content-wrapper {
-        padding: 0 var(--mynah-sizing-3) var(--mynah-sizing-2);
-      }
+
+        .mynah-modified-files-tracker-title {
+            flex: 1;
+            font-weight: var(--mynah-font-weight-medium);
+            color: var(--mynah-color-text-default);
+        }
+
+        .mynah-modified-files-tracker-count {
+            color: var(--mynah-color-text-weak);
+            font-size: var(--mynah-font-size-small);
+            font-weight: var(--mynah-font-weight-normal);
+        }
+
+        .mynah-button {
+            margin-left: auto;
+        }
     }
-  }
+
+    .mynah-modified-files-tracker-items {
+        display: flex;
+        flex-direction: column;
+        gap: var(--mynah-sizing-1);
+        padding: var(--mynah-sizing-2) 0;
+    }
+
+    .mynah-modified-files-tracker-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--mynah-sizing-1) var(--mynah-sizing-2);
+        border-radius: var(--mynah-input-radius);
+        transition: background-color var(--mynah-short-transition);
+
+        &:hover {
+            background-color: var(--mynah-color-bg-alt);
+        }
+
+        .mynah-modified-files-tracker-item-content {
+            display: flex;
+            align-items: center;
+            gap: var(--mynah-sizing-2);
+            flex: 1;
+            min-width: 0; // Allow text truncation
+        }
+
+        .mynah-modified-files-tracker-item-icon {
+            flex-shrink: 0;
+            color: var(--mynah-color-text-weak);
+        }
+
+        .mynah-modified-files-tracker-item-name {
+            flex: 1;
+            color: var(--mynah-color-text-default);
+            font-size: var(--mynah-font-size-medium);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mynah-button {
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity var(--mynah-short-transition);
+        }
+
+        &:hover .mynah-button {
+            opacity: 1;
+        }
+
+        // Status-specific styles
+        &.mynah-modified-files-tracker-item-added {
+            .mynah-modified-files-tracker-item-icon {
+                color: var(--mynah-color-status-success);
+            }
+        }
+
+        &.mynah-modified-files-tracker-item-modified {
+            .mynah-modified-files-tracker-item-icon {
+                color: var(--mynah-color-status-warning);
+            }
+        }
+
+        &.mynah-modified-files-tracker-item-deleted {
+            .mynah-modified-files-tracker-item-icon {
+                color: var(--mynah-color-status-error);
+            }
+
+            .mynah-modified-files-tracker-item-name {
+                text-decoration: line-through;
+                color: var(--mynah-color-text-weak);
+            }
+        }
+    }
+
+    // Collapsible content overrides
+    .mynah-collapsible-content-wrapper {
+        border: none;
+        background: transparent;
+
+        .mynah-collapsible-content-label {
+            padding: var(--mynah-sizing-3);
+
+            .mynah-collapsible-content-label-title-wrapper {
+                width: 100%;
+            }
+
+            .mynah-collapsible-content-label-content-wrapper {
+                padding: 0 var(--mynah-sizing-3) var(--mynah-sizing-2);
+            }
+        }
+    }
 }
