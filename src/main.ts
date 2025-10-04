@@ -96,6 +96,11 @@ export {
   ChatItemCardContent,
   ChatItemCardContentProps
 } from './components/chat-item/chat-item-card-content';
+export {
+  ModifiedFilesTracker,
+  ModifiedFilesTrackerProps,
+  ModifiedFilesTrackerData
+} from './components/modified-files-tracker';
 export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {

@@ -73,6 +73,11 @@ export const tabbarButtons: TabBarMainAction[] = [
                 icon: MynahIcons.CODE_BLOCK,
             },
             {
+                id: 'show-modified-files',
+                text: 'Show modified files tracker demo',
+                icon: MynahIcons.FILE,
+            },
+            {
                 id: 'insert-code',
                 icon: MynahIcons.CURSOR_INSERT,
                 text: 'Insert code!',

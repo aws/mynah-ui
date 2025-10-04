@@ -9,6 +9,7 @@ import { FormItemPillBoxAbstract, FormItemPillBoxProps } from './components/form
 import { SwitchAbstract, SwitchProps } from './components/form-items/switch';
 import { CustomIcon, MynahIcons, MynahIconsType } from './components/icon';
 import { ChatItemBodyRenderer } from './helper/dom';
+import { ModifiedFilesTrackerData } from './components/modified-files-tracker';
 import {
   SelectAbstract,
   SelectProps,
@@ -192,6 +193,10 @@ export interface MynahUIDataModel {
    * Custom context commands to be inserted into the prompt input.
    */
   customContextCommand?: QuickActionCommand[];
+  /**
+   * Modified files tracker data to show above the prompt input.
+   */
+  modifiedFilesData?: ModifiedFilesTrackerData | null;
 }
 
 export interface MynahUITabStoreTab {
@@ -259,7 +264,10 @@ export enum MynahEventNames {
   TOP_BAR_BUTTON_CLICK = 'promptInputTopBarButtonClick',
   CONTEXT_PINNED = 'contextPinned',
   FILES_DROPPED = 'filesDropped',
-  RESET_TOP_BAR_CLICKED = 'resetTopBarClicked'
+  RESET_TOP_BAR_CLICKED = 'resetTopBarClicked',
+  MODIFIED_FILES_COLLAPSE_STATE_CHANGE = 'modifiedFilesCollapseStateChange',
+  MODIFIED_FILES_FILE_UNDO = 'modifiedFilesFileUndo',
+  MODIFIED_FILES_UNDO_ALL = 'modifiedFilesUndoAll'
 }
 
 export enum MynahPortalNames {

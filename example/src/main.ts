@@ -17,7 +17,8 @@ import {
     QuickActionCommand,
     ChatItemButton,
     CustomQuickActionCommand,
-    DropdownListOption
+    DropdownListOption,
+    ModifiedFilesTracker
 } from '@aws/mynah-ui';
 import { mcpButton, mynahUIDefaults, promptTopBarTitle, rulesButton, tabbarButtons } from './config';
 import { Log, LogClear } from './logger';
@@ -55,6 +56,9 @@ import {
     mcpToolRunSampleCardInit,
     sampleRulesList,
     accountDetailsTabData,
+    sampleModifiedFiles,
+    sampleModifiedFilesEmpty,
+    sampleModifiedFilesLarge,
 } from './samples/sample-data';
 import escapeHTML from 'escape-html';
 import './styles/styles.scss';
@@ -139,15 +143,14 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 });
             }
             Log(`Prompt options change for tab <b>${tabId}</b>:<br/>
-        ${
-            optionsValues
-                ? `<br/>Options:<br/>${Object.keys(optionsValues)
-                      .map((optionId) => {
-                          return `<b>${optionId}</b>: ${(optionsValues as Record<string, string>)[optionId] ?? ''}`;
-                      })
-                      .join('<br/>')}`
-                : ''
-        }
+        ${optionsValues
+                    ? `<br/>Options:<br/>${Object.keys(optionsValues)
+                        .map((optionId) => {
+                            return `<b>${optionId}</b>: ${(optionsValues as Record<string, string>)[optionId] ?? ''}`;
+                        })
+                        .join('<br/>')}`
+                    : ''
+                }
         `);
         },
         onSplashLoaderActionClick: (action) => {
@@ -169,7 +172,7 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 });
             }
         },
-        onDropDownOptionChange: (tabId: string, messageId: string, value: DropdownListOption []) => {
+        onDropDownOptionChange: (tabId: string, messageId: string, value: DropdownListOption[]) => {
             Log(`Dropdown Option changed in message ${messageId} on tab ${tabId}`)
         },
         onDropDownLinkClick: (tabId, actionId, destination) => {
@@ -182,35 +185,39 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
             Log(`MynahUI focus state changed: <b>${focusState.toString()}</b>`);
         },
         onPromptTopBarItemAdded: (tabId: string, item: QuickActionCommand) => {
-                                        Log(`Prompt top bar item <b>${item.command}</b> added on tab <b>${tabId}</b>`);
+            Log(`Prompt top bar item <b>${item.command}</b> added on tab <b>${tabId}</b>`);
 
             mynahUI.updateStore(tabId, {
-                                    promptTopBarContextItems: [
-                                        ...((mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command) ?? []),
-                                        item,
-                                    ],
-                                });
+                promptTopBarContextItems: [
+                    ...((mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command) ?? []),
+                    item,
+                ],
+            });
         },
         onPromptTopBarItemRemoved: (tabId: string, item: QuickActionCommand) => {
-                                        Log(`Prompt top bar item <b>${item.command}</b> removed on tab <b>${tabId}</b>`);
+            Log(`Prompt top bar item <b>${item.command}</b> removed on tab <b>${tabId}</b>`);
 
             mynahUI.updateStore(tabId, {
-                                    promptTopBarContextItems:(mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command)
-                                });
+                promptTopBarContextItems: (mynahUI.getTabData(tabId).getValue('promptTopBarContextItems') as QuickActionCommand[]).filter((existingItem) => existingItem.command !== item.command)
+            });
         },
         onPromptTopBarButtonClick: (tabId: string, button: ChatItemButton) => {
-                                        Log(`Top bar button <b>${button.id}</b> clicked on tab <b>${tabId}</b>`);
+            Log(`Top bar button <b>${button.id}</b> clicked on tab <b>${tabId}</b>`);
 
-         const topBarOverlay =   mynahUI.openTopBarButtonOverlay({tabId, topBarButtonOverlay: sampleRulesList,
-            events: {
-            onClose: () => {Log(`Top bar overlay closed on tab <b>${tabId}</b>`)},
-            onGroupClick: (group) => {Log(`Top bar overlay group clicked <b>${group}</b> on tab <b>${tabId}</b>`)},
-            onItemClick: (item) => {  Log(`Top bar overlay item clicked <b>${item.id}</b> on tab <b>${tabId}</b>`); topBarOverlay.update(sampleRulesList)},
-            onKeyPress: (e) => {Log(`Key pressed on top bar overlay`);      if (e.key === KeyMap.ESCAPE) {
-                                topBarOverlay.close();
-                            }}
+            const topBarOverlay = mynahUI.openTopBarButtonOverlay({
+                tabId, topBarButtonOverlay: sampleRulesList,
+                events: {
+                    onClose: () => { Log(`Top bar overlay closed on tab <b>${tabId}</b>`) },
+                    onGroupClick: (group) => { Log(`Top bar overlay group clicked <b>${group}</b> on tab <b>${tabId}</b>`) },
+                    onItemClick: (item) => { Log(`Top bar overlay item clicked <b>${item.id}</b> on tab <b>${tabId}</b>`); topBarOverlay.update(sampleRulesList) },
+                    onKeyPress: (e) => {
+                        Log(`Key pressed on top bar overlay`); if (e.key === KeyMap.ESCAPE) {
+                            topBarOverlay.close();
+                        }
+                    }
 
-        }})
+                }
+            })
 
 
         },
@@ -332,6 +339,45 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                     },
                 });
                 mynahUI.addChatItem(tabId, defaultFollowUps);
+            } else if (buttonId === 'show-modified-files') {
+                // Demo the ModifiedFilesTracker as a separate component above the chat input
+                mynahUI.updateStore(tabId, {
+                    modifiedFilesData: sampleModifiedFiles
+                });
+                
+                mynahUI.addChatItem(tabId, {
+                    type: ChatItemType.ANSWER,
+                    body: `## Modified Files Tracker Demo
+                    
+The ModifiedFilesTracker is now displayed as a separate component above the chat input!
+
+Features:
+- Integrated into the main UI structure
+- Uses existing fileList data structure from ChatItem
+- Individual file undo buttons
+- Undo all functionality
+- Automatic visibility management
+- Collapsible content
+
+Try the buttons below to interact with it:`,
+                    buttons: [
+                        {
+                            id: 'add-more-files',
+                            text: 'Add More Files',
+                            status: 'primary'
+                        },
+                        {
+                            id: 'clear-files',
+                            text: 'Clear All Files',
+                            status: 'clear'
+                        },
+                        {
+                            id: 'show-large-set',
+                            text: 'Show Large Set',
+                            status: 'clear'
+                        }
+                    ]
+                });
             } else if (buttonId === 'insert-code') {
                 mynahUI.addToUserPrompt(tabId, exampleCodeBlockToInsert, 'code');
             } else if (buttonId === 'show-avatars') {
@@ -343,18 +389,19 @@ Model - ${optionsValues['model-select'] !== '' ? optionsValues['model-select'] :
                 );
             } else if (buttonId === 'show-pinned-context') {
                 showPinnedContext = !showPinnedContext;
-                if (showPinnedContext){
-                Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
-                    mynahUI.updateStore(tabIdFromStore, {
-                        promptTopBarTitle: promptTopBarTitle,
-                        promptTopBarButton: rulesButton,
-                    }),
-                ); } else {
-                         Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
-                    mynahUI.updateStore(tabIdFromStore, {
-                        promptTopBarTitle: ``,
-                    }),
-                )
+                if (showPinnedContext) {
+                    Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
+                        mynahUI.updateStore(tabIdFromStore, {
+                            promptTopBarTitle: promptTopBarTitle,
+                            promptTopBarButton: rulesButton,
+                        }),
+                    );
+                } else {
+                    Object.keys(mynahUI.getAllTabs()).forEach((tabIdFromStore) =>
+                        mynahUI.updateStore(tabIdFromStore, {
+                            promptTopBarTitle: ``,
+                        }),
+                    )
                 }
             } else if (buttonId === 'splash-loader') {
                 mynahUI.toggleSplashLoader(true, 'Showing splash loader...');
@@ -1260,16 +1307,15 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         },
         onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
 
-            
+
 
             Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>
-      options: <b>{${
-          Object.keys(prompt.options ?? {})
-              .map((op) => `'${op}': '${prompt.options?.[op] as string}'`)
-              .join(',') ?? ''
-      }}</b><br/>
+      options: <b>{${Object.keys(prompt.options ?? {})
+                    .map((op) => `'${op}': '${prompt.options?.[op] as string}'`)
+                    .join(',') ?? ''
+                }}</b><br/>
       context: <b>[${(prompt.context ?? []).map((ctx) => `${JSON.stringify(ctx)}`).join(']</b>, <b>[')}]`);
             if (tabId === 'tab-1') {
                 mynahUI.updateStore(tabId, {
@@ -1378,7 +1424,27 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             Log(`Images dropped: ${commands.map(cmd => `<br/>- <b>${cmd.command}</b>`).join('')}`);
         },
         onInBodyButtonClicked: (tabId: string, messageId: string, action) => {
-            if (action.id === 'allow-readonly-tools') {
+            if (action.id === 'add-more-files') {
+                const currentData = mynahUI.getTabData(tabId).getValue('modifiedFilesData');
+                const newFiles = ['src/new-component.tsx', 'tests/new-component.test.ts', 'docs/README.md'];
+                mynahUI.updateStore(tabId, {
+                    modifiedFilesData: {
+                        ...currentData,
+                        fileList: {
+                            ...currentData?.fileList,
+                            filePaths: [...(currentData?.fileList?.filePaths || []), ...newFiles]
+                        }
+                    }
+                });
+            } else if (action.id === 'clear-files') {
+                mynahUI.updateStore(tabId, {
+                    modifiedFilesData: null
+                });
+            } else if (action.id === 'show-large-set') {
+                mynahUI.updateStore(tabId, {
+                    modifiedFilesData: sampleModifiedFilesLarge
+                });
+            } else if (action.id === 'allow-readonly-tools') {
                 mynahUI.updateChatAnswerWithMessageId(tabId, messageId, {
                     muted: true,
                     header: {
@@ -1454,15 +1520,14 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             Log(`Body action clicked in message <b>${messageId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>
-      ${
-          action.formItemValues
-              ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
-                    .map((optionId) => {
-                        return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
-                    })
-                    .join('<br/>')}`
-              : ''
-      }
+      ${action.formItemValues
+                    ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
+                        .map((optionId) => {
+                            return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+                        })
+                        .join('<br/>')}`
+                    : ''
+                }
       `);
         },
         onQuickCommandGroupActionClick: (tabId: string, action) => {
@@ -1522,15 +1587,14 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 event.preventDefault();
                 event.stopImmediatePropagation();
                 Log(`Form keypress Enter submit on tab <b>${tabId}</b>:<br/>
-          ${
-              formData
-                  ? `<br/>Options:<br/>${Object.keys(formData)
-                        .map((optionId) => {
-                            return `<b>${optionId}</b>: ${(formData as Record<string, string>)[optionId] ?? ''}`;
-                        })
-                        .join('<br/>')}`
-                  : ''
-          }
+          ${formData
+                        ? `<br/>Options:<br/>${Object.keys(formData)
+                            .map((optionId) => {
+                                return `<b>${optionId}</b>: ${(formData as Record<string, string>)[optionId] ?? ''}`;
+                            })
+                            .join('<br/>')}`
+                        : ''
+                    }
           `);
                 return true;
             }
@@ -1540,15 +1604,14 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
             Log(`Custom form action clicked for tab <b>${tabId}</b>:<br/>
       Action Id: <b>${action.id}</b><br/>
       Action Text: <b>${action.text}</b><br/>
-      ${
-          action.formItemValues
-              ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
-                    .map((optionId) => {
-                        return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
-                    })
-                    .join('<br/>')}`
-              : ''
-      }
+      ${action.formItemValues
+                    ? `<br/>Options:<br/>${Object.keys(action.formItemValues)
+                        .map((optionId) => {
+                            return `<b>${optionId}</b>: ${(action.formItemValues as Record<string, string>)[optionId] ?? ''}`;
+                        })
+                        .join('<br/>')}`
+                    : ''
+                }
       `);
         },
         onChatItemEngagement: (tabId, messageId, engagement) => {
@@ -1623,6 +1686,47 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                     break;
                 case Commands.VOTE:
                     mynahUI.addChatItem(tabId, exampleVoteChatItem);
+                    mynahUI.addChatItem(tabId, defaultFollowUps);
+                    break;
+                case Commands.MODIFIED_FILES_TRACKER:
+                    // Demo the ModifiedFilesTracker as a separate component above the chat input
+                    mynahUI.updateStore(tabId, {
+                        modifiedFilesData: sampleModifiedFiles
+                    });
+                    
+                    mynahUI.addChatItem(tabId, {
+                        type: ChatItemType.ANSWER,
+                        body: `## Modified Files Tracker Demo
+                        
+The ModifiedFilesTracker is now displayed as a separate component above the chat input!
+
+Features:
+- Integrated into the main UI structure
+- Uses existing fileList data structure from ChatItem
+- Individual file undo buttons
+- Undo all functionality
+- Automatic visibility management
+- Collapsible content
+
+Try the buttons below to interact with it:`,
+                        buttons: [
+                            {
+                                id: 'add-more-files',
+                                text: 'Add More Files',
+                                status: 'primary'
+                            },
+                            {
+                                id: 'clear-files',
+                                text: 'Clear All Files',
+                                status: 'clear'
+                            },
+                            {
+                                id: 'show-large-set',
+                                text: 'Show Large Set',
+                                status: 'clear'
+                            }
+                        ]
+                    });
                     mynahUI.addChatItem(tabId, defaultFollowUps);
                     break;
                 case Commands.CARD_WITH_MARKDOWN_LIST:
@@ -1951,13 +2055,13 @@ used as a context to generate this message.`,
                         mynahUI.updateStore(tabId, {
                             ...(optionalParts != null
                                 ? {
-                                      promptInputProgress: {
-                                          status: 'info',
-                                          ...(percentage > 50 ? { text: 'Almost done...' } : {}),
-                                          valueText: `${parseInt(percentage.toString())}%`,
-                                          value: percentage,
-                                      },
-                                  }
+                                    promptInputProgress: {
+                                        status: 'info',
+                                        ...(percentage > 50 ? { text: 'Almost done...' } : {}),
+                                        valueText: `${parseInt(percentage.toString())}%`,
+                                        value: percentage,
+                                    },
+                                }
                                 : {}),
                         });
                         return false;
@@ -1990,8 +2094,8 @@ used as a context to generate this message.`,
                     }
                     Log(`Stream ended with details: <br/>
           ${Object.keys(cardDetails)
-              .map((key) => `${key}: <b>${cardDetails[key].toString()}</b>`)
-              .join('<br/>')}
+                            .map((key) => `${key}: <b>${cardDetails[key].toString()}</b>`)
+                            .join('<br/>')}
           `);
                     mynahUI.addChatItem(tabId, { ...defaultFollowUps, messageId: generateUID() });
                     streamingMessageId = null;
