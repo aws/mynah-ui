@@ -117,7 +117,6 @@ export class ChatItemFormItemsWrapper {
               optional: chatItemOption.mandatory !== true,
               placeholder: chatItemOption.placeholder ?? Config.getInstance().config.texts.pleaseSelect,
               tooltip: chatItemOption.selectTooltip ?? '',
-              showDescriptionAsTooltip: chatItemOption.showDescriptionAsTooltip,
               ...(this.getHandlers(chatItemOption))
             });
             if (chatItemOption.disabled === true) {
