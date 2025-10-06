@@ -36,7 +36,6 @@ export interface SelectProps {
   wrapperTestId?: string;
   optionTestId?: string;
   tooltip?: string;
-  showDescriptionAsTooltip?: boolean;
 }
 
 export abstract class SelectAbstract {
@@ -84,41 +83,17 @@ export class SelectInternal {
               value: '',
               description: undefined
             } ]
-          : []), ...props.options ?? [] ].flatMap(option => {
-          const mainOption = {
-            type: 'option',
-            testId: props.optionTestId,
-            classNames: option.value === '' ? [ 'empty-option' ] : [],
-            attributes: {
-              value: option.value,
-              ...(option.description != null && option.description.trim() !== '' ? { 'data-description': option.description } : {})
-            },
-            children: [
-              option.label
-            ]
-          };
-
-          // Add disabled description option if description exists and not using tooltip
-          if (props.showDescriptionAsTooltip !== true && option.description != null && option.description.trim() !== '') {
-            return [
-              mainOption,
-              {
-                type: 'option',
-                testId: props.optionTestId,
-                classNames: [ 'description-option' ],
-                attributes: {
-                  value: '',
-                  disabled: 'disabled'
-                },
-                children: [
-                  `  ${option.description}`
-                ]
-              }
-            ];
-          }
-
-          return [ mainOption ];
-        }) as DomBuilderObject[]
+          : []), ...props.options ?? [] ].map(option => ({
+          type: 'option',
+          testId: props.optionTestId,
+          classNames: option.value === '' ? [ 'empty-option' ] : [],
+          attributes: {
+            value: option.value,
+          },
+          children: [
+            option.label
+          ]
+        })) as DomBuilderObject[]
     });
     if (props.value !== undefined) {
       this.selectElement.value = props.value;
@@ -155,29 +130,27 @@ export class SelectInternal {
   }
 
   private readonly setupTooltip = (): void => {
-    if (this.props.showDescriptionAsTooltip === true) {
-      this.selectContainer.update({
-        events: {
-          mouseenter: () => {
-            const currentTooltip = this.getCurrentTooltip();
-            if (currentTooltip != null && currentTooltip.trim() !== '') {
-              this.showTooltip(currentTooltip);
-            }
-          },
-          mouseleave: () => {
-            this.hideTooltip();
+    this.selectContainer.update({
+      events: {
+        mouseenter: () => {
+          const currentTooltip = this.getCurrentTooltip();
+          if (currentTooltip != null && currentTooltip.trim() !== '') {
+            this.showTooltip(currentTooltip);
           }
+        },
+        mouseleave: () => {
+          this.hideTooltip();
         }
-      });
-    }
+      }
+    });
   };
 
   private readonly getCurrentTooltip = (): string => {
     const currentValue = this.selectElement.value;
     const selectedOption = this.props.options?.find(option => option.value === currentValue);
 
-    // Show label and description for tooltip mode; otherwise use base tooltip
-    if (this.props.showDescriptionAsTooltip === true && selectedOption?.description != null) {
+    // If there's a selected option, show label and description; otherwise use the base tooltip
+    if (selectedOption?.description != null) {
       return `<strong>${selectedOption.label}</strong><br>${selectedOption.description}`;
     }
     return this.props.tooltip ?? '';

@@ -309,7 +309,6 @@ export const mynahUIDefaults: Partial<MynahUITabStoreTab> = {
                 id: 'model-select',
                 mandatory: true,
                 hideMandatoryIcon: true,
-                showDescriptionAsTooltip: true,
                 options: [
                     {
                         label: 'Fast',
