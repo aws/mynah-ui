@@ -30,6 +30,7 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon } from '../icon';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
+import { ModifiedFilesTracker, ModifiedFilesTrackerData } from '../modified-files-tracker';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -58,6 +59,8 @@ export class ChatWrapper {
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
+  private modifiedFilesTracker: ModifiedFilesTracker | null = null;
+  private readonly modifiedFilesContainer: ExtendedHTMLElement;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -207,6 +210,17 @@ export class ChatWrapper {
 
     this.promptInfo = new ChatPromptInputInfo({ tabId: this.props.tabId }).render;
     this.promptStickyCard = new ChatPromptInputStickyCard({ tabId: this.props.tabId }).render;
+
+    // Initialize ModifiedFilesTracker container
+    this.modifiedFilesContainer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-modified-files-container' ]
+    });
+
+    // Listen for modifiedFilesData changes
+    MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'modifiedFilesData', (modifiedFilesData: ModifiedFilesTrackerData) => {
+      this.updateModifiedFilesTracker(modifiedFilesData);
+    });
     if (Config.getInstance().config.showPromptField) {
       this.promptInput = new ChatPromptInput({ tabId: this.props.tabId, onStopChatResponse: this.props?.onStopChatResponse });
       this.promptInputElement = this.promptInput.render;
@@ -310,6 +324,7 @@ export class ChatWrapper {
           }
         }).render,
         this.promptStickyCard,
+        this.modifiedFilesContainer,
         this.promptInputElement,
         this.footerSpacer,
         this.promptInfo,
@@ -536,5 +551,37 @@ export class ChatWrapper {
     this.dragOverlayVisibility = visible;
     this.dragOverlayContent.style.display = visible ? 'flex' : 'none';
     this.dragBlurOverlay.style.display = visible ? 'block' : 'none';
+  }
+
+  private updateModifiedFilesTracker (modifiedFilesData: ModifiedFilesTrackerData | null): void {
+    if (modifiedFilesData != null) {
+      if (this.modifiedFilesTracker == null) {
+        // Create new ModifiedFilesTracker
+        this.modifiedFilesTracker = new ModifiedFilesTracker({
+          tabId: this.props.tabId,
+          modifiedFilesData,
+          onFileUndo: (filePath: string) => {
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.MODIFIED_FILES_FILE_UNDO, {
+              tabId: this.props.tabId,
+              filePath
+            });
+          },
+          onUndoAll: () => {
+            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.MODIFIED_FILES_UNDO_ALL, {
+              tabId: this.props.tabId
+            });
+          }
+        });
+        this.modifiedFilesContainer.clear();
+        this.modifiedFilesContainer.insertChild('beforeend', this.modifiedFilesTracker.render);
+      } else {
+        // Update existing ModifiedFilesTracker
+        this.modifiedFilesTracker.updateModifiedFilesData(modifiedFilesData);
+      }
+    } else {
+      // Clear ModifiedFilesTracker
+      this.modifiedFilesContainer.clear();
+      this.modifiedFilesTracker = null;
+    }
   }
 }

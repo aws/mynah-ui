@@ -8,6 +8,8 @@
 @import './components/main-container';
 @import './components/detailed-list';
 @import './components/dropdown-list';
+@import './components/modified-files-tracker';
+@import './components/modified-files-container';
 :root {
     --mynah-sizing-half: calc(var(--mynah-sizing-base) / 2);
     --mynah-sizing-1: var(--mynah-sizing-base);

@@ -678,6 +678,10 @@ export const defaultFollowUps: ChatItem = {
                 command: Commands.SHOW_STICKY_CARD,
             },
             {
+                pillText: 'Modified Files Tracker',
+                command: Commands.MODIFIED_FILES_TRACKER,
+            },
+            {
                 pillText: 'Some auto reply',
                 prompt: 'Some random auto reply here.',
             },
@@ -2661,3 +2665,171 @@ export const sampleRulesList: DetailedList = {selectable: 'clickable', list: [{c
     description: 'README',actions: [{ id: 'README.md', icon: MynahIcons.OK, status: 'clear' }]}]}, 
     {groupName: '.amazonq/rules', childrenIndented: true, icon: MynahIcons.FOLDER , actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }], children: [{id: 'java-expert.md', icon: MynahIcons.CHECK_LIST, 
     description: 'java-expert',actions: [{ id: 'java-expert.md', icon: MynahIcons.OK, status: 'clear' }]}]}]}
+
+// Sample modified files data using the new ModifiedFilesTrackerData structure
+export const sampleModifiedFiles = {
+    title: 'Modified Files',
+    visible: true,
+    showUndoAll: true,
+    showFileCount: true,
+    initialCollapsed: false,
+    fileList: {
+        filePaths: [
+            'src/components/Button.tsx',
+            'src/utils/helpers.ts',
+            'README.md',
+            'package.json',
+            'tests/Button.test.tsx'
+        ],
+        deletedFiles: [
+            'src/styles/main.scss'
+        ],
+        details: {
+            'src/components/Button.tsx': {
+                visibleName: 'Button.tsx',
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'warning' as const, // modified
+                description: 'Modified component file'
+            },
+            'src/utils/helpers.ts': {
+                visibleName: 'helpers.ts',
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'success' as const, // added
+                description: 'New utility functions'
+            },
+            'README.md': {
+                icon: MynahIcons.DOC,
+                status: 'warning' as const, // modified
+                description: 'Updated documentation'
+            },
+            'package.json': {
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'warning' as const, // modified
+                description: 'Updated dependencies'
+            },
+            'src/styles/main.scss': {
+                visibleName: 'main.scss',
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'error' as const, // deleted
+                description: 'Removed stylesheet'
+            },
+            'tests/Button.test.tsx': {
+                visibleName: 'Button.test.tsx',
+                icon: MynahIcons.CHECK_LIST,
+                status: 'success' as const, // added
+                description: 'New test file'
+            }
+        },
+        collapsed: false,
+        hideFileCount: false
+    }
+};
+
+export const sampleModifiedFilesEmpty = {
+    title: 'Empty State',
+    visible: true,
+    showUndoAll: false,
+    showFileCount: true,
+    initialCollapsed: false,
+    fileList: {
+        filePaths: [],
+        deletedFiles: [],
+        details: {},
+        collapsed: false,
+        hideFileCount: false
+    }
+};
+
+export const sampleModifiedFilesLarge = {
+    title: 'Large File Set',
+    visible: true,
+    showUndoAll: true,
+    showFileCount: true,
+    initialCollapsed: true,
+    fileList: {
+        filePaths: [
+            'src/components/Button.tsx',
+            'src/utils/helpers.ts',
+            'README.md',
+            'package.json',
+            'tests/Button.test.tsx',
+            'src/components/Modal.tsx',
+            'src/components/Input.tsx',
+            'src/hooks/useLocalStorage.ts',
+            'src/types/index.ts',
+            'docs/api.md',
+            'config/webpack.config.js'
+        ],
+        deletedFiles: [
+            'src/styles/main.scss'
+        ],
+        details: {
+            'src/components/Button.tsx': {
+                visibleName: 'Button.tsx',
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'warning' as const,
+                description: 'Modified component file'
+            },
+            'src/utils/helpers.ts': {
+                visibleName: 'helpers.ts',
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'success' as const,
+                description: 'New utility functions'
+            },
+            'README.md': {
+                icon: MynahIcons.DOC,
+                status: 'warning' as const,
+                description: 'Updated documentation'
+            },
+            'package.json': {
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'warning' as const,
+                description: 'Updated dependencies'
+            },
+            'src/styles/main.scss': {
+                visibleName: 'main.scss',
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'error' as const,
+                description: 'Removed stylesheet'
+            },
+            'tests/Button.test.tsx': {
+                visibleName: 'Button.test.tsx',
+                icon: MynahIcons.CHECK_LIST,
+                status: 'success' as const,
+                description: 'New test file'
+            },
+            'src/components/Modal.tsx': {
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'success' as const,
+                description: 'New modal component'
+            },
+            'src/components/Input.tsx': {
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'warning' as const,
+                description: 'Modified input component'
+            },
+            'src/hooks/useLocalStorage.ts': {
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'success' as const,
+                description: 'New custom hook'
+            },
+            'src/types/index.ts': {
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'warning' as const,
+                description: 'Updated type definitions'
+            },
+            'docs/api.md': {
+                icon: MynahIcons.DOC,
+                status: 'success' as const,
+                description: 'New API documentation'
+            },
+            'config/webpack.config.js': {
+                icon: MynahIcons.CODE_BLOCK,
+                status: 'warning' as const,
+                description: 'Updated webpack configuration'
+            }
+        },
+        collapsed: true,
+        hideFileCount: false
+    }
+};

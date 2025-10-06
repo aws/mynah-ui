@@ -175,5 +175,14 @@ export default {
     option: 'dropdown-list-option',
     optionLabel: 'dropdown-list-option-label',
     checkIcon: 'dropdown-list-check-icon'
+  },
+  modifiedFilesTracker: {
+    wrapper: 'modified-files-tracker',
+    collapsible: 'modified-files-tracker-collapsible',
+    titleContainer: 'modified-files-tracker-title-container',
+    undoAll: 'modified-files-tracker-undo-all',
+    items: 'modified-files-tracker-items',
+    item: 'modified-files-tracker-item',
+    fileUndo: 'modified-files-tracker-file-undo'
   }
 };
