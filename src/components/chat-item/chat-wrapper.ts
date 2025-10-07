@@ -60,7 +60,7 @@ export class ChatWrapper {
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
   private readonly modifiedFilesTracker: ModifiedFilesTracker;
-  private modifiedFilesChatItem: ChatItem | null = null;
+
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -387,14 +387,17 @@ export class ChatWrapper {
   };
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
-    // Log chatItem details (only non-undefined properties)
-    const definedProps = Object.fromEntries(
-      Object.entries(chatItem).filter(([ _, value ]) => value !== undefined)
-    );
-    console.log('[ChatWrapper] insertChatItem received chatItem:', definedProps);
-
+    // Normal flow on initially opening ui requires the currentMessageId;
     this.removeEmptyCardsAndFollowups();
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
+    // Check if messageId contains "modified-files-" prefix
+    if (chatItem.messageId != null && chatItem.messageId !== '' && chatItem.messageId.includes('modified-files-')) {
+      // Forward only to ModifiedFilesTracker, skip normal flow
+      this.modifiedFilesTracker.addChatItem(chatItem);
+      return;
+    }
+
+    // Normal flow for all other chat items
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
       chatItem: {
@@ -423,15 +426,6 @@ export class ChatWrapper {
 
     // Add to all rendered chat items map
     this.allRenderedChatItems[currentMessageId] = chatItemCard;
-
-    // Update ModifiedFilesTracker only if chatItem messageId contains suffix "modified-files-"
-    if (chatItem.messageId != null && chatItem.header?.fileList != null) {
-      if (chatItem.messageId.includes('modified-files-')) {
-        console.log('[ChatWrapper] Setting ModifiedFilesChatItem with fileList:', chatItem.header.fileList);
-        this.setModifiedFilesChatItem(chatItem);
-        return;
-      }
-    }
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
       // Make sure we align to top when there is a new prompt.
@@ -561,24 +555,5 @@ export class ChatWrapper {
     this.dragOverlayVisibility = visible;
     this.dragOverlayContent.style.display = visible ? 'flex' : 'none';
     this.dragBlurOverlay.style.display = visible ? 'block' : 'none';
-  }
-
-  public setModifiedFilesTrackerVisible (visible: boolean): void {
-    // No-op: component is always visible
-  }
-
-  public updateModifiedFilesTracker (): void {
-    if (this.modifiedFilesChatItem != null) {
-      this.modifiedFilesTracker.addChatItem(this.modifiedFilesChatItem);
-    }
-  }
-
-  public setModifiedFilesChatItem (chatItem: ChatItem): void {
-    console.log('[ChatWrapper] setModifiedFilesChatItem called with:', {
-      messageId: chatItem.messageId,
-      fileList: chatItem.header?.fileList
-    });
-    this.modifiedFilesChatItem = chatItem;
-    this.updateModifiedFilesTracker();
   }
 }

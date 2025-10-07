@@ -1346,7 +1346,7 @@ export class MynahUI {
    */
   public setFilesTrackerVisible = (tabId: string, visible: boolean): void => {
     if (this.chatWrappers[tabId] != null) {
-      this.chatWrappers[tabId].setModifiedFilesTrackerVisible(visible);
+      // this.chatWrappers[tabId].setModifiedFilesTrackerVisible(visible);
     }
   };
 
