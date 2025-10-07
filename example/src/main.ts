@@ -1645,107 +1645,14 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                         body: 'Demonstrating the modified files tracker. Watch the component above the chat!',
                     });
                     
-                    // Make the component visible and set initial state
-                    mynahUI.updateStore(tabId, { 
-                        modifiedFilesVisible: true,
-                        modifiedFilesTitle: 'Work in progress...',
-                        modifiedFilesList: {
-                            filePaths: [],
-                            flatList: true
-                        }
+                    // Demo will be handled through chatItem approach now
+                    mynahUI.addChatItem(tabId, {
+                        type: ChatItemType.ANSWER,
+                        messageId: generateUID(),
+                        body: 'Modified files tracker demo is now handled through chatItem.header.fileList approach.',
                     });
                     
-                    // Simulate file modifications with delays
-                    setTimeout(() => {
-                        mynahUI.updateStore(tabId, {
-                            modifiedFilesList: {
-                                filePaths: ['src/components/chat-wrapper.ts'],
-                                flatList: true
-                            }
-                        });
-                    }, 1000);
-                    
-                    setTimeout(() => {
-                        mynahUI.updateStore(tabId, {
-                            modifiedFilesList: {
-                                filePaths: [
-                                    'src/components/chat-wrapper.ts',
-                                    'src/styles/components/_modified-files-tracker.scss'
-                                ],
-                                flatList: true
-                            }
-                        });
-                    }, 2000);
-                    
-                    setTimeout(() => {
-                        mynahUI.updateStore(tabId, {
-                            modifiedFilesList: {
-                                filePaths: [
-                                    'src/components/chat-wrapper.ts',
-                                    'src/styles/components/_modified-files-tracker.scss',
-                                    'src/main.ts'
-                                ],
-                                flatList: true
-                            }
-                        });
-                    }, 3000);
-                    
-                    setTimeout(() => {
-                        mynahUI.updateStore(tabId, {
-                            modifiedFilesList: {
-                                filePaths: [
-                                    'src/components/chat-wrapper.ts',
-                                    'src/styles/components/_modified-files-tracker.scss',
-                                    'src/main.ts',
-                                    'example/src/main.ts'
-                                ],
-                                flatList: true,
-                                actions: {
-                                    'src/components/chat-wrapper.ts': [{ name: 'undo', icon: 'undo' }],
-                                    'src/styles/components/_modified-files-tracker.scss': [{ name: 'undo', icon: 'undo' }],
-                                    'src/main.ts': [{ name: 'undo', icon: 'undo' }],
-                                    'example/src/main.ts': [{ name: 'undo', icon: 'undo' }]
-                                }
-                            }
-                        });
-                    }, 4000);
-                    
-                    setTimeout(() => {
-                        mynahUI.updateStore(tabId, {
-                            modifiedFilesTitle: 'Work done!',
-                            modifiedFilesList: {
-                                filePaths: [
-                                    'src/components/chat-wrapper.ts',
-                                    'src/styles/components/_modified-files-tracker.scss',
-                                    'src/main.ts',
-                                    'example/src/main.ts'
-                                ],
-                                flatList: true,
-                                actions: {
-                                    'src/components/chat-wrapper.ts': [{ name: 'undo', icon: 'undo' }],
-                                    'src/styles/components/_modified-files-tracker.scss': [{ name: 'undo', icon: 'undo' }],
-                                    'src/main.ts': [{ name: 'undo', icon: 'undo' }],
-                                    'example/src/main.ts': [{ name: 'undo', icon: 'undo' }]
-                                }
-                            }
-                        });
-                        
-                        // Add the undo all button as a separate chat item
-                        mynahUI.addChatItem(tabId, {
-                            type: ChatItemType.ANSWER,
-                            messageId: generateUID(),
-                            body: '',
-                            buttons: [
-                                { id: 'undo-all', text: 'Undo All', status: 'clear' }
-                            ]
-                        });
-                        mynahUI.addChatItem(tabId, {
-                            type: ChatItemType.ANSWER,
-                            messageId: generateUID(),
-                            body: 'Demo complete! The modified files tracker now shows "Work done!" status. Click on any file or use the undo buttons to see the callbacks in action.',
-                        });
-                        mynahUI.addChatItem(tabId, defaultFollowUps);
-                    }, 5000);
+
                     break;
                 case Commands.CARD_WITH_MARKDOWN_LIST:
                     getGenerativeAIAnswer(tabId, sampleMarkdownList);

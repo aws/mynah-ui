@@ -1357,7 +1357,7 @@ export class MynahUI {
    * @param visible Whether the tracker should be visible
    */
   public setModifiedFilesTrackerVisible = (tabId: string, visible: boolean): void => {
-    this.setFilesTrackerVisible(tabId, visible);
+    // No-op: component is always visible
   };
 
   /**

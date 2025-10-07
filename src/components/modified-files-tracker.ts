@@ -6,16 +6,15 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
-import { ChatItemContent, ChatItemButton, MynahEventNames } from '../static';
+import { ChatItem, ChatItemContent, ChatItemButton, MynahEventNames } from '../static';
 import testIds from '../helper/test-ids';
-import { MynahUITabsStore } from '../helper/tabs-store';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
 import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
 import { MynahUIGlobalEvents } from '../helper/events';
 
 export interface ModifiedFilesTrackerProps {
   tabId: string;
-  visible?: boolean;
+  chatItem?: ChatItem;
 }
 
 export class ModifiedFilesTracker {
@@ -25,8 +24,14 @@ export class ModifiedFilesTracker {
   public titleText: string = 'No files modified!';
 
   constructor (props: ModifiedFilesTrackerProps) {
+    console.log('[ModifiedFilesTracker] Constructor called with props:', {
+      tabId: props.tabId,
+      hasChatItem: !!props.chatItem,
+      chatItem: props.chatItem,
+      fileList: props.chatItem?.header?.fileList
+    });
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
-    this.props = { visible: false, ...props };
+    this.props = props;
 
     this.collapsibleContent = new CollapsibleContent({
       title: this.titleText,
@@ -38,27 +43,23 @@ export class ModifiedFilesTracker {
 
     this.render = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [
-        'mynah-modified-files-tracker-wrapper',
-        ...(this.props.visible === true ? [] : [ 'hidden' ])
-      ],
+      classNames: [ 'mynah-modified-files-tracker-wrapper' ],
       testId: testIds.modifiedFilesTracker.container,
-      children: [ this.collapsibleContent.render ]
-    });
-
-    const tabDataStore = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId);
-
-    tabDataStore.subscribe('modifiedFilesList', (fileList: ChatItemContent['fileList'] | null) => {
-      this.renderModifiedFiles(fileList);
-    });
-
-    tabDataStore.subscribe('modifiedFilesTitle', (newTitle: string) => {
-      if (newTitle !== '') {
-        this.collapsibleContent.updateTitle(newTitle);
+      children: [ this.collapsibleContent.render ],
+      attributes: {
+        style: 'display: block !important; visibility: visible !important;'
       }
     });
 
-    this.renderModifiedFiles(tabDataStore.getValue('modifiedFilesList'));
+    console.log('[ModifiedFilesTracker] Render element created:', this.render);
+
+    if (this.props.chatItem?.header?.fileList) {
+      console.log('[ModifiedFilesTracker] Rendering modified files with fileList:', this.props.chatItem.header.fileList);
+      this.renderModifiedFiles(this.props.chatItem.header.fileList);
+    } else {
+      console.log('[ModifiedFilesTracker] No fileList found, rendering empty state');
+      this.renderModifiedFiles(null);
+    }
   }
 
   private renderModifiedFiles (fileList: ChatItemContent['fileList'] | null): void {
@@ -124,10 +125,6 @@ export class ModifiedFilesTracker {
   }
 
   public setVisible (visible: boolean): void {
-    if (visible) {
-      this.render.removeClass('hidden');
-    } else {
-      this.render.addClass('hidden');
-    }
+    // No-op: component is always visible
   }
 }

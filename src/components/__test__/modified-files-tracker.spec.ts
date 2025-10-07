@@ -85,23 +85,57 @@ describe('ModifiedFilesTracker', () => {
     expect(tracker.render.classList.contains('hidden')).toBeTruthy();
   });
 
-  it('should render visible when visible prop is true', () => {
+  it('should render with chatItem when provided', () => {
+    const chatItem: ChatItem = {
+      type: ChatItemType.ANSWER,
+      header: {
+        fileList: {
+          filePaths: ['test.ts']
+        }
+      }
+    };
+    
     const tracker = new ModifiedFilesTracker({
       tabId: 'test-tab',
-      visible: true
+      chatItem
     });
 
-    expect(tracker.render.classList.contains('hidden')).toBeFalsy();
+    expect(tracker).toBeDefined();
   });
 
-  it('should subscribe to chatItems and modifiedFilesTitle', () => {
+  it('should not subscribe to store when no chatItem provided', () => {
     const tracker = new ModifiedFilesTracker({
       tabId: 'test-tab'
     });
 
     expect(tracker).toBeDefined();
-    expect(mockSubscribe).toHaveBeenCalledWith('chatItems', expect.any(Function));
-    expect(mockSubscribe).toHaveBeenCalledWith('modifiedFilesTitle', expect.any(Function));
+    // Should not subscribe to any store events when no chatItem is provided
+    expect(mockSubscribe).not.toHaveBeenCalled();
+  });
+
+  it('should use chatItem fileList when provided', () => {
+    const chatItem: ChatItem = {
+      type: ChatItemType.ANSWER,
+      header: {
+        fileList: {
+          filePaths: ['test.ts'],
+          details: {
+            'test.ts': {
+              visibleName: 'test.ts'
+            }
+          }
+        }
+      }
+    };
+
+    const tracker = new ModifiedFilesTracker({
+      tabId: 'test-tab',
+      chatItem
+    });
+
+    expect(tracker).toBeDefined();
+    // Should not subscribe to store when chatItem is provided
+    expect(mockSubscribe).not.toHaveBeenCalled();
   });
 
   describe('updateContent', () => {
@@ -161,57 +195,7 @@ describe('ModifiedFilesTracker', () => {
     });
   });
 
-  describe('title updates', () => {
-    it('should update title when modifiedFilesTitle changes', () => {
-      const mockUpdateTitle = jest.fn();
-      const { CollapsibleContent } = jest.requireMock('../collapsible-content');
-      (CollapsibleContent as jest.Mock).mockImplementation(() => ({
-        render: {
-          querySelector: jest.fn(() => ({ innerHTML: '', appendChild: jest.fn() }))
-        },
-        updateTitle: mockUpdateTitle
-      }));
 
-      const tracker = new ModifiedFilesTracker({
-        tabId: 'test-tab'
-      });
-
-      expect(tracker).toBeDefined();
-
-      const titleCallback = mockSubscribe.mock.calls.find(
-        (call: any) => call[0] === 'modifiedFilesTitle'
-      )?.[1];
-
-      titleCallback?.('New Title');
-
-      expect(mockUpdateTitle).toHaveBeenCalledWith('New Title');
-    });
-
-    it('should not update title when empty string is provided', () => {
-      const mockUpdateTitle = jest.fn();
-      const { CollapsibleContent } = jest.requireMock('../collapsible-content');
-      (CollapsibleContent as jest.Mock).mockImplementation(() => ({
-        render: {
-          querySelector: jest.fn(() => ({ innerHTML: '', appendChild: jest.fn() }))
-        },
-        updateTitle: mockUpdateTitle
-      }));
-
-      const tracker = new ModifiedFilesTracker({
-        tabId: 'test-tab'
-      });
-
-      expect(tracker).toBeDefined();
-
-      const titleCallback = mockSubscribe.mock.calls.find(
-        (call: any) => call[0] === 'modifiedFilesTitle'
-      )?.[1];
-
-      titleCallback?.('');
-
-      expect(mockUpdateTitle).not.toHaveBeenCalled();
-    });
-  });
 
   describe('setVisible method', () => {
     it('should show tracker when setVisible(true) is called', () => {

@@ -192,22 +192,6 @@ export interface MynahUIDataModel {
    * Custom context commands to be inserted into the prompt input.
    */
   customContextCommand?: QuickActionCommand[];
-  /**
-   * Title for the modified files tracker component
-   */
-  modifiedFilesTitle?: string;
-  /**
-   * Visibility state for the modified files tracker component
-   */
-  modifiedFilesVisible?: boolean;
-  /**
-   * Flag to indicate when a new conversation starts
-   */
-  newConversation?: boolean;
-  /**
-   * Modified files data for the tracker component (push mechanism)
-   */
-  modifiedFilesList?: ChatItemContent['fileList'];
 }
 
 export interface MynahUITabStoreTab {
