@@ -429,8 +429,8 @@ export class ChatWrapper {
       if (chatItem.messageId.includes('modified-files-')) {
         console.log('[ChatWrapper] Setting ModifiedFilesChatItem with fileList:', chatItem.header.fileList);
         this.setModifiedFilesChatItem(chatItem);
+        return;
       }
-      return;
     }
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {

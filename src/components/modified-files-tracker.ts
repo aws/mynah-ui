@@ -9,7 +9,6 @@ import { CollapsibleContent } from './collapsible-content';
 import { ChatItem, ChatItemContent, ChatItemButton, MynahEventNames } from '../static';
 import testIds from '../helper/test-ids';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
-import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
 import { MynahUIGlobalEvents } from '../helper/events';
 
 export interface ModifiedFilesTrackerProps {
@@ -92,8 +91,17 @@ export class ModifiedFilesTracker {
   }
 
   private renderAllFilePills (contentWrapper: Element): void {
+    // Convert buttons to actions if available
+    let buttonActions: Record<string, any[]> = {};
+    if (((this.props.chatItem?.buttons) != null) && Array.isArray(this.props.chatItem.buttons) && this.props.chatItem.buttons.length > 0) {
+      buttonActions = this.convertButtonsToActions(this.props.chatItem.buttons);
+    }
+
     this.allFiles.forEach(({ fileList, messageId }) => {
       const { filePaths = [], deletedFiles = [], actions, details, flatList } = fileList;
+
+      // Merge existing actions with button actions
+      const mergedActions = { ...actions, ...buttonActions };
 
       // Create a wrapper for each file group
       const fileGroupWrapper = DomBuilder.getInstance().build({
@@ -111,7 +119,7 @@ export class ModifiedFilesTracker {
         rootTitle: fileList.rootFolderTitle,
         deletedFiles,
         flatList,
-        actions,
+        actions: mergedActions,
         details,
         hideFileCount: fileList.hideFileCount ?? true,
         collapsed: fileList.collapsed ?? false,
@@ -120,31 +128,44 @@ export class ModifiedFilesTracker {
         onRootCollapsedStateChange: () => {}
       }).render);
 
-      // Render buttons if they exist
-      const fileListWithButtons = fileList as ChatItemContent['fileList'] & { buttons?: ChatItemButton[] };
-      const buttons: ChatItemButton[] | undefined = fileListWithButtons.buttons;
-      if (Array.isArray(buttons) && buttons.length > 0) {
-        const buttonsWrapper = new ChatItemButtonsWrapper({
-          tabId: this.props.tabId,
-          buttons,
-          onActionClick: (action: ChatItemButton) => {
-            MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-              tabId: this.props.tabId,
-              messageId: (action as any).messageId != null ? (action as any).messageId : messageId,
-              actionId: action.id,
-              actionText: action.text
-            });
-          }
-        });
-        fileGroupWrapper.appendChild(buttonsWrapper.render);
-      }
-
       contentWrapper.appendChild(fileGroupWrapper);
     });
   }
 
+  private convertButtonsToActions (buttons: ChatItemButton[]): Record<string, any[]> {
+    // Convert buttons to actions format that ChatItemTreeViewWrapper expects
+    const actions: Record<string, any[]> = {};
+
+    buttons.forEach(button => {
+      // Add action to all files (you might want to be more specific based on your needs)
+      this.allFiles.forEach(({ fileList }) => {
+        fileList.filePaths?.forEach(filePath => {
+          if (actions[filePath] == null) {
+            actions[filePath] = [];
+          }
+          actions[filePath].push({
+            id: button.id,
+            text: button.text,
+            icon: button.icon,
+            onClick: () => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                tabId: this.props.tabId,
+                messageId: this.props.chatItem?.messageId ?? '',
+                actionId: button.id,
+                actionText: button.text
+              });
+            }
+          });
+        });
+      });
+    });
+    return actions;
+  }
+
   public addChatItem (chatItem: ChatItem): void {
     if (chatItem.header?.fileList != null) {
+      // Store the current chatItem for button handling
+      this.props.chatItem = chatItem;
       this.renderModifiedFiles(chatItem.header.fileList, chatItem.messageId);
     }
   }
