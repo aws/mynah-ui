@@ -59,7 +59,7 @@ export class ChatWrapper {
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
-  private modifiedFilesTracker: ModifiedFilesTracker;
+  private readonly modifiedFilesTracker: ModifiedFilesTracker;
   private modifiedFilesChatItem: ChatItem | null = null;
 
   constructor (props: ChatWrapperProps) {
@@ -99,7 +99,6 @@ export class ChatWrapper {
     this.modifiedFilesTracker = new ModifiedFilesTracker({
       tabId: this.props.tabId
     });
-
 
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
@@ -388,6 +387,12 @@ export class ChatWrapper {
   };
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
+    // Log chatItem details (only non-undefined properties)
+    const definedProps = Object.fromEntries(
+      Object.entries(chatItem).filter(([ _, value ]) => value !== undefined)
+    );
+    console.log('[ChatWrapper] insertChatItem received chatItem:', definedProps);
+
     this.removeEmptyCardsAndFollowups();
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
     const chatItemCard = new ChatItemCard({
@@ -419,16 +424,13 @@ export class ChatWrapper {
     // Add to all rendered chat items map
     this.allRenderedChatItems[currentMessageId] = chatItemCard;
 
-    // Update ModifiedFilesTracker if chatItem has file data
-    console.log('[ChatWrapper] Checking chatItem for file data:', {
-      messageId: chatItem.messageId,
-      hasHeader: !!chatItem.header,
-      hasFileList: !!chatItem.header?.fileList,
-      fileList: chatItem.header?.fileList
-    });
-    if (chatItem.header?.fileList != null) {
-      console.log('[ChatWrapper] Setting ModifiedFilesChatItem with fileList:', chatItem.header.fileList);
-      this.setModifiedFilesChatItem(chatItem);
+    // Update ModifiedFilesTracker only if chatItem messageId contains suffix "modified-files-"
+    if (chatItem.messageId != null && chatItem.header?.fileList != null) {
+      if (chatItem.messageId.includes('modified-files-')) {
+        console.log('[ChatWrapper] Setting ModifiedFilesChatItem with fileList:', chatItem.header.fileList);
+        this.setModifiedFilesChatItem(chatItem);
+      }
+      return;
     }
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
@@ -566,24 +568,8 @@ export class ChatWrapper {
   }
 
   public updateModifiedFilesTracker (): void {
-    console.log('[ChatWrapper] updateModifiedFilesTracker called with modifiedFilesChatItem:', this.modifiedFilesChatItem);
     if (this.modifiedFilesChatItem != null) {
-      console.log('[ChatWrapper] Creating new ModifiedFilesTracker with chatItem:', {
-        tabId: this.props.tabId,
-        chatItem: this.modifiedFilesChatItem
-      });
-      // Create a new ModifiedFilesTracker with the chatItem
-      const newTracker = new ModifiedFilesTracker({
-        tabId: this.props.tabId,
-        chatItem: this.modifiedFilesChatItem
-      });
-      console.log('[ChatWrapper] New ModifiedFilesTracker created:', newTracker);
-      // Replace the old tracker
-      this.modifiedFilesTracker.render.replaceWith(newTracker.render);
-      this.modifiedFilesTracker = newTracker;
-      console.log('[ChatWrapper] ModifiedFilesTracker replaced successfully');
-    } else {
-      console.log('[ChatWrapper] No modifiedFilesChatItem to update tracker with');
+      this.modifiedFilesTracker.addChatItem(this.modifiedFilesChatItem);
     }
   }
 

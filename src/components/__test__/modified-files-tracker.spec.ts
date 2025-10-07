@@ -90,11 +90,11 @@ describe('ModifiedFilesTracker', () => {
       type: ChatItemType.ANSWER,
       header: {
         fileList: {
-          filePaths: ['test.ts']
+          filePaths: [ 'test.ts' ]
         }
       }
     };
-    
+
     const tracker = new ModifiedFilesTracker({
       tabId: 'test-tab',
       chatItem
@@ -118,7 +118,7 @@ describe('ModifiedFilesTracker', () => {
       type: ChatItemType.ANSWER,
       header: {
         fileList: {
-          filePaths: ['test.ts'],
+          filePaths: [ 'test.ts' ],
           details: {
             'test.ts': {
               visibleName: 'test.ts'
@@ -194,8 +194,6 @@ describe('ModifiedFilesTracker', () => {
       expect(mockContentWrapper.appendChild).toHaveBeenCalled();
     });
   });
-
-
 
   describe('setVisible method', () => {
     it('should show tracker when setVisible(true) is called', () => {
