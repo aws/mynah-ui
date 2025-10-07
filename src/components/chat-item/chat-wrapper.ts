@@ -61,7 +61,6 @@ export class ChatWrapper {
   private imageContextFeatureEnabled: boolean = false;
   private readonly modifiedFilesTracker: ModifiedFilesTracker;
 
-
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
 
