@@ -93,7 +93,7 @@ export class ModifiedFilesTracker {
 
   private renderAllFilePills (contentWrapper: Element): void {
     this.allFiles.forEach(({ fileList, messageId }) => {
-      const { filePaths = [], deletedFiles = [], actions, details, flatList } = fileList;
+      const { filePaths = [], deletedFiles = [], actions, details } = fileList;
 
       // Create a wrapper for each file group
       const fileGroupWrapper = DomBuilder.getInstance().build({
@@ -102,45 +102,57 @@ export class ModifiedFilesTracker {
         children: []
       });
 
-      // Render the file tree with original actions only
-      fileGroupWrapper.appendChild(new ChatItemTreeViewWrapper({
-        tabId: this.props.tabId,
-        messageId: this.getOriginalMessageId(messageId),
-        files: filePaths,
-        cardTitle: '',
-        rootTitle: fileList.rootFolderTitle,
-        deletedFiles,
-        flatList,
-        actions,
-        details,
-        hideFileCount: fileList.hideFileCount ?? true,
-        collapsed: fileList.collapsed ?? false,
-        referenceSuggestionLabel: '',
-        references: [],
-        onRootCollapsedStateChange: () => {}
-      }).render);
+      // Render each file individually with its own buttons
+      filePaths.forEach(filePath => {
+        const singleFileWrapper = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-modified-files-single-file' ],
+          children: []
+        });
+
+        // Render the file tree for single file
+        singleFileWrapper.appendChild(new ChatItemTreeViewWrapper({
+          tabId: this.props.tabId,
+          messageId: this.getOriginalMessageId(messageId),
+          files: [ filePath ],
+          cardTitle: '',
+          rootTitle: undefined, // No root title for single files
+          deletedFiles: deletedFiles.filter(df => df === filePath),
+          flatList: true, // Force flat list for single files
+          actions: (actions != null) ? { [filePath]: actions[filePath] } : undefined,
+          details: (details != null) ? { [filePath]: details[filePath] } : undefined,
+          hideFileCount: true,
+          collapsed: false,
+          referenceSuggestionLabel: '',
+          references: [],
+          onRootCollapsedStateChange: () => {}
+        }).render);
+
+        // Add buttons for this specific file if they exist
+        if (this.props.chatItem?.buttons != null && Array.isArray(this.props.chatItem.buttons) && this.props.chatItem.buttons.length > 0) {
+          const buttonsWrapper = new ChatItemButtonsWrapper({
+            tabId: this.props.tabId,
+            classNames: [ 'mynah-modified-files-file-buttons' ],
+            formItems: null,
+            buttons: this.props.chatItem.buttons,
+            onActionClick: action => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                tabId: this.props.tabId,
+                messageId: this.getOriginalMessageId(messageId),
+                actionId: action.id,
+                actionText: action.text,
+                filePath // Add filePath to identify which file the action is for
+              });
+            }
+          });
+          singleFileWrapper.appendChild(buttonsWrapper.render);
+        }
+
+        fileGroupWrapper.appendChild(singleFileWrapper);
+      });
 
       contentWrapper.appendChild(fileGroupWrapper);
     });
-
-    // Add buttons separately using ChatItemButtonsWrapper, same as chat-item-card.ts
-    if (((this.props.chatItem?.buttons) != null) && Array.isArray(this.props.chatItem.buttons) && this.props.chatItem.buttons.length > 0) {
-      const buttonsWrapper = new ChatItemButtonsWrapper({
-        tabId: this.props.tabId,
-        classNames: [ 'mynah-modified-files-buttons' ],
-        formItems: null,
-        buttons: this.props.chatItem.buttons,
-        onActionClick: action => {
-          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-            tabId: this.props.tabId,
-            messageId: this.getOriginalMessageId(this.props.chatItem?.messageId ?? ''),
-            actionId: action.id,
-            actionText: action.text
-          });
-        }
-      });
-      contentWrapper.appendChild(buttonsWrapper.render);
-    }
   }
 
   private getOriginalMessageId (messageId: string): string {
