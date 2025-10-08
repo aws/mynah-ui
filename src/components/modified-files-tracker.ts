@@ -6,9 +6,10 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
-import { ChatItem, ChatItemContent, ChatItemButton, MynahEventNames } from '../static';
+import { ChatItem, ChatItemContent, MynahEventNames } from '../static';
 import testIds from '../helper/test-ids';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
+import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
 import { MynahUIGlobalEvents } from '../helper/events';
 
 export interface ModifiedFilesTrackerProps {
@@ -91,17 +92,8 @@ export class ModifiedFilesTracker {
   }
 
   private renderAllFilePills (contentWrapper: Element): void {
-    // Convert buttons to actions if available
-    let buttonActions: Record<string, any[]> = {};
-    if (((this.props.chatItem?.buttons) != null) && Array.isArray(this.props.chatItem.buttons) && this.props.chatItem.buttons.length > 0) {
-      buttonActions = this.convertButtonsToActions(this.props.chatItem.buttons);
-    }
-
     this.allFiles.forEach(({ fileList, messageId }) => {
       const { filePaths = [], deletedFiles = [], actions, details, flatList } = fileList;
-
-      // Merge existing actions with button actions
-      const mergedActions = { ...actions, ...buttonActions };
 
       // Create a wrapper for each file group
       const fileGroupWrapper = DomBuilder.getInstance().build({
@@ -110,16 +102,16 @@ export class ModifiedFilesTracker {
         children: []
       });
 
-      // Render the file tree with actions and buttons as provided by the data
+      // Render the file tree with original actions only
       fileGroupWrapper.appendChild(new ChatItemTreeViewWrapper({
         tabId: this.props.tabId,
-        messageId,
+        messageId: this.getOriginalMessageId(messageId),
         files: filePaths,
         cardTitle: '',
         rootTitle: fileList.rootFolderTitle,
         deletedFiles,
         flatList,
-        actions: mergedActions,
+        actions,
         details,
         hideFileCount: fileList.hideFileCount ?? true,
         collapsed: fileList.collapsed ?? false,
@@ -130,36 +122,30 @@ export class ModifiedFilesTracker {
 
       contentWrapper.appendChild(fileGroupWrapper);
     });
+
+    // Add buttons separately using ChatItemButtonsWrapper, same as chat-item-card.ts
+    if (((this.props.chatItem?.buttons) != null) && Array.isArray(this.props.chatItem.buttons) && this.props.chatItem.buttons.length > 0) {
+      const buttonsWrapper = new ChatItemButtonsWrapper({
+        tabId: this.props.tabId,
+        classNames: [ 'mynah-modified-files-buttons' ],
+        formItems: null,
+        buttons: this.props.chatItem.buttons,
+        onActionClick: action => {
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+            tabId: this.props.tabId,
+            messageId: this.getOriginalMessageId(this.props.chatItem?.messageId ?? ''),
+            actionId: action.id,
+            actionText: action.text
+          });
+        }
+      });
+      contentWrapper.appendChild(buttonsWrapper.render);
+    }
   }
 
-  private convertButtonsToActions (buttons: ChatItemButton[]): Record<string, any[]> {
-    // Convert buttons to actions format that ChatItemTreeViewWrapper expects
-    const actions: Record<string, any[]> = {};
-
-    buttons.forEach(button => {
-      // Add action to all files (you might want to be more specific based on your needs)
-      this.allFiles.forEach(({ fileList }) => {
-        fileList.filePaths?.forEach(filePath => {
-          if (actions[filePath] == null) {
-            actions[filePath] = [];
-          }
-          actions[filePath].push({
-            id: button.id,
-            text: button.text,
-            icon: button.icon,
-            onClick: () => {
-              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
-                tabId: this.props.tabId,
-                messageId: this.props.chatItem?.messageId ?? '',
-                actionId: button.id,
-                actionText: button.text
-              });
-            }
-          });
-        });
-      });
-    });
-    return actions;
+  private getOriginalMessageId (messageId: string): string {
+    // Remove "modified-files-" prefix if present
+    return messageId.startsWith('modified-files-') ? messageId.replace('modified-files-', '') : messageId;
   }
 
   public addChatItem (chatItem: ChatItem): void {
