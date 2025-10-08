@@ -358,7 +358,7 @@ describe('FeedbackForm Integration Tests', () => {
   describe('Error Handling', () => {
     it('should handle missing tab data gracefully', () => {
       // Override the mock for this specific test
-      mockTabsStore.getTabDataStore.mockReturnValueOnce(undefined as any);
+      (mockTabsStore.getTabDataStore as jest.Mock).mockReturnValueOnce(undefined as any);
 
       feedbackForm = new FeedbackForm();
 

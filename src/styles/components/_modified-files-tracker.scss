@@ -1,0 +1,42 @@
+/*!
+ * Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+.mynah-modified-files-tracker-wrapper {
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
+    border-bottom: none;
+    border-radius: var(--mynah-input-radius) var(--mynah-input-radius) var(--mynah-card-radius-corner)
+        var(--mynah-card-radius-corner);
+    margin: var(--mynah-card-radius-corner) calc(var(--mynah-chat-wrapper-spacing) + var(--mynah-sizing-2));
+
+    &.hidden {
+        display: none;
+    }
+
+    .mynah-collapsible-content-label-content-wrapper {
+        pointer-events: none;
+
+        * {
+            pointer-events: auto;
+        }
+    }
+
+    .mynah-modified-files-empty-state {
+        color: var(--mynah-color-text-weak);
+        font-style: italic;
+        padding: var(--mynah-sizing-2) var(--mynah-card-radius-corner);
+    }
+}
+
+// Remove top border radius and padding from chat prompt when modified files tracker is visible
+.mynah-modified-files-tracker-wrapper:not(.hidden) + .mynah-chat-prompt-wrapper {
+    padding-top: var(--mynah-card-radius-corner);
+    margin-top: calc(var(--mynah-sizing-negative-2, calc(-1 * var(--mynah-sizing-2))));
+
+    > .mynah-chat-prompt {
+        border-top-left-radius: var(--mynah-card-radius-corner);
+        border-top-right-radius: var(--mynah-card-radius-corner);
+        border-top: none;
+    }
+}

@@ -30,6 +30,7 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon } from '../icon';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
+import { ModifiedFilesTracker } from '../modified-files-tracker';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -53,11 +54,13 @@ export class ChatWrapper {
   private lastStreamingChatItemCard: ChatItemCard | null;
   private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
+  private allRenderedModifiedFileChatItems: Record<string, ChatItem> = {};
   render: ExtendedHTMLElement;
   private readonly dragOverlayContent: HTMLElement;
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
+  private modifiedFilesTracker: ModifiedFilesTracker;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -92,8 +95,14 @@ export class ChatWrapper {
     this.imageContextFeatureEnabled = contextCommands.some(group =>
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     );
+
+    this.modifiedFilesTracker = new ModifiedFilesTracker({
+      tabId: this.props.tabId
+    });
+
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
+
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(Array.from(this.chatItemsContainer.children).length - 1);
         if (lastItem != null && chatItemToInsert != null) {
@@ -310,6 +319,7 @@ export class ChatWrapper {
           }
         }).render,
         this.promptStickyCard,
+        this.modifiedFilesTracker.render,
         this.promptInputElement,
         this.footerSpacer,
         this.promptInfo,
@@ -377,8 +387,29 @@ export class ChatWrapper {
   };
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
+    // Normal flow on initially opening ui requires the currentMessageId;
     this.removeEmptyCardsAndFollowups();
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
+    // Check if messageId contains "modified-files-" prefix
+    if (chatItem.messageId != null && chatItem.messageId !== '' && chatItem.messageId.includes('modified-files-')) {
+      // Forward only to ModifiedFilesTracker, skip normal flow
+      if (chatItem.fileList !== null) {
+        this.allRenderedModifiedFileChatItems[chatItem.messageId] = chatItem;
+        const size = Object.keys(this.allRenderedModifiedFileChatItems).length;
+        chatItem.title = size === 1 ? '1 file modified!' : `${size} files modified!`;
+      } else if (chatItem.fileList === null || chatItem.fileList === undefined) {
+        // This will mean that it is reset signal i.e. new chat;
+        // Ideally should be sent through controller
+        chatItem.title = 'working ...';
+        // remove all items from allRenderedModifiedFileChatItems
+        this.allRenderedModifiedFileChatItems = {};
+        this.modifiedFilesTracker = new ModifiedFilesTracker({ tabId: this.props.tabId });
+      }
+      this.modifiedFilesTracker.addChatItem(chatItem);
+      return;
+    }
+
+    // Normal flow for all other chat items
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
       chatItem: {

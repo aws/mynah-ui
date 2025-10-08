@@ -42,9 +42,14 @@ export class ChatItemTreeFile {
         click: () => {
           this.hideTooltip();
           if (this.props.details?.clickable !== false) {
+            const fileMessageId = this.props.details?.data?.messageId ?? this.props.messageId;
+            console.log('[ChatItemTreeFile] File clicked - originalFilePath:', this.props.originalFilePath);
+            console.log('[ChatItemTreeFile] File clicked - details.data.fullPath:', this.props.details?.data?.fullPath);
+            console.log('[ChatItemTreeFile] File clicked - details.description:', this.props.details?.description);
+            console.log('[ChatItemTreeFile] File clicked - using messageId:', fileMessageId);
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
               tabId: this.props.tabId,
-              messageId: this.props.messageId,
+              messageId: fileMessageId,
               filePath: this.props.originalFilePath,
               deleted: this.props.deleted,
               fileDetails: this.props.details
@@ -139,9 +144,17 @@ export class ChatItemTreeFile {
                 onClick: (e) => {
                   cancelEvent(e);
                   this.hideTooltip();
+                  const fileMessageId = this.props.details?.data?.messageId ?? this.props.messageId;
+                  console.log('[ChatItemTreeFile] File action clicked:', {
+                    tabId: this.props.tabId,
+                    messageId: fileMessageId,
+                    filePath: this.props.originalFilePath,
+                    actionName: action.name,
+                    actionDetails: action
+                  });
                   MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_ACTION_CLICK, {
                     tabId: this.props.tabId,
-                    messageId: this.props.messageId,
+                    messageId: fileMessageId,
                     filePath: this.props.originalFilePath,
                     actionName: action.name,
                   });

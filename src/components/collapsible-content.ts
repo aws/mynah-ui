@@ -22,6 +22,7 @@ export class CollapsibleContent {
   private readonly props: Required<CollapsibleContentProps>;
   private readonly uid: string;
   private icon: ExtendedHTMLElement;
+  private readonly titleTextElement: ExtendedHTMLElement;
   constructor (props: CollapsibleContentProps) {
     StyleLoader.getInstance().load('components/_collapsible-content.scss');
     this.uid = generateUID();
@@ -71,11 +72,11 @@ export class CollapsibleContent {
               classNames: [ 'mynah-collapsible-content-label-title-wrapper' ],
               children: [
                 this.icon,
-                {
+                this.titleTextElement = DomBuilder.getInstance().build({
                   type: 'span',
                   classNames: [ 'mynah-collapsible-content-label-title-text' ],
                   children: [ this.props.title ]
-                }
+                })
               ]
             },
             {
@@ -87,5 +88,9 @@ export class CollapsibleContent {
         },
       ],
     });
+  }
+
+  public updateTitle (newTitle: string): void {
+    this.titleTextElement.update({ children: [ newTitle ] });
   }
 }

@@ -320,11 +320,19 @@ export class ChatItemCard {
             if (header.fileList?.details?.[filePath]?.clickable === false) {
               return;
             }
+            console.log('[ChatItemCard] File pill clicked:', {
+              tabId: this.props.tabId,
+              messageId: this.props.chatItem.messageId,
+              filePath,
+              deleted: isDeleted,
+              fileDetails: header.fileList?.details?.[filePath]
+            });
             MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.FILE_CLICK, {
               tabId: this.props.tabId,
               messageId: this.props.chatItem.messageId,
               filePath,
-              deleted: isDeleted
+              deleted: isDeleted,
+              fileDetails: header.fileList?.details?.[filePath]
             });
           },
           ...(description !== undefined
@@ -805,6 +813,13 @@ export class ChatItemCard {
         formItems: this.chatFormItems,
         buttons: [],
         onActionClick: action => {
+          console.log('[ChatItemCard] Button clicked:', {
+            tabId: this.props.tabId,
+            messageId: this.props.chatItem.messageId,
+            actionId: action.id,
+            actionText: action.text,
+            formItemValues: this.chatFormItems !== null ? this.chatFormItems.getAllValues() : {}
+          });
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
             tabId: this.props.tabId,
             messageId: this.props.chatItem.messageId,
