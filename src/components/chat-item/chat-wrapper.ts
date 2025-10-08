@@ -54,12 +54,13 @@ export class ChatWrapper {
   private lastStreamingChatItemCard: ChatItemCard | null;
   private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
+  private allRenderedModifiedFileChatItems: Record<string, ChatItem> = {};
   render: ExtendedHTMLElement;
   private readonly dragOverlayContent: HTMLElement;
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
-  private readonly modifiedFilesTracker: ModifiedFilesTracker;
+  private modifiedFilesTracker: ModifiedFilesTracker;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -392,6 +393,18 @@ export class ChatWrapper {
     // Check if messageId contains "modified-files-" prefix
     if (chatItem.messageId != null && chatItem.messageId !== '' && chatItem.messageId.includes('modified-files-')) {
       // Forward only to ModifiedFilesTracker, skip normal flow
+      if (chatItem.fileList !== null) {
+        this.allRenderedModifiedFileChatItems[chatItem.messageId] = chatItem;
+        const size = Object.keys(this.allRenderedModifiedFileChatItems).length;
+        chatItem.title = size === 1 ? '1 file modified!' : `${size} files modified!`;
+      } else if (chatItem.fileList === null || chatItem.fileList === undefined) {
+        // This will mean that it is reset signal i.e. new chat;
+        // Ideally should be sent through controller
+        chatItem.title = 'working ...';
+        // remove all items from allRenderedModifiedFileChatItems
+        this.allRenderedModifiedFileChatItems = {};
+        this.modifiedFilesTracker = new ModifiedFilesTracker({ tabId: this.props.tabId });
+      }
       this.modifiedFilesTracker.addChatItem(chatItem);
       return;
     }

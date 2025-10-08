@@ -46,10 +46,7 @@ export class ModifiedFilesTracker {
       type: 'div',
       classNames: [ 'mynah-modified-files-tracker-wrapper' ],
       testId: testIds.modifiedFilesTracker.container,
-      children: [ this.collapsibleContent.render ],
-      attributes: {
-        style: 'display: block !important; visibility: visible !important;'
-      }
+      children: [ this.collapsibleContent.render ]
     });
 
     console.log('[ModifiedFilesTracker] Render element created:', this.render);
@@ -160,7 +157,16 @@ export class ModifiedFilesTracker {
     return messageId.startsWith('modified-files-') ? messageId.replace('modified-files-', '') : messageId;
   }
 
+  private updateTitleText (chatItem: ChatItem): void {
+    // check if chatItem
+    if (chatItem.title !== undefined && chatItem.title !== '') {
+      this.titleText = chatItem.title;
+      this.collapsibleContent.updateTitle(this.titleText);
+    }
+  }
+
   public addChatItem (chatItem: ChatItem): void {
+    this.updateTitleText(chatItem);
     if (chatItem.header?.fileList != null) {
       // Store the current chatItem for button handling
       this.props.chatItem = chatItem;
