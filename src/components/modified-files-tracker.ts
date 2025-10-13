@@ -166,6 +166,34 @@ export class ModifiedFilesTracker {
     return messageId.startsWith('modified-files-') ? messageId.replace('modified-files-', '') : messageId;
   }
 
+  private renderUndoAllButton (chatItem: ChatItem): void {
+    let undoAllMessageId: String;
+    const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
+    if (contentWrapper == null || chatItem.buttons == null) return;
+
+    if (chatItem.messageId !== undefined && chatItem.messageId !== null && chatItem.messageId !== '') {
+      undoAllMessageId = this.getOriginalMessageId(chatItem.messageId);
+    } else {
+      return;
+    }
+
+    const buttonsWrapper = new ChatItemButtonsWrapper({
+      tabId: this.props.tabId,
+      classNames: [ 'mynah-modified-files-undo-all-buttons' ],
+      formItems: null,
+      buttons: chatItem.buttons,
+      onActionClick: action => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+          tabId: this.props.tabId,
+          messageId: undoAllMessageId,
+          actionId: action.id,
+          actionText: action.text
+        });
+      }
+    });
+    contentWrapper.appendChild(buttonsWrapper.render);
+  }
+
   private updateTitleText (chatItem: ChatItem): void {
     // check if chatItem
     if (chatItem.title !== undefined && chatItem.title !== '') {
@@ -180,6 +208,10 @@ export class ModifiedFilesTracker {
       // Store the current chatItem for button handling
       this.props.chatItem = chatItem;
       this.renderModifiedFiles(chatItem.header.fileList, chatItem.messageId);
+    } else if (chatItem.buttons != null && Array.isArray(chatItem.buttons) && chatItem.buttons.length > 0) {
+      // Handle case where only buttons (like undo all) are provided without fileList
+      this.props.chatItem = chatItem;
+      this.renderUndoAllButton(chatItem);
     }
   }
 

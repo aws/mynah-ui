@@ -398,8 +398,6 @@ export class ChatWrapper {
         const size = Object.keys(this.allRenderedModifiedFileChatItems).length;
         chatItem.title = size === 1 ? '1 file modified!' : `${size} files modified!`;
       }
-      // else clear the component and render empty
-      // previous implementation was not working; Need a fix
       this.modifiedFilesTracker.addChatItem(chatItem);
       return;
     }
