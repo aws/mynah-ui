@@ -107,8 +107,15 @@ export class ModifiedFilesTracker {
           children: []
         });
 
+        // Create horizontal container for file and buttons
+        const horizontalContainer = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-modified-files-horizontal-container' ],
+          children: []
+        });
+
         // Render the file tree for single file
-        singleFileWrapper.appendChild(new ChatItemTreeViewWrapper({
+        const fileTreeWrapper = new ChatItemTreeViewWrapper({
           tabId: this.props.tabId,
           messageId: this.getOriginalMessageId(messageId),
           files: [ filePath ],
@@ -123,7 +130,8 @@ export class ModifiedFilesTracker {
           referenceSuggestionLabel: '',
           references: [],
           onRootCollapsedStateChange: () => {}
-        }).render);
+        });
+        horizontalContainer.appendChild(fileTreeWrapper.render);
 
         // Add buttons for this specific file if they exist
         if (this.props.chatItem?.buttons != null && Array.isArray(this.props.chatItem.buttons) && this.props.chatItem.buttons.length > 0) {
@@ -142,9 +150,10 @@ export class ModifiedFilesTracker {
               });
             }
           });
-          singleFileWrapper.appendChild(buttonsWrapper.render);
+          horizontalContainer.appendChild(buttonsWrapper.render);
         }
 
+        singleFileWrapper.appendChild(horizontalContainer);
         fileGroupWrapper.appendChild(singleFileWrapper);
       });
 
@@ -172,6 +181,13 @@ export class ModifiedFilesTracker {
       this.props.chatItem = chatItem;
       this.renderModifiedFiles(chatItem.header.fileList, chatItem.messageId);
     }
+  }
+
+  public clear (): void {
+    this.allFiles.clear();
+    this.titleText = 'No files modified!';
+    this.collapsibleContent.updateTitle(this.titleText);
+    this.renderModifiedFiles(null);
   }
 
   public setVisible (visible: boolean): void {

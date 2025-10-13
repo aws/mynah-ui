@@ -60,7 +60,7 @@ export class ChatWrapper {
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
-  private modifiedFilesTracker: ModifiedFilesTracker;
+  private readonly modifiedFilesTracker: ModifiedFilesTracker;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -393,18 +393,13 @@ export class ChatWrapper {
     // Check if messageId contains "modified-files-" prefix
     if (chatItem.messageId != null && chatItem.messageId !== '' && chatItem.messageId.includes('modified-files-')) {
       // Forward only to ModifiedFilesTracker, skip normal flow
-      if (chatItem.fileList !== null) {
+      if (chatItem.header?.fileList !== null && chatItem.header?.fileList !== undefined) {
         this.allRenderedModifiedFileChatItems[chatItem.messageId] = chatItem;
         const size = Object.keys(this.allRenderedModifiedFileChatItems).length;
         chatItem.title = size === 1 ? '1 file modified!' : `${size} files modified!`;
-      } else if (chatItem.fileList === null || chatItem.fileList === undefined) {
-        // This will mean that it is reset signal i.e. new chat;
-        // Ideally should be sent through controller
-        chatItem.title = 'working ...';
-        // remove all items from allRenderedModifiedFileChatItems
-        this.allRenderedModifiedFileChatItems = {};
-        this.modifiedFilesTracker = new ModifiedFilesTracker({ tabId: this.props.tabId });
       }
+      // else clear the component and render empty
+      // previous implementation was not working; Need a fix
       this.modifiedFilesTracker.addChatItem(chatItem);
       return;
     }
@@ -440,6 +435,9 @@ export class ChatWrapper {
     this.allRenderedChatItems[currentMessageId] = chatItemCard;
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
+      // Clear modified files tracker on new prompt
+      this.allRenderedModifiedFileChatItems = {};
+      this.modifiedFilesTracker.clear();
       // Make sure we align to top when there is a new prompt.
       // Only if it is a PROMPT!
       // Check css application
