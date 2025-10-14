@@ -283,11 +283,6 @@ export const QuickActionCommands: QuickActionCommandGroup[] = [
                 icon: MynahIcons.FLASH,
                 description: 'Test streaming animation with different speeds. Use tab bar buttons to switch modes.',
             },
-            {
-                command: Commands.MODIFIED_FILES_DEMO,
-                icon: MynahIcons.FILE,
-                description: 'Demo the modified files tracker component above the chat interface.',
-            },
         ],
     },
 ];

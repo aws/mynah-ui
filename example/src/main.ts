@@ -1259,17 +1259,6 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
       `);
         },
         onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
-            // Clear modified files tracker only for commands that modify files
-            const fileModifyingCommands = [
-                Commands.MODIFIED_FILES_DEMO,
-                '/dev',
-                '/transform',
-                '/generate'
-            ];
-            
-            if (prompt.command && fileModifyingCommands.includes(prompt.command)) {
-                mynahUI.clearModifiedFiles(tabId);
-            }
 
             Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
@@ -1587,9 +1576,6 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         onMessageDismiss: (tabId, messageId) => {
             Log(`Card dismissed: tabId: <b>${tabId}</b>, messageId: <b>${messageId}</b>`);
         },
-        onModifiedFileClick: (tabId, filePath) => {
-            Log(`Modified file clicked on tab <b>${tabId}</b>: <b>${filePath}</b>`);
-        },
     });
 
     setTimeout(() => {
@@ -1636,23 +1622,6 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
                 case Commands.VOTE:
                     mynahUI.addChatItem(tabId, exampleVoteChatItem);
                     mynahUI.addChatItem(tabId, defaultFollowUps);
-                    break;
-                case Commands.MODIFIED_FILES_DEMO:
-                    // Demo the modified files tracker
-                    mynahUI.addChatItem(tabId, {
-                        type: ChatItemType.ANSWER,
-                        messageId: generateUID(),
-                        body: 'Demonstrating the modified files tracker. Watch the component above the chat!',
-                    });
-                    
-                    // Demo will be handled through chatItem approach now
-                    mynahUI.addChatItem(tabId, {
-                        type: ChatItemType.ANSWER,
-                        messageId: generateUID(),
-                        body: 'Modified files tracker demo is now handled through chatItem.header.fileList approach.',
-                    });
-                    
-
                     break;
                 case Commands.CARD_WITH_MARKDOWN_LIST:
                     getGenerativeAIAnswer(tabId, sampleMarkdownList);

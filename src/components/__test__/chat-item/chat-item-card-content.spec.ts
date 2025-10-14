@@ -19,26 +19,28 @@ describe('ChatItemCardContent Animation Speed', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    (mockGetInstance as jest.Mock).mockReturnValue({
+    mockGetInstance.mockReturnValue({
+      // @ts-expect-error
       config: {
         typewriterStackTime: 100,
         typewriterMaxWordTime: 20,
         disableTypewriterAnimation: false,
       }
-    } as any);
+    });
 
     document.body.innerHTML = '<div id="test-container"></div>';
   });
 
   describe('Animation Configuration', () => {
     it('should use fast animation settings', () => {
-      (mockGetInstance as jest.Mock).mockReturnValue({
+      mockGetInstance.mockReturnValue({
+        // @ts-expect-error
         config: {
           typewriterStackTime: 100,
           typewriterMaxWordTime: 20,
           disableTypewriterAnimation: false,
         }
-      } as any);
+      });
 
       const props: ChatItemCardContentProps = {
         body: 'Test content',
@@ -51,11 +53,12 @@ describe('ChatItemCardContent Animation Speed', () => {
     });
 
     it('should disable animation when configured', () => {
-      (mockGetInstance as jest.Mock).mockReturnValue({
+      mockGetInstance.mockReturnValue({
+        // @ts-expect-error
         config: {
           disableTypewriterAnimation: true,
         }
-      } as any);
+      });
 
       const props: ChatItemCardContentProps = {
         body: 'Test content',
@@ -86,9 +89,10 @@ describe('ChatItemCardContent Animation Speed', () => {
 
   describe('Default Values', () => {
     it('should use defaults when config is empty', () => {
-      (mockGetInstance as jest.Mock).mockReturnValue({
+      mockGetInstance.mockReturnValue({
+        // @ts-expect-error
         config: {}
-      } as any);
+      });
 
       const props: ChatItemCardContentProps = {
         body: 'Test content',

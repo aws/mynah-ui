@@ -28,6 +28,5 @@ export enum Commands {
     CLEAR_CONTEXT_ITEMS = '/clear-context-items',
     CLEAR_LOGS = '/clear-logs',
     SHOW_CUSTOM_FORM = '/show-custom-form',
-    VOTE = '/vote',
-    MODIFIED_FILES_DEMO = '/modified-files-demo'
+    VOTE = '/vote'
 }

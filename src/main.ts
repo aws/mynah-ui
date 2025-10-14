@@ -342,11 +342,6 @@ export interface MynahUIProps {
     files: FileList,
     insertPosition: number
   ) => void;
-  onModifiedFileClick?: (
-    tabId: string,
-    filePath: string,
-    eventId?: string
-  ) => void;
 }
 
 export class MynahUI {
@@ -556,8 +551,11 @@ export class MynahUI {
   };
 
   private readonly addGlobalListeners = (): void => {
-    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, this.handleChatPrompt);
-
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CHAT_PROMPT, (data: { tabId: string; prompt: ChatPrompt }) => {
+      if (this.props.onChatPrompt !== undefined) {
+        this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
+      }
+    });
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: {
       tabId: string;
       messageId: string;
@@ -618,7 +616,6 @@ export class MynahUI {
       actionText?: string;
       formItemValues?: Record<string, string>;
     }) => {
-      console.log('[MynahUI] BODY_ACTION_CLICKED event received:', data);
       if (this.props.onInBodyButtonClicked !== undefined) {
         this.props.onInBodyButtonClicked(data.tabId, data.messageId, {
           id: data.actionId,
@@ -1226,147 +1223,6 @@ export class MynahUI {
       changeTarget: detailedListSheet.detailedListWrapper.changeTarget,
       getTargetElementId
     };
-  };
-
-  /**
-   * Adds a file to the modified files tracker for the specified tab with file type
-   * @param tabId The tab ID
-   * @param filePath The path of the file
-   * @param fileType The type of file change ('created', 'modified', 'deleted')
-   * @param fullPath Optional full path of the file
-   * @param toolUseId Optional tool use ID for undo operations
-   */
-  public addFile = (tabId: string, filePath: string, fileType: 'created' | 'modified' | 'deleted' = 'modified', fullPath?: string, toolUseId?: string): void => {
-    // No-op: now handled by data-driven approach through ChatItem.fileList
-  };
-
-  /**
-   * Adds a file to the modified files tracker for the specified tab
-   * @deprecated Use addFile() instead
-   * @param tabId The tab ID
-   * @param filePath The path of the modified file
-   * @param toolUseId Optional tool use ID for undo operations
-   */
-  public addModifiedFile = (tabId: string, filePath: string, toolUseId?: string): void => {
-    this.addFile(tabId, filePath, 'modified', toolUseId);
-  };
-
-  /**
-   * Removes a file from the modified files tracker for the specified tab
-   * @param tabId The tab ID
-   * @param filePath The path of the file to remove
-   */
-  public removeFile = (tabId: string, filePath: string): void => {
-    // No-op: now handled by data-driven approach
-  };
-
-  /**
-   * Removes a file from the modified files tracker for the specified tab
-   * @deprecated Use removeFile() instead
-   * @param tabId The tab ID
-   * @param filePath The path of the file to remove
-   */
-  public removeModifiedFile = (tabId: string, filePath: string): void => {
-    this.removeFile(tabId, filePath);
-  };
-
-  /**
-   * Sets the work in progress status for the files tracker
-   * @param tabId The tab ID
-   * @param inProgress Whether work is in progress
-   */
-  public setFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
-    // No-op: work in progress functionality removed
-  };
-
-  /**
-   * Sets the work in progress status for the modified files tracker
-   * @deprecated Use setFilesWorkInProgress() instead
-   * @param tabId The tab ID
-   * @param inProgress Whether work is in progress
-   */
-  public setModifiedFilesWorkInProgress = (tabId: string, inProgress: boolean): void => {
-    this.setFilesWorkInProgress(tabId, inProgress);
-  };
-
-  /**
-   * Clears all files for the specified tab
-   * @param tabId The tab ID
-   */
-  public clearFiles = (tabId: string): void => {
-    // No-op: now handled by data-driven approach
-  };
-
-  /**
-   * Clears all modified files for the specified tab
-   * @deprecated Use clearFiles() instead
-   * @param tabId The tab ID
-   */
-  public clearModifiedFiles = (tabId: string): void => {
-    this.clearFiles(tabId);
-  };
-
-  private readonly handleChatPrompt = (data: { tabId: string; prompt: ChatPrompt }): void => {
-    // Clear modified files for file-modifying commands
-    const fileModifyingCommands = [ '/dev', '/transform', '/generate' ];
-    if (data.prompt.command !== null && data.prompt.command !== undefined && fileModifyingCommands.includes(data.prompt.command)) {
-      this.clearModifiedFiles(data.tabId);
-    }
-
-    if (this.props.onChatPrompt !== undefined) {
-      this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
-    }
-  };
-
-  /**
-   * Gets the list of tracked files for the specified tab
-   * @param tabId The tab ID
-   * @returns Array of tracked files with types
-   */
-  public getTrackedFiles = (tabId: string): any[] => {
-    // Return empty array: now handled by data-driven approach
-    return [];
-  };
-
-  /**
-   * Gets the list of modified files for the specified tab
-   * @deprecated Use getTrackedFiles() instead
-   * @param tabId The tab ID
-   * @returns Array of modified file paths
-   */
-  public getModifiedFiles = (tabId: string): string[] => {
-    // Return empty array: now handled by data-driven approach
-    return [];
-  };
-
-  /**
-   * Sets the visibility of the files tracker for the specified tab
-   * @param tabId The tab ID
-   * @param visible Whether the tracker should be visible
-   */
-  public setFilesTrackerVisible = (tabId: string, visible: boolean): void => {
-    if (this.chatWrappers[tabId] != null) {
-      // this.chatWrappers[tabId].setModifiedFilesTrackerVisible(visible);
-    }
-  };
-
-  /**
-   * Sets the visibility of the modified files tracker for the specified tab
-   * @deprecated Use setFilesTrackerVisible() instead
-   * @param tabId The tab ID
-   * @param visible Whether the tracker should be visible
-   */
-  public setModifiedFilesTrackerVisible = (tabId: string, visible: boolean): void => {
-    // No-op: component is always visible
-  };
-
-  /**
-   * Sets the message ID for the modified files tracker to enable diff mode functionality
-   * @param tabId The tab ID
-   * @param messageId The message ID to associate with file clicks
-   */
-  public setMessageId = (tabId: string, messageId: string): void => {
-    // No-op: now handled by data-driven approach
   };
 
   public destroy = (): void => {
