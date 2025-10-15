@@ -52,8 +52,8 @@ export class ModifiedFilesTracker {
     console.log('[ModifiedFilesTracker] Render element created:', this.render);
 
     if ((this.props.chatItem?.header?.fileList) != null) {
-      console.log('[ModifiedFilesTracker] Rendering modified files with fileList:', this.props.chatItem.header.fileList);
-      this.renderModifiedFiles(this.props.chatItem.header.fileList, this.props.chatItem.messageId);
+      console.log('[ModifiedFilesTracker] Rendering modified files with fileList:', this.props.chatItem.header?.fileList);
+      this.renderModifiedFiles(this.props.chatItem.header?.fileList, this.props.chatItem.messageId);
     } else {
       console.log('[ModifiedFilesTracker] No fileList found, rendering empty state');
       this.renderModifiedFiles(null);
@@ -134,12 +134,12 @@ export class ModifiedFilesTracker {
         horizontalContainer.appendChild(fileTreeWrapper.render);
 
         // Add buttons for this specific file if they exist
-        if (this.props.chatItem?.buttons != null && Array.isArray(this.props.chatItem.buttons) && this.props.chatItem.buttons.length > 0) {
+        if (this.props.chatItem?.header?.buttons != null && Array.isArray(this.props.chatItem.header?.buttons) && this.props.chatItem.header?.buttons.length > 0) {
           const buttonsWrapper = new ChatItemButtonsWrapper({
             tabId: this.props.tabId,
             classNames: [ 'mynah-modified-files-file-buttons' ],
             formItems: null,
-            buttons: this.props.chatItem.buttons,
+            buttons: this.props.chatItem.header?.buttons,
             onActionClick: action => {
               MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                 tabId: this.props.tabId,
@@ -207,7 +207,7 @@ export class ModifiedFilesTracker {
     if (chatItem.header?.fileList != null) {
       // Store the current chatItem for button handling
       this.props.chatItem = chatItem;
-      this.renderModifiedFiles(chatItem.header.fileList, chatItem.messageId);
+      this.renderModifiedFiles(chatItem.header?.fileList, chatItem.messageId);
     } else if (chatItem.buttons != null && Array.isArray(chatItem.buttons) && chatItem.buttons.length > 0) {
       // Handle case where only buttons (like undo all) are provided without fileList
       this.props.chatItem = chatItem;
