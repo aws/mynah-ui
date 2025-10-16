@@ -177,6 +177,12 @@ export class ModifiedFilesTracker {
       return;
     }
 
+    const buttonContainer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-modified-files-undo-all-container' ],
+      children: []
+    });
+
     const buttonsWrapper = new ChatItemButtonsWrapper({
       tabId: this.props.tabId,
       classNames: [ 'mynah-modified-files-undo-all-buttons' ],
@@ -191,7 +197,8 @@ export class ModifiedFilesTracker {
         });
       }
     });
-    contentWrapper.appendChild(buttonsWrapper.render);
+    buttonContainer.appendChild(buttonsWrapper.render);
+    contentWrapper.appendChild(buttonContainer);
   }
 
   private updateTitleText (chatItem: ChatItem): void {
