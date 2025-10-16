@@ -211,7 +211,6 @@ export interface MynahUITabStoreModel {
   [tabId: string]: MynahUITabStoreTab;
 }
 
-// Event names for MynahUI component interactions
 export enum MynahEventNames {
   RESET_STORE = 'resetStore',
   FEEDBACK_SET = 'feedbackSet',

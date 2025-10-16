@@ -64,6 +64,12 @@ export class ModifiedFilesTracker {
     const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
     if (contentWrapper == null) return;
 
+    // Prevent label clicks on content wrapper from triggering collapse
+    contentWrapper.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
     // Add files to the collection if provided
     if (fileList != null && (fileList.filePaths?.length ?? 0) > 0) {
       const messageId = chatItemMessageId ?? `modified-files-tracker-${this.props.tabId}`;
@@ -131,6 +137,7 @@ export class ModifiedFilesTracker {
           references: [],
           onRootCollapsedStateChange: () => {}
         });
+
         horizontalContainer.appendChild(fileTreeWrapper.render);
 
         // Add buttons for this specific file if they exist

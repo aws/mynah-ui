@@ -347,7 +347,7 @@ describe('FeedbackForm Component', () => {
 
     it('should return empty array when tab data store is undefined', () => {
       // Override the mock for this specific test
-      (mockTabsStore.getTabDataStore as jest.Mock).mockReturnValueOnce(undefined as any);
+      mockTabsStore.getTabDataStore.mockReturnValueOnce(undefined as any);
 
       feedbackForm = new FeedbackForm();
 

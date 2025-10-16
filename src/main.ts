@@ -50,7 +50,6 @@ import { StyleLoader } from './helper/style-loader';
 import { Icon } from './components/icon';
 import { Button } from './components/button';
 import { TopBarButtonOverlayProps } from './components/chat-item/prompt-input/prompt-top-bar/top-bar-button';
-// TrackedFile interface removed - now using data-driven approach
 
 export { generateUID } from './helper/guid';
 export {
@@ -357,17 +356,6 @@ export class MynahUI {
   private readonly sheet?: Sheet;
   private readonly chatWrappers: Record<string, ChatWrapper> = {};
 
-  private logToStorage (message: string): void {
-    try {
-      const timestamp = new Date().toISOString();
-      const logEntry = `[${timestamp}] ${message}`;
-      const existingLogs = localStorage.getItem('mynah-modified-files-logs') ?? '';
-      localStorage.setItem('mynah-modified-files-logs', existingLogs + logEntry + '\n');
-    } catch (error) {
-      // Ignore storage errors
-    }
-  }
-
   constructor (props: MynahUIProps) {
     StyleLoader.getInstance(props.loadStyles !== false).load('styles.scss');
     configureMarked();
@@ -403,7 +391,7 @@ export class MynahUI {
                   props.onStopChatResponse(tabId, this.getUserEventId());
                 }
               }
-            : undefined
+            : undefined,
         });
         return this.chatWrappers[tabId].render;
       })
@@ -482,7 +470,7 @@ export class MynahUI {
                 props.onStopChatResponse(tabId, this.getUserEventId());
               }
             }
-          : undefined
+          : undefined,
       });
       this.tabContentsWrapper.appendChild(this.chatWrappers[tabId].render);
       this.focusToInput(tabId);
@@ -807,7 +795,6 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_CLICK, (data) => {
-      console.log('[MynahUI] FILE_CLICK event received:', data);
       if (this.props.onFileClick !== undefined) {
         this.props.onFileClick(
           data.tabId,
@@ -837,7 +824,6 @@ export class MynahUI {
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FILE_ACTION_CLICK, (data) => {
-      console.log('[MynahUI] FILE_ACTION_CLICK event received:', data);
       if (this.props.onFileActionClick !== undefined) {
         this.props.onFileActionClick(
           data.tabId,
