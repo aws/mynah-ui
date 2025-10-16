@@ -52,7 +52,8 @@ describe('ModifiedFilesTracker', () => {
     mockDispatch = jest.fn();
     mockContentWrapper = {
       innerHTML: '',
-      appendChild: jest.fn()
+      appendChild: jest.fn(),
+      addEventListener: jest.fn()
     };
 
     (MynahUIGlobalEvents.getInstance as jest.Mock).mockReturnValue({
