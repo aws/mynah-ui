@@ -82,7 +82,7 @@ describe('ModifiedFilesTracker', () => {
 
       expect(tracker.render).toBeDefined();
       expect(tracker.render.classList.contains('mynah-modified-files-tracker-wrapper')).toBe(true);
-      expect(tracker.titleText).toBe('No files modified!');
+      expect(tracker.titleText).toBe('No files modified');
     });
 
     it('should initialize with chatItem containing fileList', () => {
@@ -410,8 +410,8 @@ describe('ModifiedFilesTracker', () => {
       tracker.clear();
 
       expect((tracker as any).allFiles.size).toBe(0);
-      expect(tracker.titleText).toBe('No files modified!');
-      expect(mockCollapsibleContent.updateTitle).toHaveBeenCalledWith('No files modified!');
+      expect(tracker.titleText).toBe('No files modified');
+      expect(mockCollapsibleContent.updateTitle).toHaveBeenCalledWith('No files modified');
     });
   });
 
