@@ -3,6 +3,11 @@ on:
   workflow_dispatch:
   push:
     tags: ['beta*.*']
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: macos-latest
