@@ -1,5 +1,10 @@
 name: Run Unit tests
 on: workflow_call
+
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
