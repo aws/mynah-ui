@@ -415,17 +415,6 @@ describe('ModifiedFilesTracker', () => {
     });
   });
 
-  describe('setVisible', () => {
-    it('should be a no-op method', () => {
-      const tracker = new ModifiedFilesTracker({
-        tabId: 'test-tab'
-      });
-
-      expect(() => tracker.setVisible(true)).not.toThrow();
-      expect(() => tracker.setVisible(false)).not.toThrow();
-    });
-  });
-
   describe('event handling', () => {
     it('should dispatch BODY_ACTION_CLICKED event with filePath', () => {
       const chatItem: ChatItem = {

@@ -389,14 +389,18 @@ export class ChatWrapper {
   private readonly insertChatItem = (chatItem: ChatItem): void => {
     // Normal flow on initially opening ui requires the currentMessageId;
     this.removeEmptyCardsAndFollowups();
+
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
     // Check if messageId contains "modified-files-" prefix
+    // The controller sends a chatItem with specific messageId for the new component "ModifiedFilesTracker"
+    // When the language-servers send the actual list of modified files, we need to forward it to the ModifiedFilesTracker component
+    // so it can update its state and re-render itself with the files and undo buttons
     if (chatItem.messageId != null && chatItem.messageId !== '' && chatItem.messageId.includes('modified-files-')) {
       // Forward only to ModifiedFilesTracker, skip normal flow
       if (chatItem.header?.fileList !== null && chatItem.header?.fileList !== undefined) {
         this.allRenderedModifiedFileChatItems[chatItem.messageId] = chatItem;
-        const size = Object.keys(this.allRenderedModifiedFileChatItems).length;
-        chatItem.title = size === 1 ? '1 file modified!' : `${size} files modified!`;
+        const fileCount = Object.keys(this.allRenderedModifiedFileChatItems).length;
+        chatItem.title = `${fileCount} file${fileCount === 1 ? '' : 's'} modified`;
       }
       this.modifiedFilesTracker.addChatItem(chatItem);
       return;

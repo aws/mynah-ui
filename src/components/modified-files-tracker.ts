@@ -21,7 +21,7 @@ export class ModifiedFilesTracker {
   render: ExtendedHTMLElement;
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
-  public titleText: string = 'No files modified!';
+  public titleText: string = 'No files modified';
   private readonly allFiles: Map<string, { fileList: NonNullable<ChatItemContent['fileList']>; messageId: string }> = new Map();
 
   constructor (props: ModifiedFilesTrackerProps) {
@@ -48,8 +48,6 @@ export class ModifiedFilesTracker {
       testId: testIds.modifiedFilesTracker.container,
       children: [ this.collapsibleContent.render ]
     });
-
-    console.log('[ModifiedFilesTracker] Render element created:', this.render);
 
     if ((this.props.chatItem?.header?.fileList) != null) {
       console.log('[ModifiedFilesTracker] Rendering modified files with fileList:', this.props.chatItem.header?.fileList);
@@ -174,15 +172,12 @@ export class ModifiedFilesTracker {
   }
 
   private renderUndoAllButton (chatItem: ChatItem): void {
-    let undoAllMessageId: String;
-    const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
-    if (contentWrapper == null || chatItem.buttons == null) return;
-
-    if (chatItem.messageId !== undefined && chatItem.messageId !== null && chatItem.messageId !== '') {
-      undoAllMessageId = this.getOriginalMessageId(chatItem.messageId);
-    } else {
+    if (chatItem.messageId === undefined || chatItem.messageId === null || chatItem.messageId === '') {
       return;
     }
+    const undoAllMessageId = this.getOriginalMessageId(chatItem.messageId);
+    const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
+    if (contentWrapper == null || chatItem.buttons == null) return;
 
     const buttonContainer = DomBuilder.getInstance().build({
       type: 'div',
@@ -231,12 +226,9 @@ export class ModifiedFilesTracker {
 
   public clear (): void {
     this.allFiles.clear();
-    this.titleText = 'No files modified!';
+    const newTitle = 'No files modified';
+    this.titleText = newTitle;
     this.collapsibleContent.updateTitle(this.titleText);
     this.renderModifiedFiles(null);
-  }
-
-  public setVisible (visible: boolean): void {
-    // No-op: component is always visible
   }
 }
