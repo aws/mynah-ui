@@ -25,12 +25,6 @@ export class ModifiedFilesTracker {
   private readonly allFiles: Map<string, { fileList: NonNullable<ChatItemContent['fileList']>; messageId: string }> = new Map();
 
   constructor (props: ModifiedFilesTrackerProps) {
-    console.log('[ModifiedFilesTracker] Constructor called with props:', {
-      tabId: props.tabId,
-      hasChatItem: !(props.chatItem == null),
-      chatItem: props.chatItem,
-      fileList: props.chatItem?.header?.fileList
-    });
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
     this.props = props;
 
@@ -50,10 +44,8 @@ export class ModifiedFilesTracker {
     });
 
     if ((this.props.chatItem?.header?.fileList) != null) {
-      console.log('[ModifiedFilesTracker] Rendering modified files with fileList:', this.props.chatItem.header?.fileList);
       this.renderModifiedFiles(this.props.chatItem.header?.fileList, this.props.chatItem.messageId);
     } else {
-      console.log('[ModifiedFilesTracker] No fileList found, rendering empty state');
       this.renderModifiedFiles(null);
     }
   }
