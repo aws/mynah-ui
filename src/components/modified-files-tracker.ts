@@ -1,0 +1,226 @@
+/*!
+ * Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
+import { StyleLoader } from '../helper/style-loader';
+import { CollapsibleContent } from './collapsible-content';
+import { ChatItem, ChatItemContent, MynahEventNames } from '../static';
+import testIds from '../helper/test-ids';
+import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
+import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
+import { MynahUIGlobalEvents } from '../helper/events';
+
+export interface ModifiedFilesTrackerProps {
+  tabId: string;
+  chatItem?: ChatItem;
+}
+
+export class ModifiedFilesTracker {
+  render: ExtendedHTMLElement;
+  private readonly props: ModifiedFilesTrackerProps;
+  private readonly collapsibleContent: CollapsibleContent;
+  public titleText: string = 'No files modified';
+  private readonly allFiles: Map<string, { fileList: NonNullable<ChatItemContent['fileList']>; messageId: string }> = new Map();
+
+  constructor (props: ModifiedFilesTrackerProps) {
+    StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
+    this.props = props;
+
+    this.collapsibleContent = new CollapsibleContent({
+      title: this.titleText,
+      initialCollapsedState: true,
+      children: [],
+      classNames: [ 'mynah-modified-files-tracker' ],
+      testId: testIds.modifiedFilesTracker.wrapper
+    });
+
+    this.render = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-modified-files-tracker-wrapper' ],
+      testId: testIds.modifiedFilesTracker.container,
+      children: [ this.collapsibleContent.render ]
+    });
+
+    if ((this.props.chatItem?.header?.fileList) != null) {
+      this.renderModifiedFiles(this.props.chatItem.header?.fileList, this.props.chatItem.messageId);
+    } else {
+      this.renderModifiedFiles(null);
+    }
+  }
+
+  private renderModifiedFiles (fileList: ChatItemContent['fileList'] | null, chatItemMessageId?: string): void {
+    const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
+    if (contentWrapper == null) return;
+
+    // Prevent label clicks on content wrapper from triggering collapse
+    contentWrapper.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    // Add files to the collection if provided
+    if (fileList != null && (fileList.filePaths?.length ?? 0) > 0) {
+      const messageId = chatItemMessageId ?? `modified-files-tracker-${this.props.tabId}`;
+      this.allFiles.set(messageId, { fileList, messageId });
+    }
+
+    // Clear and re-render all files
+    contentWrapper.innerHTML = '';
+
+    if (this.allFiles.size > 0) {
+      this.renderAllFilePills(contentWrapper);
+    } else {
+      this.renderEmptyState(contentWrapper);
+    }
+  }
+
+  private renderEmptyState (contentWrapper: Element): void {
+    contentWrapper.appendChild(DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-modified-files-empty-state' ],
+      children: [ 'No modified files' ]
+    }));
+  }
+
+  private renderAllFilePills (contentWrapper: Element): void {
+    this.allFiles.forEach(({ fileList, messageId }) => {
+      const { filePaths = [], deletedFiles = [], actions, details } = fileList;
+
+      // Create a wrapper for each file group
+      const fileGroupWrapper = DomBuilder.getInstance().build({
+        type: 'div',
+        classNames: [ 'mynah-modified-files-group' ],
+        children: []
+      });
+
+      // Render each file individually with its own buttons
+      filePaths.forEach(filePath => {
+        const singleFileWrapper = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-modified-files-single-file' ],
+          children: []
+        });
+
+        // Create horizontal container for file and buttons
+        const horizontalContainer = DomBuilder.getInstance().build({
+          type: 'div',
+          classNames: [ 'mynah-modified-files-horizontal-container' ],
+          children: []
+        });
+
+        // Render the file tree for single file
+        const fileTreeWrapper = new ChatItemTreeViewWrapper({
+          tabId: this.props.tabId,
+          messageId: this.getOriginalMessageId(messageId),
+          files: [ filePath ],
+          cardTitle: '',
+          rootTitle: undefined, // No root title for single files
+          deletedFiles: deletedFiles.filter(df => df === filePath),
+          flatList: true, // Force flat list for single files
+          actions: (actions != null) ? { [filePath]: actions[filePath] } : undefined,
+          details: (details != null) ? { [filePath]: details[filePath] } : undefined,
+          hideFileCount: true,
+          collapsed: false,
+          referenceSuggestionLabel: '',
+          references: [],
+          onRootCollapsedStateChange: () => {}
+        });
+
+        horizontalContainer.appendChild(fileTreeWrapper.render);
+
+        // Add buttons for this specific file if they exist
+        if (this.props.chatItem?.header?.buttons != null && Array.isArray(this.props.chatItem.header?.buttons) && this.props.chatItem.header?.buttons.length > 0) {
+          const buttonsWrapper = new ChatItemButtonsWrapper({
+            tabId: this.props.tabId,
+            classNames: [ 'mynah-modified-files-file-buttons' ],
+            formItems: null,
+            buttons: this.props.chatItem.header?.buttons,
+            onActionClick: action => {
+              MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+                tabId: this.props.tabId,
+                messageId: this.getOriginalMessageId(messageId),
+                actionId: action.id,
+                actionText: action.text,
+                filePath // Add filePath to identify which file the action is for
+              });
+            }
+          });
+          horizontalContainer.appendChild(buttonsWrapper.render);
+        }
+
+        singleFileWrapper.appendChild(horizontalContainer);
+        fileGroupWrapper.appendChild(singleFileWrapper);
+      });
+
+      contentWrapper.appendChild(fileGroupWrapper);
+    });
+  }
+
+  private getOriginalMessageId (messageId: string): string {
+    // Remove "modified-files-" prefix if present
+    return messageId.startsWith('modified-files-') ? messageId.replace('modified-files-', '') : messageId;
+  }
+
+  private renderUndoAllButton (chatItem: ChatItem): void {
+    if (chatItem.messageId === undefined || chatItem.messageId === null || chatItem.messageId === '') {
+      return;
+    }
+    const undoAllMessageId = this.getOriginalMessageId(chatItem.messageId);
+    const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
+    if (contentWrapper == null || chatItem.buttons == null) return;
+
+    const buttonContainer = DomBuilder.getInstance().build({
+      type: 'div',
+      classNames: [ 'mynah-modified-files-undo-all-container' ],
+      children: []
+    });
+
+    const buttonsWrapper = new ChatItemButtonsWrapper({
+      tabId: this.props.tabId,
+      classNames: [ 'mynah-modified-files-undo-all-buttons' ],
+      formItems: null,
+      buttons: chatItem.buttons,
+      onActionClick: action => {
+        MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
+          tabId: this.props.tabId,
+          messageId: undoAllMessageId,
+          actionId: action.id,
+          actionText: action.text
+        });
+      }
+    });
+    buttonContainer.appendChild(buttonsWrapper.render);
+    contentWrapper.appendChild(buttonContainer);
+  }
+
+  private updateTitleText (chatItem: ChatItem): void {
+    // check if chatItem
+    if (chatItem.title !== undefined && chatItem.title !== '') {
+      this.titleText = chatItem.title;
+      this.collapsibleContent.updateTitle(this.titleText);
+    }
+  }
+
+  public addChatItem (chatItem: ChatItem): void {
+    this.updateTitleText(chatItem);
+    if (chatItem.header?.fileList != null) {
+      // Store the current chatItem for button handling
+      this.props.chatItem = chatItem;
+      this.renderModifiedFiles(chatItem.header?.fileList, chatItem.messageId);
+    } else if (chatItem.buttons != null && Array.isArray(chatItem.buttons) && chatItem.buttons.length > 0) {
+      // Handle case where only buttons (like undo all) are provided without fileList
+      this.props.chatItem = chatItem;
+      this.renderUndoAllButton(chatItem);
+    }
+  }
+
+  public clear (): void {
+    this.allFiles.clear();
+    const newTitle = 'No files modified';
+    this.titleText = newTitle;
+    this.collapsibleContent.updateTitle(this.titleText);
+    this.renderModifiedFiles(null);
+  }
+}

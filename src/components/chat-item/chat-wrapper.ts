@@ -30,6 +30,7 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon } from '../icon';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
+import { ModifiedFilesTracker } from '../modified-files-tracker';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -53,11 +54,13 @@ export class ChatWrapper {
   private lastStreamingChatItemCard: ChatItemCard | null;
   private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
+  private allRenderedModifiedFileChatItems: Record<string, ChatItem> = {};
   render: ExtendedHTMLElement;
   private readonly dragOverlayContent: HTMLElement;
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
+  private readonly modifiedFilesTracker: ModifiedFilesTracker;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -92,8 +95,14 @@ export class ChatWrapper {
     this.imageContextFeatureEnabled = contextCommands.some(group =>
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     );
+
+    this.modifiedFilesTracker = new ModifiedFilesTracker({
+      tabId: this.props.tabId
+    });
+
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
+
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(Array.from(this.chatItemsContainer.children).length - 1);
         if (lastItem != null && chatItemToInsert != null) {
@@ -310,6 +319,7 @@ export class ChatWrapper {
           }
         }).render,
         this.promptStickyCard,
+        this.modifiedFilesTracker.render,
         this.promptInputElement,
         this.footerSpacer,
         this.promptInfo,
@@ -377,8 +387,26 @@ export class ChatWrapper {
   };
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
+    // Normal flow on initially opening ui requires the currentMessageId;
     this.removeEmptyCardsAndFollowups();
+
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
+    // Check if messageId contains "modified-files-" prefix
+    // The controller sends a chatItem with specific messageId for the new component "ModifiedFilesTracker"
+    // When the language-servers send the actual list of modified files, we need to forward it to the ModifiedFilesTracker component
+    // so it can update its state and re-render itself with the files and undo buttons
+    if (chatItem.messageId != null && chatItem.messageId !== '' && chatItem.messageId.includes('modified-files-')) {
+      // Forward only to ModifiedFilesTracker, skip normal flow
+      if (chatItem.header?.fileList !== null && chatItem.header?.fileList !== undefined) {
+        this.allRenderedModifiedFileChatItems[chatItem.messageId] = chatItem;
+        const fileCount = Object.keys(this.allRenderedModifiedFileChatItems).length;
+        chatItem.title = `${fileCount} file${fileCount === 1 ? '' : 's'} modified`;
+      }
+      this.modifiedFilesTracker.addChatItem(chatItem);
+      return;
+    }
+
+    // Normal flow for all other chat items
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
       chatItem: {
@@ -409,6 +437,9 @@ export class ChatWrapper {
     this.allRenderedChatItems[currentMessageId] = chatItemCard;
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
+      // Clear modified files tracker on new prompt
+      this.allRenderedModifiedFileChatItems = {};
+      this.modifiedFilesTracker.clear();
       // Make sure we align to top when there is a new prompt.
       // Only if it is a PROMPT!
       // Check css application
