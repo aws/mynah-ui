@@ -14,6 +14,7 @@ import { MynahUIGlobalEvents } from '../helper/events';
 
 export interface ModifiedFilesTrackerProps {
   tabId: string;
+  isVisible?: boolean;
   chatItem?: ChatItem;
 }
 
@@ -21,15 +22,16 @@ export class ModifiedFilesTracker {
   render: ExtendedHTMLElement;
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
-  public titleText: string = 'No files modified';
   private readonly allFiles: Map<string, { fileList: NonNullable<ChatItemContent['fileList']>; messageId: string }> = new Map();
+  private isVisible: boolean;
 
   constructor (props: ModifiedFilesTrackerProps) {
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
     this.props = props;
+    this.isVisible = props.isVisible ?? false;
 
     this.collapsibleContent = new CollapsibleContent({
-      title: this.titleText,
+      title: '',
       initialCollapsedState: true,
       children: [],
       classNames: [ 'mynah-modified-files-tracker' ],
@@ -42,6 +44,8 @@ export class ModifiedFilesTracker {
       testId: testIds.modifiedFilesTracker.container,
       children: [ this.collapsibleContent.render ]
     });
+
+    this.setVisibility(this.isVisible);
 
     if ((this.props.chatItem?.header?.fileList) != null) {
       this.renderModifiedFiles(this.props.chatItem.header?.fileList, this.props.chatItem.messageId);
@@ -113,7 +117,7 @@ export class ModifiedFilesTracker {
         // Render the file tree for single file
         const fileTreeWrapper = new ChatItemTreeViewWrapper({
           tabId: this.props.tabId,
-          messageId: this.getOriginalMessageId(messageId),
+          messageId,
           files: [ filePath ],
           cardTitle: '',
           rootTitle: undefined, // No root title for single files
@@ -140,7 +144,7 @@ export class ModifiedFilesTracker {
             onActionClick: action => {
               MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                 tabId: this.props.tabId,
-                messageId: this.getOriginalMessageId(messageId),
+                messageId,
                 actionId: action.id,
                 actionText: action.text,
                 filePath // Add filePath to identify which file the action is for
@@ -158,16 +162,11 @@ export class ModifiedFilesTracker {
     });
   }
 
-  private getOriginalMessageId (messageId: string): string {
-    // Remove "modified-files-" prefix if present
-    return messageId.startsWith('modified-files-') ? messageId.replace('modified-files-', '') : messageId;
-  }
-
   private renderUndoAllButton (chatItem: ChatItem): void {
     if (chatItem.messageId === undefined || chatItem.messageId === null || chatItem.messageId === '') {
       return;
     }
-    const undoAllMessageId = this.getOriginalMessageId(chatItem.messageId);
+    const undoAllMessageId = chatItem.messageId;
     const contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
     if (contentWrapper == null || chatItem.buttons == null) return;
 
@@ -196,14 +195,23 @@ export class ModifiedFilesTracker {
   }
 
   private updateTitleText (chatItem: ChatItem): void {
-    // check if chatItem
-    if (chatItem.title !== undefined && chatItem.title !== '') {
-      this.titleText = chatItem.title;
-      this.collapsibleContent.updateTitle(this.titleText);
+    // Using chatItem itself, if other than string is passed for title
+    if (chatItem.forModifiedFilesTracker?.title !== undefined && chatItem.title !== '') {
+      this.collapsibleContent.updateTitle(chatItem.forModifiedFilesTracker.title);
+    }
+  }
+
+  private setVisibility (isVisible: boolean): void {
+    this.isVisible = isVisible;
+    if (!isVisible) {
+      this.render.classList.add('hidden');
+    } else {
+      this.render.classList.remove('hidden');
     }
   }
 
   public addChatItem (chatItem: ChatItem): void {
+    this.setVisibility(chatItem.forModifiedFilesTracker?.isVisible ?? true);
     this.updateTitleText(chatItem);
     if (chatItem.header?.fileList != null) {
       // Store the current chatItem for button handling
@@ -218,9 +226,7 @@ export class ModifiedFilesTracker {
 
   public clear (): void {
     this.allFiles.clear();
-    const newTitle = 'No files modified';
-    this.titleText = newTitle;
-    this.collapsibleContent.updateTitle(this.titleText);
     this.renderModifiedFiles(null);
+    this.setVisibility(false);
   }
 }

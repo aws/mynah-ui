@@ -54,7 +54,6 @@ export class ChatWrapper {
   private lastStreamingChatItemCard: ChatItemCard | null;
   private lastStreamingChatItemMessageId: string | null;
   private allRenderedChatItems: Record<string, ChatItemCard> = {};
-  private allRenderedModifiedFileChatItems: Record<string, ChatItem> = {};
   render: ExtendedHTMLElement;
   private readonly dragOverlayContent: HTMLElement;
   private readonly dragBlurOverlay: HTMLElement;
@@ -391,19 +390,10 @@ export class ChatWrapper {
     this.removeEmptyCardsAndFollowups();
 
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
-    // Check if messageId contains "modified-files-" prefix
-    // The controller sends a chatItem with specific messageId for the new component "ModifiedFilesTracker"
-    // When the language-servers send the actual list of modified files, we need to forward it to the ModifiedFilesTracker component
-    // so it can update its state and re-render itself with the files and undo buttons
-    if (chatItem.messageId != null && chatItem.messageId !== '' && chatItem.messageId.includes('modified-files-')) {
-      // Forward only to ModifiedFilesTracker, skip normal flow
-      if (chatItem.header?.fileList !== null && chatItem.header?.fileList !== undefined) {
-        this.allRenderedModifiedFileChatItems[chatItem.messageId] = chatItem;
-        const fileCount = Object.keys(this.allRenderedModifiedFileChatItems).length;
-        chatItem.title = `${fileCount} file${fileCount === 1 ? '' : 's'} modified`;
-      }
+    // Check if forModifiedFilesTracker property is set in the chatItem
+    if (chatItem.forModifiedFilesTracker !== undefined) {
+      // Forward the same chatItem to ModifiedFilesTracker as well
       this.modifiedFilesTracker.addChatItem(chatItem);
-      return;
     }
 
     // Normal flow for all other chat items
@@ -438,7 +428,6 @@ export class ChatWrapper {
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
       // Clear modified files tracker on new prompt
-      this.allRenderedModifiedFileChatItems = {};
       this.modifiedFilesTracker.clear();
       // Make sure we align to top when there is a new prompt.
       // Only if it is a PROMPT!
