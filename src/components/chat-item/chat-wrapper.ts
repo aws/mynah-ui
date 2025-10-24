@@ -513,6 +513,10 @@ export class ChatWrapper {
     if (this.allRenderedChatItems[messageId]?.render !== undefined) {
       this.allRenderedChatItems[messageId].updateCardStack(updateWith);
 
+      if (updateWith.forModifiedFilesTracker?.removeFile !== undefined && updateWith.forModifiedFilesTracker?.removeFile) {
+        this.modifiedFilesTracker.removeChatItem(messageId);
+      }
+
       // If the last streaming chat answer is the same with the messageId
       if (this.lastStreamingChatItemMessageId === messageId) {
         this.checkLastAnswerStreamChange(updateWith);

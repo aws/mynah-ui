@@ -6,7 +6,7 @@
 import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { StyleLoader } from '../helper/style-loader';
 import { CollapsibleContent } from './collapsible-content';
-import { ChatItem, ChatItemContent, MynahEventNames } from '../static';
+import { ChatItem, ChatItemContent, MynahEventNames, ChatItemButton } from '../static';
 import testIds from '../helper/test-ids';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
 import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
@@ -22,7 +22,7 @@ export class ModifiedFilesTracker {
   render: ExtendedHTMLElement;
   private readonly props: ModifiedFilesTrackerProps;
   private readonly collapsibleContent: CollapsibleContent;
-  private readonly allFiles: Map<string, { fileList: NonNullable<ChatItemContent['fileList']>; messageId: string }> = new Map();
+  private readonly allFiles: Map<string, { fileList: NonNullable<ChatItemContent['fileList']>; messageId: string; buttons?: ChatItemButton[] }> = new Map();
   private isVisible: boolean;
 
   constructor (props: ModifiedFilesTrackerProps) {
@@ -67,7 +67,7 @@ export class ModifiedFilesTracker {
     // Add files to the collection if provided
     if (fileList != null && (fileList.filePaths?.length ?? 0) > 0) {
       const messageId = chatItemMessageId ?? `modified-files-tracker-${this.props.tabId}`;
-      this.allFiles.set(messageId, { fileList, messageId });
+      this.allFiles.set(messageId, { fileList, messageId, buttons: this.props.chatItem?.header?.buttons ?? undefined });
     }
 
     // Clear and re-render all files
@@ -135,12 +135,13 @@ export class ModifiedFilesTracker {
         horizontalContainer.appendChild(fileTreeWrapper.render);
 
         // Add buttons for this specific file if they exist
-        if (this.props.chatItem?.header?.buttons != null && Array.isArray(this.props.chatItem.header?.buttons) && this.props.chatItem.header?.buttons.length > 0) {
+        const storedButtons = this.allFiles.get(messageId)?.buttons;
+        if (storedButtons != null && Array.isArray(storedButtons) && storedButtons.length > 0) {
           const buttonsWrapper = new ChatItemButtonsWrapper({
             tabId: this.props.tabId,
             classNames: [ 'mynah-modified-files-file-buttons' ],
             formItems: null,
-            buttons: this.props.chatItem.header?.buttons,
+            buttons: storedButtons,
             onActionClick: action => {
               MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.BODY_ACTION_CLICKED, {
                 tabId: this.props.tabId,
@@ -221,6 +222,14 @@ export class ModifiedFilesTracker {
       // Handle case where only buttons (like undo all) are provided without fileList
       this.props.chatItem = chatItem;
       this.renderUndoAllButton(chatItem);
+    }
+  }
+
+  public removeChatItem (messageId: string): void {
+    this.allFiles.delete(messageId);
+    this.renderModifiedFiles(null);
+    if (this.allFiles.size === 0) {
+      this.setVisibility(false);
     }
   }
 

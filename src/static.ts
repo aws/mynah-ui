@@ -509,6 +509,7 @@ export interface ChatItem extends ChatItemContent {
   forModifiedFilesTracker?: {
     isVisible?: boolean;
     title?: string;
+    removeFile?: boolean;
   };
 }
 
