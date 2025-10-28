@@ -513,8 +513,11 @@ export class ChatWrapper {
     if (this.allRenderedChatItems[messageId]?.render !== undefined) {
       this.allRenderedChatItems[messageId].updateCardStack(updateWith);
 
-      if (updateWith.forModifiedFilesTracker?.removeFile !== undefined && updateWith.forModifiedFilesTracker?.removeFile) {
-        this.modifiedFilesTracker.removeChatItem(messageId);
+      if (updateWith.forModifiedFilesTracker !== undefined) {
+        if (updateWith.forModifiedFilesTracker?.removeFile !== undefined && updateWith.forModifiedFilesTracker?.removeFile) {
+          this.modifiedFilesTracker.removeChatItem(messageId);
+          console.log('remove file msgid', messageId);
+        }
       }
 
       // If the last streaming chat answer is the same with the messageId
