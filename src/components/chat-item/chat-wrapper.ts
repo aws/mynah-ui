@@ -390,19 +390,23 @@ export class ChatWrapper {
     this.removeEmptyCardsAndFollowups();
 
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
+
+    // Create complete chatItem with proper messageId
+    const completeChatItem = {
+      ...chatItem,
+      messageId: currentMessageId
+    };
+
     // Check if forModifiedFilesTracker property is set in the chatItem
     if (chatItem.forModifiedFilesTracker !== undefined) {
-      // Forward the same chatItem to ModifiedFilesTracker as well
-      this.modifiedFilesTracker.addChatItem(chatItem);
+      // Forward the complete chatItem with messageId to ModifiedFilesTracker
+      this.modifiedFilesTracker.addChatItem(completeChatItem);
     }
 
     // Normal flow for all other chat items
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
-      chatItem: {
-        ...chatItem,
-        messageId: currentMessageId
-      }
+      chatItem: completeChatItem
     });
 
     // When a new card appears, we're cleaning the last streaming card vars, since it is not the last anymore
