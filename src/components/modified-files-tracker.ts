@@ -97,10 +97,17 @@ export class ModifiedFilesTracker {
   }
 
   private renderAllItems (contentWrapper: Element): void {
+    let hasFilesRendered = false;
+
     this.chatItems.forEach((chatItem) => {
       if (chatItem.header?.fileList != null) {
         this.renderFileList(contentWrapper, chatItem);
-      } else if (chatItem.buttons != null) {
+        hasFilesRendered = true;
+      }
+    });
+
+    this.chatItems.forEach((chatItem) => {
+      if (chatItem.buttons != null && chatItem.header?.fileList == null && hasFilesRendered) {
         this.renderFileList(contentWrapper, chatItem);
       }
     });
