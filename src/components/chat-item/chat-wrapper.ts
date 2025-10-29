@@ -520,7 +520,6 @@ export class ChatWrapper {
       if (updateWith.forModifiedFilesTracker !== undefined) {
         if (updateWith.forModifiedFilesTracker?.removeFile !== undefined && updateWith.forModifiedFilesTracker?.removeFile) {
           this.modifiedFilesTracker.removeChatItem(messageId);
-          console.log('remove file msgid', messageId);
         }
       }
 
