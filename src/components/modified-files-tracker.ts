@@ -25,8 +25,6 @@ export class ModifiedFilesTracker {
   private readonly chatItems: Map<string, ChatItem> = new Map();
   private isVisible: boolean;
   private contentWrapper: Element | null = null;
-  private renderTimeout: number | null = null;
-  private clickHandler: ((e: Event) => void) | null = null;
 
   constructor (props: ModifiedFilesTrackerProps) {
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
@@ -48,35 +46,24 @@ export class ModifiedFilesTracker {
       children: [ this.collapsibleContent.render ]
     });
 
-    this.setVisibility(this.isVisible);
-
     if (this.props.chatItem != null) {
       this.addChatItem(this.props.chatItem);
     } else {
       this.renderAllContent();
     }
+    this.setVisibility();
   }
 
   private renderAllContent (): void {
-    if (this.renderTimeout !== null) {
-      clearTimeout(this.renderTimeout);
-    }
-    this.renderTimeout = window.setTimeout(() => {
-      this.doRender();
-      this.renderTimeout = null;
-    }, 16);
-  }
-
-  private doRender (): void {
     if (this.contentWrapper === null) {
       this.contentWrapper = this.collapsibleContent.render.querySelector('.mynah-collapsible-content-label-content-wrapper');
       if (this.contentWrapper === null) return;
 
-      this.clickHandler = (e: Event) => {
+      // Stop propagation on content wrapper to prevent collapsing
+      this.contentWrapper.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-      };
-      this.contentWrapper.addEventListener('click', this.clickHandler);
+      });
     }
 
     this.contentWrapper.innerHTML = '';
@@ -99,17 +86,28 @@ export class ModifiedFilesTracker {
   private renderAllItems (contentWrapper: Element): void {
     let hasFilesRendered = false;
 
+    // First pass: render all items in order, tracking if files were rendered
     this.chatItems.forEach((chatItem) => {
       if (chatItem.header?.fileList != null) {
         this.renderFileList(contentWrapper, chatItem);
         hasFilesRendered = true;
+      } else if (chatItem.buttons != null && hasFilesRendered) {
+        this.renderFileList(contentWrapper, chatItem);
       }
     });
 
+    // Second pass: clean up undo-all buttons that have no preceding files
+    const toDeleteChatItems: string[] = [];
+    let hasSeenFiles = false;
     this.chatItems.forEach((chatItem) => {
-      if (chatItem.buttons != null && chatItem.header?.fileList == null && hasFilesRendered) {
-        this.renderFileList(contentWrapper, chatItem);
+      if (chatItem.header?.fileList != null) {
+        hasSeenFiles = true;
+      } else if (chatItem.buttons != null && !hasSeenFiles) {
+        toDeleteChatItems.push(chatItem.messageId ?? '');
       }
+    });
+    toDeleteChatItems.forEach((messageId) => {
+      this.removeChatItem(messageId);
     });
   }
 
@@ -229,9 +227,9 @@ export class ModifiedFilesTracker {
     }
   }
 
-  private setVisibility (isVisible: boolean): void {
-    this.isVisible = isVisible;
-    if (!isVisible) {
+  private setVisibility (): void {
+    this.isVisible = this.chatItems.size !== 0;
+    if (!this.isVisible) {
       this.render.classList.add('hidden');
     } else {
       this.render.classList.remove('hidden');
@@ -246,9 +244,9 @@ export class ModifiedFilesTracker {
       }
 
       this.chatItems.set(chatItem.messageId, chatItem);
-      this.setVisibility(chatItem.forModifiedFilesTracker?.isVisible ?? true);
       this.updateTitleText(chatItem);
       this.renderAllContent();
+      this.setVisibility();
     }
   }
 
@@ -256,24 +254,13 @@ export class ModifiedFilesTracker {
     if (this.chatItems.has(messageId)) {
       this.chatItems.delete(messageId);
       this.renderAllContent();
-      if (this.chatItems.size === 0) {
-        this.setVisibility(false);
-      }
+      this.setVisibility();
     }
   }
 
   public clear (): void {
-    if (this.renderTimeout !== null) {
-      clearTimeout(this.renderTimeout);
-      this.renderTimeout = null;
-    }
-    if (this.contentWrapper !== null && this.clickHandler !== null) {
-      this.contentWrapper.removeEventListener('click', this.clickHandler);
-      this.clickHandler = null;
-    }
-
     this.chatItems.clear();
     this.renderAllContent();
-    this.setVisibility(false);
+    this.setVisibility();
   }
 }

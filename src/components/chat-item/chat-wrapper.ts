@@ -123,6 +123,8 @@ export class ChatWrapper {
         this.chatItemsContainer.clear(true);
         this.chatItemsContainer.insertChild('beforeend', this.getNewConversationGroupElement());
         this.allRenderedChatItems = {};
+        // clear modifiedFilesTracker component as well
+        this.modifiedFilesTracker.clear();
       }
     });
 
