@@ -2,6 +2,11 @@ name: Publish package to NPM
 on:
   push:
     tags: ['v*.*']
+
+permissions:
+  id-token: write # Required for OIDC authentication with npm
+  contents: read # Required for actions/checkout
+
 jobs:
   lint:
     uses: ./.github/workflows/lint.yml
@@ -19,6 +24,8 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
+      - name: Upgrade npm # to ensure npm 11.5.1+ for OIDC support
+        run: npm install -g npm@latest
       - name: Install dependencies and build
         run: npm install && npm run build
       - name: Build demo app
@@ -40,8 +47,6 @@ jobs:
           asset_content_type: application/zip
       - name: Publish to npm
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Update Channels
         uses: fjogeleit/http-request-action@v1
         with:

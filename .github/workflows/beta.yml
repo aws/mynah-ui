@@ -3,18 +3,23 @@ on:
   workflow_dispatch:
   push:
     tags: ['beta*.*']
+
+permissions:
+  id-token: write # Required for OIDC authentication with npm
+  contents: read # Required for actions/checkout
+
 jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
+      - name: Upgrade npm # to ensure npm 11.5.1+ for OIDC support
+        run: npm install -g npm@latest
       - run: npm ci
       - run: npm run build
       - run: npm publish --tag beta --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
