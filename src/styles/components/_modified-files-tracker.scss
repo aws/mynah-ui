@@ -4,7 +4,7 @@
  */
 
 .mynah-modified-files-tracker-wrapper {
-    border: var(--mynah-border-width) solid var(--mynah-color-text-weak);
+    border: var(--mynah-border-width) solid var(--mynah-color-border-default);
     border-bottom: none;
     border-radius: var(--mynah-input-radius) var(--mynah-input-radius) var(--mynah-card-radius-corner)
         var(--mynah-card-radius-corner);
@@ -16,9 +16,15 @@
 
     .mynah-collapsible-content-label-content-wrapper {
         pointer-events: none;
+        position: relative;
 
         * {
             pointer-events: auto;
+        }
+        .mynah-modified-files-scrollable-container {
+            max-height: calc(var(--mynah-sizing-18) * 2);
+            overflow-y: auto;
+            overflow-x: hidden;
         }
     }
 
@@ -53,6 +59,12 @@
     .mynah-modified-files-undo-all-buttons {
         padding-right: var(--mynah-sizing-2);
         margin-top: var(--mynah-sizing-1);
+    }
+
+    .mynah-more-content-indicator {
+        display: flex;
+        justify-content: center;
+        width: 100%;
     }
 }
 

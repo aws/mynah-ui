@@ -11,6 +11,7 @@ import testIds from '../helper/test-ids';
 import { ChatItemTreeViewWrapper } from './chat-item/chat-item-tree-view-wrapper';
 import { ChatItemButtonsWrapper } from './chat-item/chat-item-buttons';
 import { MynahUIGlobalEvents } from '../helper/events';
+import { MoreContentIndicator } from './more-content-indicator';
 
 export interface ModifiedFilesTrackerProps {
   tabId: string;
@@ -25,6 +26,8 @@ export class ModifiedFilesTracker {
   private readonly chatItems: Map<string, ChatItem> = new Map();
   private isVisible: boolean;
   private contentWrapper: Element | null = null;
+  private scrollableContainer: ExtendedHTMLElement | null = null;
+  private moreContentIndicator: MoreContentIndicator | null = null;
 
   constructor (props: ModifiedFilesTrackerProps) {
     StyleLoader.getInstance().load('components/_modified-files-tracker.scss');
@@ -64,14 +67,39 @@ export class ModifiedFilesTracker {
         e.preventDefault();
         e.stopPropagation();
       });
+
+      // Create scrollable container
+      this.scrollableContainer = DomBuilder.getInstance().build({
+        type: 'div',
+        classNames: [ 'mynah-modified-files-scrollable-container' ],
+        children: []
+      });
+
+      // Create more content indicator
+      this.moreContentIndicator = new MoreContentIndicator({
+        onClick: () => this.scrollToBottom()
+      });
+
+      this.contentWrapper.appendChild(this.scrollableContainer);
+      this.contentWrapper.appendChild(this.moreContentIndicator.render);
+
+      // Add scroll listener to show/hide indicator
+      this.scrollableContainer.addEventListener('scroll', () => {
+        this.updateScrollIndicator();
+      });
     }
 
-    this.contentWrapper.innerHTML = '';
+    if (this.scrollableContainer !== null) {
+      this.scrollableContainer.innerHTML = '';
 
-    if (this.chatItems.size > 0) {
-      this.renderAllItems(this.contentWrapper);
-    } else {
-      this.renderEmptyState(this.contentWrapper);
+      if (this.chatItems.size > 0) {
+        this.renderAllItems(this.scrollableContainer);
+      } else {
+        this.renderEmptyState(this.scrollableContainer);
+      }
+
+      // Update scroll indicator after content changes
+      setTimeout(() => this.updateScrollIndicator(), 0);
     }
   }
 
@@ -181,14 +209,14 @@ export class ModifiedFilesTracker {
         cardTitle: '',
         rootTitle: undefined,
         deletedFiles: deletedFiles.filter(df => df === filePath),
-        flatList: true,
+        flatList: chatItem.header?.fileList?.flatList ?? true,
         actions: (actions != null) ? { [filePath]: actions[filePath] } : undefined,
         details: (details != null) ? { [filePath]: details[filePath] } : undefined,
-        hideFileCount: true,
+        hideFileCount: chatItem.header?.fileList?.hideFileCount ?? true,
         collapsed: false,
-        referenceSuggestionLabel: '',
-        references: [],
-        onRootCollapsedStateChange: () => {}
+        referenceSuggestionLabel: '', // don't need this field to be set
+        references: [], // don't need this field to be set
+        onRootCollapsedStateChange: () => {} // not useful for this component
       });
 
       horizontalContainer.appendChild(fileTreeWrapper.render);
@@ -262,5 +290,24 @@ export class ModifiedFilesTracker {
     this.chatItems.clear();
     this.renderAllContent();
     this.setVisibility();
+  }
+
+  private scrollToBottom (): void {
+    if (this.scrollableContainer !== null) {
+      this.scrollableContainer.scrollTop = this.scrollableContainer.scrollHeight;
+    }
+  }
+
+  private updateScrollIndicator (): void {
+    if (this.scrollableContainer === null || this.moreContentIndicator === null) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = this.scrollableContainer;
+    const isScrolledToBottom = scrollTop + clientHeight >= scrollHeight - 5;
+
+    if (isScrolledToBottom || scrollHeight <= clientHeight) {
+      this.moreContentIndicator.render.style.display = 'none';
+    } else {
+      this.moreContentIndicator.render.style.display = 'block';
+    }
   }
 }
