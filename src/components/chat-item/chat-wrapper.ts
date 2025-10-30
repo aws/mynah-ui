@@ -399,8 +399,8 @@ export class ChatWrapper {
       messageId: currentMessageId
     };
 
-    // Check if forModifiedFilesTracker property is set in the chatItem
-    if (chatItem.forModifiedFilesTracker !== undefined) {
+    // Check if modifiedFilesTracker property is set in the chatItem
+    if (chatItem.modifiedFilesTracker !== undefined) {
       // Forward the complete chatItem with messageId to ModifiedFilesTracker
       this.modifiedFilesTracker.addChatItem(completeChatItem);
     }
@@ -519,8 +519,8 @@ export class ChatWrapper {
     if (this.allRenderedChatItems[messageId]?.render !== undefined) {
       this.allRenderedChatItems[messageId].updateCardStack(updateWith);
 
-      if (updateWith.forModifiedFilesTracker !== undefined) {
-        if (updateWith.forModifiedFilesTracker?.removeFile !== undefined && updateWith.forModifiedFilesTracker?.removeFile) {
+      if (updateWith.modifiedFilesTracker !== undefined) {
+        if (updateWith.modifiedFilesTracker?.removeFile !== undefined && updateWith.modifiedFilesTracker?.removeFile) {
           this.modifiedFilesTracker.removeChatItem(messageId);
         }
       }

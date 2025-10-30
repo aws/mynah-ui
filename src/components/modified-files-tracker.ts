@@ -250,8 +250,8 @@ export class ModifiedFilesTracker {
 
   private updateTitleText (chatItem: ChatItem): void {
     // Using chatItem itself, if other than string is passed for title
-    if (chatItem.forModifiedFilesTracker?.title !== undefined && chatItem.title !== '') {
-      this.collapsibleContent.updateTitle(chatItem.forModifiedFilesTracker.title);
+    if (chatItem.modifiedFilesTracker?.title !== undefined && chatItem.title !== '') {
+      this.collapsibleContent.updateTitle(chatItem.modifiedFilesTracker.title);
     }
   }
 
