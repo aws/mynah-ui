@@ -28,8 +28,8 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
-      - name: Install dependencies and build # OIDC support requires npm 11.5.1+
-        run: npm install -g npm@latest && npm run build
+      - name: Install dependencies and build
+        run: npm ci && npm run build
       - name: Build demo app
         run: npm run packdemo
       - name: Get release info
