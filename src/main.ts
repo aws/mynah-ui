@@ -96,6 +96,10 @@ export {
   ChatItemCardContent,
   ChatItemCardContentProps
 } from './components/chat-item/chat-item-card-content';
+export {
+  ModifiedFilesTracker,
+  ModifiedFilesTrackerProps
+} from './components/modified-files-tracker';
 export { default as MynahUITestIds } from './helper/test-ids';
 
 export interface MynahUIProps {
@@ -540,7 +544,6 @@ export class MynahUI {
         this.props.onChatPrompt(data.tabId, data.prompt, this.getUserEventId());
       }
     });
-
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FOLLOW_UP_CLICKED, (data: {
       tabId: string;
       messageId: string;

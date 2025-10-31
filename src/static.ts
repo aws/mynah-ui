@@ -508,6 +508,10 @@ export interface ChatItem extends ChatItemContent {
   shimmer?: boolean;
   collapse?: boolean;
   border?: boolean;
+  modifiedFilesTracker?: {
+    title?: string;
+    removeFile?: boolean;
+  };
 }
 
 export interface ValidationPattern {

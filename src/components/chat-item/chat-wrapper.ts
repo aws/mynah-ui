@@ -30,6 +30,7 @@ import { StyleLoader } from '../../helper/style-loader';
 import { Icon } from '../icon';
 import { cancelEvent, MynahUIGlobalEvents } from '../../helper/events';
 import { TopBarButtonOverlayProps } from './prompt-input/prompt-top-bar/top-bar-button';
+import { ModifiedFilesTracker } from '../modified-files-tracker';
 
 export const CONTAINER_GAP = 12;
 export interface ChatWrapperProps {
@@ -58,6 +59,7 @@ export class ChatWrapper {
   private readonly dragBlurOverlay: HTMLElement;
   private dragOverlayVisibility: boolean = true;
   private imageContextFeatureEnabled: boolean = false;
+  private readonly modifiedFilesTracker: ModifiedFilesTracker;
 
   constructor (props: ChatWrapperProps) {
     StyleLoader.getInstance().load('components/chat/_chat-wrapper.scss');
@@ -92,8 +94,14 @@ export class ChatWrapper {
     this.imageContextFeatureEnabled = contextCommands.some(group =>
       group.commands.some((cmd: QuickActionCommand) => cmd.command.toLowerCase() === 'image')
     );
+
+    this.modifiedFilesTracker = new ModifiedFilesTracker({
+      tabId: this.props.tabId
+    });
+
     MynahUITabsStore.getInstance().addListenerToDataStore(this.props.tabId, 'chatItems', (chatItems: ChatItem[]) => {
       const chatItemToInsert: ChatItem = chatItems[chatItems.length - 1];
+
       if (Object.keys(this.allRenderedChatItems).length === chatItems.length) {
         const lastItem = this.chatItemsContainer.children.item(Array.from(this.chatItemsContainer.children).length - 1);
         if (lastItem != null && chatItemToInsert != null) {
@@ -115,6 +123,8 @@ export class ChatWrapper {
         this.chatItemsContainer.clear(true);
         this.chatItemsContainer.insertChild('beforeend', this.getNewConversationGroupElement());
         this.allRenderedChatItems = {};
+        // clear modifiedFilesTracker component as well
+        this.modifiedFilesTracker.clear();
       }
     });
 
@@ -310,6 +320,7 @@ export class ChatWrapper {
           }
         }).render,
         this.promptStickyCard,
+        this.modifiedFilesTracker.render,
         this.promptInputElement,
         this.footerSpacer,
         this.promptInfo,
@@ -377,14 +388,27 @@ export class ChatWrapper {
   };
 
   private readonly insertChatItem = (chatItem: ChatItem): void => {
+    // Normal flow on initially opening ui requires the currentMessageId;
     this.removeEmptyCardsAndFollowups();
+
     const currentMessageId: string = (chatItem.messageId != null && chatItem.messageId !== '') ? chatItem.messageId : `TEMP_${generateUID()}`;
+
+    // Create complete chatItem with proper messageId
+    const completeChatItem = {
+      ...chatItem,
+      messageId: currentMessageId
+    };
+
+    // Check if modifiedFilesTracker property is set in the chatItem
+    if (chatItem.modifiedFilesTracker !== undefined) {
+      // Forward the complete chatItem with messageId to ModifiedFilesTracker
+      this.modifiedFilesTracker.addChatItem(completeChatItem);
+    }
+
+    // Normal flow for all other chat items
     const chatItemCard = new ChatItemCard({
       tabId: this.props.tabId,
-      chatItem: {
-        ...chatItem,
-        messageId: currentMessageId
-      }
+      chatItem: completeChatItem
     });
 
     // When a new card appears, we're cleaning the last streaming card vars, since it is not the last anymore
@@ -409,6 +433,8 @@ export class ChatWrapper {
     this.allRenderedChatItems[currentMessageId] = chatItemCard;
 
     if (chatItem.type === ChatItemType.PROMPT || chatItem.type === ChatItemType.SYSTEM_PROMPT) {
+      // Clear modified files tracker on new prompt
+      this.modifiedFilesTracker.clear();
       // Make sure we align to top when there is a new prompt.
       // Only if it is a PROMPT!
       // Check css application
@@ -492,6 +518,12 @@ export class ChatWrapper {
   public updateChatAnswerWithMessageId = (messageId: string, updateWith: Partial<ChatItem>): void => {
     if (this.allRenderedChatItems[messageId]?.render !== undefined) {
       this.allRenderedChatItems[messageId].updateCardStack(updateWith);
+
+      if (updateWith.modifiedFilesTracker !== undefined) {
+        if (updateWith.modifiedFilesTracker?.removeFile !== undefined && updateWith.modifiedFilesTracker?.removeFile) {
+          this.modifiedFilesTracker.removeChatItem(messageId);
+        }
+      }
 
       // If the last streaming chat answer is the same with the messageId
       if (this.lastStreamingChatItemMessageId === messageId) {

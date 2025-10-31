@@ -1260,8 +1260,8 @@ here to see if it gets cut off properly as expected, with an ellipsis through cs
         },
         onChatPrompt: (tabId: string, prompt: ChatPrompt) => {
 
-            
 
+            
             Log(`New prompt on tab: <b>${tabId}</b><br/>
       prompt: <b>${prompt.prompt !== undefined && prompt.prompt !== '' ? prompt.prompt : '{command only}'}</b><br/>
       command: <b>${prompt.command ?? '{none}'}</b><br/>

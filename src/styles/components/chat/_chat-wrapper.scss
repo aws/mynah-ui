@@ -144,6 +144,14 @@
         }
     }
 
+    > .mynah-modified-files-tracker-wrapper {
+        position: relative;
+        flex-shrink: 0;
+        padding: 0 var(--mynah-sizing-4);
+        margin-bottom: var(--mynah-sizing-2);
+        z-index: 1;
+    }
+
     &:not(.with-background) {
         > .mynah-ui-gradient-background {
             opacity: 0;
