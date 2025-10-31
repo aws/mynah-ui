@@ -6,9 +6,11 @@ on:
 
 permissions:
   id-token: write # Required for OIDC authentication with npm
-  contents: read
   packages: write
-  
+  checks: write
+  contents: read
+  actions: read
+
 jobs:
   lint:
     uses: ./.github/workflows/lint.yml
