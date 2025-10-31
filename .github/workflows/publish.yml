@@ -18,7 +18,23 @@ jobs:
     uses: ./.github/workflows/unit-tests.yml
   e2e-linux:
     uses: ./.github/workflows/e2e-linux.yml
-  build:
+  build-beta:
+    if: ${{ startsWith(github.ref_name, 'beta') }}
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@aws'
+      - name: Beta release (build and publish)
+        run: echo "Publishing beta release"
+        run: npm ci
+        run: npm run build
+        run: npm publish --tag beta --access public
+  build-prod:
+    if: ${{ startsWith(github.ref_name, 'v') }}
     needs: [lint, unit-tests, e2e-linux]
     runs-on: macos-latest
     steps:
@@ -47,17 +63,7 @@ jobs:
           asset_name: mynah-ui-demo.zip
           asset_content_type: application/zip
       - name: Publish to npm
-        run: |
-          if [[ ${{ github.ref }} == refs/tags/v* ]]; then
-            echo "Publishing production release"
-            npm publish --access public
-          elif [[ ${{ github.ref }} == refs/tags/beta* ]]; then
-            echo "Publishing beta release"
-            npm publish --tag beta --access public
-          else
-            echo "Unknown tag format: ${{ github.ref }}"
-            exit 1
-          fi
+        run: npm publish --access public
       - name: Update Channels
         uses: fjogeleit/http-request-action@v1
         with:
