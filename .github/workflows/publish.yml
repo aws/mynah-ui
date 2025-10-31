@@ -1,8 +1,8 @@
 name: Publish package to NPM
 on:
-workflow_dispatch:
+  workflow_dispatch:
   push:
-    tags: ['v*.*']
+    tags: ['v*.*', 'beta*.*']
 
 permissions:
   id-token: write # Required for OIDC authentication with npm
@@ -25,10 +25,8 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
-      - name: Upgrade npm # to ensure npm 11.5.1+ for OIDC support
-        run: npm install -g npm@latest
-      - name: Install dependencies and build
-        run: npm install && npm run build
+      - name: Install dependencies and build # OIDC support requires npm 11.5.1+
+        run: npm install -g npm@latest && npm run build
       - name: Build demo app
         run: npm run packdemo
       - name: Get release info
@@ -37,7 +35,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Upload demo app to assets
-        id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -47,7 +44,17 @@ jobs:
           asset_name: mynah-ui-demo.zip
           asset_content_type: application/zip
       - name: Publish to npm
-        run: npm publish --access public
+        run: |
+          if [[ ${{ github.ref }} == refs/tags/v* ]]; then
+            echo "Publishing production release"
+            npm publish --access public
+          elif [[ ${{ github.ref }} == refs/tags/beta* ]]; then
+            echo "Publishing beta release"
+            npm publish --tag beta --access public
+          else
+            echo "Unknown tag format: ${{ github.ref }}"
+            exit 1
+          fi
       - name: Update Channels
         uses: fjogeleit/http-request-action@v1
         with:

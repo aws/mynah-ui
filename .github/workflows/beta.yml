@@ -2,14 +2,21 @@ name: Publish BETA package to NPM
 on:
   workflow_dispatch:
   push:
-    tags: ['beta*.*']
+    tags: ['v*.*', 'beta*.*']
 
 permissions:
   id-token: write # Required for OIDC authentication with npm
   contents: read # Required for actions/checkout
 
 jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+  unit-tests:
+    uses: ./.github/workflows/unit-tests.yml
+  e2e-linux:
+    uses: ./.github/workflows/e2e-linux.yml
   build:
+    needs: [lint, unit-tests, e2e-linux]
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,8 +25,40 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
-      - name: Upgrade npm # to ensure npm 11.5.1+ for OIDC support
-        run: npm install -g npm@latest
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish --tag beta --access public
+      - name: Install dependencies and build # OIDC support requires npm 11.5.1+
+        run: npm install -g npm@latest && npm run build
+      - name: Build demo app
+        run: npm run packdemo
+      - name: Get release info
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload demo app to assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./example/mynah-ui-demo.zip
+          asset_name: mynah-ui-demo.zip
+          asset_content_type: application/zip
+      - name: Publish to npm
+        run: |
+          if [[ ${{ github.ref }} == refs/tags/v* ]]; then
+            echo "Publishing production release"
+            npm publish --access public
+          elif [[ ${{ github.ref }} == refs/tags/beta* ]]; then
+            echo "Publishing beta release"
+            npm publish --tag beta --access public
+          else
+            echo "Unknown tag format: ${{ github.ref }}"
+            exit 1
+          fi
+      - name: Update Channels
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: '${{ secrets.SLACK_ENDPOINT }}'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"version": "${{ steps.get_release.outputs.tag_name }}", "url": "${{ steps.get_release.outputs.html_url }}"}'
