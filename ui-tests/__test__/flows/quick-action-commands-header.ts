@@ -140,6 +140,7 @@ export const verifyQuickActionCommandsHeaderStatusVariations = async (page: Page
     const hasStatus = await headerElement.evaluate((el, className) =>
       el.classList.contains(className), statusClass
     );
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (hasStatus) {
       foundStatusClass = true;
       console.log(`Found status class: ${statusClass}`);
