@@ -29,10 +29,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
       - name: Beta release (build and publish)
-        run: echo "Publishing beta release"
-        run: npm ci
-        run: npm run build
-        run: npm publish --tag beta --access public
+        run: |
+          echo "Publishing beta release"
+          npm ci
+          npm run build
+          npm publish --tag beta --access public
   build-prod:
     if: ${{ startsWith(github.ref_name, 'v') }}
     needs: [lint, unit-tests, e2e-linux]
