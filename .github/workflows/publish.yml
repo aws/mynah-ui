@@ -1,7 +1,16 @@
 name: Publish package to NPM
 on:
+  workflow_dispatch:
   push:
-    tags: ['v*.*']
+    tags: ['v*.*', 'beta*.*']
+
+permissions:
+  id-token: write # Required for OIDC authentication with npm
+  packages: write
+  checks: write
+  contents: read
+  actions: read
+
 jobs:
   lint:
     uses: ./.github/workflows/lint.yml
@@ -9,7 +18,24 @@ jobs:
     uses: ./.github/workflows/unit-tests.yml
   e2e-linux:
     uses: ./.github/workflows/e2e-linux.yml
-  build:
+  build-beta:
+    if: ${{ startsWith(github.ref_name, 'beta') }}
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@aws'
+      - name: Beta release (build and publish)
+        run: |
+          echo "Publishing beta release"
+          npm ci
+          npm run build
+          npm publish --tag beta --access public
+  build-prod:
+    if: ${{ startsWith(github.ref_name, 'v') }}
     needs: [lint, unit-tests, e2e-linux]
     runs-on: macos-latest
     steps:
@@ -20,7 +46,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@aws'
       - name: Install dependencies and build
-        run: npm install && npm run build
+        run: npm ci && npm run build
       - name: Build demo app
         run: npm run packdemo
       - name: Get release info
@@ -29,7 +55,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Upload demo app to assets
-        id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,8 +65,6 @@ jobs:
           asset_content_type: application/zip
       - name: Publish to npm
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Update Channels
         uses: fjogeleit/http-request-action@v1
         with:
