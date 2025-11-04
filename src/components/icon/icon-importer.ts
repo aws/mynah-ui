@@ -83,6 +83,8 @@ import MCP from './icons/mcp.svg';
 import TRASH from './icons/trash.svg';
 import TRANSFORM from './icons/transform.svg';
 import IMAGE from './icons/image.svg';
+import DESKTOP from './icons/desktop.svg';
+import GLOBE from './icons/globe.svg';
 
 export class MynahUIIconImporter {
   private static instance: MynahUIIconImporter;
@@ -164,7 +166,9 @@ export class MynahUIIconImporter {
     TRANSFORM,
     HISTORY,
     IMAGE,
-    PIN
+    PIN,
+    DESKTOP,
+    GLOBE
   };
 
   private constructor () {
