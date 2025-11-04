@@ -41,7 +41,7 @@ describe('icon', () => {
   it('renders icon with custom classNames', () => {
     const testIcon = new Icon({
       icon: MynahIcons.DESKTOP,
-      classNames: ['custom-class-1', 'custom-class-2'],
+      classNames: [ 'custom-class-1', 'custom-class-2' ],
     });
 
     expect(testIcon.render.classList.contains('custom-class-1')).toBeTruthy();
