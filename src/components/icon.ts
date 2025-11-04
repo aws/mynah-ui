@@ -85,7 +85,9 @@ export enum MynahIcons {
   TRASH = 'trash',
   TRANSFORM = 'transform',
   HISTORY = 'history',
-  IMAGE = 'image'
+  IMAGE = 'image',
+  DESKTOP = 'desktop',
+  GLOBE = 'globe'
 }
 
 export interface CustomIcon {
