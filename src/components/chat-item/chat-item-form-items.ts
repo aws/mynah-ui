@@ -102,6 +102,9 @@ export class ChatItemFormItemsWrapper {
               value: chatItemOption.value,
               ...(this.getHandlers(chatItemOption))
             });
+            if (chatItemOption.disabled === true) {
+              chatOption.setEnabled(false);
+            }
             break;
           case 'select':
             chatOption = new Select({
@@ -136,6 +139,9 @@ export class ChatItemFormItemsWrapper {
               optional: chatItemOption.mandatory !== true,
               ...(this.getHandlers(chatItemOption))
             });
+            if (chatItemOption.disabled === true) {
+              chatOption.setEnabled(false);
+            }
             break;
           case 'checkbox':
             chatOption = new Checkbox({
@@ -197,6 +203,9 @@ export class ChatItemFormItemsWrapper {
               placeholder: chatItemOption.placeholder,
               ...(this.getHandlers(chatItemOption))
             });
+            if (chatItemOption.disabled === true) {
+              chatOption.setEnabled(false);
+            }
             break;
           case 'numericinput':
             chatOption = new TextInput({
@@ -216,6 +225,9 @@ export class ChatItemFormItemsWrapper {
               placeholder: chatItemOption.placeholder,
               ...(this.getHandlers(chatItemOption))
             });
+            if (chatItemOption.disabled === true) {
+              chatOption.setEnabled(false);
+            }
             break;
           case 'email':
             chatOption = new TextInput({
@@ -235,6 +247,9 @@ export class ChatItemFormItemsWrapper {
               placeholder: chatItemOption.placeholder,
               ...(this.getHandlers(chatItemOption))
             });
+            if (chatItemOption.disabled === true) {
+              chatOption.setEnabled(false);
+            }
             break;
           case 'pillbox':
             chatOption = new FormItemPillBox({

@@ -538,6 +538,7 @@ export type TextBasedFormItem = BaseFormItem & {
     patterns: ValidationPattern[];
   };
   validateOnChange?: boolean;
+  disabled?: boolean;
 };
 
 type DropdownFormItem = BaseFormItem & {
@@ -568,6 +569,7 @@ type RadioGroupFormItem = BaseFormItem & {
     label?: string;
     icon?: MynahIcons | MynahIconsType;
   }>;
+  disabled?: boolean;
 };
 
 type CheckboxFormItem = BaseFormItem & {
@@ -593,6 +595,7 @@ export interface ListFormItem {
   boldTitle?: boolean;
   items: SingularFormItem[];
   value: ListItemEntry[];
+  disabled?: boolean;
 };
 
 export interface ListItemEntry {
