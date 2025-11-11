@@ -1188,6 +1188,7 @@ export type TextBasedFormItem = BaseFormItem & {
     genericValidationErrorMessage?: string;
     patterns: ValidationPattern[];
   };
+  disabled?: boolean;
 };
 
 type DropdownFormItem = BaseFormItem & {
@@ -1218,6 +1219,7 @@ type RadioGroupFormItem = BaseFormItem & {
     label?: string;
     icon?: MynahIcons | MynahIconsType;
   }>;
+  disabled?: boolean;
 };
 
 type CheckboxFormItem = BaseFormItem & {
@@ -1238,6 +1240,7 @@ export interface ListFormItem {
   icon?: MynahIcons | MynahIconsType;
   items: SingularFormItem[];
   value: ListItemEntry[];
+  disabled?: boolean;
 };
 
 export interface ListItemEntry {
