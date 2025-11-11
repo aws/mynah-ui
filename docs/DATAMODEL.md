@@ -2994,7 +2994,7 @@ interface ChatItemFormItem {
     label: string;
     description?: string; // Only applicable to select types. This will add a description below the label to add more context for the option
   }>;
-  disabled?: boolean; // this is only applicable to DropDownFormItem. If this is set to true, the dropdown is disabled. User cannot use the dropdown.
+  disabled?: boolean; // If set to true, the form item will be disabled and user cannot interact with it. Applicable to textinput, numericinput, email, radiogroup, and select types.
   boldTitle?: boolean; // this will make the title of the input bold
   selectTooltip?: string; // this is only applicable to DropDownFormItem. This will make the tooltip float right above the dropdown, not the wrapper object (or the title to be specific)
 }
@@ -3006,7 +3006,14 @@ Since you can give unlimited form items with several different types, it might b
 
 **Another thing which might be interesting** is to know that if you set the `select` or the `radiogroup` mandatory, they'll be rendered as the first item's of them selected if you don't provide an initial value. And you cannot deselet a radio item in any case. For select, if it is mandatory there won't be the option `Please select...`. 
 
-**Important note for DropdownFormItem:** If you set `disabled` to `true` for `DropdownFormItem`, the dropdown will be disabled and the user cannot interact with it. When you have a default value and want to ensure it's always displayed, you can combine `mandatory: true` with `disabled: true` - this will automatically select and display the first value in `options` while preventing user interaction.
+**Important note about the `disabled` property:** The `disabled` property can be set to `true` to disable form items and prevent user interaction. This is supported for the following form item types:
+- `textinput` - Text input fields will be disabled
+- `numericinput` - Numeric input fields will be disabled
+- `email` - Email input fields will be disabled
+- `radiogroup` - Radio button groups will be disabled
+- `select` - Dropdown selectors will be disabled
+
+When you have a default value and want to ensure it's always displayed, you can combine `mandatory: true` with `disabled: true` - this will automatically select and display the first value in `options` (for select/radiogroup types) while preventing user interaction.
 
 _**NOTE**: If you set `options` for `textinput` for example, it won't affect the textinput to be rendered and work properly._
 
