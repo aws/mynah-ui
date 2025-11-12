@@ -123,6 +123,7 @@ export class PromptTopBar {
     }
     if (this.titleButton == null) {
       this.titleButton = new Button({
+        testId: testIds.prompt.topBarTitle,
         onClick: () => {
           this.props.onTopBarTitleClick?.();
         },

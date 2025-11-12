@@ -38,6 +38,7 @@ interface ConfigModel {
         openNewTab: string;
         commandConfirmation: string;
         pinContextHint: string;
+        contextSearchPlaceholder: string;
         dragOverlayText: string;
     };
     // Options to show up on the overlay feedback form
@@ -216,6 +217,11 @@ Default tab title text if it is not set through store data for that tab.
 ## pinContextHint
 <p align="center">
   <img src="./img/texts/pinContextHint.png" alt="pinContextHint" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
+</p>
+
+## contextSearchPlaceholder
+<p align="center">
+  <img src="./img/texts/contextSearchPlaceholder.png" alt="contextSearchPlaceholder" style="max-width:500px; width:100%;border: 1px solid #e0e0e0;">
 </p>
 ---
 

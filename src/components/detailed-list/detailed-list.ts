@@ -308,7 +308,11 @@ export class DetailedListWrapper {
     return this.allSelectableDetailedListElements[this.activeTargetElementIndex].getItem();
   };
 
-  public readonly update = (detailedList: DetailedList, preserveScrollPosition?: boolean): void => {
+  public readonly update = (detailedList: DetailedList, preserveScrollPosition?: boolean, clearFilter?: boolean): void => {
+    if (this.filterForm != null && clearFilter === true) {
+      this.filterForm.clearAndFocusFirstTextInput();
+    }
+
     if (detailedList.header != null) {
       this.props.detailedList.header = detailedList.header;
       this.headerContainer.update({
