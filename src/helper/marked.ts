@@ -1,4 +1,5 @@
 import { marked, Tokens } from 'marked';
+import escapeHTML from 'escape-html';
 
 export const parseMarkdown = (markdownString: string, options?: {includeLineBreaks?: boolean; inline?: boolean}): string => {
   return options?.inline === true
@@ -22,9 +23,9 @@ export const configureMarked = (): void => {
         const pattern = /^\[(?:\[([^\]]+)\]|([^\]]+))\]\(([^)]+)\)$/;
         // Expect raw formatted only in [TEXT](URL)
         if (!pattern.test(token.raw)) {
-          return token.href;
+          return escapeHTML(token.href);
         }
-        return `<a href="${token.href}" target="_blank" title="${token.title ?? token.text}">${token.text}</a>`;
+        return `<a href="${escapeHTML(token.href)}" target="_blank" title="${escapeHTML(token.title ?? token.text)}">${escapeHTML(token.text)}</a>`;
       }
     },
     extensions: [ {
