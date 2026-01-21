@@ -75,19 +75,20 @@ describe('marked', () => {
       expect(result).not.toContain('<a');
     });
 
-    it('should allow mailto: URLs', () => {
+    it('should block mailto: URLs', () => {
       const markdown = '[Email us](mailto:test@example.com)';
       const result = parseMarkdown(markdown);
 
-      expect(result).toContain('href="mailto:test@example.com"');
-      expect(result).toContain('>Email us</a>');
+      expect(result).not.toContain('mailto:');
+      expect(result).not.toContain('<a');
     });
 
-    it('should allow tel: URLs', () => {
+    it('should block tel: URLs', () => {
       const markdown = '[Call us](tel:+1234567890)';
       const result = parseMarkdown(markdown);
 
-      expect(result).toContain('href="tel:+1234567890"');
+      expect(result).not.toContain('tel:');
+      expect(result).not.toContain('<a');
     });
   });
 });

@@ -20,10 +20,12 @@ export const configureMarked = (): void => {
   ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}
   </li>`,
       link: (token) => {
-        // Block dangerous URL schemes that can execute scripts
-        // Allow: http(s), mailto, tel, ftp(s), and relative URLs
-        const dangerousProtocols = /^\s*(javascript|data|vbscript):/i;
-        if (dangerousProtocols.test(token.href)) {
+        // Allow only http(s) URLs and relative URLs (most secure)
+        const safeProtocols = /^https?:/i;
+        const hasProtocol = token.href.includes(':');
+
+        // Block if has protocol but not http(s)
+        if (hasProtocol && !safeProtocols.test(token.href)) {
           return '';
         }
         const pattern = /^\[(?:\[([^\]]+)\]|([^\]]+))\]\(([^)]+)\)$/;
