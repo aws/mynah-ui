@@ -1,13 +1,15 @@
 import { marked, Tokens } from 'marked';
+import { cleanHtml } from './sanitize';
 
 export const parseMarkdown = (markdownString: string, options?: {includeLineBreaks?: boolean; inline?: boolean}): string => {
-  return options?.inline === true
+  const raw = options?.inline === true
     ? marked.parseInline(markdownString, {
       breaks: options?.includeLineBreaks,
     }) as string
     : marked.parse(markdownString, {
       breaks: options?.includeLineBreaks,
     }) as string;
+  return cleanHtml(raw);
 };
 
 export const configureMarked = (): void => {
