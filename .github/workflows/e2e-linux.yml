@@ -5,6 +5,7 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
           contents: read
+          packages: write
         steps:
           # Checkout the PR branch
           - name: Checkout Code
