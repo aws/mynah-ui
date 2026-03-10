@@ -2,6 +2,9 @@ name: New PR created
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, synchronize]
+permissions:
+  contents: read
+  packages: write
 jobs:
   lint:
     uses: ./.github/workflows/lint.yml

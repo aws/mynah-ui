@@ -17,6 +17,8 @@ export const AllowedTags = [
   'col',
   'colgroup',
   'data',
+  'del',
+  'details',
   'div',
   'em',
   'embed',
@@ -46,6 +48,7 @@ export const AllowedTags = [
   'span',
   'strong',
   'sub',
+  'summary',
   'sup',
   'table',
   'tbody',
@@ -140,8 +143,10 @@ export const cleanHtml = (dirty: string): string => {
     allowedTags: [ ...AllowedTags ],
     allowedAttributes: {
       '*': [ ...AllowedAttributes ],
-      input: [ 'type', 'disabled', 'checked' ]
+      input: [ 'type', 'disabled', 'checked' ],
+      mark: [ 'marker-index', 'reference-tracker' ]
     },
+    allowedSchemes: [ 'http', 'https', 'data' ],
     transformTags: {
       input: ((tagName, attribs) => {
         // Only allow input if it's a checkbox and disabled
