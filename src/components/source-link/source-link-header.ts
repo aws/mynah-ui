@@ -8,6 +8,7 @@ import { DomBuilder, DomBuilderObject, ExtendedHTMLElement } from '../../helper/
 import { MynahUIGlobalEvents } from '../../helper/events';
 import testIds from '../../helper/test-ids';
 import { getOrigin } from '../../helper/url';
+import escapeHTML from 'escape-html';
 import { MynahEventNames, SourceLink, SourceLinkMetaData } from '../../static';
 import { Icon, MynahIcons } from '../icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '../overlay';
@@ -92,7 +93,7 @@ export class SourceLinkHeader {
                 }),
               },
               attributes: { href: props.sourceLink.url, target: '_blank' },
-              innerHTML: splitUrl.map(urlPart => `<span>${urlPart}</span>`).join(''),
+              innerHTML: splitUrl.map(urlPart => `<span>${escapeHTML(urlPart)}</span>`).join(''),
             },
             ...((props.sourceLink.metadata != null) ? [ this.getSourceMetaBlock(props.sourceLink.metadata) ] : []),
           ],

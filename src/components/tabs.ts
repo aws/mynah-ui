@@ -8,6 +8,7 @@ import { DomBuilder, ExtendedHTMLElement } from '../helper/dom';
 import { cancelEvent } from '../helper/events';
 import { StyleLoader } from '../helper/style-loader';
 import { Button } from './button';
+import escapeHTML from 'escape-html';
 import { Icon, MynahIcons, MynahIconsType } from './icon';
 import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from './overlay';
 
@@ -253,7 +254,7 @@ export class Tab {
     this.props.options = this.props.options.filter(option => option.value !== value);
     const elmToCheck = this.render.querySelector(`span[key="${this.props.name}-${value}"] .mynah-tab-item-label-text`);
     if (elmToCheck !== undefined) {
-      (elmToCheck as HTMLSpanElement).innerHTML = title;
+      (elmToCheck as HTMLSpanElement).innerHTML = escapeHTML(title);
     }
   };
 
