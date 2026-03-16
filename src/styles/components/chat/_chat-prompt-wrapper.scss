@@ -433,6 +433,17 @@
             border-bottom-left-radius: 0 !important;
             border: none;
             box-shadow: none;
+
+            > .mynah-chat-item-card-title {
+                position: absolute;
+                right: 0;
+                top: 0;
+                z-index: var(--mynah-z-2);
+
+                > .mynah-chat-item-card-title-text {
+                    display: none;
+                }
+            }
         }
     }
 }
