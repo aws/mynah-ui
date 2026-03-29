@@ -2,41 +2,66 @@ import escapeHTML from 'escape-html';
 import { DetailedListItem, DetailedListItemGroup, QuickActionCommand, QuickActionCommandGroup } from '../static';
 import { MynahIcons } from '../main';
 
+/**
+ * Maximum number of filter results returned for display.
+ * Caps the output to avoid massive DOM rebuilds and sort overhead
+ * when filtering large context command lists (e.g., 100k+ items in large repos).
+ */
+const MAX_FILTER_RESULTS = 1000;
+
+/**
+ * Maximum number of items to scan when filtering large lists.
+ * Bounds the CPU cost per call so rapid sequential keystrokes don't
+ * compound into multi-second hangs.
+ */
+const MAX_SCAN_ITEMS = 1000;
+
 export const filterQuickPickItems = (commands: QuickActionCommandGroup[], searchTerm: string, hideSearchGroup?: boolean): QuickActionCommandGroup[] => {
   if (searchTerm.trim() === '') {
     return commands;
   }
 
   const matchedCommands: Array<{score: number; command: QuickActionCommand}> = [];
+  let scannedCount = 0;
+  let done = false;
 
   const findMatches = (cmd: QuickActionCommand): void => {
+    if (done) return;
+    scannedCount++;
+    if (scannedCount > MAX_SCAN_ITEMS || matchedCommands.length >= MAX_FILTER_RESULTS) {
+      done = true;
+      return;
+    }
+
     const score = calculateItemScore(cmd.command, searchTerm);
     if (score > 0) {
       matchedCommands.push({
         score,
         command: {
           ...cmd,
-          // Update command with highlighted text
-          // It is being reverted when user makes the selection
           command: highlightMatch(escapeHTML(cmd.command), searchTerm)
         }
       });
     }
 
-    // Search for children
-    cmd.children?.forEach(childGroup => {
-      childGroup.commands.forEach(childCmd => {
-        findMatches(childCmd);
+    if (!done) {
+      cmd.children?.forEach(childGroup => {
+        if (done) return;
+        childGroup.commands.forEach(childCmd => {
+          if (done) return;
+          findMatches(childCmd);
+        });
       });
-    });
+    }
   };
 
-  // Filter all commands
-  commands.forEach(group => {
-    group.commands.forEach(cmd => {
+  for (const group of commands) {
+    if (done) break;
+    for (const cmd of group.commands) {
+      if (done) break;
       findMatches(cmd);
-    });
-  });
+    }
+  }
 
   const returnGroup: QuickActionCommandGroup = {
     icon: MynahIcons.SEARCH,

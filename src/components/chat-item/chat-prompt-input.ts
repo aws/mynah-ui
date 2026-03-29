@@ -92,6 +92,8 @@ export class ChatPromptInput {
   private userPromptHistoryIndex: number = -1;
   private lastUnsentUserPrompt: UserPrompt;
   private readonly markerRemovalRegex = new RegExp(`${MARK_OPEN}|${MARK_CLOSE}`, 'g');
+  private quickPickFilterDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private quickPickFilterGeneration: number = 0;
   constructor (props: ChatPromptInputProps) {
     this.props = props;
     this.promptTextInputCommand = new ChatPromptInputCommand({
@@ -547,28 +549,56 @@ export class ChatPromptInput {
             if (e.key === KeyMap.ARROW_LEFT || e.key === KeyMap.ARROW_RIGHT) {
               cancelEvent(e);
             } else {
-              this.filteredQuickPickItemGroups = [];
+              // Update search term immediately so keystrokes are never blocked
               // In case the prompt is an incomplete regex
               try {
                 if (e.key === KeyMap.BACKSPACE) {
                   const isAllSelected = window.getSelection()?.toString() === this.promptTextInput.getTextInputValue();
                   if (this.searchTerm === '' || isAllSelected) {
                     this.quickPick.close();
+                    return;
                   } else {
                     this.searchTerm = this.searchTerm.slice(0, -1);
                   }
                 } else if ((!e.ctrlKey && !e.metaKey) && e.key.length === 1) {
                   this.searchTerm += e.key.toLowerCase();
                 }
-                this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
               } catch (e) {}
-              if (this.filteredQuickPickItemGroups.length > 0) {
-                this.quickPick.toggleHidden(false);
-                this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
-              } else {
-              // If there's no matching action, hide the command selector overlay
-                this.quickPick.toggleHidden(true);
+
+              // Cancel any pending debounced filter before scheduling a new one
+              if (this.quickPickFilterDebounceTimer != null) {
+                clearTimeout(this.quickPickFilterDebounceTimer);
+                this.quickPickFilterDebounceTimer = null;
               }
+
+              // Increment generation counter so any in-flight filter from a previous keystroke is discarded
+              this.quickPickFilterGeneration++;
+              const currentGeneration = this.quickPickFilterGeneration;
+
+              // Debounce the expensive filter/render so it runs at most once per 200ms
+              this.quickPickFilterDebounceTimer = setTimeout(() => {
+                this.quickPickFilterDebounceTimer = null;
+
+                // If a newer keystroke arrived since this timer was scheduled, discard this stale result
+                if (currentGeneration !== this.quickPickFilterGeneration) {
+                  return;
+                }
+
+                this.filteredQuickPickItemGroups = [];
+                try {
+                  this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
+                } catch (_e) {}
+
+                if (this.quickPick != null) {
+                  if (this.filteredQuickPickItemGroups.length > 0) {
+                    this.quickPick.toggleHidden(false);
+                    this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+                  } else {
+                    // If there's no matching action, hide the command selector overlay
+                    this.quickPick.toggleHidden(true);
+                  }
+                }
+              }, 200);
             }
           }
         }
@@ -613,6 +643,10 @@ export class ChatPromptInput {
         horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
         onClose: () => {
           this.quickPickOpen = false;
+          if (this.quickPickFilterDebounceTimer != null) {
+            clearTimeout(this.quickPickFilterDebounceTimer);
+            this.quickPickFilterDebounceTimer = null;
+          }
           window.removeEventListener('keydown', this.tabBarTitleOverlayKeyPressHandler);
         },
         children: [
@@ -945,6 +979,10 @@ export class ChatPromptInput {
   };
 
   public readonly destroy = (): void => {
+    if (this.quickPickFilterDebounceTimer != null) {
+      clearTimeout(this.quickPickFilterDebounceTimer);
+      this.quickPickFilterDebounceTimer = null;
+    }
     this.promptTextInput.destroy();
   };
 
