@@ -76,6 +76,10 @@ export class DetailedListWrapper {
         this.filterActionsContainer
       ]
     });
+
+    // Eagerly load buffer blocks adjacent to the viewport after the first
+    // block is rendered, so the user doesn't see empty space while scrolling.
+    requestAnimationFrame(() => this.handleScroll());
   }
 
   /**
@@ -90,6 +94,7 @@ export class DetailedListWrapper {
    */
   private readonly handleScroll = (): void => {
     const wrapperOffsetHeight = this.detailedListItemGroupsContainer.offsetHeight;
+    if (wrapperOffsetHeight === 0) return; // Not laid out yet — skip
     const wrapperScrollTop = this.detailedListItemGroupsContainer.scrollTop;
     const buffer = wrapperOffsetHeight;
 
@@ -203,7 +208,7 @@ export class DetailedListWrapper {
                 }
               }) ]
             : []),
-          ...((chunkArray(detailedListGroup.children ?? [], 100)).map((detailedListItemPart, index) => {
+          ...((chunkArray(detailedListGroup.children ?? [], 25)).map((detailedListItemPart, index) => {
             const itemBlockKey = generateUID();
             const detailedListItemBlock = DomBuilder.getInstance().build({
               type: 'div',
@@ -212,7 +217,7 @@ export class DetailedListWrapper {
                 style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-8) + var(--mynah-sizing-half)));`
               },
               classNames: [ 'mynah-detailed-list-items-block', (detailedListGroup.groupName !== undefined && detailedListGroup.childrenIndented === true) ? 'indented' : '' ],
-              children: index < 5
+              children: index < 1
                 ? this.getDetailedListItemElements(detailedListItemPart)
                 : []
             });
@@ -349,16 +354,14 @@ export class DetailedListWrapper {
         children: this.getDetailedListItemGroups()
       });
 
-      // Restore scroll position after DOM update if preserveScrollPosition is true
       if (preserveScrollPosition === true) {
-      // Use requestAnimationFrame to ensure the DOM has been updated
         requestAnimationFrame(() => {
-        // Set the scroll position
           this.detailedListItemGroupsContainer.scrollTop = scrollTop;
-
-          // Trigger the virtualization logic using the existing handler
           this.handleScroll();
         });
+      } else {
+        // Eagerly load buffer blocks adjacent to the viewport after rebuild
+        requestAnimationFrame(() => this.handleScroll());
       }
     }
   };
