@@ -15,7 +15,7 @@ import { QuickActionCommandGroup, QuickActionCommand } from '../../static';
  * Generate a small set of QuickActionCommandGroups simulating a small repo (<1,000 items).
  * Items have varied names to exercise all scoring tiers.
  */
-function generateSmallCommandGroups(items: Array<{ command: string; id: string }>): QuickActionCommandGroup[] {
+function generateSmallCommandGroups (items: Array<{ command: string; id: string }>): QuickActionCommandGroup[] {
   const commands: QuickActionCommand[] = items.map(item => ({
     command: item.command,
     id: item.id,
@@ -24,17 +24,14 @@ function generateSmallCommandGroups(items: Array<{ command: string; id: string }
     description: `workspace/${item.command}`,
   }));
 
-  return [{
+  return [ {
     groupName: 'Files',
     commands,
-  }];
+  } ];
 }
 
 /** Arbitrary for search terms that are non-empty lowercase strings (1-10 chars) */
 const searchTermArb = fc.stringMatching(/^[a-z]{1,10}$/);
-
-/** Arbitrary for small item counts in the non-bug-condition range (<1,000) */
-const smallItemCount = fc.integer({ min: 1, max: 999 });
 
 /**
  * Arbitrary for a list of command names that are realistic file-path-like strings.
@@ -44,7 +41,7 @@ const commandNameArb = fc.tuple(
   fc.constantFrom('src', 'lib', 'test', 'docs', 'utils', 'config', 'main', 'index', 'helper', 'service'),
   fc.constantFrom('module', 'component', 'handler', 'provider', 'factory', 'manager', 'controller', 'adapter'),
   fc.constantFrom('.ts', '.js', '.tsx', '.json', '.md')
-).map(([prefix, name, ext]) => `${prefix}/${name}${ext}`);
+).map(([ prefix, name, ext ]) => `${prefix}/${name}${ext}`);
 
 describe('Preservation: Small Repo filterQuickPickItems Behavior', () => {
   /**
@@ -89,7 +86,7 @@ describe('Preservation: Small Repo filterQuickPickItems Behavior', () => {
           const scores = resultCommands.map(cmd => {
             // Find the original command name by matching the id
             const original = items.find(item => item.id === cmd.id);
-            if (!original) return 0;
+            if (original == null) return 0;
             return calculateScore(original.command, searchTerm);
           });
 
@@ -158,14 +155,14 @@ describe('Preservation: Small Repo filterQuickPickItems Behavior', () => {
         fc.array(quickActionNameArb, { minLength: 1, maxLength: 49 }),
         searchTermArb,
         (actionNames, searchTerm) => {
-          const commands: QuickActionCommandGroup[] = [{
+          const commands: QuickActionCommandGroup[] = [ {
             groupName: 'Quick Actions',
             commands: actionNames.map((name, i) => ({
               command: name,
               id: `action-${i}`,
               description: `Quick action: ${name}`,
             })),
-          }];
+          } ];
 
           const result = filterQuickPickItems(commands, searchTerm);
 
@@ -202,7 +199,7 @@ describe('Preservation: Small Repo filterQuickPickItems Behavior', () => {
 /**
  * Helper: mirrors the scoring logic from quick-pick-data-handler.ts
  */
-function calculateScore(text: string, searchTerm: string): number {
+function calculateScore (text: string, searchTerm: string): number {
   const normalizedText = text.toLowerCase();
   const normalizedTerm = searchTerm.toLowerCase();
 
