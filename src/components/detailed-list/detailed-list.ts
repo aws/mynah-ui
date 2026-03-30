@@ -354,13 +354,15 @@ export class DetailedListWrapper {
         children: this.getDetailedListItemGroups()
       });
 
+      // Only schedule eager block loading if there are unrendered blocks beyond the first.
+      // For small lists (single block per group), all content is already rendered inline.
+      const hasUnrenderedBlocks = this.detailedListItemsBlockData.some(b => b.element.childNodes.length === 0);
       if (preserveScrollPosition === true) {
         requestAnimationFrame(() => {
           this.detailedListItemGroupsContainer.scrollTop = scrollTop;
           this.handleScroll();
         });
-      } else {
-        // Eagerly load buffer blocks adjacent to the viewport after rebuild
+      } else if (hasUnrenderedBlocks) {
         requestAnimationFrame(() => this.handleScroll());
       }
     }
