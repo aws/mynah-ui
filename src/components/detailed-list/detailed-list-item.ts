@@ -8,6 +8,7 @@ import { Overlay, OverlayHorizontalDirection, OverlayVerticalDirection } from '.
 import { parseMarkdown } from '../../helper/marked';
 import { Card } from '../card/card';
 import { CardBody } from '../card/card-body';
+import { cleanHtml } from '../../helper/sanitize';
 
 const TOOLTIP_DELAY = 350;
 
@@ -77,7 +78,7 @@ export class DetailedListItemWrapper {
               ? [ {
                   type: 'div',
                   classNames: [ 'mynah-detailed-list-item-name' ],
-                  innerHTML: this.props.listItem.title ?? this.props.listItem.name
+                  innerHTML: cleanHtml(this.props.listItem.title ?? this.props.listItem.name ?? '')
                 } ]
               : []),
             ...(this.props.listItem.description != null
