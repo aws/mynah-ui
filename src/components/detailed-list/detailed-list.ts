@@ -39,26 +39,26 @@ export class DetailedListWrapper {
 
   private activeTargetElementIndex: number = -1;
   private allSelectableDetailedListElements: DetailedListItemWrapper[] = [];
-  constructor (props: DetailedListWrapperProps) {
+  constructor(props: DetailedListWrapperProps) {
     this.props = props;
     this.headerContainer = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-detailed-list-header-wrapper' ],
+      classNames: ['mynah-detailed-list-header-wrapper'],
       children: this.getHeader()
     });
     this.filtersContainer = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-detailed-list-filters-wrapper' ],
+      classNames: ['mynah-detailed-list-filters-wrapper'],
       children: this.getFilters()
     });
     this.filterActionsContainer = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-detailed-list-filter-actions-wrapper' ],
+      classNames: ['mynah-detailed-list-filter-actions-wrapper'],
       children: this.getFilterActions()
     });
     this.detailedListItemGroupsContainer = DomBuilder.getInstance().build({
       type: 'div',
-      classNames: [ 'mynah-detailed-list-item-groups-wrapper' ],
+      classNames: ['mynah-detailed-list-item-groups-wrapper'],
       children: this.getDetailedListItemGroups(),
       events: {
         scroll: this.handleScroll
@@ -68,7 +68,7 @@ export class DetailedListWrapper {
     this.render = DomBuilder.getInstance().build({
       type: 'div',
       testId: testIds.prompt.quickPicksWrapper,
-      classNames: [ 'mynah-detailed-list' ],
+      classNames: ['mynah-detailed-list'],
       children: [
         this.headerContainer,
         this.filtersContainer,
@@ -104,7 +104,7 @@ export class DetailedListWrapper {
       const hasChildren = itemsBlock.element.childNodes.length > 0;
 
       const isVisible = (itemBlockTop < wrapperScrollTop + wrapperOffsetHeight + buffer) &&
-                     (itemBlockBottom > wrapperScrollTop - buffer);
+        (itemBlockBottom > wrapperScrollTop - buffer);
 
       if (!hasChildren && isVisible) {
         // Block is visible but not rendered yet - add DOM elements
@@ -120,31 +120,31 @@ export class DetailedListWrapper {
 
   private readonly getHeader = (): Array<ExtendedHTMLElement | string> => {
     if (this.props.detailedList.header != null) {
-      return [ new TitleDescriptionWithIcon({
+      return [new TitleDescriptionWithIcon({
         description: DomBuilder.getInstance().build({
           type: 'div',
           children: [
             this.props.detailedList.header.description ?? '',
             ...(this.props.detailedList.header.status != null
-              ? [ new Card({
-                  testId: testIds.sheet.description,
-                  border: true,
-                  padding: 'medium',
-                  status: this.props.detailedList.header.status?.status,
-                  children: [ new TitleDescriptionWithIcon({
-                    description: this.props.detailedList.header.status?.description,
-                    title: this.props.detailedList.header.status?.title,
-                    icon: this.props.detailedList.header.status?.icon
-                  }).render ],
-                }).render ]
+              ? [new Card({
+                testId: testIds.sheet.description,
+                border: true,
+                padding: 'medium',
+                status: this.props.detailedList.header.status?.status,
+                children: [new TitleDescriptionWithIcon({
+                  description: this.props.detailedList.header.status?.description,
+                  title: this.props.detailedList.header.status?.title,
+                  icon: this.props.detailedList.header.status?.icon
+                }).render],
+              }).render]
               : [])
           ]
         }),
         icon: this.props.detailedList.header.icon,
         title: this.props.detailedList.header.title,
-      }).render ];
+      }).render];
     }
-    return [ '' ];
+    return [''];
   };
 
   private readonly getFilters = (): Array<ExtendedHTMLElement | string> => {
@@ -156,18 +156,18 @@ export class DetailedListWrapper {
         },
         onFormChange: this.props.onFilterValueChange
       });
-      return [ this.filterForm.render ];
+      return [this.filterForm.render];
     }
-    return [ '' ];
+    return [''];
   };
 
   private readonly getFilterActions = (): ExtendedHTMLElement[] => {
-    return [ new ChatItemButtonsWrapper({
+    return [new ChatItemButtonsWrapper({
       onActionClick: (action) => {
         this.props.onFilterActionClick?.(action, this.filterForm?.getAllValues(), this.filterForm?.isFormValid());
       },
       buttons: this.props.detailedList.filterActions ?? [],
-    }).render ];
+    }).render];
   };
 
   private readonly getDetailedListItemGroups = (): Array<ExtendedHTMLElement | string> => {
@@ -175,38 +175,38 @@ export class DetailedListWrapper {
       return DomBuilder.getInstance().build({
         type: 'div',
         testId: testIds.prompt.quickPicksGroup,
-        classNames: [ 'mynah-detailed-list-group' ],
+        classNames: ['mynah-detailed-list-group'],
         children: [
           ...(detailedListGroup.groupName !== undefined
-            ? [ DomBuilder.getInstance().build({
-                type: 'div',
-                testId: testIds.prompt.quickPicksGroupTitle,
-                classNames: [ 'mynah-detailed-list-group-title', (this.props.onGroupClick != null && this.props.detailedList.selectable === 'clickable') ? 'mynah-group-title-clickable' : '' ],
-                children: [
-                  ...(detailedListGroup.icon != null ? [ new Icon({ icon: detailedListGroup.icon }).render ] : []),
-                  new CardBody({
-                    body: detailedListGroup.groupName,
-                  }).render,
-                  new ChatItemButtonsWrapper({
-                    buttons: (detailedListGroup.actions ?? []).map(action => ({
-                      id: action.id,
-                      status: action.status,
-                      icon: action.icon,
-                      text: action.text,
-                      disabled: false
-                    })),
-                    onActionClick: (action) => { this.props.onGroupActionClick?.(action, detailedListGroup.groupName); }
-                  }).render
-                ],
-                events: {
-                  click: (e) => {
-                    if (this.props.onGroupClick != null && detailedListGroup.groupName != null && this.props.detailedList.selectable === 'clickable') {
-                      cancelEvent(e);
-                      this.props.onGroupClick(detailedListGroup.groupName);
-                    }
+            ? [DomBuilder.getInstance().build({
+              type: 'div',
+              testId: testIds.prompt.quickPicksGroupTitle,
+              classNames: ['mynah-detailed-list-group-title', (this.props.onGroupClick != null && this.props.detailedList.selectable === 'clickable') ? 'mynah-group-title-clickable' : ''],
+              children: [
+                ...(detailedListGroup.icon != null ? [new Icon({ icon: detailedListGroup.icon }).render] : []),
+                new CardBody({
+                  body: detailedListGroup.groupName,
+                }).render,
+                new ChatItemButtonsWrapper({
+                  buttons: (detailedListGroup.actions ?? []).map(action => ({
+                    id: action.id,
+                    status: action.status,
+                    icon: action.icon,
+                    text: action.text,
+                    disabled: false
+                  })),
+                  onActionClick: (action) => { this.props.onGroupActionClick?.(action, detailedListGroup.groupName); }
+                }).render
+              ],
+              events: {
+                click: (e) => {
+                  if (this.props.onGroupClick != null && detailedListGroup.groupName != null && this.props.detailedList.selectable === 'clickable') {
+                    cancelEvent(e);
+                    this.props.onGroupClick(detailedListGroup.groupName);
                   }
                 }
-              }) ]
+              }
+            })]
             : []),
           ...((chunkArray(detailedListGroup.children ?? [], 25)).map((detailedListItemPart, index) => {
             const itemBlockKey = generateUID();
@@ -216,7 +216,7 @@ export class DetailedListWrapper {
                 key: itemBlockKey,
                 style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-8) + var(--mynah-sizing-half)));`
               },
-              classNames: [ 'mynah-detailed-list-items-block', (detailedListGroup.groupName !== undefined && detailedListGroup.childrenIndented === true) ? 'indented' : '' ],
+              classNames: ['mynah-detailed-list-items-block', (detailedListGroup.groupName !== undefined && detailedListGroup.childrenIndented === true) ? 'indented' : ''],
               children: index < 1
                 ? this.getDetailedListItemElements(detailedListItemPart)
                 : []
@@ -230,7 +230,7 @@ export class DetailedListWrapper {
         ]
       });
     });
-    return groups ?? [ '' ];
+    return groups ?? [''];
   };
 
   private readonly getDetailedListItemElements = (detailedListItems: DetailedListItem[]): ExtendedHTMLElement[] => {
