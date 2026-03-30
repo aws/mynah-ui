@@ -565,25 +565,7 @@ export class ChatPromptInput {
                 }
               } catch (e) {}
 
-              // Cancel any pending debounced filter before scheduling a new one
-              if (this.quickPickFilterDebounceTimer != null) {
-                clearTimeout(this.quickPickFilterDebounceTimer);
-                this.quickPickFilterDebounceTimer = null;
-              }
-
-              // Increment generation counter so any in-flight filter from a previous keystroke is discarded
-              this.quickPickFilterGeneration++;
-              const currentGeneration = this.quickPickFilterGeneration;
-
-              // Debounce the expensive filter/render so it runs at most once per 200ms
-              this.quickPickFilterDebounceTimer = setTimeout(() => {
-                this.quickPickFilterDebounceTimer = null;
-
-                // If a newer keystroke arrived since this timer was scheduled, discard this stale result
-                if (currentGeneration !== this.quickPickFilterGeneration) {
-                  return;
-                }
-
+              const runFilter = (): void => {
                 this.filteredQuickPickItemGroups = [];
                 try {
                   this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
@@ -594,11 +576,32 @@ export class ChatPromptInput {
                     this.quickPick.toggleHidden(false);
                     this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
                   } else {
-                    // If there's no matching action, hide the command selector overlay
                     this.quickPick.toggleHidden(true);
                   }
                 }
-              }, 200);
+              };
+
+              // Only debounce for context commands (@ mentions) which can have 10k+ items.
+              // Quick actions (/ commands) are small lists — filter synchronously.
+              if (this.quickPickType === 'context') {
+                if (this.quickPickFilterDebounceTimer != null) {
+                  clearTimeout(this.quickPickFilterDebounceTimer);
+                  this.quickPickFilterDebounceTimer = null;
+                }
+
+                this.quickPickFilterGeneration++;
+                const currentGeneration = this.quickPickFilterGeneration;
+
+                this.quickPickFilterDebounceTimer = setTimeout(() => {
+                  this.quickPickFilterDebounceTimer = null;
+                  if (currentGeneration !== this.quickPickFilterGeneration) {
+                    return;
+                  }
+                  runFilter();
+                }, 200);
+              } else {
+                runFilter();
+              }
             }
           }
         }

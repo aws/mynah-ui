@@ -15,14 +15,16 @@ export const filterQuickPicks = async (page: Page, mode?: 'command' | 'context',
   await input.press(mode === 'context' ? 'w' : 'h');
   await waitForAnimationEnd(page);
 
-  // Wait for the debounced filter to render results (filter is debounced at 200ms)
-  const quickPickItem = page.locator(getSelector(testIds.prompt.quickPickItem));
-  await quickPickItem.first().waitFor({ state: 'visible', timeout: 5000 });
-
   // Check that the command selector is opened, and visible
   const commandSelector = page.locator(getSelector(testIds.prompt.quickPicksWrapper)).nth(-1);
   expect(commandSelector).toBeDefined();
   expect(await commandSelector.isVisible()).toBeTruthy();
+
+  // For context commands, wait for debounced filter results (200ms debounce)
+  const quickPickItem = page.locator(getSelector(testIds.prompt.quickPickItem));
+  if (mode === 'context') {
+    await quickPickItem.first().waitFor({ state: 'visible', timeout: 5000 });
+  }
 
   // Check that there is only one suggestion
   expect(await quickPickItem.count()).toBe(1);
