@@ -208,7 +208,7 @@ export class DetailedListWrapper {
                 }
               }) ]
             : []),
-          ...((chunkArray(detailedListGroup.children ?? [], 25)).map((detailedListItemPart, index) => {
+          ...((chunkArray(detailedListGroup.children ?? [], 50)).map((detailedListItemPart, index) => {
             const itemBlockKey = generateUID();
             const detailedListItemBlock = DomBuilder.getInstance().build({
               type: 'div',

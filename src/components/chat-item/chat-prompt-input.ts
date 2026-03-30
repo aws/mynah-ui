@@ -93,7 +93,6 @@ export class ChatPromptInput {
   private lastUnsentUserPrompt: UserPrompt;
   private readonly markerRemovalRegex = new RegExp(`${MARK_OPEN}|${MARK_CLOSE}`, 'g');
   private quickPickFilterDebounceTimer: ReturnType<typeof setTimeout> | null = null;
-  private quickPickFilterGeneration: number = 0;
   constructor (props: ChatPromptInputProps) {
     this.props = props;
     this.promptTextInputCommand = new ChatPromptInputCommand({
@@ -589,14 +588,8 @@ export class ChatPromptInput {
                   this.quickPickFilterDebounceTimer = null;
                 }
 
-                this.quickPickFilterGeneration++;
-                const currentGeneration = this.quickPickFilterGeneration;
-
                 this.quickPickFilterDebounceTimer = setTimeout(() => {
                   this.quickPickFilterDebounceTimer = null;
-                  if (currentGeneration !== this.quickPickFilterGeneration) {
-                    return;
-                  }
                   runFilter();
                 }, 200);
               } else {

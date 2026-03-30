@@ -9,29 +9,15 @@ import { MynahIcons } from '../main';
  */
 const MAX_FILTER_RESULTS = 1000;
 
-/**
- * Maximum number of items to scan when filtering large lists.
- * Bounds the CPU cost per call so rapid sequential keystrokes don't
- * compound into multi-second hangs.
- */
-const MAX_SCAN_ITEMS = 1000;
-
 export const filterQuickPickItems = (commands: QuickActionCommandGroup[], searchTerm: string, hideSearchGroup?: boolean): QuickActionCommandGroup[] => {
   if (searchTerm.trim() === '') {
     return commands;
   }
 
   const matchedCommands: Array<{score: number; command: QuickActionCommand}> = [];
-  let scannedCount = 0;
-  let done = false;
 
   const findMatches = (cmd: QuickActionCommand): void => {
-    if (done) return;
-    scannedCount++;
-    if (scannedCount > MAX_SCAN_ITEMS || matchedCommands.length >= MAX_FILTER_RESULTS) {
-      done = true;
-      return;
-    }
+    if (matchedCommands.length >= MAX_FILTER_RESULTS) return;
 
     const score = calculateItemScore(cmd.command, searchTerm);
     if (score > 0) {
@@ -44,11 +30,11 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroup[], search
       });
     }
 
-    if (!done) {
+    if (matchedCommands.length < MAX_FILTER_RESULTS) {
       cmd.children?.forEach(childGroup => {
-        if (done) return;
+        if (matchedCommands.length >= MAX_FILTER_RESULTS) return;
         childGroup.commands.forEach(childCmd => {
-          if (done) return;
+          if (matchedCommands.length >= MAX_FILTER_RESULTS) return;
           findMatches(childCmd);
         });
       });
@@ -56,9 +42,9 @@ export const filterQuickPickItems = (commands: QuickActionCommandGroup[], search
   };
 
   for (const group of commands) {
-    if (done) break;
+    if (matchedCommands.length >= MAX_FILTER_RESULTS) break;
     for (const cmd of group.commands) {
-      if (done) break;
+      if (matchedCommands.length >= MAX_FILTER_RESULTS) break;
       findMatches(cmd);
     }
   }
