@@ -35,6 +35,7 @@ export class PromptTextInput {
   private contextTooltip: Overlay | null;
   private contextTooltipTimeout: ReturnType<typeof setTimeout>;
   private mutationObserver: MutationObserver | null = null;
+  private hasImageCommand: boolean = false;
 
   constructor (props: PromptTextInputProps) {
     this.props = props;
@@ -75,13 +76,7 @@ export class PromptTextInput {
         keyup: (e: KeyboardEvent) => {
           this.lastCursorIndex = this.updateCursorPos();
 
-          // Check if image command exists in context commands to make the feature consistent
-          const contextCommands = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[] | undefined;
-          const hasImageCommand = contextCommands?.some(group =>
-            group.commands.some(cmd => cmd.command.toLowerCase() === 'image')
-          );
-
-          if (hasImageCommand ?? false) {
+          if (this.hasImageCommand) {
             const text = this.promptTextInput.textContent ?? '';
             if (text.includes(IMAGE_CONTEXT_SELECT_KEYWORD)) {
               // Dispatch event to open file system
@@ -174,6 +169,18 @@ export class PromptTextInput {
 
     // Set up MutationObserver to detect context span removals
     this.setupContextRemovalObserver();
+
+    // Cache whether image command exists to avoid deep-cloning contextCommands on every keyup
+    const contextCommandsRaw = MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands');
+    this.hasImageCommand = Array.isArray(contextCommandsRaw) && (contextCommandsRaw as QuickActionCommandGroup[]).some(group =>
+      group.commands.some(cmd => cmd.command.toLowerCase() === 'image')
+    );
+
+    MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('contextCommands', (contextCommands: QuickActionCommandGroup[]) => {
+      this.hasImageCommand = Array.isArray(contextCommands) && contextCommands.some(group =>
+        group.commands.some(cmd => cmd.command.toLowerCase() === 'image')
+      );
+    });
 
     MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).subscribe('promptInputDisabledState', (isDisabled: boolean) => {
       if (isDisabled) {
