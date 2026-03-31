@@ -230,6 +230,29 @@ export class ChatPromptInput {
         this.contextSelectorButton.setEnabled(false);
         this.contextSelectorButton.render.addClass('hidden');
       }
+
+      // When the quick pick is open in context mode and the store gets updated
+      // (e.g. from a server-side filter response), refresh the picker with the
+      // new items.  The server-side search term matches the current this.searchTerm,
+      // so we run the local filter to apply highlights and re-render.
+      if (this.quickPick != null && this.quickPickType === 'context' && contextCommands?.length > 0) {
+        this.quickPickItemGroups = contextCommands as QuickActionCommandGroup[];
+        if (this.searchTerm.length > 0) {
+          try {
+            this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
+          } catch (_e) {
+            this.filteredQuickPickItemGroups = [];
+          }
+        } else {
+          this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+        }
+        if (this.filteredQuickPickItemGroups.length > 0) {
+          this.quickPick.toggleHidden(false);
+          this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+        } else {
+          this.quickPick.toggleHidden(true);
+        }
+      }
     });
     this.chatPrompt = DomBuilder.getInstance().build({
       type: 'div',
@@ -590,7 +613,16 @@ export class ChatPromptInput {
 
                 this.quickPickFilterDebounceTimer = setTimeout(() => {
                   this.quickPickFilterDebounceTimer = null;
+                  // Run local filter over the capped initial set for immediate feedback
                   runFilter();
+                  // Dispatch event for server-side filtering over the full item set.
+                  // The host sends the search to the server, which responds with filtered
+                  // results and updates the store's contextCommands — the store listener
+                  // below will pick that up and refresh the picker.
+                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_COMMAND_FILTER, {
+                    tabId: this.props.tabId,
+                    searchTerm: this.searchTerm,
+                  });
                 }, 200);
               } else {
                 runFilter();
