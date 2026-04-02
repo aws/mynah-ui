@@ -165,6 +165,16 @@ export interface MynahUIProps {
     tabId: string,
     eventId?: string
   ) => boolean;
+  /**
+   * Called when the user types in the `@` context picker.
+   * The host should send the search term to the server for filtering
+   * and update the store's `contextCommands` with the server response.
+   * If not provided, client-side filtering is used as a fallback.
+   */
+  onContextCommandFilter?: (
+    tabId: string,
+    searchTerm: string
+  ) => void;
   onTabRemove?: (
     tabId: string,
     eventId?: string) => void;
@@ -561,6 +571,15 @@ export class MynahUI {
       promptInputCallback: (insert: boolean) => void;
     }) => {
       data.promptInputCallback(this.props.onContextSelected === undefined || this.props.onContextSelected(data.contextItem, data.tabId, this.getUserEventId()));
+    });
+
+    MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.CONTEXT_COMMAND_FILTER, (data: {
+      tabId: string;
+      searchTerm: string;
+    }) => {
+      if (this.props.onContextCommandFilter != null) {
+        this.props.onContextCommandFilter(data.tabId, data.searchTerm);
+      }
     });
 
     MynahUIGlobalEvents.getInstance().addListener(MynahEventNames.FORM_MODIFIER_ENTER_PRESS, (data: {

@@ -92,6 +92,7 @@ export class ChatPromptInput {
   private userPromptHistoryIndex: number = -1;
   private lastUnsentUserPrompt: UserPrompt;
   private readonly markerRemovalRegex = new RegExp(`${MARK_OPEN}|${MARK_CLOSE}`, 'g');
+  private quickPickFilterDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   constructor (props: ChatPromptInputProps) {
     this.props = props;
     this.promptTextInputCommand = new ChatPromptInputCommand({
@@ -228,6 +229,29 @@ export class ChatPromptInput {
       } else {
         this.contextSelectorButton.setEnabled(false);
         this.contextSelectorButton.render.addClass('hidden');
+      }
+
+      // When the quick pick is open in context mode and the store gets updated
+      // (e.g. from a server-side filter response), refresh the picker with the
+      // new items.  The server-side search term matches the current this.searchTerm,
+      // so we run the local filter to apply highlights and re-render.
+      if (this.quickPick != null && this.quickPickType === 'context' && contextCommands?.length > 0) {
+        this.quickPickItemGroups = contextCommands as QuickActionCommandGroup[];
+        if (this.searchTerm.length > 0) {
+          try {
+            this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
+          } catch (_e) {
+            this.filteredQuickPickItemGroups = [];
+          }
+        } else {
+          this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
+        }
+        if (this.filteredQuickPickItemGroups.length > 0) {
+          this.quickPick.toggleHidden(false);
+          this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+        } else {
+          this.quickPick.toggleHidden(true);
+        }
       }
     });
     this.chatPrompt = DomBuilder.getInstance().build({
@@ -547,27 +571,61 @@ export class ChatPromptInput {
             if (e.key === KeyMap.ARROW_LEFT || e.key === KeyMap.ARROW_RIGHT) {
               cancelEvent(e);
             } else {
-              this.filteredQuickPickItemGroups = [];
+              // Update search term immediately so keystrokes are never blocked
               // In case the prompt is an incomplete regex
               try {
                 if (e.key === KeyMap.BACKSPACE) {
                   const isAllSelected = window.getSelection()?.toString() === this.promptTextInput.getTextInputValue();
                   if (this.searchTerm === '' || isAllSelected) {
                     this.quickPick.close();
+                    return;
                   } else {
                     this.searchTerm = this.searchTerm.slice(0, -1);
                   }
                 } else if ((!e.ctrlKey && !e.metaKey) && e.key.length === 1) {
                   this.searchTerm += e.key.toLowerCase();
                 }
-                this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
               } catch (e) {}
-              if (this.filteredQuickPickItemGroups.length > 0) {
-                this.quickPick.toggleHidden(false);
-                this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+
+              const runFilter = (): void => {
+                this.filteredQuickPickItemGroups = [];
+                try {
+                  this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
+                } catch (_e) {}
+
+                if (this.quickPick != null) {
+                  if (this.filteredQuickPickItemGroups.length > 0) {
+                    this.quickPick.toggleHidden(false);
+                    this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+                  } else {
+                    this.quickPick.toggleHidden(true);
+                  }
+                }
+              };
+
+              // Only debounce for context commands (@ mentions) which can have 10k+ items.
+              // Quick actions (/ commands) are small lists — filter synchronously.
+              if (this.quickPickType === 'context') {
+                if (this.quickPickFilterDebounceTimer != null) {
+                  clearTimeout(this.quickPickFilterDebounceTimer);
+                  this.quickPickFilterDebounceTimer = null;
+                }
+
+                this.quickPickFilterDebounceTimer = setTimeout(() => {
+                  this.quickPickFilterDebounceTimer = null;
+                  // Run local filter over the capped initial set for immediate feedback
+                  runFilter();
+                  // Dispatch event for server-side filtering over the full item set.
+                  // The host sends the search to the server, which responds with filtered
+                  // results and updates the store's contextCommands — the store listener
+                  // below will pick that up and refresh the picker.
+                  MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_COMMAND_FILTER, {
+                    tabId: this.props.tabId,
+                    searchTerm: this.searchTerm,
+                  });
+                }, 200);
               } else {
-              // If there's no matching action, hide the command selector overlay
-                this.quickPick.toggleHidden(true);
+                runFilter();
               }
             }
           }
@@ -613,6 +671,10 @@ export class ChatPromptInput {
         horizontalDirection: OverlayHorizontalDirection.START_TO_RIGHT,
         onClose: () => {
           this.quickPickOpen = false;
+          if (this.quickPickFilterDebounceTimer != null) {
+            clearTimeout(this.quickPickFilterDebounceTimer);
+            this.quickPickFilterDebounceTimer = null;
+          }
           window.removeEventListener('keydown', this.tabBarTitleOverlayKeyPressHandler);
         },
         children: [
@@ -945,6 +1007,10 @@ export class ChatPromptInput {
   };
 
   public readonly destroy = (): void => {
+    if (this.quickPickFilterDebounceTimer != null) {
+      clearTimeout(this.quickPickFilterDebounceTimer);
+      this.quickPickFilterDebounceTimer = null;
+    }
     this.promptTextInput.destroy();
   };
 

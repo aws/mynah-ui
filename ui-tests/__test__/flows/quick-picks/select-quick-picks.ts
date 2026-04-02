@@ -14,6 +14,10 @@ export const selectQuickPicks = async (page: Page, method: 'click' | 'Tab' | 'En
   await waitForAnimationEnd(page);
   await input.press(mode === 'context' ? 'w' : 'h');
   await waitForAnimationEnd(page);
+  // For context commands, wait for debounced filter results (200ms debounce)
+  if (mode === 'context') {
+    await page.locator(getSelector(testIds.prompt.quickPickItem)).first().waitFor({ state: 'visible', timeout: 5000 });
+  }
   if (method !== 'click') {
     await input.press(method);
   } else {

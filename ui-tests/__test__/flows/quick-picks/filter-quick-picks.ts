@@ -20,8 +20,13 @@ export const filterQuickPicks = async (page: Page, mode?: 'command' | 'context',
   expect(commandSelector).toBeDefined();
   expect(await commandSelector.isVisible()).toBeTruthy();
 
-  // Check that there is only one suggestion
+  // For context commands, wait for debounced filter results (200ms debounce)
   const quickPickItem = page.locator(getSelector(testIds.prompt.quickPickItem));
+  if (mode === 'context') {
+    await quickPickItem.first().waitFor({ state: 'visible', timeout: 5000 });
+  }
+
+  // Check that there is only one suggestion
   expect(await quickPickItem.count()).toBe(1);
 
   // Check that the suggestions are what we expect from the first character

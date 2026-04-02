@@ -76,6 +76,10 @@ export class DetailedListWrapper {
         this.filterActionsContainer
       ]
     });
+
+    // Eagerly load buffer blocks adjacent to the viewport after the first
+    // block is rendered, so the user doesn't see empty space while scrolling.
+    requestAnimationFrame(() => this.handleScroll());
   }
 
   /**
@@ -90,6 +94,7 @@ export class DetailedListWrapper {
    */
   private readonly handleScroll = (): void => {
     const wrapperOffsetHeight = this.detailedListItemGroupsContainer.offsetHeight;
+    if (wrapperOffsetHeight === 0) return; // Not laid out yet — skip
     const wrapperScrollTop = this.detailedListItemGroupsContainer.scrollTop;
     const buffer = wrapperOffsetHeight;
 
@@ -99,7 +104,7 @@ export class DetailedListWrapper {
       const hasChildren = itemsBlock.element.childNodes.length > 0;
 
       const isVisible = (itemBlockTop < wrapperScrollTop + wrapperOffsetHeight + buffer) &&
-                     (itemBlockBottom > wrapperScrollTop - buffer);
+        (itemBlockBottom > wrapperScrollTop - buffer);
 
       if (!hasChildren && isVisible) {
         // Block is visible but not rendered yet - add DOM elements
@@ -203,7 +208,7 @@ export class DetailedListWrapper {
                 }
               }) ]
             : []),
-          ...((chunkArray(detailedListGroup.children ?? [], 100)).map((detailedListItemPart, index) => {
+          ...((chunkArray(detailedListGroup.children ?? [], 50)).map((detailedListItemPart, index) => {
             const itemBlockKey = generateUID();
             const detailedListItemBlock = DomBuilder.getInstance().build({
               type: 'div',
@@ -212,7 +217,7 @@ export class DetailedListWrapper {
                 style: `min-height: calc(${detailedListItemPart.length} * (var(--mynah-sizing-8) + var(--mynah-sizing-half)));`
               },
               classNames: [ 'mynah-detailed-list-items-block', (detailedListGroup.groupName !== undefined && detailedListGroup.childrenIndented === true) ? 'indented' : '' ],
-              children: index < 5
+              children: index < 1
                 ? this.getDetailedListItemElements(detailedListItemPart)
                 : []
             });
@@ -349,16 +354,16 @@ export class DetailedListWrapper {
         children: this.getDetailedListItemGroups()
       });
 
-      // Restore scroll position after DOM update if preserveScrollPosition is true
+      // Only schedule eager block loading if there are unrendered blocks beyond the first.
+      // For small lists (single block per group), all content is already rendered inline.
+      const hasUnrenderedBlocks = this.detailedListItemsBlockData.some(b => b.element.childNodes.length === 0);
       if (preserveScrollPosition === true) {
-      // Use requestAnimationFrame to ensure the DOM has been updated
         requestAnimationFrame(() => {
-        // Set the scroll position
           this.detailedListItemGroupsContainer.scrollTop = scrollTop;
-
-          // Trigger the virtualization logic using the existing handler
           this.handleScroll();
         });
+      } else if (hasUnrenderedBlocks) {
+        requestAnimationFrame(() => this.handleScroll());
       }
     }
   };
