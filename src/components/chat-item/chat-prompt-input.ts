@@ -82,6 +82,13 @@ export class ChatPromptInput {
   private quickPickTriggerRange?: Range;
   private quickPickType: 'quick-action' | 'context';
   private quickPickItemGroups: QuickActionCommandGroup[];
+  /**
+   * Snapshot of contextCommands taken when the picker opens.
+   * Used for sub-menu navigation so that server-side filter responses
+   * (which update the store's contextCommands) don't overwrite the
+   * base set the user is browsing.
+   */
+  private baseContextCommands: QuickActionCommandGroup[] = [];
   private topBarTitleClicked: boolean = false;
   private filteredQuickPickItemGroups: QuickActionCommandGroup[];
   private searchTerm: string = '';
@@ -237,6 +244,11 @@ export class ChatPromptInput {
       // so we run the local filter to apply highlights and re-render.
       if (this.quickPick != null && this.quickPickType === 'context' && contextCommands?.length > 0) {
         this.quickPickItemGroups = contextCommands as QuickActionCommandGroup[];
+        // Update the base snapshot when not actively searching, so sub-menu
+        // navigation always uses the latest full set from sendContextCommands.
+        if (this.searchTerm.length === 0) {
+          this.baseContextCommands = [ ...(contextCommands as QuickActionCommandGroup[]) ];
+        }
         if (this.searchTerm.length > 0) {
           try {
             this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
@@ -454,6 +466,9 @@ export class ChatPromptInput {
         this.searchTerm = '';
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
         this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;
+        if (this.quickPickType === 'context') {
+          this.baseContextCommands = [ ...quickPickContextItems ];
+        }
         this.quickPickTriggerRange = window.getSelection()?.getRangeAt(0);
         this.quickPickTriggerIndex = this.quickPickType === 'context' ? this.promptTextInput.getCursorPos() : 1;
         this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
@@ -854,9 +869,24 @@ export class ChatPromptInput {
     if (contextCommand.children?.[0] != null) {
       // If user types '@fi', and then selects a command with children (ex: file command), remove 'fi' from prompt
       if (!this.topBarTitleClicked) { this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex + 1, this.promptTextInput.getCursorPos()); }
-      this.quickPickItemGroups = [ ...contextCommand.children ];
+
+      // Look up children from the base snapshot to avoid showing stale
+      // filtered results. Fall back to the clicked item's children if
+      // the command isn't found in the base set (e.g. quick actions).
+      let children = contextCommand.children;
+      if (this.quickPickType === 'context' && this.baseContextCommands.length > 0) {
+        for (const group of this.baseContextCommands) {
+          const baseCmd = group.commands?.find(c => c.command === contextCommand.command);
+          if (baseCmd?.children?.[0] != null) {
+            children = baseCmd.children;
+            break;
+          }
+        }
+      }
+
+      this.quickPickItemGroups = [ ...children ];
       this.quickPick.updateContent([
-        this.getQuickPickItemGroups(contextCommand.children)
+        this.getQuickPickItemGroups(children)
       ]);
     } else {
       if (this.quickPickTriggerRange != null) {
