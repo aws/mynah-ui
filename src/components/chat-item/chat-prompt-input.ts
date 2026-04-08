@@ -288,7 +288,19 @@ export class ChatPromptInput {
         }
         if (this.filteredQuickPickItemGroups.length > 0) {
           this.quickPick.toggleHidden(false);
-          this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+          if (this.quickPickItemsSelectorContainer != null) {
+            // Update the wrapper's internal list directly with preserveFocus,
+            // so the user's keyboard selection survives the refresh when a
+            // fresh fetch arrives mid-navigation. The wrapper's render is
+            // already attached to the overlay's DOM, so updating in place is
+            // visible without re-running getQuickPickItemGroups (which would
+            // tear down and rebuild the wrapper internals).
+            this.quickPickItemsSelectorContainer.update({
+              list: convertQuickActionCommandGroupsToDetailedListGroups(this.filteredQuickPickItemGroups)
+            }, false, true);
+          } else {
+            this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+          }
         } else {
           this.quickPick.toggleHidden(true);
         }
