@@ -82,6 +82,20 @@ export class ChatPromptInput {
   private quickPickTriggerRange?: Range;
   private quickPickType: 'quick-action' | 'context';
   private quickPickItemGroups: QuickActionCommandGroup[];
+  /**
+   * Snapshot of contextCommands taken when the picker opens.
+   * Used for sub-menu navigation so that server-side filter responses
+   * (which update the store's contextCommands) don't overwrite the
+   * base set the user is browsing.
+   */
+  private baseContextCommands: QuickActionCommandGroup[] = [];
+  /**
+   * When the user clicks into a sub-menu (e.g. @Folders), this holds the
+   * `command` string of the parent. The contextCommands store listener
+   * uses it to refresh the visible sub-menu's children in place when a
+   * fresh fetch returns, instead of snapping back to the top-level menu.
+   */
+  private activeSubMenuCommand: string | undefined;
   private topBarTitleClicked: boolean = false;
   private filteredQuickPickItemGroups: QuickActionCommandGroup[];
   private searchTerm: string = '';
@@ -236,7 +250,42 @@ export class ChatPromptInput {
       // new items.  The server-side search term matches the current this.searchTerm,
       // so we run the local filter to apply highlights and re-render.
       if (this.quickPick != null && this.quickPickType === 'context' && contextCommands?.length > 0) {
-        this.quickPickItemGroups = contextCommands as QuickActionCommandGroup[];
+        const fresh = contextCommands as QuickActionCommandGroup[];
+
+        // Update the base snapshot when not actively searching, so sub-menu
+        // navigation always uses the latest full set from sendContextCommands.
+        if (this.searchTerm.length === 0) {
+          this.baseContextCommands = [ ...fresh ];
+        }
+
+        if (this.activeSubMenuCommand !== undefined) {
+          // The user is inside a sub-menu (e.g. @Folders). Find the matching
+          // command in the freshly-arrived top-level structure and use ITS
+          // children to repopulate the visible sub-menu in place. This avoids
+          // snapping the picker back to the top-level menu when the fetch
+          // completes mid-navigation.
+          let subMenuChildren: QuickActionCommandGroup[] | null = null;
+          for (const group of fresh) {
+            const cmd = group.commands?.find(c => c.command === this.activeSubMenuCommand);
+            if (cmd?.children != null) {
+              subMenuChildren = cmd.children;
+              break;
+            }
+          }
+          if (subMenuChildren !== null) {
+            this.quickPickItemGroups = subMenuChildren;
+          } else {
+            // The active sub-menu command no longer exists in the fresh
+            // top-level structure (e.g. server config changed, command was
+            // removed). Fall back to the top-level so the user isn't stranded
+            // inside an empty sub-menu with no way out.
+            this.activeSubMenuCommand = undefined;
+            this.quickPickItemGroups = fresh;
+          }
+        } else {
+          this.quickPickItemGroups = fresh;
+        }
+
         if (this.searchTerm.length > 0) {
           try {
             this.filteredQuickPickItemGroups = filterQuickPickItems([ ...this.quickPickItemGroups ], this.searchTerm);
@@ -248,7 +297,19 @@ export class ChatPromptInput {
         }
         if (this.filteredQuickPickItemGroups.length > 0) {
           this.quickPick.toggleHidden(false);
-          this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+          if (this.quickPickItemsSelectorContainer != null) {
+            // Update the wrapper's internal list directly with preserveFocus,
+            // so the user's keyboard selection survives the refresh when a
+            // fresh fetch arrives mid-navigation. The wrapper's render is
+            // already attached to the overlay's DOM, so updating in place is
+            // visible without re-running getQuickPickItemGroups (which would
+            // tear down and rebuild the wrapper internals).
+            this.quickPickItemsSelectorContainer.update({
+              list: convertQuickActionCommandGroupsToDetailedListGroups(this.filteredQuickPickItemGroups)
+            }, false, true);
+          } else {
+            this.quickPick.updateContent([ this.getQuickPickItemGroups(this.filteredQuickPickItemGroups) ]);
+          }
         } else {
           this.quickPick.toggleHidden(true);
         }
@@ -449,11 +510,24 @@ export class ChatPromptInput {
         (this.selectedCommand === '' && e.key === KeyMap.SLASH && this.promptTextInput.getTextInputValue() === '') ||
         (e.key === KeyMap.AT && this.promptTextInput.promptTextInputMaxLength > 0)
       ) {
-        const quickPickContextItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
         const quickPickCommandItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('quickActionCommands') as QuickActionCommandGroup[]) ?? [];
         this.searchTerm = '';
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
-        this.quickPickItemGroups = this.quickPickType === 'context' ? quickPickContextItems : quickPickCommandItems;
+        if (this.quickPickType === 'context') {
+          // Show the top-level menu skeleton (Files / Folders / Code / Prompts /
+          // Image, ...) immediately, then dispatch a fresh fetch. The store
+          // listener will populate the children when its response arrives.
+          const previousStoreItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
+          this.quickPickItemGroups = this.buildContextSkeleton(previousStoreItems);
+          this.baseContextCommands = [];
+          this.activeSubMenuCommand = undefined;
+          MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_COMMAND_FILTER, {
+            tabId: this.props.tabId,
+            searchTerm: '',
+          });
+        } else {
+          this.quickPickItemGroups = quickPickCommandItems;
+        }
         this.quickPickTriggerRange = window.getSelection()?.getRangeAt(0);
         this.quickPickTriggerIndex = this.quickPickType === 'context' ? this.promptTextInput.getCursorPos() : 1;
         this.filteredQuickPickItemGroups = [ ...this.quickPickItemGroups ];
@@ -661,7 +735,7 @@ export class ChatPromptInput {
       window.addEventListener('keydown', this.tabBarTitleOverlayKeyPressHandler);
     }
 
-    if (this.quickPickItemGroups.length > 0) {
+    if (this.quickPickItemGroups.length > 0 || this.quickPickType === 'context') {
       this.quickPick = new Overlay({
         closeOnOutsideClick: true,
         referenceElement: this.render.querySelector('.mynah-chat-prompt') as ExtendedHTMLElement,
@@ -675,6 +749,7 @@ export class ChatPromptInput {
             clearTimeout(this.quickPickFilterDebounceTimer);
             this.quickPickFilterDebounceTimer = null;
           }
+          this.activeSubMenuCommand = undefined;
           window.removeEventListener('keydown', this.tabBarTitleOverlayKeyPressHandler);
         },
         children: [
@@ -715,6 +790,35 @@ export class ChatPromptInput {
       this.filteredQuickPickItemGroups = [ ...restorePreviousFilteredQuickPickItemGroups ];
       this.openQuickPick();
     }
+  };
+
+  /**
+   * Build a top-level skeleton from a previously-rendered context structure:
+   * keep all top-level commands (Files / Folders / Code / Prompts / Image, ...)
+   * with their metadata (icon, description, command name) so the picker shows
+   * the categories immediately, but strip the children to an empty group so
+   * stale items from a previous search session don't leak through.
+   *
+   * Note: this only preserves the FIRST child group of each command. Top-level
+   * context commands always ship a single child group, so this is fine in
+   * practice. If a command has no children (e.g. @workspace, @image), it is
+   * passed through unchanged.
+   */
+  private readonly buildContextSkeleton = (groups: QuickActionCommandGroup[]): QuickActionCommandGroup[] => {
+    return groups.map(group => ({
+      ...group,
+      commands: (group.commands ?? []).map(cmd =>
+        cmd.children != null && cmd.children.length > 0
+          ? {
+              ...cmd,
+              children: [ {
+                groupName: cmd.children[0]?.groupName ?? '',
+                commands: [],
+              } ],
+            }
+          : cmd
+      ),
+    }));
   };
 
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
@@ -854,9 +958,31 @@ export class ChatPromptInput {
     if (contextCommand.children?.[0] != null) {
       // If user types '@fi', and then selects a command with children (ex: file command), remove 'fi' from prompt
       if (!this.topBarTitleClicked) { this.promptTextInput.deleteTextRange(this.quickPickTriggerIndex + 1, this.promptTextInput.getCursorPos()); }
-      this.quickPickItemGroups = [ ...contextCommand.children ];
+
+      // Track which sub-menu we're inside so the contextCommands store
+      // listener can refresh ITS children in place when a fresh fetch
+      // returns, instead of snapping the picker back to the top-level menu.
+      if (this.quickPickType === 'context') {
+        this.activeSubMenuCommand = contextCommand.command;
+      }
+
+      // Look up children from the base snapshot to avoid showing stale
+      // filtered results. Fall back to the clicked item's children if
+      // the command isn't found in the base set (e.g. quick actions).
+      let children = contextCommand.children;
+      if (this.quickPickType === 'context' && this.baseContextCommands.length > 0) {
+        for (const group of this.baseContextCommands) {
+          const baseCmd = group.commands?.find(c => c.command === contextCommand.command);
+          if (baseCmd?.children?.[0] != null) {
+            children = baseCmd.children;
+            break;
+          }
+        }
+      }
+
+      this.quickPickItemGroups = [ ...children ];
       this.quickPick.updateContent([
-        this.getQuickPickItemGroups(contextCommand.children)
+        this.getQuickPickItemGroups(children)
       ]);
     } else {
       if (this.quickPickTriggerRange != null) {

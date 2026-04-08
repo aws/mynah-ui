@@ -313,7 +313,7 @@ export class DetailedListWrapper {
     return this.allSelectableDetailedListElements[this.activeTargetElementIndex].getItem();
   };
 
-  public readonly update = (detailedList: DetailedList, preserveScrollPosition?: boolean): void => {
+  public readonly update = (detailedList: DetailedList, preserveScrollPosition?: boolean, preserveFocus?: boolean): void => {
     if (detailedList.header != null) {
       this.props.detailedList.header = detailedList.header;
       this.headerContainer.update({
@@ -338,6 +338,9 @@ export class DetailedListWrapper {
     if (detailedList.list != null) {
       // Save current scroll position if preserveScrollPosition is true
       const scrollTop = preserveScrollPosition === true ? this.detailedListItemGroupsContainer.scrollTop : 0;
+      // Save the currently focused index if preserveFocus is true so we can
+      // restore the user's selection after the rebuild.
+      const focusIndexToRestore = preserveFocus === true ? this.activeTargetElementIndex : -1;
       if (detailedList.selectable != null) {
         this.props.detailedList.selectable = detailedList.selectable;
       }
@@ -353,6 +356,12 @@ export class DetailedListWrapper {
       this.detailedListItemGroupsContainer.update({
         children: this.getDetailedListItemGroups()
       });
+
+      // Restore focus to the same index if preserveFocus was requested and
+      // the index is still valid in the rebuilt list.
+      if (focusIndexToRestore >= 0 && focusIndexToRestore < this.allSelectableDetailedListElements.length) {
+        this.setFocusByIndex(focusIndexToRestore);
+      }
 
       // Only schedule eager block loading if there are unrendered blocks beyond the first.
       // For small lists (single block per group), all content is already rendered inline.
