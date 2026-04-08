@@ -264,7 +264,7 @@ export class ChatPromptInput {
           // children to repopulate the visible sub-menu in place. This avoids
           // snapping the picker back to the top-level menu when the fetch
           // completes mid-navigation.
-          let subMenuChildren: QuickActionCommandGroup[] = [];
+          let subMenuChildren: QuickActionCommandGroup[] | null = null;
           for (const group of fresh) {
             const cmd = group.commands?.find(c => c.command === this.activeSubMenuCommand);
             if (cmd?.children != null) {
@@ -272,7 +272,16 @@ export class ChatPromptInput {
               break;
             }
           }
-          this.quickPickItemGroups = subMenuChildren;
+          if (subMenuChildren !== null) {
+            this.quickPickItemGroups = subMenuChildren;
+          } else {
+            // The active sub-menu command no longer exists in the fresh
+            // top-level structure (e.g. server config changed, command was
+            // removed). Fall back to the top-level so the user isn't stranded
+            // inside an empty sub-menu with no way out.
+            this.activeSubMenuCommand = undefined;
+            this.quickPickItemGroups = fresh;
+          }
         } else {
           this.quickPickItemGroups = fresh;
         }
@@ -505,26 +514,11 @@ export class ChatPromptInput {
         this.searchTerm = '';
         this.quickPickType = e.key === KeyMap.AT ? 'context' : 'quick-action';
         if (this.quickPickType === 'context') {
-          // Build a skeleton from the previous store structure: keep the
-          // top-level commands (Files, Folders, Code, Prompts, Image, ...)
-          // so the user sees the menu immediately, but strip children to
-          // avoid showing stale items from a previous search session. The
-          // fresh fetch will populate the children when its response arrives.
+          // Show the top-level menu skeleton (Files / Folders / Code / Prompts /
+          // Image, ...) immediately, then dispatch a fresh fetch. The store
+          // listener will populate the children when its response arrives.
           const previousStoreItems = (MynahUITabsStore.getInstance().getTabDataStore(this.props.tabId).getValue('contextCommands') as QuickActionCommandGroup[]) ?? [];
-          this.quickPickItemGroups = previousStoreItems.map(group => ({
-            ...group,
-            commands: (group.commands ?? []).map(cmd =>
-              cmd.children != null && cmd.children.length > 0
-                ? {
-                    ...cmd,
-                    children: [ {
-                      groupName: cmd.children[0]?.groupName ?? '',
-                      commands: [],
-                    } ],
-                  }
-                : cmd
-            ),
-          }));
+          this.quickPickItemGroups = this.buildContextSkeleton(previousStoreItems);
           this.baseContextCommands = [];
           this.activeSubMenuCommand = undefined;
           MynahUIGlobalEvents.getInstance().dispatch(MynahEventNames.CONTEXT_COMMAND_FILTER, {
@@ -796,6 +790,35 @@ export class ChatPromptInput {
       this.filteredQuickPickItemGroups = [ ...restorePreviousFilteredQuickPickItemGroups ];
       this.openQuickPick();
     }
+  };
+
+  /**
+   * Build a top-level skeleton from a previously-rendered context structure:
+   * keep all top-level commands (Files / Folders / Code / Prompts / Image, ...)
+   * with their metadata (icon, description, command name) so the picker shows
+   * the categories immediately, but strip the children to an empty group so
+   * stale items from a previous search session don't leak through.
+   *
+   * Note: this only preserves the FIRST child group of each command. Top-level
+   * context commands always ship a single child group, so this is fine in
+   * practice. If a command has no children (e.g. @workspace, @image), it is
+   * passed through unchanged.
+   */
+  private readonly buildContextSkeleton = (groups: QuickActionCommandGroup[]): QuickActionCommandGroup[] => {
+    return groups.map(group => ({
+      ...group,
+      commands: (group.commands ?? []).map(cmd =>
+        cmd.children != null && cmd.children.length > 0
+          ? {
+              ...cmd,
+              children: [ {
+                groupName: cmd.children[0]?.groupName ?? '',
+                commands: [],
+              } ],
+            }
+          : cmd
+      ),
+    }));
   };
 
   private readonly getQuickPickItemGroups = (quickPickGroupList: QuickActionCommandGroup[]): ExtendedHTMLElement => {
