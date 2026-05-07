@@ -1269,14 +1269,7 @@ export const exampleCustomRendererWithDomBuilderJson: ChatItem = {
                                     attributes: {
                                         style: 'min-width: 30px; width: 30px;',
                                     },
-                                    children: [
-                                        {
-                                            type: 'img',
-                                            attributes: {
-                                                src: `data:image/svg+xml;base64,${window.btoa(attachmentIcon)}`,
-                                            },
-                                        },
-                                    ],
+                                    children: [attachmentIcon],
                                 },
                                 {
                                     type: 'td',

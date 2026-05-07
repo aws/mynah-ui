@@ -17,6 +17,8 @@ export const configureMarked = (): void => {
   // Apply global fix for marked listitem content is not getting parsed.
   marked.use({
     renderer: {
+      html: ({ text }) => escapeHTML(text),
+      image: ({ href, title, text }) => escapeHTML(`![${text}](${href}${title != null ? ` "${title}"` : ''})`),
       listitem: (item: Tokens.ListItem) => `<li>
   ${item.task ? `<input ${item.checked === true ? 'checked' : ''} disabled type="checkbox">` : ''}
   ${(item.task ? marked.parseInline : marked.parse)(item.text, { breaks: false }) as string}

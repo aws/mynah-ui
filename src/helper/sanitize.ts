@@ -7,7 +7,6 @@ import sanitizeHtml from 'sanitize-html';
 
 export const AllowedTags = [
   'a',
-  'audio',
   'b',
   'blockquote',
   'br',
@@ -30,7 +29,6 @@ export const AllowedTags = [
   'h5',
   'h6',
   'i',
-  'img',
   'input',
   'li',
   'map',
@@ -41,7 +39,6 @@ export const AllowedTags = [
   'q',
   's',
   'small',
-  'source',
   'span',
   'strong',
   'sub',
@@ -54,10 +51,8 @@ export const AllowedTags = [
   'th',
   'thead',
   'tr',
-  'track',
   'u',
   'ul',
-  'video',
 ] as const;
 
 export const AllowedAttributes = [

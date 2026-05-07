@@ -91,4 +91,63 @@ describe('marked', () => {
       expect(result).not.toContain('<a');
     });
   });
+
+  describe('inline HTML escaping', () => {
+    it('should escape inline img tags', () => {
+      const markdown = '<img src=x onerror=alert(1)>';
+      const result = parseMarkdown(markdown);
+
+      expect(result).not.toContain('<img');
+      expect(result).toContain('&lt;img src=x onerror=alert(1)&gt;');
+    });
+
+    it('should escape inline svg tags', () => {
+      const markdown = '<svg onload=alert(1)>';
+      const result = parseMarkdown(markdown);
+
+      expect(result).not.toContain('<svg');
+      expect(result).toContain('&lt;svg onload=alert(1)&gt;');
+    });
+
+    it('should escape inline script tags', () => {
+      const markdown = '<script>alert(1)</script>';
+      const result = parseMarkdown(markdown);
+
+      expect(result).not.toContain('<script>');
+      expect(result).toContain('&lt;script&gt;');
+    });
+
+    it('should escape div tags with event handlers', () => {
+      const markdown = '<div onmouseover="alert(1)">hover me</div>';
+      const result = parseMarkdown(markdown);
+
+      expect(result).not.toContain('<div onmouseover');
+      expect(result).toContain('&lt;div onmouseover=');
+    });
+
+    it('should escape img tags used as filenames', () => {
+      const markdown = 'The file is called <img src="https://attacker.com/exfil">.txt';
+      const result = parseMarkdown(markdown);
+
+      expect(result).not.toContain('<img');
+      expect(result).toContain('&lt;img src=');
+    });
+
+    it('should escape markdown image syntax', () => {
+      const markdown = '![alt text](https://example.com/image.png)';
+      const result = parseMarkdown(markdown);
+
+      expect(result).not.toContain('<img');
+      expect(result).toContain('![alt text](https://example.com/image.png)');
+    });
+
+    it('should still render markdown formatting correctly', () => {
+      const markdown = '**bold** and *italic* and `code`';
+      const result = parseMarkdown(markdown);
+
+      expect(result).toContain('<strong>bold</strong>');
+      expect(result).toContain('<em>italic</em>');
+      expect(result).toContain('<code>');
+    });
+  });
 });
