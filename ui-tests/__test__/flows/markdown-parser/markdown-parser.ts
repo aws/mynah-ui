@@ -17,8 +17,8 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
         codeReference: [ {
           information: 'Hello Reference Tracker',
           recommendationContentSpan: {
-            start: 428,
-            end: 437
+            start: 423,
+            end: 432
           }
         } ],
         body
