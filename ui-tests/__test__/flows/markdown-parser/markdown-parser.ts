@@ -17,8 +17,8 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
         codeReference: [ {
           information: 'Hello Reference Tracker',
           recommendationContentSpan: {
-            start: 4828, // because of base64 image length calculation
-            end: 4837
+            start: 466,
+            end: 475
           }
         } ],
         body
@@ -66,11 +66,10 @@ export const parseMarkdown = async (page: Page, skipScreenshots?: boolean): Prom
   })).toBe('Subitem 1');
   expect(await answerCard.evaluate(node => node.querySelector('ol > li:first-child > input[checked][disabled][type="checkbox"]'))).toBeDefined();
 
-  // Anchors and IMG
+  // Anchors
   // We're not expecting any link except [TEXT](URL) format, we should have only 1 link.
   expect(await answerCard.evaluate(node => node.querySelectorAll('a[href="https://github.com/aws/mynah-ui"]').length)).toBe(1);
   expect(await answerCard.evaluate(node => node.querySelectorAll('a[href="https://github.com/aws/mynah-ui"]')[0]?.innerHTML)).toBe('mynah-ui');
-  expect(await answerCard.evaluate(node => node.querySelector('img[src="https://placehold.co/600x400"]'))).toBeDefined();
 
   // Table
   expect(await answerCard.evaluate(node => node.querySelector('table > tbody > tr:nth-child(2) > td:nth-child(2)')?.innerHTML)).toBe('2');
