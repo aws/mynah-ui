@@ -30,7 +30,6 @@ export const AllowedTags = [
   'h5',
   'h6',
   'i',
-  'img',
   'input',
   'li',
   'map',
