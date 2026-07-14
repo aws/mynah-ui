@@ -6,6 +6,21 @@
 import { Select, SelectInternal, SelectProps } from '../../../components/form-items/select';
 import { MynahIcons } from '../../../components/icon';
 import { DomBuilder } from '../../../helper/dom';
+import { configureMarked } from '../../../helper/marked';
+
+// Mock the overlay component so we can capture the tooltip content that gets rendered,
+// without depending on the real Overlay's positioning logic.
+jest.mock('../../../components/overlay', () => ({
+  Overlay: jest.fn().mockImplementation(() => ({
+    close: jest.fn()
+  })),
+  OverlayHorizontalDirection: {
+    START_TO_RIGHT: 'start-to-right'
+  },
+  OverlayVerticalDirection: {
+    TO_TOP: 'to-top'
+  }
+}));
 
 describe('Select Component', () => {
   let select: SelectInternal;
@@ -359,6 +374,89 @@ describe('Select Component', () => {
       selectElement.dispatchEvent(new Event('change'));
 
       expect(select.getValue()).toBe('option2');
+    });
+  });
+
+  describe('Tooltip content', () => {
+    // Options that carry a description mirror the model-selector use case, where the
+    // hover tooltip shows the selected model's label and description.
+    const optionsWithDescription = [
+      { value: 'model1', label: 'Claude Sonnet 4', description: 'Hybrid reasoning and coding for regular use' },
+      { value: 'model2', label: 'Claude Haiku', description: 'Fast responses for lightweight tasks' }
+    ];
+
+    beforeEach(() => {
+      // The tooltip is rendered through the markdown parser, which (in production) escapes
+      // raw HTML. Configure marked here so the test reflects real rendering behavior.
+      configureMarked();
+      jest.useFakeTimers();
+      const { Overlay } = jest.requireMock('../../../components/overlay');
+      (Overlay as jest.Mock).mockClear();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    const openTooltip = (): HTMLElement => {
+      document.body.appendChild(select.render);
+      const container = document.body.querySelector('.mynah-form-input-container') as HTMLElement;
+      container.dispatchEvent(new MouseEvent('mouseenter'));
+      jest.advanceTimersByTime(350);
+
+      const { Overlay } = jest.requireMock('../../../components/overlay');
+      expect(Overlay).toHaveBeenCalledTimes(1);
+      const overlayProps = (Overlay as jest.Mock).mock.calls[0][0];
+      // The overlay renders a Card whose body is the parsed tooltip content.
+      return overlayProps.children[0] as HTMLElement;
+    };
+
+    it('should render the tooltip as markdown, not raw HTML tags', () => {
+      select = new SelectInternal({
+        options: optionsWithDescription,
+        value: 'model1'
+      });
+
+      const tooltipContent = openTooltip();
+
+      // The label must render as a real bold element, not literal "<strong>" text.
+      const strongElement = tooltipContent.querySelector('strong');
+      expect(strongElement).not.toBeNull();
+      expect(strongElement?.textContent).toBe('Claude Sonnet 4');
+
+      // Regression guard: the raw HTML tags must never leak into the visible text.
+      expect(tooltipContent.textContent).not.toContain('<strong>');
+      expect(tooltipContent.textContent).not.toContain('<br>');
+
+      // Both label and description should be present in the rendered tooltip.
+      expect(tooltipContent.textContent).toContain('Claude Sonnet 4');
+      expect(tooltipContent.textContent).toContain('Hybrid reasoning and coding for regular use');
+    });
+
+    it('should reflect the currently selected option in the tooltip', () => {
+      select = new SelectInternal({
+        options: optionsWithDescription,
+        value: 'model1'
+      });
+      select.setValue('model2');
+
+      const tooltipContent = openTooltip();
+
+      expect(tooltipContent.querySelector('strong')?.textContent).toBe('Claude Haiku');
+      expect(tooltipContent.textContent).toContain('Fast responses for lightweight tasks');
+      expect(tooltipContent.textContent).not.toContain('<strong>');
+    });
+
+    it('should fall back to the base tooltip when the option has no description', () => {
+      select = new SelectInternal({
+        options: testOptions,
+        value: 'option1',
+        tooltip: 'Base tooltip text'
+      });
+
+      const tooltipContent = openTooltip();
+
+      expect(tooltipContent.textContent).toContain('Base tooltip text');
     });
   });
 });
