@@ -9,7 +9,7 @@
     "main": "./dist/main.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/aws/mynah-ui"
+        "url": "https://github.com/Amazon-Q-Developer/mynah-ui"
     },
     "scripts": {
         "clean": "npm run clean:dist && npm run clean:node",
