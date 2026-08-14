@@ -149,9 +149,11 @@ export class SelectInternal {
     const currentValue = this.selectElement.value;
     const selectedOption = this.props.options?.find(option => option.value === currentValue);
 
-    // If there's a selected option, show label and description; otherwise use the base tooltip
+    // If there's a selected option, show label and description; otherwise use the base tooltip.
+    // The tooltip is rendered through the markdown parser (via CardBody), which escapes raw HTML,
+    // so use markdown syntax (bold + line break) instead of HTML tags to avoid showing literal markup.
     if (selectedOption?.description != null) {
-      return `<strong>${selectedOption.label}</strong><br>${selectedOption.description}`;
+      return `**${selectedOption.label}**\n${selectedOption.description}`;
     }
     return this.props.tooltip ?? '';
   };
