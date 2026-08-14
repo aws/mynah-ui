@@ -137,9 +137,9 @@ export const verifyQuickActionCommandsHeaderStatusVariations = async (page: Page
   let foundStatusClass = false;
 
   for (const statusClass of statusClasses) {
-    const hasStatus = await headerElement.evaluate((el, className) =>
+    const hasStatus = Boolean(await headerElement.evaluate((el, className) =>
       el.classList.contains(className), statusClass
-    );
+    ));
     if (hasStatus) {
       foundStatusClass = true;
       console.log(`Found status class: ${statusClass}`);
