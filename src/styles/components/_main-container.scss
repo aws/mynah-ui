@@ -51,13 +51,32 @@ body.mynah-ui-root {
     }
 
     ::-webkit-scrollbar {
-        width: 2px;
-        height: 2px;
-        opacity: 0.25;
+        width: var(--mynah-sizing-2);
+        height: var(--mynah-sizing-2);
         &:horizontal {
             width: 0px;
             height: 0px;
         }
+    }
+
+    // Declaring ::-webkit-scrollbar above opts every scroller inside the wrapper
+    // out of native scrollbars, so any part left unstyled is simply not painted.
+    // The thumb and track therefore have to be styled explicitly.
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--mynah-scrollbar-thumb-bg);
+        border-radius: var(--mynah-sizing-1);
+
+        &:hover {
+            background-color: var(--mynah-scrollbar-thumb-bg-hover);
+        }
+    }
+
+    ::-webkit-scrollbar-corner {
+        background-color: transparent;
     }
 
     *:focus {

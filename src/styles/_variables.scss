@@ -126,6 +126,13 @@
     --mynah-card-bg: var(--vscode-editor-background);
     --mynah-card-bg-alternate: var(--vscode-editor-background, var(--mynah-color-button)); // OK
 
+    // Scrollbar thumb colours, derived from the host theme's foreground so the
+    // thumb stays visible in both light and dark themes. The literal fallbacks
+    // apply only if a host supplies neither the mynah nor the VS Code token, so
+    // the thumb can never end up unpainted.
+    --mynah-scrollbar-thumb-bg: var(--mynah-color-text-weak, rgba(128, 128, 128, 0.5));
+    --mynah-scrollbar-thumb-bg-hover: var(--mynah-color-text-default, rgba(128, 128, 128, 0.8));
+
     --mynah-shadow-button: none;
     --mynah-shadow-card: none;
     --mynah-shadow-card-hover: 0 40px 25px -15px rgba(0, 0, 0, 0.35);
